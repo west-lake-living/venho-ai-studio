@@ -1,0 +1,17 @@
+{
+  "providers": {
+    "image_analysis": "openai",
+    "knowledge_merge": "claude",
+    "markdown_generation": "claude"
+  },
+  "batch_size": 5,
+  "image_extensions": [".jpg", ".jpeg", ".png", ".webp"],
+  "categories": ["Room", "Lobby", "Reception", "Facade", "Rooftop", "WestLake", "LinhAn", "Other"],
+  "openai_model": "gpt-4o",
+  "claude_model": "claude-sonnet-4-6",
+  "output": {
+    "knowledge_dir": "output/knowledge",
+    "json_dir": "output/json",
+    "log_dir": "output/logs"
+  }
+}
