@@ -1,0 +1,77 @@
+schema_id: venho_hotel.outside
+schema_version: "1.0"
+subject: outside
+display_name: Hotel Outdoor Spaces
+description: Ven Ho Hotel outdoor areas — rooftop terrace, balconies, street-level exterior, West Lake views
+
+aggregation_keys:
+  # --- Space type ---
+  - key: space_type
+    type: enum
+    values: [rooftop_terrace, balcony, entrance_area, street_level_exterior, corridor_outdoor, not_visible]
+
+  - key: floor_level
+    type: enum
+    values: [ground_floor, upper_floor, rooftop, not_visible]
+
+  # --- Lake view ---
+  - key: lake_view_visible
+    type: enum
+    values: [full_panoramic, partial, none, not_visible]
+
+  - key: lake_water_color
+    type: enum
+    values: [jade_teal, blue_gray, dark_blue, brown_murky, not_visible]
+
+  - key: sky_condition
+    type: enum
+    values: [clear_blue, golden_hour, overcast, hazy_hanoi, night, not_visible]
+
+  # --- Furniture & fixtures ---
+  - key: outdoor_furniture
+    type: enum
+    values: [rattan_chairs, metal_chairs, sun_loungers, none, not_visible]
+
+  - key: railing_type
+    type: enum
+    values: [black_iron_scroll, glass_panel, concrete_parapet, metal_bar, none, not_visible]
+
+  - key: flooring_material
+    type: enum
+    values: [tile, concrete, wood_deck, stone, not_visible]
+
+  # --- Greenery & context ---
+  - key: plants_present
+    type: enum
+    values: [yes_potted, yes_landscaped, none, not_visible]
+
+  - key: cityscape_visible
+    type: enum
+    values: [yes_low_rise, yes_mixed, none, not_visible]
+
+  - key: street_trees_visible
+    type: enum
+    values: [yes_mature, yes_small, none, not_visible]
+
+  # --- Lighting & time ---
+  - key: lighting_condition
+    type: enum
+    values: [natural_daylight, golden_hour, dusk, night_ambient, not_visible]
+
+  - key: time_of_day
+    type: enum
+    values: [morning, midday, afternoon, golden_hour, dusk, not_visible]
+
+  # --- Condition ---
+  - key: space_condition
+    type: enum
+    values: [well_maintained, slightly_worn, under_renovation, not_visible]
+
+  - key: allowed_imperfection
+    type: free
+
+forbidden_defaults:
+  - no infinity pool or resort-style pool deck
+  - no rooftop bar with full bar setup
+  - no luxury resort terrace furniture
+  - no city high-rise skyline in background

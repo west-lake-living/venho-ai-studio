@@ -13,8 +13,14 @@ build/
 .venv/
 venv/
 
-# Output (optional — uncomment to track outputs in git)
-# output/
+# Data — media, observations, knowledge (không đẩy lên GitHub)
+data/
+
+# Raw assets — ảnh gốc, quá lớn cho git
+assets/raw/
+
+# Output — generated files, logs
+output/
 
 # macOS
 .DS_Store

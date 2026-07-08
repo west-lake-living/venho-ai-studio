@@ -1,0 +1,40 @@
+schema_id: universal
+schema_version: "1.0"
+description: Universal aggregation schema for any subject
+
+aggregation_keys:
+  - key: subject_type
+    type: enum
+    values: [room, lobby, facade, outdoor, person, product, location, other]
+
+  - key: scene_type
+    type: free
+
+  - key: primary_color
+    type: free
+
+  - key: secondary_color
+    type: free
+
+  - key: lighting_condition
+    type: enum
+    values: [natural_daylight, artificial_warm, artificial_cool, mixed, low_light, overcast, golden_hour]
+
+  - key: composition
+    type: enum
+    values: [wide_shot, medium_shot, close_up, portrait, aerial, interior]
+
+  - key: material_dominant
+    type: free
+
+  - key: mood
+    type: enum
+    values: [warm, cool, neutral, vibrant, muted, dramatic, serene]
+
+  - key: time_of_day
+    type: enum
+    values: [morning, midday, afternoon, evening, night, unknown]
+
+  - key: allowed_imperfection
+    type: free
+    description: "Observable naturally occurring imperfection acceptable per Authenticity principle"

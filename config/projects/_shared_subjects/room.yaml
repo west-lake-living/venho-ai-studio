@@ -1,0 +1,61 @@
+schema_id: shared.room
+schema_version: "1.0"
+subject: room
+display_name: Shared Hotel Room
+description: Generic hotel room schema for project-specific room subjects
+approved_for_pass1: true
+
+aggregation_keys:
+  - key: window_frame
+    type: enum
+    values: [black_aluminum, white_pvc, wood_frame, metal_other, not_visible]
+
+  - key: window_layout
+    type: enum
+    values: [single_pane, double_pane, grid_2x2, grid_2x3, louvered, not_visible]
+
+  - key: ceiling
+    type: enum
+    values: [flat_white, decorative_molding, exposed_beam, not_visible]
+
+  - key: floor
+    type: enum
+    values: [tile, hardwood, laminate, carpet, marble, not_visible]
+
+  - key: wall_color
+    type: free
+
+  - key: bed_size
+    type: enum
+    values: [single, double, queen, king, twin, not_visible]
+
+  - key: bedding_color
+    type: free
+
+  - key: furniture_style
+    type: enum
+    values: [wooden_classic, modern_minimal, mixed, none_visible, not_visible]
+
+  - key: lighting_condition
+    type: enum
+    values: [natural_daylight, artificial_warm, artificial_cool, mixed, low_light, overcast]
+
+  - key: window_view
+    type: enum
+    values: [lake, street, courtyard, wall, interior_only, not_visible]
+
+  - key: room_scale
+    type: enum
+    values: [compact, medium, spacious, not_visible]
+
+  - key: style_category
+    type: enum
+    values: [boutique_local, modern_minimal, classic_hotel, generic_hotel, not_visible]
+
+  - key: allowed_imperfection
+    type: free
+
+forbidden_defaults:
+  - no luxury apartment style
+  - no resort aesthetic
+  - no generic international hotel

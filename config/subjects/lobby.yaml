@@ -1,0 +1,53 @@
+subject: lobby
+display_name: Hotel Lobby
+description: Ven Ho Hotel lobby/reception area — boutique mini-hotel on West Lake, Hanoi
+
+feature_keys:
+  structure:
+    - entrance_door
+    - flooring_type
+    - ceiling_height
+    - ceiling_treatment
+    - wall_treatment
+    - staircase
+    - corridor
+
+  furniture:
+    - reception_desk
+    - desk_material
+    - waiting_seating
+    - side_table
+    - luggage_rack
+    - key_cabinet
+
+  materials:
+    - floor_material
+    - floor_color
+    - furniture_wood_tone
+    - fabric_texture
+
+  lighting:
+    - ambient_lighting
+    - accent_lighting
+    - natural_light
+    - chandelier_or_pendant
+
+  decor:
+    - plants
+    - artwork
+    - hotel_signage
+    - decorative_objects
+    - color_palette
+
+  atmosphere:
+    - scale
+    - hotel_tier_impression
+    - style_category
+    - cleanliness
+
+forbidden_defaults:
+  - no marble floor
+  - no luxury hotel chandeliers
+  - no resort-scale lobby
+  - no modern minimalist glass-and-steel design
+  - no generic international hotel style

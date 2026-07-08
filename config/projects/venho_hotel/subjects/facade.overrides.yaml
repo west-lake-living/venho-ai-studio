@@ -1,0 +1,29 @@
+# Ven Hồ Hotel — Building Facade / Exterior Overrides
+# Source: VENHO_HOTEL_MASTER_REFERENCE_PACK_v2.0
+# 181 Nguyễn Đình Thi, Tây Hồ, Hà Nội — narrow urban plot, multi-storey
+# This file is curated by humans. Never overwrite via DNA regeneration.
+
+forbidden:
+  - "no glass curtain wall facade — building uses traditional window openings"
+  - "no luxury resort exterior — this is a compact urban boutique hotel"
+  - "no colonial-era grand facade with pillars or ornate stonework"
+  - "no modern high-rise design — building is low-rise, 4-6 floors"
+  - "no generic commercial building look"
+  - "no artificial night illumination scenes unless the hotel actually lights up that way"
+
+allowed_imperfections:
+  - "slight weathering on exterior paint acceptable — authentic urban patina"
+  - "minor staining or discoloration from Hanoi climate acceptable"
+  - "natural street-level clutter (motorbikes, trees) in foreground acceptable"
+  - "uneven signage lighting acceptable"
+
+wording_overrides:
+  building_type: "narrow urban boutique hotel, multi-storey, compact street-facing plot"
+  facade_style: "Vietnamese urban vernacular — painted concrete, window openings, balconies"
+
+notes:
+  - "Address: 181 Nguyễn Đình Thi, Tây Hồ — lakeside street, Hanoi"
+  - "Building character: urban Vietnamese mini-hotel — NOT resort, NOT colonial villa"
+  - "Signage: 'Ven Hồ Hotel' sign on facade — white or warm tone"
+  - "Street context: Nguyễn Đình Thi is tree-lined, green lamp posts, light traffic"
+  - "Authenticity principle: real Hanoi urban texture over glossy hotel render"

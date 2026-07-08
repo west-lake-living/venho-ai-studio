@@ -1,0 +1,38 @@
+# Ven Hồ Hotel — West Lake (Hồ Tây) Environment Overrides
+# Source: 03_WESTLAKE_LIFESTYLE_DNA_v1.1 + Hồ Tây Image DNA (ho-tay-image-dna.md)
+# Nguyễn Đình Thi lakeside street — Ho Tay, Tay Ho, Hanoi, Vietnam
+# This file is curated by humans. Never overwrite via DNA regeneration.
+
+forbidden:
+  - "no tourist postcard aesthetic — must feel like daily local life, not staged"
+  - "no generic Asian city lake — must be distinctly Ho Tay / Hanoi"
+  - "no artificial or manicured park look — natural, unhurried"
+  - "no resort waterfront design — this is public lakeside street, not hotel grounds"
+  - "no dramatic staged lighting — soft Hanoi haze and natural glow only"
+  - "no saturated or oversaturated water color — must be muted jade-teal, not tropical blue"
+  - "no modern glass high-rise backdrop — low-rise cityscape across the water"
+
+allowed_imperfections:
+  - "slight Hanoi haze or atmospheric softness acceptable — authentic weather"
+  - "natural water texture variation (ripples, reflections) acceptable"
+  - "modest street-level elements (motorbikes, vendors) acceptable — real life"
+  - "overcast or grey sky acceptable — not all shots need golden hour"
+  - "slight color variation in water between morning and afternoon acceptable"
+
+wording_overrides:
+  water_color: "muted jade-teal #4E8FA0 — calm, reflective, not tropical blue"
+  atmosphere: "soft Hanoi haze, warm tropical light, unhurried daily life"
+  distant_cityscape: "yes"
+  railing_presence: "yes"
+  path_presence: "yes"
+
+notes:
+  - "Identity Block (MUST USE as prefix in all AI prompts):"
+  - "  West Lake (Ho Tay), Hanoi, Vietnam. Nguyen Dinh Thi lakeside street."
+  - "  Muted blue-green calm lake water (jade-teal #4E8FA0), wide open lake view,"
+  - "  low-rise cityscape across the water. Warm tropical atmosphere, soft Hanoi haze."
+  - "  Wide tree-lined boulevard, large mature tropical trees,"
+  - "  green lamp posts, green metal lakeshore railing."
+  - "  Authentic Vietnamese daily life. Real, unhurried, quietly beautiful."
+  - "Water color reference: #4E8FA0 (day) · #B8C4C8 (haze) · #C07840 (sunset)"
+  - "Golden Rule: show what it is like to LIVE beside West Lake today — not visit"

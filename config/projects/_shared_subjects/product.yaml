@@ -1,0 +1,57 @@
+schema_id: shared.product
+schema_version: "1.0"
+subject: product
+display_name: Shared Product
+description: Generic product schema for object, packaging, and merchandise subjects
+approved_for_pass1: true
+
+aggregation_keys:
+  - key: product_category
+    type: enum
+    values: [bottle, box, bag, apparel, accessory, furniture, printed_material, digital_device, other, not_visible]
+
+  - key: primary_material
+    type: enum
+    values: [paper, cardboard, plastic, glass, metal, fabric, wood, ceramic, mixed, not_visible]
+
+  - key: primary_color
+    type: free
+
+  - key: secondary_color
+    type: free
+
+  - key: logo_presence
+    type: enum
+    values: ["yes", "no", partial, not_visible]
+
+  - key: text_presence
+    type: enum
+    values: ["yes", "no", partial, not_visible]
+
+  - key: surface_finish
+    type: enum
+    values: [matte, glossy, satin, textured, transparent, not_visible]
+
+  - key: shape_profile
+    type: enum
+    values: [rectangular, cylindrical, rounded, irregular, flat, not_visible]
+
+  - key: scale_context
+    type: enum
+    values: [handheld, tabletop, room_scale, unknown, not_visible]
+
+  - key: condition_state
+    type: enum
+    values: [new, used_clean, worn, damaged, not_visible]
+
+  - key: lighting_condition
+    type: enum
+    values: [natural_daylight, artificial_warm, artificial_cool, studio, mixed, low_light]
+
+  - key: allowed_imperfection
+    type: free
+
+forbidden_defaults:
+  - no fake brand mark
+  - no unreadable invented logo
+  - no impossible material reflection

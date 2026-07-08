@@ -1,0 +1,54 @@
+subject: room
+display_name: Hotel Room
+description: Ven Ho Hotel guest room — boutique mini-hotel on West Lake, Hanoi
+
+feature_keys:
+  structure:
+    - window_frame
+    - window_layout
+    - ceiling
+    - floor
+    - wall_color
+    - room_shape
+    - door
+    - balcony_railing
+
+  furniture:
+    - bed_size
+    - bed_position
+    - headboard
+    - bedding_color
+    - wardrobe
+    - desk
+    - chairs
+    - nightstand
+
+  materials:
+    - wood_tone
+    - fabric_texture
+    - surface_finish
+
+  lighting:
+    - natural_light
+    - artificial_light
+    - curtain_state
+    - time_of_day
+
+  view:
+    - window_view
+    - lake_visibility
+    - exterior_elements
+
+  atmosphere:
+    - room_scale
+    - hotel_tier
+    - cleanliness
+    - style_category
+
+forbidden_defaults:
+  - no floor-to-ceiling glass wall
+  - no luxury apartment style
+  - no marble interior
+  - no resort aesthetic
+  - no Korean hotel style
+  - no generic international hotel

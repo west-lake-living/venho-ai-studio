@@ -1,0 +1,36 @@
+# Ven Hồ Hotel — Phòng Đôi View Hồ Tây (Double Lake View Room) Overrides
+# Source: VENHO_HOTEL_MASTER_REFERENCE_PACK_v2.0 + Visual DNA v2.7
+# Slot: 16m², lake-facing, black aluminum window frame, West Lake view
+# This file is curated by humans. Never overwrite via DNA regeneration.
+
+forbidden:
+  - "no floor-to-ceiling glass wall — actual window is grid-pane black aluminum"
+  - "no Dubai-style luxury interior"
+  - "no generic resort look"
+  - "no marble flooring"
+  - "no cream and beige luxury palette"
+  - "no Korean hotel style"
+  - "no generic international hotel design"
+  - "no rooftop or outdoor scene — this is an interior room"
+
+allowed_imperfections:
+  - "minor scuff marks on skirting boards acceptable"
+  - "slight curtain wrinkles acceptable"
+  - "small wear marks on wooden furniture edges acceptable"
+  - "natural aging of wooden headboard acceptable"
+  - "slight unevenness in curtain hang acceptable"
+
+wording_overrides:
+  window_frame: "matte black aluminum window frame, thin profile, grid pattern"
+  wood_tone: "dark reddish-brown solid wood furniture"
+  style_category: "boutique Vietnamese heritage hotel"
+  hotel_tier: "boutique mid-range"
+  lake_view_visible: "yes — West Lake visible through grid-pane window"
+
+notes:
+  - "DEFINING FEATURE: Lake view through black aluminum grid window — must be present"
+  - "16m² floor plan — compact, not spacious — rooms are narrow-long"
+  - "Palette reference: Visual DNA v2.7 §12 — warm neutral tones, dark wood accents"
+  - "Hotel tier: boutique mid-range on West Lake — NOT luxury resort"
+  - "Authenticity principle: trustworthy impression over polished perfection"
+  - "Corresponds to room_2 from v2.3 DNA (ceiling: flat_white, lake view)"

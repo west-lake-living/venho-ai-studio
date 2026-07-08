@@ -69,7 +69,7 @@ class OpenAIProvider(BaseImageProvider):
                 {"role": "user", "content": content},
             ],
             response_format={"type": "json_object"},
-            max_tokens=4096,
+            max_completion_tokens=4096,
         )
 
         raw_text = response.choices[0].message.content

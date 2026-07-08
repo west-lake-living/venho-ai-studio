@@ -1,0 +1,37 @@
+# Ven Hồ Hotel — Phòng Deluxe Đôi (Deluxe Double Room) Overrides
+# Source: VENHO_HOTEL_MASTER_REFERENCE_PACK_v2.0 + Visual DNA v2.7
+# Slot: 18m², no direct lake view, decorative molding ceiling, boutique double
+# This file is curated by humans. Never overwrite via DNA regeneration.
+
+forbidden:
+  - "no floor-to-ceiling glass wall — actual window is grid-pane black aluminum"
+  - "no Dubai-style luxury interior"
+  - "no generic resort look"
+  - "no marble flooring"
+  - "no cream and beige luxury palette"
+  - "no Korean hotel style"
+  - "no generic international hotel design"
+  - "no lake view — this room faces away from the lake"
+
+allowed_imperfections:
+  - "minor scuff marks on skirting boards acceptable"
+  - "slight curtain wrinkles acceptable"
+  - "small wear marks on wooden furniture edges acceptable"
+  - "natural aging of wooden headboard acceptable"
+  - "decorative molding ceiling may show slight paint texture variation"
+
+wording_overrides:
+  window_frame: "matte black aluminum window frame, thin profile, grid pattern"
+  wood_tone: "dark reddish-brown solid wood furniture"
+  style_category: "boutique Vietnamese heritage hotel"
+  hotel_tier: "boutique mid-range"
+  ceiling: "decorative molding — white painted ceiling with trim detail"
+
+notes:
+  - "DEFINING FEATURE: Decorative molding ceiling (vs flat white in lake_view_room)"
+  - "18m² floor plan — slightly larger than lake_view_room (16m²)"
+  - "No direct lake view — interior-facing or side-facing windows"
+  - "Palette reference: Visual DNA v2.7 §12 — warm neutral tones, dark wood accents"
+  - "Hotel tier: boutique mid-range on West Lake — NOT luxury resort"
+  - "Authenticity principle: trustworthy impression over polished perfection"
+  - "Corresponds to room_1 from v2.3 DNA (ceiling: decorative_molding, no lake view)"

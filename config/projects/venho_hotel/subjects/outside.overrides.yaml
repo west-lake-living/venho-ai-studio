@@ -1,0 +1,29 @@
+# Ven Hồ Hotel — Outdoor Spaces Overrides
+# Covers: rooftop terrace, balconies, street-level exterior at 181 Nguyễn Đình Thi
+# This file is curated by humans. Never overwrite via DNA regeneration.
+
+forbidden:
+  - "no infinity pool or resort-style pool deck — hotel has no pool"
+  - "no rooftop bar with full commercial bar setup"
+  - "no luxury resort terrace furniture (cabanas, daybeds)"
+  - "no city high-rise skyline — West Lake area is low-rise"
+  - "no generic rooftop lounge aesthetic — this is a simple urban terrace"
+  - "no manicured hotel garden — space is compact and urban"
+
+allowed_imperfections:
+  - "Hanoi haze over lake view acceptable and authentic"
+  - "weathered tiles or concrete surface acceptable"
+  - "visible neighboring rooftops acceptable"
+  - "natural sky variation (clouds, smog) acceptable"
+  - "modest outdoor furniture showing wear acceptable"
+
+wording_overrides:
+  lake_water_color: "jade-teal #4E8FA0 (Hồ Tây signature color)"
+  space_context: "compact urban rooftop/terrace of a 5-floor boutique hotel on Nguyễn Đình Thi, Tây Hồ"
+
+notes:
+  - "West Lake (Hồ Tây) should be visible or partially visible from upper floors"
+  - "Street: Nguyễn Đình Thi — tree-lined, green lamp posts, low traffic"
+  - "Outdoor spaces are modest — not resort, not bar venue, just genuine hotel terrace"
+  - "Authenticity principle: real Hanoi sky + real lake color over staged perfection"
+  - "Reference: ho-tay-image-dna.md for lake color standards"

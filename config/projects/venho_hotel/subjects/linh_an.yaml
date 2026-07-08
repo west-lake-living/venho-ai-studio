@@ -1,0 +1,97 @@
+schema_id: venho_hotel.linh_an
+schema_version: "1.0"
+subject: linh_an
+display_name: Linh An — AI KOL Character
+description: Structural face DNA for Linh An character — grounding always disabled
+
+# INVARIANT = structural identity features (these make Linh An recognizable)
+# VARIABLE = appearance features (lighting, expression, outfit, hairstyle)
+
+aggregation_keys:
+  # --- Face structure (identity — expect INVARIANT) ---
+  - key: face_shape
+    type: enum
+    values: [elongated_oval, round, square, heart, diamond, not_visible]
+
+  - key: eye_shape
+    type: enum
+    values: [long_almond, round_almond, monolid, hooded, not_visible]
+
+  - key: eye_opening
+    type: enum
+    values: [slightly_narrow, standard, wide, not_visible]
+
+  - key: eye_color
+    type: enum
+    values: [warm_brown, dark_brown, black, not_visible]
+
+  - key: eyebrow_position
+    type: enum
+    values: [low_close_to_eye, standard, high, not_visible]
+
+  - key: eyebrow_shape
+    type: enum
+    values: [minimal_arch, medium_arch, high_arch, straight, not_visible]
+
+  - key: nose_bridge
+    type: enum
+    values: [slim_natural, wide, high_bridge, not_visible]
+
+  - key: lip_shape
+    type: enum
+    values: [natural_full_slightly_thinner_upper, thin, full, heart_shaped, not_visible]
+
+  - key: lip_corners
+    type: enum
+    values: [very_subtle_upward, neutral, downward, not_visible]
+
+  - key: jaw_line
+    type: enum
+    values: [soft_feminine, defined, square, not_visible]
+
+  - key: chin_shape
+    type: enum
+    values: [delicate_pointed, round, square, not_visible]
+
+  - key: skin_tone
+    type: enum
+    values: [fair_warm_ivory, medium_warm, medium_cool, olive, not_visible]
+
+  # --- Hair (identity-adjacent — semi-variable) ---
+  - key: hair_color
+    type: enum
+    values: [dark_chocolate_brown, black, light_brown, blonde, not_visible]
+
+  - key: hair_length
+    type: enum
+    values: [long_past_shoulders, shoulder_length, short, not_visible]
+
+  # --- Accessories (identity marker) ---
+  - key: earring_type
+    type: enum
+    values: [small_pearl_drop, no_earrings, hoop, stud, not_visible]
+
+  # --- Variable appearance features ---
+  - key: hairstyle
+    type: enum
+    values: [long_soft_waves, elegant_low_bun, natural_loose, updo, other, not_visible]
+
+  - key: expression_type
+    type: enum
+    values: [living_expression_subtle_smile, neutral, broad_smile, serious, not_visible]
+
+  - key: camera_angle_horizontal
+    type: enum
+    values: [soft_hero_left_10_20deg, straight_on, right_angle, profile_left, profile_right, not_visible]
+
+  - key: shot_distance
+    type: enum
+    values: [portrait_head_shoulders, medium_waist_up, wide_full_body, not_visible]
+
+forbidden_defaults:
+  - no plastic or doll-like skin texture
+  - no exaggerated Western features
+  - no heavy theatrical makeup
+  - no generic K-pop idol aesthetic
+  - no overly symmetrical artificial face
+  - no web search or identity recognition used

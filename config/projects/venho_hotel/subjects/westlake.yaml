@@ -1,0 +1,85 @@
+schema_id: venho_hotel.westlake
+schema_version: "1.0"
+subject: westlake
+display_name: West Lake Environment
+description: Ho Tay (West Lake) lakeside environment — Nguyen Dinh Thi street, Tay Ho, Hanoi
+
+aggregation_keys:
+  # --- Water ---
+  - key: water_color
+    type: free
+
+  - key: water_surface_texture
+    type: enum
+    values: [calm, rippled, choppy, not_visible]
+
+  - key: water_visibility_range
+    type: enum
+    values: [far, mid, near, not_visible]
+
+  - key: water_reflection_quality
+    type: enum
+    values: [clear, minimal, low, none, not_visible]
+
+  # --- Vegetation ---
+  - key: vegetation_presence
+    type: enum
+    values: [yes, no, partial]
+
+  - key: tree_density
+    type: enum
+    values: [sparse, moderate, dense, not_visible]
+
+  # --- Infrastructure ---
+  - key: path_presence
+    type: enum
+    values: [yes, no, partial]
+
+  - key: railing_presence
+    type: enum
+    values: [yes, no, partial]
+
+  - key: lamp_post_presence
+    type: enum
+    values: [yes, no, partial]
+
+  # --- Sky ---
+  - key: sky_condition
+    type: enum
+    values: [clear, partly_cloudy, overcast, hazy]
+
+  - key: haze_level
+    type: enum
+    values: [none, light, moderate, heavy]
+
+  # --- Light ---
+  - key: light_quality
+    type: enum
+    values: [soft, harsh, golden, diffuse, not_visible]
+
+  - key: time_of_day
+    type: enum
+    values: [morning, midday, afternoon, golden_hour, night]
+
+  # --- Atmosphere ---
+  - key: human_activity
+    type: enum
+    values: [none, sparse, moderate, busy]
+
+  - key: distant_cityscape
+    type: enum
+    values: [yes, no, partial]
+
+  - key: general_scene_character
+    type: free
+
+  # --- Authenticity ---
+  - key: allowed_imperfection
+    type: free
+
+forbidden_defaults:
+  - no tourist postcard aesthetic
+  - no generic Asian city lake
+  - no artificial or manicured park look
+  - no resort waterfront design
+  - no dramatic/staged lighting

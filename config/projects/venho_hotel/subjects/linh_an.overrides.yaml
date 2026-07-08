@@ -1,0 +1,37 @@
+# Linh An — Face DNA Overrides
+# Source: 07C Face Lock System v1.1 + 07B Master Reference Pack v3.0
+# QC GATE: Only images scoring ≥ 9.0 on rubric 07F may enter media/linh_an/
+# This file is curated by humans. Never overwrite via DNA regeneration.
+
+forbidden:
+  - "no plastic skin texture or doll face"
+  - "no exaggerated makeup or heavy contouring"
+  - "no generic Asian face (pan-Asian ambiguity)"
+  - "no Western facial structure"
+  - "no symmetrical perfect face (lacks natural asymmetry)"
+  - "no large round eyes (must be long almond, horizontal emphasis)"
+  - "no high-arch eyebrows (must be low-position, minimal arch)"
+  - "no thick upper eyelid"
+  - "no generic influencer look — must be distinctly Vietnamese"
+
+allowed_imperfections:
+  - "very subtle natural eye asymmetry is correct and required"
+  - "slightly uneven lip corners acceptable — natural upward tendency"
+  - "natural skin texture with realistic pores acceptable — no airbrushing"
+  - "slight hair strand variation acceptable — natural look"
+
+wording_overrides:
+  face_shape: "soft elongated oval face, balanced facial proportions, slightly fuller cheeks"
+  eye_shape: "long almond eyes, horizontal eye emphasis, slightly narrow eye opening, thin upper eyelid, warm brown irises"
+  eyebrow_style: "low-position eyebrows, minimal arch, close eye-brow distance"
+  lip_shape: "natural full lips, slightly thinner upper lip, slightly fuller lower lip, very subtle upward lip corners"
+  skin_tone: "fair warm ivory skin, healthy natural glow, realistic skin texture"
+  hair: "long dark chocolate brown layered wavy hair, natural center part"
+
+notes:
+  - "Primary reference: B3_Hero.png (9.4–9.5 score) — 3/4 left angle"
+  - "Master Face #001: linh-an-master-face.png — highest authority for identity"
+  - "QC gate 07F: minimum 9.0/10 for source DNA images, 8.0–8.9 conditional, <8.0 reject"
+  - "Identity stack: Master Face #001 > 07C Face Lock > 07B Ref Pack > 07A Visual DNA > 07E Prompt"
+  - "Signature: small pearl drop earrings present in EVERY image"
+  - "Official angle: 10–20° Soft Hero Left"

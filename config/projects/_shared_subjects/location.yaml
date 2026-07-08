@@ -1,0 +1,58 @@
+schema_id: shared.location
+schema_version: "1.0"
+subject: location
+display_name: Shared Location
+description: Generic location schema for exterior places, streets, landscapes, and venues
+approved_for_pass1: true
+
+aggregation_keys:
+  - key: location_type
+    type: enum
+    values: [street, lakeside, building_exterior, interior_venue, park, waterfront, landmark, other, not_visible]
+
+  - key: dominant_structure
+    type: enum
+    values: [building, road, water, vegetation, open_space, mixed, not_visible]
+
+  - key: ground_surface
+    type: enum
+    values: [pavement, asphalt, tile, grass, soil, water, mixed, not_visible]
+
+  - key: vegetation_presence
+    type: enum
+    values: ["yes", "no", partial, not_visible]
+
+  - key: water_presence
+    type: enum
+    values: ["yes", "no", partial, not_visible]
+
+  - key: signage_presence
+    type: enum
+    values: ["yes", "no", partial, not_visible]
+
+  - key: human_activity
+    type: enum
+    values: [none, sparse, moderate, busy, not_visible]
+
+  - key: vehicle_presence
+    type: enum
+    values: [none, sparse, moderate, busy, not_visible]
+
+  - key: sky_condition
+    type: enum
+    values: [clear, partly_cloudy, overcast, hazy, night, not_visible]
+
+  - key: time_of_day
+    type: enum
+    values: [morning, midday, afternoon, golden_hour, evening, night, unknown]
+
+  - key: atmosphere
+    type: free
+
+  - key: allowed_imperfection
+    type: free
+
+forbidden_defaults:
+  - no generic postcard look
+  - no invented landmark
+  - no unrealistic city density

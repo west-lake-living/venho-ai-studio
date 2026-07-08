@@ -1,0 +1,47 @@
+subject: facade
+display_name: Hotel Facade
+description: Ven Ho Hotel building exterior — 181 Nguyen Dinh Thi, Tay Ho, Hanoi
+
+feature_keys:
+  structure:
+    - building_height
+    - building_width
+    - facade_material
+    - window_count
+    - window_layout
+    - window_frame_color
+    - entrance_door
+    - balcony
+
+  materials:
+    - wall_paint_color
+    - facade_finish
+    - railing_material
+    - railing_color
+    - awning_or_canopy
+
+  signage:
+    - hotel_name_placement
+    - sign_style
+    - logo_visibility
+    - entrance_marking
+
+  street:
+    - sidewalk_type
+    - street_trees
+    - neighboring_buildings
+    - street_width
+    - parked_vehicles
+
+  atmosphere:
+    - architectural_style
+    - building_age_impression
+    - neighborhood_character
+    - street_level_activity
+
+forbidden_defaults:
+  - no glass curtain wall facade
+  - no luxury resort exterior
+  - no colonial-era grand facade
+  - no modern high-rise design
+  - no generic commercial building

@@ -1,0 +1,94 @@
+schema_id: venho_hotel.room_1
+schema_version: "1.0"
+subject: room_1
+display_name: Hotel Room — Type 1
+description: Ven Ho Hotel guest room Type 1 (no lake view) — boutique mini-hotel on West Lake, Hanoi
+
+aggregation_keys:
+  # --- Structure ---
+  - key: window_frame
+    type: enum
+    values: [black_aluminum, white_pvc, wood_frame, metal_other, not_visible]
+
+  - key: window_layout
+    type: enum
+    values: [grid_2x2, grid_2x3, single_pane, double_pane, louvered, not_visible]
+
+  - key: ceiling
+    type: enum
+    values: [flat_white, decorative_molding, exposed_beam, not_visible]
+
+  - key: floor
+    type: enum
+    values: [tile, hardwood, laminate, carpet, marble, not_visible]
+
+  - key: wall_color
+    type: free
+
+  - key: room_shape
+    type: enum
+    values: [rectangular, l_shaped, irregular, not_visible]
+
+  # --- Furniture ---
+  - key: bed_size
+    type: enum
+    values: [single, double, queen, king, not_visible]
+
+  - key: bed_headboard
+    type: enum
+    values: [wooden, upholstered, metal, none, not_visible]
+
+  - key: bedding_color
+    type: free
+
+  - key: desk
+    type: enum
+    values: [present_with_mirror, present_without_mirror, not_visible]
+
+  - key: chairs
+    type: enum
+    values: [two_wooden, two_upholstered, one_chair, none, not_visible]
+
+  - key: wardrobe
+    type: enum
+    values: [built_in, standalone, not_visible]
+
+  # --- Materials / Tone ---
+  - key: wood_tone
+    type: enum
+    values: [dark_reddish_brown, medium_brown, light_oak, white, not_visible]
+
+  - key: curtain_color
+    type: free
+
+  # --- Lighting ---
+  - key: lighting_condition
+    type: enum
+    values: [natural_daylight, artificial_warm, artificial_cool, mixed, low_light, overcast]
+
+  - key: lake_view_visible
+    type: enum
+    values: [yes, no, partial]
+
+  # --- Atmosphere ---
+  - key: style_category
+    type: enum
+    values: [boutique_vietnamese, modern_minimal, traditional_asian, generic_hotel]
+
+  - key: hotel_tier
+    type: enum
+    values: [budget, mid_range, boutique, luxury]
+
+  # --- Artwork ---
+  - key: wall_artwork
+    type: enum
+    values: [three_floral_prints, single_artwork, none, other]
+
+forbidden_defaults:
+  - no floor-to-ceiling glass wall
+  - no luxury apartment style
+  - no marble interior
+  - no resort aesthetic
+  - no Korean hotel style
+  - no generic international hotel
+  - no cream and beige luxury palette

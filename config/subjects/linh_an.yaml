@@ -1,0 +1,72 @@
+subject: linh_an
+display_name: Linh An — AI KOL Character
+description: Linh An — Vietnamese female lifestyle creator, 24, consistent character DNA for AI image generation
+
+feature_keys:
+  face:
+    - face_shape
+    - face_proportion
+    - eye_shape
+    - eye_size
+    - eye_color
+    - eyebrow_position
+    - eyebrow_shape
+    - nose_bridge
+    - nose_tip
+    - lip_shape
+    - lip_fullness
+    - lip_corners
+    - chin_shape
+    - cheek_fullness
+
+  complexion:
+    - skin_tone
+    - skin_texture
+    - makeup_level
+    - eye_makeup
+    - lip_color
+
+  hair:
+    - hair_color
+    - hair_style
+    - hair_length
+    - hair_texture
+    - hair_parting
+
+  body:
+    - height_impression
+    - body_proportion
+    - posture
+    - shoulder_width
+
+  expression:
+    - expression_type
+    - eye_engagement
+    - lip_position
+    - overall_mood
+
+  accessories:
+    - earring_type
+    - earring_size
+    - necklace
+    - other_jewelry
+
+  outfit:
+    - top_color
+    - top_style
+    - bottom_color
+    - bottom_style
+    - outfit_category
+
+  framing:
+    - camera_angle_horizontal
+    - camera_angle_vertical
+    - shot_distance
+    - head_tilt
+
+forbidden_defaults:
+  - no plastic/doll-like skin
+  - no exaggerated Western features
+  - no heavy theatrical makeup
+  - no generic K-pop idol aesthetic
+  - no overly symmetrical artificial face

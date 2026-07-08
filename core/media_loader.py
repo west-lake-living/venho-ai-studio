@@ -12,7 +12,7 @@ def load_images(folder: Path) -> list[Path]:
         raise NotADirectoryError(f"Không phải folder: {folder}")
 
     images = sorted([
-        p for p in folder.iterdir()
+        p for p in folder.rglob("*")
         if p.is_file() and p.suffix.lower() in SUPPORTED_EXTENSIONS
     ])
 

@@ -1,0 +1,29 @@
+# Ven Hồ Hotel — Lobby / Reception Overrides
+# Source: VENHO_HOTEL_MASTER_REFERENCE_PACK_v2.0 + Visual DNA v2.7
+# 181 Nguyễn Đình Thi, Tây Hồ, Hà Nội — boutique 12-room mini-hotel
+# This file is curated by humans. Never overwrite via DNA regeneration.
+
+forbidden:
+  - "no marble floor — actual flooring is tile or stone, not polished marble"
+  - "no luxury hotel chandeliers — lighting is warm and functional, not grand"
+  - "no resort-scale lobby — this is a compact boutique reception, not a 5-star atrium"
+  - "no modern minimalist glass-and-steel design"
+  - "no generic international hotel style"
+  - "no over-staged decorative props — keep it authentic Vietnamese boutique"
+
+allowed_imperfections:
+  - "slight wear on reception desk surface acceptable"
+  - "minor asymmetry in decorative arrangement acceptable"
+  - "natural lighting variation across time of day acceptable"
+  - "small personal items on reception counter acceptable — authentic, not sterile"
+
+wording_overrides:
+  style_category: "traditional Vietnamese boutique hotel lobby"
+  hotel_tier: "boutique mid-range — warm and personal, not luxury"
+
+notes:
+  - "Scale: boutique 12-room hotel — reception is compact and intimate"
+  - "Character: warm, personal, traditional Vietnamese hospitality"
+  - "Lighting: warm ambient — NOT cool corporate fluorescent"
+  - "Palette reference: warm neutral tones matching room DNA"
+  - "Authenticity principle: lived-in warmth over sterile hotel polish"

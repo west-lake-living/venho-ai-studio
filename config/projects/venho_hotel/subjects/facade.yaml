@@ -1,0 +1,84 @@
+schema_id: venho_hotel.facade
+schema_version: "1.0"
+subject: facade
+display_name: Hotel Facade
+description: Ven Ho Hotel building exterior — 181 Nguyen Dinh Thi, Tay Ho, Hanoi
+
+aggregation_keys:
+  # --- Structure ---
+  - key: building_height
+    type: enum
+    values: [3_floors, 4_floors, 5_floors, 6_floors, 7_floors, not_visible]
+
+  - key: facade_material
+    type: enum
+    values: [painted_concrete, plaster, tile_cladding, brick, glass_curtain, not_visible]
+
+  - key: wall_paint_color
+    type: enum
+    values: [white, cream, light_gray, yellow, beige, other, not_visible]
+
+  - key: window_frame_color
+    type: enum
+    values: [black, white, silver, brown, not_visible]
+
+  - key: railing_style
+    type: enum
+    values: [black_iron_scroll, black_iron_grid, white_metal, glass, none, not_visible]
+
+  - key: balcony_present
+    type: enum
+    values: [yes_every_floor, yes_some_floors, no, not_visible]
+
+  - key: entrance_door
+    type: enum
+    values: [glass_door, wooden_door, metal_door, open_entrance, not_visible]
+
+  - key: hotel_signage
+    type: enum
+    values: [vertical_sign, horizontal_sign, rooftop_sign, illuminated, not_visible]
+
+  - key: signage_text
+    type: free
+
+  - key: architectural_style
+    type: enum
+    values: [neoclassical, modern_minimal, colonial, townhouse_vietnam, mixed, not_visible]
+
+  - key: street_trees
+    type: enum
+    values: [large_mature_trees, small_trees, none, not_visible]
+
+  - key: sidewalk_type
+    type: enum
+    values: [tiled_sidewalk, concrete, paved_road_level, not_visible]
+
+  - key: neighboring_buildings
+    type: free
+
+  - key: parked_vehicles
+    type: enum
+    values: [motorcycles, cars, bicycles, none, mixed, not_visible]
+
+  - key: street_activity
+    type: enum
+    values: [busy, moderate, quiet, not_visible]
+
+  - key: ground_floor_use
+    type: enum
+    values: [hotel_reception, commercial, mixed, residential, not_visible]
+
+  - key: facade_condition
+    type: enum
+    values: [well_maintained, slightly_worn, weathered, not_visible]
+
+  - key: daytime_lighting
+    type: enum
+    values: [bright_sunlight, overcast, golden_hour, night, not_visible]
+
+forbidden_defaults:
+  - no glass curtain wall facade
+  - no luxury resort exterior
+  - no colonial-era grand facade
+  - no modern high-rise design
+  - no generic commercial building

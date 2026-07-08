@@ -1,0 +1,59 @@
+provider: openai
+
+models:
+  openai: gpt-4o
+  claude: claude-sonnet-4-6
+
+temperature: 0
+
+concurrency: 4
+
+consolidation_threshold: 0.6
+consistency_threshold: 0.7
+weak_threshold: 0.3
+
+max_image_px: 1568
+
+retry:
+  max_attempts: 2
+  backoff_seconds: 2
+
+cache_dir: data
+
+grounding: false
+
+output:
+  markdown: true
+  json: true
+  compact: true
+  archive_old_dna: true
+
+mode_a:
+  default_input: data/projects/_inbox/media
+  default_output: data/projects/_inbox/output
+
+mode_b:
+  default_project: venho_hotel
+
+schema_version: "1.0"
+prompt_version: "1.1"
+
+vision:
+  max_image_size: 1568
+  structured_output: true
+  grounding_enabled: false
+  supported_formats:
+    - .jpg
+    - .jpeg
+    - .png
+    - .webp
+
+ai:
+  default_provider: openai
+  image_extraction_provider: openai
+  consolidation_provider: claude
+
+data:
+  media_dir: data/media
+  observations_dir: data/observations
+  knowledge_dir: data/knowledge

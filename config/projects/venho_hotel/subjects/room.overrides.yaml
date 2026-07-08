@@ -1,0 +1,28 @@
+# Ven Hồ Hotel — Room Overrides (generic / standard_room)
+# Source: VENHO_HOTEL_MASTER_REFERENCE_PACK_v2.0 + Visual DNA v2.7
+# This file is curated by humans. Never overwrite via DNA regeneration.
+
+forbidden:
+  - "no floor-to-ceiling glass wall"
+  - "no Dubai-style luxury interior"
+  - "no generic resort look"
+  - "no marble flooring"
+  - "no cream and beige luxury palette"
+  - "no Korean hotel style"
+  - "no generic international hotel design"
+
+allowed_imperfections:
+  - "minor scuff marks on skirting boards acceptable"
+  - "slight curtain wrinkles acceptable"
+  - "small wear marks on wooden furniture edges acceptable"
+  - "natural aging of wooden headboard acceptable"
+
+wording_overrides:
+  window_frame: "matte black aluminum window frame, thin profile, grid pattern"
+  wood_tone: "dark reddish-brown solid wood furniture"
+  style_category: "boutique Vietnamese heritage hotel"
+
+notes:
+  - "Palette reference: Visual DNA v2.7 §12 — warm neutral tones, dark wood accents"
+  - "Hotel tier: boutique mid-range on West Lake — NOT luxury resort"
+  - "Authenticity principle: trustworthy impression over polished perfection"

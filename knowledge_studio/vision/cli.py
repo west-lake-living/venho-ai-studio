@@ -21,6 +21,20 @@ vault_app = typer.Typer(help="Knowledge Vault — search, diff, export DNA")
 app.add_typer(vault_app, name="vault")
 
 
+def _confirm_one_subject_or_exit(subject: str, assume_one_subject: bool = False) -> None:
+    """Require explicit one-tier confirmation before Mode B builds DNA."""
+    typer.secho(
+        f"  [v2.4 §2.1] Subject: '{subject}' — all images must be the SAME tier/subject.",
+        fg=typer.colors.YELLOW,
+    )
+    if assume_one_subject:
+        return
+    confirmed = typer.confirm("Confirm this folder contains only one tier/subject", default=False)
+    if not confirmed:
+        typer.secho("Aborted. Split the folder by tier/subject and retry.", fg=typer.colors.RED)
+        raise typer.Exit(1)
+
+
 @vision_app.callback(invoke_without_command=True)
 def vision_interactive(ctx: typer.Context) -> None:
     """Interactive entry point: if no subcommand given, show A/B menu."""
@@ -87,13 +101,18 @@ def observe_cmd(
     dna_version: str = typer.Option("1.0", "--dna-version", help="DNA version label (Mode B / --all)"),
     provider: Optional[str] = typer.Option(None, "--provider", help="Override AI provider (openai/claude/mock)"),
     classify: bool = typer.Option(False, "--classify", help="Pass 0: classify mixed folder into subject groups"),
+    classify_review: Optional[Path] = typer.Option(None, "--classify-review", help="Review YAML path for --classify results"),
     all_subjects: bool = typer.Option(False, "--all", help="Run Mode B for ALL subject folders under data/projects/<project>/media/"),
+    assume_one_subject: bool = typer.Option(False, "--confirm-one-subject", help="Confirm Mode B input contains only one tier/subject"),
 ) -> None:
     """Run AI Vision pipeline in Mode A (observe), Mode B (DNA builder), --classify, or --all."""
     # --classify: run Pass 0 classification, print groups, then suggest Mode B commands
     if classify:
-        from knowledge_studio.vision.pass0_classify import classify_folder
+        from knowledge_studio.vision.pass0_classify import classify_folder, write_classification_review
         from knowledge_studio.vision.pipeline import _load_config, _make_client
+        if input_dir is None:
+            typer.secho("--input is required for --classify", fg=typer.colors.RED, err=True)
+            raise typer.Exit(1)
         if not input_dir.is_dir():
             typer.secho(f"Input dir not found: {input_dir}", fg=typer.colors.RED, err=True)
             raise typer.Exit(1)
@@ -107,12 +126,19 @@ def observe_cmd(
             typer.secho("\nPass 0 — Classification results:", fg=typer.colors.CYAN, bold=True)
             for subj, paths in sorted(groups.items()):
                 typer.echo(f"  {subj:<12} {len(paths):>3} image(s)")
-            typer.secho("\nTo build DNA for each subject:", fg=typer.colors.CYAN)
+            review_path = classify_review or (input_dir / "_classification_review.yaml")
+            write_classification_review(groups, review_path, input_dir=input_dir)
+            typer.echo(f"\n  Review file: {review_path}")
+            typer.secho("\nBefore Mode B:", fg=typer.colors.CYAN)
+            typer.echo("  1. Review and correct the suggested groups.")
+            typer.echo("  2. Move approved images into data/projects/<project>/media/<subject>/ folders.")
+            typer.echo("  3. Run Mode B only on one confirmed subject folder at a time.")
+            typer.secho("\nExample commands after review:", fg=typer.colors.CYAN)
             for subj in sorted(groups.keys()):
                 if subj != "general":
                     typer.echo(
                         f"  venho vision observe --mode b --project {project}"
-                        f" --subject {subj} --input {input_dir}"
+                        f" --subject {subj} --input data/projects/{project}/media/{subj}"
                     )
         except Exception as e:
             typer.secho(f"Error: {e}", fg=typer.colors.RED, err=True)
@@ -156,11 +182,7 @@ def observe_cmd(
             if not input_dir.is_dir() or not any(input_dir.iterdir()):
                 typer.secho(f"Input dir empty or missing: {input_dir}", fg=typer.colors.RED, err=True)
                 raise typer.Exit(1)
-            # §2.1 — one subject = one tier confirmation (non-interactive, shows reminder)
-            typer.secho(
-                f"  [v2.4 §2.1] Subject: '{subject}' — ensure all images are the SAME tier/subject.",
-                fg=typer.colors.YELLOW,
-            )
+            _confirm_one_subject_or_exit(subject, assume_one_subject=assume_one_subject)
             paths = run_mode_b(
                 project=project, subject=subject,
                 input_dir=input_dir, dna_version=dna_version, provider=provider,

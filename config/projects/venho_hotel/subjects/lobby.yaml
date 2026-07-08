@@ -1,0 +1,97 @@
+schema_id: venho_hotel.lobby
+schema_version: "1.0"
+subject: lobby
+display_name: Hotel Lobby
+description: Ven Ho Hotel lobby/reception area — boutique mini-hotel on West Lake, Hanoi
+
+aggregation_keys:
+  # --- Structure ---
+  - key: entrance_door
+    type: enum
+    values: [glass_door, wooden_door, open_entrance, metal_door, not_visible]
+
+  - key: floor_material
+    type: enum
+    values: [tile, marble, hardwood, laminate, carpet, not_visible]
+
+  - key: floor_color
+    type: free
+
+  - key: ceiling_treatment
+    type: enum
+    values: [flat_white, decorative_molding, exposed_beam, drop_ceiling, not_visible]
+
+  - key: wall_treatment
+    type: enum
+    values: [painted_smooth, wallpaper, tile, wood_panel, not_visible]
+
+  - key: staircase_visible
+    type: enum
+    values: [yes, no, not_visible]
+
+  # --- Reception / Furniture ---
+  - key: reception_desk
+    type: enum
+    values: [present_wood, present_glass, present_marble, not_visible]
+
+  - key: furniture_wood_tone
+    type: enum
+    values: [dark_reddish_brown, medium_brown, light_oak, white, mixed, not_visible]
+
+  - key: waiting_seating
+    type: enum
+    values: [sofa, chairs, bench, none, not_visible]
+
+  - key: key_cabinet
+    type: enum
+    values: [present, not_visible]
+
+  # --- Lighting ---
+  - key: ambient_lighting
+    type: enum
+    values: [warm, cool, neutral, not_visible]
+
+  - key: natural_light
+    type: enum
+    values: [high, moderate, low, none, not_visible]
+
+  - key: pendant_or_chandelier
+    type: enum
+    values: [chandelier, pendant_lights, ceiling_recessed, none, not_visible]
+
+  # --- Decor ---
+  - key: plants
+    type: enum
+    values: [present_multiple, present_single, none, not_visible]
+
+  - key: wall_artwork
+    type: enum
+    values: [present, none, not_visible]
+
+  - key: hotel_signage
+    type: enum
+    values: [logo_visible, none, not_visible]
+
+  # --- Atmosphere ---
+  - key: scale
+    type: enum
+    values: [compact, medium, large, not_visible]
+
+  - key: style_category
+    type: enum
+    values: [boutique_vietnamese, modern_minimal, traditional_asian, generic_hotel, colonial, not_visible]
+
+  - key: hotel_tier_impression
+    type: enum
+    values: [budget, mid_range, boutique, luxury, not_visible]
+
+  - key: cleanliness
+    type: enum
+    values: [spotless, clean, worn, not_visible]
+
+forbidden_defaults:
+  - no marble floor
+  - no luxury hotel chandeliers
+  - no resort-scale lobby
+  - no modern minimalist glass-and-steel design
+  - no generic international hotel style

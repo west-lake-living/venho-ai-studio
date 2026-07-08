@@ -1,0 +1,56 @@
+subject: westlake
+display_name: West Lake Environment
+description: Ho Tay (West Lake) lakeside environment — Nguyen Dinh Thi street, Tay Ho, Hanoi
+
+feature_keys:
+  water:
+    - water_color
+    - water_surface_texture
+    - water_visibility_range
+    - water_reflections
+
+  vegetation:
+    - tree_species_impression
+    - tree_density
+    - tree_height
+    - flower_or_plant_presence
+    - grass_or_ground_cover
+
+  path:
+    - path_type
+    - path_width
+    - pavement_material
+    - pavement_color
+
+  infrastructure:
+    - lamp_post_style
+    - lamp_post_color
+    - railing_style
+    - railing_color
+    - benches
+    - signage
+
+  sky:
+    - sky_condition
+    - cloud_type
+    - haze_level
+    - sky_color
+
+  light:
+    - light_direction
+    - light_quality
+    - time_of_day_impression
+    - shadow_quality
+
+  atmosphere:
+    - mood
+    - human_activity
+    - distant_cityscape
+    - overall_scene_character
+
+forbidden_defaults:
+  - no tourist postcard aesthetic
+  - no generic Asian city lake
+  - no artificial or manicured park look
+  - no resort waterfront design
+  - no dramatic/staged lighting
