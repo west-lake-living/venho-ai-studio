@@ -1,0 +1,27 @@
+workflow_id: venho_room_dna_update
+name: Ven Ho Room DNA Update
+version: "1.0"
+project: venho_hotel
+trigger: { type: manual }
+steps:
+  - id: knowledge_mode_b
+    module: knowledge_studio
+    action: vision_mode_b
+    params:
+      project: "${project}"
+      subject: room
+      input: data/projects/${project}/media/rooms
+      settings:
+        mock: true
+        dna_version: "1.0"
+    on_error: skip_dependents
+  - id: check_manifest
+    module: knowledge_studio
+    action: update_manifest
+    needs: [knowledge_mode_b]
+    params:
+      project: "${project}"
+      subject: room
+    on_error: stop
+output: { report: true, log: true }
+

@@ -1,0 +1,20 @@
+workflow_id: venho_half2_validation
+name: Ven Ho Generated Image Validation Half 2
+version: "1.0"
+project: venho_hotel
+trigger: { type: manual }
+steps:
+  - id: validate_generated_image
+    module: validator_studio
+    action: validate_image
+    params:
+      project: "${project}"
+      subject: lake_view_room
+      image_path: data/projects/${project}/production/images/lake_view_room_latest.png
+      dna_path: data/projects/${project}/knowledge/VENHO_HOTEL_LAKE_VIEW_ROOM_DNA.json
+      prompt_path: data/projects/${project}/prompts/image/LAKE_VIEW_ROOM__booking-style__IMAGE_PROMPT_v1.0.json
+      settings:
+        provider: mock
+    on_error: stop
+output: { report: true, log: true }
+

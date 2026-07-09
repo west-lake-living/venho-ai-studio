@@ -1,0 +1,34 @@
+workflow_id: venho_prompt_generation
+name: Ven Ho Prompt Generation Half 1
+version: "1.0"
+project: venho_hotel
+trigger: { type: manual }
+steps:
+  - id: generate_image_prompt
+    module: prompt_studio
+    action: generate_prompt
+    params:
+      project: "${project}"
+      subject_or_subjects: lake_view_room
+      prompt_type: image
+      brief: Booking-style realistic lake-view room hero image for Ven Ho Hotel.
+      target_language: en
+      settings:
+        mock: true
+        brief_slug: booking-style
+    on_error: skip_dependents
+  - id: manual_generation_gate
+    module: automation
+    action: manual_gate
+    needs: [generate_image_prompt]
+    params:
+      message: Create the generated image outside VENHO AI Studio, then place it in production/images.
+      instructions:
+        - Open the prompt JSON/Markdown from the previous step.
+        - Generate the image in Flow or GPT Image manually.
+        - Save the final image as data/projects/venho_hotel/production/images/lake_view_room_latest.png.
+      next_actions:
+        - Run `venho auto run venho_half2_validation` after the image is saved.
+    on_error: stop
+output: { report: true, log: true }
+

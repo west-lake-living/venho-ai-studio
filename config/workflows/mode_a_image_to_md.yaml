@@ -1,0 +1,18 @@
+workflow_id: mode_a_image_to_md
+name: General Image to Markdown Observation
+version: "1.0"
+project: _inbox
+trigger: { type: manual }
+steps:
+  - id: knowledge_mode_a
+    module: knowledge_studio
+    action: vision_mode_a
+    params:
+      project: "${project}"
+      input: data/projects/${project}/media
+      output: data/projects/${project}/output/observations
+      settings:
+        mock: true
+    on_error: stop
+output: { report: true, log: true }
+
