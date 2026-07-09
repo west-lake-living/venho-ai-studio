@@ -1,6 +1,6 @@
 # VENHO AI STUDIO — Task Memory
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-07-09 (M10 Operating Center UI v2.0 final — Phase 1 Home Core) · **Đọc bởi:** AI Engine, Claude Code sessions
+**Cập nhật:** 2026-07-09 (Code review M08–M10 — 10 bugs fixed) · **Đọc bởi:** AI Engine, Claude Code sessions
 
 ---
 
@@ -367,7 +367,7 @@ AgentRequest
 ### Review notes / follow-up
 
 - Review 2026-07-09: MVP đạt, module tests 10/10 và full suite 423/423 pass.
-- Follow-up hardening: khi missing required knowledge, flow nên dừng cứng ngay sau detector; hiện response trả `FAILED / ERR_MISSING_KNOWLEDGE` nhưng mock module requests vẫn được chuẩn bị.
+- **Fixed (373b1cc):** execute mode bị block khi missing_knowledge (fallback dry_run); gate task không bị slice; status đổi thành `PARTIAL` thay vì `FAILED` khi plan vẫn valid.
 - Follow-up execution: `--execute` hiện vẫn là prepared/mock M04 bridge; khi chuyển sang execution thật phải nối qua public API của M04, vẫn giữ approval gate.
 
 ---

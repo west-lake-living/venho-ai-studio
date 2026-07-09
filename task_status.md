@@ -1,6 +1,6 @@
 # VENHO AI STUDIO — Task Status
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-07-09 (M10 Operating Center UI v2.0 final — Phase 1 Home Core) · **Tests:** 430/430 pass · 0 API call
+**Cập nhật:** 2026-07-09 (Code review M08–M10 — 10 bugs fixed, 430/430 pass) · **Tests:** 430/430 pass · 0 API call
 
 ---
 
@@ -191,11 +191,12 @@
 
 ---
 
-## M08 — Analytics & Feedback Loop ✅ COMPLETE (offline MVP)
+## M08 — Analytics & Feedback Loop ✅ COMPLETE (offline MVP, code reviewed)
 
 **Plan:** `VENHO_AI_STUDIO_Module_08_Analytics_Feedback_Development_Plan_v1_2_QC.md`
 **Tests:** 7/7 — xem `tests/test_analytics_feedback.py`
-**Full suite:** `python3 -m pytest -q` → 413/413 pass, 0 API call
+**Full suite:** `python3 -m pytest -q` → 430/430 pass, 0 API call
+**Code review:** 2026-07-09 — 5 bugs fixed (commit `373b1cc`)
 
 **Vai trò:** Nhận Delivery Receipt từ M07 → tạo collection tasks → mock collect metrics → chuẩn hóa unified metrics → tính derived stats/baseline/score → sentiment guardrail → sinh alert/advisory/report. M08 chỉ sinh output advisory, không tự apply vào M01/M05.
 
@@ -219,12 +220,12 @@
 
 ---
 
-## M09 — Agent Studio ✅ COMPLETE (offline planning/orchestration MVP, reviewed)
+## M09 — Agent Studio ✅ COMPLETE (offline planning/orchestration MVP, reviewed + bugs fixed)
 
 **Plan:** `VENHO_AI_STUDIO_Module_09_Agent_Studio_Development_Plan_v2_2_QC.md`
 **Tests:** 10/10 — xem `tests/test_agent_studio.py`
-**Full suite:** `python3 -m pytest -q` → 423/423 pass, 0 API call
-**Review:** 2026-07-09 — code review hoàn tất; MVP đạt yêu cầu offline, còn 1 follow-up guardrail bên dưới.
+**Full suite:** `python3 -m pytest -q` → 430/430 pass, 0 API call
+**Code review:** 2026-07-09 — 3 bugs fixed (commit `373b1cc`)
 
 **Vai trò:** Cognitive Interface / Agent Orchestration Layer. Nhận goal tự nhiên → validate request → route persona → load context → detect missing knowledge → tạo TaskPlan → classify risk → đóng gói ModuleRequest qua M04 → aggregate response Markdown/JSON. M09 không tự publish, không tự sửa Knowledge, không bypass M04.
 
@@ -255,12 +256,13 @@
 
 ---
 
-## M10 — Operating Center ✅ COMPLETE (v2.0 Home Core)
+## M10 — Operating Center ✅ COMPLETE (v2.0 Home Core, code reviewed + bugs fixed)
 
 **Plan:** `VENHO_AI_STUDIO_Module_10_Dashboard_Plan_v1_2.md`
 **Design:** `M10_OPERATING_CENTER_DESIGN_v2.0_final.md`
 **Tests:** 7/7 — xem `tests/test_dashboard.py`
 **Full suite:** 430/430 pass — `python3 -m pytest -q`
+**Code review:** 2026-07-09 — 3 bugs fixed (commit `373b1cc`)
 
 **Quyết định kiến trúc:** M10 mở rộng Studio Shell Streamlit hiện có thay vì tạo web JS app độc lập, để khớp UI local-first đang chạy ở `localhost:8501`.
 
@@ -293,9 +295,12 @@ streamlit run ui/studio_app.py
 ## Git Log (10 commits gần nhất)
 
 ```
-uncommitted M09 review + task closing memory/status (2026-07-09)
-uncommitted M09 Agent Studio MVP (2026-07-09)
-uncommitted M06 bug fixes + design hardening (2026-07-09)
+373b1cc fix: M08-M10 code review — 10 correctness bugs fixed (430/430 tests pass)
+54be086 fix: M07 publishing gateway + M10 studio UI uncommitted fixes
+b3a21ac Complete M10 operating center review
+ca3c71c Add operating center snapshot model
+ac787f4 Add M10 operating center design spec
+1f08619 Complete modules 07-10 offline MVPs
 58e2ea1 Update task memory and M06 status
 155b5f9 Complete Module 06 Video Studio package pipeline
 1c2de40 feat: Module 06 Video Studio — scaffold + plan doc
