@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-from pathlib import Path
-
 from validator_studio.prompt_validator import validate_prompt_contract
+from validator_studio.schemas.validation_base import Recommendation
 
 from video_studio.schemas.video_package import ValidationInfo
 from video_studio.schemas.video_request import VideoRequest
@@ -28,14 +27,26 @@ def validate_scene_prompts(
                 prompt_file=contract.get("prompt_id", "(in-memory scene prompt)"),
             )
             reports.append(report.artifact_ref.file)
-            statuses.append(report.verdict)
+            if report.verdict == Recommendation.APPROVE:
+                statuses.append("pass")
+            elif report.verdict == Recommendation.REVISE:
+                statuses.append("warning")
+            else:
+                statuses.append("fail")
         except Exception as exc:  # Validator bridge must degrade while M03 package validation is future work.
             notes.append(f"Scene prompt validation not_available: {exc}")
             return ValidationInfo(required=required, status="not_available", reports=reports, notes=notes)
-    status = "pass" if statuses and all(status in {"pass", "warning"} for status in statuses) else "pending"
+    if not statuses:
+        status = "pending"
+    elif any(item == "fail" for item in statuses):
+        status = "warning"
+        notes.append("One or more scene prompt validations returned fail; treating as warning until video-package validation exists.")
+    elif any(item == "warning" for item in statuses):
+        status = "warning"
+    else:
+        status = "pass"
     return ValidationInfo(required=required, status=status, reports=reports, notes=notes)
 
 
 def write_not_available(required: bool, reason: str) -> ValidationInfo:
     return ValidationInfo(required=required, status="not_available", notes=[reason])
-

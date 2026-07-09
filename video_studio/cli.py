@@ -57,6 +57,10 @@ def generate(
     typer.echo(f"Validation: {result.package.validation.status}")
 
 
+@app.command("version")
+def version() -> None:
+    typer.echo("video_studio contract 1.0")
+
+
 if __name__ == "__main__":
     app()
-

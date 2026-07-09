@@ -1,18 +1,22 @@
 from __future__ import annotations
 
 import importlib
-from shutil import copyfile
 from pathlib import Path
+from shutil import copyfile
+from typer.testing import CliRunner
 
 import yaml
 
 from prompt_studio.knowledge_reader import read_dna
 
 from video_studio.continuity_checker import check_continuity
+from video_studio.cli import app
 from video_studio.schemas.video_request import SourceKnowledgeRef, VideoRequest
 from video_studio.storyboard_builder import build_storyboard
-from video_studio.video_context import load_video_config
+from video_studio.video_context import MissingKnowledgeError, load_video_config, load_video_context
 from video_studio.video_engine import generate_video_package
+
+runner = CliRunner()
 
 
 def _tmp_data_root(tmp_path: Path) -> Path:
@@ -51,6 +55,19 @@ def _request(data_root: Path) -> VideoRequest:
         target_engine="veo",
         alt_engines=["kling"],
         validation_required=True,
+    )
+
+
+def _character_request(data_root: Path) -> VideoRequest:
+    return _request(data_root).model_copy(
+        update={
+            "video_type": "character",
+            "include_character": True,
+            "source_knowledge": [
+                _source_ref("VENHO_HOTEL_LAKE_VIEW_ROOM_DNA.json", data_root),
+                _source_ref("VENHO_HOTEL_LINH_AN_DNA.json", data_root),
+            ],
+        }
     )
 
 
@@ -120,6 +137,7 @@ def test_video_engine_generates_mvp_lifestyle_reel(tmp_path: Path) -> None:
     assert package.text_from_content.caption_language == "vi"
     assert package.text_from_content.source_file
     assert package.engine_prompts[0].language == "en"
+    assert {prompt.engine for prompt in package.engine_prompts} == {"veo", "kling"}
     assert "Module 02" not in package.engine_prompt_full
     assert all(scene.scene_prompt_ref and scene.scene_prompt_ref.source == "module_02" for scene in package.storyboard)
     assert result.markdown_path.exists()
@@ -127,3 +145,48 @@ def test_video_engine_generates_mvp_lifestyle_reel(tmp_path: Path) -> None:
     assert result.manifest_path.exists()
     assert "## ENGINE PROMPT (English)" in result.markdown_path.read_text(encoding="utf-8")
 
+
+def test_character_request_requires_face_dna(tmp_path: Path) -> None:
+    data_root = _tmp_data_root(tmp_path)
+    bad_request = _request(data_root).model_copy(update={"include_character": True})
+
+    try:
+        load_video_context(bad_request, data_root=data_root, config_root=Path("config/projects"))
+    except MissingKnowledgeError as exc:
+        assert "Face/character DNA" in str(exc)
+    else:
+        raise AssertionError("include_character=true must require Face DNA")
+
+
+def test_character_package_adds_face_lock_continuity(tmp_path: Path) -> None:
+    data_root = _tmp_data_root(tmp_path)
+    result = generate_video_package(_character_request(data_root), data_root=data_root, config_root=Path("config/projects"))
+
+    assert "small_pearl_drop" in result.package.continuity_keys
+    assert result.package.continuity_check.all_scenes_have_keys is True
+    assert all("Character lock" in scene.engine_prompt for scene in result.package.storyboard if scene.engine_prompt)
+
+
+def test_video_cli_generate_command_matches_readme(tmp_path: Path) -> None:
+    data_root = _tmp_data_root(tmp_path)
+    result = runner.invoke(
+        app,
+        [
+            "generate",
+            "--topic",
+            "lake view room morning",
+            "--duration",
+            "15",
+            "--type",
+            "social_reel",
+            "--subjects",
+            "lake_view_room,westlake",
+            "--data-root",
+            str(data_root),
+            "--no-validate",
+        ],
+    )
+
+    assert result.exit_code == 0, result.output
+    assert "Markdown:" in result.output
+    assert "Validation: pending" in result.output

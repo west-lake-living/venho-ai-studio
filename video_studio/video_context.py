@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional, Tuple
 
 import yaml
 
@@ -27,7 +27,7 @@ class VideoContext:
     request: VideoRequest
     config: Dict[str, Any]
     environment_dnas: List[KnowledgeDna]
-    character_dna: KnowledgeDna | None
+    character_dna: Optional[KnowledgeDna]
     continuity_keys: List[str]
 
 
@@ -71,7 +71,7 @@ def _is_character_dna(dna: KnowledgeDna) -> bool:
     return "linh_an" in dna.subject.lower() or "character" in dna.subject.lower()
 
 
-def load_source_dnas(request: VideoRequest, data_root: Path = DEFAULT_DATA_ROOT) -> tuple[List[KnowledgeDna], KnowledgeDna | None]:
+def load_source_dnas(request: VideoRequest, data_root: Path = DEFAULT_DATA_ROOT) -> Tuple[List[KnowledgeDna], Optional[KnowledgeDna]]:
     dnas: List[KnowledgeDna] = []
     for source in request.source_knowledge:
         path = data_root / request.project / "knowledge" / source.file
@@ -80,14 +80,16 @@ def load_source_dnas(request: VideoRequest, data_root: Path = DEFAULT_DATA_ROOT)
         dnas.append(read_dna(path))
 
     character_dnas = [dna for dna in dnas if _is_character_dna(dna)]
-    character_dna = character_dnas[0] if request.include_character and character_dnas else None
-    environment_dnas = [dna for dna in dnas if dna is not character_dna]
+    if request.include_character and not character_dnas:
+        raise MissingKnowledgeError("include_character=true requires a Face/character DNA source")
+    character_dna = character_dnas[0] if request.include_character else None
+    environment_dnas = [dna for dna in dnas if not _is_character_dna(dna)]
     if not environment_dnas:
         raise MissingKnowledgeError("Video Studio requires at least one environment DNA for Module 02 video prompts")
     return environment_dnas, character_dna
 
 
-def build_continuity_keys(environment_dnas: List[KnowledgeDna], character_dna: KnowledgeDna | None) -> List[str]:
+def build_continuity_keys(environment_dnas: List[KnowledgeDna], character_dna: Optional[KnowledgeDna]) -> List[str]:
     keys: List[str] = []
     for dna in environment_dnas:
         for item in dna.required_dna[:3]:
@@ -116,4 +118,3 @@ def load_video_context(
         character_dna=character_dna,
         continuity_keys=continuity_keys,
     )
-

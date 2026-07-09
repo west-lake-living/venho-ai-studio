@@ -53,12 +53,14 @@ def generate_video_package(
     text = build_text_from_content(request, config_root=config_root, data_root=data_root).text
 
     scene_contracts = []
-    primary_engine_prompts = []
+    engine_prompts = []
     for index, scene in enumerate(storyboard):
         prompt_result = build_scene_prompt(context, scene, prompts_root=data_root)
         scene_contracts.append(prompt_result.contract.model_dump(mode="json"))
         engine_prompt = format_scene_prompt(prompt_result.contract, scene, request.target_engine)
-        primary_engine_prompts.append(engine_prompt)
+        engine_prompts.append(engine_prompt)
+        for alt_engine in request.alt_engines:
+            engine_prompts.append(format_scene_prompt(prompt_result.contract, scene, alt_engine))
         storyboard[index] = scene.model_copy(
             update={
                 "scene_prompt_ref": ScenePromptRef(
@@ -102,8 +104,8 @@ def generate_video_package(
         duration_check=duration_check,
         continuity_check=continuity_check,
         text_from_content=text,
-        engine_prompt_full=combine_engine_prompts(primary_engine_prompts),
-        engine_prompts=primary_engine_prompts,
+        engine_prompt_full=combine_engine_prompts(engine_prompts),
+        engine_prompts=engine_prompts,
         motion_negative_prompt=_motion_negative_prompt(context.config),
         character_rules=context.config.get("character_rules", {}),
         camera_motion_rules={
@@ -122,4 +124,3 @@ def generate_video_package(
     write_json(json_path, package)
     manifest_path = update_manifest(package, markdown_path=markdown_path, json_path=json_path, root=data_root)
     return VideoEngineResult(package=package, markdown_path=markdown_path, json_path=json_path, manifest_path=manifest_path)
-
