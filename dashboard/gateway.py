@@ -18,6 +18,16 @@ DEFAULT_PROJECT = "venho_hotel"
 PROJECT_DISPLAY = {"venho_hotel": "Ven Hồ Hotel"}
 PROJECT_PROMPT_DISPLAY = {"venho_hotel": "Ven Ho Hotel"}
 EXPECTED_SUBJECTS = ("lake_view_room", "deluxe_double", "lobby", "facade", "linh_an", "westlake", "outside")
+OPERATING_STAGES = (
+    "Observe",
+    "DNA",
+    "Prompt",
+    "Validate",
+    "Automation",
+    "Video",
+    "Publishing",
+    "Analytics",
+)
 
 
 @dataclass(frozen=True)
@@ -59,6 +69,7 @@ class DashboardSnapshot:
     analytics_items: list[dict[str, Any]]
     agent_personas: list[dict[str, Any]]
     system: dict[str, Any]
+    operating_center: dict[str, Any]
     advisories: list[Advisory] = field(default_factory=list)
 
 
@@ -161,6 +172,18 @@ class DashboardGateway:
                 "agent_personas": len(agent_personas),
             },
         }
+        operating_center = self.operating_center_snapshot(
+            advisories=advisories,
+            subjects=subjects,
+            prompts=prompts,
+            content_items=content_items,
+            validation_runs=validation_runs,
+            automation_jobs=automation_jobs,
+            video_items=video_items,
+            publishing_items=publishing_items,
+            analytics_items=analytics_items,
+            agent_personas=agent_personas,
+        )
 
         return DashboardSnapshot(
             project=project,
@@ -174,6 +197,7 @@ class DashboardGateway:
             analytics_items=analytics_items,
             agent_personas=agent_personas,
             system=system,
+            operating_center=operating_center,
             advisories=advisories,
         )
 
@@ -312,6 +336,259 @@ class DashboardGateway:
                 }
             )
         return personas
+
+    def operating_center_snapshot(
+        self,
+        *,
+        advisories: list[Advisory],
+        subjects: list[SubjectAsset],
+        prompts: list[dict[str, Any]],
+        content_items: list[dict[str, Any]],
+        validation_runs: list[dict[str, Any]],
+        automation_jobs: list[dict[str, Any]],
+        video_items: list[dict[str, Any]],
+        publishing_items: list[dict[str, Any]],
+        analytics_items: list[dict[str, Any]],
+        agent_personas: list[dict[str, Any]],
+    ) -> dict[str, Any]:
+        override = _read_json(self.base_dir / "artifacts" / "m10" / "home_snapshot.json")
+        if override:
+            return override
+
+        failed_validations = [
+            item
+            for item in validation_runs
+            if str(item.get("verdict") or item.get("status") or "").lower()
+            in {"fail", "failed", "reject", "rejected", "regenerate"}
+        ]
+        review_validations = [
+            item
+            for item in validation_runs
+            if str(item.get("verdict") or item.get("status") or "").lower()
+            in {"conditional", "review", "needs_review", "warning"}
+        ]
+        active_jobs = [
+            item
+            for item in automation_jobs
+            if str(item.get("status") or "").lower() in {"running", "pending", "waiting", "queued"}
+        ]
+        waiting_publish = [
+            item
+            for item in publishing_items
+            if str(item.get("status") or "").lower() in {"waiting_approval", "pending", "ready", "draft"}
+        ]
+
+        tasks = self._today_tasks(
+            failed_validations=failed_validations,
+            review_validations=review_validations,
+            waiting_publish=waiting_publish,
+            prompts=prompts,
+            analytics_items=analytics_items,
+        )
+        health = self._system_health(
+            subjects=subjects,
+            prompts=prompts,
+            validation_runs=validation_runs,
+            automation_jobs=automation_jobs,
+            publishing_items=publishing_items,
+            analytics_items=analytics_items,
+        )
+        worst_health = self._worst_status([item["status"] for item in health])
+        publishing_status = "Waiting Approval" if waiting_publish else ("Ready" if publishing_items else "Missing")
+
+        return {
+            "summary_cards": [
+                {"label": "Today's Tasks", "value": len(tasks), "status": "Active"},
+                {"label": "System Health", "value": worst_health, "status": worst_health},
+                {"label": "Active Jobs", "value": len(active_jobs), "status": "Active" if active_jobs else "Healthy"},
+                {"label": "Publishing Status", "value": publishing_status, "status": "Warning" if waiting_publish else publishing_status},
+            ],
+            "today_tasks": tasks,
+            "system_health": health,
+            "pipeline": self._pipeline(
+                subjects=subjects,
+                prompts=prompts,
+                content_items=content_items,
+                validation_runs=validation_runs,
+                automation_jobs=automation_jobs,
+                video_items=video_items,
+                publishing_items=publishing_items,
+                analytics_items=analytics_items,
+                failed_validations=failed_validations,
+                review_validations=review_validations,
+                waiting_publish=waiting_publish,
+            ),
+            "alerts": self._alerts(advisories, failed_validations, waiting_publish),
+            "recent_activity": self._recent_activity(automation_jobs, validation_runs, content_items),
+            "agents": self._agent_cards(agent_personas, health),
+        }
+
+    def _today_tasks(
+        self,
+        *,
+        failed_validations: list[dict[str, Any]],
+        review_validations: list[dict[str, Any]],
+        waiting_publish: list[dict[str, Any]],
+        prompts: list[dict[str, Any]],
+        analytics_items: list[dict[str, Any]],
+    ) -> list[dict[str, str]]:
+        tasks: list[dict[str, str]] = []
+        if failed_validations:
+            tasks.append({"task": "Review failed validations", "priority": "High", "source": "Validator"})
+        if review_validations:
+            tasks.append({"task": "Review conditional validation results", "priority": "Medium", "source": "Validator"})
+        if waiting_publish:
+            tasks.append({"task": "Approve publishing queue", "priority": "High", "source": "Publishing"})
+        if not prompts:
+            tasks.append({"task": "Generate room prompt", "priority": "Medium", "source": "Workbench"})
+        if not analytics_items:
+            tasks.append({"task": "Review analytics snapshot", "priority": "Low", "source": "Insights"})
+        if not tasks:
+            tasks.append({"task": "Review recent activity", "priority": "Low", "source": "Home"})
+        return tasks[:5]
+
+    def _system_health(
+        self,
+        *,
+        subjects: list[SubjectAsset],
+        prompts: list[dict[str, Any]],
+        validation_runs: list[dict[str, Any]],
+        automation_jobs: list[dict[str, Any]],
+        publishing_items: list[dict[str, Any]],
+        analytics_items: list[dict[str, Any]],
+    ) -> list[dict[str, str]]:
+        missing_dna = any(not item.has_dna_json for item in subjects)
+        failed_validation = any(
+            str(item.get("verdict") or item.get("status") or "").lower()
+            in {"fail", "failed", "reject", "rejected", "regenerate"}
+            for item in validation_runs
+        )
+        failed_job = any(str(item.get("status") or "").lower() in {"failed", "error"} for item in automation_jobs)
+
+        return [
+            {"area": "Knowledge", "status": "Warning" if missing_dna else "Healthy"},
+            {"area": "Prompt", "status": "Healthy" if prompts else "Missing"},
+            {"area": "Validator", "status": "Critical" if failed_validation else ("Healthy" if validation_runs else "Missing")},
+            {"area": "Automation", "status": "Critical" if failed_job else ("Healthy" if automation_jobs else "Missing")},
+            {"area": "Publishing", "status": "Healthy" if publishing_items else "Warning"},
+            {"area": "Analytics", "status": "Healthy" if analytics_items else "Missing"},
+        ]
+
+    def _pipeline(
+        self,
+        *,
+        subjects: list[SubjectAsset],
+        prompts: list[dict[str, Any]],
+        content_items: list[dict[str, Any]],
+        validation_runs: list[dict[str, Any]],
+        automation_jobs: list[dict[str, Any]],
+        video_items: list[dict[str, Any]],
+        publishing_items: list[dict[str, Any]],
+        analytics_items: list[dict[str, Any]],
+        failed_validations: list[dict[str, Any]],
+        review_validations: list[dict[str, Any]],
+        waiting_publish: list[dict[str, Any]],
+    ) -> list[dict[str, str | int]]:
+        missing_dna = sum(1 for item in subjects if not item.has_dna_json)
+        failed_jobs = sum(1 for item in automation_jobs if str(item.get("status") or "").lower() in {"failed", "error"})
+        return [
+            {"stage": "Observe", "status": "Ready", "ready": len(subjects), "need_review": 0, "failed": 0, "action": "Open Workbench"},
+            {
+                "stage": "DNA",
+                "status": "Need Review" if missing_dna else "Ready",
+                "ready": max(len(subjects) - missing_dna, 0),
+                "need_review": missing_dna,
+                "failed": 0,
+                "action": "Build DNA" if missing_dna else "Browse Project",
+            },
+            {"stage": "Prompt", "status": "Ready" if prompts else "Need Review", "ready": len(prompts), "need_review": 0 if prompts else 1, "failed": 0, "action": "Generate Prompt"},
+            {
+                "stage": "Validate",
+                "status": "Failed" if failed_validations else ("Need Review" if review_validations else "Ready"),
+                "ready": len(validation_runs),
+                "need_review": len(review_validations),
+                "failed": len(failed_validations),
+                "action": "Review Failed" if failed_validations else "Open Validator",
+            },
+            {"stage": "Automation", "status": "Failed" if failed_jobs else "Ready", "ready": len(automation_jobs), "need_review": 0, "failed": failed_jobs, "action": "Run Automation"},
+            {"stage": "Video", "status": "Ready" if video_items else "Need Review", "ready": len(video_items), "need_review": 0 if video_items else 1, "failed": 0, "action": "Create Video"},
+            {
+                "stage": "Publishing",
+                "status": "Need Review" if waiting_publish else ("Ready" if publishing_items else "Need Review"),
+                "ready": len(publishing_items),
+                "need_review": len(waiting_publish) if waiting_publish else (0 if publishing_items else 1),
+                "failed": 0,
+                "action": "Approve Queue",
+            },
+            {"stage": "Analytics", "status": "Ready" if analytics_items else "Need Review", "ready": len(analytics_items), "need_review": 0 if analytics_items else 1, "failed": 0, "action": "Review Snapshot"},
+        ]
+
+    def _alerts(
+        self,
+        advisories: list[Advisory],
+        failed_validations: list[dict[str, Any]],
+        waiting_publish: list[dict[str, Any]],
+    ) -> list[dict[str, str]]:
+        alerts = [
+            {"status": "Warning", "message": advisory.message}
+            for advisory in advisories
+            if advisory.status in {"degraded", "advisory"}
+        ]
+        if failed_validations:
+            alerts.insert(0, {"status": "Critical", "message": f"{len(failed_validations)} validation failure(s) need review."})
+        if waiting_publish:
+            alerts.insert(0, {"status": "Warning", "message": "Publishing queue waiting approval."})
+        return alerts[:5]
+
+    def _recent_activity(
+        self,
+        automation_jobs: list[dict[str, Any]],
+        validation_runs: list[dict[str, Any]],
+        content_items: list[dict[str, Any]],
+    ) -> list[dict[str, str]]:
+        activity: list[dict[str, str]] = []
+        for item in automation_jobs[:4]:
+            activity.append(
+                {
+                    "time": str(item.get("finished_at") or item.get("started_at") or "Recent"),
+                    "event": f"Automation {item.get('status', 'updated')}",
+                    "detail": str(item.get("workflow_id") or item.get("run_id") or ""),
+                }
+            )
+        for item in validation_runs[-2:]:
+            activity.append(
+                {
+                    "time": str(item.get("created_at") or item.get("finished_at") or "Recent"),
+                    "event": "Validator completed",
+                    "detail": str(item.get("subject") or item.get("validation_type") or ""),
+                }
+            )
+        if content_items:
+            activity.append({"time": "Recent", "event": "Content draft available", "detail": str(content_items[-1].get("id") or "")})
+        return activity[:6]
+
+    def _agent_cards(self, agent_personas: list[dict[str, Any]], health: list[dict[str, str]]) -> list[dict[str, str]]:
+        health_map = {item["area"]: item["status"] for item in health}
+        cards = []
+        for persona in agent_personas:
+            name = str(persona.get("display_name") or persona.get("agent"))
+            modules = " ".join(str(module) for module in persona.get("allowed_modules", []))
+            if "M07" in modules:
+                status = "Waiting Approval" if health_map.get("Publishing") != "Healthy" else "Ready"
+            elif "M03" in modules:
+                status = health_map.get("Validator", "Ready")
+            elif "M01" in modules:
+                status = health_map.get("Knowledge", "Ready")
+            else:
+                status = "Ready"
+            cards.append({"agent": name, "status": status})
+        return cards
+
+    def _worst_status(self, statuses: list[str]) -> str:
+        order = {"Critical": 4, "Warning": 3, "Missing": 2, "Active": 1, "Healthy": 0, "Ready": 0}
+        if not statuses:
+            return "Missing"
+        return max(statuses, key=lambda status: order.get(status, 0))
 
 
 def build_dashboard_snapshot(base_dir: Path | str = Path("."), project: str = DEFAULT_PROJECT) -> DashboardSnapshot:
