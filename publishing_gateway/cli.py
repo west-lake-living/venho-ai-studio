@@ -5,11 +5,13 @@ from pathlib import Path
 
 import typer
 
+from publishing_gateway.exceptions import PublishingGatewayError
 from publishing_gateway.gateway_router import publish_request
 from publishing_gateway.receipt_store import ReceiptStore
 from publishing_gateway.renderers import render_receipt_json, render_receipt_markdown
 from publishing_gateway.schemas.delivery_receipt import DeliveryReceipt
 from publishing_gateway.schemas.publishing_request import PublishingRequest
+from publishing_gateway.utils.idempotency import ensure_idempotency_key
 
 app = typer.Typer(help="Publishing Gateway dry-run publisher")
 
@@ -17,13 +19,19 @@ app = typer.Typer(help="Publishing Gateway dry-run publisher")
 @app.command("publish")
 def publish(
     package_file: Path = typer.Option(..., "--package-file"),
-    approval_secret: str = typer.Option("test-secret", "--approval-secret"),
+    # Fix #4: no default for approval_secret — operators must supply it explicitly.
+    approval_secret: str = typer.Option(..., "--approval-secret", help="HMAC secret for approval verification"),
     dry_run: bool = typer.Option(True, "--dry-run/--live"),
     data_root: Path = typer.Option(Path("data/projects")),
     config_root: Path = typer.Option(Path("config/projects")),
 ) -> None:
     request = PublishingRequest.model_validate_json(package_file.read_text(encoding="utf-8"))
-    receipt = publish_request(request, approval_secret=approval_secret, dry_run=dry_run, data_root=data_root, config_root=config_root)
+    # Fix #6: surface PublishingGatewayError as a clean message instead of a raw traceback.
+    try:
+        receipt = publish_request(request, approval_secret=approval_secret, dry_run=dry_run, data_root=data_root, config_root=config_root)
+    except PublishingGatewayError as exc:
+        typer.echo(f"ERROR {exc}", err=True)
+        raise typer.Exit(1) from exc
     typer.echo(f"Receipt: {receipt.package_id}")
     typer.echo(f"Status: {receipt.overall_status}")
     typer.echo(render_receipt_json(receipt))
@@ -33,14 +41,24 @@ def publish(
 def retry(
     package_file: Path = typer.Option(..., "--package-file"),
     platform: str = typer.Option(..., "--platform"),
-    approval_secret: str = typer.Option("test-secret", "--approval-secret"),
+    # Fix #4: no default for approval_secret.
+    approval_secret: str = typer.Option(..., "--approval-secret", help="HMAC secret for approval verification"),
     dry_run: bool = typer.Option(True, "--dry-run/--live"),
     data_root: Path = typer.Option(Path("data/projects")),
     config_root: Path = typer.Option(Path("config/projects")),
 ) -> None:
     request = PublishingRequest.model_validate_json(package_file.read_text(encoding="utf-8"))
+    # Fix #3: compute the idempotency key from the ORIGINAL multi-platform request before
+    # mutating platforms. model_copy inherits the key, so publish_request() won't regenerate
+    # a different hash for the single-platform retry_request.
+    request = ensure_idempotency_key(request)
     retry_request = request.model_copy(update={"platforms": [platform]})
-    receipt = publish_request(retry_request, approval_secret=approval_secret, dry_run=dry_run, data_root=data_root, config_root=config_root)
+    # Fix #6: surface PublishingGatewayError cleanly.
+    try:
+        receipt = publish_request(retry_request, approval_secret=approval_secret, dry_run=dry_run, data_root=data_root, config_root=config_root)
+    except PublishingGatewayError as exc:
+        typer.echo(f"ERROR {exc}", err=True)
+        raise typer.Exit(1) from exc
     typer.echo(f"Retry: {platform}")
     typer.echo(f"Status: {receipt.overall_status}")
 

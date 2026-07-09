@@ -21,6 +21,11 @@ from publishing_gateway.utils.idempotency import ensure_idempotency_key
 from publishing_gateway.utils.time_utils import utc_now_iso
 
 
+# Fix #1: module-level singleton so failure history accumulates across calls.
+# Tests that need isolation should inject their own CircuitBreaker instance.
+_SHARED_CIRCUIT_BREAKER = CircuitBreaker()
+
+
 def default_adapters() -> Dict[str, BasePlatformAdapter]:
     return {
         "facebook": FacebookAdapter(),
@@ -48,11 +53,13 @@ def publish_request(
 
     store = ReceiptStore(request.project, data_root=data_root)
     successful = store.successful_platforms(request.idempotency_key or "", request.platforms)
-    breaker = circuit_breaker or CircuitBreaker()
+    # Fix #1: use injected breaker or module-level singleton — never create a fresh one per call.
+    breaker = circuit_breaker if circuit_breaker is not None else _SHARED_CIRCUIT_BREAKER
     adapter_map = adapters or default_adapters()
     publish_queue = queue or PublisherQueue(rate_limits=load_rate_limits(request.project, config_root=config_root))
     platform_results: Dict[str, PlatformResult] = {}
-    circuit_info = CircuitBreakerInfo()
+    # Fix #9: accumulate all circuit-tripped platforms; build CircuitBreakerInfo once after the loop.
+    circuit_tripped: list[tuple[str, str]] = []
 
     for platform in request.platforms:
         if platform in successful:
@@ -72,12 +79,28 @@ def publish_request(
                 error_code=ERR_CIRCUIT_OPEN,
                 error_message="circuit breaker is open",
             )
-            circuit_info = CircuitBreakerInfo(triggered=True, platform=platform, state=breaker.state_for(platform))
+            circuit_tripped.append((platform, breaker.state_for(platform)))
             continue
         publish_queue.enqueue(request, platform)
 
+    # Fix #9: set circuit_info from first tripped platform (not last-wins).
+    if circuit_tripped:
+        first_platform, first_state = circuit_tripped[0]
+        circuit_info = CircuitBreakerInfo(triggered=True, platform=first_platform, state=first_state)
+    else:
+        circuit_info = CircuitBreakerInfo()
+
     def _publish(job: PublishJob) -> PlatformResult:
-        adapter = adapter_map[job.platform]
+        # Fix #10: guard against missing adapter instead of letting KeyError propagate.
+        adapter = adapter_map.get(job.platform)
+        if adapter is None:
+            return PlatformResult(
+                platform=job.platform,
+                success=False,
+                status="FAILED",
+                error_code=ERR_ADAPTER_FAILED,
+                error_message=f"no adapter registered for platform '{job.platform}'",
+            )
         result = adapter.publish(job.request, dry_run=dry_run)
         if result.success:
             breaker.record_success(job.platform)

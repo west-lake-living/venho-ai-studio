@@ -9,7 +9,13 @@ from publishing_gateway.schemas.publishing_request import PublishingRequest
 
 def canonical_request_payload(request: PublishingRequest) -> Dict[str, Any]:
     payload = request.model_dump(mode="json")
+    # Fix #2: exclude time-variant approval fields (approved_at, approval_signature change
+    # on every re-approval). Including them would produce a new hash on re-approval and
+    # bypass successful_platforms() dedup, causing duplicate publishes.
+    # Also exclude package_status (may change without content changing).
     payload.pop("idempotency_key", None)
+    payload.pop("approval", None)
+    payload.pop("package_status", None)
     return payload
 
 

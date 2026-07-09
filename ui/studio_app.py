@@ -11,6 +11,7 @@ Run:
 from __future__ import annotations
 
 import contextlib
+import html
 import io
 import sys
 import threading
@@ -107,86 +108,329 @@ def _install_operating_center_css() -> None:
     st.markdown(
         """
         <style>
-        .block-container { padding-top: 2rem; }
-        [data-testid="stMetric"] {
-            background: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            padding: 16px 18px;
+        :root {
+            --oc-primary: #2F6F91;
+            --oc-primary-soft: #EAF3F7;
+            --oc-background: #F8F7F4;
+            --oc-surface: #FFFFFF;
+            --oc-border: #E8E5DF;
+            --oc-text: #2B2B2B;
+            --oc-secondary: #6B6B6B;
+            --oc-muted: #9A958E;
+            --oc-success: #5F8F6F;
+            --oc-success-soft: #EEF6F0;
+            --oc-warning: #D9A441;
+            --oc-warning-soft: #FFF6E4;
+            --oc-critical: #C96A5C;
+            --oc-critical-soft: #FDECEA;
+            --oc-radius-card: 16px;
+            --oc-shadow-card: 0 2px 10px rgba(0,0,0,0.05);
+            --oc-shadow-hover: 0 8px 24px rgba(0,0,0,0.08);
         }
-        [data-testid="stMetricLabel"] { color: #64748b; }
-        .oc-eyebrow {
-            color: #64748b;
-            font-size: 0.78rem;
+        .stApp { background: var(--oc-background); color: var(--oc-text); }
+        .block-container {
+            max-width: 1280px;
+            padding: 24px 32px 72px;
+        }
+        [data-testid="stSidebar"] {
+            background: var(--oc-surface);
+            border-right: 1px solid var(--oc-border);
+            min-width: 240px;
+            width: 240px;
+        }
+        [data-testid="stSidebar"] [data-testid="stMarkdownContainer"],
+        [data-testid="stSidebar"] label {
+            color: var(--oc-text);
+            font-size: 14px;
+        }
+        .oc-top-header {
+            align-items: center;
+            background: var(--oc-surface);
+            border: 1px solid var(--oc-border);
+            border-radius: var(--oc-radius-card);
+            box-shadow: var(--oc-shadow-card);
+            display: grid;
+            gap: 20px;
+            grid-template-columns: 1fr auto auto;
+            min-height: 80px;
+            margin-bottom: 24px;
+            padding: 18px 24px;
+        }
+        .oc-brand-title { color: var(--oc-text); font-size: 18px; font-weight: 700; line-height: 1.2; }
+        .oc-brand-subtitle { color: var(--oc-secondary); font-size: 12px; font-weight: 500; margin-top: 4px; }
+        .oc-header-meta {
+            align-items: center;
+            color: var(--oc-secondary);
+            display: flex;
+            flex-wrap: wrap;
+            font-size: 13px;
+            gap: 10px;
+            justify-content: center;
+        }
+        .oc-header-actions { color: var(--oc-primary); display: flex; font-size: 20px; gap: 14px; }
+        .oc-card {
+            background: var(--oc-surface);
+            border: 1px solid var(--oc-border);
+            border-radius: var(--oc-radius-card);
+            box-shadow: var(--oc-shadow-card);
+            padding: 24px;
+        }
+        .oc-card:hover { box-shadow: var(--oc-shadow-hover); }
+        .oc-section-title {
+            color: var(--oc-text);
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: 0;
+            margin: 0 0 16px;
+        }
+        .oc-label {
+            color: var(--oc-muted);
+            font-size: 12px;
             font-weight: 700;
             letter-spacing: 0;
             text-transform: uppercase;
         }
-        .oc-header {
-            border-bottom: 1px solid #e5e7eb;
-            margin-bottom: 0.85rem;
-            padding-bottom: 0.85rem;
-        }
-        .oc-focus {
-            background: #f8fafc;
-            border: 1px solid #dbe3ec;
-            border-radius: 8px;
-            padding: 18px;
-        }
-        .oc-status {
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            padding: 12px 14px;
-            min-height: 78px;
-            background: #fff;
-        }
-        .oc-pill {
+        .oc-muted { color: var(--oc-secondary); font-size: 14px; }
+        .oc-small { color: var(--oc-muted); font-size: 12px; }
+        .oc-badge {
             border-radius: 999px;
-            display: inline-block;
-            font-size: 0.78rem;
+            display: inline-flex;
+            font-size: 12px;
             font-weight: 700;
-            padding: 4px 9px;
+            padding: 6px 10px;
+            white-space: nowrap;
         }
-        .oc-Healthy, .oc-Ready, .oc-APPROVED { background: #dcfce7; color: #166534; }
-        .oc-Warning, .oc-Need-Review, .oc-CONDITIONAL { background: #fef3c7; color: #92400e; }
-        .oc-Critical, .oc-Failed, .oc-REJECT { background: #fee2e2; color: #991b1b; }
-        .oc-Critical-Failure, .oc-Needs-Attention { background: #fee2e2; color: #991b1b; }
-        .oc-Missing { background: #f1f5f9; color: #475569; }
-        .oc-Active { background: #dbeafe; color: #1d4ed8; }
-        .oc-In-Progress { background: #dbeafe; color: #1d4ed8; }
-        .oc-card-title { color: #0f172a; font-size: 1.02rem; font-weight: 750; margin-bottom: 4px; }
-        .oc-muted { color: #64748b; font-size: 0.9rem; }
-        .oc-task {
+        .oc-tone-success { background: var(--oc-success-soft); color: var(--oc-success); }
+        .oc-tone-warning { background: var(--oc-warning-soft); color: #8A621A; }
+        .oc-tone-critical { background: var(--oc-critical-soft); color: var(--oc-critical); }
+        .oc-tone-info { background: var(--oc-primary-soft); color: var(--oc-primary); }
+        .oc-tone-muted { background: #F2F0EC; color: var(--oc-secondary); }
+        .oc-btn {
             align-items: center;
-            border-bottom: 1px solid #f1f5f9;
+            background: var(--oc-primary);
+            border-radius: 999px;
+            color: #fff;
+            display: inline-flex;
+            font-size: 14px;
+            font-weight: 700;
+            justify-content: center;
+            min-height: 40px;
+            padding: 0 18px;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        .oc-btn-secondary { background: var(--oc-primary-soft); color: var(--oc-primary); }
+        .oc-focus-card {
+            align-items: center;
+            display: grid;
+            gap: 24px;
+            grid-template-columns: 1fr auto;
+            min-height: 170px;
+            padding: 28px;
+        }
+        .oc-focus-title {
+            color: var(--oc-text);
+            font-size: 32px;
+            font-weight: 700;
+            line-height: 1.15;
+            margin: 8px 0 10px;
+        }
+        .oc-progress {
+            background: #EEEAE3;
+            border-radius: 999px;
+            height: 8px;
+            margin-top: 20px;
+            overflow: hidden;
+            width: min(520px, 100%);
+        }
+        .oc-progress-fill {
+            background: var(--oc-primary);
+            border-radius: inherit;
+            height: 100%;
+            width: 38%;
+        }
+        .oc-focus-side {
+            align-items: flex-end;
             display: flex;
-            gap: 10px;
-            padding: 10px 0;
+            flex-direction: column;
+            gap: 18px;
         }
-        .oc-box {
-            border: 1px solid #d1d5db;
-            border-radius: 4px;
-            height: 16px;
-            width: 16px;
+        .oc-status-grid {
+            display: grid;
+            gap: 16px;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            margin: 24px 0;
         }
-        .oc-node {
-            background: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            min-height: 148px;
-            padding: 14px;
+        .oc-status-card {
+            min-height: 120px;
+            padding: 20px;
         }
-        .oc-node-title {
-            color: #0f172a;
-            font-size: 0.95rem;
-            font-weight: 750;
-            margin-bottom: 8px;
+        .oc-status-icon {
+            align-items: center;
+            background: var(--oc-primary-soft);
+            border-radius: 12px;
+            color: var(--oc-primary);
+            display: inline-flex;
+            font-size: 18px;
+            height: 36px;
+            justify-content: center;
+            margin-bottom: 14px;
+            width: 36px;
         }
-        .oc-node-meta {
-            color: #64748b;
-            font-size: 0.82rem;
-            line-height: 1.45;
-            margin-top: 8px;
+        .oc-status-metric {
+            color: var(--oc-text);
+            font-size: 28px;
+            font-weight: 700;
+            line-height: 1.05;
+            margin: 6px 0 10px;
+        }
+        .oc-link { color: var(--oc-primary); font-size: 13px; font-weight: 700; }
+        .oc-two-col {
+            display: grid;
+            gap: 24px;
+            grid-template-columns: 2fr 1fr;
+            margin-bottom: 24px;
+        }
+        .oc-task-row {
+            align-items: center;
+            border-top: 1px solid var(--oc-border);
+            display: grid;
+            gap: 14px;
+            grid-template-columns: 32px 1fr auto;
+            min-height: 64px;
+            padding: 12px 0;
+        }
+        .oc-task-icon {
+            align-items: center;
+            border-radius: 10px;
+            display: flex;
+            font-size: 15px;
+            height: 32px;
+            justify-content: center;
+            width: 32px;
+        }
+        .oc-task-title { color: var(--oc-text); font-size: 14px; font-weight: 700; }
+        .oc-action-grid {
+            display: grid;
+            gap: 12px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .oc-action-chip {
+            align-items: center;
+            background: var(--oc-primary-soft);
+            border: 1px solid #D7E8EF;
+            border-radius: 999px;
+            color: var(--oc-primary);
+            display: flex;
+            font-size: 13px;
+            font-weight: 700;
+            justify-content: center;
+            min-height: 52px;
+            padding: 0 14px;
+            text-align: center;
+        }
+        .oc-pipeline {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+        .oc-stage {
+            flex: 0 0 140px;
+            min-height: 150px;
+            padding: 16px;
+            position: relative;
+        }
+        .oc-stage:not(:last-child)::after {
+            color: var(--oc-muted);
+            content: ">";
+            font-size: 18px;
+            font-weight: 700;
+            position: absolute;
+            right: -13px;
+            top: 58px;
+        }
+        .oc-stage-title { color: var(--oc-text); font-size: 16px; font-weight: 700; margin-bottom: 12px; }
+        .oc-stage-meta { color: var(--oc-secondary); font-size: 12px; line-height: 1.5; margin-top: 12px; }
+        .oc-alert {
+            border-left: 4px solid var(--oc-warning);
+            border-radius: 14px;
+            margin-top: 12px;
+            padding: 16px;
+        }
+        .oc-alert-critical { background: var(--oc-critical-soft); border-left-color: var(--oc-critical); }
+        .oc-alert-warning { background: var(--oc-warning-soft); border-left-color: var(--oc-warning); }
+        .oc-alert-title { color: var(--oc-text); font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+        .oc-health-row {
+            align-items: center;
+            border-top: 1px solid var(--oc-border);
+            display: grid;
+            gap: 12px;
+            grid-template-columns: 26px 1fr auto;
+            min-height: 48px;
+        }
+        .oc-timeline-row {
+            border-top: 1px solid var(--oc-border);
+            display: grid;
+            gap: 16px;
+            grid-template-columns: 64px 1fr;
+            padding: 14px 0;
+        }
+        .oc-bottom-nav { display: none; }
+        @media (max-width: 767px) {
+            .block-container { padding: 16px 16px 92px; }
+            [data-testid="stSidebar"] { display: none; }
+            .oc-top-header {
+                grid-template-columns: 1fr auto;
+                min-height: 64px;
+                padding: 14px 16px;
+            }
+            .oc-header-meta { display: none; }
+            .oc-focus-card { grid-template-columns: 1fr; min-height: auto; padding: 22px; }
+            .oc-focus-title { font-size: 26px; }
+            .oc-focus-side { align-items: stretch; }
+            .oc-status-grid {
+                display: flex;
+                overflow-x: auto;
+                scroll-snap-type: x mandatory;
+            }
+            .oc-status-card { flex: 0 0 220px; scroll-snap-align: start; }
+            .oc-two-col { grid-template-columns: 1fr; }
+            .oc-action-grid { display: flex; overflow-x: auto; }
+            .oc-action-chip { flex: 0 0 auto; min-height: 44px; }
+            .oc-pipeline { flex-direction: column; overflow: visible; }
+            .oc-stage { flex: 1 1 auto; min-height: auto; }
+            .oc-stage:not(:last-child)::after {
+                content: "v";
+                left: 50%;
+                right: auto;
+                top: auto;
+                bottom: -18px;
+                transform: translateX(-50%);
+            }
+            .oc-task-row { grid-template-columns: 32px 1fr; }
+            .oc-task-row .oc-btn { grid-column: 1 / -1; }
+            .oc-timeline-row { grid-template-columns: 1fr; gap: 4px; }
+            .oc-bottom-nav {
+                align-items: center;
+                background: var(--oc-surface);
+                border-top: 1px solid var(--oc-border);
+                bottom: 0;
+                display: grid;
+                grid-template-columns: repeat(5, 1fr);
+                height: 72px;
+                left: 0;
+                position: fixed;
+                right: 0;
+                z-index: 9999;
+            }
+            .oc-bottom-item {
+                color: var(--oc-secondary);
+                font-size: 11px;
+                font-weight: 700;
+                text-align: center;
+            }
+            .oc-bottom-item:first-child { color: var(--oc-primary); }
         }
         </style>
         """,
@@ -194,27 +438,64 @@ def _install_operating_center_css() -> None:
     )
 
 
-def _status_class(status: str) -> str:
-    return status.replace(" ", "-")
+def _esc(value: object) -> str:
+    return html.escape(str(value), quote=True)
+
+
+def _status_tone(status: str) -> str:
+    normalized = status.lower().replace("_", " ")
+    if any(word in normalized for word in ["critical", "failed", "failure", "reject", "needs attention"]):
+        return "critical"
+    if any(word in normalized for word in ["warning", "review", "missing", "conditional"]):
+        return "warning"
+    if any(word in normalized for word in ["healthy", "ready", "approved", "completed", "active"]):
+        return "success"
+    if any(word in normalized for word in ["running", "progress"]):
+        return "info"
+    return "muted"
 
 
 def _status_pill(status: str) -> str:
-    return f'<span class="oc-pill oc-{_status_class(status)}">{status}</span>'
+    return f'<span class="oc-badge oc-tone-{_status_tone(status)}">{_esc(status)}</span>'
+
+
+def _action_for_label(label: str) -> str:
+    actions = {
+        "Today's Tasks": "Open",
+        "System Security": "Review",
+        "Automation Engine": "Continue",
+        "Publishing Queue": "Open queue",
+    }
+    return actions.get(label, "Open")
+
+
+def _status_icon(label: str) -> str:
+    icons = {
+        "Today's Tasks": "T",
+        "System Security": "S",
+        "Automation Engine": "A",
+        "Publishing Queue": "P",
+    }
+    return icons.get(label, "O")
 
 
 def _render_operating_header(snapshot) -> None:
     header = snapshot.operating_center.get("header", {})
     st.markdown(
         f"""
-        <div class="oc-header">
-            <div class="oc-eyebrow">{header.get('title', 'VENHO AI STUDIO')} ({header.get('subtitle', 'Operating Center')})</div>
-            <h1 style="margin: 0.2rem 0 0.45rem;">Operating Center</h1>
-            <div class="oc-muted">
-                Project <strong>{header.get('project_scope', snapshot.project.display_name)}</strong>
-                &nbsp;&nbsp; Status <strong>{header.get('project_status', 'ACTIVE')}</strong>
-                &nbsp;&nbsp; Last Sync <strong>{header.get('last_sync', 'Recent')}</strong>
-                &nbsp;&nbsp; Mode <strong>{header.get('mode', 'Read-only')}</strong>
-                &nbsp;&nbsp; Build <strong>{header.get('build', 'v2.0')}</strong>
+        <div class="oc-top-header">
+            <div>
+                <div class="oc-brand-title">{_esc(header.get('title', 'VENHO AI Studio'))}</div>
+                <div class="oc-brand-subtitle">{_esc(header.get('subtitle', 'Operating Center'))}</div>
+            </div>
+            <div class="oc-header-meta">
+                <strong>{_esc(header.get('project_scope', snapshot.project.display_name))}</strong>
+                <span>{_status_pill(str(header.get('project_status', 'ACTIVE')))}</span>
+                <span>Last Sync {_esc(header.get('last_sync', 'Recent'))}</span>
+                <span>{_esc(header.get('mode', 'Read-only'))}</span>
+            </div>
+            <div class="oc-header-actions" aria-hidden="true">
+                <span>!</span><span>U</span>
             </div>
         </div>
         """,
@@ -223,119 +504,208 @@ def _render_operating_header(snapshot) -> None:
 
 
 def _render_summary_cards(cards: list[dict]) -> None:
-    columns = st.columns(4)
-    for column, card in zip(columns, cards):
-        column.metric(card["label"], card["value"], card.get("status"))
+    items = []
+    for card in cards:
+        label = str(card["label"])
+        status = str(card.get("status", "Ready"))
+        items.append(
+            f"""
+            <div class="oc-card oc-status-card">
+                <div class="oc-status-icon">{_esc(_status_icon(label))}</div>
+                <div class="oc-label">{_esc(label)}</div>
+                <div class="oc-status-metric">{_esc(card["value"])}</div>
+                <div class="oc-link">{_esc(_action_for_label(label))} &gt;</div>
+                <div style="margin-top: 10px;">{_status_pill(status)}</div>
+            </div>
+            """
+        )
+    st.markdown(f'<div class="oc-status-grid">{"".join(items)}</div>', unsafe_allow_html=True)
 
 
 def _render_current_focus(focus: dict) -> None:
-    st.subheader("Current Focus")
-    left, right = st.columns([4, 1])
-    with left:
-        detail = focus.get("progress_label") or "No active workflow selected"
-        st.markdown(
-            f"""
-            <div class="oc-focus">
-                <div class="oc-card-title">{focus.get('title', 'No active focus.')}</div>
-                <div class="oc-muted">Progress: {detail} · Status: {_status_pill(str(focus.get('status', 'Ready')))}</div>
+    detail = focus.get("progress_label") or "No active workflow selected"
+    st.markdown(
+        f"""
+        <div class="oc-card oc-focus-card">
+            <div>
+                <div class="oc-label">Current Focus</div>
+                <div class="oc-focus-title">{_esc(focus.get('title', 'No active focus.'))}</div>
+                <div class="oc-muted">Progress: {_esc(detail)}</div>
+                <div class="oc-progress"><div class="oc-progress-fill"></div></div>
             </div>
-            """,
-            unsafe_allow_html=True,
-        )
-    with right:
-        st.button(str(focus.get("action_label", "Continue")), use_container_width=True, disabled=True)
+            <div class="oc-focus-side">
+                {_status_pill(str(focus.get('status', 'Ready')))}
+                <span class="oc-btn">{_esc(focus.get('action_label', 'Continue'))}</span>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 
 def _render_today(tasks: list[dict], progress: dict) -> None:
     completed = progress.get("completed", 0)
     total = progress.get("total", len(tasks))
-    st.subheader(f"Today Task Center: {completed} / {total} Tasks Completed")
+    groups_html = []
     groups = ["High", "Medium", "Low", "Completed"]
     for group in groups:
         rows = [task for task in tasks if task.get("priority") == group or task.get("status") == group]
         if not rows:
             continue
-        st.caption(f"{group} Priority" if group != "Completed" else "Completed")
+        group_title = f"{group} Priority" if group != "Completed" else "Completed"
+        groups_html.append(f'<div class="oc-label" style="margin-top: 18px;">{_esc(group_title)}</div>')
         for task in rows:
-            text_col, button_col = st.columns([4, 1])
-            with text_col:
-                marker = "■" if group in {"High", "Medium", "Low"} else "✓"
-                st.markdown(
-                    f"""
-                    <div class="oc-task">
-                        <div class="oc-muted">{marker}</div>
-                        <div>
-                            <div class="oc-card-title">{task['task']}</div>
-                            <div class="oc-muted">{task['source']} · {task.get('status', 'Pending')}</div>
-                        </div>
+            tone = "success" if group == "Completed" else ("critical" if group == "High" else "warning")
+            marker = "OK" if group == "Completed" else "!"
+            groups_html.append(
+                f"""
+                <div class="oc-task-row">
+                    <div class="oc-task-icon oc-tone-{tone}">{_esc(marker)}</div>
+                    <div>
+                        <div class="oc-task-title">{_esc(task['task'])}</div>
+                        <div class="oc-small">{_esc(task['source'])} · {_esc(task.get('status', 'Pending'))}</div>
                     </div>
-                    """,
-                    unsafe_allow_html=True,
-                )
-            with button_col:
-                st.button(task.get("action_label", "Open"), key=f"task_{task['task']}", use_container_width=True, disabled=True)
+                    <span class="oc-btn oc-btn-secondary">{_esc(task.get('action_label', 'Open'))}</span>
+                </div>
+                """
+            )
+    st.markdown(
+        f"""
+        <div class="oc-card">
+            <h2 class="oc-section-title">Today Task Center</h2>
+            <div class="oc-muted">Today progress: <strong>{_esc(completed)} / {_esc(total)}</strong> tasks completed</div>
+            {''.join(groups_html)}
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 
 def _render_quick_actions(actions: list[dict]) -> None:
-    st.subheader("Quick Actions")
-    columns = st.columns(6)
-    for index, action in enumerate(actions):
-        columns[index % 6].button(action["label"], key=f"quick_{action['label']}", use_container_width=True, disabled=True)
+    buttons = "".join(f'<div class="oc-action-chip">{_esc(action["label"])}</div>' for action in actions)
+    st.markdown(
+        f"""
+        <div class="oc-card">
+            <h2 class="oc-section-title">Quick Actions</h2>
+            <div class="oc-action-grid">{buttons}</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 
 def _render_health(health: list[dict]) -> None:
-    st.subheader("System Health")
+    rows = []
     for item in health:
-        left, right = st.columns([2, 1])
-        left.write(item["area"])
-        right.markdown(_status_pill(item["status"]), unsafe_allow_html=True)
+        status = str(item["status"])
+        rows.append(
+            f"""
+            <div class="oc-health-row">
+                <div class="oc-small">{_esc(item['area'][:1])}</div>
+                <div class="oc-task-title">{_esc(item['area'])}</div>
+                {_status_pill(status)}
+            </div>
+            """
+        )
+    st.markdown(
+        f'<div class="oc-card"><h2 class="oc-section-title">System Health</h2>{"".join(rows)}</div>',
+        unsafe_allow_html=True,
+    )
 
 
 def _render_pipeline(pipeline: list[dict]) -> None:
-    st.subheader("Pipeline Flow")
-    first_row = st.columns(4)
-    second_row = st.columns(4)
-    for index, row in enumerate(pipeline):
-        column = first_row[index] if index < 4 else second_row[index - 4]
-        with column:
-            st.markdown(
-                f"""
-                <div class="oc-node">
-                    <div class="oc-node-title">{row['stage']}</div>
-                    {_status_pill(str(row['status']))}
-                    <div class="oc-node-meta">
-                        Ready: {row['ready']}<br>
-                        Need Review: {row['need_review']}<br>
-                        Failed: {row['failed']}<br>
-                        Action: <strong>{row['action']}</strong>
-                    </div>
+    stages = []
+    for row in pipeline:
+        stages.append(
+            f"""
+            <div class="oc-card oc-stage">
+                <div class="oc-stage-title">{_esc(row['stage'])}</div>
+                {_status_pill(str(row['status']))}
+                <div class="oc-stage-meta">
+                    Ready: {_esc(row['ready'])}<br>
+                    Need Review: {_esc(row['need_review'])}<br>
+                    Failed: {_esc(row['failed'])}<br>
+                    <strong>{_esc(row['action'])}</strong>
                 </div>
-                """,
-                unsafe_allow_html=True,
-            )
+            </div>
+            """
+        )
+    st.markdown(
+        f"""
+        <div class="oc-card" style="margin-bottom: 24px;">
+            <h2 class="oc-section-title">Pipeline Flow</h2>
+            <div class="oc-pipeline">{''.join(stages)}</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 
 def _render_alerts(alerts: list[dict]) -> None:
-    st.subheader("Alerts")
     if not alerts:
-        st.success("All systems healthy.")
+        st.markdown(
+            """
+            <div class="oc-card">
+                <h2 class="oc-section-title">Alerts</h2>
+                <div class="oc-alert oc-alert-warning">
+                    <div class="oc-alert-title">All systems healthy</div>
+                    <div class="oc-muted">No urgent action is needed right now.</div>
+                    <div class="oc-link" style="margin-top: 8px;">Keep monitoring &gt;</div>
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
         return
+    rows = []
     for alert in alerts:
-        if alert["status"] == "Critical":
-            st.error(alert["message"])
-        else:
-            st.warning(alert["message"])
+        status = str(alert["status"])
+        severity = "critical" if status == "Critical" else "warning"
+        action = "Review now" if severity == "critical" else "Open workflow"
+        rows.append(
+            f"""
+            <div class="oc-alert oc-alert-{severity}">
+                <div class="oc-alert-title">{_esc(status)}</div>
+                <div class="oc-muted">{_esc(alert['message'])}</div>
+                <div class="oc-link" style="margin-top: 8px;">{_esc(action)} &gt;</div>
+            </div>
+            """
+        )
+    st.markdown(
+        f'<div class="oc-card"><h2 class="oc-section-title">Alerts</h2>{"".join(rows)}</div>',
+        unsafe_allow_html=True,
+    )
 
 
 def _render_recent_activity(activity: list[dict]) -> None:
-    st.subheader("Recent Activity")
     if not activity:
-        st.info("No recent activity yet.")
+        st.markdown(
+            """
+            <div class="oc-card">
+                <h2 class="oc-section-title">Recent Activity</h2>
+                <div class="oc-muted">No recent activity yet.</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
         return
+    rows = []
     for item in activity:
-        st.markdown(f"**{item['time']}** — {item['event']}")
-        if item.get("detail"):
-            st.caption(item["detail"])
+        rows.append(
+            f"""
+            <div class="oc-timeline-row">
+                <div class="oc-small">{_esc(item['time'])}</div>
+                <div>
+                    <div class="oc-task-title">{_esc(item['event'])}</div>
+                    <div class="oc-small">{_esc(item.get('detail', ''))}</div>
+                </div>
+            </div>
+            """
+        )
+    st.markdown(
+        f'<div class="oc-card"><h2 class="oc-section-title">Recent Activity</h2>{"".join(rows)}</div>',
+        unsafe_allow_html=True,
+    )
 
 
 def _render_workbench(snapshot) -> None:
@@ -366,28 +736,47 @@ def _render_workbench(snapshot) -> None:
 
 def _render_dashboard() -> None:
     _install_operating_center_css()
+    st.sidebar.markdown("### VENHO AI Studio")
+    st.sidebar.caption("Operating Center")
+    section = st.sidebar.radio(
+        "Navigation",
+        ["Home", "Projects", "Workbench", "Agents", "Publishing", "Insights", "System"],
+        key="m10_section",
+    )
     project = st.sidebar.text_input("Project", value="venho_hotel", key="m10_project")
     snapshot = build_dashboard_snapshot(BASE_DIR, project=project)
     oc = snapshot.operating_center
 
     _render_operating_header(snapshot)
-    tab_names = ["Home", "Projects", "Workbench", "Agents", "Publish", "Insights", "System"]
-    tabs = st.tabs(tab_names)
-
-    with tabs[0]:
+    if section == "Home":
         _render_current_focus(oc["current_focus"])
         _render_summary_cards(oc["summary_cards"])
-        _render_today(oc["today_tasks"], oc["today_progress"])
-        _render_quick_actions(oc["quick_actions"])
+        left, right = st.columns([2, 1])
+        with left:
+            _render_today(oc["today_tasks"], oc["today_progress"])
+        with right:
+            _render_quick_actions(oc["quick_actions"])
         _render_pipeline(oc["pipeline"])
-        left, right = st.columns([1, 1])
+        left, right = st.columns([2, 1])
         with left:
             _render_alerts(oc["alerts"])
         with right:
             _render_health(oc["system_health"])
         _render_recent_activity(oc["recent_activity"])
+        st.markdown(
+            """
+            <div class="oc-bottom-nav">
+                <div class="oc-bottom-item">Home</div>
+                <div class="oc-bottom-item">Projects</div>
+                <div class="oc-bottom-item">Workbench</div>
+                <div class="oc-bottom-item">Publish</div>
+                <div class="oc-bottom-item">System</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
-    with tabs[1]:
+    elif section == "Projects":
         st.subheader("Projects")
         with st.container():
             st.markdown(f"### {snapshot.project.display_name}")
@@ -415,16 +804,16 @@ def _render_dashboard() -> None:
                 hide_index=True,
             )
 
-    with tabs[2]:
+    elif section == "Workbench":
         _render_workbench(snapshot)
 
-    with tabs[3]:
+    elif section == "Agents":
         st.subheader("Agents")
         st.dataframe(oc["agents"], use_container_width=True, hide_index=True)
         st.subheader("Recent Automation")
         st.dataframe(snapshot.automation_jobs, use_container_width=True, hide_index=True)
 
-    with tabs[4]:
+    elif section == "Publishing":
         st.subheader("Publishing")
         publishing_tabs = st.tabs(["Ready", "Scheduled", "Published", "Failed"])
         statuses = {
@@ -439,14 +828,14 @@ def _render_dashboard() -> None:
                 rows = [item for item in snapshot.publishing_items if str(item.get("status", "")).lower() in allowed]
                 st.dataframe(rows, use_container_width=True, hide_index=True)
 
-    with tabs[5]:
+    elif section == "Insights":
         st.subheader("Insights")
         if snapshot.analytics_items:
             st.dataframe(snapshot.analytics_items, use_container_width=True, hide_index=True)
         else:
             st.info("No analytics snapshot available.")
 
-    with tabs[6]:
+    else:
         system_tabs = st.tabs(["Developer", "Artifacts", "JSON Viewer", "Module Status", "Logs", "Settings"])
         with system_tabs[0]:
             st.json(snapshot.system)
@@ -492,8 +881,6 @@ def _render_dashboard() -> None:
 
 
 st.set_page_config(page_title="VENHO AI Studio", page_icon="🧬", layout="wide")
-st.title("VENHO AI Studio")
-st.caption("Studio Shell + M10 Operating Center")
 
 mode = st.sidebar.radio(
     "Chọn màn hình",
@@ -508,6 +895,8 @@ if mode.startswith("M10 Operating"):
     _render_dashboard()
 
 elif mode.startswith("Mode A"):
+    st.title("VENHO AI Studio")
+    st.caption("Studio Shell")
     st.header("Mode A — Observe")
     st.caption("Mỗi ảnh → 1 file quan sát .md + .json. Không tạo DNA.")
 
@@ -540,6 +929,8 @@ elif mode.startswith("Mode A"):
                             _show_output_paths(paths)
 
 else:
+    st.title("VENHO AI Studio")
+    st.caption("Studio Shell")
     st.header("Mode B — Build DNA")
     st.caption("Nhiều ảnh cùng 1 subject → DNA .md + .json. §2.1: 1 folder = 1 tier/subject.")
 

@@ -16,7 +16,12 @@ class ReceiptStore:
     def load(self) -> Dict[str, object]:
         if not self.path.exists():
             return {"receipts": []}
-        return json.loads(self.path.read_text(encoding="utf-8"))
+        # Fix #8: a mid-write crash can leave a truncated/corrupted file; treat it as empty
+        # rather than raising JSONDecodeError and blocking all future publish calls.
+        try:
+            return json.loads(self.path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            return {"receipts": []}
 
     def save_receipt(self, receipt: DeliveryReceipt) -> None:
         data = self.load()

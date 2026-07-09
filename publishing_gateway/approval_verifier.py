@@ -31,7 +31,12 @@ def verify_approval(
         raise PublishingGatewayError("approval signature mismatch", ERR_APPROVAL_INVALID)
 
     now = now_fn() if now_fn else utc_now()
-    approved_at = parse_utc(request.approval.approved_at)
+    # Fix #7: datetime.fromisoformat() raises ValueError (not PublishingGatewayError) on
+    # malformed strings; wrap it so the error carries a stable error_code for callers.
+    try:
+        approved_at = parse_utc(request.approval.approved_at)
+    except ValueError as exc:
+        raise PublishingGatewayError(f"approved_at is not a valid UTC datetime: {exc}", ERR_APPROVAL_INVALID) from exc
     if now - approved_at > timedelta(minutes=ttl_minutes):
         raise PublishingGatewayError("approval has expired", ERR_APPROVAL_EXPIRED)
     return True
