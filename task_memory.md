@@ -30,7 +30,7 @@ Pipeline tổng quát:
 | **M03** Validator Studio | Kiểm output (ảnh, prompt, face, content) | Tạo output |
 | **M04** Automation Studio | Điều phối M01–M03 thành workflow | Chứa business logic module khác |
 | **M05** Content Studio | Thực thi content-prompt M02 → prose | Dựng prompt lại, tự parse DNA |
-| **M06** Video Studio | DNA + character → storyboard + engine prompt | Render video |
+| **M06** Video Studio | DNA + character → storyboard + engine prompt package | Render video, publish video |
 | **M07** *(planned)* | Publishing Gateway — đăng lên các platform | Tạo content |
 | **M08** *(planned)* | Analytics & Feedback Loop | Đăng bài |
 
@@ -43,6 +43,7 @@ Pipeline tổng quát:
 5. **0 API call trong tests** — tất cả offline/mock.
 6. **Config-first** — workflow/rule khai báo YAML, không hard-code.
 7. **Project-agnostic core** — Ven Hồ là project đầu tiên, không phải core.
+8. **Kết thúc task = cập nhật memory/status** — khi người dùng nói "kết thúc task", Codex tự động cập nhật `task_memory.md` và `task_status.md` trước khi chốt.
 
 ---
 
@@ -59,6 +60,7 @@ Pipeline tổng quát:
 | M01 DNA | `contract_version = "1.1"` | M02 accept `[1.1, 2.0)` |
 | M02 Prompt | `contract_version = "1.0"` | Per prompt type |
 | M05 Content output | `contract_version = "1.0"` | |
+| M06 Video package | `contract_version = "1.0"` | Pre-render package only |
 
 ### DNA subjects (venho_hotel)
 `lake_view_room` · `deluxe_double` · `lobby` · `facade` · `linh_an` · `westlake` · `outside`
@@ -76,6 +78,7 @@ venho auto resume {run_id}
 venho content --project venho_hotel --type {facebook,blog,...} --topic "..." --lang vi
 venho content campaign --project venho_hotel --topic "..." --channels facebook,instagram,threads
 venho content calendar --project venho_hotel --month 2026-08
+python3 -m video_studio.cli generate --topic "lake view room morning" --duration 15 --type social_reel --subjects lake_view_room,westlake
 ```
 
 ### Integration seams đã verify (2026-07-09)
@@ -83,6 +86,9 @@ venho content calendar --project venho_hotel --month 2026-08
 - M02→M05: `prompt_bridge` import `build_content_prompt` — signature khớp ✅
 - M03→M05: `content_validator_bridge` gọi `validate_content` có degradation ✅
 - M04 adapters → M01/02/03: cả 3 adapter gọi đúng public API ✅
+- M02→M06: `prompt_bridge` gọi `build_video_prompt` cho từng scene prompt ✅
+- M05→M06: `content_bridge` gọi Content Studio để lấy hook/caption/CTA ✅
+- M03→M06: `validator_bridge` dùng prompt validation per scene; video-package validation degrade advisory ✅
 
 ---
 
@@ -97,7 +103,7 @@ venho-ai-studio/
 │   └── adapters/              ← lớp cô lập interface M01/M02/M03
 ├── content_studio/            ← M05 content builders + manifest
 │   └── builders/              ← social, blog, website, OTA, FAQ, email
-├── video_studio/              ← M06 scaffold (chưa implement)
+├── video_studio/              ← M06 video package pipeline
 │   └── builders/              ← character, lifestyle, reel, explainer, hero
 ├── shared/vision/             ← VisionClient, MockVisionClient, image_loader
 ├── config/
@@ -112,8 +118,9 @@ venho-ai-studio/
 │   ├── knowledge/             ← DNA files
 │   ├── prompts/               ← prompt JSON per type
 │   ├── content/               ← draft content per channel
+│   ├── video/                 ← video packages + video_manifest
 │   └── validation/            ← validation reports
-├── tests/                     ← 384 tests, 0 API call
+├── tests/                     ← 387 tests, 0 API call
 ├── docs/                      ← plan docs + how-to guides
 ├── task_memory.md             ← file này — context chung AI Engine
 └── task_status.md             ← status từng module
@@ -157,7 +164,7 @@ no plastic skin, no doll face, no exaggerated makeup
 - Prompt Studio: luôn truyền `optimize_fn=optimize_mock` trong tests (default gọi Claude API thật, tốn tiền).
 - Validator Studio: provider schema guards — test dùng fake clients.
 - Content Studio: prose generator ở mock/deterministic mode trong tests.
-- Video Studio (M06): cần giữ nguyên quy tắc này khi implement.
+- Video Studio (M06): prompt/content/validator bridges đều chạy offline/mock trong tests.
 
 ---
 
@@ -171,3 +178,14 @@ no plastic skin, no doll face, no exaggerated makeup
 | Manual gate trong M04 | Ảnh sinh bởi Flow/GPT Image (ngoài hệ thống) — không thể tự động hóa khâu này |
 | Staleness advisory (không auto-regen) | Nội dung theo ngày vẫn dùng được dù DNA nguồn cập nhật |
 | Archive thuộc module con | M04 không biết format file của module khác |
+
+---
+
+## 8. Task Closing Protocol
+
+Khi người dùng nói **"kết thúc task"**, Codex phải tự động:
+
+1. Cập nhật `task_memory.md` nếu có quy ước, kiến trúc, contract, CLI, hoặc integration seam mới.
+2. Cập nhật `task_status.md` nếu module/stage/test count/commit/package mẫu thay đổi.
+3. Ghi rõ commit hash, test command/kết quả, output mẫu nếu có.
+4. Kiểm tra `git status --short` và báo working tree còn sạch hay còn thay đổi.

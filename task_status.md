@@ -1,6 +1,6 @@
 # VENHO AI STUDIO — Task Status
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-07-09 (Kết thúc Task) · **Tests:** 384/384 pass · 0 API call
+**Cập nhật:** 2026-07-09 (Kết thúc Task M06) · **Tests:** 387/387 pass · 0 API call
 
 ---
 
@@ -13,11 +13,11 @@
 | M03 | Validator Studio | ✅ COMPLETE | 26 |
 | M04 | Automation Studio | ✅ COMPLETE | 7 |
 | M05 | Content Studio | ✅ COMPLETE (mock prose) | 22 |
-| M06 | Video Studio | 🟡 SCAFFOLD — chưa implement | 6 |
+| M06 | Video Studio | ✅ COMPLETE (pre-render package pipeline) | 9 |
 | M07 | Publishing Gateway | 📋 PLANNED | — |
 | M08 | Analytics & Feedback Loop | 📋 PLANNED | — |
 
-> Tests ghi theo module-specific. Full suite = 384 (M01+M02+M03+M04+M05+M06+shared).
+> Tests ghi theo module-specific. Full suite = 387 (M01+M02+M03+M04+M05+M06+shared).
 
 ---
 
@@ -120,20 +120,35 @@
 
 ---
 
-## M06 — Video Studio 🟡 SCAFFOLD
+## M06 — Video Studio ✅ COMPLETE (pre-render package pipeline)
 
 **Plan:** `VENHO_AI_STUDIO_Module_06_Video_Studio_Plan_v1_1.md`
-**Git:** `1c2de40` (scaffold commit)
-**Tests:** 6/6 (import, config, config single-source, storyboard duration, continuity checker, MVP lifestyle reel)
+**Git:** `155b5f9` — `Complete Module 06 Video Studio package pipeline`
+**Tests:** 9/9 — xem `tests/test_video_studio.py`
 
 **Đã có:**
-- `video_studio/` scaffold: `builders/`, `renderers/`, `schemas/`, `templates/`, `cli.py`, `video_engine.py`, `storyboard_builder.py`, `shot_list_builder.py`, `prompt_bridge.py`, `content_bridge.py`, `continuity_checker.py`, `engine_formatter.py`, `video_manifest.py`, `validator_bridge.py`
+- `video_studio/` package pipeline: `builders/`, `renderers/`, `schemas/`, `templates/`, `cli.py`, `video_engine.py`, `storyboard_builder.py`, `shot_list_builder.py`, `prompt_bridge.py`, `content_bridge.py`, `continuity_checker.py`, `engine_formatter.py`, `video_manifest.py`, `validator_bridge.py`
 - Templates: `seedance.yaml` · `reel_15s.yaml` · `reel_30s.yaml` · `hero_video.yaml` · `kling.yaml` · `runway.yaml` · `veo.yaml`
 - Config: `config/projects/venho_hotel/video/` — camera_rules, character_rules, motion_rules, motion_negatives, platform_rules, video_style
+- Request/Package schemas: contract `1.0`, source knowledge `{file,dna_version,hash}`, duration/continuity checks, validation scope `pre_render`
+- M02 bridge: scene prompts đi qua `build_video_prompt`, M06 không tự dựng prompt cảnh
+- M05 bridge: caption/hook/CTA lấy từ Content Studio, M06 không tự sinh text
+- M03 bridge: prompt validation per scene; video-package validation chưa có nên degrade advisory (`warning`/`not_available`)
+- Continuity: DNA invariants + Face DNA khi `include_character=true`; thiếu Face DNA thì fail rõ
+- Engine formatting: target engine + optional alt engines
+- Renderers: `.md` + `.json`; manifest `data/projects/<project>/video/video_manifest.json`
+- CLI: `python3 -m video_studio.cli generate ...`
 
-**Chưa implement:** builders thực sự, engine logic, tests chức năng, CLI hoạt động, manifest logic.
+**Package mẫu đã sinh:**
+- `data/projects/venho_hotel/video/packages/2026-07-09_lake_view_room_morning_15s.md`
+- `data/projects/venho_hotel/video/packages/2026-07-09_lake_view_room_morning_15s.json`
+- `data/projects/venho_hotel/video/video_manifest.json`
+- Validation: `warning` (M03 prompt-validation advisory); duration/continuity OK
 
-**Cần làm tiếp:** Đọc plan doc M06 và triển khai end-to-end theo cùng phong cách M01–M05.
+**Ranh giới giữ nguyên:**
+- Chỉ tạo pre-render package; không render, không upload, không publish
+- Post-render video validation là future work
+- Spatial/brand forbidden single-source qua M02/DNA; video config chỉ giữ motion/camera rules
 
 ---
 
@@ -154,6 +169,7 @@
 ## Git Log (10 commits gần nhất)
 
 ```
+155b5f9 Complete Module 06 Video Studio package pipeline
 1c2de40 feat: Module 06 Video Studio — scaffold + plan doc
 0d81079 chore: remove superseded v2.4 plan doc
 8c95194 Implement Module 05 Content Studio
