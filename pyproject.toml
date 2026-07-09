@@ -23,10 +23,13 @@ ui = ["streamlit>=1.28"]
 [project.scripts]
 venho = "knowledge_studio.vision.cli:app"
 venho-video = "video_studio.cli:app"
+venho-publish = "publishing_gateway.cli:app"
+venho-analytics = "analytics_feedback.cli:app"
+venho-agent = "agent_studio.cli:app"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["app*", "automation_studio*", "content_studio*", "core*", "knowledge_studio*", "prompt_studio*", "providers*", "shared*", "validator_studio*", "video_studio*"]
+include = ["agent_studio*", "analytics_feedback*", "app*", "automation_studio*", "content_studio*", "core*", "dashboard*", "knowledge_studio*", "prompt_studio*", "providers*", "publishing_gateway*", "shared*", "validator_studio*", "video_studio*"]
 
 [tool.setuptools.package-data]
 "knowledge_studio.vision.prompts" = ["*.md"]

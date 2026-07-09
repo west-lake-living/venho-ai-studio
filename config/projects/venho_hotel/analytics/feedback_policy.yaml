@@ -1,0 +1,7 @@
+approval_required: true
+approval_route:
+  - M04_AUTOMATION_STUDIO
+  - M09_AGENT_STUDIO
+target_modules:
+  - M01_KNOWLEDGE_STUDIO
+  - M05_CONTENT_STUDIO

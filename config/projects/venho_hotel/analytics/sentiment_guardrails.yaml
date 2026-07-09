@@ -1,0 +1,26 @@
+negative_spike_threshold: 0.15
+minimum_comments_for_alert: 10
+languages:
+  - vi
+  - en
+critical_keywords:
+  vi:
+    - "ban"
+    - "bẩn"
+    - "lua dao"
+    - "lừa đảo"
+    - "hoan tien"
+    - "hoàn tiền"
+    - "tho lo"
+    - "thô lỗ"
+    - "mat an toan"
+    - "mất an toàn"
+    - "hoi"
+    - "hôi"
+  en:
+    - "dirty"
+    - "scam"
+    - "refund"
+    - "rude"
+    - "unsafe"
+alert_target: "M04_AUTOMATION_STUDIO"

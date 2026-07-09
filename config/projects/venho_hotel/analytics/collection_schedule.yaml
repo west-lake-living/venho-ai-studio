@@ -1,0 +1,7 @@
+snapshots_after_publish:
+  - 24h
+  - 72h
+  - 7d
+  - 14d
+default_lookback_days: 30
+max_posts_per_run: 50

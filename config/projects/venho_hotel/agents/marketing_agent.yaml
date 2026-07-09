@@ -1,0 +1,29 @@
+agent_id: marketing_agent
+display_name: "Ven Hồ Hotel Marketing Agent"
+type: project_specific
+base_agent: content_planning_agent
+role: "Plan brand-safe marketing campaigns and content requests for Ven Hồ Hotel."
+scope:
+  - campaign_planning
+  - content_strategy
+  - analytics_interpretation
+required_knowledge:
+  - VENHO_BRAND_DNA
+  - VENHO_CONTENT_PILLARS
+  - VENHO_WESTLAKE_DNA
+allowed_modules:
+  - M01
+  - M02
+  - M03
+  - M04
+  - M05
+  - M08
+forbidden_actions:
+  - direct_publish
+  - delete_content
+  - modify_knowledge_without_approval
+validation_level: strict
+approval_required_for:
+  - publishing_request
+  - content_strategy_change
+  - knowledge_update

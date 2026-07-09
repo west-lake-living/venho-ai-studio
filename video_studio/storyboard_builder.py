@@ -8,6 +8,46 @@ class DurationMismatchError(Exception):
     """Storyboard scene durations must exactly match the requested video duration."""
 
 
+_SCENE_TEMPLATES: dict[str, list[tuple[str, str]]] = {
+    "social_reel": [
+        ("Opening hook close-up", "fast push-in"),
+        ("Environment context reveal", "gentle pan"),
+        ("Human-scale lifestyle moment", "static composed shot"),
+        ("Closing CTA visual", "slow hold"),
+        ("Final cut-away detail", "clean natural cut"),
+    ],
+    "character": [
+        ("Character introduction moment", "slow push-in toward character"),
+        ("Character in environment context", "gentle arc around character"),
+        ("Character interaction or expression", "static composed medium shot"),
+        ("Character and brand identity beat", "slow hold on face"),
+        ("Character signature closing gesture", "clean natural cut"),
+    ],
+    "hotel_lifestyle": [
+        ("Opening detail of hotel space", "slow push-in"),
+        ("Room and lake view context", "gentle pan"),
+        ("Human-scale hotel atmosphere", "static composed shot"),
+        ("Closing brand-safe CTA visual", "slow hold"),
+        ("Final transition detail", "clean natural cut"),
+    ],
+    "website_hero": [
+        ("Establishing wide hotel shot", "slow push-in"),
+        ("Signature hotel feature detail", "gentle pan"),
+        ("Lifestyle or guest experience moment", "static composed"),
+        ("Brand identity visual close", "slow hold"),
+        ("End card transition", "clean natural cut"),
+    ],
+    "explainer": [
+        ("Hook statement or problem visual", "static composed"),
+        ("Solution or feature reveal", "gentle pan"),
+        ("Feature demonstration detail", "slow push-in"),
+        ("Proof or social evidence moment", "static composed"),
+        ("CTA close with brand visual", "slow hold"),
+    ],
+}
+_DEFAULT_TEMPLATES = _SCENE_TEMPLATES["hotel_lifestyle"]
+
+
 def _durations(total: int, scene_count: int) -> list[int]:
     base = total // scene_count
     remainder = total % scene_count
@@ -24,13 +64,7 @@ def planned_scene_count(request: VideoRequest) -> int:
 
 def build_storyboard(request: VideoRequest, continuity_keys: list[str]) -> tuple[list[StoryboardScene], DurationCheck]:
     durations = _durations(request.duration_seconds, planned_scene_count(request))
-    scene_templates = [
-        ("Opening detail", "slow push-in"),
-        ("Room and lake context", "gentle pan"),
-        ("Human-scale atmosphere", "static composed shot"),
-        ("Closing brand-safe CTA visual", "slow hold"),
-        ("Final transition detail", "clean natural cut"),
-    ]
+    scene_templates = _SCENE_TEMPLATES.get(request.video_type, _DEFAULT_TEMPLATES)
     scenes: list[StoryboardScene] = []
     for index, duration in enumerate(durations, start=1):
         label, movement = scene_templates[index - 1]
@@ -51,4 +85,3 @@ def build_storyboard(request: VideoRequest, continuity_keys: list[str]) -> tuple
     if not check.ok:
         raise DurationMismatchError(f"Storyboard duration {check.sum_scenes}s != request {check.target}s")
     return scenes, check
-

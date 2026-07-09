@@ -1,0 +1,5 @@
+blocked_display_terms:
+  - "Ven Ho Hotel"
+required_display_name:
+  - "Ven Hồ Hotel"
+error_code: "ERR_BRAND_DISPLAY_VIOLATION"

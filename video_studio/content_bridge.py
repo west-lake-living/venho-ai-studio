@@ -20,7 +20,7 @@ class ContentBridgeResult:
 def _content_type_for_platform(platform: str) -> str:
     if platform == "instagram_reels":
         return "instagram_post"
-    if platform == "tiktok":
+    if platform in ("tiktok", "youtube_shorts"):
         return "tiktok_caption"
     return "facebook_post"
 

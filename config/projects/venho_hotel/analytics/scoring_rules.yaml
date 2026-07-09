@@ -1,0 +1,18 @@
+minimum_sample_size: 5
+strong_conclusion_sample_size: 20
+confidence_levels:
+  low: 5
+  medium: 12
+  high: 20
+baseline_grouping:
+  - platform
+  - content_type
+  - pillar
+weights:
+  engagement_rate: 0.35
+  reach: 0.20
+  saves_or_shares: 0.20
+  click_actions: 0.15
+  sentiment_quality: 0.10
+outperform_threshold: 1.25
+underperform_threshold: 0.75

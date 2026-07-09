@@ -1,0 +1,15 @@
+policy_version: "1.0"
+project: venho_hotel
+risk_approval_map:
+  read_only: auto
+  draft_creation: auto
+  internal_file_write: config_dependent
+  knowledge_update: require_approval
+  external_impact: require_approval
+  destructive_action: blocked
+external_impact_actions:
+  - publishing_request
+  - send_email
+  - update_public_content
+  - change_campaign_strategy
+default_execution_mode: plan_only

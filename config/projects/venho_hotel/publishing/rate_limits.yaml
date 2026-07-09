@@ -1,0 +1,9 @@
+platforms:
+  facebook:
+    max_per_minute: 10
+  instagram:
+    max_per_minute: 6
+  threads:
+    max_per_minute: 5
+  google_business:
+    max_per_minute: 3

@@ -1,9 +1,12 @@
-# How to Run the Studio UI (Phase 8 MVP)
+# How to Run the Studio UI
 
-A thin local web UI over the existing CLI pipeline. It contains no business
-logic — it only calls `knowledge_studio.vision.pipeline.run_mode_a` /
-`run_mode_b`, the same functions `venho vision observe` uses. If the CLI and
-the UI ever disagree, the UI is wrong (Master Plan v2.5 §4 Phase 8).
+A thin local web UI over the existing CLI pipeline and Module 10 Dashboard.
+It contains no business logic:
+
+- Mode A / Mode B call `knowledge_studio.vision.pipeline.run_mode_a` /
+  `run_mode_b`, the same functions `venho vision observe` uses.
+- M10 Dashboard reads presentation snapshots from `dashboard.gateway`, which
+  only normalizes existing M01-M09 config/artifacts for display.
 
 ## Install
 
@@ -24,18 +27,31 @@ hosting cost.
 
 ## What it does (v1 scope)
 
+- Open **M10 Dashboard** as the unified read-only presentation layer for
+  Projects, Knowledge, Prompt/Content, Validator, Automation/Agent, Video,
+  Publishing/Analytics, and System Monitor.
 - Choose **Mode A** (observe any image) or **Mode B** (build DNA from
   multiple images of one subject)
 - Pick project / subject / input folder
 - Run and watch the pipeline log stream live
 - View the resulting Markdown / JSON output inline
 
-## Not in v1 (deferred)
+## M10 Guardrails
+
+- No live provider API calls from dashboard tests.
+- No standalone dashboard database; project config and module artifacts remain
+  the source of truth.
+- No duplicated scoring, prompt building, publishing, or analytics logic.
+- Missing module artifacts degrade into advisory messages instead of crashing
+  the UI.
+
+## Deferred
 
 - Failed-images gallery view
-- DNA manifest viewer
 - Re-render overlay button
 - Export compact DNA from the UI (use `venho vault export` for now)
+- Direct M04/M07 write actions from the dashboard UI; approvals remain routed
+  through module contracts.
 
 ## Notes
 

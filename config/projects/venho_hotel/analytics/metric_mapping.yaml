@@ -1,0 +1,13 @@
+default_zero_metrics:
+  - reach
+  - impressions
+  - views
+  - likes
+  - comments
+  - shares
+  - saves
+  - clicks
+  - booking_clicks
+  - watch_time_ms
+views_fallback:
+  reel: impressions

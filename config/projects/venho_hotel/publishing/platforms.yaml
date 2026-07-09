@@ -1,0 +1,18 @@
+project: venho_hotel
+platforms:
+  facebook:
+    enabled: true
+    adapter: facebook
+    page_id_env: VENHO_FB_PAGE_ID
+    token_env: VENHO_META_ACCESS_TOKEN
+  instagram:
+    enabled: true
+    adapter: instagram
+    ig_business_id_env: VENHO_IG_BUSINESS_ID
+    token_env: VENHO_META_ACCESS_TOKEN
+  threads:
+    enabled: false
+    adapter: threads
+  google_business:
+    enabled: false
+    adapter: google_business

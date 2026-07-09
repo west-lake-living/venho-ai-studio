@@ -1,8 +1,8 @@
-"""VENHO AI Studio — Studio Shell (Phase 8, MVP).
+"""VENHO AI Studio — Studio Shell + Module 10 Dashboard.
 
 Thin UI over the existing CLI pipeline (Mode A / Mode B). This file must not
-contain business logic — it only calls `knowledge_studio.vision.pipeline`.
-If the CLI and this UI ever disagree, the UI is wrong (Master Plan v2.5 §4 Phase 8).
+contain business logic. The M10 dashboard only reads normalized presentation
+snapshots from `dashboard.gateway`.
 
 Run:
     streamlit run ui/studio_app.py
@@ -23,6 +23,7 @@ BASE_DIR = Path(__file__).parent.parent
 if str(BASE_DIR) not in sys.path:
     sys.path.insert(0, str(BASE_DIR))
 
+from dashboard.gateway import build_dashboard_snapshot  # noqa: E402
 from knowledge_studio.vision.pipeline import run_mode_a, run_mode_b  # noqa: E402
 
 
@@ -102,16 +103,109 @@ def _show_output_paths(paths: dict) -> None:
                 st.code(path.read_text(encoding="utf-8"), language="json")
 
 
+def _render_dashboard() -> None:
+    project = st.sidebar.text_input("Project", value="venho_hotel", key="m10_project")
+    snapshot = build_dashboard_snapshot(BASE_DIR, project=project)
+
+    st.header("M10 Dashboard — Unified Presentation Layer")
+    st.caption("Read-only UI layer over M01-M09 artifacts. No live API calls, no duplicated business logic.")
+
+    c1, c2, c3, c4 = st.columns(4)
+    c1.metric("Project", snapshot.project.display_name)
+    c2.metric("DNA Subjects", snapshot.system["counts"]["subjects"])
+    c3.metric("Automation Jobs", snapshot.system["counts"]["automation_jobs"])
+    c4.metric("Validation Runs", snapshot.system["counts"]["validation_runs"])
+
+    if snapshot.advisories:
+        for advisory in snapshot.advisories:
+            st.warning(f"{advisory.module} · {advisory.status}: {advisory.message}")
+
+    tab_names = [
+        "Home",
+        "Projects",
+        "Knowledge",
+        "Prompt & Content",
+        "Validator",
+        "Automation & Agent",
+        "Video",
+        "Publishing & Analytics",
+        "System",
+    ]
+    tabs = st.tabs(tab_names)
+
+    with tabs[0]:
+        st.subheader("System Overview")
+        st.json(snapshot.system)
+        st.subheader("Recent Automation Queue")
+        st.dataframe(snapshot.automation_jobs, use_container_width=True)
+
+    with tabs[1]:
+        st.subheader("Project Manager")
+        st.write(
+            {
+                "project": snapshot.project.project,
+                "ui_display": snapshot.project.display_name,
+                "prompt_display": snapshot.project.prompt_name,
+                "config_sections": snapshot.project.config_sections,
+            }
+        )
+        st.caption('UI display keeps "Ven Hồ Hotel"; prompt display keeps "Ven Ho Hotel".')
+
+    with tabs[2]:
+        st.subheader("Knowledge Studio Browser")
+        st.dataframe([asset.__dict__ for asset in snapshot.subjects], use_container_width=True)
+
+    with tabs[3]:
+        st.subheader("Prompt Library")
+        st.dataframe(snapshot.prompts, use_container_width=True)
+        st.subheader("Content Drafts")
+        st.dataframe(snapshot.content_items, use_container_width=True)
+
+    with tabs[4]:
+        st.subheader("Validation Reports")
+        st.dataframe(snapshot.validation_runs, use_container_width=True)
+
+    with tabs[5]:
+        st.subheader("Agent Personas")
+        st.dataframe(snapshot.agent_personas, use_container_width=True)
+        st.subheader("Automation Jobs")
+        st.dataframe(snapshot.automation_jobs, use_container_width=True)
+        st.info("Manual Gate approval remains routed through M09/M04 contracts; the dashboard does not build ModuleRequest packages.")
+
+    with tabs[6]:
+        st.subheader("Video Storyboard Packages")
+        st.dataframe(snapshot.video_items, use_container_width=True)
+        st.info("M06 packages are pre-render only. This view does not render, upload, or publish video.")
+
+    with tabs[7]:
+        st.subheader("Publishing Gateway")
+        st.dataframe(snapshot.publishing_items, use_container_width=True)
+        st.subheader("Analytics & Feedback")
+        st.dataframe(snapshot.analytics_items, use_container_width=True)
+        st.info("M08 advisories remain pending approval and are not applied automatically.")
+
+    with tabs[8]:
+        st.subheader("System Monitor")
+        st.json(snapshot.system)
+
+
 st.set_page_config(page_title="VENHO AI Studio", page_icon="🧬", layout="wide")
-st.title("🧬 VENHO AI Studio — Studio Shell")
-st.caption("UI mỏng gọi trực tiếp pipeline CLI (Mode A / Mode B) — Phase 8 MVP")
+st.title("🧬 VENHO AI Studio")
+st.caption("Studio Shell + M10 Dashboard — local-first, presentation-only")
 
 mode = st.sidebar.radio(
-    "Chọn Mode",
-    ["Mode A — Observe (bất kỳ ảnh nào)", "Mode B — Build DNA (nhiều ảnh cùng 1 subject)"],
+    "Chọn màn hình",
+    [
+        "M10 Dashboard — Unified Control Center",
+        "Mode A — Observe (bất kỳ ảnh nào)",
+        "Mode B — Build DNA (nhiều ảnh cùng 1 subject)",
+    ],
 )
 
-if mode.startswith("Mode A"):
+if mode.startswith("M10 Dashboard"):
+    _render_dashboard()
+
+elif mode.startswith("Mode A"):
     st.header("Mode A — Observe")
     st.caption("Mỗi ảnh → 1 file quan sát .md + .json. Không tạo DNA.")
 

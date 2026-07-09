@@ -1,0 +1,5 @@
+allow_scheduled_execution: false
+allowed_execution_windows_utc:
+  - start: "00:00"
+    end: "23:59"
+max_hold_minutes: 1440

@@ -18,8 +18,10 @@ def validate_scene_prompts(
     statuses: list[str] = []
     for contract in scene_prompt_contracts:
         try:
-            subject = str(contract.get("source_knowledge", [{}])[-1].get("file", "")).removeprefix("VENHO_HOTEL_")
-            subject = subject.removesuffix("_DNA.json").lower() or "lake_view_room"
+            sources = contract.get("source_knowledge", [{}])
+            env_sources = [s for s in sources if not any(kw in s.get("file", "").lower() for kw in ("linh_an", "character"))]
+            primary = (env_sources or sources or [{}])[0]
+            subject = str(primary.get("file", "")).removeprefix("VENHO_HOTEL_").removesuffix("_DNA.json").lower() or "lake_view_room"
             report = validate_prompt_contract(
                 request.project,
                 subject,

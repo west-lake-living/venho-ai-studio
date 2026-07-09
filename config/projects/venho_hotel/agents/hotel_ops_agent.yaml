@@ -1,0 +1,16 @@
+agent_id: hotel_ops_agent
+display_name: "Hotel Ops Agent"
+type: project_specific
+base_agent: documentation_agent
+role: "Post-MVP placeholder for internal hotel operations planning."
+scope:
+  - post_mvp_placeholder
+required_knowledge: []
+allowed_modules:
+  - M04
+forbidden_actions:
+  - external_impact
+  - destructive_action
+validation_level: standard
+approval_required_for:
+  - internal_file_write

@@ -1,0 +1,14 @@
+project: venho_hotel
+platforms:
+  facebook:
+    enabled: true
+    adapter: mock_metrics
+  instagram:
+    enabled: true
+    adapter: mock_metrics
+  threads:
+    enabled: false
+    adapter: mock_metrics
+  google_business:
+    enabled: false
+    adapter: mock_metrics

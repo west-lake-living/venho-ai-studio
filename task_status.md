@@ -1,6 +1,6 @@
 # VENHO AI STUDIO — Task Status
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-07-09 (Kết thúc Task M06) · **Tests:** 387/387 pass · 0 API call
+**Cập nhật:** 2026-07-09 (Kết thúc Task M10 Dashboard MVP) · **Tests:** 428/428 pass · 0 API call
 
 ---
 
@@ -13,11 +13,13 @@
 | M03 | Validator Studio | ✅ COMPLETE | 26 |
 | M04 | Automation Studio | ✅ COMPLETE | 7 |
 | M05 | Content Studio | ✅ COMPLETE (mock prose) | 22 |
-| M06 | Video Studio | ✅ COMPLETE (pre-render package pipeline) | 9 |
-| M07 | Publishing Gateway | 📋 PLANNED | — |
-| M08 | Analytics & Feedback Loop | 📋 PLANNED | — |
+| M06 | Video Studio | ✅ COMPLETE (MVP — bugs fixed, design hardened) | 15 |
+| M07 | Publishing Gateway | ✅ COMPLETE (offline dry-run MVP) | 19 |
+| M08 | Analytics & Feedback Loop | ✅ COMPLETE (offline MVP) | 7 |
+| M09 | Agent Studio | ✅ COMPLETE (offline planning/orchestration MVP) | 10 |
+| M10 | Dashboard | ✅ COMPLETE (Streamlit presentation MVP) | 5 |
 
-> Tests ghi theo module-specific. Full suite = 387 (M01+M02+M03+M04+M05+M06+shared).
+> Tests ghi theo module-specific. Full suite = 428 (M01+M02+M03+M04+M05+M06+M07+M08+M09+M10+shared).
 
 ---
 
@@ -120,55 +122,171 @@
 
 ---
 
-## M06 — Video Studio ✅ COMPLETE (pre-render package pipeline)
+## M06 — Video Studio ✅ COMPLETE (MVP — bugs fixed, design hardened)
 
 **Plan:** `VENHO_AI_STUDIO_Module_06_Video_Studio_Plan_v1_1.md`
-**Git:** `155b5f9` — `Complete Module 06 Video Studio package pipeline`
-**Tests:** 9/9 — xem `tests/test_video_studio.py`
+**Git:** `155b5f9` (scaffold) + uncommitted (bug fixes 2026-07-09)
+**Tests:** 15/15 — xem `tests/test_video_studio.py` (9) + `tests/test_video_prompt_builder.py` (6)
 
-**Đã có:**
-- `video_studio/` package pipeline: `builders/`, `renderers/`, `schemas/`, `templates/`, `cli.py`, `video_engine.py`, `storyboard_builder.py`, `shot_list_builder.py`, `prompt_bridge.py`, `content_bridge.py`, `continuity_checker.py`, `engine_formatter.py`, `video_manifest.py`, `validator_bridge.py`
-- Templates: `seedance.yaml` · `reel_15s.yaml` · `reel_30s.yaml` · `hero_video.yaml` · `kling.yaml` · `runway.yaml` · `veo.yaml`
-- Config: `config/projects/venho_hotel/video/` — camera_rules, character_rules, motion_rules, motion_negatives, platform_rules, video_style
-- Request/Package schemas: contract `1.0`, source knowledge `{file,dna_version,hash}`, duration/continuity checks, validation scope `pre_render`
-- M02 bridge: scene prompts đi qua `build_video_prompt`, M06 không tự dựng prompt cảnh
+**Pipeline đầy đủ:**
+- `video_engine.py` orchestrates: context → concept → storyboard → shot list → per-scene M02 prompt → engine format → M05 caption/hook/CTA → M03 validation bridge → MD/JSON output → manifest
+- M02 bridge: scene prompts qua `build_video_prompt`, M06 không tự dựng prompt cảnh
 - M05 bridge: caption/hook/CTA lấy từ Content Studio, M06 không tự sinh text
-- M03 bridge: prompt validation per scene; video-package validation chưa có nên degrade advisory (`warning`/`not_available`)
-- Continuity: DNA invariants + Face DNA khi `include_character=true`; thiếu Face DNA thì fail rõ
-- Engine formatting: target engine + optional alt engines
+- M03 bridge: prompt validation per scene, degrade advisory (`warning`/`not_available`)
+- Continuity: DNA invariants + Face DNA khi `include_character=true`; thiếu Face DNA → fail rõ
 - Renderers: `.md` + `.json`; manifest `data/projects/<project>/video/video_manifest.json`
-- CLI: `python3 -m video_studio.cli generate ...`
+- CLI: `venho-video generate --topic "..." --duration 15 --type social_reel --subjects lake_view_room,westlake`
 
-**Package mẫu đã sinh:**
-- `data/projects/venho_hotel/video/packages/2026-07-09_lake_view_room_morning_15s.md`
-- `data/projects/venho_hotel/video/packages/2026-07-09_lake_view_room_morning_15s.json`
-- `data/projects/venho_hotel/video/video_manifest.json`
-- Validation: `warning` (M03 prompt-validation advisory); duration/continuity OK
+**Bugs đã fix (2026-07-09):**
+- `engine_formatter.py` — aspect ratio thực (`"9:16"`) điền vào engine prompt, không còn là prose
+- `content_bridge.py` — `youtube_shorts` → `tiktok_caption` (không còn fallback sai sang `facebook_post`)
+- `validator_bridge.py` — subject lấy từ primary env DNA (non-linh_an/non-character) thay vì `[-1]`
+
+**Design improvements (2026-07-09):**
+- `storyboard_builder.py` — 5 bộ scene templates theo `video_type`: social_reel · character · hotel_lifestyle · website_hero · explainer
+- `shot_list_builder.py` — angle/motion_note/lighting_note động theo scene position và camera_movement
+- `engine_formatter.py` + `templates/*.yaml` — template notes được embed vào engine prompt (AI-facing, không còn internal references)
+- Xóa `video_studio/video_request.py` (redundant re-export)
+- `venho-video` CLI available trong PATH sau `pip install -e .`
 
 **Ranh giới giữ nguyên:**
 - Chỉ tạo pre-render package; không render, không upload, không publish
 - Post-render video validation là future work
-- Spatial/brand forbidden single-source qua M02/DNA; video config chỉ giữ motion/camera rules
+- Spatial/brand forbidden single-source qua M02/DNA; video config chỉ giữ motion/camera/character rules
 
 ---
 
-## M07 — Publishing Gateway 📋 PLANNED
+## M07 — Publishing Gateway ✅ COMPLETE (offline dry-run MVP)
 
-**Plan:** chưa có.
-**Vai trò dự kiến:** Nhận draft từ M05/M06 → đăng lên Facebook/Instagram/Threads/OTA. Thay thế pipeline Make.com hiện tại. Không tạo content.
+**Plan:** `VENHO_AI_STUDIO_Module_07_Publishing_Gateway_Development_Plan_v1_2_QC.md`
+**Tests:** 19/19 — xem `tests/test_publishing_gateway_scaffold.py`, `tests/test_publishing_gateway.py`
+**CLI smoke:** `python3 -m publishing_gateway.cli publish --package-file data/projects/venho_hotel/publishing/fixtures/approved_package.json --approval-secret test-secret --dry-run --data-root /tmp/venho_m07_cli_check`
+
+**Vai trò:** Nhận package đã duyệt từ M04 → kiểm contract/approval/brand/capability → queue/adapters → delivery receipt cho M08. Không tạo content, không sửa caption/hashtag, không quyết định giờ đăng, không chứa logic Agent.
+
+**Đã hoàn thành:**
+- Step 0–2 — Scaffold, schemas/contracts, base adapter + mock adapter
+- Step 3–7 — Approval verifier (HMAC/TTL), contract validator, brand guard, platform capability, idempotency + receipt store
+- Step 8–11 — Publisher queue, circuit breaker, rate-limit policy, token vault
+- Step 12–15 — Facebook/Instagram Core MVP adapters + Threads/Google Business conditional adapters (offline payload mapping)
+- Step 16–18 — Gateway router, delivery receipt JSON/Markdown, M08 handoff contract docs
+- Step 19–20 — CLI publish/retry/receipt/queue/version + end-to-end dry-run acceptance
+- Step 21 — Controlled real API checklist documented; not run in pytest
+
+**MVP scope theo plan v1.2:**
+- Core MVP: Facebook Page + Instagram Business
+- Conditional MVP: Threads + Google Business Profile, mặc định feature-flag off
+- Automated tests luôn offline, không đọc secret thật, không gọi API thật
+
+**Artifacts chính:**
+- Package: `publishing_gateway/`
+- Config: `config/projects/venho_hotel/publishing/`
+- Fixture: `data/projects/venho_hotel/publishing/fixtures/approved_package.json`
+- Docs: `docs/how_to_run_publishing_gateway.md`, `docs/contracts/m07_to_m08_delivery_receipt.md`
+
+**Ranh giới còn giữ:**
+- Real API publish là controlled manual test, không chạy tự động.
+- Adapter live chưa gọi network; hiện map payload và dry-run an toàn.
+- M07 chỉ phân phối package đã duyệt, không sáng tạo hay chỉnh nội dung.
 
 ---
 
-## M08 — Analytics & Feedback Loop 📋 PLANNED
+## M08 — Analytics & Feedback Loop ✅ COMPLETE (offline MVP)
 
-**Plan:** chưa có.
-**Vai trò dự kiến:** Thu thập metrics từ platform → feedback về M01 DNA (cập nhật overrides) và M05 content strategy. Vòng lặp cải tiến liên tục.
+**Plan:** `VENHO_AI_STUDIO_Module_08_Analytics_Feedback_Development_Plan_v1_2_QC.md`
+**Tests:** 7/7 — xem `tests/test_analytics_feedback.py`
+**Full suite:** `python3 -m pytest -q` → 413/413 pass, 0 API call
+
+**Vai trò:** Nhận Delivery Receipt từ M07 → tạo collection tasks → mock collect metrics → chuẩn hóa unified metrics → tính derived stats/baseline/score → sentiment guardrail → sinh alert/advisory/report. M08 chỉ sinh output advisory, không tự apply vào M01/M05.
+
+**Đã hoàn thành MVP:**
+- Step 0–2 — Scaffold, schemas/contracts, base metrics adapter + mock adapter offline
+- Step 3–5 — Ingestion router, collection scheduler, raw/snapshot stores idempotent
+- Step 6–9 — Unified Metrics Standardizer, stats calculator, baseline calculator, performance scorer, score store
+- Step 10–11 — Rule-based sentiment scorer song ngữ vi/en + critical alert generator/store
+- Step 12–14 — Feedback advisory generator, advisory/report renderers và stores
+- CLI entrypoint: `venho-analytics` / `analytics_feedback.cli`
+
+**Artifacts chính:**
+- Package: `analytics_feedback/`
+- Config: `config/projects/venho_hotel/analytics/`
+- Test: `tests/test_analytics_feedback.py`
+
+**Ranh giới còn giữ:**
+- Không gọi API thật trong pytest; mock metrics adapter là mặc định.
+- Không tự publish, không tự sửa Knowledge, không tự đổi Content Strategy.
+- Advisory luôn `pending_approval`, `approval_required=true`, route qua `M04_AUTOMATION_STUDIO` / `M09_AGENT_STUDIO`.
+
+---
+
+## M09 — Agent Studio ✅ COMPLETE (offline planning/orchestration MVP, reviewed)
+
+**Plan:** `VENHO_AI_STUDIO_Module_09_Agent_Studio_Development_Plan_v2_2_QC.md`
+**Tests:** 10/10 — xem `tests/test_agent_studio.py`
+**Full suite:** `python3 -m pytest -q` → 423/423 pass, 0 API call
+**Review:** 2026-07-09 — code review hoàn tất; MVP đạt yêu cầu offline, còn 1 follow-up guardrail bên dưới.
+
+**Vai trò:** Cognitive Interface / Agent Orchestration Layer. Nhận goal tự nhiên → validate request → route persona → load context → detect missing knowledge → tạo TaskPlan → classify risk → đóng gói ModuleRequest qua M04 → aggregate response Markdown/JSON. M09 không tự publish, không tự sửa Knowledge, không bypass M04.
+
+**Đã hoàn thành MVP:**
+- Step 0–2 — Scaffold, contracts/schemas, BaseAgent interface offline
+- Step 3–7 — Request validator, router, persona resolver, context loader, missing knowledge detector
+- Step 8–10 — Task planner, risk classifier đọc `agent_policy.yaml`, module request builder luôn route qua `M04_AUTOMATION_STUDIO`
+- Step 11–13 — Automation bridge mock/dry-run, result aggregator + execution log, Markdown/JSON renderers
+- Step 14–18 — Generic agent classes + templates: documentation, research, content planning, visual planning, analytics insight
+- Step 19–23 — Base persona template, Ven Hồ agent policy, marketing agent config, Linh An brand agent config, project acceptance
+- Step 24–26 — CLI `venho-agent` / `agent_studio.cli`, E2E dry-run, MVP acceptance
+
+**Artifacts chính:**
+- Package: `agent_studio/`
+- Config: `config/projects/venho_hotel/agents/`
+- Test: `tests/test_agent_studio.py`
+- CLI: `venho-agent --agent marketing_agent --project venho_hotel --goal "..." --plan-only`
+
+**Ranh giới còn giữ:**
+- M09 chỉ lập kế hoạch và đóng gói yêu cầu; M04 là execution gateway.
+- Publishing request chỉ thành manual gate / module request; M09 không gọi M07 trực tiếp.
+- Required knowledge thiếu trả `ERR_MISSING_KNOWLEDGE`.
+- Destructive action bị block theo policy; external impact yêu cầu approval.
+
+**Follow-up sau review:**
+- Missing knowledge hiện trả `FAILED / ERR_MISSING_KNOWLEDGE`, nhưng flow vẫn chuẩn bị module requests mock. Phase hardening kế tiếp nên dừng cứng ngay sau `detect_missing_knowledge`, không build/dispatch module requests khi thiếu required knowledge.
+- `--execute` hiện vẫn dùng mock/prepared M04 bridge trong MVP; phase sau nếu cần execution thật thì nối sang public API của M04 workflow runner.
+
+---
+
+## M10 — Dashboard ✅ COMPLETE (Streamlit presentation MVP)
+
+**Plan:** `VENHO_AI_STUDIO_Module_10_Dashboard_Plan_v1_2.md`
+**Tests:** 5/5 — xem `tests/test_dashboard.py`
+**Full suite:** 428/428 pass — `python3 -m pytest -q`
+
+**Quyết định kiến trúc:** M10 mở rộng Studio Shell Streamlit hiện có thay vì tạo web JS app độc lập, để khớp UI local-first đang chạy ở `localhost:8501`.
+
+**Đã hoàn thành:**
+- `dashboard/gateway.py` — read-only presentation adapter đọc `config/projects`, `data/projects`, `data/automation_runs` và normalize snapshot cho UI.
+- `ui/studio_app.py` — thêm màn hình `M10 Dashboard — Unified Control Center` với tabs Home, Projects, Knowledge, Prompt & Content, Validator, Automation & Agent, Video, Publishing & Analytics, System.
+- Graceful degradation: thiếu DNA/video/publishing/analytics artifacts hiển thị advisory thay vì crash.
+- Face Lock display mapping theo plan: `>=9.0 APPROVED`, `8.0-8.9 CONDITIONAL`, `<8.0 REJECT`; score 0-100 được normalize để chỉ hiển thị.
+- Giữ ranh giới zero business logic: Dashboard không tự build ModuleRequest, không tự validate HMAC, không tính lại score, không render/upload/publish.
+- `pyproject.toml` package discovery đã include `dashboard*`.
+- `docs/how_to_run_studio_ui.md` cập nhật hướng dẫn chạy M10.
+
+**Run UI:**
+```bash
+pip install -e ".[ui]"
+streamlit run ui/studio_app.py
+```
 
 ---
 
 ## Git Log (10 commits gần nhất)
 
 ```
+uncommitted M09 review + task closing memory/status (2026-07-09)
+uncommitted M09 Agent Studio MVP (2026-07-09)
+uncommitted M06 bug fixes + design hardening (2026-07-09)
+58e2ea1 Update task memory and M06 status
 155b5f9 Complete Module 06 Video Studio package pipeline
 1c2de40 feat: Module 06 Video Studio — scaffold + plan doc
 0d81079 chore: remove superseded v2.4 plan doc

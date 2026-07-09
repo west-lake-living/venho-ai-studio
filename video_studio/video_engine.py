@@ -57,10 +57,10 @@ def generate_video_package(
     for index, scene in enumerate(storyboard):
         prompt_result = build_scene_prompt(context, scene, prompts_root=data_root)
         scene_contracts.append(prompt_result.contract.model_dump(mode="json"))
-        engine_prompt = format_scene_prompt(prompt_result.contract, scene, request.target_engine)
+        engine_prompt = format_scene_prompt(prompt_result.contract, scene, request.target_engine, request.aspect_ratio)
         engine_prompts.append(engine_prompt)
         for alt_engine in request.alt_engines:
-            engine_prompts.append(format_scene_prompt(prompt_result.contract, scene, alt_engine))
+            engine_prompts.append(format_scene_prompt(prompt_result.contract, scene, alt_engine, request.aspect_ratio))
         storyboard[index] = scene.model_copy(
             update={
                 "scene_prompt_ref": ScenePromptRef(

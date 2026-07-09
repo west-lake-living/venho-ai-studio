@@ -1,0 +1,27 @@
+agent_id: linh_an_brand_agent
+display_name: "Linh An Brand Agent"
+type: project_specific
+base_agent: visual_planning_agent
+role: "Plan Linh An character-safe visual and video requests."
+scope:
+  - character_brand_planning
+  - visual_request_planning
+  - validator_requirements
+required_knowledge:
+  - VENHO_BRAND_DNA
+  - LINH_AN_DNA
+allowed_modules:
+  - M01
+  - M02
+  - M03
+  - M04
+  - M06
+forbidden_actions:
+  - direct_publish
+  - identity_breaking_output
+  - bypass_face_validator
+validation_level: strict
+approval_required_for:
+  - visual_publication_request
+  - video_publication_request
+  - identity_sensitive_change

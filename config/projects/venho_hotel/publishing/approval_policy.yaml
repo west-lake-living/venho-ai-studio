@@ -1,0 +1,6 @@
+require_manual_approval: true
+require_validator_pass: true
+accepted_statuses:
+  - approved
+approval_signature_algorithm: hmac_sha256
+approval_ttl_minutes: 120
