@@ -1,0 +1,10 @@
+style_name: warm_natural_hotel_video
+default_tone: warm, calm, realistic, trustworthy
+visual_priority:
+  - authentic West Lake atmosphere
+  - clean hotel details
+  - natural morning light
+notes:
+  - Keep Ven Ho grounded and residential-hotel realistic.
+  - Do not define spatial or brand forbidden rules here; those come through Module 02.
+

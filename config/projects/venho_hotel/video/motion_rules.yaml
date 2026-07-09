@@ -1,0 +1,8 @@
+default_motion:
+  pace: calm
+  transition_style: clean natural cuts
+  subject_motion: subtle environmental movement
+duration_rules:
+  min_scene_seconds: 2
+  max_scene_seconds: 6
+

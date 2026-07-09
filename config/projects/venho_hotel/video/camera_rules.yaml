@@ -1,0 +1,9 @@
+default_movements:
+  - slow push-in
+  - gentle pan
+  - static establishing shot
+avoid_movements:
+  - aggressive whip pan
+  - unstable handheld shake
+  - fast zoom
+

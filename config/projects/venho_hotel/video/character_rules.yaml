@@ -1,0 +1,6 @@
+source: face_dna
+rules:
+  - Character identity rules must be loaded from Face DNA.
+  - Face-lock descriptors become required continuity keys when include_character is true.
+  - Do not invent new face, outfit, or identity descriptors in video config.
+

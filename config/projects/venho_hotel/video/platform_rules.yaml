@@ -1,0 +1,9 @@
+instagram_reels:
+  aspect_ratio: "9:16"
+  default_duration_seconds: 15
+  pacing: 3-5 calm shots with a clear opening visual hook
+website_hero:
+  aspect_ratio: "16:9"
+  default_duration_seconds: 8
+  pacing: slow, steady, brand-safe motion
+
