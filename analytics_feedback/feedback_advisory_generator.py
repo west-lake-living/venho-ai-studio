@@ -11,6 +11,13 @@ from analytics_feedback.sentiment_scorer import SentimentResult
 def generate_feedback_advisory(snapshot: UnifiedMetrics, score: PerformanceScore, sentiment: SentimentResult) -> FeedbackAdvisory:
     now = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
     recommendations = []
+    evidence = {
+        "package_id": snapshot.package_id,
+        "platform": snapshot.platform,
+        "pillar": snapshot.pillar,
+        "theme": snapshot.theme,
+        "relative_score": score.relative_score,
+    }
     if score.performance_label == "OUTPERFORM" and not sentiment.negative_sentiment_spike:
         recommendations.append(
             FeedbackRecommendation(
@@ -19,13 +26,18 @@ def generate_feedback_advisory(snapshot: UnifiedMetrics, score: PerformanceScore
                 action="INCREASE_WEIGHT",
                 modifier=1.25,
                 reason=f"{snapshot.platform} content outperformed the {snapshot.pillar} baseline by {round((score.relative_score - 1) * 100)}%.",
-                evidence={
-                    "package_id": snapshot.package_id,
-                    "platform": snapshot.platform,
-                    "pillar": snapshot.pillar,
-                    "theme": snapshot.theme,
-                    "relative_score": score.relative_score,
-                },
+                evidence=evidence,
+            )
+        )
+    elif score.performance_label == "UNDERPERFORM":
+        recommendations.append(
+            FeedbackRecommendation(
+                target=f"content_pillars.{snapshot.pillar}",
+                theme=snapshot.theme,
+                action="DECREASE_WEIGHT",
+                modifier=0.8,
+                reason=f"{snapshot.platform} content underperformed the {snapshot.pillar} baseline by {round((1 - score.relative_score) * 100)}%.",
+                evidence=evidence,
             )
         )
     summary = f"{snapshot.platform} {snapshot.content_type} performance is {score.performance_label.lower()} for pillar {snapshot.pillar}."

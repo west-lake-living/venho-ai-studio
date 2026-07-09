@@ -20,12 +20,16 @@ def build_task_plan(request: AgentRequest, persona: Persona, loaded_context: dic
         tasks.append(Task(task_id=f"task_{len(tasks)+1:03d}", module="M04_AUTOMATION_STUDIO", action="prepare_manual_gate", input_refs=["content_package"], risk_level="external_impact", approval_required=True))
     if not tasks:
         tasks.append(Task(task_id="task_001", module="M04_AUTOMATION_STUDIO", action="prepare_plan", input_refs=refs, risk_level="draft_creation"))
+    gate = [t for t in tasks if t.approval_required]
+    others = [t for t in tasks if not t.approval_required]
+    sliced = others[: max(0, request.constraints.max_steps - len(gate))]
+    final_tasks = sliced + gate
     return TaskPlan(
         plan_id=stable_id("plan", request.project, request.agent, request.goal),
         project=request.project,
         agent=request.agent,
         goal=request.goal,
-        tasks=tasks[: request.constraints.max_steps],
+        tasks=final_tasks,
         max_steps=request.constraints.max_steps,
         execution_mode=request.execution_mode,
     )

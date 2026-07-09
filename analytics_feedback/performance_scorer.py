@@ -43,7 +43,8 @@ def score_snapshot(snapshot: UnifiedMetrics, baseline: Baseline, rules: Dict[str
         confidence = _confidence(baseline.sample_size, rules.get("confidence_levels", {}))
         if baseline.sample_size < strong:
             warnings.append(f"Sample size {baseline.sample_size} < strong_conclusion_sample_size ({strong}), avoid strong conclusion")
-            confidence = "low" if baseline.sample_size < 12 else "medium"
+            if confidence == "high":
+                confidence = "medium"
 
     return PerformanceScore(
         snapshot_id=snapshot.snapshot_id,

@@ -111,7 +111,7 @@ def face_gate_status(score: float | int | None) -> str:
     """Map an M03 face score into the dashboard's Face Lock gate labels."""
     if score is None:
         return "NOT_AVAILABLE"
-    normalized = float(score) / 10 if float(score) > 10 else float(score)
+    normalized = float(score) / 10 if float(score) >= 11 else float(score)
     if normalized >= 9.0:
         return "APPROVED"
     if normalized >= 8.0:
@@ -455,7 +455,7 @@ class DashboardGateway:
             job = running[0]
             return {
                 "title": f"Continue {job.get('workflow_id') or 'automation workflow'}",
-                "progress_label": f"Step {job.get('step_count') or 1} / {max(int(job.get('step_count') or 1), 1)}",
+                "progress_label": f"Running · {job.get('step_count') or '?'} Steps Total",
                 "status": "In Progress",
                 "action_label": "Continue",
                 "empty": False,
@@ -500,7 +500,6 @@ class DashboardGateway:
             tasks.append({"task": "Review analytics snapshot", "priority": "High", "source": "Insights", "action_label": "Open", "status": "Pending"})
         if not tasks:
             tasks.append({"task": "Review recent activity", "priority": "Low", "source": "Home", "action_label": "Open", "status": "Pending"})
-        tasks.append({"task": "Backup knowledge snapshot", "priority": "Completed", "source": "System", "action_label": "Done", "status": "Completed"})
         return tasks[:5]
 
     def _quick_actions(self) -> list[dict[str, str]]:

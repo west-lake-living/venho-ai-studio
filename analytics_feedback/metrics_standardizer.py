@@ -10,7 +10,8 @@ from analytics_feedback.utils.time_windows import days_since
 
 def standardize_metrics(raw: RawMetrics, receipt: DeliveryReceiptRef, source_adapter: str | None = None) -> UnifiedMetrics:
     data = raw.raw
-    reach = int(data.get("reach") or data.get("views") or data.get("impressions") or 0)
+    reach_raw = data.get("reach")
+    reach = int(reach_raw if reach_raw is not None else (data.get("views") or data.get("impressions") or 0))
     impressions = int(data.get("impressions") or data.get("views") or reach)
     values = UnifiedMetricValues(
         reach=reach,

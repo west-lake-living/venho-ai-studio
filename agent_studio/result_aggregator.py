@@ -15,13 +15,13 @@ def aggregate_result(
     missing_knowledge: list[str],
     execution_log: list[str],
 ) -> AgentResponse:
-    status = "FAILED" if missing_knowledge else "SUCCESS"
+    status = "PARTIAL" if missing_knowledge else "SUCCESS"
     return AgentResponse(
         agent_name=agent_name,
         project=project,
         status=status,
         execution_mode=execution_mode,
-        confidence_score=0.88 if not missing_knowledge else 0.2,
+        confidence_score=0.88 if not missing_knowledge else 0.55,
         knowledge_sources_used=knowledge_sources,
         plan=plan,
         module_requests=[

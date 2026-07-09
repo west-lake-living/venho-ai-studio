@@ -38,7 +38,8 @@ class BaseAgent:
         log.add("Risk classified")
         package = build_module_requests(plan)
         log.add("Module requests packaged for M04")
-        result = dispatch_to_automation(package, dry_run=request.execution_mode != "execute")
+        execute = request.execution_mode == "execute" and not missing["missing_knowledge"]
+        result = dispatch_to_automation(package, dry_run=not execute)
         log.add("Automation bridge returned mock execution result")
         if persist:
             log.save(request.project, plan.plan_id, Path("data/projects"))
