@@ -1,0 +1,18 @@
+template_version: "1.0"
+prompt_type: image
+sections:
+  - objective
+  - subject
+  - environment
+  - composition
+  - lighting
+  - materials
+  - camera
+  - authenticity
+  - forbidden
+  - output_style
+rules:
+  language: english
+  include_forbidden: true
+  include_allowed_imperfections: true
+  max_length: 1800

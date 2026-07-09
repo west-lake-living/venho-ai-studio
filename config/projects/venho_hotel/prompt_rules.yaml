@@ -1,0 +1,26 @@
+# Project-level rules for content/seo prompts (§3.2, §5.3, §5.4). Read by Prompt Studio
+# builders only — never used to invent facts, only tone/audience/CTA/restriction framing.
+
+default_target_language: bilingual  # Ven Ho guests are mostly Vietnamese + English (§5.3)
+
+audience: "Travelers considering a stay near West Lake (Ho Tay), Hanoi — leisure and business, VN + international."
+
+tone: "Warm, authentic, unhurried. Show real daily life beside West Lake, not a sales pitch."
+
+brand_dna:
+  - "The West Lake Living — gold #C9A84C accent, deep navy #1B2D4F, warm white #F7F4EF background."
+  - "Tagline: 'Where West Lake Meets Elegance'."
+  - "Ven Ho Hotel is the gateway/base camp of the universe — boutique mid-range, not luxury resort."
+
+cta_rule: "End with one soft call-to-action inviting the reader to check availability or message the page — never pushy, never a hard sell."
+
+restrictions:
+  - "Do not claim '5 star' or 'best in Hanoi' — Ven Ho Hotel is boutique mid-range, not luxury."
+  - "Do not use the phrase 'sang chảnh nhất' or overclaim luxury positioning."
+  - "Do not fabricate guest reviews, ratings, or awards not present in Knowledge."
+  - "Do not describe West Lake as a generic tourist postcard — keep it authentic, local, unhurried."
+
+internal_link_hints:
+  - "Link to the relevant room page (e.g. /phong/double-lake-view) when a specific room type is mentioned."
+  - "Link to the location page (/vi-tri) when describing the West Lake surroundings."
+  - "Link to the contact/booking page (/lien-he) in the call-to-action."

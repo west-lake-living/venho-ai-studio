@@ -1,0 +1,10 @@
+# Shared rule set for rendering DNA `forbidden` into a visual negative_prompt (§5.5).
+# Only applies to image/video — content/seo use `restrictions` text instead.
+template_version: "1.0"
+applies_to:
+  - image
+  - video
+rules:
+  join_with: ", "
+  dedupe: true
+  keep_source_in_notes: true

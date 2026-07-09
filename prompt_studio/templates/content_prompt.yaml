@@ -1,0 +1,18 @@
+template_version: "1.0"
+prompt_type: content
+sections:
+  - objective
+  - audience
+  - message_goal
+  - tone
+  - brand_dna
+  - content_structure
+  - cta_rule
+  - restrictions
+rules:
+  language: english
+  include_forbidden: false
+  include_restrictions: true
+  include_allowed_imperfections: false
+  max_length: 2000
+  requires_target_language: true

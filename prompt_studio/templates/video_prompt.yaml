@@ -1,0 +1,17 @@
+template_version: "1.0"
+prompt_type: video
+sections:
+  - objective
+  - scene_setup
+  - character_lock
+  - camera_movement
+  - action_timeline
+  - environment_dna
+  - consistency_rules
+  - forbidden
+rules:
+  language: english
+  include_forbidden: true
+  include_allowed_imperfections: true
+  max_length: 3200  # kept in sync with config/settings_prompt.yaml max_length.video
+  multi_dna: true

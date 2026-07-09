@@ -20,6 +20,18 @@ app.add_typer(vision_app, name="vision")
 vault_app = typer.Typer(help="Knowledge Vault — search, diff, export DNA")
 app.add_typer(vault_app, name="vault")
 
+from validator_studio.cli import app as validator_app
+
+app.add_typer(validator_app, name="validate")
+
+from prompt_studio.cli import app as prompt_app
+
+app.add_typer(prompt_app, name="prompt")
+
+from automation_studio.cli import app as automation_app
+
+app.add_typer(automation_app, name="auto")
+
 
 def _confirm_one_subject_or_exit(subject: str, assume_one_subject: bool = False) -> None:
     """Require explicit one-tier confirmation before Mode B builds DNA."""

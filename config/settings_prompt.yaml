@@ -1,0 +1,19 @@
+optimizer:
+  enabled: true
+  provider: claude
+  model: claude-sonnet-4-6
+  temperature: 0
+  max_attempts: 2
+
+default_language:
+  prompt_instructions: en
+  content_target: vi
+
+max_length:
+  image: 1800
+  # 2200 (§9.3 default) is too tight for a real character+environment merge (linh_an +
+  # lake_view_room alone renders ~2770 chars before any optimizer trims it) — raised with
+  # headroom rather than relying on the optimizer to always shrink it (2026-07-08).
+  video: 3200
+  content: 2000
+  seo: 2200

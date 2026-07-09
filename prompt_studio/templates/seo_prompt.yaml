@@ -1,0 +1,17 @@
+template_version: "1.0"
+prompt_type: seo
+sections:
+  - objective
+  - keyword_intent
+  - reader_profile
+  - seo_structure
+  - internal_link_hints
+  - location_entity_rules
+  - restrictions
+rules:
+  language: english
+  include_forbidden: false
+  include_restrictions: true
+  include_allowed_imperfections: false
+  max_length: 2200
+  requires_target_language: true

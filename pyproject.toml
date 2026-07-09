@@ -25,7 +25,8 @@ venho = "knowledge_studio.vision.cli:app"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["app*", "core*", "knowledge_studio*", "providers*", "shared*"]
+include = ["app*", "automation_studio*", "core*", "knowledge_studio*", "prompt_studio*", "providers*", "shared*", "validator_studio*"]
 
 [tool.setuptools.package-data]
 "knowledge_studio.vision.prompts" = ["*.md"]
+"validator_studio.prompts" = ["*.md"]
