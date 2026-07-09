@@ -1,6 +1,6 @@
 # VENHO AI STUDIO — Task Status
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-07-09 · **Tests:** 384/384 pass · 0 API call
+**Cập nhật:** 2026-07-09 (Kết thúc Task) · **Tests:** 384/384 pass · 0 API call
 
 ---
 
@@ -13,7 +13,7 @@
 | M03 | Validator Studio | ✅ COMPLETE | 26 |
 | M04 | Automation Studio | ✅ COMPLETE | 7 |
 | M05 | Content Studio | ✅ COMPLETE (mock prose) | 22 |
-| M06 | Video Studio | 🟡 SCAFFOLD — chưa implement | 2 |
+| M06 | Video Studio | 🟡 SCAFFOLD — chưa implement | 6 |
 | M07 | Publishing Gateway | 📋 PLANNED | — |
 | M08 | Analytics & Feedback Loop | 📋 PLANNED | — |
 
@@ -124,7 +124,7 @@
 
 **Plan:** `VENHO_AI_STUDIO_Module_06_Video_Studio_Plan_v1_1.md`
 **Git:** `1c2de40` (scaffold commit)
-**Tests:** 2/2 (import + config existence)
+**Tests:** 6/6 (import, config, config single-source, storyboard duration, continuity checker, MVP lifestyle reel)
 
 **Đã có:**
 - `video_studio/` scaffold: `builders/`, `renderers/`, `schemas/`, `templates/`, `cli.py`, `video_engine.py`, `storyboard_builder.py`, `shot_list_builder.py`, `prompt_bridge.py`, `content_bridge.py`, `continuity_checker.py`, `engine_formatter.py`, `video_manifest.py`, `validator_bridge.py`
