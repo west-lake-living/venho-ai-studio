@@ -40,14 +40,17 @@ def test_dashboard_snapshot_reads_existing_repo_artifacts_offline() -> None:
     assert snapshot.agent_personas
 
 
-def test_operating_center_home_snapshot_matches_v2_design() -> None:
+def test_operating_center_home_snapshot_matches_v4_workspace_design() -> None:
     snapshot = build_dashboard_snapshot(Path("."), project="venho_hotel")
     home = snapshot.operating_center
 
     assert home["header"]["title"] == "VENHO AI STUDIO"
-    assert home["header"]["subtitle"] == "Operating Center"
+    assert home["header"]["subtitle"] == "Workspace"
+    assert home["header"]["build"] == "v4.0"
     assert home["header"]["mode"] == "Read-only"
     assert home["current_focus"]["action_label"]
+    assert len(home["needs_review"]) <= 5
+    assert "ready_to_publish" in home
     assert [card["label"] for card in home["summary_cards"]] == [
         "Today's Tasks",
         "System Security",
@@ -57,12 +60,12 @@ def test_operating_center_home_snapshot_matches_v2_design() -> None:
     assert home["today_progress"]["total"] == len(home["today_tasks"])
     assert home["today_tasks"]
     assert [action["label"] for action in home["quick_actions"]] == [
-        "+ Build DNA",
-        "+ Generate Prompt",
-        "+ Validate",
-        "+ Prepare Publish",
-        "+ Create Video",
-        "+ Run Automation",
+        "Build DNA",
+        "Generate Prompt",
+        "Validate",
+        "Publish",
+        "Video",
+        "Automation",
     ]
     assert {item["area"] for item in home["system_health"]} == {
         "Knowledge",

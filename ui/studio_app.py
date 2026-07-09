@@ -130,7 +130,7 @@ def _install_operating_center_css() -> None:
         .stApp { background: var(--oc-background); color: var(--oc-text); }
         .block-container {
             max-width: 1280px;
-            padding: 24px 32px 72px;
+            padding: 32px 32px 72px;
         }
         [data-testid="stSidebar"] {
             background: var(--oc-surface);
@@ -146,15 +146,15 @@ def _install_operating_center_css() -> None:
         .oc-top-header {
             align-items: center;
             background: var(--oc-surface);
-            border: 1px solid var(--oc-border);
-            border-radius: var(--oc-radius-card);
-            box-shadow: var(--oc-shadow-card);
             display: grid;
-            gap: 20px;
-            grid-template-columns: 1fr auto auto;
-            min-height: 80px;
+            gap: 24px;
+            grid-template-columns: 1fr auto 1fr;
+            min-height: 72px;
             margin-bottom: 24px;
-            padding: 18px 24px;
+            padding: 16px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 3;
         }
         .oc-brand-title { color: var(--oc-text); font-size: 18px; font-weight: 700; line-height: 1.2; }
         .oc-brand-subtitle { color: var(--oc-secondary); font-size: 12px; font-weight: 500; margin-top: 4px; }
@@ -167,7 +167,26 @@ def _install_operating_center_css() -> None:
             gap: 10px;
             justify-content: center;
         }
-        .oc-header-actions { color: var(--oc-primary); display: flex; font-size: 20px; gap: 14px; }
+        .oc-header-actions {
+            align-items: center;
+            color: var(--oc-secondary);
+            display: flex;
+            font-size: 13px;
+            gap: 14px;
+            justify-content: flex-end;
+        }
+        .oc-header-icon {
+            align-items: center;
+            background: #F2F0EC;
+            border-radius: 999px;
+            color: var(--oc-primary);
+            display: inline-flex;
+            font-size: 13px;
+            font-weight: 800;
+            height: 34px;
+            justify-content: center;
+            width: 34px;
+        }
         .oc-card {
             background: var(--oc-surface);
             border: 1px solid var(--oc-border);
@@ -230,7 +249,7 @@ def _install_operating_center_css() -> None:
         }
         .oc-focus-title {
             color: var(--oc-text);
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 700;
             line-height: 1.15;
             margin: 8px 0 10px;
@@ -291,6 +310,12 @@ def _install_operating_center_css() -> None:
             grid-template-columns: 2fr 1fr;
             margin-bottom: 24px;
         }
+        .oc-workspace-grid {
+            display: grid;
+            gap: 24px;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            margin: 24px 0;
+        }
         .oc-task-row {
             align-items: center;
             border-top: 1px solid var(--oc-border);
@@ -313,7 +338,7 @@ def _install_operating_center_css() -> None:
         .oc-action-grid {
             display: grid;
             gap: 12px;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
+            grid-template-columns: repeat(3, minmax(0, 1fr));
         }
         .oc-action-chip {
             align-items: center;
@@ -436,6 +461,7 @@ def _install_operating_center_css() -> None:
             .oc-focus-card { grid-template-columns: 1fr; min-height: auto; padding: 22px; }
             .oc-focus-title { font-size: 26px; }
             .oc-focus-side { align-items: stretch; }
+            .oc-workspace-grid { grid-template-columns: 1fr; }
             .oc-status-grid {
                 display: flex;
                 overflow-x: auto;
@@ -444,7 +470,7 @@ def _install_operating_center_css() -> None:
             .oc-status-card { flex: 0 0 220px; scroll-snap-align: start; }
             .oc-two-col { grid-template-columns: 1fr; }
             .oc-action-grid { display: flex; overflow-x: auto; }
-            .oc-action-chip { flex: 0 0 auto; min-height: 44px; }
+            .oc-action-chip { flex: 0 0 auto; min-height: 48px; }
             .oc-pipeline { flex-direction: column; overflow: visible; }
             .oc-stage { flex: 1 1 auto; min-height: auto; }
             .oc-stage:not(:last-child)::after {
@@ -535,16 +561,15 @@ def _render_operating_header(snapshot) -> None:
         <div class="oc-top-header">
             <div>
                 <div class="oc-brand-title">{_esc(header.get('title', 'VENHO AI Studio'))}</div>
-                <div class="oc-brand-subtitle">{_esc(header.get('subtitle', 'Operating Center'))}</div>
+                <div class="oc-brand-subtitle">{_esc(header.get('subtitle', 'Workspace'))}</div>
             </div>
             <div class="oc-header-meta">
                 <strong>{_esc(header.get('project_scope', snapshot.project.display_name))}</strong>
-                <span>{_status_pill(str(header.get('project_status', 'ACTIVE')))}</span>
-                <span>Last Sync {_esc(header.get('last_sync', 'Recent'))}</span>
-                <span>{_esc(header.get('mode', 'Read-only'))}</span>
             </div>
-            <div class="oc-header-actions" aria-hidden="true">
-                <span>!</span><span>U</span>
+            <div class="oc-header-actions">
+                <span>Last Sync {_esc(header.get('last_sync', 'Recent'))}</span>
+                <span class="oc-header-icon" aria-label="Notifications">!</span>
+                <span class="oc-header-icon" aria-label="User">U</span>
             </div>
         </div>
         """,
@@ -577,7 +602,7 @@ def _render_current_focus(focus: dict) -> None:
         f"""
         <div class="oc-card oc-focus-card">
             <div>
-                <div class="oc-label">Current Focus</div>
+                <div class="oc-label">Current Work</div>
                 <div class="oc-focus-title">{_esc(focus.get('title', 'No active focus.'))}</div>
                 <div class="oc-muted">Progress: {_esc(detail)}</div>
                 <div class="oc-progress"><div class="oc-progress-fill"></div></div>
@@ -586,6 +611,37 @@ def _render_current_focus(focus: dict) -> None:
                 {_status_pill(str(focus.get('status', 'Ready')))}
                 <span class="oc-btn">{_esc(focus.get('action_label', 'Continue'))}</span>
             </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def _render_workspace_list(title: str, items: list[dict], empty_message: str) -> None:
+    if not items:
+        rows = f'<div class="oc-empty">{_esc(empty_message)}</div>'
+    else:
+        rendered = []
+        for item in items[:5]:
+            source = str(item.get("source", "Workspace"))
+            rendered.append(
+                f"""
+                <div class="oc-task-row">
+                    <div class="oc-task-icon oc-tone-{_status_tone(str(item.get('status', 'Ready')))}">{_esc(source[:1].upper())}</div>
+                    <div>
+                        <div class="oc-task-title">{_esc(item.get('title', 'Untitled'))}</div>
+                        <div class="oc-small">{_esc(source)}</div>
+                    </div>
+                    <span class="oc-btn oc-btn-secondary">{_esc(item.get('action_label', 'Open'))} &gt;</span>
+                </div>
+                """
+            )
+        rows = "".join(rendered)
+    st.markdown(
+        f"""
+        <div class="oc-card">
+            <h2 class="oc-section-title">{_esc(title)}</h2>
+            {rows}
         </div>
         """,
         unsafe_allow_html=True,
@@ -888,10 +944,10 @@ def _render_workbench(snapshot) -> None:
 def _render_dashboard() -> None:
     _install_operating_center_css()
     st.sidebar.markdown("### VENHO AI Studio")
-    st.sidebar.caption("Operating Center")
+    st.sidebar.caption("Workspace")
     section = st.sidebar.radio(
         "Navigation",
-        ["Home", "Projects", "Workbench", "Agents", "Publishing", "Insights", "System"],
+        ["Workspace", "Projects", "Workbench", "Publishing", "Settings"],
         key="m10_section",
     )
     project = st.sidebar.text_input("Project", value="venho_hotel", key="m10_project")
@@ -899,29 +955,31 @@ def _render_dashboard() -> None:
     oc = snapshot.operating_center
 
     _render_operating_header(snapshot)
-    if section == "Home":
+    if section == "Workspace":
         _render_current_focus(oc["current_focus"])
-        _render_summary_cards(oc["summary_cards"])
-        left, right = st.columns([2, 1])
+        left, right = st.columns(2)
         with left:
-            _render_today(oc["today_tasks"], oc["today_progress"])
+            _render_workspace_list(
+                "Needs Review",
+                oc.get("needs_review", oc["today_tasks"]),
+                "No items need review right now.",
+            )
         with right:
-            _render_quick_actions(oc["quick_actions"])
-        _render_pipeline(oc["pipeline"])
-        left, right = st.columns([2, 1])
-        with left:
-            _render_alerts(oc["alerts"])
-        with right:
-            _render_health(oc["system_health"])
+            _render_workspace_list(
+                "Ready to Publish",
+                oc.get("ready_to_publish", []),
+                "No content is waiting for publishing approval.",
+            )
+        _render_quick_actions(oc["quick_actions"])
         _render_recent_activity(oc["recent_activity"])
         st.markdown(
             """
             <div class="oc-bottom-nav">
-                <div class="oc-bottom-item">Home</div>
+                <div class="oc-bottom-item">Workspace</div>
                 <div class="oc-bottom-item">Projects</div>
                 <div class="oc-bottom-item">Workbench</div>
                 <div class="oc-bottom-item">Publish</div>
-                <div class="oc-bottom-item">System</div>
+                <div class="oc-bottom-item">Settings</div>
             </div>
             """,
             unsafe_allow_html=True,
@@ -965,25 +1023,6 @@ def _render_dashboard() -> None:
     elif section == "Workbench":
         _render_workbench(snapshot)
 
-    elif section == "Agents":
-        _render_page_header("Agents", "Persona cards show who can plan work and what should happen next.")
-        agent_cards = [
-            {
-                "label": "Agent",
-                "title": row.get("agent") or row.get("display_name") or "Agent",
-                "meta": f"{row.get('display_name', '')} · Modules: {', '.join(str(item) for item in row.get('allowed_modules', []))}",
-                "status": row.get("status", "Ready"),
-                "action": "Open",
-            }
-            for row in snapshot.agent_personas
-        ]
-        _render_card_grid("Agent Cards", agent_cards, "No agent persona configured.")
-        _render_card_grid(
-            "Recent Automation",
-            _cards_from_records(snapshot.automation_jobs, label="Automation", title_key="run_id"),
-            "No automation run has been recorded yet.",
-        )
-
     elif section == "Publishing":
         _render_page_header("Publishing", "Review approved packages, waiting approvals, scheduled work, receipts, and failures.")
         statuses = {
@@ -1001,32 +1040,25 @@ def _render_dashboard() -> None:
                 f"No {label.lower()} publishing items.",
             )
 
-    elif section == "Insights":
-        _render_page_header("Insights", "Analytics stays advisory-only: review snapshots and recommendations before approval.")
+    else:
+        _render_page_header("Settings", "Developer and system tools stay here so Workspace remains focused.")
+        agent_cards = [
+            {
+                "label": "Agent",
+                "title": row.get("agent") or row.get("display_name") or "Agent",
+                "meta": f"{row.get('display_name', '')} · Modules: {', '.join(str(item) for item in row.get('allowed_modules', []))}",
+                "status": row.get("status", "Ready"),
+                "action": "Open",
+            }
+            for row in snapshot.agent_personas
+        ]
+        _render_card_grid("Agent Cards", agent_cards, "No agent persona configured.")
         if snapshot.analytics_items:
             _render_card_grid(
-                "Overview",
+                "Analytics",
                 _cards_from_records(snapshot.analytics_items, label="Analytics", title_key="id"),
                 "No analytics snapshot available.",
             )
-            recommendations = [
-                {
-                    "label": "Recommendation",
-                    "title": "Review advisory before applying changes",
-                    "meta": "M08 advisories remain pending approval and must route through M04/M09.",
-                    "status": "Need Review",
-                    "action": "Review",
-                }
-            ]
-            _render_card_grid("Recommendations", recommendations, "No recommendations available.")
-        else:
-            _render_empty_card(
-                "No Analytics Snapshot",
-                "No analytics snapshot available. Publish receipts from M07 will feed M08 when ready.",
-                "Review Pipeline",
-            )
-
-    else:
         system_tabs = st.tabs(["Developer", "Artifacts", "JSON Viewer", "Module Status", "Logs", "Settings"])
         with system_tabs[0]:
             st.json(snapshot.system)

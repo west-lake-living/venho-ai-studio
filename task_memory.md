@@ -1,6 +1,6 @@
 # VENHO AI STUDIO — Task Memory
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-07-09 (M10 card-based workflow pages) · **Đọc bởi:** AI Engine, Claude Code sessions
+**Cập nhật:** 2026-07-09 (M10 Workspace UI v4.0) · **Đọc bởi:** AI Engine, Claude Code sessions
 
 ---
 
@@ -15,7 +15,7 @@ Pipeline tổng quát:
                            → [M05] Content prose → [M03] Validate
                            → [M06] Video storyboard → [AI Engine ngoài render video]
 [M09] nhận goal tự nhiên → lập plan/risk/module requests → [M04] điều phối + approval gate → [M07] Publishing Gateway dry-run/publish receipt → [M08] Analytics Feedback
-[M10] Operating Center đọc artifacts/config của M01-M09 → hướng founder tới việc cần làm tiếp theo
+[M10] Workspace đọc artifacts/config của M01-M09 → hướng founder tới đúng việc cần làm ngay bây giờ
 ```
 
 ---
@@ -35,7 +35,7 @@ Pipeline tổng quát:
 | **M07** Publishing Gateway | Phân phối package đã duyệt, dry-run/publish receipt cho M08 | Tạo/sửa content, tự quyết giờ đăng, phân tích performance |
 | **M08** Analytics & Feedback Loop | Đo metrics, score performance, sentiment guardrail, sinh feedback advisory | Đăng bài, tự sửa Knowledge/Content Strategy, tự apply advisory |
 | **M09** Agent Studio | Cognitive interface: goal → request validation → persona/context → task plan/risk/module requests qua M04 | Tự publish, tự sửa Knowledge, tự tính metrics, gọi M07 trực tiếp |
-| **M10** Operating Center | Founder-first UI đọc M01-M09 artifacts/config, hiển thị Today, Health, Pipeline, Alerts, Activity | Lưu DB nghiệp vụ, tính lại score/HMAC, build prompt/ModuleRequest, render/upload/publish, đưa raw JSON lên Home |
+| **M10** Workspace | Founder-first UI đọc M01-M09 artifacts/config, hiển thị Current Work, Needs Review, Ready to Publish, Quick Actions, Recent Activity | Lưu DB nghiệp vụ, tính lại score/HMAC, build prompt/ModuleRequest, render/upload/publish, đưa raw JSON/pipeline/analytics/system health lên Home |
 
 ### Nguyên tắc bất biến
 
@@ -48,7 +48,7 @@ Pipeline tổng quát:
 7. **Project-agnostic core** — Ven Hồ là project đầu tiên, không phải core.
 8. **Kết thúc task = cập nhật memory/status** — khi người dùng nói "kết thúc task", Codex tự động cập nhật `task_memory.md` và `task_status.md` trước khi chốt.
 9. **M10 presentation-only** — Operating Center degrade bằng advisory khi module con thiếu artifact; không làm sập toàn UI và không sao chép business logic.
-10. **M10 founder-first v2.0** — Home trả lời “What should I do next?”; raw JSON, token/cache/runtime internals chỉ nằm trong `System → Developer/JSON Viewer`, không nằm ở Home.
+10. **M10 Workspace v4.0** — Workspace trả lời “What should I work on now?”; Home chỉ có Current Work, Needs Review, Ready to Publish, Quick Actions, Recent Activity. Pipeline nằm ở Workbench; raw JSON/token/cache/runtime internals nằm trong Settings, không nằm ở Home.
 11. **M10 action-first** — Status quan trọng phải dẫn tới contextual action label/button; button MVP chỉ điều hướng/placeholder, không chạy live workflow ngầm.
 
 ---
@@ -70,7 +70,7 @@ Pipeline tổng quát:
 | M07 Publishing request/receipt | `contract_version = "1.0"` | Dry-run/publish receipt cho M08 |
 | M08 Analytics outputs | `contract_version = "1.0"` | Raw metrics, unified snapshot, score, alert, advisory |
 | M09 Agent request/response | `contract_version = "1.0"` | Plan/module request/risk/approval contract |
-| M10 Operating Center snapshot | `contract = "presentation_only"` | Read-only normalized view over module artifacts + founder-first home snapshot |
+| M10 Workspace snapshot | `contract = "presentation_only"` | Read-only normalized view over module artifacts + founder-first workspace snapshot |
 
 ### DNA subjects (venho_hotel)
 `lake_view_room` · `deluxe_double` · `lobby` · `facade` · `linh_an` · `westlake` · `outside`
@@ -107,7 +107,7 @@ streamlit run ui/studio_app.py
 - M07→M08: delivery receipt contract có `platform_results`, `public_url/post_id/status`, circuit breaker info và `analytics_handoff.ready_for_m08=true` ✅
 - M08 loop: receipt → mock metrics → unified snapshot → score → sentiment → advisory/report chạy offline ✅
 - M09→M04: goal → TaskPlan → ModuleRequest package luôn target `M04_AUTOMATION_STUDIO`; external impact cần manual gate, không gọi M07 trực tiếp ✅
-- M10 Operating Center v2.0: `dashboard.gateway` đọc config/artifacts của M01-M09, Face Lock display threshold, graceful advisory khi thiếu dữ liệu; Home dùng Current Focus + 4 directional cards + Today Task Center + Quick Actions + Pipeline Flow + Alerts/Health/Activity; không gọi API và không mutate data ✅
+- M10 Workspace v4.0: `dashboard.gateway` đọc config/artifacts của M01-M09, Face Lock display threshold, graceful advisory khi thiếu dữ liệu; Home dùng Current Work + Needs Review + Ready to Publish + Quick Actions + Recent Activity; pipeline chuyển vào Workbench, system/debug chuyển vào Settings; không gọi API và không mutate data ✅
 
 ---
 
@@ -135,7 +135,7 @@ venho-ai-studio/
 │   ├── schemas/               ← request/response/persona/task/module/risk contracts
 │   ├── renderers/             ← response Markdown/JSON
 │   └── templates/             ← persona/agent templates
-├── dashboard/                 ← M10 read-only presentation gateway for Streamlit Operating Center
+├── dashboard/                 ← M10 read-only presentation gateway for Streamlit Workspace
 ├── config/
 │   ├── settings.yaml
 │   ├── validation.yaml

@@ -1,6 +1,6 @@
 # VENHO AI STUDIO — Task Status
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-07-09 (M10 card-based workflow pages, 430/430 pass) · **Tests:** 430/430 pass · 0 API call
+**Cập nhật:** 2026-07-09 (M10 Workspace UI v4.0, 430/430 pass) · **Tests:** 430/430 pass · 0 API call
 
 ---
 
@@ -17,7 +17,7 @@
 | M07 | Publishing Gateway | ✅ COMPLETE (offline dry-run MVP) | 19 |
 | M08 | Analytics & Feedback Loop | ✅ COMPLETE (offline MVP) | 7 |
 | M09 | Agent Studio | ✅ COMPLETE (offline planning/orchestration MVP) | 10 |
-| M10 | Operating Center | ✅ COMPLETE (v2.0 Home + workflow pages) | 7 |
+| M10 | Workspace | ✅ COMPLETE (v4.0 workspace home + focused pages) | 7 |
 
 > Tests ghi theo module-specific. Full suite = 430 (M01+M02+M03+M04+M05+M06+M07+M08+M09+M10+shared).
 

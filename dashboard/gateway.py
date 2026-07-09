@@ -405,14 +405,16 @@ class DashboardGateway:
         return {
             "header": {
                 "title": "VENHO AI STUDIO",
-                "subtitle": "Operating Center",
+                "subtitle": "Workspace",
                 "project_scope": PROJECT_DISPLAY.get(self.project, self.project),
                 "project_status": "ACTIVE",
                 "last_sync": self._last_sync(automation_jobs, validation_runs),
                 "mode": "Read-only",
-                "build": "v2.0",
+                "build": "v4.0",
             },
             "current_focus": self._current_focus(tasks, automation_jobs),
+            "needs_review": self._needs_review(tasks, failed_validations, review_validations),
+            "ready_to_publish": self._ready_to_publish(waiting_publish, publishing_items),
             "summary_cards": [
                 {"label": "Today's Tasks", "value": f"{len(tasks) - completed_tasks} Pending Tasks", "status": "Active"},
                 {"label": "System Security", "value": f"{health_warning_count} Warnings Detected", "status": worst_health},
@@ -504,13 +506,77 @@ class DashboardGateway:
 
     def _quick_actions(self) -> list[dict[str, str]]:
         return [
-            {"label": "+ Build DNA", "target": "Workbench"},
-            {"label": "+ Generate Prompt", "target": "Workbench"},
-            {"label": "+ Validate", "target": "Workbench"},
-            {"label": "+ Prepare Publish", "target": "Publish"},
-            {"label": "+ Create Video", "target": "Workbench"},
-            {"label": "+ Run Automation", "target": "Workbench"},
+            {"label": "Build DNA", "target": "Workbench"},
+            {"label": "Generate Prompt", "target": "Workbench"},
+            {"label": "Validate", "target": "Workbench"},
+            {"label": "Publish", "target": "Publishing"},
+            {"label": "Video", "target": "Workbench"},
+            {"label": "Automation", "target": "Workbench"},
         ]
+
+    def _needs_review(
+        self,
+        tasks: list[dict[str, str]],
+        failed_validations: list[dict[str, Any]],
+        review_validations: list[dict[str, Any]],
+    ) -> list[dict[str, str]]:
+        rows: list[dict[str, str]] = []
+        if failed_validations:
+            rows.append(
+                {
+                    "title": "Review failed validation",
+                    "source": "Validator",
+                    "status": "Critical",
+                    "action_label": "Review",
+                }
+            )
+        if review_validations:
+            rows.append(
+                {
+                    "title": "Review conditional validation",
+                    "source": "Validator",
+                    "status": "Needs Review",
+                    "action_label": "Review",
+                }
+            )
+        for task in tasks:
+            if len(rows) >= 5:
+                break
+            if task.get("source") == "Publishing":
+                continue
+            rows.append(
+                {
+                    "title": task.get("task", "Review task"),
+                    "source": task.get("source", "Workspace"),
+                    "status": task.get("status", "Pending"),
+                    "action_label": task.get("action_label", "Open"),
+                }
+            )
+        return rows[:5]
+
+    def _ready_to_publish(
+        self,
+        waiting_publish: list[dict[str, Any]],
+        publishing_items: list[dict[str, Any]],
+    ) -> list[dict[str, str]]:
+        ready_items = waiting_publish or [
+            item
+            for item in publishing_items
+            if str(item.get("status") or "").lower() in {"ready", "available", "pending", "draft"}
+        ]
+        rows = []
+        for item in ready_items[:5]:
+            platforms = item.get("platforms") or ["Publishing"]
+            platform = str(platforms[0]) if isinstance(platforms, list) and platforms else "Publishing"
+            rows.append(
+                {
+                    "title": str(item.get("id") or "Content package"),
+                    "source": platform,
+                    "status": str(item.get("status") or "Ready"),
+                    "action_label": "Approve",
+                }
+            )
+        return rows
 
     def _system_health(
         self,
