@@ -256,13 +256,13 @@
 
 ---
 
-## M10 — Workspace / Operating System ✅ COMPLETE (v4.0 workspace + shell UX)
+## M10 — Workspace / Operating System ✅ COMPLETE (v4.0 + Creative Studio)
 
 **Plan:** `VENHO_AI_STUDIO_Module_10_Dashboard_Plan_v1_2.md`
 **Design:** `M10_WORKSPACE_UI_SPEC_v4.0.md`
 **Tests:** 7/7 — xem `tests/test_dashboard.py`
 **Full suite:** 430/430 pass — `python3 -m pytest -q`
-**Latest UI shell update:** 2026-07-09 — Operating System sidebar + upload/output UX
+**Latest UI shell update:** 2026-07-09 — Creative Studio (Tạo Ảnh AI · Tạo Social Post · Tạo Video Script)
 
 **Quyết định kiến trúc:** M10 mở rộng Studio Shell Streamlit hiện có thay vì tạo web JS app độc lập, để khớp UI local-first đang chạy ở `localhost:8501`.
 
@@ -283,6 +283,13 @@
 - Mode A/B có Upload ảnh, tự lưu vào folder input chuẩn.
 - Mode A/B provider mặc định `mock` để test offline, không cần credentials; vẫn cho chọn `openai`, `claude`, hoặc `config mặc định`.
 - Mode A/B hiển thị folder output và có nút mở Finder; Mode A output mặc định `data/projects/_inbox/output`, Mode B output mặc định `data/projects/{project}/knowledge`.
+
+**Creative Studio (2026-07-09):**
+- 3 mode mới trong sidebar: Tạo Ảnh AI · Tạo Social Post · Tạo Video Script
+- Fix: `Path(__file__).resolve()` — Streamlit truyền `__file__` relative, không resolve → path sai
+- Fix: timeout 300s (gpt-image-2 + `--ref` mất 90–150s, 120s không đủ)
+- Fix: action-first prompt — action dẫn đầu prompt, strip default pose khi có action tùy chỉnh
+- Thêm: `use_ref` toggle — bật = portrait (9/10 face score); tắt = full-body action (7–8.5, tự do pose)
 
 **v4.0 còn lại / follow-up:**
 - Deep panels đã có card UI nền tảng; có thể tinh chỉnh tiếp theo production contexts.

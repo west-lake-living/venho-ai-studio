@@ -431,7 +431,49 @@ Sau bản `M10_WORKSPACE_UI_SPEC_v4.0.md`, M10 không được xem là technical
 
 ---
 
-## 12. Task Closing Protocol
+## 12. Creative Studio — M10 Extension (2026-07-09)
+
+**Status:** ✅ COMPLETE — 3 modes tích hợp vào `ui/studio_app.py`
+
+### Các mode
+
+| Mode | Chức năng |
+|------|----------|
+| **Tạo Ảnh AI** | Topic/scenario/outfit/action → assemble prompt → `generate_image.py` subprocess → hiển thị ảnh trong UI |
+| **Tạo Social Post** | Content Strategy v2.0 analysis (persona/funnel/golden rule) → caption prompt template → tạo ảnh AI + lưu `meta.json` |
+| **Tạo Video Script** | Auto-number → sinh script 3 scene × Seedance prompt → preview + Lưu `.md` vào `scripts/` |
+
+### Path constants (đầu `studio_app.py`)
+```python
+VENHO_HOTEL_DIR = BASE_DIR.parent.parent / "Ven Ho Hotel"   # projects/Ven Ho Hotel/
+SOCIAL_MANAGER_DIR = VENHO_HOTEL_DIR / "ops" / "VenHoSocialManager"
+VIDEO_SCRIPTS_DIR = VENHO_HOTEL_DIR / "local-generated" / "social-video" / "scripts"
+```
+
+### Fix quan trọng
+
+1. **`Path(__file__).resolve()`** — Streamlit đôi khi truyền `__file__` = `ui/studio_app.py` (relative). Không có `.resolve()` → `SOCIAL_MANAGER_DIR` = `Ven Ho Hotel/ops/...` (relative, không tồn tại). Bắt buộc dùng `.resolve()`.
+
+2. **Timeout 300s** — gpt-image-2 + `--ref` (image editing) thường mất 90–150s. 120s không đủ.
+
+3. **Action-first prompt** — khi có action, action là dòng đầu tiên prompt. Đồng thời strip default pose (`"10-20 degree soft hero left angle / Living Expression"`) khỏi Face Lock. Không làm vậy → AI bỏ qua action vì Face Lock 20 dòng đứng trước.
+
+4. **`use_ref` toggle** — gpt-image-2 `--ref` dùng image editing từ ảnh gốc (Linh An đứng) → không thể thay đổi toàn bộ body pose (đạp xe, chạy, ngồi). Bỏ `--ref` = text-to-image mode → AI tự do tạo bất kỳ pose.
+
+### Quy tắc `use_ref`
+
+| Checkbox | Dùng khi | Face score |
+|----------|----------|-----------|
+| ✅ Có ref | Portrait / Standing / Leaning | ~9/10 |
+| ☐ Không ref | Full-body action (đạp xe, chạy, ngồi) | 7–8.5/10 |
+
+### Caption generation decision
+
+`/tao-social-post` trong UI **không** gọi AI API trực tiếp để viết caption — sinh sẵn prompt template để Harry copy sang ChatGPT. Lý do: M05 Content Studio dùng mock prose generator, không nối API thật; tránh thêm API key/cost vào Streamlit UI.
+
+---
+
+## 13. Task Closing Protocol
 
 Khi người dùng nói **"kết thúc task"**, Codex phải tự động:
 
