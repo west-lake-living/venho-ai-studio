@@ -1,6 +1,6 @@
 # VENHO AI STUDIO — Task Status
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-07-09 (Code review M08–M10 — 10 bugs fixed, 430/430 pass) · **Tests:** 430/430 pass · 0 API call
+**Cập nhật:** 2026-07-09 (M10 card-based workflow pages, 430/430 pass) · **Tests:** 430/430 pass · 0 API call
 
 ---
 
@@ -17,7 +17,7 @@
 | M07 | Publishing Gateway | ✅ COMPLETE (offline dry-run MVP) | 19 |
 | M08 | Analytics & Feedback Loop | ✅ COMPLETE (offline MVP) | 7 |
 | M09 | Agent Studio | ✅ COMPLETE (offline planning/orchestration MVP) | 10 |
-| M10 | Operating Center | ✅ COMPLETE (v2.0 Home Core) | 7 |
+| M10 | Operating Center | ✅ COMPLETE (v2.0 Home + workflow pages) | 7 |
 
 > Tests ghi theo module-specific. Full suite = 430 (M01+M02+M03+M04+M05+M06+M07+M08+M09+M10+shared).
 
@@ -256,7 +256,7 @@
 
 ---
 
-## M10 — Operating Center ✅ COMPLETE (v2.0 Home Core, code reviewed + bugs fixed)
+## M10 — Operating Center ✅ COMPLETE (v2.0 Home + workflow pages, code reviewed + bugs fixed)
 
 **Plan:** `VENHO_AI_STUDIO_Module_10_Dashboard_Plan_v1_2.md`
 **Design:** `M10_OPERATING_CENTER_DESIGN_v2.0_final.md`
@@ -272,7 +272,8 @@
 - Home v2.0 bỏ raw JSON/module internals; thứ tự hiển thị: Current Focus, 4 status cards, Today Task Center, Quick Actions, Pipeline Flow, Alerts, System Health, Recent Activity.
 - Home v2.0 có exactly 4 directional cards: Today's Tasks, System Security, Automation Engine, Publishing Queue.
 - Pipeline chuyển từ table-like rows sang visual node flow.
-- Workbench gom quick actions, pending reviews, draft outputs, ready-to-publish và failed items.
+- Projects, Workbench, Agents, Publishing, Insights chuyển sang card-based workflow panels; tables/raw JSON chỉ còn trong System developer area.
+- Workbench gom quick actions, current focus, pending reviews, draft outputs, ready-to-publish và failed items.
 - System giữ Developer, Artifacts, JSON Viewer, Module Status, Logs, Settings; debug/raw JSON không còn nằm ở Home.
 - Graceful degradation: thiếu DNA/video/publishing/analytics artifacts hiển thị advisory thay vì crash.
 - Face Lock display mapping theo plan: `>=9.0 APPROVED`, `8.0-8.9 CONDITIONAL`, `<8.0 REJECT`; score 0-100 được normalize để chỉ hiển thị.
@@ -281,7 +282,7 @@
 - `docs/how_to_run_studio_ui.md` cập nhật hướng dẫn chạy M10.
 
 **v2.0 còn lại / follow-up:**
-- Phase 2–4 deep panels có thể tinh chỉnh tiếp theo production contexts.
+- Phase 2–4 deep panels đã có card UI nền tảng; có thể tinh chỉnh tiếp theo production contexts.
 - Phase 5 Command Palette (`Cmd+K`) chưa triển khai trong Streamlit MVP.
 
 **Run UI:**

@@ -376,6 +376,53 @@ def _install_operating_center_css() -> None:
             grid-template-columns: 64px 1fr;
             padding: 14px 0;
         }
+        .oc-page-head {
+            margin: 0 0 24px;
+        }
+        .oc-page-title {
+            color: var(--oc-text);
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: 0;
+            line-height: 1.15;
+            margin: 0 0 8px;
+        }
+        .oc-card-grid {
+            display: grid;
+            gap: 16px;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            margin-bottom: 24px;
+        }
+        .oc-mini-card {
+            min-height: 150px;
+            padding: 20px;
+        }
+        .oc-mini-title {
+            color: var(--oc-text);
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1.25;
+            margin: 8px 0;
+        }
+        .oc-mini-meta {
+            color: var(--oc-secondary);
+            font-size: 13px;
+            line-height: 1.45;
+            min-height: 38px;
+        }
+        .oc-mini-footer {
+            align-items: center;
+            display: flex;
+            gap: 10px;
+            justify-content: space-between;
+            margin-top: 16px;
+        }
+        .oc-section-gap { margin-top: 24px; }
+        .oc-empty {
+            color: var(--oc-secondary);
+            font-size: 14px;
+            line-height: 1.55;
+        }
         .oc-bottom-nav { display: none; }
         @media (max-width: 767px) {
             .block-container { padding: 16px 16px 92px; }
@@ -411,6 +458,8 @@ def _install_operating_center_css() -> None:
             .oc-task-row { grid-template-columns: 32px 1fr; }
             .oc-task-row .oc-btn { grid-column: 1 / -1; }
             .oc-timeline-row { grid-template-columns: 1fr; gap: 4px; }
+            .oc-page-title { font-size: 26px; }
+            .oc-card-grid { grid-template-columns: 1fr; }
             .oc-bottom-nav {
                 align-items: center;
                 background: var(--oc-surface);
@@ -708,30 +757,132 @@ def _render_recent_activity(activity: list[dict]) -> None:
     )
 
 
+def _render_page_header(title: str, subtitle: str) -> None:
+    st.markdown(
+        f"""
+        <div class="oc-page-head">
+            <h1 class="oc-page-title">{_esc(title)}</h1>
+            <div class="oc-muted">{_esc(subtitle)}</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def _render_empty_card(title: str, message: str, action: str = "Open Home") -> None:
+    st.markdown(
+        f"""
+        <div class="oc-card" style="margin-bottom: 24px;">
+            <div class="oc-label">{_esc(title)}</div>
+            <div class="oc-empty" style="margin-top: 10px;">{_esc(message)}</div>
+            <div class="oc-link" style="margin-top: 14px;">{_esc(action)} &gt;</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def _render_card_grid(title: str, cards: list[dict[str, object]], empty_message: str) -> None:
+    if not cards:
+        _render_empty_card(title, empty_message)
+        return
+    rendered = []
+    for card in cards:
+        status = str(card.get("status", "Ready"))
+        rendered.append(
+            f"""
+            <div class="oc-card oc-mini-card">
+                <div class="oc-label">{_esc(card.get('label', title))}</div>
+                <div class="oc-mini-title">{_esc(card.get('title', 'Untitled'))}</div>
+                <div class="oc-mini-meta">{_esc(card.get('meta', ''))}</div>
+                <div class="oc-mini-footer">
+                    {_status_pill(status)}
+                    <span class="oc-link">{_esc(card.get('action', 'Open'))} &gt;</span>
+                </div>
+            </div>
+            """
+        )
+    st.markdown(
+        f"""
+        <div class="oc-section-gap">
+            <h2 class="oc-section-title">{_esc(title)}</h2>
+            <div class="oc-card-grid">{''.join(rendered)}</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def _validation_failed(row: dict) -> bool:
+    return str(row.get("verdict") or row.get("status") or "").lower() in {
+        "fail",
+        "failed",
+        "reject",
+        "rejected",
+        "regenerate",
+    }
+
+
+def _cards_from_records(records: list[dict], *, label: str, title_key: str, status_key: str = "status") -> list[dict[str, object]]:
+    cards = []
+    for index, row in enumerate(records):
+        title = row.get(title_key) or row.get("id") or row.get("run_id") or row.get("path") or f"Item {index + 1}"
+        status = row.get(status_key) or row.get("verdict") or "Available"
+        path = row.get("path") or row.get("report_md") or row.get("report_json") or ""
+        meta_parts = []
+        if row.get("project"):
+            meta_parts.append(f"Project: {row['project']}")
+        if row.get("platforms"):
+            meta_parts.append(f"Platforms: {', '.join(str(item) for item in row['platforms'])}")
+        if row.get("workflow_id"):
+            meta_parts.append(f"Workflow: {row['workflow_id']}")
+        if path:
+            meta_parts.append(str(path))
+        cards.append(
+            {
+                "label": label,
+                "title": title,
+                "meta": " · ".join(meta_parts) or "Ready for review",
+                "status": status,
+                "action": "Open",
+            }
+        )
+    return cards
+
+
 def _render_workbench(snapshot) -> None:
-    st.subheader("Quick Actions")
-    actions = ["Build DNA", "Generate Prompt", "Validate Output", "Prepare Publishing", "Create Video", "Run Automation"]
-    columns = st.columns(3)
-    for index, action in enumerate(actions):
-        columns[index % 3].button(action, use_container_width=True, disabled=True)
+    _render_page_header("Workbench", "Continue and complete production work without reading module internals.")
+    _render_current_focus(snapshot.operating_center["current_focus"])
+    _render_quick_actions(snapshot.operating_center["quick_actions"])
 
-    left, right = st.columns(2)
-    with left:
-        st.subheader("Pending Reviews")
-        rows = [row for row in snapshot.operating_center["pipeline"] if row["need_review"] or row["failed"]]
-        st.dataframe(rows, use_container_width=True, hide_index=True)
-    with right:
-        st.subheader("Draft Outputs")
-        st.dataframe(snapshot.content_items, use_container_width=True, hide_index=True)
-
-    left, right = st.columns(2)
-    with left:
-        st.subheader("Ready To Publish")
-        st.dataframe(snapshot.publishing_items, use_container_width=True, hide_index=True)
-    with right:
-        st.subheader("Failed Items")
-        failed = [row for row in snapshot.validation_runs if str(row.get("verdict") or row.get("status") or "").lower() in {"fail", "failed", "reject", "rejected", "regenerate"}]
-        st.dataframe(failed, use_container_width=True, hide_index=True)
+    pending = [
+        {
+            "label": "Pipeline Review",
+            "title": row["stage"],
+            "meta": f"Need review: {row['need_review']} · Failed: {row['failed']}",
+            "status": row["status"],
+            "action": row["action"],
+        }
+        for row in snapshot.operating_center["pipeline"]
+        if row["need_review"] or row["failed"]
+    ]
+    _render_card_grid("Pending Reviews", pending, "No workflow stages need review right now.")
+    _render_card_grid(
+        "Draft Outputs",
+        _cards_from_records(snapshot.content_items, label="Content Draft", title_key="id"),
+        "No content drafts available yet.",
+    )
+    _render_card_grid(
+        "Ready To Publish",
+        _cards_from_records(snapshot.publishing_items, label="Publishing Item", title_key="id"),
+        "No approved publishing package is ready yet.",
+    )
+    failed = [row for row in snapshot.validation_runs if _validation_failed(row)]
+    _render_card_grid(
+        "Failed Items",
+        _cards_from_records(failed, label="Validation", title_key="validation_type", status_key="verdict"),
+        "No failed validation items.",
+    )
 
 
 def _render_dashboard() -> None:
@@ -777,63 +928,103 @@ def _render_dashboard() -> None:
         )
 
     elif section == "Projects":
-        st.subheader("Projects")
-        with st.container():
-            st.markdown(f"### {snapshot.project.display_name}")
-            st.caption(f"Prompt name: {snapshot.project.prompt_name}")
-            st.write("Active project")
-        project_tabs = st.tabs(["Overview", "Knowledge", "Content", "Validation", "Automation", "Publishing", "Analytics", "Files"])
-        with project_tabs[0]:
-            st.dataframe(oc["system_health"], use_container_width=True, hide_index=True)
-        with project_tabs[1]:
-            st.dataframe([asset.__dict__ for asset in snapshot.subjects], use_container_width=True, hide_index=True)
-        with project_tabs[2]:
-            st.dataframe(snapshot.content_items, use_container_width=True, hide_index=True)
-        with project_tabs[3]:
-            st.dataframe(snapshot.validation_runs, use_container_width=True, hide_index=True)
-        with project_tabs[4]:
-            st.dataframe(snapshot.automation_jobs, use_container_width=True, hide_index=True)
-        with project_tabs[5]:
-            st.dataframe(snapshot.publishing_items, use_container_width=True, hide_index=True)
-        with project_tabs[6]:
-            st.dataframe(snapshot.analytics_items, use_container_width=True, hide_index=True)
-        with project_tabs[7]:
-            st.dataframe(
-                [{"section": section} for section in snapshot.project.config_sections],
-                use_container_width=True,
-                hide_index=True,
-            )
+        _render_page_header("Projects", "Project cards show operating state, attention areas, and the next place to work.")
+        health_attention = [item for item in oc["system_health"] if _status_tone(str(item["status"])) != "success"]
+        project_status = "Warning" if health_attention else "Active"
+        project_cards = [
+            {
+                "label": "Active Project",
+                "title": snapshot.project.display_name,
+                "meta": (
+                    f"Prompt name: {snapshot.project.prompt_name} · "
+                    f"{len(snapshot.subjects)} DNA subjects · "
+                    f"{len(health_attention)} attention area(s)"
+                ),
+                "status": project_status,
+                "action": "Open Workbench" if health_attention else "Open",
+            }
+        ]
+        _render_card_grid("Project Cards", project_cards, "No project configured.")
+        knowledge_cards = [
+            {
+                "label": "Knowledge",
+                "title": asset.subject,
+                "meta": (
+                    f"Config: {'yes' if asset.has_config else 'no'} · "
+                    f"DNA JSON: {'yes' if asset.has_dna_json else 'no'} · "
+                    f"Compact: {'yes' if asset.has_compact else 'no'}"
+                ),
+                "status": "Ready" if asset.has_dna_json else "Need Review",
+                "action": "Browse" if asset.has_dna_json else "Build DNA",
+            }
+            for asset in snapshot.subjects
+        ]
+        _render_card_grid("Knowledge Assets", knowledge_cards, "No knowledge assets available yet.")
+        _render_health(oc["system_health"])
 
     elif section == "Workbench":
         _render_workbench(snapshot)
 
     elif section == "Agents":
-        st.subheader("Agents")
-        st.dataframe(oc["agents"], use_container_width=True, hide_index=True)
-        st.subheader("Recent Automation")
-        st.dataframe(snapshot.automation_jobs, use_container_width=True, hide_index=True)
+        _render_page_header("Agents", "Persona cards show who can plan work and what should happen next.")
+        agent_cards = [
+            {
+                "label": "Agent",
+                "title": row.get("agent") or row.get("display_name") or "Agent",
+                "meta": f"{row.get('display_name', '')} · Modules: {', '.join(str(item) for item in row.get('allowed_modules', []))}",
+                "status": row.get("status", "Ready"),
+                "action": "Open",
+            }
+            for row in snapshot.agent_personas
+        ]
+        _render_card_grid("Agent Cards", agent_cards, "No agent persona configured.")
+        _render_card_grid(
+            "Recent Automation",
+            _cards_from_records(snapshot.automation_jobs, label="Automation", title_key="run_id"),
+            "No automation run has been recorded yet.",
+        )
 
     elif section == "Publishing":
-        st.subheader("Publishing")
-        publishing_tabs = st.tabs(["Ready", "Scheduled", "Published", "Failed"])
+        _render_page_header("Publishing", "Review approved packages, waiting approvals, scheduled work, receipts, and failures.")
         statuses = {
             "Ready": {"ready", "pending", "waiting_approval", "draft", "available"},
+            "Waiting Approval": {"waiting_approval", "pending", "draft"},
             "Scheduled": {"scheduled"},
             "Published": {"published", "success", "completed"},
             "Failed": {"failed", "error"},
         }
-        for tab, label in zip(publishing_tabs, statuses):
-            with tab:
-                allowed = statuses[label]
-                rows = [item for item in snapshot.publishing_items if str(item.get("status", "")).lower() in allowed]
-                st.dataframe(rows, use_container_width=True, hide_index=True)
+        for label, allowed in statuses.items():
+            rows = [item for item in snapshot.publishing_items if str(item.get("status", "")).lower() in allowed]
+            _render_card_grid(
+                label,
+                _cards_from_records(rows, label="Publishing", title_key="id"),
+                f"No {label.lower()} publishing items.",
+            )
 
     elif section == "Insights":
-        st.subheader("Insights")
+        _render_page_header("Insights", "Analytics stays advisory-only: review snapshots and recommendations before approval.")
         if snapshot.analytics_items:
-            st.dataframe(snapshot.analytics_items, use_container_width=True, hide_index=True)
+            _render_card_grid(
+                "Overview",
+                _cards_from_records(snapshot.analytics_items, label="Analytics", title_key="id"),
+                "No analytics snapshot available.",
+            )
+            recommendations = [
+                {
+                    "label": "Recommendation",
+                    "title": "Review advisory before applying changes",
+                    "meta": "M08 advisories remain pending approval and must route through M04/M09.",
+                    "status": "Need Review",
+                    "action": "Review",
+                }
+            ]
+            _render_card_grid("Recommendations", recommendations, "No recommendations available.")
         else:
-            st.info("No analytics snapshot available.")
+            _render_empty_card(
+                "No Analytics Snapshot",
+                "No analytics snapshot available. Publish receipts from M07 will feed M08 when ready.",
+                "Review Pipeline",
+            )
 
     else:
         system_tabs = st.tabs(["Developer", "Artifacts", "JSON Viewer", "Module Status", "Logs", "Settings"])

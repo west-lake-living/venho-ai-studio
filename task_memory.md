@@ -1,6 +1,6 @@
 # VENHO AI STUDIO — Task Memory
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-07-09 (Code review M08–M10 — 10 bugs fixed) · **Đọc bởi:** AI Engine, Claude Code sessions
+**Cập nhật:** 2026-07-09 (M10 card-based workflow pages) · **Đọc bởi:** AI Engine, Claude Code sessions
 
 ---
 
@@ -374,7 +374,7 @@ AgentRequest
 
 ## 11. M10 Operating Center — hoàn thành 2026-07-09
 
-**Status:** ✅ COMPLETE — Streamlit Operating Center v2.0 Home Core
+**Status:** ✅ COMPLETE — Streamlit Operating Center v2.0 Home + workflow pages
 **Plan:** `VENHO_AI_STUDIO_Module_10_Dashboard_Plan_v1_2.md`  
 **Design:** `M10_OPERATING_CENTER_DESIGN_v2.0_final.md`
 **Tests:** `python3 -m pytest -q` → 430/430 pass, 0 API call
@@ -390,7 +390,7 @@ Sau bản `M10_OPERATING_CENTER_DESIGN_v2.0_final.md`, M10 không được xem l
 
 - `dashboard/gateway.py` — read-only adapter đọc M01-M09 config/artifacts và tạo `DashboardSnapshot` + `operating_center` v2 fields (`header`, `current_focus`, `today_progress`, `quick_actions`).
 - `dashboard/__init__.py` — module metadata (`MODULE_ID = "M10"`).
-- `ui/studio_app.py` — render `M10 Operating Center` với navigation Home, Projects, Workbench, Agents, Publish, Insights, System.
+- `ui/studio_app.py` — render `M10 Operating Center` với navigation Home, Projects, Workbench, Agents, Publishing, Insights, System.
 - `docs/how_to_run_studio_ui.md` — hướng dẫn chạy shell + dashboard.
 
 ### Home UI v2.0
@@ -403,6 +403,14 @@ Sau bản `M10_OPERATING_CENTER_DESIGN_v2.0_final.md`, M10 không được xem l
 - Pipeline order: Observe → DNA → Prompt → Validate → Automation → Video → Publishing → Analytics.
 - Pipeline is rendered as visual node flow, not table rows.
 - Raw JSON/debug details moved to `System → JSON Viewer`; Home contains no raw JSON.
+
+### Workflow pages v2.0
+
+- Projects, Workbench, Agents, Publishing, Insights dùng card-based panels thay vì dense tables.
+- Workbench ưu tiên Continue Working, Pending Reviews, Draft Outputs, Ready To Publish, Failed Items.
+- Publishing tách Ready, Waiting Approval, Scheduled, Published, Failed dưới dạng cards.
+- Insights giữ advisory-only; khi có dữ liệu hiển thị Overview + Recommendations cards, khi chưa có dữ liệu hiển thị empty state rõ ràng.
+- Raw JSON và dataframes chỉ còn trong `System` developer area.
 
 ### M10 boundaries
 

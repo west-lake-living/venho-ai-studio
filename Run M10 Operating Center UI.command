@@ -25,11 +25,17 @@ fi
 
 if ! python3 -m streamlit --version >/dev/null 2>&1; then
   echo "Streamlit is not installed for python3."
-  echo 'Run: pip install -e ".[ui]"'
-  echo ""
-  echo "Press Enter to close this window."
-  read
-  exit 1
+  echo 'Installing UI dependencies with: python3 -m pip install -e ".[ui]"'
+  python3 -m pip install -e ".[ui]"
+  if ! python3 -m streamlit --version >/dev/null 2>&1; then
+    echo ""
+    echo "Could not install Streamlit automatically."
+    echo 'Try manually: python3 -m pip install -e ".[ui]"'
+    echo ""
+    echo "Press Enter to close this window."
+    read
+    exit 1
+  fi
 fi
 
 (sleep 2; open "$URL") &
