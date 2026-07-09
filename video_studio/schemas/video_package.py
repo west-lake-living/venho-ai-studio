@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Dict, List, Literal
+from typing import Any, Dict, List, Literal, Optional
 
 from pydantic import BaseModel, Field
 
@@ -17,12 +17,12 @@ class Concept(BaseModel):
 
 
 class TextFromContent(BaseModel):
-    caption: str | None = None
-    hook: str | None = None
-    voiceover: str | None = None
-    cta: str | None = None
+    caption: Optional[str] = None
+    hook: Optional[str] = None
+    voiceover: Optional[str] = None
+    cta: Optional[str] = None
     caption_language: str
-    source_file: str | None = None
+    source_file: Optional[str] = None
 
 
 class ValidationInfo(BaseModel):
@@ -59,4 +59,3 @@ class VideoPackage(BaseModel):
     camera_motion_rules: Dict[str, Any] = Field(default_factory=dict)
     validation: ValidationInfo = Field(default_factory=ValidationInfo)
     status: Literal["draft"] = "draft"
-

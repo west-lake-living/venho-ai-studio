@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List
+from typing import List, Optional
 
 from pydantic import BaseModel, Field
 
@@ -9,7 +9,7 @@ class ScenePromptRef(BaseModel):
     source: str = "module_02"
     prompt_id: str
     prompt_version: str
-    file: str | None = None
+    file: Optional[str] = None
 
 
 class StoryboardScene(BaseModel):
@@ -18,8 +18,8 @@ class StoryboardScene(BaseModel):
     description: str
     camera_movement: str
     visual_dna_required: List[str] = Field(default_factory=list)
-    scene_prompt_ref: ScenePromptRef | None = None
-    engine_prompt: str | None = None
+    scene_prompt_ref: Optional[ScenePromptRef] = None
+    engine_prompt: Optional[str] = None
     forbidden: List[dict] = Field(default_factory=list)
 
 
@@ -32,4 +32,3 @@ class DurationCheck(BaseModel):
 class ContinuityCheck(BaseModel):
     all_scenes_have_keys: bool
     missing_by_scene: dict[int, List[str]] = Field(default_factory=dict)
-
