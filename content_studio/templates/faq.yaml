@@ -1,0 +1,8 @@
+template_version: "1.0"
+sections:
+  - question
+  - short_answer
+  - long_answer
+  - source_knowledge
+  - related_cta
+

@@ -1,0 +1,11 @@
+template_version: "1.0"
+sections:
+  - meta
+  - hero
+  - about
+  - room_description
+  - location
+  - cta_block
+  - faq
+  - seo_metadata
+

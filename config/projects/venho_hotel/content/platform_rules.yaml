@@ -1,0 +1,23 @@
+facebook:
+  max_length: 900
+  max_hashtags: 4
+  hashtags:
+    - "#venhohotelhanoi"
+    - "#hotay"
+    - "#hanoi"
+    - "#westlake"
+instagram:
+  max_length: 700
+  max_hashtags: 6
+  hashtags:
+    - "#venhohotelhanoi"
+    - "#hotay"
+    - "#hanoistay"
+    - "#westlake"
+threads:
+  max_length: 500
+  max_hashtags: 2
+  hashtags:
+    - "#hotay"
+    - "#hanoi"
+

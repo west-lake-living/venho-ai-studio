@@ -1,0 +1,13 @@
+template_version: "1.0"
+sections:
+  - meta
+  - source_knowledge
+  - source_prompt
+  - audience
+  - hook
+  - body
+  - cta
+  - hashtags
+  - visual_note
+  - validation_status
+

@@ -1,0 +1,12 @@
+tone:
+  default: warm, clear, trustworthy
+  traits:
+    - local
+    - calm
+    - practical
+    - honest
+  avoid:
+    - hard sell
+    - luxury resort language
+    - unverifiable superlatives
+

@@ -1,0 +1,7 @@
+template_version: "1.0"
+sections:
+  - subject_options
+  - preview_text
+  - body
+  - cta
+  - follow_up_variation

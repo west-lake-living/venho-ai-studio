@@ -1,0 +1,10 @@
+template_version: "1.0"
+sections:
+  - meta
+  - hook
+  - body
+  - cta
+  - hashtags
+  - visual_note
+  - validation_status
+

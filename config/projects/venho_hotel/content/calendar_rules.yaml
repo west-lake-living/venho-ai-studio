@@ -1,0 +1,7 @@
+cadence:
+  facebook: 3
+  instagram: 3
+  threads: 2
+default_status: planned
+required_asset_policy: existing_asset_or_image_prompt
+

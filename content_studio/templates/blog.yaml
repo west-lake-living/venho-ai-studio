@@ -1,0 +1,15 @@
+template_version: "1.0"
+sections:
+  - meta
+  - source_knowledge
+  - seo_intent
+  - keywords
+  - title_options
+  - meta_description
+  - outline
+  - article
+  - faq
+  - internal_links
+  - cta
+  - validation_status
+

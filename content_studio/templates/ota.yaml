@@ -1,0 +1,13 @@
+template_version: "1.0"
+channels:
+  - agoda
+  - google_business
+  - direct
+sections:
+  - short_description
+  - long_description
+  - facilities_highlight
+  - location_highlight
+  - guest_fit_messaging
+  - rules_notes
+

@@ -1,469 +1,550 @@
 VENHO AI STUDIO
-MODULE 06 — VIDEO STUDIO — Development Plan v1.1 (QC Consolidated)
-Workspace mẹ: THE WEST LAKE LIVING Repo: venho-ai-studio Module: video_studio/ Phụ thuộc: Module 01 (DNA + Face DNA) · Module 02 (Video Prompt) · Module 03 (Validator) · Module 04 (Automation) · Module 05 (Content text) · shared/ AI Engine: OpenAI + Claude Mục tiêu: Biến Knowledge/DNA thành GÓI SẢN XUẤT VIDEO có cấu trúc (concept → storyboard → shot list → prompt cảnh → continuity) để render nhất quán ở engine ngoài (Veo/Kling/Runway/Seedance).
+MODULE 05 — CONTENT STUDIO — Development Plan v1.1 (QC Consolidated)
+Workspace mẹ: THE WEST LAKE LIVING Repo: venho-ai-studio Module: content_studio/ Phụ thuộc: Module 01 (DNA) · Module 02 (Content/SEO Prompt) · Module 03 (Content Validator) · Module 04 (Automation) · shared/ AI Engine: OpenAI + Claude Mục tiêu: Biến Knowledge/DNA thành nội dung marketing/SEO/social/website THẬT — dựa trên tri thức chuẩn hóa, không viết theo cảm tính, không tự publish.
 
 
 0. Kết quả QC v1.0 → v1.1
 LỖI RANH GIỚI (nghiêm trọng)
 
-1. Trùng dựng video prompt với M02 → SỬA: M02 dựng prompt DNA-faithful từng cảnh;
+1. Trùng "sản xuất nội dung" với Module 02 → SỬA: phân vai. M02 DỰNG prompt nội dung;
 
-   M06 lo temporal/narrative + package; M06 gọi M02 (§1.1, §11.2)
+   M05 THỰC THI prompt đó để viết prose. M05 không dựng lại prompt (§1.1, §10.2)
 
-LỖI THÀNH THẬT VỀ PHẠM VI
+2. Mâu thuẫn nguồn (Knowledge vs Prompt)   → SỬA: M05 LUÔN đi qua content-prompt của M02;
 
-2. Ngụ ý gói đảm bảo kết quả render → SỬA: render ở engine NGOÀI; M06 validate GÓI (pre-render);
-
-   trôi identity per-frame là hậu-render/ngoài, tương lai (§2.5, §11.3)
-
-3. Continuity không cơ chế         → SỬA: continuity_keys (invariant DNA + face-lock)
-
-   phải có trong MỌI cảnh; checker khẳng định (§7.1)
-
-4. Character không nối Face DNA/07F → SỬA: character rules từ Face DNA (M01) + rubric 07F (M03) (§6.2)
+   DNA facts đến qua prompt, không tự parse lại (§4, §12)
 
 LỖI KỶ LUẬT HỆ THỐNG
 
-5. source_knowledge thiếu version/hash → {file,version,hash} + manifest (§9,§10)
+3. Forbidden chỉ phát hiện, không phòng    → SỬA: chèn forbidden/CTA vào SINH (qua prompt M02)
 
-6. Ngôn ngữ lẫn lộn                  → engine_prompt English; caption/voiceover target_language (§12.1)
+   + tiền lọc ở M05 + validator ở M03 (§2.5, §10.3)
 
-7. Caption/voiceover trùng M05       → text đến TỪ M05; M06 chỉ nhúng (§11.5)
+4. source_knowledge thiếu version/hash     → SỬA: {file, version, hash} (§8, §9)
 
-8. Forbidden trùng/chỉ phát hiện     → không gian/brand qua prompt M02 (phòng);
+5. Thiếu manifest + staleness             → SỬA: content_manifest + cờ source_updated (§9.1)
 
-   negative chuyển động ở config video; validator phát hiện (§2.6, §8)
+6. Phụ thuộc chéo M03 chưa khai báo        → SỬA: bridge degradation khi content validator chưa có (§10.3)
 
-LỖ HỔNG VIDEO
+LỖ HỔNG NỘI DUNG & CHIẾN LƯỢC
 
-9. Không kiểm tổng thời lượng        → Σ scene_duration = duration_seconds (§7.2)
+7. language đơn trị, lệch tên M02          → SỬA: target_language + hỗ trợ bilingual (§8)
 
-10. target_engine đơn vs "2 engine"  → một engine chính + biến thể tùy chọn (§9)
+8. Campaign không có cơ chế               → SỬA: một message-core → tạo hình theo kênh (§6.8)
 
-11. Bridge chưa degradation          → not_available + dùng prompt-validation per cảnh (§11.3)
+9. Calendar không có input model          → SỬA: cadence + topic từ pillar (§6.7)
+
+10. OTA có Booking.com                     → SỬA: Agoda + Google Business + direct (§6.4)
+
+11. forbidden_claims trùng/ba lớp mờ       → SỬA: single-source + phân cấp engine/builder rõ (§7)
 
 
-1. Vai trò của Video Studio
-Video Studio biến Knowledge thành gói sản xuất video có cấu trúc — không phải công cụ dựng phim. Output cốt lõi:
+1. Vai trò của Content Studio
+Content Studio trả lời: "Nội dung cuối cùng để đăng/dùng/xuất bản là gì?" Nó biến Knowledge → nội dung thật, KHÔNG viết tùy hứng.
+1.1 Phân vai dứt khoát với Module 02 (sửa lỗi trùng lặp)
+MODULE 02 (Prompt Studio)  = DỰNG PROMPT nội dung/SEO:
 
-Concept → Storyboard → Shot List → Scene Prompts → Negative → Continuity → Validation
-1.1 Phân vai dứt khoát với Module 02 (sửa lỗi trùng)
-MODULE 02 (Prompt Studio) = DỰNG PROMPT VIDEO cho TỪNG CẢNH:
+   chỉ dẫn có cấu trúc, sinh tất định từ DNA, đã gắn required_dna, forbidden,
 
-   prompt DNA-faithful, đa DNA (Linh An + phòng), character_lock, environment_dna,
+   CTA rules, target_language, và đã qua cổng faithfulness của M02.
 
-   camera, forbidden union — đã qua cổng faithfulness của M02.
+   → M02 KHÔNG gọi AI viết bài.
 
-MODULE 06 (Video Studio)  = lớp THỜI GIAN / TƯỜNG THUẬT + ĐÓNG GÓI:
+MODULE 05 (Content Studio) = THỰC THI prompt đó:
 
-   concept · storyboard (cấu trúc cảnh, thời lượng, DNA mỗi cảnh) · shot list ·
+   gọi AI viết prose thật · tạo hình theo từng kênh (độ dài, hashtag, format) ·
 
-   continuity giữa các cảnh · định dạng theo engine (Veo/Kling...) · đóng gói package.
+   render .md+.json · đa kênh/campaign · calendar · gửi validator · lưu draft.
 
-   → M06 GỌI M02 để dựng prompt mỗi cảnh; KHÔNG dựng prompt lại.
+   → M05 KHÔNG dựng lại prompt, KHÔNG tự phán faithfulness (đã là việc của M02).
 
-Chia rõ: Module 02 lo DNA đúng cho từng cảnh; Module 06 lo chuỗi cảnh, liên tục, định dạng engine, đóng gói.
+Hệ quả: templates/ của M05 là template ĐỊNH HÌNH OUTPUT (bố cục section .md + rule kênh như max_length, hashtag), KHÔNG phải template dựng prompt. Việc dựng prompt thuộc M02.
 
 
 2. Nguyên tắc thiết kế
-2.1 Knowledge First. Mọi prompt cảnh bắt nguồn từ Knowledge — nhưng đến qua prompt của M02. Không tạo cảnh ngoài Knowledge; không biến Ven Hồ thành resort luxury; không làm Linh An trôi identity.
+2.1 Knowledge First. Mọi nội dung bắt nguồn từ Knowledge — nhưng đến M05 qua content-prompt của M02, không tự nhớ, không bịa, không thêm claim vô nguồn.
 
-2.2 Prompt is not the source. Prompt là output từ Knowledge + production goal + platform rules.
+2.2 Brand Consistency. Giữ Brand DNA, tone, audience, content pillars, SEO, CTA rules, forbidden claims.
 
-2.3 Storyboard before Prompt. Concept → Storyboard → Shot List → (gọi M02) Scene Prompt. Vì video cần logic thời gian, chuỗi shot, camera, kiểm soát identity qua nhiều frame.
+2.3 Multi-channel, Single Source. Một Knowledge → nhiều định dạng, không viết rời rạc lại từ đầu.
 
-2.4 Draft First. M06 chỉ tạo package. Không render, không upload, không publish. Workflow dài thuộc M04.
+2.4 Draft First, Publish Later. M05 chỉ tạo draft (status=draft). Publish thuộc Automation hoặc thao tác người dùng.
 
-2.5 Thành thật về render ngoài (mới v1.1). Video render ở engine NGOÀI. M06 validate GÓI trước render; kết quả render (trôi identity per-frame, artifact chuyển động) chỉ kiểm được sau render trên file video — hiện là thủ công/ngoài phạm vi (Video Validation của M03 là tương lai). M06 tối đa hóa cơ hội khớp bằng continuity + negative mạnh, KHÔNG đảm bảo render.
+2.5 Forbidden: phòng ngừa TRƯỚC, phát hiện SAU. Forbidden claims + CTA rules được chèn vào chỉ dẫn sinh (đã có trong content-prompt của M02) để AI không viết ra; M05 tiền lọc chuỗi forbidden trước khi lưu; M03 validator chấm cuối. Ba lớp.
 
-2.6 Forbidden: phòng TRƯỚC, phát hiện SAU + single-source. Forbidden không gian/brand (no glass wall, no luxury) đến từ DNA qua prompt M02 (phòng ngừa). Negative CHUYỂN ĐỘNG video (no fast cuts, no shaky cam) ở config video. Validator M03 phát hiện. Không có hai danh sách forbidden không gian lệch nhau.
+2.6 Ngoại lệ nhiệt độ có kiểm soát (mới v1.1). Đây là module DUY NHẤT mà sáng tạo của AI là sản phẩm → cho phép temperature > 0 khi viết prose. NHƯNG: cấu trúc output vẫn render từ JSON (không để AI tự bịa bố cục); faithfulness vẫn ràng bằng prompt M02 + forbidden injection + validator M03. Tất định áp cho CẤU TRÚC và NGUỒN, không áp cho câu chữ sáng tạo.
 
-2.7 Project-agnostic. Core không hard-code Ven Hồ.
-
-
-3. Phạm vi Module 06
-CÓ:    concept · storyboard · shot list · scene prompt (qua M02) · prompt đa engine ·
-
-       negative chuyển động · continuity · character rules · camera/motion ·
-
-       package .md+.json · gửi validator (pre-render)
-
-CHƯA:  render video · upload · hậu kỳ · ghép nhạc · timeline editor · UI phức tạp ·
-
-       validate video đã render (post-render — tương lai)
+2.7 Project-agnostic. Core không hard-code Ven Hồ; đọc rule từ config project.
 
 
-4. Input
-QUA MODULE 02 (prompt cảnh DNA-faithful, đa DNA)
+3. Phạm vi Module 05
+CÓ:    social · blog SEO · website copy · OTA · FAQ · email draft · content calendar ·
 
-QUA MODULE 05 (text: caption, hook, voiceover, CTA)
+       campaign đa kênh · nhiều bản theo tone/length/platform · .md+.json ·
 
-ĐỌC TRỰC TIẾP (config lớp video — KHÔNG phải DNA/forbidden không gian):
+       lịch sử nội dung + manifest · gửi Validator
 
-  config/projects/<project>/video/{video_style, platform_rules, camera_rules,
+CHƯA:  đăng tự động · chạy ads · quản lý inbox · thay CMS · thay scheduler ·
 
-                                   motion_rules, character_rules, motion_negatives}.yaml
+       UI phức tạp · tự quyết publish
 
-QUA MODULE 01 (gián tiếp): Face DNA + DNA invariants → nguồn continuity_keys
 
-Thiếu Knowledge → M02 báo Missing Knowledge; M06 dừng, không bịa.
+4. Input của Content Studio
+ĐI QUA MODULE 02 (nguồn tri thức nội dung):
+
+  content-prompt do M02 dựng (đã nhúng DNA facts + forbidden + CTA + target_language)
+
+ĐỌC TRỰC TIẾP (config lớp nội dung — KHÔNG phải DNA):
+
+  config/projects/<project>/content/{content_pillars, tone_of_voice, platform_rules,
+
+                                     seo_keywords, calendar_rules}.yaml
+
+  data/projects/<project>/content/_archive/   (nội dung cũ để tránh lặp)
+
+Quy tắc single-source (sửa lỗi trùng forbidden): forbidden_claims và CTA rules KHÔNG đặt riêng ở M05 — chúng sống ở lớp prompt (prompt_rules/overlay của M01/M02) và tới M05 qua content-prompt. Tránh hai danh sách forbidden lệch nhau. content/ config của M05 chỉ giữ thứ thuần nội dung: pillars, platform rules, SEO keywords, cadence.
+
+Nếu thiếu Knowledge → M02 báo Missing Knowledge; M05 dừng, KHÔNG bịa.
 
 
 5. Output
-data/projects/<project>/video/{concepts, storyboards, shot_lists, prompts,
+data/projects/<project>/content/{facebook, instagram, threads, blog, website,
 
-                               packages, validation}/
+                                 ota, email, faq, calendar}/
 
-   <date>_<slug>_<duration>.md + .json
+   <date>_<slug>.md + .json
 
-data/projects/<project>/video/video_manifest.json
+data/projects/<project>/content/content_manifest.json
 
+data/projects/<project>/content/_archive/
 
-6. Các loại Video
-6.1 Hotel Lifestyle — room view, lobby, rooftop, West Lake walk. Vd 15s vertical morning lake view room. 6.2 Character (Linh An) — YÊU CẦU đặc biệt, nối vào tài sản đã có:
-
-- Character rules LẤY TỪ Face DNA (M01, đã qua cổng 07F ở Step 13), KHÔNG phát minh lại.
-
-- Face-lock descriptor của Linh An là continuity_key bắt buộc trong MỌI cảnh.
-
-- Pre-render: validate face-lock có trong prompt mỗi cảnh (M03 prompt validation).
-
-- Post-render drift (per-frame): NGOÀI phạm vi hiện tại — cần Video Validation tương lai.
-
-6.3 Social Reel / Short — hook visual, 3–5 shot, caption overlay (TỪ M05), CTA end card, music mood note. 6.4 Website / Hero — calm movement, clean, brand-safe, no hard sale, no unrealistic luxury. 6.5 Explainer / Service — script + shot list + voiceover (TỪ M05) + visual notes + CTA.
+Dạng kép .md (người) + .json (máy/Automation).
 
 
-7. Video Production Package
-Concept · Storyboard · Shot List · Scene Prompts (từ M02) · Motion Negatives ·
+6. Các loại Content
+6.1 Social (Facebook, Instagram, Threads, TikTok caption)
+Output: hook, body, CTA, hashtags, visual note (tham chiếu asset/ image-prompt cần có — M05 KHÔNG tạo ảnh), suggested posting note.
+6.2 Blog SEO
+Output: SEO title, meta description, slug, outline, article, internal links, FAQ, keywords, search intent.
+6.3 Website Copy
+Output: hero, about, room description, location, CTA block, FAQ, SEO metadata. Thường bilingual (vi + en).
+6.4 OTA Description (Agoda + Google Business + direct — KHÔNG Booking.com giai đoạn này)
+Output: short/long description, facilities highlight, location highlight, guest-fit messaging, rules/notes. Align chiến lược kênh: Agoda + đặt trực tiếp; Booking.com để sau.
+6.5 Email Draft
+Output: subject options, preview text, body, CTA, follow-up variation. KHÔNG gửi thật.
+6.6 FAQ
+Output: question, short answer, long answer, source knowledge, related CTA. KHÔNG bịa chính sách chưa có.
+6.7 Content Calendar (đã định nghĩa input)
+Input model: calendar_rules.yaml (cadence: số bài/tuần theo kênh) + content_pillars (nguồn topic) + tháng. Output: date, channel, topic (dẫn xuất từ pillar), pillar, format, status, required asset, CTA. Calendar là công cụ LẬP LỊCH — nó không viết nội dung, chỉ xếp chỗ.
+6.8 Campaign — cơ chế một MESSAGE-CORE (mới v1.1)
+1 message-core (thông điệp gốc + CTA strategy, sinh một lần từ content-prompt M02)
 
-Continuity Rules · Character Rules · Camera/Motion Rules · Platform Rules ·
+     ↓ tạo hình theo từng kênh (platform_rules: độ dài, giọng, hashtag)
 
-Validation Checklist · Export Notes
-7.1 Cơ chế Continuity (mới v1.1)
-continuity_keys = INVARIANT từ DNA (window_frame, bedding, room geometry...)
+Facebook / Instagram / Threads ...   → mỗi bản KHÁC câu chữ, CÙNG thông điệp & CTA
 
-                + face-lock descriptor (nếu include_character)
-
-Luật: MỖI scene prompt PHẢI chứa TẤT CẢ continuity_keys giống hệt nhau.
-
-continuity_checker khẳng định (deterministic); thiếu ở cảnh nào → FAIL cảnh đó.
-
-Đây là cách giữ nhất quán qua nhiều frame ở mức prompt (mức duy nhất M06 kiểm được trước render).
-7.2 Kiểm thời lượng (mới v1.1)
-Σ scene_duration PHẢI = duration_seconds. Lệch → storyboard builder báo lỗi, không xuất.
+Không sinh N lần độc lập (tránh trùng nguyên văn hoặc lệch ngẫu nhiên).
 
 
-8. Cấu trúc repo (phân cấp rõ)
-video_studio/
+7. Cấu trúc repo (phân cấp rõ)
+content_studio/
 
-├── video_engine.py              # ORCHESTRATOR: request → context → concept → storyboard
+├── content_engine.py            # ORCHESTRATOR: request → context → build → render → validate
 
-│                                #   → shot list → (M02 scene prompts) → continuity → package
+├── content_request.py
 
-├── video_request.py
+├── content_context.py           # nạp config nội dung + gọi M02 lấy content-prompt
 
-├── video_context.py             # nạp config video + Face DNA/invariants (continuity_keys)
+├── prompt_bridge.py             # MỚI: gọi Module 02 (adapter) lấy content/SEO prompt
 
-├── prompt_bridge.py             # MỚI: gọi Module 02 dựng scene prompt (đa DNA)
+├── campaign_generator.py        # đa kênh từ 1 message-core (đổi tên từ content_generator)
 
-├── content_bridge.py            # MỚI: lấy caption/voiceover/hook/CTA từ Module 05
+├── content_calendar.py
 
-├── concept_builder.py
+├── content_validator_bridge.py  # gọi Module 03 (có degradation)
 
-├── storyboard_builder.py        # cấu trúc cảnh + kiểm Σ duration
-
-├── shot_list_builder.py
-
-├── engine_formatter.py          # MỚI: định dạng prompt theo Veo/Kling/Runway/Seedance
-
-├── continuity_checker.py        # khẳng định continuity_keys trong mọi cảnh
-
-├── validator_bridge.py          # có degradation
-
-├── video_manifest.py            # MỚI: theo dõi + staleness
+├── content_manifest.py          # MỚI: theo dõi + staleness
 
 ├── cli.py
 
-├── builders/                    # preset cấu hình pipeline theo LOẠI video
+├── builders/                    # per-type: THỰC THI prompt → prose + tạo hình kênh
 
-│   ├── lifestyle_video_builder.py  character_video_builder.py
+│   ├── social_builder.py  blog_builder.py  website_builder.py
 
-│   ├── reel_builder.py  website_hero_builder.py  explainer_builder.py
+│   ├── ota_builder.py  email_builder.py  faq_builder.py
 
-├── templates/                   # ĐỊNH DẠNG ENGINE (Veo/Kling...) + preset thời lượng
+├── templates/                   # ĐỊNH HÌNH OUTPUT (section + rule kênh), KHÔNG dựng prompt
 
-│   ├── veo.yaml kling.yaml runway.yaml seedance.yaml
-
-│   ├── reel_15s.yaml reel_30s.yaml hero_video.yaml
+│   ├── facebook.yaml ... faq.yaml
 
 ├── schemas/
 
-│   ├── video_request.py video_package.py storyboard.py shot.py engine_prompt.py
+│   ├── content_request.py  content_output.py  social.py  blog.py  website.py  calendar.py
 
-└── renderers/{markdown_renderer.py, json_renderer.py}
+└── renderers/
 
-config/projects/<project>/video/
+    ├── markdown_renderer.py  json_renderer.py
 
-├── video_style.yaml platform_rules.yaml camera_rules.yaml
+config/projects/<project>/content/
 
-├── motion_rules.yaml character_rules.yaml motion_negatives.yaml
+├── content_pillars.yaml  tone_of_voice.yaml  platform_rules.yaml
 
-# (forbidden KHÔNG GIAN/BRAND không ở đây — single-source qua prompt M02)
+├── seo_keywords.yaml  calendar_rules.yaml
 
-Phân cấp: video_engine điều phối → concept/storyboard/shot/continuity là các stage → builders/ là preset theo loại video. Test dùng mock (kế thừa shared).
+# (forbidden_claims + cta KHÔNG ở đây — single-source tại prompt_rules/overlay của M01/M02)
+
+Phân cấp: content_engine điều phối → builders/ thực thi từng loại → campaign_generator lo đa kênh. Test dùng mock provider (kế thừa shared) — không tốn token.
 
 
-9. Video Request Model
+8. Content Request Model
 {
 
   "project": "venho_hotel",
 
-  "video_type": "social_reel",
+  "content_type": "facebook_post",
 
-  "topic": "lake view room morning",
-
-  "duration_seconds": 15,
-
-  "aspect_ratio": "9:16",
-
-  "platform": "instagram_reels",
-
-  "caption_language": "vi",
-
-  "include_character": false,
+  "topic": "morning at West Lake",
 
   "target_audience": "Vietnamese leisure guests",
 
+  "content_pillar": "Khám phá Hồ Tây",
+
+  "tone": "warm, clear, trustworthy",
+
+  "length": "medium",
+
+  "target_language": "vi",
+
+  "cta_type": "booking_soft",
+
   "source_knowledge": [
 
-    { "file": "VENHO_LAKE_VIEW_ROOM_DNA.json", "dna_version": "1.0", "hash": "sha256..." },
+    { "file": "VENHO_WESTLAKE_DNA.json", "dna_version": "1.0", "hash": "sha256..." },
 
-    { "file": "VENHO_WESTLAKE_DNA.json", "dna_version": "1.0", "hash": "sha256..." }
+    { "file": "VENHO_HOTEL_BRAND_DNA.json", "dna_version": "1.0", "hash": "sha256..." }
 
   ],
-
-  "target_engine": "veo",
-
-  "alt_engines": ["kling"],
 
   "validation_required": true
 
 }
 
-caption_language (không phải language) — rõ đây là ngôn ngữ caption/voiceover, KHÔNG phải ngôn ngữ prompt. target_engine = engine chính; alt_engines = biến thể tùy chọn (sửa mâu thuẫn "2 engine").
+target_language ∈ {vi, en, bilingual} (chuẩn hóa theo Module 02). source_knowledge là object có version/hash.
 
 
-10. Video Package Model
+9. Content Output Model
 {
 
   "contract_version": "1.0",
 
-  "module": "video_studio",
+  "module": "content_studio",
 
   "project": "venho_hotel",
 
-  "video_type": "social_reel",
+  "content_type": "facebook_post",
 
-  "duration_seconds": 15,
-
-  "aspect_ratio": "9:16",
-
-  "target_engine": "veo",
+  "target_language": "vi",
 
   "generated_at": "ISO",
 
   "source_knowledge": [
 
-    { "file": "VENHO_LAKE_VIEW_ROOM_DNA.json", "dna_version": "1.0", "hash": "sha256..." }
+    { "file": "VENHO_WESTLAKE_DNA.json", "dna_version": "1.0", "hash": "sha256..." }
 
   ],
 
-  "continuity_keys": ["black aluminum window frame", "white bedding", "narrow room geometry"],
+  "source_prompt": { "file": "...CONTENT_PROMPT_v1.0.json", "prompt_version": "1.0" },
 
-  "concept": { "title": "Morning by West Lake", "objective": "...", "tone": "warm, natural" },
+  "generator": { "provider": "claude", "model": "...", "temperature": 0.6 },
 
-  "storyboard": [
+  "title": "Một buổi sáng bên Hồ Tây",
 
-    { "scene_number": 1, "duration_seconds": 4,
+  "body": "...",
 
-      "description": "...", "camera_movement": "slow handheld push-in",
+  "cta": "...",
 
-      "visual_dna_required": ["narrow hotel room", "black aluminum window frame"],
+  "hashtags": ["#venhohotelhanoi", "#hotay", "#hanoi"],
 
-      "scene_prompt_ref": { "source": "module_02", "prompt_version": "1.0" },
+  "visual_note": "cần ảnh phòng lake view buổi sáng (ref: image prompt lake_view_room)",
 
-      "engine_prompt": "...(English)...",
+  "status": "draft",
 
-      "forbidden": [ { "rule": "no floor-to-ceiling glass wall", "source": "curated" } ] }
-
-  ],
-
-  "duration_check": { "sum_scenes": 15, "target": 15, "ok": true },
-
-  "continuity_check": { "all_scenes_have_keys": true },
-
-  "text_from_content": { "caption": "(từ M05)", "voiceover": null, "cta": "(từ M05)",
-
-                         "caption_language": "vi" },
-
-  "engine_prompt_full": "...(English)...",
-
-  "motion_negative_prompt": "no fast cuts, no shaky cam",
-
-  "validation": { "scope": "pre_render", "required": true, "status": "pending" }
+  "validation": { "required": true, "status": "pending" }
 
 }
+9.1 Content Manifest & Staleness (mới v1.1)
+content_manifest.json ghi mỗi content: id, type, source_knowledge_hashes, source_prompt_version,
 
-validation.scope = pre_render nói rõ chỉ kiểm gói, không kiểm video đã render.
+   target_language, generated_at, status.
 
+Staleness (advisory): khi DNA nguồn đổi hash → đánh cờ content cũ = "source_updated"
 
-11. Quan hệ với các Module
-11.1 Knowledge (M01): đọc DNA invariants + Face DNA để lấy continuity_keys; không sửa Knowledge. 11.2 Prompt (M02): M06 gọi M02 dựng scene prompt DNA-faithful (đa DNA); M06 không dựng prompt lại. 11.3 Validator (M03) — pre-render + degradation:
-
-CÓ NGAY:  prompt validation cho TỪNG scene prompt (M03 đã có) + kiểm continuity_keys.
-
-TƯƠNG LAI: video-package validation / post-render frame validation → chưa có
-
-           → bridge trả status "not_available", không chặn; ghi scope=pre_render.
-
-11.4 Automation (M04): điều phối Generate package → Validate (pre-render) → Save → (render ngoài thủ công) → sau này validate post-render. 11.5 Content (M05): caption/hook/voiceover/CTA ĐẾN TỪ M05 (qua content_bridge); M06 nhúng, KHÔNG tự sinh text.
+   (KHÔNG tự xóa/regenerate — nội dung theo ngày có thể vẫn dùng được; người quyết).
 
 
-12. Video Prompt Strategy
-Prompt cảnh (do M02 dựng) chia section: Scene · Subject · Environment · Camera · Motion · Lighting · Style · Continuity · Negative · Duration · Aspect Ratio.
-12.1 Ngôn ngữ (đã tách)
-engine_prompt (gửi Veo/Kling...): TIẾNG ANH (hard rule — engine tiêu thụ English).
+10. Quan hệ với các Module
+10.1 Knowledge Studio (M01): M05 KHÔNG đọc/sửa DNA trực tiếp cho content facts — DNA facts đến qua content-prompt của M02.
 
-caption / voiceover: theo caption_language (vi | en | bilingual), lấy từ M05.
+10.2 Prompt Studio (M02): M05 gọi M02 (qua prompt_bridge) để dựng content/SEO prompt, rồi THỰC THI prompt đó. M05 không dựng prompt.
 
-Metadata/CLI: tiếng Việt.
+10.3 Validator Studio (M03) — có degradation: M05 gửi draft sang M03 content validator (brand/tone/SEO/forbidden/CTA/hallucination). Nếu content validator của M03 chưa build (M03 xếp ở Phase sau) → bridge trả validation.status = "not_available", draft vẫn lưu, ghi rõ chưa validate. Không chặn tiến độ M05.
+
+10.4 Automation Studio (M04): M04 điều phối Generate → Validate → Save → Notify → (publish sau). M05 không tự publish.
+
+
+11. CLI
+venho content --project venho_hotel --type facebook --topic "morning at West Lake" --lang vi
+
+venho content --project venho_hotel --type blog --keyword "khách sạn gần Hồ Tây" --lang vi
+
+venho content calendar --project venho_hotel --month 2026-08
+
+venho content campaign --project venho_hotel --topic "lake view room" --channels facebook,instagram,threads
+
+Có --lang {vi,en,bilingual}; mặc định lấy từ platform_rules. Test có cờ --mock.
+
+
+12. Workflow chuẩn (đã sửa nguồn)
+ContentRequest
+
+↓
+
+Load content config (pillars, platform rules, tone)
+
+↓
+
+prompt_bridge → Module 02 dựng content/SEO prompt (đã gắn DNA + forbidden + CTA + lang)
+
+↓
+
+Builder THỰC THI prompt → prose (temp>0 có kiểm soát) + tạo hình theo kênh
+
+↓
+
+Tiền lọc forbidden (deterministic) 
+
+↓
+
+Render .md + .json (section cố định từ JSON)
+
+↓
+
+Validator bridge → Module 03 (hoặc not_available)
+
+↓
+
+Save draft + cập nhật manifest
 
 
 13. Markdown Output chuẩn
-# VIDEO PRODUCTION PACKAGE
+Social:
+
+# FACEBOOK POST DRAFT
 
 ## META
 
 ## SOURCE KNOWLEDGE
 
-## CONTINUITY KEYS
+## SOURCE PROMPT
 
-## VIDEO OBJECTIVE
+## AUDIENCE
 
-## TARGET PLATFORM / ENGINE
+## HOOK
 
-## CONCEPT
+## BODY
 
-## STORYBOARD (per scene: duration, DNA required, camera, forbidden)
+## CTA
 
-## SHOT LIST
+## HASHTAGS
 
-## ENGINE PROMPT (English)
+## VISUAL NOTE
 
-## MOTION NEGATIVE
+## VALIDATION STATUS
 
-## CONTINUITY RULES
+Blog:
 
-## CHARACTER RULES (nếu có, từ Face DNA)
+# BLOG ARTICLE DRAFT
 
-## CAMERA / MOTION RULES
+## META
 
-## CAPTION / VOICEOVER (từ Content Studio)
+## SOURCE KNOWLEDGE
 
-## DURATION CHECK
+## SEO INTENT
 
-## VALIDATION (scope: pre_render)
+## KEYWORDS
+
+## TITLE OPTIONS
+
+## META DESCRIPTION
+
+## OUTLINE
+
+## ARTICLE
+
+## FAQ
+
+## INTERNAL LINKS
+
+## CTA
+
+## VALIDATION STATUS
 
 
 14. Kế hoạch phát triển theo GIAI ĐOẠN
 GIAI ĐOẠN 0 — Nền tảng & hợp đồng
-Step 0 — Module setup. Cây video_studio/, config/video/, test folder. DoD: import không lỗi; README; nối shared (mock).
+Step 0 — Module setup. Cây content_studio/, config/content/, test folder. DoD: import không lỗi; README; nối shared (gồm mock).
 
-Step 1 — Request/Package Schema. schemas/{video_request, video_package, storyboard, shot}.py. DoD: validate request+package mẫu; contract_version; source_knowledge {file,version,hash}; continuity_keys; caption_language; duration_check/continuity_check fields.
+Step 1 — Request/Output Schema. schemas/{content_request, content_output}.py. DoD: validate request+output mẫu; có contract_version; source_knowledge dạng {file,version,hash}; target_language enum.
 
-Step 2 — Project Video Config. config/.../video/*.yaml (style, platform, camera, motion, character, motion_negatives). DoD: load được; fallback; KHÔNG chứa forbidden không gian/brand (single-source qua M02); không hard-code Ven Hồ.
+Step 2 — Project Content Config. config/.../content/*.yaml (pillars, tone, platform_rules, seo_keywords, calendar_rules). DoD: load được; fallback khi thiếu; KHÔNG chứa forbidden_claims/cta (single-source ở prompt layer); không hard-code Ven Hồ.
 GIAI ĐOẠN 1 — Cầu nối & ngữ cảnh
-Step 3 — Prompt Bridge (M02) + Content Bridge (M05). prompt_bridge.py, content_bridge.py. DoD: prompt_bridge gọi M02 dựng scene prompt (đa DNA, đã có forbidden/character_lock); content_bridge lấy caption/voiceover/CTA từ M05; thiếu Knowledge → Missing, không bịa.
+Step 3 — Prompt Bridge (gọi Module 02). prompt_bridge.py. DoD: gọi M02 dựng content-prompt qua adapter; nhận prompt.json (đã có DNA+forbidden+CTA+lang); thiếu Knowledge → báo Missing, không bịa.
 
-Step 4 — Video Context Loader. video_context.py. DoD: nạp config video + Face DNA/invariants → dựng continuity_keys; báo missing đúng.
-GIAI ĐOẠN 2 — Chuỗi thời gian & MVP
-Step 5 — Concept Builder. DoD: objective/tone/platform/source từ request. Step 6 — Storyboard Builder (+ duration check). DoD: 3–5 cảnh cho 15s; mỗi cảnh có duration + visual_dna_required; Σ duration = duration_seconds; không vi phạm forbidden. Step 7 — Shot List Builder. DoD: mỗi scene có camera angle/movement/motion/lighting notes. Step 8 — Scene Prompt qua M02 + Engine Formatter. engine_formatter.py. DoD: mỗi cảnh gọi M02 lấy prompt DNA-faithful; format theo target_engine (+ alt_engines); engine_prompt tiếng Anh; AI không viết prompt tự do (M02 lo cấu trúc). Step 9 — Continuity Checker. continuity_checker.py. DoD: continuity_keys từ DNA invariants (+ face-lock nếu character); khẳng định mọi cảnh chứa đủ keys; thiếu → fail cảnh; character continuity khi include_character. Step 10 — Renderer. DoD: .md+.json; section §13 cố định; round-trip. Step 11 — Validator Bridge (pre-render + degradation). validator_bridge.py. DoD: gửi từng scene prompt sang M03 prompt validation + kiểm continuity; video-package validation chưa có → not_available; ghi scope=pre_render. Step 12 — MVP Lifestyle Reel. ◀ MỐC GIÁ TRỊ ĐẦU TIÊN Test: lake view room morning, 15s, 9:16, Veo, nguồn Lake View Room + West Lake + Brand DNA. DoD: full package; storyboard hợp lý; Σ duration=15; mỗi cảnh có continuity_keys; prompt đúng DNA (qua M02); không luxury/không glass wall; caption từ M05; validator pre-render pass hoặc not_available; .md+.json + manifest. ➜ Dừng, review.
-GIAI ĐOẠN 3 — Nhân vật (nối Face DNA/07F)
-Step 13 — Character Video Builder. builders/character_video_builder.py. DoD: character rules TỪ Face DNA (M01); face-lock là continuity_key bắt buộc; identity continuity mọi cảnh; pre-render validate face-lock trong prompt (M03); ghi rõ post-render drift NGOÀI phạm vi; outfit/expression/motion rules.
-GIAI ĐOẠN 4 — Mở rộng loại & vận hành
-Step 14 — Reel Builder. DoD: 15s+30s; hook visual; caption overlay (từ M05); CTA end card. Step 15 — Website Hero Builder. DoD: motion nhẹ; brand-safe; no hard sale; đúng Location DNA. Step 16 — Explainer Builder. DoD: script + shot list + voiceover (từ M05) + CTA + source. Step 17 — Manifest + CLI. video_manifest.py, cli.py. DoD: manifest ghi source hash + staleness; venho video chọn project/type/topic/duration/engine; --lang, --mock; lưu đúng folder.
+Step 4 — Content Context Loader. content_context.py. DoD: nạp config nội dung + prompt từ bridge cho một FB post; báo missing đúng.
+GIAI ĐOẠN 2 — MVP Social
+Step 5 — Social Builder. builders/social_builder.py, templates facebook/instagram/threads. DoD: thực thi content-prompt → FB/IG/Threads draft; tạo hình theo kênh (length/hashtag); temp>0 có kiểm soát; tiền lọc forbidden; .md+.json.
+
+Step 6 — Renderer. renderers/{markdown,json}_renderer.py. DoD: section cố định từ JSON; round-trip; AI không tự bịa bố cục.
+
+Step 7 — Validator Bridge (có degradation). content_validator_bridge.py. DoD: gửi draft sang M03; nhận pass/warning/fail; M03 content validator chưa có → not_available, không chặn; ghi status vào output.
+
+Step 8 — MVP Acceptance (Social). ◀ MỐC GIÁ TRỊ ĐẦU TIÊN Test: topic "Morning at West Lake", 3 kênh, nguồn West Lake DNA + Brand DNA (qua prompt M02). DoD: 3 draft đúng tone tiếng Việt; không bịa (source_prompt truy được); CTA hợp; forbidden sạch; validator không fail (hoặc not_available); .md+.json + manifest. ➜ Dừng, review.
+GIAI ĐOẠN 3 — Mở rộng loại nội dung
+Step 9 — Blog SEO Builder. DoD: title/meta/outline/article/FAQ/CTA; keyword không nhồi; theo target_language. Step 10 — Website Copy Builder. DoD: hero/about/room/location/CTA/SEO metadata; hỗ trợ bilingual. Step 11 — OTA Builder. DoD: short/long/facilities/location/guest-fit; Agoda+Google+direct; không claim quá mức. Step 12 — FAQ Builder. DoD: FAQ từ Knowledge; có source; không bịa chính sách. Step 13 — Email Builder. DoD: subject options/preview/body/CTA; KHÔNG gửi thật.
+GIAI ĐOẠN 4 — Đa kênh, lịch & vận hành
+Step 14 — Campaign Generator (message-core). campaign_generator.py. DoD: 1 topic → 1 message-core → FB+IG+Threads khác câu chữ, cùng thông điệp & CTA; không lặp nguyên văn. Step 15 — Content Calendar. content_calendar.py, calendar_rules.yaml. DoD: lịch theo tháng từ cadence + pillar; gắn channel/asset/CTA; .md+.json. Step 16 — Manifest + CLI. content_manifest.py, cli.py. DoD: manifest ghi source hash + staleness (source_updated); venho content + calendar + campaign chạy; --lang, --mock; lưu đúng folder.
 
 
-15. Definition of Done — Module 06
-- Sinh concept/storyboard/shot list/scene prompt (qua M02)/negative/continuity/package.
+15. Definition of Done — Module 05
+- Sinh được social, blog SEO, website, OTA, FAQ, email, calendar; đa kênh campaign.
 
-- Prompt cảnh đi QUA M02 (DNA-faithful, đa DNA); M06 không dựng prompt lại.
+- MỌI nội dung đi QUA content-prompt của M02 (không dựng prompt lại, không bịa DNA).
 
-- Continuity_keys có trong mọi cảnh; Σ duration khớp; engine_prompt tiếng Anh.
+- Output .md+.json; contract_version; source_knowledge {file,version,hash}; source_prompt; validation status.
 
-- Caption/voiceover từ M05; character rules từ Face DNA + 07F.
+- Forbidden phòng (qua prompt) + tiền lọc (M05) + phát hiện (M03).
 
-- Validate scope=pre_render (post-render là tương lai); bridge degradation.
+- target_language chuẩn hóa; hỗ trợ bilingual; OTA = Agoda+Google+direct.
 
-- .md+.json; contract_version; source {file,version,hash}; manifest+staleness.
-
-- Test mock; project-agnostic; KHÔNG render/publish.
+- content_manifest + staleness; test bằng mock; project-agnostic; KHÔNG tự publish.
 
 
 16. Rủi ro chính
-1. Prompt dài thiếu cấu trúc   → concept→storyboard→shot→(M02) prompt; section rõ
+1. Content bịa            → luôn qua prompt M02 (có DNA); Missing Knowledge → dừng; validator M03
 
-2. Sai DNA không gian          → prompt qua M02 (DNA-faithful); validator pre-render
+2. Trùng giữa các kênh    → campaign một message-core + platform rules; không sinh N độc lập
 
-3. Trôi Linh An                → face-lock là continuity_key mọi cảnh; nhưng post-render
+3. Trùng vai với M02      → M02 dựng prompt, M05 thực thi; M05 không dựng prompt lại
 
-                                 drift NGOÀI phạm vi — thừa nhận, không giả vờ chặn được
+4. SEO sáo rỗng           → keyword+intent rõ; FAQ từ Knowledge; không nhồi
 
-4. Trùng dựng prompt với M02   → M02 dựng prompt cảnh; M06 lo temporal+package
+5. CTA quá mạnh           → CTA rules ở prompt layer; cta_type soft/direct/informational
 
-5. Video quá luxury            → forbidden không gian qua M02; motion negatives ở config
+6. Forbidden lọt lưới     → phòng (prompt) + tiền lọc (M05) + phát hiện (M03)
 
-6. Ngôn ngữ sai                → engine_prompt English; caption theo caption_language
+7. Nội dung lỗi thời      → manifest + cờ source_updated (advisory)
 
-7. Caption trùng M05           → text từ M05; M06 chỉ nhúng
+8. Hard-code Ven Hồ       → config project; core agnostic
 
-8. Thời lượng lệch             → Σ scene_duration = duration_seconds (bắt buộc)
+9. Publish nhầm           → chỉ draft; publish thuộc M04; mặc định status=draft
 
-9. Hard-code Ven Hồ            → config project; core agnostic
-
-10. Publish nhầm               → chỉ package; publish thuộc M04; status=draft
-
-11. Chờ video validation M03   → bridge not_available; dùng prompt-validation per cảnh
+10. Chờ M03 mới chạy được → bridge degradation: not_available, không chặn
 
 
 17. Thứ tự ưu tiên thực tế
-Nền tảng:  Schema → Video Config → Prompt/Content Bridge → Context (continuity_keys)
+Nền tảng:  Schema → Content Config → Prompt Bridge → Context Loader
 
-Chuỗi:     Concept → Storyboard(+duration) → Shot List → Scene Prompt(M02)+Formatter
+MVP:       Social Builder → Renderer → Validator Bridge → Acceptance (Social)
 
-           → Continuity Checker → Renderer → Validator Bridge → MVP Lifestyle Reel
+Mở rộng:   Blog → Website → OTA → FAQ → Email
 
-Nhân vật:  Character Video (Face DNA + 07F)
+Đa kênh:   Campaign → Calendar → Manifest/CLI
 
-Mở rộng:   Reel → Hero → Explainer → Manifest/CLI
-
-Bắt đầu: Lake View Room Morning — 15s vertical reel (gần Ven Hồ nhất, dễ kiểm DNA).
+Bắt đầu bằng Social — gần nhất nhu cầu hiện tại của Ven Hồ (Linh An làm mặt social).
 
 
 18. Kết luận
-Video Studio là cầu nối Knowledge → sản xuất video — nhưng trung thực về ranh giới: nó không dựng prompt (M02 làm), không tạo text (M05 làm), không render (engine ngoài), không đảm bảo kết quả render (chỉ tối đa hóa cơ hội qua continuity + negative). Nó tạo lớp chỉ dẫn có cấu trúc để video AI hoạt động nhất quán hơn.
+Content Studio là Knowledge-based Content Production Engine — nhưng trung thực về ranh giới: nó không dựng prompt (M02 làm), không tạo ảnh (công cụ ngoài), không validate điểm số (M03 làm), không publish (M04/ người làm). Nó THỰC THI prompt tri thức thành nội dung thật.
 
 Điểm cần giữ tuyệt đối:
 
-M06 lo THỜI GIAN/TƯỜNG THUẬT + ĐÓNG GÓI; M02 dựng prompt cảnh DNA-faithful.
+M05 THỰC THI content-prompt của M02; không dựng prompt lại, không bịa DNA.
 
-continuity_keys phải xuất hiện trong MỌI cảnh — đây là cách giữ nhất quán trước render.
+Forbidden phòng ngừa trong sinh, không chỉ phát hiện khi validate.
 
-Render ở engine NGOÀI; M06 validate GÓI, không đảm bảo video render.
+Đây là module duy nhất AI được sáng tạo (temp>0) — nhưng nguồn & cấu trúc vẫn tất định.
 
-Character từ Face DNA + 07F; caption/voiceover từ M05; engine_prompt tiếng Anh.
+source_knowledge có version/hash; manifest theo dõi staleness.
 
-Chỉ tạo package; không render/publish. Ven Hồ là project đầu tiên, không phải lõi.
+Chỉ tạo draft; publish thuộc module/thao tác khác.
+
+Ven Hồ là project đầu tiên, không phải lõi.
+
+19. Trạng thái triển khai — 2026-07-09
+STATUS: COMPLETE theo phạm vi Module 05 v1.1, với prose generator hiện ở chế độ deterministic/mock để test không tốn token và giữ contract ổn định.
+
+ĐÃ HOÀN THÀNH:
+
+- Step 0 — Module setup: content_studio/ + README + package discovery trong pyproject.
+
+- Step 1 — Request/Output Schema: ContentRequest, ContentOutput, source_knowledge, source_prompt, validation, payload theo loại nội dung.
+
+- Step 2 — Project Content Config: config/projects/venho_hotel/content/{content_pillars,tone_of_voice,platform_rules,seo_keywords,calendar_rules}.yaml; không chứa forbidden_claims/cta_rules.
+
+- Step 3 — Prompt Bridge: content_studio/prompt_bridge.py gọi Module 02 build_content_prompt, lưu prompt .md+.json.
+
+- Step 4 — Content Context Loader: content_studio/content_context.py nạp config + prompt từ bridge, báo missing rõ.
+
+- Step 5 — Social Builder: Facebook/Instagram/Threads/TikTok caption qua builders/social_builder.py; có prefilter forbidden.
+
+- Step 6 — Renderer: renderers/markdown_renderer.py và json_renderer.py; markdown sinh từ JSON/schema, không để AI tự định bố cục.
+
+- Step 7 — Validator Bridge: content_validator_bridge.py gọi M03 validate_content; có degradation not_available nếu validator không có; ghi report khi có.
+
+- Step 8 — MVP Social Acceptance: đã generate topic "Morning at West Lake"; output .md+.json + manifest; validator pass.
+
+- Step 9 — Blog SEO Builder: title/meta/slug/keywords/outline/article/FAQ/internal links/CTA.
+
+- Step 10 — Website Copy Builder: hero/about/room/location/CTA/SEO metadata; hỗ trợ bilingual.
+
+- Step 11 — OTA Builder: Agoda + Google Business + direct; short/long/facilities/location/guest-fit/rules notes.
+
+- Step 12 — FAQ Builder: FAQ có source_prompt/source_knowledge; không tự bịa chính sách.
+
+- Step 13 — Email Builder: subject options/preview/body/CTA/follow-up; không gửi thật.
+
+- Step 14 — Campaign Generator: campaign_generator.py tạo 1 message-core rồi tạo hình theo FB/IG/Threads.
+
+- Step 15 — Content Calendar: content_calendar.py sinh lịch theo month từ cadence + pillars; .md+.json.
+
+- Step 16 — Manifest + CLI: content_manifest.py ghi manifest + staleness source_updated; cli.py có generate/campaign/calendar.
+
+ACCEPTANCE ĐÃ CHẠY:
+
+- Social: data/projects/venho_hotel/content/facebook/2026-07-09_morning-at-west-lake.md — validation pass.
+
+- Blog: data/projects/venho_hotel/content/blog/2026-07-09_morning-at-west-lake.md — validation pass.
+
+- Website: data/projects/venho_hotel/content/website/2026-07-09_ven-ho-website-copy.md — validation pass.
+
+- OTA: data/projects/venho_hotel/content/ota/2026-07-09_ven-ho-ota-description.md — validation pass.
+
+- FAQ: data/projects/venho_hotel/content/faq/2026-07-09_ven-ho-faq.md — validation pass.
+
+- Email: data/projects/venho_hotel/content/email/2026-07-09_morning-at-west-lake-email.md — validation pass.
+
+- Campaign: topic "Lake view room" -> facebook/instagram/threads — validation pass.
+
+- Calendar: data/projects/venho_hotel/content/calendar/2026-08_calendar.md — 32 entries.
+
+TEST STATUS:
+
+- python3 -m pytest tests/test_content_studio.py tests/test_content_prompt_builder.py tests/test_prompt_contract_schema.py tests/test_validator_studio.py
+
+- Result: 41 passed.
+
+LƯU Ý PHẠM VI:
+
+- Content Studio đã hoàn thành workflow/module contract end-to-end, nhưng câu chữ prose hiện dùng deterministic/mock generator. Bước production tiếp theo là thay generator_fn bằng provider AI thật (OpenAI/Claude) trong cùng contract, giữ nguyên prompt bridge, prefilter, renderer, validator, manifest và CLI.
 
 END OF DOCUMENT v1.1 (QC Consolidated)
-
