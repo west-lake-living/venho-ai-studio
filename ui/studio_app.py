@@ -13,6 +13,7 @@ from __future__ import annotations
 import contextlib
 import html
 import io
+import subprocess
 import sys
 import threading
 import time
@@ -58,11 +59,82 @@ def _list_subjects(project: str) -> list[str]:
     return names
 
 
-def _list_media_subfolders(project: str) -> list[str]:
-    media_dir = BASE_DIR / "data" / "projects" / project / "media"
-    if not media_dir.is_dir():
-        return []
-    return sorted(d.name for d in media_dir.iterdir() if d.is_dir())
+def _resolve_repo_path(path: str) -> Path:
+    resolved = Path(path)
+    return resolved if resolved.is_absolute() else BASE_DIR / resolved
+
+
+def _save_uploaded_images(uploaded_files: list, target_dir: Path) -> list[Path]:
+    target_dir.mkdir(parents=True, exist_ok=True)
+    saved_paths = []
+    for uploaded_file in uploaded_files:
+        filename = Path(uploaded_file.name).name
+        if not filename:
+            continue
+        destination = target_dir / filename
+        destination.write_bytes(uploaded_file.getbuffer())
+        saved_paths.append(destination)
+    return saved_paths
+
+
+def _image_input_selector(default_dir: str, key_prefix: str) -> Path | None:
+    source = st.radio(
+        "Nguồn ảnh input",
+        ["Folder có sẵn", "Upload ảnh"],
+        horizontal=True,
+        key=f"{key_prefix}_source",
+    )
+    input_dir = st.text_input("Folder ảnh input", value=default_dir, key=f"{key_prefix}_input_dir")
+    if not input_dir.strip():
+        return None
+
+    input_path = _resolve_repo_path(input_dir)
+    if source == "Upload ảnh":
+        uploaded_files = st.file_uploader(
+            "Upload ảnh",
+            type=["jpg", "jpeg", "png", "webp", "heic"],
+            accept_multiple_files=True,
+            key=f"{key_prefix}_uploader",
+        )
+        if uploaded_files:
+            saved_paths = _save_uploaded_images(uploaded_files, input_path)
+            if saved_paths:
+                st.success(f"Đã lưu {len(saved_paths)} ảnh vào `{input_path}`.")
+    return input_path
+
+
+def _provider_selector(key: str) -> str | None:
+    provider = st.selectbox(
+        "Provider",
+        ["mock", "openai", "claude", "config mặc định"],
+        help="Chọn mock để test offline không cần API key. Chỉ chọn openai/claude khi đã cấu hình credentials.",
+        key=key,
+    )
+    return None if provider == "config mặc định" else provider
+
+
+def _mode_a_output_path(output_dir: str) -> Path:
+    if output_dir.strip():
+        return _resolve_repo_path(output_dir)
+    return BASE_DIR / "data" / "projects" / "_inbox" / "output"
+
+
+def _mode_b_output_path(project: str) -> Path:
+    return BASE_DIR / "data" / "projects" / project / "knowledge"
+
+
+def _open_folder(path: Path) -> tuple[bool, str | None]:
+    path.mkdir(parents=True, exist_ok=True)
+    try:
+        if sys.platform == "darwin":
+            subprocess.run(["open", str(path)], check=True)
+        elif sys.platform.startswith("win"):
+            subprocess.run(["cmd", "/c", "start", "", str(path)], check=True)
+        else:
+            subprocess.run(["xdg-open", str(path)], check=True)
+    except (OSError, subprocess.CalledProcessError) as exc:
+        return False, str(exc)
+    return True, None
 
 
 def _run_with_live_log(target, kwargs: dict) -> tuple[dict | None, str | None, list[str]]:
@@ -1108,13 +1180,13 @@ st.set_page_config(page_title="VENHO AI Studio", page_icon="🧬", layout="wide"
 mode = st.sidebar.radio(
     "Chọn màn hình",
     [
-        "M10 Operating Center",
+        "Operating System",
         "Mode A — Observe (bất kỳ ảnh nào)",
         "Mode B — Build DNA (nhiều ảnh cùng 1 subject)",
     ],
 )
 
-if mode.startswith("M10 Operating"):
+if mode.startswith("Operating System"):
     _render_dashboard()
 
 elif mode.startswith("Mode A"):
@@ -1123,33 +1195,37 @@ elif mode.startswith("Mode A"):
     st.header("Mode A — Observe")
     st.caption("Mỗi ảnh → 1 file quan sát .md + .json. Không tạo DNA.")
 
-    input_dir = st.text_input("Folder ảnh input", value="data/projects/_inbox/media")
+    input_path = _image_input_selector("data/projects/_inbox/media", "mode_a")
     output_dir = st.text_input("Folder output (để trống = mặc định trong settings.yaml)", value="")
-    provider = st.selectbox("Provider (để trống = dùng config mặc định)", ["", "openai", "claude", "mock"])
+    output_path = _mode_a_output_path(output_dir)
+    st.caption(f"Output sẽ lưu tại: `{output_path}`")
+    if st.button("Mở folder output", key="mode_a_open_output"):
+        opened, error = _open_folder(output_path)
+        if opened:
+            st.success(f"Đã mở folder output: `{output_path}`")
+        else:
+            st.error(f"Không mở được folder output: {error}")
+    provider = _provider_selector("mode_a_provider")
 
     if st.button("▶ Chạy Mode A", type="primary"):
-        if not input_dir.strip():
+        if input_path is None:
             st.error("Cần nhập folder ảnh input.")
+        elif not input_path.is_dir():
+            st.error(f"Không tìm thấy folder: {input_path}")
         else:
-            input_path = Path(input_dir)
-            if not input_path.is_absolute():
-                input_path = BASE_DIR / input_path
-            if not input_path.is_dir():
-                st.error(f"Không tìm thấy folder: {input_path}")
-            else:
-                kwargs = {
-                    "input_dir": input_path,
-                    "output_dir": (Path(output_dir) if output_dir.strip() else None),
-                    "provider": (provider or None),
-                }
-                result, error, _ = _run_with_live_log(run_mode_a, kwargs)
-                if error:
-                    st.error(f"Lỗi: {error}")
-                elif result:
-                    st.success(f"Xong! {len(result)} ảnh đã xử lý.")
-                    for i, paths in enumerate(result):
-                        with st.expander(f"Ảnh {i + 1}: {Path(paths['md']).stem}"):
-                            _show_output_paths(paths)
+            kwargs = {
+                "input_dir": input_path,
+                "output_dir": output_path,
+                "provider": provider,
+            }
+            result, error, _ = _run_with_live_log(run_mode_a, kwargs)
+            if error:
+                st.error(f"Lỗi: {error}")
+            elif result:
+                st.success(f"Xong! {len(result)} ảnh đã xử lý.")
+                for i, paths in enumerate(result):
+                    with st.expander(f"Ảnh {i + 1}: {Path(paths['md']).stem}"):
+                        _show_output_paths(paths)
 
 else:
     st.title("VENHO AI Studio")
@@ -1167,15 +1243,18 @@ else:
     subject_manual = st.text_input("Hoặc nhập subject khác", value="")
     resolved_subject = subject_manual.strip() or subject
 
-    media_subfolders = _list_media_subfolders(project)
-    default_input = (
-        f"data/projects/{project}/media/{resolved_subject}"
-        if resolved_subject in media_subfolders
-        else ""
-    )
-    input_dir = st.text_input("Folder ảnh input", value=default_input)
+    default_input = f"data/projects/{project}/media/{resolved_subject}"
+    input_path = _image_input_selector(default_input, "mode_b")
+    output_path = _mode_b_output_path(project)
+    st.caption(f"Output sẽ lưu tại: `{output_path}`")
+    if st.button("Mở folder output", key="mode_b_open_output"):
+        opened, error = _open_folder(output_path)
+        if opened:
+            st.success(f"Đã mở folder output: `{output_path}`")
+        else:
+            st.error(f"Không mở được folder output: {error}")
     dna_version = st.text_input("DNA version", value="1.0")
-    provider = st.selectbox("Provider (để trống = dùng config mặc định)", ["", "openai", "claude", "mock"])
+    provider = _provider_selector("mode_b_provider")
 
     st.warning(
         "⚠ Xác nhận (v2.4 §2.1): TẤT CẢ ảnh trong folder trên phải thuộc ĐÚNG 1 "
@@ -1188,12 +1267,9 @@ else:
             st.error("Cần chọn hoặc nhập subject.")
         elif not confirmed_one_subject:
             st.error("Phải xác nhận folder chỉ chứa 1 tier/subject trước khi chạy (v2.4 §2.1).")
-        elif not input_dir.strip():
+        elif input_path is None:
             st.error("Cần nhập folder ảnh input.")
         else:
-            input_path = Path(input_dir)
-            if not input_path.is_absolute():
-                input_path = BASE_DIR / input_path
             if not input_path.is_dir() or not any(input_path.iterdir()):
                 st.error(f"Folder rỗng hoặc không tồn tại: {input_path}")
             else:
@@ -1202,7 +1278,7 @@ else:
                     "subject": resolved_subject,
                     "input_dir": input_path,
                     "dna_version": dna_version,
-                    "provider": (provider or None),
+                    "provider": provider,
                 }
                 result, error, _ = _run_with_live_log(run_mode_b, kwargs)
                 if error:

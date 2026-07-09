@@ -372,11 +372,11 @@ AgentRequest
 
 ---
 
-## 11. M10 Operating Center — hoàn thành 2026-07-09
+## 11. M10 Workspace / Operating System — hoàn thành 2026-07-09
 
-**Status:** ✅ COMPLETE — Streamlit Operating Center v2.0 Home + workflow pages
+**Status:** ✅ COMPLETE — Streamlit Workspace v4.0 + Operating System shell
 **Plan:** `VENHO_AI_STUDIO_Module_10_Dashboard_Plan_v1_2.md`  
-**Design:** `M10_OPERATING_CENTER_DESIGN_v2.0_final.md`
+**Design:** `M10_WORKSPACE_UI_SPEC_v4.0.md`
 **Tests:** `python3 -m pytest -q` → 430/430 pass, 0 API call
 **Module tests:** 7 tests — `tests/test_dashboard.py`
 
@@ -384,25 +384,32 @@ AgentRequest
 
 M10 mở rộng Studio Shell Streamlit hiện có (`ui/studio_app.py`) thay vì tạo Next/Nuxt/Vite app riêng. Lý do: repo đã có local-first Studio Shell tại `localhost:8501`, nên M10 giữ một entrypoint duy nhất và tránh thêm stack mới.
 
-Sau bản `M10_OPERATING_CENTER_DESIGN_v2.0_final.md`, M10 không được xem là technical dashboard nữa. M10 là Operating Center cho founder: OS-first, workflow-first, action-first, quyết định nhanh trong 5 giây, Home ưu tiên việc cần làm tiếp theo thay vì module internals.
+Sau bản `M10_WORKSPACE_UI_SPEC_v4.0.md`, M10 không được xem là technical dashboard nữa. M10 là Workspace / Operating System cho founder: OS-first, workflow-first, action-first, quyết định nhanh trong 5 giây, Home ưu tiên việc cần làm tiếp theo thay vì module internals.
 
 ### Core files
 
 - `dashboard/gateway.py` — read-only adapter đọc M01-M09 config/artifacts và tạo `DashboardSnapshot` + `operating_center` v2 fields (`header`, `current_focus`, `today_progress`, `quick_actions`).
 - `dashboard/__init__.py` — module metadata (`MODULE_ID = "M10"`).
-- `ui/studio_app.py` — render `M10 Operating Center` với navigation Home, Projects, Workbench, Agents, Publishing, Insights, System.
+- `ui/studio_app.py` — render `Operating System` với navigation Workspace, Projects, Workbench, Publishing, Settings; đồng thời giữ Studio Shell Mode A / Mode B.
 - `docs/how_to_run_studio_ui.md` — hướng dẫn chạy shell + dashboard.
 
-### Home UI v2.0
+### Workspace UI v4.0
 
-- Header: `VENHO AI STUDIO (Operating Center)`, project `Ven Hồ Hotel`, status ACTIVE, last sync, mode Read-only, build v2.0.
-- Priority order: Current Focus → 4 status cards → Today Task Center → Quick Actions → Pipeline Flow → Alerts → System Health → Recent Activity.
-- Exactly 4 summary cards: Today's Tasks, System Security, Automation Engine, Publishing Queue.
-- Today Task Center groups High/Medium/Low/Completed tasks with action labels.
-- Quick Actions: + Build DNA, + Generate Prompt, + Validate, + Prepare Publish, + Create Video, + Run Automation.
-- Pipeline order: Observe → DNA → Prompt → Validate → Automation → Video → Publishing → Analytics.
-- Pipeline is rendered as visual node flow, not table rows.
-- Raw JSON/debug details moved to `System → JSON Viewer`; Home contains no raw JSON.
+- Header: `VENHO AI STUDIO (Workspace)`, project `Ven Hồ Hotel`, last sync, notifications/user affordances, build v4.0.
+- Sidebar label: `Operating System` (không hiển thị `M10 Operating Center` ở leftframe).
+- Priority order: Current Work → Needs Review → Ready to Publish → Quick Actions → Recent Activity.
+- Home không hiển thị pipeline, analytics, system health, large KPI counters, raw JSON.
+- Pipeline/workflow nằm trong Workbench; raw JSON/debug/system tools nằm trong Settings.
+- Quick Actions: Build DNA, Generate Prompt, Validate, Publish, Video, Automation.
+
+### Studio Shell upload/output UX
+
+- Mode A có `Nguồn ảnh input`: Folder có sẵn hoặc Upload ảnh; upload lưu vào `data/projects/_inbox/media`.
+- Mode B có `Nguồn ảnh input`: Folder có sẵn hoặc Upload ảnh; upload lưu vào `data/projects/{project}/media/{subject}`.
+- Mode A/B provider mặc định là `mock` để test offline, không cần `OPENAI_API_KEY`; `openai`, `claude`, `config mặc định` vẫn chọn được khi có credentials.
+- Mode A hiển thị output path và nút `Mở folder output`; mặc định `data/projects/_inbox/output`.
+- Mode B hiển thị output path và nút `Mở folder output`; mặc định `data/projects/{project}/knowledge`.
+- Nút mở folder tự tạo folder nếu chưa có và mở Finder trên macOS.
 
 ### Workflow pages v2.0
 
