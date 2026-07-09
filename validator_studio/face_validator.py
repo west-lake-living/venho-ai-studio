@@ -1,0 +1,141 @@
+from __future__ import annotations
+
+import json
+from pathlib import Path
+from typing import Any
+
+from shared.vision.client import VisionClient
+from shared.vision.structured import extract_json
+
+from validator_studio.observe_adapter import ObservationSchemaError
+from validator_studio.schemas.face_validation import FaceGateResult, FaceValidationObservation
+from validator_studio.schemas.validation_base import ArtifactRef, ObserverInfo, SourceKnowledgeRef, ValidationReport
+from validator_studio.scoring import score_face_observation
+from validator_studio.utils import BASE_DIR, find_dna_path, load_json, load_yaml, sha256_file, validation_config
+
+
+def _load_face_rubric(project: str) -> dict:
+    config = validation_config()
+    rubric_file = config.get("face_validation", {}).get(
+        "rubric_file",
+        f"config/projects/{project}/face_qc_rubric.yaml",
+    )
+    path = BASE_DIR / rubric_file
+    data = load_yaml(path)
+    rubric = data.get("face_qc_rubric", data)
+    if rubric.get("grounding") is not False:
+        raise ValueError("Face validation requires grounding=false.")
+    return rubric
+
+
+def _mock_observe_face(image_path: Path, rubric: dict) -> FaceValidationObservation:
+    forced_fail = any(flag in image_path.stem.lower() for flag in ("bad", "fail", "wrong", "reject"))
+    gates = []
+    for index, gate in enumerate(rubric.get("binary_gates", [])):
+        gate_id = str(gate.get("id", f"gate_{index + 1}"))
+        failed = forced_fail and index == 0
+        gates.append(FaceGateResult(
+            gate=gate_id,
+            passed=not failed,
+            reason="Mock forced face gate failure from artifact filename." if failed else "Mock face gate passed against fictional Face DNA.",
+            evidence=str(gate.get("description", "")),
+        ))
+    weighted = {category: 88.0 for category in rubric.get("weighted", {})}
+    return FaceValidationObservation(
+        gates=gates,
+        weighted_scores=weighted,
+        notes=[
+            "mock face observation; no network calls",
+            "grounding/web search disabled; no real-person or celebrity matching performed",
+        ],
+    )
+
+
+def _assert_face_observation_contract(payload: Any) -> None:
+    if not isinstance(payload, dict):
+        raise ObservationSchemaError("Face observe must return a JSON object")
+    forbidden = {"overall_score", "verdict", "recommendation", "identity_match", "celebrity_match"}
+    stack = [payload]
+    while stack:
+        item = stack.pop()
+        if isinstance(item, dict):
+            for key, value in item.items():
+                if key in forbidden:
+                    raise ObservationSchemaError(f"Face observe must not return field: {key}")
+                stack.append(value)
+        elif isinstance(item, list):
+            stack.extend(item)
+
+
+def _build_face_observe_prompt(dna: dict, rubric: dict) -> str:
+    prompt_path = BASE_DIR / "validator_studio" / "prompts" / "observe_face_against_dna.md"
+    base_prompt = prompt_path.read_text(encoding="utf-8")
+    payload = {
+        "face_dna": {
+            "project": dna.get("project"),
+            "subject": dna.get("subject"),
+            "invariant": dna.get("invariant", []),
+            "variable": dna.get("variable", []),
+            "forbidden": dna.get("forbidden", []),
+        },
+        "rubric_07f": rubric,
+    }
+    return (
+        f"{base_prompt}\n\n"
+        "VALIDATION INPUT JSON:\n"
+        f"{json.dumps(payload, ensure_ascii=False, indent=2)}\n\n"
+        "Hard rules: fictional character only, no real-person identification, no celebrity matching, grounding off."
+    )
+
+
+def _observe_face(image_path: Path, dna: dict, rubric: dict, provider: str) -> FaceValidationObservation:
+    if provider == "mock":
+        return _mock_observe_face(image_path, rubric)
+    client = VisionClient(image_provider=provider, temperature=0.0)
+    response = client.analyze_image(image_path, _build_face_observe_prompt(dna, rubric))
+    payload = response if isinstance(response, dict) and "gates" in response else extract_json(str(response))
+    _assert_face_observation_contract(payload)
+    observation = FaceValidationObservation.model_validate(payload)
+    return observation.model_copy(update={
+        "notes": [
+            *observation.notes,
+            f"{provider} face observation; grounding/web search disabled by prompt contract",
+            "no real-person or celebrity matching requested",
+        ]
+    })
+
+
+def validate_face(
+    project: str,
+    subject: str,
+    image_path: Path,
+    provider: str = "mock",
+) -> ValidationReport:
+    dna_path = find_dna_path(project, subject)
+    dna = load_json(dna_path)
+    rubric = _load_face_rubric(project)
+    observation = _observe_face(image_path, dna, rubric, provider)
+    score = score_face_observation(observation, rubric)
+    return ValidationReport(
+        project=project,
+        subject=subject,
+        validation_type="face",
+        artifact_ref=ArtifactRef(type="face", file=str(image_path), hash=sha256_file(image_path)),
+        source_knowledge=[SourceKnowledgeRef(
+            file=str(dna_path),
+            dna_version=dna.get("dna_version"),
+            dna_contract_version=dna.get("contract_version"),
+            hash=sha256_file(dna_path),
+        )],
+        observer=ObserverInfo(provider=provider, model=provider if provider == "mock" else "configured", samples=1),
+        kill_switch=score.kill_switch,
+        overall_score=score.overall_score,
+        verdict=score.verdict,
+        dna_match_score=score.dna_match_score,
+        section_scores=score.section_scores,
+        category_scores=score.category_scores,
+        issues=score.issues,
+        recommendation=score.recommendation,
+        validation_notes=observation.notes,
+        raw_observation=observation.model_dump(mode="json"),
+    )

@@ -1,0 +1,17 @@
+face_qc_rubric:
+  version: "07F"
+  grounding: false
+  binary_gates:
+    - id: identity_structure
+      description: Fictional character face structure matches the approved Face DNA.
+    - id: eye_ratio
+      description: Eye proportions stay within the approved character design.
+    - id: forbidden_traits
+      description: No forbidden character traits are present.
+  weighted:
+    facial_shape: 0.30
+    eyes: 0.25
+    hair: 0.20
+    expression: 0.15
+    technical_quality: 0.10
+
