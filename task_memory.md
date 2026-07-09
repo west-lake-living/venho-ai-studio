@@ -1,6 +1,6 @@
 # VENHO AI STUDIO — Task Memory
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-07-09 (Kết thúc Task M10 Dashboard MVP) · **Đọc bởi:** AI Engine, Claude Code sessions
+**Cập nhật:** 2026-07-09 (M10 Operating Center UI v2.0 final — Phase 1 Home Core) · **Đọc bởi:** AI Engine, Claude Code sessions
 
 ---
 
@@ -15,7 +15,7 @@ Pipeline tổng quát:
                            → [M05] Content prose → [M03] Validate
                            → [M06] Video storyboard → [AI Engine ngoài render video]
 [M09] nhận goal tự nhiên → lập plan/risk/module requests → [M04] điều phối + approval gate → [M07] Publishing Gateway dry-run/publish receipt → [M08] Analytics Feedback
-[M10] Dashboard đọc artifacts/config của M01-M09 → hiển thị unified presentation layer
+[M10] Operating Center đọc artifacts/config của M01-M09 → hướng founder tới việc cần làm tiếp theo
 ```
 
 ---
@@ -35,7 +35,7 @@ Pipeline tổng quát:
 | **M07** Publishing Gateway | Phân phối package đã duyệt, dry-run/publish receipt cho M08 | Tạo/sửa content, tự quyết giờ đăng, phân tích performance |
 | **M08** Analytics & Feedback Loop | Đo metrics, score performance, sentiment guardrail, sinh feedback advisory | Đăng bài, tự sửa Knowledge/Content Strategy, tự apply advisory |
 | **M09** Agent Studio | Cognitive interface: goal → request validation → persona/context → task plan/risk/module requests qua M04 | Tự publish, tự sửa Knowledge, tự tính metrics, gọi M07 trực tiếp |
-| **M10** Dashboard | Unified presentation UI đọc M01-M09 artifacts/config và hiển thị trạng thái | Lưu DB nghiệp vụ, tính lại score/HMAC, build prompt/ModuleRequest, render/upload/publish |
+| **M10** Operating Center | Founder-first UI đọc M01-M09 artifacts/config, hiển thị Today, Health, Pipeline, Alerts, Activity | Lưu DB nghiệp vụ, tính lại score/HMAC, build prompt/ModuleRequest, render/upload/publish, đưa raw JSON lên Home |
 
 ### Nguyên tắc bất biến
 
@@ -47,7 +47,9 @@ Pipeline tổng quát:
 6. **Config-first** — workflow/rule khai báo YAML, không hard-code.
 7. **Project-agnostic core** — Ven Hồ là project đầu tiên, không phải core.
 8. **Kết thúc task = cập nhật memory/status** — khi người dùng nói "kết thúc task", Codex tự động cập nhật `task_memory.md` và `task_status.md` trước khi chốt.
-9. **M10 presentation-only** — Dashboard degrade bằng advisory khi module con thiếu artifact; không làm sập toàn UI và không sao chép business logic.
+9. **M10 presentation-only** — Operating Center degrade bằng advisory khi module con thiếu artifact; không làm sập toàn UI và không sao chép business logic.
+10. **M10 founder-first v2.0** — Home trả lời “What should I do next?”; raw JSON, token/cache/runtime internals chỉ nằm trong `System → Developer/JSON Viewer`, không nằm ở Home.
+11. **M10 action-first** — Status quan trọng phải dẫn tới contextual action label/button; button MVP chỉ điều hướng/placeholder, không chạy live workflow ngầm.
 
 ---
 
@@ -68,7 +70,7 @@ Pipeline tổng quát:
 | M07 Publishing request/receipt | `contract_version = "1.0"` | Dry-run/publish receipt cho M08 |
 | M08 Analytics outputs | `contract_version = "1.0"` | Raw metrics, unified snapshot, score, alert, advisory |
 | M09 Agent request/response | `contract_version = "1.0"` | Plan/module request/risk/approval contract |
-| M10 Dashboard snapshot | `contract = "presentation_only"` | Read-only normalized view over module artifacts |
+| M10 Operating Center snapshot | `contract = "presentation_only"` | Read-only normalized view over module artifacts + founder-first home snapshot |
 
 ### DNA subjects (venho_hotel)
 `lake_view_room` · `deluxe_double` · `lobby` · `facade` · `linh_an` · `westlake` · `outside`
@@ -105,7 +107,7 @@ streamlit run ui/studio_app.py
 - M07→M08: delivery receipt contract có `platform_results`, `public_url/post_id/status`, circuit breaker info và `analytics_handoff.ready_for_m08=true` ✅
 - M08 loop: receipt → mock metrics → unified snapshot → score → sentiment → advisory/report chạy offline ✅
 - M09→M04: goal → TaskPlan → ModuleRequest package luôn target `M04_AUTOMATION_STUDIO`; external impact cần manual gate, không gọi M07 trực tiếp ✅
-- M10 snapshot: `dashboard.gateway` đọc config/artifacts của M01-M09, Face Lock display threshold, graceful advisory khi thiếu dữ liệu; không gọi API và không mutate data ✅
+- M10 Operating Center v2.0: `dashboard.gateway` đọc config/artifacts của M01-M09, Face Lock display threshold, graceful advisory khi thiếu dữ liệu; Home dùng Current Focus + 4 directional cards + Today Task Center + Quick Actions + Pipeline Flow + Alerts/Health/Activity; không gọi API và không mutate data ✅
 
 ---
 
@@ -133,7 +135,7 @@ venho-ai-studio/
 │   ├── schemas/               ← request/response/persona/task/module/risk contracts
 │   ├── renderers/             ← response Markdown/JSON
 │   └── templates/             ← persona/agent templates
-├── dashboard/                 ← M10 read-only presentation gateway for Streamlit Dashboard
+├── dashboard/                 ← M10 read-only presentation gateway for Streamlit Operating Center
 ├── config/
 │   ├── settings.yaml
 │   ├── validation.yaml
@@ -153,7 +155,7 @@ venho-ai-studio/
 │   ├── publishing/            ← fixture package + receipt store
 │   ├── analytics/             ← raw metrics, snapshots, scores, advisories, alerts, reports
 │   └── validation/            ← validation reports
-├── tests/                     ← 428 tests, 0 API call
+├── tests/                     ← 430 tests, 0 API call
 ├── docs/                      ← plan docs + how-to guides
 ├── task_memory.md             ← file này — context chung AI Engine
 └── task_status.md             ← status từng module
@@ -370,23 +372,37 @@ AgentRequest
 
 ---
 
-## 11. M10 Dashboard — hoàn thành 2026-07-09
+## 11. M10 Operating Center — hoàn thành 2026-07-09
 
-**Status:** ✅ COMPLETE — Streamlit presentation MVP  
+**Status:** ✅ COMPLETE — Streamlit Operating Center v2.0 Home Core
 **Plan:** `VENHO_AI_STUDIO_Module_10_Dashboard_Plan_v1_2.md`  
-**Tests:** `python3 -m pytest` → 428/428 pass, 0 API call  
-**Module tests:** 5 tests — `tests/test_dashboard.py`
+**Design:** `M10_OPERATING_CENTER_DESIGN_v2.0_final.md`
+**Tests:** `python3 -m pytest -q` → 430/430 pass, 0 API call
+**Module tests:** 7 tests — `tests/test_dashboard.py`
 
 ### Quyết định kiến trúc
 
 M10 mở rộng Studio Shell Streamlit hiện có (`ui/studio_app.py`) thay vì tạo Next/Nuxt/Vite app riêng. Lý do: repo đã có local-first Studio Shell tại `localhost:8501`, nên M10 giữ một entrypoint duy nhất và tránh thêm stack mới.
 
+Sau bản `M10_OPERATING_CENTER_DESIGN_v2.0_final.md`, M10 không được xem là technical dashboard nữa. M10 là Operating Center cho founder: OS-first, workflow-first, action-first, quyết định nhanh trong 5 giây, Home ưu tiên việc cần làm tiếp theo thay vì module internals.
+
 ### Core files
 
-- `dashboard/gateway.py` — read-only adapter đọc M01-M09 config/artifacts và tạo `DashboardSnapshot`.
+- `dashboard/gateway.py` — read-only adapter đọc M01-M09 config/artifacts và tạo `DashboardSnapshot` + `operating_center` v2 fields (`header`, `current_focus`, `today_progress`, `quick_actions`).
 - `dashboard/__init__.py` — module metadata (`MODULE_ID = "M10"`).
-- `ui/studio_app.py` — thêm màn hình `M10 Dashboard — Unified Control Center`.
+- `ui/studio_app.py` — render `M10 Operating Center` với navigation Home, Projects, Workbench, Agents, Publish, Insights, System.
 - `docs/how_to_run_studio_ui.md` — hướng dẫn chạy shell + dashboard.
+
+### Home UI v2.0
+
+- Header: `VENHO AI STUDIO (Operating Center)`, project `Ven Hồ Hotel`, status ACTIVE, last sync, mode Read-only, build v2.0.
+- Priority order: Current Focus → 4 status cards → Today Task Center → Quick Actions → Pipeline Flow → Alerts → System Health → Recent Activity.
+- Exactly 4 summary cards: Today's Tasks, System Security, Automation Engine, Publishing Queue.
+- Today Task Center groups High/Medium/Low/Completed tasks with action labels.
+- Quick Actions: + Build DNA, + Generate Prompt, + Validate, + Prepare Publish, + Create Video, + Run Automation.
+- Pipeline order: Observe → DNA → Prompt → Validate → Automation → Video → Publishing → Analytics.
+- Pipeline is rendered as visual node flow, not table rows.
+- Raw JSON/debug details moved to `System → JSON Viewer`; Home contains no raw JSON.
 
 ### M10 boundaries
 
@@ -395,6 +411,8 @@ M10 mở rộng Studio Shell Streamlit hiện có (`ui/studio_app.py`) thay vì 
 - Không build prompt, không build ModuleRequest, không render/upload/publish.
 - Missing artifact tạo advisory theo module thay vì làm sập dashboard.
 - Face Lock gate chỉ là display mapping theo plan: `>=9.0 APPROVED`, `8.0-8.9 CONDITIONAL`, `<8.0 REJECT`; score 0-100 được normalize để hiển thị.
+- Quick actions trong Workbench là UI entrypoints/disabled placeholders ở MVP; không kích hoạt business logic hay external workflow trực tiếp.
+- Phase 5 Command Palette (`Cmd+K`) chưa triển khai trong Streamlit MVP; giữ là follow-up.
 
 ---
 

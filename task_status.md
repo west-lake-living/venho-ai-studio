@@ -1,6 +1,6 @@
 # VENHO AI STUDIO — Task Status
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-07-09 (Kết thúc Task M10 Dashboard MVP) · **Tests:** 428/428 pass · 0 API call
+**Cập nhật:** 2026-07-09 (M10 Operating Center UI v2.0 final — Phase 1 Home Core) · **Tests:** 430/430 pass · 0 API call
 
 ---
 
@@ -17,9 +17,9 @@
 | M07 | Publishing Gateway | ✅ COMPLETE (offline dry-run MVP) | 19 |
 | M08 | Analytics & Feedback Loop | ✅ COMPLETE (offline MVP) | 7 |
 | M09 | Agent Studio | ✅ COMPLETE (offline planning/orchestration MVP) | 10 |
-| M10 | Dashboard | ✅ COMPLETE (Streamlit presentation MVP) | 5 |
+| M10 | Operating Center | ✅ COMPLETE (v2.0 Home Core) | 7 |
 
-> Tests ghi theo module-specific. Full suite = 428 (M01+M02+M03+M04+M05+M06+M07+M08+M09+M10+shared).
+> Tests ghi theo module-specific. Full suite = 430 (M01+M02+M03+M04+M05+M06+M07+M08+M09+M10+shared).
 
 ---
 
@@ -255,22 +255,32 @@
 
 ---
 
-## M10 — Dashboard ✅ COMPLETE (Streamlit presentation MVP)
+## M10 — Operating Center ✅ COMPLETE (v2.0 Home Core)
 
 **Plan:** `VENHO_AI_STUDIO_Module_10_Dashboard_Plan_v1_2.md`
-**Tests:** 5/5 — xem `tests/test_dashboard.py`
-**Full suite:** 428/428 pass — `python3 -m pytest -q`
+**Design:** `M10_OPERATING_CENTER_DESIGN_v2.0_final.md`
+**Tests:** 7/7 — xem `tests/test_dashboard.py`
+**Full suite:** 430/430 pass — `python3 -m pytest -q`
 
 **Quyết định kiến trúc:** M10 mở rộng Studio Shell Streamlit hiện có thay vì tạo web JS app độc lập, để khớp UI local-first đang chạy ở `localhost:8501`.
 
 **Đã hoàn thành:**
 - `dashboard/gateway.py` — read-only presentation adapter đọc `config/projects`, `data/projects`, `data/automation_runs` và normalize snapshot cho UI.
-- `ui/studio_app.py` — thêm màn hình `M10 Dashboard — Unified Control Center` với tabs Home, Projects, Knowledge, Prompt & Content, Validator, Automation & Agent, Video, Publishing & Analytics, System.
+- `ui/studio_app.py` — thiết kế lại M10 thành `Operating Center` theo workflow-first navigation: Home, Projects, Workbench, Agents, Publish, Insights, System.
+- Home v2.0 bỏ raw JSON/module internals; thứ tự hiển thị: Current Focus, 4 status cards, Today Task Center, Quick Actions, Pipeline Flow, Alerts, System Health, Recent Activity.
+- Home v2.0 có exactly 4 directional cards: Today's Tasks, System Security, Automation Engine, Publishing Queue.
+- Pipeline chuyển từ table-like rows sang visual node flow.
+- Workbench gom quick actions, pending reviews, draft outputs, ready-to-publish và failed items.
+- System giữ Developer, Artifacts, JSON Viewer, Module Status, Logs, Settings; debug/raw JSON không còn nằm ở Home.
 - Graceful degradation: thiếu DNA/video/publishing/analytics artifacts hiển thị advisory thay vì crash.
 - Face Lock display mapping theo plan: `>=9.0 APPROVED`, `8.0-8.9 CONDITIONAL`, `<8.0 REJECT`; score 0-100 được normalize để chỉ hiển thị.
 - Giữ ranh giới zero business logic: Dashboard không tự build ModuleRequest, không tự validate HMAC, không tính lại score, không render/upload/publish.
 - `pyproject.toml` package discovery đã include `dashboard*`.
 - `docs/how_to_run_studio_ui.md` cập nhật hướng dẫn chạy M10.
+
+**v2.0 còn lại / follow-up:**
+- Phase 2–4 deep panels có thể tinh chỉnh tiếp theo production contexts.
+- Phase 5 Command Palette (`Cmd+K`) chưa triển khai trong Streamlit MVP.
 
 **Run UI:**
 ```bash

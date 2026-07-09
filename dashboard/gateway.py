@@ -394,16 +394,34 @@ class DashboardGateway:
             analytics_items=analytics_items,
         )
         worst_health = self._worst_status([item["status"] for item in health])
-        publishing_status = "Waiting Approval" if waiting_publish else ("Ready" if publishing_items else "Missing")
+        health_warning_count = sum(
+            1
+            for item in health
+            if self._worst_status([item["status"]]) in {"Warning", "Critical Failure", "Critical"}
+        )
+        publishing_status = "1 Post Ready" if waiting_publish else ("Ready" if publishing_items else "No Items")
+        completed_tasks = sum(1 for task in tasks if task.get("status") == "Completed")
 
         return {
+            "header": {
+                "title": "VENHO AI STUDIO",
+                "subtitle": "Operating Center",
+                "project_scope": PROJECT_DISPLAY.get(self.project, self.project),
+                "project_status": "ACTIVE",
+                "last_sync": self._last_sync(automation_jobs, validation_runs),
+                "mode": "Read-only",
+                "build": "v2.0",
+            },
+            "current_focus": self._current_focus(tasks, automation_jobs),
             "summary_cards": [
-                {"label": "Today's Tasks", "value": len(tasks), "status": "Active"},
-                {"label": "System Health", "value": worst_health, "status": worst_health},
-                {"label": "Active Jobs", "value": len(active_jobs), "status": "Active" if active_jobs else "Healthy"},
-                {"label": "Publishing Status", "value": publishing_status, "status": "Warning" if waiting_publish else publishing_status},
+                {"label": "Today's Tasks", "value": f"{len(tasks) - completed_tasks} Pending Tasks", "status": "Active"},
+                {"label": "System Security", "value": f"{health_warning_count} Warnings Detected", "status": worst_health},
+                {"label": "Automation Engine", "value": f"{len(active_jobs)} Running Jobs", "status": "Active" if active_jobs else "Ready"},
+                {"label": "Publishing Queue", "value": publishing_status, "status": "Warning" if waiting_publish else ("Ready" if publishing_items else "Missing")},
             ],
+            "today_progress": {"completed": completed_tasks, "total": len(tasks)},
             "today_tasks": tasks,
+            "quick_actions": self._quick_actions(),
             "system_health": health,
             "pipeline": self._pipeline(
                 subjects=subjects,
@@ -423,6 +441,43 @@ class DashboardGateway:
             "agents": self._agent_cards(agent_personas, health),
         }
 
+    def _current_focus(
+        self,
+        tasks: list[dict[str, str]],
+        automation_jobs: list[dict[str, Any]],
+    ) -> dict[str, str | int | None]:
+        running = [
+            item
+            for item in automation_jobs
+            if str(item.get("status") or "").lower() in {"running", "pending", "waiting", "queued"}
+        ]
+        if running:
+            job = running[0]
+            return {
+                "title": f"Continue {job.get('workflow_id') or 'automation workflow'}",
+                "progress_label": f"Step {job.get('step_count') or 1} / {max(int(job.get('step_count') or 1), 1)}",
+                "status": "In Progress",
+                "action_label": "Continue",
+                "empty": False,
+            }
+        actionable = [task for task in tasks if task.get("status") != "Completed"]
+        if actionable:
+            task = actionable[0]
+            return {
+                "title": task["task"],
+                "progress_label": "Step 1 / 8",
+                "status": "Needs Attention" if task["priority"] == "High" else "In Progress",
+                "action_label": task.get("action_label", "Continue"),
+                "empty": False,
+            }
+        return {
+            "title": "No active focus.",
+            "progress_label": None,
+            "status": "Ready",
+            "action_label": "Choose Today's Focus",
+            "empty": True,
+        }
+
     def _today_tasks(
         self,
         *,
@@ -434,18 +489,29 @@ class DashboardGateway:
     ) -> list[dict[str, str]]:
         tasks: list[dict[str, str]] = []
         if failed_validations:
-            tasks.append({"task": "Review failed validations", "priority": "High", "source": "Validator"})
+            tasks.append({"task": "Review failed validations", "priority": "High", "source": "Validator", "action_label": "Review", "status": "Pending"})
         if review_validations:
-            tasks.append({"task": "Review conditional validation results", "priority": "Medium", "source": "Validator"})
+            tasks.append({"task": "Review conditional validation results", "priority": "Medium", "source": "Validator", "action_label": "Open", "status": "Pending"})
         if waiting_publish:
-            tasks.append({"task": "Approve publishing queue", "priority": "High", "source": "Publishing"})
+            tasks.append({"task": "Approve publishing queue", "priority": "Medium", "source": "Publishing", "action_label": "Approve", "status": "Pending"})
         if not prompts:
-            tasks.append({"task": "Generate room prompt", "priority": "Medium", "source": "Workbench"})
+            tasks.append({"task": "Generate next room prompt", "priority": "Medium", "source": "Workbench", "action_label": "Generate", "status": "Pending"})
         if not analytics_items:
-            tasks.append({"task": "Review analytics snapshot", "priority": "Low", "source": "Insights"})
+            tasks.append({"task": "Review analytics snapshot", "priority": "High", "source": "Insights", "action_label": "Open", "status": "Pending"})
         if not tasks:
-            tasks.append({"task": "Review recent activity", "priority": "Low", "source": "Home"})
+            tasks.append({"task": "Review recent activity", "priority": "Low", "source": "Home", "action_label": "Open", "status": "Pending"})
+        tasks.append({"task": "Backup knowledge snapshot", "priority": "Completed", "source": "System", "action_label": "Done", "status": "Completed"})
         return tasks[:5]
+
+    def _quick_actions(self) -> list[dict[str, str]]:
+        return [
+            {"label": "+ Build DNA", "target": "Workbench"},
+            {"label": "+ Generate Prompt", "target": "Workbench"},
+            {"label": "+ Validate", "target": "Workbench"},
+            {"label": "+ Prepare Publish", "target": "Publish"},
+            {"label": "+ Create Video", "target": "Workbench"},
+            {"label": "+ Run Automation", "target": "Workbench"},
+        ]
 
     def _system_health(
         self,
@@ -468,8 +534,8 @@ class DashboardGateway:
         return [
             {"area": "Knowledge", "status": "Warning" if missing_dna else "Healthy"},
             {"area": "Prompt", "status": "Healthy" if prompts else "Missing"},
-            {"area": "Validator", "status": "Critical" if failed_validation else ("Healthy" if validation_runs else "Missing")},
-            {"area": "Automation", "status": "Critical" if failed_job else ("Healthy" if automation_jobs else "Missing")},
+            {"area": "Validator", "status": "Critical Failure" if failed_validation else ("Healthy" if validation_runs else "Missing")},
+            {"area": "Automation", "status": "Critical Failure" if failed_job else ("Healthy" if automation_jobs else "Missing")},
             {"area": "Publishing", "status": "Healthy" if publishing_items else "Warning"},
             {"area": "Analytics", "status": "Healthy" if analytics_items else "Missing"},
         ]
@@ -584,8 +650,27 @@ class DashboardGateway:
             cards.append({"agent": name, "status": status})
         return cards
 
+    def _last_sync(
+        self,
+        automation_jobs: list[dict[str, Any]],
+        validation_runs: list[dict[str, Any]],
+    ) -> str:
+        candidates = []
+        for item in automation_jobs:
+            candidates.extend([item.get("finished_at"), item.get("started_at")])
+        for item in validation_runs:
+            candidates.extend([item.get("created_at"), item.get("finished_at")])
+        values = sorted(str(value) for value in candidates if value)
+        if not values:
+            return "No sync yet"
+        latest = values[-1]
+        if "T" in latest:
+            return latest.split("T", 1)[1][:5]
+        parts = latest.split()
+        return parts[-1][:5] if parts else latest[:5]
+
     def _worst_status(self, statuses: list[str]) -> str:
-        order = {"Critical": 4, "Warning": 3, "Missing": 2, "Active": 1, "Healthy": 0, "Ready": 0}
+        order = {"Critical Failure": 4, "Critical": 4, "Warning": 3, "Missing": 2, "Active": 1, "Healthy": 0, "Ready": 0}
         if not statuses:
             return "Missing"
         return max(statuses, key=lambda status: order.get(status, 0))

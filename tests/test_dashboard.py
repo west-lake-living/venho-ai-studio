@@ -40,6 +40,66 @@ def test_dashboard_snapshot_reads_existing_repo_artifacts_offline() -> None:
     assert snapshot.agent_personas
 
 
+def test_operating_center_home_snapshot_matches_v2_design() -> None:
+    snapshot = build_dashboard_snapshot(Path("."), project="venho_hotel")
+    home = snapshot.operating_center
+
+    assert home["header"]["title"] == "VENHO AI STUDIO"
+    assert home["header"]["subtitle"] == "Operating Center"
+    assert home["header"]["mode"] == "Read-only"
+    assert home["current_focus"]["action_label"]
+    assert [card["label"] for card in home["summary_cards"]] == [
+        "Today's Tasks",
+        "System Security",
+        "Automation Engine",
+        "Publishing Queue",
+    ]
+    assert home["today_progress"]["total"] == len(home["today_tasks"])
+    assert home["today_tasks"]
+    assert [action["label"] for action in home["quick_actions"]] == [
+        "+ Build DNA",
+        "+ Generate Prompt",
+        "+ Validate",
+        "+ Prepare Publish",
+        "+ Create Video",
+        "+ Run Automation",
+    ]
+    assert {item["area"] for item in home["system_health"]} == {
+        "Knowledge",
+        "Prompt",
+        "Validator",
+        "Automation",
+        "Publishing",
+        "Analytics",
+    }
+    assert [stage["stage"] for stage in home["pipeline"]] == [
+        "Observe",
+        "DNA",
+        "Prompt",
+        "Validate",
+        "Automation",
+        "Video",
+        "Publishing",
+        "Analytics",
+    ]
+    assert "system" not in home
+
+
+def test_operating_center_counts_critical_failures_as_warnings(tmp_path: Path) -> None:
+    manifest = {"runs": [{"validation_type": "content", "verdict": "regenerate"}]}
+    path = tmp_path / "data" / "projects" / "venho_hotel" / "validation"
+    path.mkdir(parents=True)
+    (path / "validation_manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+
+    snapshot = DashboardGateway(tmp_path, "venho_hotel").build_snapshot()
+    system_security = next(
+        card for card in snapshot.operating_center["summary_cards"] if card["label"] == "System Security"
+    )
+
+    assert system_security["status"] == "Critical Failure"
+    assert system_security["value"] != "0 Warnings Detected"
+
+
 def test_dashboard_degrades_by_module_without_crashing(tmp_path: Path) -> None:
     project_root = tmp_path / "repo"
     subjects_dir = project_root / "config" / "projects" / "venho_hotel" / "subjects"
