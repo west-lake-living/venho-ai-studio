@@ -293,6 +293,14 @@
 - Fix: action-first prompt — action dẫn đầu prompt, strip default pose khi có action tùy chỉnh
 - Thêm: `use_ref` toggle — bật = portrait (9/10 face score); tắt = full-body action (7–8.5, tự do pose)
 
+**Creative Studio — Action prompt v2 (2026-07-10):**
+- Fix: integrated single-sentence prompt (không `\n\n`) — gpt-image-2 treats `\n\n` as paragraph separator → character disappears; giờ dùng một câu liên tục "Linh An {action}, she is ... MAIN SUBJECT in the foreground, full body visible"
+- Fix: lens 85mm → 35mm cho action shots (85mm portrait crop quá tight → không render full body)
+- Thêm: Outfit E — Sport & Active (`pastel green sports top, black leggings, white sneakers`); hair tự động đổi sang ponytail khi chọn E
+- Thêm: extra negatives cho action mode (no conical hat, no dark work clothes, no ornate railing)
+- **Test validated (2026-07-10):** Linh An xuất hiện đúng trên xe đạp, trang phục thể thao, tóc đuôi ngựa, cảnh bên hồ Hà Nội
+- Commits: `3a9be1c`, `fc3e31c`
+
 **v1.0 còn lại / follow-up:**
 - Deep panels đã có card UI nền tảng; có thể tinh chỉnh tiếp theo production contexts.
 - Phase 5 Command Palette (`Cmd+K`) chưa triển khai trong Streamlit MVP.
