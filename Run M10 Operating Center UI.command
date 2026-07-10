@@ -9,7 +9,7 @@ URL="http://localhost:$PORT"
 cd "$REPO_DIR"
 export PATH="$HOME/Library/Python/3.9/bin:$PATH"
 
-echo "Starting VENHO AI Studio — Operating System"
+echo "Starting VENHO OS — Home Workspace"
 echo "Repo: $REPO_DIR"
 echo "URL:  $URL"
 echo ""

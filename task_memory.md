@@ -1,6 +1,6 @@
 # VENHO AI STUDIO — Task Memory
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-07-09 (M10 Workspace UI v4.0) · **Đọc bởi:** AI Engine, Claude Code sessions
+**Cập nhật:** 2026-07-10 (VENHO OS Home Workspace UI v1.0 baseline) · **Đọc bởi:** AI Engine, Claude Code sessions
 
 ---
 
@@ -15,7 +15,7 @@ Pipeline tổng quát:
                            → [M05] Content prose → [M03] Validate
                            → [M06] Video storyboard → [AI Engine ngoài render video]
 [M09] nhận goal tự nhiên → lập plan/risk/module requests → [M04] điều phối + approval gate → [M07] Publishing Gateway dry-run/publish receipt → [M08] Analytics Feedback
-[M10] Workspace đọc artifacts/config của M01-M09 → hướng founder tới đúng việc cần làm ngay bây giờ
+[M10] VENHO OS Home Workspace đọc artifacts/config của M01-M09 → hướng founder tới đúng việc cần làm ngay bây giờ
 ```
 
 ---
@@ -35,7 +35,7 @@ Pipeline tổng quát:
 | **M07** Publishing Gateway | Phân phối package đã duyệt, dry-run/publish receipt cho M08 | Tạo/sửa content, tự quyết giờ đăng, phân tích performance |
 | **M08** Analytics & Feedback Loop | Đo metrics, score performance, sentiment guardrail, sinh feedback advisory | Đăng bài, tự sửa Knowledge/Content Strategy, tự apply advisory |
 | **M09** Agent Studio | Cognitive interface: goal → request validation → persona/context → task plan/risk/module requests qua M04 | Tự publish, tự sửa Knowledge, tự tính metrics, gọi M07 trực tiếp |
-| **M10** Workspace | Founder-first UI đọc M01-M09 artifacts/config, hiển thị Current Work, Needs Review, Ready to Publish, Quick Actions, Recent Activity | Lưu DB nghiệp vụ, tính lại score/HMAC, build prompt/ModuleRequest, render/upload/publish, đưa raw JSON/pipeline/analytics/system health lên Home |
+| **M10** VENHO OS Home Workspace | Founder-first UI đọc M01-M09 artifacts/config, hiển thị Today's Focus, Current Work, Needs Review, Ready to Publish, Quick Actions, Recent Activity | Lưu DB nghiệp vụ, tính lại score/HMAC, build prompt/ModuleRequest, render/upload/publish, đưa raw JSON/pipeline/analytics/system health lên Home |
 
 ### Nguyên tắc bất biến
 
@@ -48,7 +48,7 @@ Pipeline tổng quát:
 7. **Project-agnostic core** — Ven Hồ là project đầu tiên, không phải core.
 8. **Kết thúc task = cập nhật memory/status** — khi người dùng nói "kết thúc task", Codex tự động cập nhật `task_memory.md` và `task_status.md` trước khi chốt.
 9. **M10 presentation-only** — Operating Center degrade bằng advisory khi module con thiếu artifact; không làm sập toàn UI và không sao chép business logic.
-10. **M10 Workspace v4.0** — Workspace trả lời “What should I work on now?”; Home chỉ có Current Work, Needs Review, Ready to Publish, Quick Actions, Recent Activity. Pipeline nằm ở Workbench; raw JSON/token/cache/runtime internals nằm trong Settings, không nằm ở Home.
+10. **M10 Home Workspace v1.0** — Home trả lời “What should I do now to move my business forward?”; Home chỉ có Today's Focus, Current Work, Needs Review, Ready to Publish, Quick Actions, Recent Activity. Pipeline nằm ở Workbench; raw JSON/token/cache/runtime internals nằm trong Settings, không nằm ở Home.
 11. **M10 action-first** — Status quan trọng phải dẫn tới contextual action label/button; button MVP chỉ điều hướng/placeholder, không chạy live workflow ngầm.
 
 ---
@@ -70,7 +70,7 @@ Pipeline tổng quát:
 | M07 Publishing request/receipt | `contract_version = "1.0"` | Dry-run/publish receipt cho M08 |
 | M08 Analytics outputs | `contract_version = "1.0"` | Raw metrics, unified snapshot, score, alert, advisory |
 | M09 Agent request/response | `contract_version = "1.0"` | Plan/module request/risk/approval contract |
-| M10 Workspace snapshot | `contract = "presentation_only"` | Read-only normalized view over module artifacts + founder-first workspace snapshot |
+| M10 Home Workspace snapshot | `contract = "presentation_only"` | Read-only normalized view over module artifacts + founder-first home workspace snapshot |
 
 ### DNA subjects (venho_hotel)
 `lake_view_room` · `deluxe_double` · `lobby` · `facade` · `linh_an` · `westlake` · `outside`
@@ -107,7 +107,7 @@ streamlit run ui/studio_app.py
 - M07→M08: delivery receipt contract có `platform_results`, `public_url/post_id/status`, circuit breaker info và `analytics_handoff.ready_for_m08=true` ✅
 - M08 loop: receipt → mock metrics → unified snapshot → score → sentiment → advisory/report chạy offline ✅
 - M09→M04: goal → TaskPlan → ModuleRequest package luôn target `M04_AUTOMATION_STUDIO`; external impact cần manual gate, không gọi M07 trực tiếp ✅
-- M10 Workspace v4.0: `dashboard.gateway` đọc config/artifacts của M01-M09, Face Lock display threshold, graceful advisory khi thiếu dữ liệu; Home dùng Current Work + Needs Review + Ready to Publish + Quick Actions + Recent Activity; pipeline chuyển vào Workbench, system/debug chuyển vào Settings; không gọi API và không mutate data ✅
+- M10 Home Workspace v1.0: `dashboard.gateway` đọc config/artifacts của M01-M09, Face Lock display threshold, graceful advisory khi thiếu dữ liệu; Home dùng Today's Focus + Current Work + Needs Review + Ready to Publish + Quick Actions + Recent Activity; pipeline chuyển vào Workbench, system/debug chuyển vào Settings; không gọi API và không mutate data ✅
 
 ---
 
@@ -135,7 +135,7 @@ venho-ai-studio/
 │   ├── schemas/               ← request/response/persona/task/module/risk contracts
 │   ├── renderers/             ← response Markdown/JSON
 │   └── templates/             ← persona/agent templates
-├── dashboard/                 ← M10 read-only presentation gateway for Streamlit Workspace
+├── dashboard/                 ← M10 read-only presentation gateway for Streamlit Home Workspace
 ├── config/
 │   ├── settings.yaml
 │   ├── validation.yaml
@@ -372,11 +372,11 @@ AgentRequest
 
 ---
 
-## 11. M10 Workspace / Operating System — hoàn thành 2026-07-09
+## 11. M10 VENHO OS Home Workspace — hoàn thành 2026-07-10
 
-**Status:** ✅ COMPLETE — Streamlit Workspace v4.0 + Operating System shell
+**Status:** ✅ COMPLETE — Streamlit Home Workspace UI v1.0 + Operating System shell
 **Plan:** `VENHO_AI_STUDIO_Module_10_Dashboard_Plan_v1_2.md`  
-**Design:** `M10_WORKSPACE_UI_SPEC_v4.0.md`
+**Design:** `/Users/hanhpham/Developer/VENHO_OS_HOME_WORKSPACE_UI_SPEC_v1.0.md` + `/Users/hanhpham/Developer/VENHO_OS_UI_DESIGN_SPEC_v1.0.md`
 **Tests:** `python3 -m pytest -q` → 430/430 pass, 0 API call
 **Module tests:** 7 tests — `tests/test_dashboard.py`
 
@@ -384,20 +384,21 @@ AgentRequest
 
 M10 mở rộng Studio Shell Streamlit hiện có (`ui/studio_app.py`) thay vì tạo Next/Nuxt/Vite app riêng. Lý do: repo đã có local-first Studio Shell tại `localhost:8501`, nên M10 giữ một entrypoint duy nhất và tránh thêm stack mới.
 
-Sau bản `M10_WORKSPACE_UI_SPEC_v4.0.md`, M10 không được xem là technical dashboard nữa. M10 là Workspace / Operating System cho founder: OS-first, workflow-first, action-first, quyết định nhanh trong 5 giây, Home ưu tiên việc cần làm tiếp theo thay vì module internals.
+Sau bản `VENHO_OS_HOME_WORKSPACE_UI_SPEC_v1.0.md` và `VENHO_OS_UI_DESIGN_SPEC_v1.0.md`, M10 không được xem là technical dashboard nữa. M10 là Business Operating Workspace cho founder: workspace-first, execution-first, one primary mission, giảm tải nhận thức, Home ưu tiên việc cần làm tiếp theo thay vì module internals.
 
 ### Core files
 
-- `dashboard/gateway.py` — read-only adapter đọc M01-M09 config/artifacts và tạo `DashboardSnapshot` + `operating_center` v2 fields (`header`, `current_focus`, `today_progress`, `quick_actions`).
+- `dashboard/gateway.py` — read-only adapter đọc M01-M09 config/artifacts và tạo `DashboardSnapshot` + `operating_center` workspace fields (`header`, `today_focus`, `current_focus`, `needs_review`, `ready_to_publish`, `quick_actions`).
 - `dashboard/__init__.py` — module metadata (`MODULE_ID = "M10"`).
-- `ui/studio_app.py` — render `Operating System` với navigation Workspace, Projects, Workbench, Publishing, Settings; đồng thời giữ Studio Shell Mode A / Mode B.
+- `ui/studio_app.py` — render `VENHO OS — Home Workspace` với navigation Home Workspace, Projects, Tasks, Knowledge, Workbench, Creative Studio, Publishing, Reports, Settings; đồng thời giữ Studio Shell Mode A / Mode B.
 - `docs/how_to_run_studio_ui.md` — hướng dẫn chạy shell + dashboard.
 
-### Workspace UI v4.0
+### Home Workspace UI v1.0
 
-- Header: `VENHO AI STUDIO (Workspace)`, project `Ven Hồ Hotel`, last sync, notifications/user affordances, build v4.0.
-- Sidebar label: `Operating System` (không hiển thị `M10 Operating Center` ở leftframe).
-- Priority order: Current Work → Needs Review → Ready to Publish → Quick Actions → Recent Activity.
+- Header: `VENHO OS (Home Workspace)`, project `Ven Hồ Hotel`, last sync, notifications/user affordances, build Home Workspace v1.0.
+- Sidebar label: `VENHO OS` / `Business Operating Workspace`.
+- Sidebar navigation: Home Workspace, Projects, Tasks, Knowledge, Workbench, Creative Studio, Publishing, Reports, Settings.
+- Priority order: Today's Focus → Current Work → Needs Review + Ready to Publish → Quick Actions → Recent Activity.
 - Home không hiển thị pipeline, analytics, system health, large KPI counters, raw JSON.
 - Pipeline/workflow nằm trong Workbench; raw JSON/debug/system tools nằm trong Settings.
 - Quick Actions: Build DNA, Generate Prompt, Validate, Publish, Video, Automation.
@@ -413,7 +414,7 @@ Sau bản `M10_WORKSPACE_UI_SPEC_v4.0.md`, M10 không được xem là technical
 
 ### Workflow pages v2.0
 
-- Projects, Workbench, Agents, Publishing, Insights dùng card-based panels thay vì dense tables.
+- Projects, Tasks, Knowledge, Workbench, Creative Studio, Publishing, Reports dùng card-based panels thay vì dense tables.
 - Workbench ưu tiên Continue Working, Pending Reviews, Draft Outputs, Ready To Publish, Failed Items.
 - Publishing tách Ready, Waiting Approval, Scheduled, Published, Failed dưới dạng cards.
 - Insights giữ advisory-only; khi có dữ liệu hiển thị Overview + Recommendations cards, khi chưa có dữ liệu hiển thị empty state rõ ràng.
@@ -456,16 +457,28 @@ VIDEO_SCRIPTS_DIR = VENHO_HOTEL_DIR / "local-generated" / "social-video" / "scri
 
 2. **Timeout 300s** — gpt-image-2 + `--ref` (image editing) thường mất 90–150s. 120s không đủ.
 
-3. **Action-first prompt** — khi có action, action là dòng đầu tiên prompt. Đồng thời strip default pose (`"10-20 degree soft hero left angle / Living Expression"`) khỏi Face Lock. Không làm vậy → AI bỏ qua action vì Face Lock 20 dòng đứng trước.
+3. **Action prompt formula v2 (2026-07-10)** — single integrated sentence, NO `\n\n` break. gpt-image-2 treats `\n\n` as paragraph separator → renders two separate entities → character disappears. Công thức: `"Linh An {action}, she is a Vietnamese female lifestyle influencer, 24 years old, ... wearing {outfit}, ... she is the MAIN SUBJECT in the foreground, full body visible, no conical hat, photorealistic."` — tất cả một câu liên tục. Thêm `"MAIN SUBJECT in the foreground, full body visible"` để AI giữ nhân vật ở foreground. Lens: 35mm (không phải 85mm portrait) cho full-body action shots.
 
 4. **`use_ref` toggle** — gpt-image-2 `--ref` dùng image editing từ ảnh gốc (Linh An đứng) → không thể thay đổi toàn bộ body pose (đạp xe, chạy, ngồi). Bỏ `--ref` = text-to-image mode → AI tự do tạo bất kỳ pose.
 
+5. **Outfit E — Sport & Active** (2026-07-10) — `"light pastel-green fitted sports top, slim-fit black cycling leggings, white sneakers"`. Khi outfit_key bắt đầu bằng "E — Sport", hair tự động đổi sang `"tied back in a sporty ponytail"` thay vì center part. Validated với cycling test (2026-07-10): nhân vật xuất hiện đúng, trang phục đúng, tóc đuôi ngựa đúng.
+
 ### Quy tắc `use_ref`
 
-| Checkbox | Dùng khi | Face score |
-|----------|----------|-----------|
-| ✅ Có ref | Portrait / Standing / Leaning | ~9/10 |
-| ☐ Không ref | Full-body action (đạp xe, chạy, ngồi) | 7–8.5/10 |
+| Checkbox | Dùng khi | Face score | Kết quả |
+|----------|----------|-----------|---------|
+| ✅ Có ref | Portrait / Standing / Leaning / Tựa lan can | ~9/10 | Linh An đúng khuôn mặt ✅ |
+| ☐ Không ref | Full-body action (đạp xe, chạy, ngồi, nhảy) | 7–8.5/10 | Action đúng, nhân vật xuất hiện ✅, face generic |
+
+### Outfit mapping
+
+| Key | Mô tả | Hair tự động | Dùng khi |
+|-----|-------|-------------|---------|
+| A — Cafe Girl | cream knit top, beige A-line skirt | wavy | Cafe, lifestyle |
+| B — West Lake Sunset | flowing white dress, minimal gold jewelry | wavy | Hoàng hôn, lãng mạn |
+| C — Street Style | white button-up, high-waist trousers, denim jacket | wavy | Phố phường |
+| D — Business Travel | light beige blazer, white blouse | wavy | Professional |
+| E — Sport & Active | pastel green sports top, black leggings, white sneakers | ponytail | Cycling, running, active |
 
 ### Caption generation decision
 

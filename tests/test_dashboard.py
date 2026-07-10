@@ -40,14 +40,18 @@ def test_dashboard_snapshot_reads_existing_repo_artifacts_offline() -> None:
     assert snapshot.agent_personas
 
 
-def test_operating_center_home_snapshot_matches_v4_workspace_design() -> None:
+def test_operating_center_home_snapshot_matches_home_workspace_v1_design() -> None:
     snapshot = build_dashboard_snapshot(Path("."), project="venho_hotel")
     home = snapshot.operating_center
 
-    assert home["header"]["title"] == "VENHO AI STUDIO"
-    assert home["header"]["subtitle"] == "Workspace"
-    assert home["header"]["build"] == "v4.0"
+    assert home["header"]["title"] == "VENHO OS"
+    assert home["header"]["subtitle"] == "Home Workspace"
+    assert home["header"]["build"] == "Home Workspace v1.0"
     assert home["header"]["mode"] == "Read-only"
+    assert home["today_focus"]["objective"]
+    assert home["today_focus"]["priority"]
+    assert home["today_focus"]["next_action"]
+    assert home["today_focus"]["eta"]
     assert home["current_focus"]["action_label"]
     assert len(home["needs_review"]) <= 5
     assert "ready_to_publish" in home

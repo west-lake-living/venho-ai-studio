@@ -404,14 +404,15 @@ class DashboardGateway:
 
         return {
             "header": {
-                "title": "VENHO AI STUDIO",
-                "subtitle": "Workspace",
+                "title": "VENHO OS",
+                "subtitle": "Home Workspace",
                 "project_scope": PROJECT_DISPLAY.get(self.project, self.project),
                 "project_status": "ACTIVE",
                 "last_sync": self._last_sync(automation_jobs, validation_runs),
                 "mode": "Read-only",
-                "build": "v4.0",
+                "build": "Home Workspace v1.0",
             },
+            "today_focus": self._today_focus(tasks),
             "current_focus": self._current_focus(tasks, automation_jobs),
             "needs_review": self._needs_review(tasks, failed_validations, review_validations),
             "ready_to_publish": self._ready_to_publish(waiting_publish, publishing_items),
@@ -441,6 +442,26 @@ class DashboardGateway:
             "alerts": self._alerts(advisories, failed_validations, waiting_publish),
             "recent_activity": self._recent_activity(automation_jobs, validation_runs, content_items),
             "agents": self._agent_cards(agent_personas, health),
+        }
+
+    def _today_focus(self, tasks: list[dict[str, str]]) -> dict[str, str]:
+        primary = next((task for task in tasks if task.get("priority") == "High"), None)
+        if primary is None:
+            primary = next((task for task in tasks if task.get("status") != "Completed"), None)
+        if primary is None:
+            return {
+                "objective": "Keep VenHo OS ready for business execution",
+                "priority": "Review recent activity",
+                "milestone": "Daily workspace check",
+                "next_action": "Open Recent Activity",
+                "eta": "5 min",
+            }
+        return {
+            "objective": "Move Ven Hồ Hotel production forward",
+            "priority": primary.get("task", "Continue current task"),
+            "milestone": primary.get("source", "Workspace"),
+            "next_action": primary.get("action_label", "Continue"),
+            "eta": "15 min" if primary.get("priority") == "High" else "10 min",
         }
 
     def _current_focus(

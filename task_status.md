@@ -1,6 +1,6 @@
 # VENHO AI STUDIO — Task Status
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-07-09 (Operating System shell upload/output UX, 430/430 pass) · **Tests:** 430/430 pass · 0 API call
+**Cập nhật:** 2026-07-10 (VENHO OS Home Workspace UI v1.0 baseline, 430/430 pass) · **Tests:** 430/430 pass · 0 API call
 
 ---
 
@@ -17,7 +17,7 @@
 | M07 | Publishing Gateway | ✅ COMPLETE (offline dry-run MVP) | 19 |
 | M08 | Analytics & Feedback Loop | ✅ COMPLETE (offline MVP) | 7 |
 | M09 | Agent Studio | ✅ COMPLETE (offline planning/orchestration MVP) | 10 |
-| M10 | Workspace / Operating System | ✅ COMPLETE (v4.0 workspace + upload/output shell UX) | 7 |
+| M10 | VENHO OS Home Workspace | ✅ COMPLETE (Home Workspace UI v1.0 + upload/output shell UX) | 7 |
 
 > Tests ghi theo module-specific. Full suite = 430 (M01+M02+M03+M04+M05+M06+M07+M08+M09+M10+shared).
 
@@ -256,10 +256,10 @@
 
 ---
 
-## M10 — Workspace / Operating System ✅ COMPLETE (v4.0 + Creative Studio)
+## M10 — VENHO OS Home Workspace ✅ COMPLETE (UI baseline v1.0 + Creative Studio)
 
 **Plan:** `VENHO_AI_STUDIO_Module_10_Dashboard_Plan_v1_2.md`
-**Design:** `M10_WORKSPACE_UI_SPEC_v4.0.md`
+**Design:** `/Users/hanhpham/Developer/VENHO_OS_HOME_WORKSPACE_UI_SPEC_v1.0.md` + `/Users/hanhpham/Developer/VENHO_OS_UI_DESIGN_SPEC_v1.0.md`
 **Tests:** 7/7 — xem `tests/test_dashboard.py`
 **Full suite:** 430/430 pass — `python3 -m pytest -q`
 **Latest UI shell update:** 2026-07-09 — Creative Studio (Tạo Ảnh AI · Tạo Social Post · Tạo Video Script)
@@ -268,10 +268,12 @@
 
 **Đã hoàn thành:**
 - `dashboard/gateway.py` — read-only presentation adapter đọc `config/projects`, `data/projects`, `data/automation_runs` và normalize snapshot cho UI.
-- `ui/studio_app.py` — thiết kế lại M10 thành `Operating System` theo workflow-first navigation: Workspace, Projects, Workbench, Publishing, Settings.
-- Workspace v4.0 bỏ raw JSON/module internals; thứ tự hiển thị: Current Work, Needs Review, Ready to Publish, Quick Actions, Recent Activity.
+- `ui/studio_app.py` — thiết kế lại M10 thành `VENHO OS — Home Workspace` theo business operating workspace navigation.
+- Home Workspace v1.0 bỏ raw JSON/module internals; thứ tự hiển thị: Today's Focus, Current Work, Needs Review + Ready to Publish, Quick Actions, Recent Activity.
+- Sidebar theo spec v1.0: Home Workspace, Projects, Tasks, Knowledge, Workbench, Creative Studio, Publishing, Reports, Settings.
+- Header theo spec v1.0: left VENHO OS/Home Workspace, center current project, right Last Sync/Notifications/User.
 - Pipeline/workflow chuyển vào Workbench; analytics/system/debug chuyển vào Settings.
-- Projects, Workbench, Publishing, Settings dùng card-based workflow panels; tables/raw JSON chỉ còn trong Settings developer area.
+- Projects, Tasks, Knowledge, Workbench, Creative Studio, Publishing, Reports, Settings dùng card-based workflow panels; tables/raw JSON chỉ còn trong Settings developer area.
 - Workbench gom quick actions, current focus, pending reviews, draft outputs, ready-to-publish và failed items.
 - Settings giữ Developer, Artifacts, JSON Viewer, Module Status, Logs, Settings; debug/raw JSON không còn nằm ở Workspace.
 - Graceful degradation: thiếu DNA/video/publishing/analytics artifacts hiển thị advisory thay vì crash.
@@ -291,7 +293,7 @@
 - Fix: action-first prompt — action dẫn đầu prompt, strip default pose khi có action tùy chỉnh
 - Thêm: `use_ref` toggle — bật = portrait (9/10 face score); tắt = full-body action (7–8.5, tự do pose)
 
-**v4.0 còn lại / follow-up:**
+**v1.0 còn lại / follow-up:**
 - Deep panels đã có card UI nền tảng; có thể tinh chỉnh tiếp theo production contexts.
 - Phase 5 Command Palette (`Cmd+K`) chưa triển khai trong Streamlit MVP.
 
