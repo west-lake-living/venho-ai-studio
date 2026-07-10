@@ -64,6 +64,7 @@ _OUTFITS: dict[str, str] = {
     "B — West Lake Sunset": "flowing white dress, minimal gold jewelry",
     "C — Street Style": "white button-up shirt, high-waist trousers, denim jacket",
     "D — Business Travel": "light beige blazer, white blouse, elegant trousers",
+    "E — Sport & Active": "light pastel-green fitted sports top, slim-fit black cycling leggings, white sneakers",
 }
 
 _ENV_BLOCKS: dict[str, str] = {
@@ -414,9 +415,24 @@ def _assemble_image_prompt(
         outfit_desc = _OUTFITS.get(outfit_key, "")
         act = action.strip()
         if act:
-            # Action leads the prompt — strips default pose/angle from Face Lock
-            face_no_pose = _LINH_AN_FACE_LOCK.split("10-20 degree")[0].rstrip(",\n")
-            parts.append(f"{act},\n\n{face_no_pose}\nOutfit: {outfit_desc}.")
+            subject_prefix = "" if act.lower().startswith("linh an") else "Linh An "
+            is_sport = outfit_key.startswith("E — Sport")
+            hair_desc = (
+                "long dark chocolate brown hair tied back in a sporty ponytail"
+                if is_sport else
+                "long dark chocolate brown layered wavy hair"
+            )
+            # Single integrated sentence: character description woven into action
+            # No paragraph break — gpt-image-2 treats \n\n as separate entities
+            integrated = (
+                f"{subject_prefix}{act}, "
+                f"she is a Vietnamese female lifestyle influencer, 24 years old, "
+                f"fair warm ivory skin, healthy natural glow, realistic skin texture, "
+                f"{hair_desc}, small pearl drop earrings, wearing {outfit_desc}, "
+                f"slim elegant 168cm figure, she is the MAIN SUBJECT in the foreground, "
+                f"full body visible, no conical hat, photorealistic, natural beauty."
+            )
+            parts.append(integrated)
         else:
             parts.append(f"{_LINH_AN_FACE_LOCK}\nOutfit: {outfit_desc}.")
     env = _ENV_BLOCKS.get(scenario, "")
@@ -426,8 +442,21 @@ def _assemble_image_prompt(
         invariant = _extract_dna_section(dna_compact, "INVARIANT")
         if invariant:
             parts.append(f"[DNA Invariants — {scenario}]\n{invariant}")
-    parts.append(_TECH_BLOCK)
-    parts.append(f"Negative: {_NEGATIVE_BLOCK}")
+    # Action shots need wider lens (35mm) for full body; portrait shots keep 85mm
+    has_action = has_linh_an and bool(action.strip())
+    if has_action:
+        parts.append(
+            "Fujifilm GFX100S, 35mm lens, moderate depth of field, photorealistic 8K,\n"
+            "natural skin texture, editorial lifestyle photography, authentic Vietnamese atmosphere."
+        )
+    else:
+        parts.append(_TECH_BLOCK)
+    action_extra_negative = (
+        " No conical hat on main subject, no dark work clothes on main subject,"
+        " no anonymous passerby as main subject, no decorative ornate wrought-iron railing."
+        if has_action else ""
+    )
+    parts.append(f"Negative: {_NEGATIVE_BLOCK}{action_extra_negative}")
     return "\n\n".join(parts)
 
 
@@ -1073,6 +1102,28 @@ def _render_operating_header(snapshot) -> None:
     )
 
 
+def _render_today_focus(focus: dict) -> None:
+    st.markdown(
+        f"""
+        <div class="oc-card oc-focus-card" style="min-height: 140px;">
+            <div>
+                <div class="oc-label">Today's Focus</div>
+                <div class="oc-focus-title">{_esc(focus.get('objective', 'Define today mission'))}</div>
+                <div class="oc-muted">
+                    Priority #1: <strong>{_esc(focus.get('priority', 'Choose focus'))}</strong><br>
+                    Milestone: {_esc(focus.get('milestone', 'Workspace'))}
+                </div>
+            </div>
+            <div class="oc-focus-side">
+                <div class="oc-small">ETA: {_esc(focus.get('eta', '10 min'))}</div>
+                <span class="oc-btn">{_esc(focus.get('next_action', 'Continue'))}</span>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
 def _render_summary_cards(cards: list[dict]) -> None:
     items = []
     for card in cards:
@@ -1439,11 +1490,21 @@ def _render_workbench(snapshot) -> None:
 
 def _render_dashboard() -> None:
     _install_operating_center_css()
-    st.sidebar.markdown("### VENHO AI Studio")
-    st.sidebar.caption("Workspace")
+    st.sidebar.markdown("### VENHO OS")
+    st.sidebar.caption("Business Operating Workspace")
     section = st.sidebar.radio(
         "Navigation",
-        ["Workspace", "Projects", "Workbench", "Publishing", "Settings"],
+        [
+            "Home Workspace",
+            "Projects",
+            "Tasks",
+            "Knowledge",
+            "Workbench",
+            "Creative Studio",
+            "Publishing",
+            "Reports",
+            "Settings",
+        ],
         key="m10_section",
     )
     project = st.sidebar.text_input("Project", value="venho_hotel", key="m10_project")
@@ -1451,7 +1512,8 @@ def _render_dashboard() -> None:
     oc = snapshot.operating_center
 
     _render_operating_header(snapshot)
-    if section == "Workspace":
+    if section == "Home Workspace":
+        _render_today_focus(oc["today_focus"])
         _render_current_focus(oc["current_focus"])
         left, right = st.columns(2)
         with left:
@@ -1471,9 +1533,9 @@ def _render_dashboard() -> None:
         st.markdown(
             """
             <div class="oc-bottom-nav">
-                <div class="oc-bottom-item">Workspace</div>
+                <div class="oc-bottom-item">Home</div>
                 <div class="oc-bottom-item">Projects</div>
-                <div class="oc-bottom-item">Workbench</div>
+                <div class="oc-bottom-item">Tasks</div>
                 <div class="oc-bottom-item">Publish</div>
                 <div class="oc-bottom-item">Settings</div>
             </div>
@@ -1516,8 +1578,75 @@ def _render_dashboard() -> None:
         _render_card_grid("Knowledge Assets", knowledge_cards, "No knowledge assets available yet.")
         _render_health(oc["system_health"])
 
+    elif section == "Tasks":
+        _render_page_header("Tasks", "Daily execution queue grouped by priority and review state.")
+        task_cards = [
+            {
+                "label": task.get("priority", "Task"),
+                "title": task.get("task", "Untitled task"),
+                "meta": f"{task.get('source', 'Workspace')} · {task.get('status', 'Pending')}",
+                "status": task.get("status", "Pending"),
+                "action": task.get("action_label", "Open"),
+            }
+            for task in oc["today_tasks"]
+        ]
+        _render_card_grid("Today Tasks", task_cards, "No tasks are queued for today.")
+        _render_workspace_list("Needs Review", oc.get("needs_review", []), "No items need review right now.")
+
+    elif section == "Knowledge":
+        _render_page_header("Knowledge", "Browse DNA subjects and identify missing knowledge without exposing raw JSON.")
+        knowledge_cards = [
+            {
+                "label": "DNA Subject",
+                "title": asset.subject,
+                "meta": (
+                    f"Config: {'yes' if asset.has_config else 'no'} · "
+                    f"Overrides: {'yes' if asset.has_overrides else 'no'} · "
+                    f"Compact: {'yes' if asset.has_compact else 'no'}"
+                ),
+                "status": "Ready" if asset.has_dna_json else "Need Review",
+                "action": "Open" if asset.has_dna_json else "Build DNA",
+            }
+            for asset in snapshot.subjects
+        ]
+        _render_card_grid("Knowledge Assets", knowledge_cards, "No knowledge assets available yet.")
+
     elif section == "Workbench":
         _render_workbench(snapshot)
+
+    elif section == "Creative Studio":
+        _render_page_header("Creative Studio", "AI creation skills for daily production.")
+        skill_cards = [
+            {
+                "label": "Current Skill",
+                "title": "Image Creator",
+                "meta": "Generate AI image prompts and production-ready image concepts.",
+                "status": "Ready",
+                "action": "Open from sidebar",
+            },
+            {
+                "label": "Current Skill",
+                "title": "Content Creator",
+                "meta": "Create social post drafts from Ven Hồ Hotel context.",
+                "status": "Ready",
+                "action": "Open from sidebar",
+            },
+            {
+                "label": "Current Skill",
+                "title": "Video Script Creator",
+                "meta": "Build short-form video scripts and scene packages.",
+                "status": "Ready",
+                "action": "Open from sidebar",
+            },
+            {
+                "label": "Future Skill",
+                "title": "Voice / SEO / Email / Translation",
+                "meta": "Reserved extension area for future VenHo OS skills.",
+                "status": "Planned",
+                "action": "Plan",
+            },
+        ]
+        _render_card_grid("Creative Skills", skill_cards, "No creative skills configured.")
 
     elif section == "Publishing":
         _render_page_header("Publishing", "Review approved packages, waiting approvals, scheduled work, receipts, and failures.")
@@ -1535,6 +1664,12 @@ def _render_dashboard() -> None:
                 _cards_from_records(rows, label="Publishing", title_key="id"),
                 f"No {label.lower()} publishing items.",
             )
+
+    elif section == "Reports":
+        _render_page_header("Reports", "Review operational reports without turning Home into a KPI wall.")
+        report_cards = _cards_from_records(snapshot.analytics_items, label="Report", title_key="id")
+        _render_card_grid("Reports", report_cards, "No reports or analytics snapshots are available yet.")
+        _render_recent_activity(oc["recent_activity"])
 
     else:
         _render_page_header("Settings", "Developer and system tools stay here so Workspace remains focused.")
@@ -1572,7 +1707,7 @@ def _render_dashboard() -> None:
                         len(snapshot.analytics_items),
                     ],
                 },
-                use_container_width=True,
+                width="stretch",
                 hide_index=True,
             )
         with system_tabs[2]:
@@ -1585,7 +1720,7 @@ def _render_dashboard() -> None:
                 }
             )
         with system_tabs[3]:
-            st.dataframe(oc["system_health"], use_container_width=True, hide_index=True)
+            st.dataframe(oc["system_health"], width="stretch", hide_index=True)
         with system_tabs[4]:
             _render_recent_activity(oc["recent_activity"])
         with system_tabs[5]:
@@ -1846,12 +1981,12 @@ def _render_tao_video_script() -> None:
                 st.rerun()
 
 
-st.set_page_config(page_title="VENHO AI Studio", page_icon="🧬", layout="wide")
+st.set_page_config(page_title="VENHO OS", page_icon="🧬", layout="wide")
 
 mode = st.sidebar.radio(
     "Chọn màn hình",
     [
-        "Operating System",
+        "VENHO OS — Home Workspace",
         "Mode A — Observe (bất kỳ ảnh nào)",
         "Mode B — Build DNA (nhiều ảnh cùng 1 subject)",
         "─── Creative Studio ───",
@@ -1861,7 +1996,7 @@ mode = st.sidebar.radio(
     ],
 )
 
-if mode.startswith("Operating System"):
+if mode.startswith("VENHO OS"):
     _render_dashboard()
 
 elif mode == "Tạo Ảnh AI":
