@@ -110,6 +110,9 @@ def observe_cmd(
     output_dir: Optional[Path] = typer.Option(None, "--output", "-o", help="Output folder (Mode A only)"),
     project: str = typer.Option("venho_hotel", "--project", "-p", help="Project name (Mode B / --all)"),
     subject: Optional[str] = typer.Option(None, "--subject", "-s", help="Subject type (Mode B)"),
+    outfit_id: Optional[str] = typer.Option(None, "--outfit-id", help="Stable wardrobe variant ID (Mode C)"),
+    schema_subject: Optional[str] = typer.Option(None, "--schema-subject", help="Canonical schema subject (Mode C)"),
+    display_label: Optional[str] = typer.Option(None, "--display-label", help="Friendly label for Mode C logs/UI"),
     dna_version: str = typer.Option("1.0", "--dna-version", help="DNA version label (Mode B / --all)"),
     provider: Optional[str] = typer.Option(None, "--provider", help="Override AI provider (openai/claude/mock)"),
     classify: bool = typer.Option(False, "--classify", help="Pass 0: classify mixed folder into subject groups"),
@@ -174,7 +177,7 @@ def observe_cmd(
             raise typer.Exit(1)
         return
 
-    from knowledge_studio.vision.pipeline import run_mode_a, run_mode_b
+    from knowledge_studio.vision.pipeline import run_mode_a, run_mode_b, run_mode_c
 
     if input_dir is None:
         typer.secho("--input is required (unless using --all or --classify)", fg=typer.colors.RED, err=True)
@@ -203,8 +206,29 @@ def observe_cmd(
             typer.echo(f"  Markdown : {paths['md']}")
             typer.echo(f"  JSON     : {paths['json']}")
 
+        elif resolved_mode == "c":
+            if not outfit_id:
+                typer.secho("--outfit-id is required for Mode C", fg=typer.colors.RED, err=True)
+                raise typer.Exit(1)
+            if not input_dir.is_dir() or not any(input_dir.iterdir()):
+                typer.secho(f"Input dir empty or missing: {input_dir}", fg=typer.colors.RED, err=True)
+                raise typer.Exit(1)
+            _confirm_one_subject_or_exit(outfit_id, assume_one_subject=assume_one_subject)
+            paths = run_mode_c(
+                project=project,
+                outfit_id=outfit_id,
+                schema_subject=schema_subject,
+                display_label=display_label,
+                input_dir=input_dir,
+                dna_version=dna_version,
+                provider=provider,
+            )
+            typer.secho("Mode C complete.", fg=typer.colors.GREEN, bold=True)
+            typer.echo(f"  Markdown : {paths['md']}")
+            typer.echo(f"  JSON     : {paths['json']}")
+
         else:
-            typer.secho(f"Unknown mode '{resolved_mode}'. Use --mode a or --mode b.", fg=typer.colors.RED, err=True)
+            typer.secho(f"Unknown mode '{resolved_mode}'. Use --mode a, --mode b, or --mode c.", fg=typer.colors.RED, err=True)
             raise typer.Exit(1)
 
     except Exception as e:

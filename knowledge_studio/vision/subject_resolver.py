@@ -43,7 +43,12 @@ def _assert_schema_approved(schema_data: dict, path: Path) -> None:
         )
 
 
-def _resolve_schema_path(project: str, subject: str) -> tuple[Path, str]:
+def _resolve_schema_path(
+    project: str,
+    subject: str,
+    *,
+    allow_universal: bool = True,
+) -> tuple[Path, str]:
     """Resolve schema YAML for (project, subject) via §6 lookup order.
 
     Returns (yaml_path, source_description).
@@ -63,6 +68,8 @@ def _resolve_schema_path(project: str, subject: str) -> tuple[Path, str]:
         ),
     ]
     for path, source in candidates:
+        if source == "config/universal_schema.yaml" and not allow_universal:
+            continue
         if path.exists():
             return path, source
     raise FileNotFoundError(
@@ -98,14 +105,16 @@ def _resolve_overlay_path(project: str, subject: str) -> Optional[Path]:
     return path if path.exists() else None
 
 
-def resolve(project: str, subject: str) -> SubjectDef:
+def resolve(project: str, subject: str, *, allow_universal_schema: bool = True) -> SubjectDef:
     """Resolve and return a SubjectDef for (project, subject).
 
     Raises FileNotFoundError if no schema found.
     """
     from knowledge_studio.vision._subject_classes import get_observation_cls, get_dna_cls
 
-    schema_path, source = _resolve_schema_path(project, subject)
+    schema_path, source = _resolve_schema_path(
+        project, subject, allow_universal=allow_universal_schema,
+    )
     schema_data = _load_schema_yaml(schema_path)
     _assert_schema_approved(schema_data, schema_path)
 

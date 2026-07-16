@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from dataclasses import replace
 
 import yaml
 
@@ -12,6 +13,19 @@ from knowledge_studio.vision.subject_resolver import resolve, SubjectDef
 
 BASE_DIR = Path(__file__).parent.parent.parent
 CONFIG_PATH = BASE_DIR / "config" / "settings.yaml"
+
+MODE_C_WARDROBE_VARIANTS = {
+    "mint_green": {
+        "display_label": "Nike Mint Green Running",
+        "schema_subject": "outfit_e_sport",
+        "family": "sport_active",
+    },
+    "nike_pink_running": {
+        "display_label": "Nike Pink Running",
+        "schema_subject": "outfit_e_sport",
+        "family": "sport_active",
+    },
+}
 
 
 def _load_config() -> dict:
@@ -132,13 +146,88 @@ def run_mode_b(
     input_dir: Path,
     dna_version: str = "1.0",
     provider: str | None = None,
+    allow_universal_schema: bool = True,
 ) -> dict[str, Path]:
     """Mode B: multiple images → DNA .md + .json."""
+    subject_def = resolve(project, subject, allow_universal_schema=allow_universal_schema)
+    return _run_mode_b_with_subject_def(
+        project=project,
+        subject=subject,
+        input_dir=input_dir,
+        dna_version=dna_version,
+        provider=provider,
+        subject_def=subject_def,
+    )
+
+
+def run_mode_c(
+    project: str,
+    outfit_id: str,
+    input_dir: Path,
+    dna_version: str = "1.0",
+    provider: str | None = None,
+    schema_subject: str | None = None,
+    display_label: str | None = None,
+) -> dict[str, Path]:
+    """Mode C: Linh An wardrobe variant → DNA, using a canonical schema subject.
+
+    Mode C separates:
+      - outfit_id: stable user-facing variant/artifact ID;
+      - schema_subject: canonical schema used for observation/consolidation;
+      - display_label: friendly label shown in logs/UI.
+
+    Universal schema fallback is never allowed here.
+    """
+    if project != "linh_an":
+        raise ValueError("Mode C currently supports project='linh_an' only.")
+
+    variant = MODE_C_WARDROBE_VARIANTS.get(outfit_id)
+    if variant is None:
+        allowed = ", ".join(sorted(MODE_C_WARDROBE_VARIANTS))
+        raise ValueError(f"Unknown Mode C outfit_id '{outfit_id}'. Allowed: {allowed}")
+
+    effective_schema_subject = schema_subject or variant["schema_subject"]
+    if effective_schema_subject != variant["schema_subject"]:
+        raise ValueError(
+            f"Mode C outfit_id '{outfit_id}' must use schema_subject "
+            f"'{variant['schema_subject']}', got '{effective_schema_subject}'."
+        )
+
+    schema_def = resolve(project, effective_schema_subject, allow_universal_schema=False)
+    subject_def = replace(
+        schema_def,
+        name=outfit_id,
+        display_name=display_label or variant["display_label"],
+        dna_filename=f"{project.upper()}_{outfit_id.upper()}_DNA",
+    )
+
+    return _run_mode_b_with_subject_def(
+        project=project,
+        subject=outfit_id,
+        input_dir=input_dir,
+        dna_version=dna_version,
+        provider=provider,
+        subject_def=subject_def,
+        mode_label="Mode C: Linh An Wardrobe DNA",
+        schema_subject=effective_schema_subject,
+    )
+
+
+def _run_mode_b_with_subject_def(
+    project: str,
+    subject: str,
+    input_dir: Path,
+    dna_version: str,
+    provider: str | None,
+    subject_def: SubjectDef,
+    mode_label: str = "Mode B: DNA Builder",
+    schema_subject: str | None = None,
+) -> dict[str, Path]:
+    """Shared implementation for Mode B and strict Mode C."""
     from knowledge_studio.vision.pass2_consolidate import consolidate
     from knowledge_studio.vision.renderers.dna_md import write_dna_output
 
     cfg = _load_config()
-    subject_def = resolve(project, subject)
 
     obs_dir_key = f"data/projects/{project}/observations"
     obs_dir = BASE_DIR / obs_dir_key
@@ -148,8 +237,11 @@ def run_mode_b(
     init_log(log_path)
 
     log("=" * 60)
-    log("VENHO AI Studio — Mode B: DNA Builder")
+    log(f"VENHO AI Studio — {mode_label}")
     log(f"Project : {project}")
+    if schema_subject:
+        log(f"Outfit  : {subject}")
+        log(f"Schema subject: {schema_subject}")
     log(f"Subject : {subject_def.display_name}")
     log(f"Schema  : {subject_def.schema_source}")
     log(f"Input   : {input_dir}")

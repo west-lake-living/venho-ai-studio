@@ -84,6 +84,15 @@ class TestResolveSchemaPath:
         assert path.exists()
         assert "universal" in source
 
+    def test_strict_resolve_rejects_universal_fallback(self):
+        with pytest.raises(FileNotFoundError):
+            _resolve_schema_path("linh_an", "nike_pink_running", allow_universal=False)
+
+    def test_linh_an_sport_schema_resolves_project_specific(self):
+        path, source = _resolve_schema_path("linh_an", "outfit_e_sport", allow_universal=False)
+        assert path.exists()
+        assert source == "config/projects/linh_an/subjects/outfit_e_sport.yaml"
+
     def test_source_description_contains_yaml_filename(self):
         _, source = _resolve_schema_path("venho_hotel", "lake_view_room")
         assert "lake_view_room.yaml" in source

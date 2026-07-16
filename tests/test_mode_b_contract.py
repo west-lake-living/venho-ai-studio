@@ -219,6 +219,51 @@ class TestModeBOutput:
         assert paths["compact"].exists()
         assert "_COMPACT.md" in paths["compact"].name
 
+
+# ---------------------------------------------------------------------------
+# TestModeCContract — strict wardrobe routing
+# ---------------------------------------------------------------------------
+
+class TestModeCContract:
+    def test_unknown_outfit_id_rejected_before_generation(self, tmp_path):
+        from knowledge_studio.vision.pipeline import run_mode_c
+        with pytest.raises(ValueError, match="Unknown Mode C outfit_id"):
+            run_mode_c(project="linh_an", outfit_id="unknown_variant", input_dir=tmp_path)
+
+    def test_schema_subject_must_match_locked_variant(self, tmp_path):
+        from knowledge_studio.vision.pipeline import run_mode_c
+        with pytest.raises(ValueError, match="must use schema_subject"):
+            run_mode_c(
+                project="linh_an",
+                outfit_id="nike_pink_running",
+                schema_subject="wardrobe",
+                input_dir=tmp_path,
+            )
+
+    def test_nike_pink_uses_sport_schema_with_variant_artifact_subject(self, tmp_path, monkeypatch):
+        from knowledge_studio.vision import pipeline
+
+        captured = {}
+
+        def fake_run(**kwargs):
+            captured.update(kwargs)
+            return {"md": tmp_path / "ok.md", "json": tmp_path / "ok.json"}
+
+        monkeypatch.setattr(pipeline, "_run_mode_b_with_subject_def", fake_run)
+
+        result = pipeline.run_mode_c(
+            project="linh_an",
+            outfit_id="nike_pink_running",
+            input_dir=tmp_path,
+        )
+
+        assert result["md"].name == "ok.md"
+        assert captured["subject"] == "nike_pink_running"
+        assert captured["schema_subject"] == "outfit_e_sport"
+        assert captured["subject_def"].name == "nike_pink_running"
+        assert captured["subject_def"].schema_source == "config/projects/linh_an/subjects/outfit_e_sport.yaml"
+        assert captured["subject_def"].dna_filename == "LINH_AN_NIKE_PINK_RUNNING_DNA"
+
     def test_compact_not_written_by_default(self, tmp_path):
         from knowledge_studio.vision.renderers.dna_md import write_dna_output
         dna = _minimal_dna()
