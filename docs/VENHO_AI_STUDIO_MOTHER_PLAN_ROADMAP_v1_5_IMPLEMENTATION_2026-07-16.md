@@ -7,6 +7,26 @@
 
 ---
 
+# 0. IMPLEMENTATION CLOSEOUT — 2026-07-16
+
+Roadmap này đã được triển khai qua Phase 0–6 và closeout `QA-01/DOC-01` như “Phase 7” vận hành.
+
+| Repo | Current verification | Latest relevant commit |
+|---|---:|---|
+| `venho-ai-studio` | `python3 -m pytest -q` → **443/443 pass**, 0 API call | `b975466` |
+| `venho-os` | `npm test -- --run` → **65/65 pass**; lint, TypeScript, build pass | `6beff50` |
+
+Các mục trong phần baseline/audit bên dưới là snapshot lúc lập kế hoạch. Current source of truth:
+
+- Status/memory: `task_status.md`, `task_memory.md`
+- QA matrix: `config/quality/controlled_live_matrix.json`
+- Phase 7 closeout: `docs/AI_STUDIO_PHASE7_QA_DOC_CLOSEOUT_2026-07-16.md`
+- VenHo OS changelog: `venho-os/CHANGELOG.md`
+
+Known external dependency: API key từng lộ trong chat phải được revoke/rotate ngoài repo trước production run thật.
+
+---
+
 # 1. KẾT LUẬN ĐIỀU HÀNH
 
 Sau chuỗi triển khai và test thực tế ngày 2026-07-15–16, roadmap cần đổi thứ tự ưu tiên so với v1.4:

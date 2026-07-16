@@ -137,7 +137,7 @@
 
 ---
 
-## M05 — Content Studio ✅ COMPLETE (mock prose generator)
+## M05 — Content Studio ✅ COMPLETE (deterministic + real Claude adapter gated)
 
 **Plan:** `VENHO_AI_STUDIO_Module_05_Content_Studio_Plan_v1_1.md` (§19 ghi status hoàn thành)
 **Git:** `8c95194`
@@ -155,16 +155,17 @@
 
 **Content types:** social (FB/IG/Threads/TikTok) · blog SEO · website copy · OTA (Agoda+Google+direct) · FAQ · email draft · campaign · calendar
 
-**⚠️ Caveats:**
-- Prose generator hiện **deterministic/mock** — không tốn token, test ổn định.
-- Production follow-up: thay `generator_fn` bằng Claude/OpenAI thật, giữ nguyên bridge + prefilter + renderer + validator + manifest + CLI.
+**Runtime policy:**
+- Deterministic builders/mock generator vẫn là default trong tests — 0 API call.
+- Real Claude adapter đã có và chỉ chạy khi được gọi rõ ràng với credentials; pytest dùng fake-client coverage.
+- Phase 5 đã thêm `contract_refs/outfit_id` trace từ M02 → M05 → M03.
 
 ---
 
 ## M06 — Video Studio ✅ COMPLETE (MVP — bugs fixed, design hardened)
 
 **Plan:** `VENHO_AI_STUDIO_Module_06_Video_Studio_Plan_v1_1.md`
-**Git:** `155b5f9` (scaffold) + uncommitted (bug fixes 2026-07-09)
+**Git:** `155b5f9` scaffold; các bug fix 2026-07-09 và Phase 5/6/7 hardening đã commit trong lịch sử sau đó.
 **Tests:** 15/15 — xem `tests/test_video_studio.py` (9) + `tests/test_video_prompt_builder.py` (6)
 
 **Pipeline đầy đủ:**
@@ -192,6 +193,7 @@
 - Chỉ tạo pre-render package; không render, không upload, không publish
 - Post-render video validation là future work
 - Spatial/brand forbidden single-source qua M02/DNA; video config chỉ giữ motion/camera/character rules
+- Phase 5 đã thêm `outfit_id` continuity lock và `contract_refs` vào video package.
 
 ---
 
@@ -234,7 +236,7 @@
 
 **Plan:** `VENHO_AI_STUDIO_Module_08_Analytics_Feedback_Development_Plan_v1_2_QC.md`
 **Tests:** 7/7 — xem `tests/test_analytics_feedback.py`
-**Full suite:** `python3 -m pytest -q` → 430/430 pass, 0 API call
+**Historical full suite at completion:** `430/430` pass, 0 API call. **Current full suite:** `443/443` pass.
 **Code review:** 2026-07-09 — 5 bugs fixed (commit `373b1cc`)
 
 **Vai trò:** Nhận Delivery Receipt từ M07 → tạo collection tasks → mock collect metrics → chuẩn hóa unified metrics → tính derived stats/baseline/score → sentiment guardrail → sinh alert/advisory/report. M08 chỉ sinh output advisory, không tự apply vào M01/M05.
@@ -263,7 +265,7 @@
 
 **Plan:** `VENHO_AI_STUDIO_Module_09_Agent_Studio_Development_Plan_v2_2_QC.md`
 **Tests:** 10/10 — xem `tests/test_agent_studio.py`
-**Full suite:** `python3 -m pytest -q` → 430/430 pass, 0 API call
+**Historical full suite at completion:** `430/430` pass, 0 API call. **Current full suite:** `443/443` pass.
 **Code review:** 2026-07-09 — 3 bugs fixed (commit `373b1cc`)
 
 **Vai trò:** Cognitive Interface / Agent Orchestration Layer. Nhận goal tự nhiên → validate request → route persona → load context → detect missing knowledge → tạo TaskPlan → classify risk → đóng gói ModuleRequest qua M04 → aggregate response Markdown/JSON. M09 không tự publish, không tự sửa Knowledge, không bypass M04.
@@ -289,89 +291,57 @@
 - Required knowledge thiếu trả `ERR_MISSING_KNOWLEDGE`.
 - Destructive action bị block theo policy; external impact yêu cầu approval.
 
-**Follow-up sau review:**
-- Missing knowledge hiện trả `FAILED / ERR_MISSING_KNOWLEDGE`, nhưng flow vẫn chuẩn bị module requests mock. Phase hardening kế tiếp nên dừng cứng ngay sau `detect_missing_knowledge`, không build/dispatch module requests khi thiếu required knowledge.
-- `--execute` hiện vẫn dùng mock/prepared M04 bridge trong MVP; phase sau nếu cần execution thật thì nối sang public API của M04 workflow runner.
+**Phase 6 hardening đã xong:**
+- Missing knowledge hiện hard-stop trước M04 dispatch và trả `ERR_MISSING_KNOWLEDGE`.
+- `--execute` vẫn qua M04 boundary; execution thật phải dùng workflow runner/capability contract, không bypass M04.
 
 ---
 
 ## M10 — VenHo OS Dashboard ✅ COMPLETE v3.0 (Next.js OS Stage A+B+C — Streamlit đã xóa 2026-07-13)
 
 **Plan:** `VENHO_AI_STUDIO_Module_10_Dashboard_Plan_v1_2.md`
-**Tests:** 0 unit tests (logic trong Next.js API routes — không có Python tests)
-**Full suite:** 424/424 pass — `python3 -m pytest -q`
-**Next.js OS (Stage A+B+C):** `localhost:3000/os` — `npm run dev` hoặc `run-venho-os.command`
+**Repo runtime:** `venho-os` Next.js 16 App Router (`/os`)  
+**Current OS tests:** `npm test -- --run` → 65/65; `npm run lint`; `npx tsc --noEmit`; `npm run build` pass  
+**AI Studio Python suite:** 443/443 pass, 0 API call  
 
-**Quyết định kiến trúc:** M10 chuyển hoàn toàn sang Next.js 16 App Router (`src/app/os/`). Streamlit (`ui/`, `dashboard/`) đã xóa 2026-07-13 sau khi tích hợp đầy đủ vào VenHo OS.
+**Quyết định kiến trúc:** M10 đã chuyển hẳn khỏi Python/Streamlit. `venho-ai-studio` giữ engine/contracts M01–M09; `venho-os` giữ UI/BFF/job boundary.
 
-**Đã hoàn thành:**
-- `dashboard/gateway.py` — read-only presentation adapter đọc `config/projects`, `data/projects`, `data/automation_runs` và normalize snapshot cho UI.
-- `ui/studio_app.py` — thiết kế lại M10 thành `VENHO OS — Home Workspace` theo business operating workspace navigation.
-- Home Workspace v1.0 bỏ raw JSON/module internals; thứ tự hiển thị: Today's Focus, Current Work, Needs Review + Ready to Publish, Quick Actions, Recent Activity.
-- Sidebar theo spec v1.0: Home Workspace, Projects, Tasks, Knowledge, Workbench, Creative Studio, Publishing, Reports, Settings.
-- Header theo spec v1.0: left VENHO OS/Home Workspace, center current project, right Last Sync/Notifications/User.
-- Pipeline/workflow chuyển vào Workbench; analytics/system/debug chuyển vào Settings.
-- Projects, Tasks, Knowledge, Workbench, Creative Studio, Publishing, Reports, Settings dùng card-based workflow panels; tables/raw JSON chỉ còn trong Settings developer area.
-- Workbench gom quick actions, current focus, pending reviews, draft outputs, ready-to-publish và failed items.
-- Settings giữ Developer, Artifacts, JSON Viewer, Module Status, Logs, Settings; debug/raw JSON không còn nằm ở Workspace.
-- Graceful degradation: thiếu DNA/video/publishing/analytics artifacts hiển thị advisory thay vì crash.
-- Face Lock display mapping theo plan: `>=9.0 APPROVED`, `8.0-8.9 CONDITIONAL`, `<8.0 REJECT`; score 0-100 được normalize để chỉ hiển thị.
-- Giữ ranh giới zero business logic: Dashboard không tự build ModuleRequest, không tự validate HMAC, không tính lại score, không render/upload/publish.
-- `pyproject.toml` package discovery đã include `dashboard*`.
-- `docs/how_to_run_studio_ui.md` cập nhật hướng dẫn chạy M10.
-- Studio Shell leftframe đổi `M10 Operating Center` thành `Operating System`.
-- Mode A/B có Upload ảnh, tự lưu vào folder input chuẩn.
-- Mode A/B provider mặc định `mock` để test offline, không cần credentials; vẫn cho chọn `openai`, `claude`, hoặc `config mặc định`.
-- Mode A/B hiển thị folder output và có nút mở Finder; Mode A output mặc định `data/projects/_inbox/output`, Mode B output mặc định `data/projects/{project}/knowledge`.
+**Current Image Studio trong `venho-os`:**
+- Workbench: Mode A/B SSE, upload ảnh, normalize ảnh server-side, output dir dùng thật.
+- Knowledge: DNA Library, Vault Search, Mode C Linh An, status artifact theo run, upload duplicate bị chặn.
+- Creative Studio: Tạo Ảnh AI, Social Post, Video Script.
+- Image generation: durable file-backed jobs, status API, cancel, history, manifest 1.1.
+- Wardrobe: dynamic Wardrobe Index 1.0; selector không còn hardcode hai outfit trong UI.
+- QC: image/face validation, manifest trace face/outfit/location/reference, partial validation errors là `UNVALIDATED`.
+- QA: `/api/v1/studio/quality-matrix` đọc controlled live matrix; không chạy paid generation.
 
-**Creative Studio (2026-07-09):**
-- 3 mode mới trong sidebar: Tạo Ảnh AI · Tạo Social Post · Tạo Video Script
-- Fix: `Path(__file__).resolve()` — Streamlit truyền `__file__` relative, không resolve → path sai
-- Fix: timeout 300s (gpt-image-2 + `--ref` mất 90–150s, 120s không đủ)
-- Fix: action-first prompt — action dẫn đầu prompt, strip default pose khi có action tùy chỉnh
-- Thêm: `use_ref` toggle — bật = portrait (9/10 face score); tắt = full-body action (7–8.5, tự do pose)
-
-**Creative Studio — Action prompt v2 (2026-07-10):**
-- Fix: integrated single-sentence prompt (không `\n\n`) — gpt-image-2 treats `\n\n` as paragraph separator → character disappears; giờ dùng một câu liên tục "Linh An {action}, she is ... MAIN SUBJECT in the foreground, full body visible"
-- Fix: lens 85mm → 35mm cho action shots (85mm portrait crop quá tight → không render full body)
-- Thêm: Outfit E — Sport & Active (`pastel green sports top, black leggings, white sneakers`); hair tự động đổi sang ponytail khi chọn E
-- Thêm: extra negatives cho action mode (no conical hat, no dark work clothes, no ornate railing)
-- **Test validated (2026-07-10):** Linh An xuất hiện đúng trên xe đạp, trang phục thể thao, tóc đuôi ngựa, cảnh bên hồ Hà Nội
-- Commits: `3a9be1c`, `fc3e31c`
-
-**v1.0 còn lại / follow-up:**
-- Deep panels đã có card UI nền tảng; có thể tinh chỉnh tiếp theo production contexts.
-- Phase 5 Command Palette (`Cmd+K`) chưa triển khai trong Streamlit MVP.
-
-**Run UI:**
-```bash
-pip install -e ".[ui]"
-streamlit run ui/studio_app.py
-```
+**Historical note:** Các dòng cũ về `ui/studio_app.py`, Streamlit path bugs và Command Palette là lịch sử trước 2026-07-13, không còn là runtime hiện tại.
 
 ---
 
-## Git Log (10 commits gần nhất)
+## Git Log gần nhất liên quan AI Studio v1.5
 
 ```
-373b1cc fix: M08-M10 code review — 10 correctness bugs fixed (430/430 tests pass)
-54be086 fix: M07 publishing gateway + M10 studio UI uncommitted fixes
-b3a21ac Complete M10 operating center review
-ca3c71c Add operating center snapshot model
-ac787f4 Add M10 operating center design spec
-1f08619 Complete modules 07-10 offline MVPs
-58e2ea1 Update task memory and M06 status
-155b5f9 Complete Module 06 Video Studio package pipeline
-1c2de40 feat: Module 06 Video Studio — scaffold + plan doc
-0d81079 chore: remove superseded v2.4 plan doc
-8c95194 Implement Module 05 Content Studio
-bceef45 feat: Module 04 — Automation Studio + Module 05 plan doc
-9b6c76b feat: Module 03 — Validator Studio (all 4 validation types complete)
-07535a4 feat: Module 02 — Prompt Studio (all 5 stages / 16 steps complete)
-7a9e10b feat: Phase 7 hardening — 258 tests + full documentation suite
-0df848f feat: core pipeline Phase 2–6 — knowledge_studio, shared, config, schemas
-dfac10c feat: Phase 8 MVP — Studio Shell UI (Streamlit)
-daf033e feat: vault search/diff/export + EXIF reading (Phase 1 complete)
+AI Studio:
+b975466 Add Phase 7 QA closeout matrix
+b01c429 Add Phase 6 ops workflow controls
+7291eeb Integrate contract refs across prompt content video validation
+484dc20 Add Linh An wardrobe index
+811c473 Enforce face validation contract
+b8c34e3 Record Mode C wardrobe quarantine registry
+976922b Add strict Mode C wardrobe routing
+5d918d8 Sanitize Phase 0 baseline note
+
+VenHo OS:
+6beff50 Expose Studio quality matrix
+7ce0548 Integrate dynamic Studio wardrobe index
+0138168 Add durable Studio generation jobs
+b54059e Complete image QC manifest handling
+736c18e Upgrade image generation manifest contract
+70a4ee7 Honor Mode C quarantine and Mode A output
+836e503 Wire Mode C wardrobe data integrity
+4aa6651 Isolate image route tests from production artifacts
+6e2a93c Improve image generation identity controls
 ```
 
 ---
