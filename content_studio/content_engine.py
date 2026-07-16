@@ -2,11 +2,12 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable
+from typing import Callable, Optional, Union
 
 from prompt_studio.schemas.content_prompt import ContentPromptContract
 
 from content_studio.builders.longform_builder import (
+    LongformGeneratorFn,
     build_blog_draft,
     build_email_draft,
     build_faq_draft,
@@ -24,6 +25,7 @@ from content_studio.schemas.content_output import ContentOutput
 from content_studio.schemas.content_request import ContentRequest
 
 BuilderFn = Callable[[ContentRequest, ContentPromptContract, dict], ContentOutput]
+AnyGeneratorFn = Optional[Union[GeneratorFn, LongformGeneratorFn]]
 
 
 @dataclass
@@ -64,7 +66,7 @@ def generate_content(
     *,
     config_root: Path = DEFAULT_CONFIG_ROOT,
     data_root: Path = DEFAULT_DATA_ROOT,
-    generator_fn: GeneratorFn | None = None,
+    generator_fn: AnyGeneratorFn = None,
     validate: bool = True,
 ) -> ContentEngineResult:
     context = load_content_context(request, config_root=config_root, data_root=data_root)
@@ -83,6 +85,7 @@ def generate_content(
             context.prompt.contract,
             context.config,
             source_prompt_file=str(context.prompt.json_path),
+            generator_fn=generator_fn,
         )
 
     out_dir = data_root / request.project / "content" / _channel_dir(request.content_type)

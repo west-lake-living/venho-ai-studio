@@ -1,13 +1,15 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
-from typing import Any, Dict, Optional
+from typing import Any, Callable, Dict, Optional
 
 from prompt_studio.schemas.content_prompt import ContentPromptContract
 
 from content_studio.builders.social_builder import _natural_fact_sentence, _source_refs, prefilter_forbidden
 from content_studio.schemas.content_output import ContentOutput, GeneratorInfo, SourcePromptRef, ValidationInfo
 from content_studio.schemas.content_request import ContentRequest
+
+LongformGeneratorFn = Callable[[ContentRequest, ContentPromptContract, Dict[str, Any]], Dict[str, Any]]
 
 
 def _base_output(
@@ -54,7 +56,19 @@ def build_blog_draft(
     *,
     source_prompt_file: Optional[str] = None,
     generated_at: Optional[str] = None,
+    generator_fn: Optional[LongformGeneratorFn] = None,
 ) -> ContentOutput:
+    if generator_fn is not None:
+        draft = generator_fn(request, prompt, config)
+        payload = {k: v for k, v in draft.items() if k not in ("title", "hook", "body", "cta")}
+        payload.setdefault("keywords", config.get("seo_keywords", {}).get("keywords", {}).get("vi", [])[:3])
+        payload.setdefault("internal_links", ["/vi-tri", "/lien-he"])
+        return _base_output(
+            request, prompt,
+            source_prompt_file=source_prompt_file, generated_at=generated_at,
+            title=draft["title"], hook=draft["hook"], body=draft["body"], cta=draft["cta"],
+            payload=payload,
+        )
     keyword = request.keyword or "khách sạn gần Hồ Tây"
     fact = _natural_fact_sentence(prompt, request.target_language)
     title = f"{keyword}: bắt đầu ngày mới bên Hồ Tây"
@@ -77,13 +91,9 @@ def build_blog_draft(
         "internal_links": ["/vi-tri", "/lien-he"],
     }
     return _base_output(
-        request,
-        prompt,
-        source_prompt_file=source_prompt_file,
-        generated_at=generated_at,
-        title=title,
-        hook=f"Góc nhìn SEO cho {keyword}",
-        body=article,
+        request, prompt,
+        source_prompt_file=source_prompt_file, generated_at=generated_at,
+        title=title, hook=f"Góc nhìn SEO cho {keyword}", body=article,
         cta="Nhắn Ven Ho để kiểm tra phòng phù hợp với lịch của bạn.",
         payload=payload,
     )
@@ -96,7 +106,17 @@ def build_website_draft(
     *,
     source_prompt_file: Optional[str] = None,
     generated_at: Optional[str] = None,
+    generator_fn: Optional[LongformGeneratorFn] = None,
 ) -> ContentOutput:
+    if generator_fn is not None:
+        draft = generator_fn(request, prompt, config)
+        payload = {k: v for k, v in draft.items() if k not in ("title", "hook", "body", "cta")}
+        return _base_output(
+            request, prompt,
+            source_prompt_file=source_prompt_file, generated_at=generated_at,
+            title=draft["title"], hook=draft["hook"], body=draft["body"], cta=draft["cta"],
+            payload=payload,
+        )
     fact = _natural_fact_sentence(prompt, request.target_language)
     payload = {
         "hero": "Ven Ho Hotel - điểm dừng gọn gàng bên nhịp sống Hồ Tây.",
@@ -107,15 +127,10 @@ def build_website_draft(
         "seo_metadata": {"title": "Ven Ho Hotel gần Hồ Tây", "description": "Lưu trú gọn gàng gần Hồ Tây, Hà Nội."},
     }
     return _base_output(
-        request,
-        prompt,
-        source_prompt_file=source_prompt_file,
-        generated_at=generated_at,
-        title="Website copy Ven Ho",
-        hook=payload["hero"],
-        body=payload["about"],
-        cta=payload["cta_block"],
-        payload=payload,
+        request, prompt,
+        source_prompt_file=source_prompt_file, generated_at=generated_at,
+        title="Website copy Ven Ho", hook=payload["hero"], body=payload["about"],
+        cta=payload["cta_block"], payload=payload,
     )
 
 
@@ -126,7 +141,18 @@ def build_ota_draft(
     *,
     source_prompt_file: Optional[str] = None,
     generated_at: Optional[str] = None,
+    generator_fn: Optional[LongformGeneratorFn] = None,
 ) -> ContentOutput:
+    if generator_fn is not None:
+        draft = generator_fn(request, prompt, config)
+        payload = {k: v for k, v in draft.items() if k not in ("title", "hook", "body", "cta")}
+        payload.setdefault("channels", ["Agoda", "Google Business", "direct"])
+        return _base_output(
+            request, prompt,
+            source_prompt_file=source_prompt_file, generated_at=generated_at,
+            title=draft["title"], hook=draft["hook"], body=draft["body"], cta=draft["cta"],
+            payload=payload,
+        )
     fact = _natural_fact_sentence(prompt, request.target_language)
     payload = {
         "channels": ["Agoda", "Google Business", "direct"],
@@ -138,13 +164,9 @@ def build_ota_draft(
         "rules_notes": "Không tự thêm chính sách chưa có trong Knowledge.",
     }
     return _base_output(
-        request,
-        prompt,
-        source_prompt_file=source_prompt_file,
-        generated_at=generated_at,
-        title="OTA description draft",
-        hook=payload["short_description"],
-        body=payload["long_description"],
+        request, prompt,
+        source_prompt_file=source_prompt_file, generated_at=generated_at,
+        title="OTA description draft", hook=payload["short_description"], body=payload["long_description"],
         cta="Đặt trực tiếp hoặc nhắn Ven Ho để kiểm tra tình trạng phòng.",
         payload=payload,
     )
@@ -157,7 +179,17 @@ def build_faq_draft(
     *,
     source_prompt_file: Optional[str] = None,
     generated_at: Optional[str] = None,
+    generator_fn: Optional[LongformGeneratorFn] = None,
 ) -> ContentOutput:
+    if generator_fn is not None:
+        draft = generator_fn(request, prompt, config)
+        payload = {k: v for k, v in draft.items() if k not in ("title", "hook", "body", "cta")}
+        return _base_output(
+            request, prompt,
+            source_prompt_file=source_prompt_file, generated_at=generated_at,
+            title=draft["title"], hook=draft["hook"], body=draft["body"], cta=draft["cta"],
+            payload=payload,
+        )
     payload = {
         "items": [
             {
@@ -175,12 +207,9 @@ def build_faq_draft(
         ]
     }
     return _base_output(
-        request,
-        prompt,
-        source_prompt_file=source_prompt_file,
-        generated_at=generated_at,
-        title="FAQ draft",
-        hook="Câu hỏi thường gặp về Ven Ho",
+        request, prompt,
+        source_prompt_file=source_prompt_file, generated_at=generated_at,
+        title="FAQ draft", hook="Câu hỏi thường gặp về Ven Ho",
         body="FAQ chỉ dùng thông tin có nguồn và tránh bịa chính sách.",
         cta="Nhắn Ven Ho nếu bạn cần xác nhận chi tiết trước chuyến đi.",
         payload=payload,
@@ -194,7 +223,17 @@ def build_email_draft(
     *,
     source_prompt_file: Optional[str] = None,
     generated_at: Optional[str] = None,
+    generator_fn: Optional[LongformGeneratorFn] = None,
 ) -> ContentOutput:
+    if generator_fn is not None:
+        draft = generator_fn(request, prompt, config)
+        payload = {k: v for k, v in draft.items() if k not in ("title", "hook", "body", "cta")}
+        return _base_output(
+            request, prompt,
+            source_prompt_file=source_prompt_file, generated_at=generated_at,
+            title=draft["title"], hook=draft["hook"], body=draft["body"], cta=draft["cta"],
+            payload=payload,
+        )
     payload = {
         "subject_options": ["Một gợi ý ở gần Hồ Tây", "Bắt đầu ngày Hà Nội nhẹ hơn cùng Ven Ho"],
         "preview_text": "Một lời mời nhẹ để kiểm tra phòng phù hợp gần Hồ Tây.",
@@ -206,13 +245,9 @@ def build_email_draft(
         "follow_up_variation": "Nhắn lại Ven Ho khi bạn có ngày dự kiến, đội ngũ sẽ kiểm tra phòng phù hợp.",
     }
     return _base_output(
-        request,
-        prompt,
-        source_prompt_file=source_prompt_file,
-        generated_at=generated_at,
-        title="Email draft",
-        hook=payload["preview_text"],
-        body=payload["body"],
+        request, prompt,
+        source_prompt_file=source_prompt_file, generated_at=generated_at,
+        title="Email draft", hook=payload["preview_text"], body=payload["body"],
         cta="Nhắn Ven Ho để kiểm tra phòng còn trống.",
         payload=payload,
     )
