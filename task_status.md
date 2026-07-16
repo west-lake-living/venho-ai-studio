@@ -1,6 +1,6 @@
 # VENHO AI STUDIO — Task Status
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-07-10 (VENHO OS Home Workspace UI v1.0 baseline, 430/430 pass) · **Tests:** 430/430 pass · 0 API call
+**Cập nhật:** 2026-07-16 (AI Studio v1.5 Phase 0 baseline) · **Tests:** 424/424 pass · 0 API call
 
 ---
 
@@ -12,14 +12,20 @@
 | M02 | Prompt Studio | ✅ COMPLETE | 347 |
 | M03 | Validator Studio | ✅ COMPLETE | 26 |
 | M04 | Automation Studio | ✅ COMPLETE | 7 |
-| M05 | Content Studio | ✅ COMPLETE (mock prose) | 22 |
+| M05 | Content Studio | ✅ COMPLETE — real Claude generator (2026-07-15) | 22 |
 | M06 | Video Studio | ✅ COMPLETE (MVP — bugs fixed, design hardened) | 15 |
 | M07 | Publishing Gateway | ✅ COMPLETE (offline dry-run MVP) | 19 |
 | M08 | Analytics & Feedback Loop | ✅ COMPLETE (offline MVP) | 7 |
 | M09 | Agent Studio | ✅ COMPLETE (offline planning/orchestration MVP) | 10 |
-| M10 | VENHO OS Home Workspace | ✅ COMPLETE (Home Workspace UI v1.0 + upload/output shell UX) | 7 |
+| M10 | **VenHo OS Dashboard** (Next.js `localhost:3000/os`) | ✅ COMPLETE v3.0 — Next.js OS Stage A+B+C (2026-07-13) · Streamlit đã xóa (2026-07-13): Workbench (Mode A+B SSE), Creative Studio, Knowledge (DNA Library+Vault Search+Mode C), Reports (DNA Status+Social Log), Shared UI, 7 API routes, 0 TS error | 0 |
 
-> Tests ghi theo module-specific. Full suite = 430 (M01+M02+M03+M04+M05+M06+M07+M08+M09+M10+shared).
+> Tests ghi theo module-specific. Full suite = 424 (M01+M02+M03+M04+M05+M06+M07+M08+M09+shared — M10 không có unit test, logic nằm trong Next.js API routes).
+
+### M10 — Mode C additions (2026-07-11)
+- Tab "Linh An DNA — Mode C" trong Workbench
+- Project `linh_an`: `config/projects/linh_an/subjects/` — 6 YAML schemas (wardrobe + 5 outfit presets)
+- Workflow: upload outfit image → run_mode_b(project="linh_an") → DNA `data/projects/linh_an/knowledge/`
+- Wardrobe DNA Library tab: browser tất cả outfit DNA đã có
 
 ---
 
@@ -36,7 +42,7 @@
 - Phase 5 Schema Bootstrap + Auto Classify
 - Phase 6 Face Subject / Linh An (QC gate 07F)
 - Phase 7 Hardening + Documentation (248 tests, contracts, docs đầy đủ)
-- Phase 8 Studio Shell / UI (Streamlit → localhost:8501)
+- Phase 8 Studio Shell / UI (Next.js VenHo OS → localhost:3000/os)
 
 **DNA subjects:** `lake_view_room` · `deluxe_double` · `lobby` · `facade` · `linh_an` · `westlake` · `outside`
 **DNA contract:** `1.1` · **assets/raw/** và `output/` excluded khỏi git (.gitignore)
@@ -256,15 +262,14 @@
 
 ---
 
-## M10 — VENHO OS Home Workspace ✅ COMPLETE (UI baseline v1.0 + Creative Studio)
+## M10 — VenHo OS Dashboard ✅ COMPLETE v3.0 (Next.js OS Stage A+B+C — Streamlit đã xóa 2026-07-13)
 
 **Plan:** `VENHO_AI_STUDIO_Module_10_Dashboard_Plan_v1_2.md`
-**Design:** `/Users/hanhpham/Developer/VENHO_OS_HOME_WORKSPACE_UI_SPEC_v1.0.md` + `/Users/hanhpham/Developer/VENHO_OS_UI_DESIGN_SPEC_v1.0.md`
-**Tests:** 7/7 — xem `tests/test_dashboard.py`
-**Full suite:** 430/430 pass — `python3 -m pytest -q`
-**Latest UI shell update:** 2026-07-09 — Creative Studio (Tạo Ảnh AI · Tạo Social Post · Tạo Video Script)
+**Tests:** 0 unit tests (logic trong Next.js API routes — không có Python tests)
+**Full suite:** 424/424 pass — `python3 -m pytest -q`
+**Next.js OS (Stage A+B+C):** `localhost:3000/os` — `npm run dev` hoặc `run-venho-os.command`
 
-**Quyết định kiến trúc:** M10 mở rộng Studio Shell Streamlit hiện có thay vì tạo web JS app độc lập, để khớp UI local-first đang chạy ở `localhost:8501`.
+**Quyết định kiến trúc:** M10 chuyển hoàn toàn sang Next.js 16 App Router (`src/app/os/`). Streamlit (`ui/`, `dashboard/`) đã xóa 2026-07-13 sau khi tích hợp đầy đủ vào VenHo OS.
 
 **Đã hoàn thành:**
 - `dashboard/gateway.py` — read-only presentation adapter đọc `config/projects`, `data/projects`, `data/automation_runs` và normalize snapshot cho UI.

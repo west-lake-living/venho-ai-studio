@@ -244,6 +244,46 @@ Risk 3 — Vi phạm nguyên tắc bảo mật khi phân phối.
 Mitigation: Dashboard không lưu trữ hay tự sinh Token/API Key. Toàn bộ thông tin nhạy cảm được quản lý bằng biến môi trường hoặc cấu hình mã hóa của Publishing Gateway (M07); giao diện chỉ hiển thị dạng tham chiếu (ẩn ký tự).
 
 
+---
+
+## Addendum — VenHo OS Next.js Dashboard (2026-07-13)
+
+Quyết định kiến trúc cuối cùng: **M10 chuyển sang Next.js VenHo OS; Streamlit được loại bỏ sau khi migration hoàn tất.**
+
+| Nền tảng | URL | Mục đích |
+|---------|-----|---------|
+| **Next.js `src/app/os/`** | `localhost:3000/os` | VenHo OS Stage A+B+C — Section UI, Creative tools, Knowledge viewer |
+| Streamlit `ui/studio_app.py` | removed | Superseded by Next.js VenHo OS |
+
+### Next.js OS — Implementation Complete
+
+**Codebase:** `Ven Ho Hotel/src/app/os/` + `src/components/os/` + `src/app/api/v1/studio/`
+
+**Stage A ✅ — Section Routing**
+- `os/page.tsx` — RSC, reads `searchParams` (Next.js 16 Promise), routes to section components
+- `SidebarNavigation.tsx` — 9 items, `<Link>` from next/link, active blue dot
+- `WorkspaceHeader.tsx` — dynamic section title
+- 8 `PlaceholderSection` wrappers
+
+**Stage B ✅ — Workbench + Creative Studio**
+- `src/lib/studio/` — `paths.ts`, `constants.ts` (Python port), `prompt-builder.ts` (pure TS)
+- `WorkbenchSection.tsx` — Mode A (Observe) + Mode B (Build DNA), SSE live log via `LiveLog.tsx`
+- `CreativeStudioSection.tsx` — Tạo Ảnh AI, Tạo Social Post, Tạo Video Script
+- API: `observe` (SSE), `generate-image`, `file`, `save-script`
+
+**Stage C ✅ — Knowledge + Reports**
+- `KnowledgeSection.tsx` — DNA Library (colored blocks per section type), Vault Search (highlight), Mode C Linh An
+- `ReportsSection.tsx` — DNA Status (4 summary cards + subjects table), Social Content Log (entries + pillar filter)
+- API: `dna`, `vault-search`, `social-index`
+
+**Cleanup ✅**
+- `src/components/os/shared/ui.tsx` — shared primitives (SectionHeader, Field, PrimaryBtn, CopyBtn, TabBar)
+- Xóa `src/shared/kernel/result.ts` + test — dead code
+- Xóa unused imports (`SCENARIO_SUBJECT`), redundant aliases (`selectCls`)
+- Build: ✓ Compiled, 34/34 pages, 0 TypeScript error
+
+---
+
 END OF DOCUMENT
 M10 Dashboard Plan v1.2 đã đồng bộ 100% với task_status.md (M01–M09 COMPLETE, 423/423 tests, 0 API call) và task_memory.md, loại bỏ hoàn toàn nội dung trùng lặp và rác, chuẩn hóa tên gọi và bổ sung bước Roadmap còn thiếu.
-
+Addendum 2026-07-13: Next.js OS Stage A+B+C hoàn thành. M10 dùng Next.js (`localhost:3000/os`) làm entrypoint UI duy nhất; Streamlit đã được loại bỏ.

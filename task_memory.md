@@ -1,6 +1,6 @@
 # VENHO AI STUDIO — Task Memory
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-07-10 (VENHO OS Home Workspace UI v1.0 baseline) · **Đọc bởi:** AI Engine, Claude Code sessions
+**Cập nhật:** 2026-07-16 (AI Studio v1.5 Phase 0 baseline) · **Đọc bởi:** AI Engine, Claude Code sessions
 
 ---
 
@@ -50,6 +50,9 @@ Pipeline tổng quát:
 9. **M10 presentation-only** — Operating Center degrade bằng advisory khi module con thiếu artifact; không làm sập toàn UI và không sao chép business logic.
 10. **M10 Home Workspace v1.0** — Home trả lời “What should I do now to move my business forward?”; Home chỉ có Today's Focus, Current Work, Needs Review, Ready to Publish, Quick Actions, Recent Activity. Pipeline nằm ở Workbench; raw JSON/token/cache/runtime internals nằm trong Settings, không nằm ở Home.
 11. **M10 action-first** — Status quan trọng phải dẫn tới contextual action label/button; button MVP chỉ điều hướng/placeholder, không chạy live workflow ngầm.
+12. **M05 real generator = claude_longform_generator** — inject qua `generator_fn` param; `None` → template mock (tests an toàn); chỉ dùng cho non-social (blog/OTA/FAQ/email/website); social posts thuộc VenHoSocialManager.
+13. **VenHoSocialManager QC gate (2026-07-15)** — `generate_image_with_qc()` dùng GPT-4o-mini vision (score 1–10, ngưỡng 7); max 2 retry với tightened prompt; fail sau retry → skip Drive+Make.com, gửi `send_qc_alert()`; không thay đổi social posting logic.
+14. **AI Studio v1.5 Phase 0 baseline (2026-07-16)** — AI Studio `424/424` pass; VenHo OS `54/54` pass + build pass; roadmap v1.5 và Phase 0 baseline note đã commit/push; exposed API key phải revoke/rotate ngoài repo.
 
 ---
 
@@ -77,6 +80,13 @@ Pipeline tổng quát:
 
 Mỗi subject có: `_DNA.md` + `_DNA.json` + `_DNA_COMPACT.md` + `overrides.yaml` + `dna_manifest_*.json`
 
+### DNA subjects (linh_an) — Mode C Wardrobe Studio
+`wardrobe` (base/custom) · `outfit_a_cafe` · `outfit_b_west_lake` · `outfit_c_street` · `outfit_d_business` · `outfit_e_sport`
+
+Configs: `config/projects/linh_an/subjects/{subject}.yaml` — 22 aggregation keys: brand, garment_category, color_primary/secondary, top/bottom/dress description, fit, logo_branding, signature_design_elements, footwear, accessories, hair_style_suggestion, occasion_context, content_pillar_fit, **prompt_snippet**
+Output: `data/projects/linh_an/knowledge/LINH_AN_{SUBJECT_UPPER}_DNA.md`
+UI: Workbench → Tab "Linh An DNA — Mode C"
+
 ### CLI commands (venho global PATH: `/Users/hanhpham/Library/Python/3.9/bin`)
 ```bash
 venho vision observe --mode b --project venho_hotel --subject {subject} --input {dir}
@@ -92,7 +102,8 @@ venho-video generate --topic "lake view room morning" --duration 15 --type socia
 python3 -m publishing_gateway.cli publish --package-file data/projects/venho_hotel/publishing/fixtures/approved_package.json --approval-secret test-secret --dry-run
 python3 -m publishing_gateway.cli retry --package-file data/projects/venho_hotel/publishing/fixtures/approved_package.json --platform instagram --approval-secret test-secret --dry-run
 python3 -m agent_studio.cli --agent marketing_agent --project venho_hotel --goal "Tạo campaign trải nghiệm mùa hè Hồ Tây" --plan-only
-streamlit run ui/studio_app.py
+# VenHo OS UI (Next.js — Streamlit đã xóa 2026-07-13)
+npm run dev   # → localhost:3000/os
 ```
 
 ### Integration seams đã verify (2026-07-09)
@@ -135,7 +146,7 @@ venho-ai-studio/
 │   ├── schemas/               ← request/response/persona/task/module/risk contracts
 │   ├── renderers/             ← response Markdown/JSON
 │   └── templates/             ← persona/agent templates
-├── dashboard/                 ← M10 read-only presentation gateway for Streamlit Home Workspace
+├── [dashboard/ — DELETED 2026-07-13, thay bởi Next.js VenHo OS]
 ├── config/
 │   ├── settings.yaml
 │   ├── validation.yaml
@@ -374,7 +385,8 @@ AgentRequest
 
 ## 11. M10 VENHO OS Home Workspace — hoàn thành 2026-07-10
 
-**Status:** ✅ COMPLETE — Streamlit Home Workspace UI v1.0 + Operating System shell
+**Status:** ✅ COMPLETE — **Mother Dashboard v1.0** (VENHO OS UI v1.0 + Mode C Linh An DNA Studio)
+**Tên chính thức:** **Mother Dashboard** — đặt bởi Harry 2026-07-13
 **Plan:** `VENHO_AI_STUDIO_Module_10_Dashboard_Plan_v1_2.md`  
 **Design:** `/Users/hanhpham/Developer/VENHO_OS_HOME_WORKSPACE_UI_SPEC_v1.0.md` + `/Users/hanhpham/Developer/VENHO_OS_UI_DESIGN_SPEC_v1.0.md`
 **Tests:** `python3 -m pytest -q` → 430/430 pass, 0 API call
@@ -461,7 +473,13 @@ VIDEO_SCRIPTS_DIR = VENHO_HOTEL_DIR / "local-generated" / "social-video" / "scri
 
 4. **`use_ref` toggle** — gpt-image-2 `--ref` dùng image editing từ ảnh gốc (Linh An đứng) → không thể thay đổi toàn bộ body pose (đạp xe, chạy, ngồi). Bỏ `--ref` = text-to-image mode → AI tự do tạo bất kỳ pose.
 
-5. **Outfit E — Sport & Active** (2026-07-10) — `"light pastel-green fitted sports top, slim-fit black cycling leggings, white sneakers"`. Khi outfit_key bắt đầu bằng "E — Sport", hair tự động đổi sang `"tied back in a sporty ponytail"` thay vì center part. Validated với cycling test (2026-07-10): nhân vật xuất hiện đúng, trang phục đúng, tóc đuôi ngựa đúng.
+5. **Outfit E — Nike AeroSwift** (cập nhật 2026-07-13 từ ảnh thật) — `"mint-green Nike racerback loose crop tank top, dual Swoosh logos at collar, perforated ventilation panels on chest and back, mint-green Nike running shorts (3-inch inseam) with mesh waistband and small Swoosh logo on leg, white Nike running shoes, white ankle socks, sleek high ponytail"`. Khi outfit_key bắt đầu bằng "E — Sport", hair tự động đổi sang `"tied back in a sporty ponytail"`.
+
+6. **Textarea cache bug (fix 2026-07-13)** — `st.text_area(key="tai_prompt")` khiến Streamlit cache giá trị cũ khi user thay inputs (checkbox/outfit/action). Fix: bỏ `key` khỏi textarea. Prompt luôn reflect trạng thái inputs hiện tại.
+
+7. **Prompt structure action mode (fix 2026-07-13)** — Character + environment giờ join `\n` (1 dòng) thành 1 block duy nhất thay vì `\n\n` riêng. Format mới: `"Linh An {action} in the scene, she is the MAIN SUBJECT prominently in the foreground...\nSetting: {env}"` — gpt-image-2 không còn coi character/env là 2 entity độc lập.
+
+8. **Quick Actions nav pattern (fix 2026-07-13)** — Không thể set `st.session_state["m10_section"]` sau khi sidebar radio widget đã instantiate (StreamlitAPIException). Fix: dùng `_m10_nav_pending` key trung gian; apply vào `m10_section` ở đầu `_render_dashboard()` TRƯỚC khi sidebar radio được tạo.
 
 ### Quy tắc `use_ref`
 
@@ -478,7 +496,7 @@ VIDEO_SCRIPTS_DIR = VENHO_HOTEL_DIR / "local-generated" / "social-video" / "scri
 | B — West Lake Sunset | flowing white dress, minimal gold jewelry | wavy | Hoàng hôn, lãng mạn |
 | C — Street Style | white button-up, high-waist trousers, denim jacket | wavy | Phố phường |
 | D — Business Travel | light beige blazer, white blouse | wavy | Professional |
-| E — Sport & Active | pastel green sports top, black leggings, white sneakers | ponytail | Cycling, running, active |
+| E — Sport & Active | mint-green Nike racerback crop tank + running shorts (3-inch), white Nike shoes | ponytail | Cycling, running, active |
 
 ### Caption generation decision
 
@@ -486,7 +504,57 @@ VIDEO_SCRIPTS_DIR = VENHO_HOTEL_DIR / "local-generated" / "social-video" / "scri
 
 ---
 
-## 13. Task Closing Protocol
+## 13. VenHo OS — Next.js Dashboard (2026-07-13)
+
+**Status:** ✅ Stage A+B+C COMPLETE · Build 34/34 pages, 0 TS error
+**Location:** `Ven Ho Hotel/src/app/os/` + `src/components/os/` + `src/app/api/v1/studio/`
+**URL:** `localhost:3000/os` (chạy bằng `npm run dev` hoặc `run-venho-os.command`)
+
+### Architecture
+- RSC page `src/app/os/page.tsx` reads `?section=` query param, routes to section components
+- Section routing via `<Link href="/os?section=xxx">` — no `useSearchParams()` in client components
+- `src/lib/studio/paths.ts` — path constants (venho-ai-studio, VenHoSocialManager, video scripts)
+- `src/lib/studio/constants.ts` — Python constants ported to TS (outfits, env blocks, pillars, scenes)
+- `src/lib/studio/prompt-builder.ts` — pure TS port of 3 Python functions (assembleImagePrompt, buildCaptionPrompt, generateVideoScript)
+- `src/components/os/shared/ui.tsx` — shared UI primitives (SectionHeader, Field, PrimaryBtn, CopyBtn, TabBar)
+
+### API Routes (`/api/v1/studio/`)
+| Route | Method | Chức năng |
+|-------|--------|-----------|
+| `observe` | POST | SSE stream `venho vision observe` (Mode A/B) |
+| `generate-image` | POST | `generate_image.py` subprocess → imagePath |
+| `file` | GET | Serve local files (generated images) — whitelist dirs + exts |
+| `save-script` | GET/POST | Next script number / save `.md` to scripts dir |
+| `dna` | GET | List DNA subjects + read COMPACT content |
+| `vault-search` | POST | Full-text search across all `*_DNA*.md` files |
+| `social-index` | GET | Read `database/index.json` → social post history |
+
+### Sections implemented
+| Section | Tabs |
+|---------|------|
+| Workbench | Mode A (Observe) · Mode B (Build DNA) — SSE live log |
+| Creative Studio | Tạo Ảnh AI · Tạo Social Post · Tạo Video Script |
+| Knowledge | DNA Library · Vault Search · Mode C — Linh An |
+| Reports | DNA Status · Social Content Log |
+| Others (8) | PlaceholderSection — Projects, Tasks, Agents, Operations, Publishing, Settings |
+
+### Quan trọng
+- `venho` CLI path: `/Users/hanhpham/Library/Python/3.9/bin` phải inject vào `PATH` trong spawn
+- DNA content dir: `data/projects/venho_hotel/knowledge/` trong venho-ai-studio
+- Social post index: `ops/VenHoSocialManager/database/index.json` trong Ven Ho Hotel repo
+- File API whitelist: `SOCIAL_MANAGER_DIR`, `VIDEO_SCRIPTS_DIR`, `STUDIO_DIR`
+- Next.js 16: `searchParams` là `Promise<{section?: string}>` — bắt buộc `await`
+
+### Cleanup 2026-07-13 — Xóa Streamlit
+- `ui/studio_app.py` + `ui/` — DELETED (2.335 dòng)
+- `dashboard/gateway.py` + `dashboard/__init__.py` + `dashboard/` — DELETED (774 dòng)
+- `tests/test_dashboard.py` — DELETED (149 dòng); test suite giảm từ 430 → 423
+- `docs/how_to_run_studio_ui.md` — DELETED
+- Next.js VenHo OS (`localhost:3000/os`) là entrypoint UI duy nhất
+
+---
+
+## 14. Task Closing Protocol
 
 Khi người dùng nói **"kết thúc task"**, Codex phải tự động:
 
