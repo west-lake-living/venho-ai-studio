@@ -1,0 +1,27 @@
+{
+  "contract_version": "0.1",
+  "project": "linh_an",
+  "families": {
+    "sport_active": {
+      "schema_subject": "outfit_e_sport",
+      "default_outfit_id": "mint_green",
+      "outfit_ids": ["mint_green", "nike_pink_running"]
+    }
+  },
+  "legacy_aliases": {
+    "sport_active": {
+      "canonical_outfit_id": "mint_green",
+      "status": "legacy_upload_alias",
+      "note": "Keep source images for audit only. New Mode C runs must use explicit outfit_id folders."
+    }
+  },
+  "quarantined_artifacts": [
+    {
+      "artifact_id": "LINH_AN_NIKE_PINK_RUNNING_DNA",
+      "outfit_id": "nike_pink_running",
+      "reason": "Generated before Mode C strict routing; schema may have fallen back to universal.",
+      "status": "quarantined",
+      "quarantined_at": "2026-07-16"
+    }
+  ]
+}
