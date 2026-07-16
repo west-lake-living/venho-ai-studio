@@ -1,6 +1,6 @@
 # VENHO AI STUDIO — Task Status
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-07-16 (AI Studio v1.5 Phase 6 Ops/Living Lab integration) · **Tests:** 440/440 pass · 0 API call
+**Cập nhật:** 2026-07-16 (AI Studio v1.5 Phase 7 QA/DOC closeout) · **Tests:** 443/443 pass · 0 API call
 
 ---
 
@@ -19,7 +19,15 @@
 | M09 | Agent Studio | ✅ COMPLETE (offline planning/orchestration MVP) | 10 |
 | M10 | **VenHo OS Dashboard** (Next.js `localhost:3000/os`) | ✅ COMPLETE v3.0 — Next.js OS Stage A+B+C (2026-07-13) · Streamlit đã xóa (2026-07-13): Workbench (Mode A+B SSE), Creative Studio, Knowledge (DNA Library+Vault Search+Mode C), Reports (DNA Status+Social Log), Shared UI, 7 API routes, 0 TS error | 0 |
 
-> Tests ghi theo module-specific. Full suite = 440 (M01+M02+M03+M04+M05+M06+M07+M08+M09+shared — M10 runtime/API tests nằm ở repo `venho-os`).
+> Tests ghi theo module-specific. Full suite = 443 (M01+M02+M03+M04+M05+M06+M07+M08+M09+shared — M10 runtime/API tests nằm ở repo `venho-os`).
+
+### QA/DOC — Phase 7 Closeout (2026-07-16)
+- Roadmap v1.5 chỉ có Phase 0–6; Phase 7 được map vào backlog `QA-01` + `DOC-01`.
+- Controlled live matrix canonical: `config/quality/controlled_live_matrix.json`.
+- Offline evaluator: `validator_studio/controlled_matrix.py`.
+- Production-ready image workflow yêu cầu 2 run approved liên tiếp cho mỗi case E1–E6.
+- Missing validator/gate luôn là `UNVALIDATED`, không được tính approved.
+- VenHo OS expose matrix qua `/api/v1/studio/quality-matrix`, không chạy paid generation.
 
 ### M04/M09/AiStudioPort/Living Lab — Phase 6 Ops integration (2026-07-16)
 - M04 thêm `automation_studio.wardrobe_ingest`: tạo review file, validation fail chặn index update.

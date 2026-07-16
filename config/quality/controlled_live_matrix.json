@@ -1,0 +1,60 @@
+{
+  "contract_version": "1.0",
+  "matrix_id": "ai_studio_controlled_live_matrix_v1",
+  "project": "venho_hotel",
+  "created_at": "2026-07-16",
+  "required_consecutive_approved_runs": 2,
+  "paid_generation_allowed_in_tests": false,
+  "acceptance_gates": {
+    "actor_geometry_required": true,
+    "face_identity_min": 90,
+    "outfit_match_min": 90,
+    "scenario_location_min": 90,
+    "technical_quality_min": 85,
+    "missing_validator_verdict": "UNVALIDATED"
+  },
+  "cases": [
+    {
+      "case_id": "E1",
+      "action": "running_front_facing",
+      "outfit_id": "mint_green",
+      "scenario_profile_id": "nguyen_dinh_thi_street_2026",
+      "face_ref": "on"
+    },
+    {
+      "case_id": "E2",
+      "action": "running_three_quarter",
+      "outfit_id": "nike_pink_running",
+      "scenario_profile_id": "nguyen_dinh_thi_street_2026",
+      "face_ref": "on"
+    },
+    {
+      "case_id": "E3",
+      "action": "cycling",
+      "outfit_id": "mint_green",
+      "scenario_profile_id": "nguyen_dinh_thi_street_2026",
+      "face_ref": "off"
+    },
+    {
+      "case_id": "E4",
+      "action": "cycling",
+      "outfit_id": "nike_pink_running",
+      "scenario_profile_id": "nguyen_dinh_thi_street_2026",
+      "face_ref": "off"
+    },
+    {
+      "case_id": "E5",
+      "action": "static_portrait",
+      "outfit_id": "mint_green",
+      "scenario_profile_id": "westlake_landscape_wide_2026",
+      "face_ref": "on"
+    },
+    {
+      "case_id": "E6",
+      "action": "static_portrait",
+      "outfit_id": "nike_pink_running",
+      "scenario_profile_id": "westlake_landscape_wide_2026",
+      "face_ref": "on"
+    }
+  ]
+}
