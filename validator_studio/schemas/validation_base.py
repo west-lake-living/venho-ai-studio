@@ -5,6 +5,7 @@ from enum import Enum
 from typing import Any, Literal, Optional
 
 from pydantic import BaseModel, Field
+from shared.contract_refs import ContractRefs
 
 
 class Status(str, Enum):
@@ -104,6 +105,7 @@ class ValidationReport(BaseModel):
     artifact_ref: ArtifactRef
     source_knowledge: list[SourceKnowledgeRef] = Field(default_factory=list)
     prompt_ref: Optional[PromptRef] = None
+    contract_refs: Optional[ContractRefs] = None
     generated_at: str = Field(default_factory=lambda: datetime.now().isoformat())
     observer: ObserverInfo = Field(default_factory=ObserverInfo)
     kill_switch: KillSwitch = Field(default_factory=KillSwitch)

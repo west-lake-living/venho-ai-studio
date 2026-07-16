@@ -44,6 +44,7 @@ def _base_output(
         body=body,
         cta=cta,
         visual_note=visual_note,
+        contract_refs=prompt.contract_refs,
         payload=payload,
         validation=ValidationInfo(required=request.validation_required),
     )
@@ -251,4 +252,3 @@ def build_email_draft(
         cta="Nhắn Ven Ho để kiểm tra phòng còn trống.",
         payload=payload,
     )
-

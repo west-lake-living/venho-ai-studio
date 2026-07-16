@@ -44,7 +44,7 @@ Write the engine-facing scene prompt in English."""
         character_dna=context.character_dna,
         task_brief=task_brief,
         brief_slug=f"{slugify(context.request.topic)}_scene_{scene.scene_number}",
+        outfit_id=context.request.outfit_id,
     )
     paths = save_prompt(contract, root=prompts_root)
     return ScenePromptResult(contract=contract, paths=paths)
-

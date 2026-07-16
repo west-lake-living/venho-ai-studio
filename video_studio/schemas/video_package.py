@@ -8,6 +8,7 @@ from video_studio.schemas.engine_prompt import EnginePrompt
 from video_studio.schemas.shot import Shot
 from video_studio.schemas.storyboard import ContinuityCheck, DurationCheck, StoryboardScene
 from video_studio.schemas.video_request import SourceKnowledgeRef
+from shared.contract_refs import ContractRefs
 
 
 class Concept(BaseModel):
@@ -46,6 +47,7 @@ class VideoPackage(BaseModel):
     generated_at: str
     source_knowledge: List[SourceKnowledgeRef]
     continuity_keys: List[str] = Field(default_factory=list)
+    contract_refs: Optional[ContractRefs] = None
     concept: Concept
     storyboard: List[StoryboardScene]
     shot_list: List[Shot]

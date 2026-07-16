@@ -21,6 +21,7 @@ from prompt_studio.schemas.base import (
 )
 from prompt_studio.schemas.content_prompt import ContentPromptContract
 from prompt_studio.template_loader import PromptTemplate, load_template
+from shared.contract_refs import ContractRefs, resolve_outfit_ref
 
 _LANGUAGE_LABEL = {
     "vi": "Vietnamese",
@@ -35,6 +36,7 @@ def render_final_prompt(
     prompt_rules: Dict[str, Any],
     required_dna: List[RequiredDnaItem],
     allowed_variations: List[AllowedVariationItem],
+    contract_refs: Optional[ContractRefs] = None,
 ) -> str:
     lines = [task_brief.strip(), "", f"Write the content in {_LANGUAGE_LABEL[target_language]}.", ""]
 
@@ -49,6 +51,14 @@ def render_final_prompt(
     if required_dna:
         lines.append("Required facts (must appear, do not alter):")
         lines.extend(f"- {item.key}: {item.value}" for item in required_dna)
+        lines.append("")
+
+    if contract_refs and contract_refs.outfit:
+        lines.append("Outfit capsule (use only when the content needs a visual/wardrobe note):")
+        lines.append(f"- outfit_id: {contract_refs.outfit.outfit_id}")
+        lines.append(f"- label: {contract_refs.outfit.display_label}")
+        lines.append(f"- description: {contract_refs.outfit.description}")
+        lines.append(f"- selection_reason: {contract_refs.outfit.selection_reason}")
         lines.append("")
 
     if allowed_variations:
@@ -71,6 +81,8 @@ def build_content_prompt(
     prompt_version: str = "1.0",
     contract_version: str = "1.0",
     generated_at: Optional[str] = None,
+    outfit_id: Optional[str] = None,
+    character_id: Optional[str] = None,
 ) -> ContentPromptContract:
     """Build a content Prompt JSON from one brand/location DNA + a brief (§7.1, §5.3)."""
     template = template or load_template("content")
@@ -84,6 +96,8 @@ def build_content_prompt(
     forbidden = list(dna.forbidden)
 
     restrictions = merge_restrictions(forbidden, prompt_rules)
+    outfit_ref = resolve_outfit_ref(outfit_id) if outfit_id else None
+    contract_refs = ContractRefs(character_id=character_id, outfit=outfit_ref) if (character_id or outfit_ref) else None
 
     return ContentPromptContract(
         contract_version=contract_version,
@@ -102,9 +116,17 @@ def build_content_prompt(
         allowed_variations=allowed_variations,
         allowed_imperfections=allowed_imperfections,
         forbidden=forbidden,
-        final_prompt=render_final_prompt(task_brief, target_language, prompt_rules, required_dna, allowed_variations),
+        final_prompt=render_final_prompt(
+            task_brief,
+            target_language,
+            prompt_rules,
+            required_dna,
+            allowed_variations,
+            contract_refs,
+        ),
         restrictions=restrictions,
         optimizer=OptimizerInfo(used=False),
         validation=ValidationBlock(),
+        contract_refs=contract_refs,
         notes=[],
     )

@@ -19,6 +19,7 @@ from video_studio.storyboard_builder import build_storyboard
 from video_studio.validator_bridge import validate_scene_prompts
 from video_studio.video_context import DEFAULT_CONFIG_ROOT, DEFAULT_DATA_ROOT, load_video_context
 from video_studio.video_manifest import update_manifest
+from shared.contract_refs import ContractRefs, resolve_outfit_ref
 
 
 @dataclass
@@ -51,6 +52,11 @@ def generate_video_package(
     storyboard, duration_check = build_storyboard(request, context.continuity_keys)
     shot_list = build_shot_list(storyboard)
     text = build_text_from_content(request, config_root=config_root, data_root=data_root).text
+    outfit_ref = resolve_outfit_ref(request.outfit_id) if request.outfit_id else None
+    contract_refs = ContractRefs(
+        character_id="linh_an" if request.include_character else None,
+        outfit=outfit_ref,
+    ) if (request.include_character or outfit_ref) else None
 
     scene_contracts = []
     engine_prompts = []
@@ -98,6 +104,7 @@ def generate_video_package(
         generated_at=datetime.now(timezone.utc).isoformat(),
         source_knowledge=request.source_knowledge,
         continuity_keys=context.continuity_keys,
+        contract_refs=contract_refs,
         concept=concept,
         storyboard=storyboard,
         shot_list=shot_list,

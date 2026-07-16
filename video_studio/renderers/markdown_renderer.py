@@ -7,6 +7,22 @@ def _source_knowledge(package: VideoPackage) -> str:
     return "\n".join(f"- {item.file} (version {item.dna_version}, {item.hash})" for item in package.source_knowledge)
 
 
+def _contract_refs(package: VideoPackage) -> str:
+    if not package.contract_refs:
+        return "None"
+    lines = []
+    if package.contract_refs.character_id:
+        lines.append(f"- character_id: {package.contract_refs.character_id}")
+    if package.contract_refs.outfit:
+        lines.extend([
+            f"- outfit_id: {package.contract_refs.outfit.outfit_id}",
+            f"- outfit_label: {package.contract_refs.outfit.display_label}",
+            f"- outfit_status: {package.contract_refs.outfit.status}",
+            f"- outfit_source: {package.contract_refs.outfit.source_kind}",
+        ])
+    return "\n".join(lines) or "None"
+
+
 def _storyboard(package: VideoPackage) -> str:
     lines = []
     for scene in package.storyboard:
@@ -41,6 +57,9 @@ def render_markdown(package: VideoPackage) -> str:
 
 ## SOURCE KNOWLEDGE
 {_source_knowledge(package)}
+
+## CONTRACT REFS
+{_contract_refs(package)}
 
 ## CONTINUITY KEYS
 {chr(10).join(f"- {key}" for key in package.continuity_keys)}
@@ -100,4 +119,3 @@ def render_markdown(package: VideoPackage) -> str:
 
 {validation_notes}
 """.strip()
-

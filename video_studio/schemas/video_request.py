@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import List, Literal
+from typing import Optional
 
 from pydantic import BaseModel, Field, model_validator
 
@@ -30,10 +31,10 @@ class VideoRequest(BaseModel):
     target_engine: TargetEngine = "veo"
     alt_engines: List[TargetEngine] = Field(default_factory=list)
     validation_required: bool = True
+    outfit_id: Optional[str] = None
 
     @model_validator(mode="after")
     def require_source_knowledge(self) -> "VideoRequest":
         if not self.source_knowledge:
             raise ValueError("VideoRequest requires source_knowledge; M06 must not invent missing Knowledge")
         return self
-

@@ -26,6 +26,7 @@ from prompt_studio.schemas.base import (
 )
 from prompt_studio.schemas.video_prompt import VideoPromptContract
 from prompt_studio.template_loader import PromptTemplate, load_template
+from shared.contract_refs import ContractRefs, resolve_outfit_ref
 
 
 def _dedupe_by_key(items: List[RequiredDnaItem], notes: List[str], label: str) -> List[RequiredDnaItem]:
@@ -76,12 +77,21 @@ def render_final_prompt(
     allowed_variations: List[AllowedVariationItem],
     allowed_imperfections: List[AllowedImperfectionItem],
     consistency_rules: List[str],
+    contract_refs: Optional[ContractRefs] = None,
 ) -> str:
     lines = [task_brief.strip(), ""]
 
     if character_lock:
         lines.append("Character lock (identity must stay exactly consistent):")
         lines.extend(f"- {item.key}: {item.value}" for item in character_lock)
+        lines.append("")
+
+    if contract_refs and contract_refs.outfit:
+        lines.append("Wardrobe continuity lock:")
+        lines.append(f"- outfit_id: {contract_refs.outfit.outfit_id}")
+        lines.append(f"- label: {contract_refs.outfit.display_label}")
+        lines.append(f"- description: {contract_refs.outfit.description}")
+        lines.append("- Use the same outfit_id and clothing details across every shot unless a later approved contract changes it.")
         lines.append("")
 
     if environment_dna:
@@ -116,6 +126,7 @@ def build_video_prompt(
     prompt_version: str = "1.0",
     contract_version: str = "1.0",
     generated_at: Optional[str] = None,
+    outfit_id: Optional[str] = None,
 ) -> VideoPromptContract:
     """Build a video Prompt JSON from one optional character DNA + 1+ environment DNAs (§5.2)."""
     if not environment_dnas:
@@ -133,6 +144,13 @@ def build_video_prompt(
     consistency_rules: List[str] = []
     if character_dna:
         consistency_rules.append("Character identity must match character_lock exactly across every scene.")
+    outfit_ref = resolve_outfit_ref(outfit_id) if outfit_id else None
+    contract_refs = ContractRefs(
+        character_id=character_dna.subject if character_dna else None,
+        outfit=outfit_ref,
+    ) if (character_dna or outfit_ref) else None
+    if outfit_ref:
+        consistency_rules.append(f"Wardrobe outfit_id '{outfit_ref.outfit_id}' must stay continuous across every scene.")
     if environment_dna:
         consistency_rules.append("Environment details must match environment_dna exactly across every scene.")
 
@@ -158,7 +176,13 @@ def build_video_prompt(
     subject_combo = "+".join(dna.subject for dna in all_dnas)
 
     final_prompt = render_final_prompt(
-        task_brief, character_lock, environment_dna, allowed_variations, allowed_imperfections, consistency_rules
+        task_brief,
+        character_lock,
+        environment_dna,
+        allowed_variations,
+        allowed_imperfections,
+        consistency_rules,
+        contract_refs,
     )
     negative_prompt = render_negative_prompt(forbidden)
 
@@ -184,6 +208,7 @@ def build_video_prompt(
         character_lock=character_lock,
         environment_dna=environment_dna or None,
         consistency_rules=consistency_rules or None,
+        contract_refs=contract_refs,
         optimizer=OptimizerInfo(used=False),
         validation=ValidationBlock(),
         notes=notes,

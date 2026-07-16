@@ -1,6 +1,6 @@
 # VENHO AI STUDIO — Task Status
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-07-16 (AI Studio v1.5 Phase 2 Image QC contract) · **Tests:** 430/430 pass · 0 API call
+**Cập nhật:** 2026-07-16 (AI Studio v1.5 Phase 5 Contract Refs integration) · **Tests:** 434/434 pass · 0 API call
 
 ---
 
@@ -19,7 +19,15 @@
 | M09 | Agent Studio | ✅ COMPLETE (offline planning/orchestration MVP) | 10 |
 | M10 | **VenHo OS Dashboard** (Next.js `localhost:3000/os`) | ✅ COMPLETE v3.0 — Next.js OS Stage A+B+C (2026-07-13) · Streamlit đã xóa (2026-07-13): Workbench (Mode A+B SSE), Creative Studio, Knowledge (DNA Library+Vault Search+Mode C), Reports (DNA Status+Social Log), Shared UI, 7 API routes, 0 TS error | 0 |
 
-> Tests ghi theo module-specific. Full suite = 430 (M01+M02+M03+M04+M05+M06+M07+M08+M09+shared — M10 runtime/API tests nằm ở repo `venho-os`).
+> Tests ghi theo module-specific. Full suite = 434 (M01+M02+M03+M04+M05+M06+M07+M08+M09+shared — M10 runtime/API tests nằm ở repo `venho-os`).
+
+### M02/M03/M05/M06 — Phase 5 Contract Refs integration (2026-07-16)
+- M02 prompt contracts có optional `contract_refs` để trace `character_id`, `outfit_id`, `scenario_profile`.
+- Content prompt 1.0 vẫn backward compatible, nhưng khi request có `outfit_id` sẽ render Outfit Capsule có ID rõ ràng.
+- M05 `ContentRequest` nhận `outfit_id`; output copy `contract_refs` từ M02, không tự chọn outfit.
+- M06 `VideoRequest` nhận `outfit_id`; package ghi `contract_refs`, continuity thêm `outfit_id:<id>` và scene prompts khóa wardrobe xuyên shot.
+- M03 prompt/content validator đọc `contract_refs` từ prompt contract; không suy luận outfit từ prose.
+- Claude adapter đã có fake-client unit test; pytest không gọi production Claude API.
 
 ### M10 / Mode C — Data Integrity (2026-07-16)
 - Mode C có CLI/runtime riêng: `venho vision observe --mode c`.

@@ -5,6 +5,7 @@ from typing import Any, Dict, List, Literal, Optional
 from pydantic import BaseModel, Field
 
 from content_studio.schemas.content_request import SourceKnowledgeRef, TargetLanguage
+from shared.contract_refs import ContractRefs
 
 
 class SourcePromptRef(BaseModel):
@@ -42,6 +43,7 @@ class ContentOutput(BaseModel):
     cta: str
     hashtags: List[str] = Field(default_factory=list)
     visual_note: Optional[str] = None
+    contract_refs: Optional[ContractRefs] = None
     payload: Dict[str, Any] = Field(default_factory=dict)
     status: Literal["draft"] = "draft"
     validation: ValidationInfo = Field(default_factory=ValidationInfo)

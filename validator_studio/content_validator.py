@@ -16,6 +16,7 @@ from validator_studio.schemas.validation_base import (
 )
 from validator_studio.scoring import score_content_categories, status_for_score
 from validator_studio.utils import BASE_DIR, find_dna_path, load_json, load_yaml, sha256_file, sha256_text, token_set, validation_config
+from shared.contract_refs import ContractRefs
 
 
 VI_MARKS = set("ăâđêôơưáàảãạắằẳẵặấầẩẫậéèẻẽẹếềểễệíìỉĩịóòỏõọốồổỗộớờởỡợúùủũụứừửữựýỳỷỹỵ")
@@ -150,10 +151,12 @@ def validate_content(
     prompt_rules = _load_prompt_rules(project)
     text = draft_path.read_text(encoding="utf-8").strip()
     prompt_ref = None
+    contract_refs = None
     if prompt_path:
         prompt = load_json(prompt_path)
         target_language = target_language or prompt.get("target_language")
         prompt_ref = PromptRef(file=str(prompt_path), prompt_version=prompt.get("prompt_version"))
+        contract_refs = ContractRefs.model_validate(prompt["contract_refs"]) if prompt.get("contract_refs") else None
         restrictions = list(prompt.get("restrictions", []))
     else:
         restrictions = []
@@ -209,6 +212,7 @@ def validate_content(
             hash=sha256_file(dna_path),
         )],
         prompt_ref=prompt_ref,
+        contract_refs=contract_refs,
         overall_score=overall,
         verdict=verdict,
         dna_match_score=brand_fit,
@@ -219,5 +223,6 @@ def validate_content(
         validation_notes=[
             "Content validation is advisory and does not rewrite the draft.",
             f"platform={platform}; target_language={target_language}",
+            "Contract refs are read from the M02 prompt contract when present; M03 does not infer outfit context from prose.",
         ],
     )

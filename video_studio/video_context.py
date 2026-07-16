@@ -111,6 +111,8 @@ def load_video_context(
     config = load_video_config(request.project, config_root=config_root)
     environment_dnas, character_dna = load_source_dnas(request, data_root=data_root)
     continuity_keys = build_continuity_keys(environment_dnas, character_dna)
+    if request.outfit_id and f"outfit_id:{request.outfit_id}" not in continuity_keys:
+        continuity_keys.append(f"outfit_id:{request.outfit_id}")
     return VideoContext(
         request=request,
         config=config,

@@ -41,6 +41,7 @@ class ContentRequest(BaseModel):
     source_knowledge: List[SourceKnowledgeRef] = Field(default_factory=list)
     validation_required: bool = True
     subject: Optional[str] = None
+    outfit_id: Optional[str] = None
 
     @property
     def platform(self) -> str:

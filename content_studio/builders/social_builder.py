@@ -150,5 +150,6 @@ def build_social_draft(
         cta=str(draft["cta"]),
         hashtags=list(draft.get("hashtags", [])),
         visual_note=draft.get("visual_note"),
+        contract_refs=prompt.contract_refs,
         validation=ValidationInfo(required=request.validation_required),
     )

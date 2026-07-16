@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-from typing import List
+from typing import List, Optional
 
 from pydantic import BaseModel
 
+from shared.contract_refs import ContractRefs
 from prompt_studio.schemas.base import (
     AllowedImperfectionItem,
     AllowedVariationItem,
@@ -41,3 +42,4 @@ class PromptContractBase(BaseModel):
     optimizer: OptimizerInfo
     validation: ValidationBlock
     notes: List[str] = []
+    contract_refs: Optional[ContractRefs] = None

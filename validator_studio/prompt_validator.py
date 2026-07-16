@@ -15,6 +15,7 @@ from validator_studio.schemas.validation_base import (
 )
 from validator_studio.scoring import score_prompt_categories, status_for_score
 from validator_studio.utils import find_dna_path, load_json, normalize_text, sha256_file, sha256_text, token_set, validation_config
+from shared.contract_refs import ContractRefs
 
 
 def _coverage_score(required: list[dict], prompt_text: str) -> tuple[float, list[Issue], list[DnaSectionScore]]:
@@ -109,6 +110,7 @@ def build_prompt_validation_report(
             hash=dna_hash,
         )],
         prompt_ref=PromptRef(file=prompt_file, prompt_version=prompt.get("prompt_version")),
+        contract_refs=ContractRefs.model_validate(prompt["contract_refs"]) if prompt.get("contract_refs") else None,
         overall_score=overall,
         verdict=verdict,
         dna_match_score=dna_coverage,
@@ -119,6 +121,7 @@ def build_prompt_validation_report(
         validation_notes=[
             "Prompt validation is advisory; Module 02 remains the pass/fail build gate.",
             "Scores are deterministic heuristics over prompt.json and DNA JSON.",
+            "Contract refs are read as IDs/capsules; M03 does not infer outfit or scenario from prose.",
         ],
     )
     return report
