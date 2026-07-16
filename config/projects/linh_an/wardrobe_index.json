@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "project": "linh_an",
+  "owner": "Linh An",
+  "updated_at": "2026-07-16",
+  "auto_selection": {
+    "enabled": false,
+    "policy": "User selection is authoritative. Automatic outfit selection is allowed only for explicit sport-action safety locks and must be recorded in generation manifest selectionReason."
+  },
+  "families": [
+    {
+      "family_key": "sport_active",
+      "family_label": "E — Sport & Active",
+      "default_outfit_id": "mint_green",
+      "status": "approved",
+      "outfit_ids": ["mint_green", "nike_pink_running"]
+    }
+  ],
+  "outfits": [
+    {
+      "outfit_id": "mint_green",
+      "family_key": "sport_active",
+      "display_label": "Nike Mint Green Running",
+      "status": "approved",
+      "schema_subject": "outfit_e_sport",
+      "source_kind": "manual_seed",
+      "source_images_dir": null,
+      "dna_artifacts": [],
+      "description": "mint-green Nike racerback loose crop tank top, dual Swoosh logos at collar, perforated ventilation panels on chest and back, mint-green Nike running shorts (3-inch inseam) with mesh waistband and small Swoosh logo on leg, white Nike running shoes, white ankle socks, sleek high ponytail",
+      "positive_lock": "Linh An must wear the mint-green Nike athletic running set exactly for sport actions.",
+      "negative_lock": [
+        "no skirt",
+        "no dress",
+        "no handbag",
+        "no knit cardigan",
+        "no blouse",
+        "no casual city-walk outfit"
+      ],
+      "default": true,
+      "notes": "Approved manual seed used as the default sport_active outfit until source-backed DNA is added."
+    },
+    {
+      "outfit_id": "nike_pink_running",
+      "family_key": "sport_active",
+      "display_label": "Nike Pink Running",
+      "status": "approved",
+      "schema_subject": "outfit_e_sport",
+      "source_kind": "source_backed",
+      "source_images_dir": "data/projects/linh_an/wardrobe/nike_pink_running",
+      "dna_artifacts": [
+        "data/projects/linh_an/knowledge/LINH_AN_NIKE_PINK_RUNNING_DNA.md",
+        "data/projects/linh_an/knowledge/LINH_AN_NIKE_PINK_RUNNING_DNA.json",
+        "data/projects/linh_an/knowledge/LINH_AN_NIKE_PINK_RUNNING_DNA_COMPACT.md"
+      ],
+      "description": "pink Nike running crop tank top, breathable performance fabric, matching pink Nike running shorts, white Nike running shoes, white ankle socks, sleek high ponytail",
+      "positive_lock": "Linh An must wear the pink Nike athletic running set exactly for sport actions.",
+      "negative_lock": [
+        "no skirt",
+        "no dress",
+        "no handbag",
+        "no knit cardigan",
+        "no blouse",
+        "no casual city-walk outfit"
+      ],
+      "default": false,
+      "notes": "Current approved outfit entry. Earlier universal-style artifact remains quarantined in wardrobe_manifest.json for audit."
+    }
+  ]
+}
