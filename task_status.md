@@ -1,6 +1,6 @@
 # VENHO AI STUDIO — Task Status
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-07-16 (AI Studio v1.5 Phase 5 Contract Refs integration) · **Tests:** 434/434 pass · 0 API call
+**Cập nhật:** 2026-07-16 (AI Studio v1.5 Phase 6 Ops/Living Lab integration) · **Tests:** 440/440 pass · 0 API call
 
 ---
 
@@ -19,7 +19,15 @@
 | M09 | Agent Studio | ✅ COMPLETE (offline planning/orchestration MVP) | 10 |
 | M10 | **VenHo OS Dashboard** (Next.js `localhost:3000/os`) | ✅ COMPLETE v3.0 — Next.js OS Stage A+B+C (2026-07-13) · Streamlit đã xóa (2026-07-13): Workbench (Mode A+B SSE), Creative Studio, Knowledge (DNA Library+Vault Search+Mode C), Reports (DNA Status+Social Log), Shared UI, 7 API routes, 0 TS error | 0 |
 
-> Tests ghi theo module-specific. Full suite = 434 (M01+M02+M03+M04+M05+M06+M07+M08+M09+shared — M10 runtime/API tests nằm ở repo `venho-os`).
+> Tests ghi theo module-specific. Full suite = 440 (M01+M02+M03+M04+M05+M06+M07+M08+M09+shared — M10 runtime/API tests nằm ở repo `venho-os`).
+
+### M04/M09/AiStudioPort/Living Lab — Phase 6 Ops integration (2026-07-16)
+- M04 thêm `automation_studio.wardrobe_ingest`: tạo review file, validation fail chặn index update.
+- M04 thêm `automation_studio.wardrobe_index_update`: chỉ update Wardrobe Index khi `validation_status=pass` và `approved_for_index=true`.
+- M09 hard-stop khi thiếu required knowledge; không dispatch M04 kể cả dry-run/execute.
+- `JobContract 1.0` tách transition `approved → executed → published`; không cho publish nhảy cóc.
+- `AiStudioPort` expose coarse capabilities: `wardrobe_ingest`, `content_generate`, `video_package`, `publish_content`.
+- Living Lab metrics ghi `output_used`, `approved_first_try`, retry, minutes saved, cost/run, decision `continue/simplify/pivot/kill`.
 
 ### M02/M03/M05/M06 — Phase 5 Contract Refs integration (2026-07-16)
 - M02 prompt contracts có optional `contract_refs` để trace `character_id`, `outfit_id`, `scenario_profile`.

@@ -1,0 +1,24 @@
+workflow_id: linh_an_wardrobe_ingest
+name: Linh An Wardrobe Ingest
+version: "1.0"
+project: linh_an
+trigger:
+  type: manual
+steps:
+  - id: ingest_review
+    module: automation_studio
+    action: wardrobe_ingest
+    params:
+      outfit_id: nike_pink_running
+      source_dir: data/projects/linh_an/wardrobe/nike_pink_running
+      schema_subject: outfit_e_sport
+      display_label: Nike Pink Running
+      family_key: sport_active
+      validation_status: pass
+      description: pink Nike running crop tank top, matching pink Nike running shorts, white Nike running shoes
+    on_error: stop
+output:
+  review_required: true
+  index_update_requires:
+    - validation_status=pass
+    - approved_for_index=true

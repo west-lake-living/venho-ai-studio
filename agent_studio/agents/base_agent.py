@@ -13,6 +13,7 @@ from agent_studio.request_validator import validate_agent_request
 from agent_studio.result_aggregator import aggregate_result
 from agent_studio.risk_classifier import classify_plan_risk
 from agent_studio.schemas import AgentResponse
+from agent_studio.schemas.execution_result import ExecutionResult
 from agent_studio.task_planner import build_task_plan
 
 
@@ -38,9 +39,21 @@ class BaseAgent:
         log.add("Risk classified")
         package = build_module_requests(plan)
         log.add("Module requests packaged for M04")
-        execute = request.execution_mode == "execute" and not missing["missing_knowledge"]
-        result = dispatch_to_automation(package, dry_run=not execute)
-        log.add("Automation bridge returned mock execution result")
+        if missing["missing_knowledge"]:
+            result = ExecutionResult(
+                status="BLOCKED_MISSING_KNOWLEDGE",
+                run_id=f"blocked_{plan.plan_id}",
+                project=request.project,
+                plan_id=plan.plan_id,
+                approval_required=False,
+                module_results=[],
+                notes=["M09 hard-stop: missing required knowledge; no M04 dispatch performed."],
+            )
+            log.add("Hard-stop: missing required knowledge; M04 dispatch skipped")
+        else:
+            execute = request.execution_mode == "execute"
+            result = dispatch_to_automation(package, dry_run=not execute)
+            log.add("Automation bridge returned mock execution result")
         if persist:
             log.save(request.project, plan.plan_id, Path("data/projects"))
         return aggregate_result(

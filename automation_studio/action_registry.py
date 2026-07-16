@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Callable
 
-from automation_studio.adapters import knowledge_adapter, prompt_adapter, validator_adapter
+from automation_studio.adapters import knowledge_adapter, prompt_adapter, validator_adapter, wardrobe_adapter
 from automation_studio.errors import ActionRegistryError
 from automation_studio.types import StepResult
 
@@ -84,6 +84,22 @@ REGISTRY: dict[str, ActionSpec] = {
         optional=("instructions", "next_actions", "settings"),
         description="Pause workflow for a human action",
     ),
+    "automation_studio.wardrobe_ingest": ActionSpec(
+        key="automation_studio.wardrobe_ingest",
+        handler=wardrobe_adapter.wardrobe_ingest,
+        required=("outfit_id", "source_dir", "schema_subject", "display_label"),
+        optional=("family_key", "validation_status", "description", "settings"),
+        path_params=("source_dir",),
+        description="Build wardrobe ingest review; validation failure blocks index update",
+    ),
+    "automation_studio.wardrobe_index_update": ActionSpec(
+        key="automation_studio.wardrobe_index_update",
+        handler=wardrobe_adapter.wardrobe_index_update,
+        required=("review_file",),
+        optional=("settings",),
+        path_params=("review_file",),
+        description="Update wardrobe index only after passed validation and human approval",
+    ),
 }
 
 
@@ -105,4 +121,3 @@ def validate_params(spec: ActionSpec, params: dict[str, Any]) -> None:
 
 def list_actions() -> list[ActionSpec]:
     return [REGISTRY[key] for key in sorted(REGISTRY)]
-
