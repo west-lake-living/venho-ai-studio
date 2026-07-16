@@ -1,0 +1,161 @@
+schema_id: linh_an.outfit_b_west_lake
+schema_version: "1.0"
+subject: outfit_b_west_lake
+display_name: Linh An — Outfit B West Lake Sunset
+description: West Lake Sunset — Flowing white dress
+
+# INVARIANT = defining brand/structural elements of the outfit (brand identity, core design)
+# VARIABLE  = contextual styling details (color variations, usage context, pairing notes)
+
+aggregation_keys:
+  # --- Brand & Identity ---
+  - key: brand
+    type: free
+
+  - key: garment_category
+    type: enum
+    values:
+      [
+        sport_active_set,
+        casual_top_bottom,
+        dress_single_piece,
+        outerwear,
+        footwear_only,
+        accessory_only,
+        full_outfit_layered,
+        not_visible,
+      ]
+
+  - key: style_category
+    type: enum
+    values:
+      [
+        sport_active,
+        cafe_casual,
+        west_lake_lifestyle,
+        street_chic,
+        business_elegant,
+        resort_leisure,
+        not_visible,
+      ]
+
+  # --- Color Palette ---
+  - key: color_primary
+    type: free
+
+  - key: color_secondary
+    type: free
+
+  - key: color_accent
+    type: free
+
+  # --- Garment Details ---
+  - key: top_description
+    type: free
+
+  - key: bottom_description
+    type: free
+
+  - key: dress_description
+    type: free
+
+  - key: outerwear_description
+    type: free
+
+  - key: fit_silhouette
+    type: enum
+    values:
+      [
+        fitted_tailored,
+        relaxed_loose,
+        flowing_draped,
+        structured,
+        oversized,
+        not_applicable,
+      ]
+
+  - key: material_texture
+    type: free
+
+  # --- Branding & Signature Details ---
+  - key: logo_branding
+    type: free
+
+  - key: signature_design_elements
+    type: free
+
+  # --- Footwear ---
+  - key: footwear_type
+    type: enum
+    values:
+      [
+        white_sneakers,
+        classic_sneakers,
+        flats,
+        strappy_sandals,
+        block_heels,
+        ankle_boots,
+        loafers,
+        not_included,
+        not_visible,
+      ]
+
+  - key: footwear_description
+    type: free
+
+  # --- Accessories ---
+  - key: bag_type
+    type: enum
+    values:
+      [
+        small_luxury_handbag,
+        tote,
+        backpack,
+        crossbody,
+        clutch,
+        none,
+        not_visible,
+      ]
+
+  - key: accessory_items
+    type: free
+
+  # --- Hair Styling Suggestion ---
+  - key: hair_style_suggestion
+    type: enum
+    values:
+      [
+        high_sporty_ponytail,
+        elegant_low_bun,
+        long_soft_waves,
+        natural_loose,
+        flexible_any,
+      ]
+
+  # --- Usage Context ---
+  - key: occasion_context
+    type: free
+
+  - key: content_pillar_fit
+    type: enum
+    values:
+      [
+        view_and_vibe,
+        local_life,
+        room_tour,
+        deal,
+        guest_story,
+        social_activity,
+        flexible_multi_pillar,
+      ]
+
+  # --- Prompt Generation ---
+  - key: prompt_snippet
+    type: free
+
+forbidden_defaults:
+  - no heavy luxury logos covering garment
+  - no provocative or revealing clothing
+  - no flashy hype streetwear with excessive graphics
+  - no culturally inappropriate elements
+  - no non-Linh An appropriate styling
