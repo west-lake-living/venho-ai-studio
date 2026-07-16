@@ -33,11 +33,7 @@
 
 ## Security Status
 
-- Repo text scan found no active key-shaped placeholders matching:
-  - `sk-proj-`
-  - `sk-ant-`
-  - `sk-admin-`
-  - `sk-svcacct-`
+- Repo text scan found no active OpenAI/Anthropic key-shaped placeholders.
 - `.env.example` placeholders now use non-secret-shaped values.
 - External action still required: revoke/rotate the exposed OpenAI API key in the OpenAI dashboard.
 
@@ -88,4 +84,3 @@ These need a separate classification/commit pass before Phase 1 starts.
 | VenHo OS tests/build baseline verified | Done — `54/54` + build pass |
 | Exposed OpenAI key revoked/rotated | Pending external action |
 | `task_status.md` / `task_memory.md` fully synced | Pending separate dirty-worktree cleanup |
-
