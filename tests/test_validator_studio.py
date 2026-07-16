@@ -13,9 +13,10 @@ from validator_studio.observe_adapter import ObservationSchemaError, observe_ima
 from validator_studio.prompt_resolver import resolve_latest_prompt_path
 from validator_studio.prompt_validator import validate_prompt, validate_prompt_contract
 from validator_studio.report_builder import write_report
+from validator_studio.schemas.face_validation import FaceGateResult, FaceValidationObservation
 from validator_studio.schemas.image_validation import DnaMatchObservation, ForbiddenObservation, ImageObservation
 from validator_studio.schemas.validation_base import MatchState, Severity
-from validator_studio.scoring import CONTENT_CATEGORIES, IMAGE_CATEGORIES, PROMPT_CATEGORIES, score_image_observation, validate_weights
+from validator_studio.scoring import CONTENT_CATEGORIES, IMAGE_CATEGORIES, PROMPT_CATEGORIES, score_face_observation, score_image_observation, validate_weights
 from validator_studio.utils import validation_config
 
 
@@ -273,6 +274,34 @@ def test_face_validator_provider_path_uses_rubric_and_schema_guard(tmp_path, mon
     assert "no real-person identification" in calls["prompt"]
     assert report.kill_switch.triggered is False
     assert report.overall_score > 0
+
+
+def test_face_scoring_normalizes_observer_scores_from_zero_to_one():
+    observation = FaceValidationObservation(
+        gates=[FaceGateResult(gate="identity_structure", passed=True)],
+        weighted_scores={
+            "facial_shape": 0.30,
+            "eyes": 0.25,
+            "hair": 0.20,
+            "expression": 0.15,
+            "technical_quality": 0.10,
+        },
+    )
+    rubric = {
+        "weighted": {
+            "facial_shape": 0.30,
+            "eyes": 0.25,
+            "hair": 0.20,
+            "expression": 0.15,
+            "technical_quality": 0.10,
+        }
+    }
+
+    result = score_face_observation(observation, rubric)
+
+    assert result.category_scores["facial_shape"] == 30
+    assert result.category_scores["technical_quality"] == 10
+    assert result.overall_score == 22.5
 
 
 def test_face_validator_provider_rejects_identity_matching_fields(tmp_path, monkeypatch):
