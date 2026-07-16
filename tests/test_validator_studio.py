@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
 from typer.testing import CliRunner
 
 from validator_studio.content_validator import validate_content
@@ -276,32 +277,58 @@ def test_face_validator_provider_path_uses_rubric_and_schema_guard(tmp_path, mon
     assert report.overall_score > 0
 
 
-def test_face_scoring_normalizes_observer_scores_from_zero_to_one():
-    observation = FaceValidationObservation(
-        gates=[FaceGateResult(gate="identity_structure", passed=True)],
-        weighted_scores={
-            "facial_shape": 0.30,
-            "eyes": 0.25,
-            "hair": 0.20,
-            "expression": 0.15,
-            "technical_quality": 0.10,
-        },
-    )
-    rubric = {
-        "weighted": {
-            "facial_shape": 0.30,
-            "eyes": 0.25,
-            "hair": 0.20,
-            "expression": 0.15,
-            "technical_quality": 0.10,
-        }
-    }
+def test_face_validator_provider_rejects_missing_required_gates(tmp_path, monkeypatch):
+    image = tmp_path / "linh_an_provider.png"
+    image.write_bytes(b"fake-face-image")
 
-    result = score_face_observation(observation, rubric)
+    class FakeClient:
+        def __init__(self, image_provider="openai", temperature=0.0):
+            pass
 
-    assert result.category_scores["facial_shape"] == 30
-    assert result.category_scores["technical_quality"] == 10
-    assert result.overall_score == 22.5
+        def analyze_image(self, image_path, system_prompt):
+            return {
+                "gates": [{"gate": "identity_structure", "passed": True}],
+                "weighted_scores": {
+                    "facial_shape": 90,
+                    "eyes": 88,
+                    "hair": 87,
+                    "expression": 86,
+                    "technical_quality": 85,
+                },
+            }
+
+    monkeypatch.setattr("validator_studio.face_validator.VisionClient", FakeClient)
+    with pytest.raises(ObservationSchemaError, match="Face gates mismatch"):
+        validate_face("venho_hotel", "linh_an", image, provider="openai")
+
+
+def test_face_validator_provider_rejects_rubric_weight_scale_scores(tmp_path, monkeypatch):
+    image = tmp_path / "linh_an_provider.png"
+    image.write_bytes(b"fake-face-image")
+
+    class FakeClient:
+        def __init__(self, image_provider="openai", temperature=0.0):
+            pass
+
+        def analyze_image(self, image_path, system_prompt):
+            return {
+                "gates": [
+                    {"gate": "identity_structure", "passed": True},
+                    {"gate": "eye_ratio", "passed": True},
+                    {"gate": "forbidden_traits", "passed": True},
+                ],
+                "weighted_scores": {
+                    "facial_shape": 0.30,
+                    "eyes": 0.25,
+                    "hair": 0.20,
+                    "expression": 0.15,
+                    "technical_quality": 0.10,
+                },
+            }
+
+    monkeypatch.setattr("validator_studio.face_validator.VisionClient", FakeClient)
+    with pytest.raises(ObservationSchemaError, match="0-100 scale"):
+        validate_face("venho_hotel", "linh_an", image, provider="openai")
 
 
 def test_face_validator_provider_rejects_identity_matching_fields(tmp_path, monkeypatch):

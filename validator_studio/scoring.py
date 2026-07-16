@@ -239,13 +239,6 @@ def score_face_observation(observation: FaceValidationObservation, rubric: dict)
         category: float(observation.weighted_scores.get(category, 0))
         for category in weights
     }
-    # Older observer responses occasionally used normalized 0..1 values even
-    # though Validator Studio reports every category on a 0..100 scale.
-    if category_scores and all(0 <= score <= 1 for score in category_scores.values()):
-        category_scores = {
-            category: round(score * 100, 2)
-            for category, score in category_scores.items()
-        }
     category_scores = {
         category: max(0.0, min(100.0, score))
         for category, score in category_scores.items()

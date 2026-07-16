@@ -51,7 +51,16 @@ def _mock_observe_face(image_path: Path, rubric: dict) -> FaceValidationObservat
     )
 
 
-def _assert_face_observation_contract(payload: Any) -> None:
+def _expected_face_gate_ids(rubric: dict) -> set[str]:
+    return {str(gate.get("id")) for gate in rubric.get("binary_gates", []) if gate.get("id")}
+
+
+def _expected_face_score_keys(rubric: dict) -> set[str]:
+    weighted = rubric.get("weighted", {})
+    return set(weighted) if weighted else {"facial_shape", "eyes", "hair", "expression", "technical_quality"}
+
+
+def _assert_face_observation_contract(payload: Any, rubric: dict) -> None:
     if not isinstance(payload, dict):
         raise ObservationSchemaError("Face observe must return a JSON object")
     forbidden = {"overall_score", "verdict", "recommendation", "identity_match", "celebrity_match"}
@@ -65,6 +74,31 @@ def _assert_face_observation_contract(payload: Any) -> None:
                 stack.append(value)
         elif isinstance(item, list):
             stack.extend(item)
+
+    gates = payload.get("gates")
+    if not isinstance(gates, list):
+        raise ObservationSchemaError("Face observe must return gates[]")
+    actual_gates = {str(gate.get("gate")) for gate in gates if isinstance(gate, dict)}
+    expected_gates = _expected_face_gate_ids(rubric)
+    if actual_gates != expected_gates:
+        raise ObservationSchemaError(
+            f"Face gates mismatch. expected={sorted(expected_gates)} actual={sorted(actual_gates)}"
+        )
+
+    weighted_scores = payload.get("weighted_scores")
+    if not isinstance(weighted_scores, dict):
+        raise ObservationSchemaError("Face observe must return weighted_scores{}")
+    expected_scores = _expected_face_score_keys(rubric)
+    actual_scores = set(weighted_scores)
+    if actual_scores != expected_scores:
+        raise ObservationSchemaError(
+            f"Face weighted score keys mismatch. expected={sorted(expected_scores)} actual={sorted(actual_scores)}"
+        )
+    for key, value in weighted_scores.items():
+        if not isinstance(value, (int, float)) or not 0 <= float(value) <= 100:
+            raise ObservationSchemaError(f"Face weighted score '{key}' must be on a 0-100 scale")
+    if weighted_scores and all(0 <= float(score) <= 1 for score in weighted_scores.values()):
+        raise ObservationSchemaError("Face weighted_scores must use 0-100 scale, not 0-1 rubric weights")
 
 
 def _build_face_observe_prompt(dna: dict, rubric: dict) -> str:
@@ -94,7 +128,7 @@ def _observe_face(image_path: Path, dna: dict, rubric: dict, provider: str) -> F
     client = VisionClient(image_provider=provider, temperature=0.0)
     response = client.analyze_image(image_path, _build_face_observe_prompt(dna, rubric))
     payload = response if isinstance(response, dict) and "gates" in response else extract_json(str(response))
-    _assert_face_observation_contract(payload)
+    _assert_face_observation_contract(payload, rubric)
     observation = FaceValidationObservation.model_validate(payload)
     return observation.model_copy(update={
         "notes": [

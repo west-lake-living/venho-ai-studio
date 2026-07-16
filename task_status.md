@@ -1,6 +1,6 @@
 # VENHO AI STUDIO — Task Status
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-07-16 (AI Studio v1.5 Phase 1 Mode C data integrity) · **Tests:** 429/429 pass · 0 API call
+**Cập nhật:** 2026-07-16 (AI Studio v1.5 Phase 2 Image QC contract) · **Tests:** 430/430 pass · 0 API call
 
 ---
 
@@ -19,7 +19,7 @@
 | M09 | Agent Studio | ✅ COMPLETE (offline planning/orchestration MVP) | 10 |
 | M10 | **VenHo OS Dashboard** (Next.js `localhost:3000/os`) | ✅ COMPLETE v3.0 — Next.js OS Stage A+B+C (2026-07-13) · Streamlit đã xóa (2026-07-13): Workbench (Mode A+B SSE), Creative Studio, Knowledge (DNA Library+Vault Search+Mode C), Reports (DNA Status+Social Log), Shared UI, 7 API routes, 0 TS error | 0 |
 
-> Tests ghi theo module-specific. Full suite = 429 (M01+M02+M03+M04+M05+M06+M07+M08+M09+shared — M10 runtime/API tests nằm ở repo `venho-os`).
+> Tests ghi theo module-specific. Full suite = 430 (M01+M02+M03+M04+M05+M06+M07+M08+M09+shared — M10 runtime/API tests nằm ở repo `venho-os`).
 
 ### M10 / Mode C — Data Integrity (2026-07-16)
 - Mode C có CLI/runtime riêng: `venho vision observe --mode c`.
@@ -29,6 +29,12 @@
 - Artifact output vẫn theo variant (`LINH_AN_NIKE_PINK_RUNNING_DNA.*`) nhưng schema lấy từ `outfit_e_sport`.
 - VenHo OS status chỉ báo success khi artifact mới hơn run hiện tại; upload trùng tên bị chặn thay vì overwrite.
 - `wardrobe_manifest.json` quarantine Nike Pink artifact cũ và đánh dấu `sport_active` upload folder là legacy alias.
+
+### M03 / Image QC — Phase 2 contract hardening (2026-07-16)
+- Face Validator bắt buộc đúng 3 gate: `identity_structure`, `eye_ratio`, `forbidden_traits`.
+- Face Validator bắt buộc đúng 5 score keys: `facial_shape`, `eyes`, `hair`, `expression`, `technical_quality`.
+- `weighted_scores` phải là điểm 0–100; payload dùng rubric weight 0–1 bị reject.
+- VenHo OS Generation Manifest nâng lên `schemaVersion: 1.1` với `promptHash`, outfit trace, `scenarioProfile`, face reference set version, validation contract và latency.
 
 ---
 
