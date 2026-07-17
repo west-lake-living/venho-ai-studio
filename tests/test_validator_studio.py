@@ -379,6 +379,61 @@ def test_face_validator_provider_rejects_identity_matching_fields(tmp_path, monk
         raise AssertionError("expected ObservationSchemaError")
 
 
+def test_face_validator_samples_majority_vote_gates_and_average_scores(tmp_path, monkeypatch):
+    image = tmp_path / "linh_an_flip.png"
+    image.write_bytes(b"fake-face-image")
+    responses = [
+        {  # sample 1: reject
+            "gates": [
+                {"gate": "identity_structure", "passed": False, "reason": "off", "evidence": ""},
+                {"gate": "eye_ratio", "passed": False, "reason": "off", "evidence": ""},
+                {"gate": "forbidden_traits", "passed": True, "reason": "ok", "evidence": ""},
+            ],
+            "weighted_scores": {"facial_shape": 60, "eyes": 50, "hair": 70, "expression": 80, "technical_quality": 85},
+            "notes": [],
+        },
+        {  # sample 2: revise (majority for identity/eye_ratio flips to True with sample 3)
+            "gates": [
+                {"gate": "identity_structure", "passed": True, "reason": "ok", "evidence": ""},
+                {"gate": "eye_ratio", "passed": True, "reason": "ok", "evidence": ""},
+                {"gate": "forbidden_traits", "passed": True, "reason": "ok", "evidence": ""},
+            ],
+            "weighted_scores": {"facial_shape": 90, "eyes": 85, "hair": 80, "expression": 75, "technical_quality": 70},
+            "notes": [],
+        },
+        {  # sample 3: revise
+            "gates": [
+                {"gate": "identity_structure", "passed": True, "reason": "ok", "evidence": ""},
+                {"gate": "eye_ratio", "passed": True, "reason": "ok", "evidence": ""},
+                {"gate": "forbidden_traits", "passed": True, "reason": "ok", "evidence": ""},
+            ],
+            "weighted_scores": {"facial_shape": 90, "eyes": 85, "hair": 80, "expression": 75, "technical_quality": 70},
+            "notes": [],
+        },
+    ]
+
+    class FakeClient:
+        def __init__(self, image_provider="openai", temperature=0.0):
+            self.calls = 0
+
+        def analyze_image(self, image_path, system_prompt):
+            payload = responses[self.calls]
+            self.calls += 1
+            return payload
+
+    monkeypatch.setattr("validator_studio.face_validator.VisionClient", FakeClient)
+    report = validate_face("venho_hotel", "linh_an", image, provider="openai", samples=3)
+
+    # majority vote (2 of 3 pass) -> gates pass, no kill switch
+    assert report.kill_switch.triggered is False
+    raw_gates = {g["gate"]: g["passed"] for g in report.raw_observation["gates"]}
+    assert raw_gates == {"identity_structure": True, "eye_ratio": True, "forbidden_traits": True}
+    # average of [60,90,90]=80, [50,85,85]=73.33, etc.
+    assert report.raw_observation["weighted_scores"]["facial_shape"] == 80.0
+    assert report.raw_observation["weighted_scores"]["eyes"] == round((50 + 85 + 85) / 3, 2)
+    assert any("aggregated from 3 vision samples" in note for note in report.validation_notes)
+
+
 def test_face_validator_uses_reference_images_when_provided(tmp_path, monkeypatch):
     image = tmp_path / "linh_an_provider.png"
     image.write_bytes(b"fake-face-image")

@@ -65,8 +65,9 @@ def run_face_validation(
     image_path: Path,
     provider: str = "mock",
     reference_image_paths: Optional[list[Path]] = None,
+    samples: int = 1,
 ) -> dict[str, Path]:
-    report = validate_face(project, subject, image_path, provider, reference_image_paths)
+    report = validate_face(project, subject, image_path, provider, reference_image_paths, samples)
     reports_dir, manifest_path = _output_paths(project)
     paths = write_report(report, reports_dir, _report_id("face", subject, report.artifact_ref.hash))
     update_manifest(manifest_path, report, paths)

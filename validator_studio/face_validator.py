@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from collections import Counter
 from pathlib import Path
 from typing import Any, Optional
 
@@ -138,12 +139,42 @@ def _build_face_observe_prompt(dna: dict, rubric: dict, reference_count: int = 0
     )
 
 
+def _merge_face_samples(samples: list[FaceValidationObservation]) -> FaceValidationObservation:
+    """Aggregate N independent vision-judge samples of the SAME image into one observation.
+
+    Real-run testing found GPT-4o's face judging is not reliably deterministic even at
+    temperature=0.0 — the identical image+reference set produced a passing verdict on one
+    call and a hard-reject verdict on another. Majority-vote the binary gates and average
+    the weighted scores across samples to reduce the chance that a single unlucky call
+    flips a real production run's outcome.
+    """
+    if len(samples) == 1:
+        return samples[0]
+    gates_by_id: dict[str, list[FaceGateResult]] = {}
+    for sample in samples:
+        for gate in sample.gates:
+            gates_by_id.setdefault(gate.gate, []).append(gate)
+    merged_gates = []
+    for gate_id, items in gates_by_id.items():
+        votes = Counter(item.passed for item in items)
+        majority_passed = votes[True] >= votes[False]
+        merged_gates.append(items[0].model_copy(update={"passed": majority_passed}))
+
+    score_keys = samples[0].weighted_scores.keys()
+    merged_scores = {
+        key: round(sum(float(sample.weighted_scores.get(key, 0)) for sample in samples) / len(samples), 2)
+        for key in score_keys
+    }
+    return samples[0].model_copy(update={"gates": merged_gates, "weighted_scores": merged_scores})
+
+
 def _observe_face(
     image_path: Path,
     dna: dict,
     rubric: dict,
     provider: str,
     reference_image_paths: Optional[list[Path]] = None,
+    samples: int = 1,
 ) -> FaceValidationObservation:
     if provider == "mock":
         return _mock_observe_face(image_path, rubric)
@@ -153,19 +184,25 @@ def _observe_face(
             raise FileNotFoundError(f"Face validator reference image not found: {reference_path}")
     client = VisionClient(image_provider=provider, temperature=0.0)
     prompt = _build_face_observe_prompt(dna, rubric, reference_count=len(reference_image_paths))
-    if reference_image_paths:
-        response = client.analyze_images([image_path, *reference_image_paths], prompt)
-    else:
-        response = client.analyze_image(image_path, prompt)
-    payload = response if isinstance(response, dict) and "gates" in response else extract_json(str(response))
-    _assert_face_observation_contract(payload, rubric)
-    observation = FaceValidationObservation.model_validate(payload)
+
+    observed: list[FaceValidationObservation] = []
+    for _ in range(max(samples, 1)):
+        if reference_image_paths:
+            response = client.analyze_images([image_path, *reference_image_paths], prompt)
+        else:
+            response = client.analyze_image(image_path, prompt)
+        payload = response if isinstance(response, dict) and "gates" in response else extract_json(str(response))
+        _assert_face_observation_contract(payload, rubric)
+        observed.append(FaceValidationObservation.model_validate(payload))
+
+    observation = _merge_face_samples(observed)
     return observation.model_copy(update={
         "notes": [
             *observation.notes,
             f"{provider} face observation; grounding/web search disabled by prompt contract",
             "no real-person or celebrity matching requested",
             *([f"compared against {len(reference_image_paths)} approved reference image(s)"] if reference_image_paths else []),
+            *([f"aggregated from {len(observed)} vision samples (majority-vote gates, averaged scores)"] if len(observed) > 1 else []),
         ]
     })
 
@@ -176,11 +213,12 @@ def validate_face(
     image_path: Path,
     provider: str = "mock",
     reference_image_paths: Optional[list[Path]] = None,
+    samples: int = 1,
 ) -> ValidationReport:
     dna_path = find_dna_path(project, subject)
     dna = load_json(dna_path)
     rubric = _load_face_rubric(project)
-    observation = _observe_face(image_path, dna, rubric, provider, reference_image_paths)
+    observation = _observe_face(image_path, dna, rubric, provider, reference_image_paths, samples)
     score = score_face_observation(observation, rubric)
     return ValidationReport(
         project=project,
@@ -193,7 +231,11 @@ def validate_face(
             dna_contract_version=dna.get("contract_version"),
             hash=sha256_file(dna_path),
         )],
-        observer=ObserverInfo(provider=provider, model=provider if provider == "mock" else "configured", samples=1),
+        observer=ObserverInfo(
+            provider=provider,
+            model=provider if provider == "mock" else "configured",
+            samples=max(samples, 1) if provider != "mock" else 1,
+        ),
         kill_switch=score.kill_switch,
         overall_score=score.overall_score,
         verdict=score.verdict,

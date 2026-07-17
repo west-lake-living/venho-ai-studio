@@ -94,9 +94,10 @@ def face_cmd(
     image: Path = typer.Option(..., "--image", "-i"),
     provider: str = typer.Option("mock", "--provider"),
     reference: Optional[list[Path]] = typer.Option(None, "--reference", help="Approved reference image(s) for direct comparison"),
+    samples: int = typer.Option(1, "--samples", help="Vision-judge samples to average (majority-vote gates, mean scores)"),
 ) -> None:
     """Validate fictional character image against Face DNA and rubric 07F."""
-    _print_paths(run_face_validation(project, subject, image, provider, reference))
+    _print_paths(run_face_validation(project, subject, image, provider, reference, samples))
 
 
 @app.command("content")
