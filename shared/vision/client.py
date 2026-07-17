@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
+from typing import Any, Sequence
 
 from shared.vision.providers.openai_vision import OpenAIVisionProvider
 from shared.vision.providers.claude_vision import ClaudeProvider
@@ -30,6 +30,15 @@ class VisionClient:
 
     def analyze_image(self, image_path: Path, system_prompt: str) -> dict[str, Any]:
         return self._image_provider.analyze(image_path, system_prompt)
+
+    def analyze_images(
+        self,
+        image_paths: Sequence[Path],
+        system_prompt: str,
+        text_prompt: str = "Analyze these images and return JSON only.",
+    ) -> dict[str, Any]:
+        """Analyze multiple images (e.g. a candidate plus approved reference photos) in one call."""
+        return self._image_provider.analyze_many(image_paths, system_prompt, text_prompt)
 
     def synthesize(self, system_prompt: str, user_content: str) -> dict[str, Any]:
         return self._synthesis_provider.synthesize(system_prompt, user_content)

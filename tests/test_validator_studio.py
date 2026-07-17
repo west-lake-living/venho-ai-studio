@@ -73,6 +73,34 @@ def test_image_validator_mock_writes_report(tmp_path):
     assert data["validation_type"] == "image"
 
 
+def test_image_validator_accepts_scenario_profile_id(tmp_path):
+    image = tmp_path / "westlake_street.png"
+    image.write_bytes(b"fake-image-bytes")
+    report = validate_image(
+        "venho_hotel", "westlake", image,
+        provider="mock", scenario_profile_id="nguyen_dinh_thi_street_2026",
+    )
+    assert report.validation_type == "image"
+    assert report.subject == "westlake"
+
+
+def test_image_validator_scenario_overlay_merges_in_memory_only():
+    from validator_studio.image_validator import _apply_scenario_overlay
+    from validator_studio.utils import find_dna_path, load_json
+
+    dna_path = find_dna_path("venho_hotel", "westlake")
+    dna = load_json(dna_path)
+
+    merged = _apply_scenario_overlay("venho_hotel", "westlake", "nguyen_dinh_thi_street_2026", dna)
+    assert any("ivory-white metal railing" in note for note in merged["curator_notes"])
+
+    unchanged = _apply_scenario_overlay("venho_hotel", "westlake", None, dna)
+    assert unchanged == dna
+
+    unchanged_missing = _apply_scenario_overlay("venho_hotel", "westlake", "no_such_scenario_profile", dna)
+    assert unchanged_missing == dna
+
+
 def test_image_observe_provider_path_includes_dna_and_rejects_ai_score(tmp_path, monkeypatch):
     image = tmp_path / "generated.png"
     image.write_bytes(b"fake-image")
@@ -349,6 +377,97 @@ def test_face_validator_provider_rejects_identity_matching_fields(tmp_path, monk
         assert "identity_match" in str(exc)
     else:
         raise AssertionError("expected ObservationSchemaError")
+
+
+def test_face_validator_uses_reference_images_when_provided(tmp_path, monkeypatch):
+    image = tmp_path / "linh_an_provider.png"
+    image.write_bytes(b"fake-face-image")
+    ref1 = tmp_path / "ref1.png"
+    ref1.write_bytes(b"fake-ref1")
+    ref2 = tmp_path / "ref2.png"
+    ref2.write_bytes(b"fake-ref2")
+    calls = {}
+
+    class FakeClient:
+        def __init__(self, image_provider="openai", temperature=0.0):
+            pass
+
+        def analyze_images(self, image_paths, system_prompt):
+            calls["image_paths"] = list(image_paths)
+            calls["prompt"] = system_prompt
+            return {
+                "gates": [
+                    {"gate": "identity_structure", "passed": True, "reason": "ok", "evidence": ""},
+                    {"gate": "eye_ratio", "passed": True, "reason": "ok", "evidence": ""},
+                    {"gate": "forbidden_traits", "passed": True, "reason": "ok", "evidence": ""},
+                ],
+                "weighted_scores": {
+                    "facial_shape": 90, "eyes": 88, "hair": 87, "expression": 86, "technical_quality": 85,
+                },
+                "notes": [],
+            }
+
+    monkeypatch.setattr("validator_studio.face_validator.VisionClient", FakeClient)
+    report = validate_face(
+        "venho_hotel", "linh_an", image, provider="openai",
+        reference_image_paths=[ref1, ref2],
+    )
+    assert calls["image_paths"] == [image, ref1, ref2]
+    assert "REFERENCE IMAGES" in calls["prompt"]
+    assert report.kill_switch.triggered is False
+    assert any("2 approved reference image" in note for note in report.validation_notes)
+
+
+def test_face_validator_missing_reference_image_raises_before_api_call(tmp_path, monkeypatch):
+    image = tmp_path / "linh_an_provider.png"
+    image.write_bytes(b"fake-face-image")
+    missing_ref = tmp_path / "does_not_exist.png"
+
+    class FakeClient:
+        def __init__(self, image_provider="openai", temperature=0.0):
+            pass
+
+        def analyze_images(self, image_paths, system_prompt):
+            raise AssertionError("should not call the vision API when a reference file is missing")
+
+    monkeypatch.setattr("validator_studio.face_validator.VisionClient", FakeClient)
+    with pytest.raises(FileNotFoundError, match="does_not_exist"):
+        validate_face(
+            "venho_hotel", "linh_an", image, provider="openai",
+            reference_image_paths=[missing_ref],
+        )
+
+
+def test_face_validator_no_reference_images_keeps_old_behavior(tmp_path, monkeypatch):
+    image = tmp_path / "linh_an_provider.png"
+    image.write_bytes(b"fake-face-image")
+    calls = {}
+
+    class FakeClient:
+        def __init__(self, image_provider="openai", temperature=0.0):
+            pass
+
+        def analyze_image(self, image_path, system_prompt):
+            calls["prompt"] = system_prompt
+            return {
+                "gates": [
+                    {"gate": "identity_structure", "passed": True, "reason": "ok", "evidence": ""},
+                    {"gate": "eye_ratio", "passed": True, "reason": "ok", "evidence": ""},
+                    {"gate": "forbidden_traits", "passed": True, "reason": "ok", "evidence": ""},
+                ],
+                "weighted_scores": {
+                    "facial_shape": 90, "eyes": 88, "hair": 87, "expression": 86, "technical_quality": 85,
+                },
+                "notes": [],
+            }
+
+        def analyze_images(self, image_paths, system_prompt):
+            raise AssertionError("should not be called when reference_image_paths is None")
+
+    monkeypatch.setattr("validator_studio.face_validator.VisionClient", FakeClient)
+    report = validate_face("venho_hotel", "linh_an", image, provider="openai")
+    assert "REFERENCE IMAGES" not in calls["prompt"]
+    assert report.kill_switch.triggered is False
 
 
 def test_cli_validate_face_command(tmp_path):

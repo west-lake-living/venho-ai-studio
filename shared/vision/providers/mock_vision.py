@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
+from typing import Any, Sequence
 
 
 MOCK_OBSERVATION = {
@@ -40,6 +40,11 @@ class MockVisionProvider:
         self.temperature = temperature
 
     def analyze(self, image_path: Path, system_prompt: str) -> dict[str, Any]:
+        return dict(MOCK_OBSERVATION)
+
+    def analyze_many(
+        self, image_paths: Sequence[Path], system_prompt: str, text_prompt: str = ""
+    ) -> dict[str, Any]:
         return dict(MOCK_OBSERVATION)
 
     def synthesize(self, system_prompt: str, user_content: str) -> list[dict[str, Any]]:

@@ -32,8 +32,9 @@ def run_image_validation(
     prompt_path: Optional[Path] = None,
     provider: str = "mock",
     samples: Optional[int] = None,
+    scenario_profile_id: Optional[str] = None,
 ) -> dict[str, Path]:
-    report = validate_image(project, subject, image_path, prompt_path, provider, samples)
+    report = validate_image(project, subject, image_path, prompt_path, provider, samples, scenario_profile_id)
     reports_dir, manifest_path = _output_paths(project)
     paths = write_report(report, reports_dir, _report_id("image", subject, report.artifact_ref.hash))
     update_manifest(manifest_path, report, paths)
@@ -63,8 +64,9 @@ def run_face_validation(
     subject: str,
     image_path: Path,
     provider: str = "mock",
+    reference_image_paths: Optional[list[Path]] = None,
 ) -> dict[str, Path]:
-    report = validate_face(project, subject, image_path, provider)
+    report = validate_face(project, subject, image_path, provider, reference_image_paths)
     reports_dir, manifest_path = _output_paths(project)
     paths = write_report(report, reports_dir, _report_id("face", subject, report.artifact_ref.hash))
     update_manifest(manifest_path, report, paths)

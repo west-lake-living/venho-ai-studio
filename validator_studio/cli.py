@@ -59,9 +59,10 @@ def image_cmd(
     prompt: Optional[Path] = typer.Option(None, "--prompt"),
     provider: str = typer.Option("mock", "--provider"),
     samples: Optional[int] = typer.Option(None, "--samples"),
+    scenario_profile_id: Optional[str] = typer.Option(None, "--scenario-profile-id"),
 ) -> None:
     """Validate generated image artifact against DNA and optional prompt.json."""
-    _print_paths(run_image_validation(project, subject, image, prompt, provider, samples))
+    _print_paths(run_image_validation(project, subject, image, prompt, provider, samples, scenario_profile_id))
 
 
 @app.command("prompt")
@@ -92,9 +93,10 @@ def face_cmd(
     subject: str = typer.Option(..., "--subject", "-s"),
     image: Path = typer.Option(..., "--image", "-i"),
     provider: str = typer.Option("mock", "--provider"),
+    reference: Optional[list[Path]] = typer.Option(None, "--reference", help="Approved reference image(s) for direct comparison"),
 ) -> None:
     """Validate fictional character image against Face DNA and rubric 07F."""
-    _print_paths(run_face_validation(project, subject, image, provider))
+    _print_paths(run_face_validation(project, subject, image, provider, reference))
 
 
 @app.command("content")

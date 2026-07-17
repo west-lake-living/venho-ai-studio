@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 from shared.vision.client import VisionClient
 from shared.vision.structured import extract_json
@@ -101,7 +101,10 @@ def _assert_face_observation_contract(payload: Any, rubric: dict) -> None:
         raise ObservationSchemaError("Face weighted_scores must use 0-100 scale, not 0-1 rubric weights")
 
 
-def _build_face_observe_prompt(dna: dict, rubric: dict) -> str:
+REFERENCE_LABELS = ["B3 Hero (primary)", "A2 Front", "C Left Profile", "D Right Profile"]
+
+
+def _build_face_observe_prompt(dna: dict, rubric: dict, reference_count: int = 0) -> str:
     prompt_path = BASE_DIR / "validator_studio" / "prompts" / "observe_face_against_dna.md"
     base_prompt = prompt_path.read_text(encoding="utf-8")
     payload = {
@@ -114,19 +117,46 @@ def _build_face_observe_prompt(dna: dict, rubric: dict) -> str:
         },
         "rubric_07f": rubric,
     }
+    reference_block = ""
+    if reference_count:
+        labels = REFERENCE_LABELS[:reference_count]
+        labelled = ", ".join(f"image {i + 2} = {label}" for i, label in enumerate(labels))
+        reference_block = (
+            "\nREFERENCE IMAGES: image 1 is the generated candidate to be judged. "
+            f"The remaining images are approved reference photos of the same fictional character "
+            f"at different angles ({labelled}). "
+            "Judge identity_structure and eye_ratio by directly comparing the candidate against these "
+            "reference images, not only against the text Face DNA below. "
+            "The text Face DNA and rubric still define what to look for and how forbidden_traits is judged.\n"
+        )
     return (
-        f"{base_prompt}\n\n"
+        f"{base_prompt}\n"
+        f"{reference_block}\n"
         "VALIDATION INPUT JSON:\n"
         f"{json.dumps(payload, ensure_ascii=False, indent=2)}\n\n"
         "Hard rules: fictional character only, no real-person identification, no celebrity matching, grounding off."
     )
 
 
-def _observe_face(image_path: Path, dna: dict, rubric: dict, provider: str) -> FaceValidationObservation:
+def _observe_face(
+    image_path: Path,
+    dna: dict,
+    rubric: dict,
+    provider: str,
+    reference_image_paths: Optional[list[Path]] = None,
+) -> FaceValidationObservation:
     if provider == "mock":
         return _mock_observe_face(image_path, rubric)
+    reference_image_paths = reference_image_paths or []
+    for reference_path in reference_image_paths:
+        if not reference_path.exists():
+            raise FileNotFoundError(f"Face validator reference image not found: {reference_path}")
     client = VisionClient(image_provider=provider, temperature=0.0)
-    response = client.analyze_image(image_path, _build_face_observe_prompt(dna, rubric))
+    prompt = _build_face_observe_prompt(dna, rubric, reference_count=len(reference_image_paths))
+    if reference_image_paths:
+        response = client.analyze_images([image_path, *reference_image_paths], prompt)
+    else:
+        response = client.analyze_image(image_path, prompt)
     payload = response if isinstance(response, dict) and "gates" in response else extract_json(str(response))
     _assert_face_observation_contract(payload, rubric)
     observation = FaceValidationObservation.model_validate(payload)
@@ -135,6 +165,7 @@ def _observe_face(image_path: Path, dna: dict, rubric: dict, provider: str) -> F
             *observation.notes,
             f"{provider} face observation; grounding/web search disabled by prompt contract",
             "no real-person or celebrity matching requested",
+            *([f"compared against {len(reference_image_paths)} approved reference image(s)"] if reference_image_paths else []),
         ]
     })
 
@@ -144,11 +175,12 @@ def validate_face(
     subject: str,
     image_path: Path,
     provider: str = "mock",
+    reference_image_paths: Optional[list[Path]] = None,
 ) -> ValidationReport:
     dna_path = find_dna_path(project, subject)
     dna = load_json(dna_path)
     rubric = _load_face_rubric(project)
-    observation = _observe_face(image_path, dna, rubric, provider)
+    observation = _observe_face(image_path, dna, rubric, provider, reference_image_paths)
     score = score_face_observation(observation, rubric)
     return ValidationReport(
         project=project,
