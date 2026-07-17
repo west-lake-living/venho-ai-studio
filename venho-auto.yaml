@@ -1,0 +1,35 @@
+schema_version: 1
+project_id: venho-ai-studio
+display_name: "VENHO AI Studio (Knowledge/Prompt/Validator/Automation/Content/Video/Publishing/Analytics/Agent Studio)"
+repository:
+  default_branch: main
+  require_clean_base: true
+  commit_mode: after_pass
+  push_mode: never
+runtime:
+  kind: python
+  required_versions: {}
+scope:
+  default_allow: ["knowledge_studio/**", "prompt_studio/**", "validator_studio/**", "automation_studio/**", "content_studio/**", "video_studio/**", "publishing_gateway/**", "analytics_feedback/**", "agent_studio/**", "core/**", "shared/**", "tests/**"]
+  always_deny: [".env", "data/**", "output/**"]
+  protected_require_human: ["pyproject.toml", "setup.sh"]
+verification:
+  commands:
+    - id: unit
+      argv: ["python3", "-m", "pytest", "-q"]
+      timeout_seconds: 1200
+      required: true
+      order: 10
+limits:
+  max_changed_files: 20
+  max_diff_lines: 1000
+  max_repairs_per_task: 3
+  max_agent_turns_per_attempt: 15
+  task_timeout_seconds: 1800
+  run_timeout_seconds: 21600
+  run_budget_usd: 20
+  task_budget_usd: 5
+agents:
+  pm_planner: {model: "gpt-5.6-sol", profile: "pm_readonly"}
+  pm_reviewer: {model: "gpt-5.6-sol", profile: "pm_readonly"}
+  developer: {model: "sonnet-4.5", profile: "dev_bounded"}
