@@ -1,0 +1,36 @@
+# Ven Hồ Hotel — West Lake (Hồ Tây) — Nguyễn Đình Thi Street Level, 2026
+# Scenario-specific overlay, merged in-memory only at validate time via
+# validator_studio/image_validator.py::_apply_scenario_overlay (does NOT touch
+# the general westlake.overrides.yaml, does NOT rewrite the persisted DNA file).
+# Source of truth for exact wording: venho-os/src/lib/studio/constants.ts
+# ENV_BLOCKS["Nguyễn Đình Thi (Street Level)"].
+# This file is curated by humans. Never overwrite via DNA regeneration.
+
+forbidden:
+  - "no green railing — street was renovated, railing is ivory-white"
+  - "no lamp posts — none are present at street level here"
+  - "no tourist postcard aesthetic — must feel like daily local life, not staged"
+  - "no generic Asian city lake — must be distinctly Ho Tay / Hanoi"
+
+allowed_imperfections:
+  - "slight Hanoi haze or atmospheric softness acceptable — authentic weather"
+  - "modest street-level elements (motorbikes, vendors) acceptable — real life"
+  - "tree shadow patterns on pavement vary by time of day — acceptable"
+
+wording_overrides:
+  distant_cityscape: "yes"
+  railing_presence: "yes"
+  path_presence: "yes"
+  lamp_post_presence: "no"
+
+notes:
+  - "Identity Block (Nguyễn Đình Thi street level, MUST USE as prefix in AI prompts):"
+  - "  West Lake (Ho Tay), Hanoi, Vietnam. Nguyen Dinh Thi lakeside street level."
+  - "  Muted blue-green calm lake water (jade-teal #4E8FA0), wide open lake view,"
+  - "  low-rise cityscape across the water. Warm tropical atmosphere, soft Hanoi haze."
+  - "  Narrow sidewalk, ivory-white metal railing (no green railing, no lamp posts),"
+  - "  mature roadside trees growing close to the railing and road, natural leafy"
+  - "  branches extending over the path, strong tree shadows on the pavement,"
+  - "  motorbikes and low-rise local frontage along the street."
+  - "  Authentic Vietnamese daily life. Real, unhurried, quietly beautiful."
+  - "Water color reference: #4E8FA0 (day) · #B8C4C8 (haze) · #C07840 (sunset)"

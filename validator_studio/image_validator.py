@@ -3,10 +3,28 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Optional
 
+from knowledge_studio.vision.overlay_merge import load_overlay, apply_overlay
+from knowledge_studio.vision.schemas.base import BaseDNA
 from validator_studio.observe_adapter import observe_image_against_dna
 from validator_studio.schemas.validation_base import ArtifactRef, ObserverInfo, PromptRef, SourceKnowledgeRef, ValidationReport
 from validator_studio.scoring import score_image_observation
 from validator_studio.utils import find_dna_path, load_json, sha256_file, validation_config
+
+
+def _apply_scenario_overlay(project: str, subject: str, scenario_profile_id: Optional[str], dna: dict) -> dict:
+    """Merge an optional per-scenario overrides.yaml onto an already-loaded DNA dict, in memory only.
+
+    Looks for config/projects/<project>/subjects/<subject>.<scenario_profile_id>.overrides.yaml.
+    Falls back silently to the unchanged dna dict when no scenario_profile_id is given or no such
+    file exists — this never touches the general <subject>.overrides.yaml or the DNA file on disk.
+    """
+    if not scenario_profile_id:
+        return dna
+    scenario_overlay = load_overlay(project, f"{subject}.{scenario_profile_id}")
+    if not scenario_overlay:
+        return dna
+    dna_obj = BaseDNA.model_validate(dna)
+    return apply_overlay(dna_obj, scenario_overlay).model_dump()
 
 
 def validate_image(
@@ -16,11 +34,13 @@ def validate_image(
     prompt_path: Optional[Path] = None,
     provider: str = "mock",
     samples: Optional[int] = None,
+    scenario_profile_id: Optional[str] = None,
 ) -> ValidationReport:
     config = validation_config()
     resolved_samples = samples or int(config.get("observe_samples", 1))
     dna_path = find_dna_path(project, subject)
     dna = load_json(dna_path)
+    dna = _apply_scenario_overlay(project, subject, scenario_profile_id, dna)
     observation = observe_image_against_dna(image_path, dna, provider=provider, samples=resolved_samples)
     score = score_image_observation(observation, config)
     prompt_ref = None
