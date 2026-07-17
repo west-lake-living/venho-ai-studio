@@ -1,5 +1,7 @@
 # VENHO AI STUDIO — MOTHER PLAN RECONCILED ROADMAP v1.4
 
+> **⚠️ SUPERSEDED BY v1.5** — `VENHO_AI_STUDIO_MOTHER_PLAN_ROADMAP_v1_5_IMPLEMENTATION_2026-07-16.md` (2026-07-16) là baseline điều hành hiện hành. v1.5 đảo thứ tự ưu tiên (Baseline/Security → Mode C Data Integrity → Image/Validator Quality → ... thay vì build Mode C C0–C7 đầy đủ trước) dựa trên bằng chứng run thật cho thấy Mode C có bug fallback schema và Face Validator thiếu gate. Giữ file này làm tài liệu lịch sử/audit trail — **không dùng làm baseline thực thi**.
+
 **Ngày chốt hiện trạng:** 2026-07-15  
 **Thay thế bản điều hành:** `VENHO_AI_STUDIO_MOTHER_PLAN_ROADMAP_v1_3_QC_PROGRESS_BASELINE.md`  
 **Phạm vi đối chiếu:** `venho-ai-studio` + `venho-os`  

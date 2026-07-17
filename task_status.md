@@ -1,8 +1,21 @@
 # VENHO AI STUDIO — Task Status
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-07-16 (AI Studio v1.5 Phase 7 QA/DOC closeout) · **Tests:** 443/443 pass · 0 API call
+**Cập nhật:** 2026-07-17 (VAL-01/LOC-01/VAL-02 real-run fixes + live QA) · **Tests:** 450/450 pass · 0 API call
 
 ---
+
+### SEC-01 / VAL-01 / LOC-01 — Real production blockers fixed (2026-07-17)
+- **SEC-01 done.** Harry đã tự rotate API key từng lộ trong chat (ngoài repo, xác nhận trực tiếp).
+- **VAL-01 fixed — root cause.** `validator_studio/prompts/observe_face_against_dna.md` chỉ đưa 1 ví dụ JSON gate (`identity_structure`), khiến LLM luôn trả về 1/3 gate dù rubric (`face_qc_rubric.yaml`) yêu cầu đủ 3 (`identity_structure`, `eye_ratio`, `forbidden_traits`) → mọi run thật bị chặn cứng bởi `Face gates mismatch`. Đã sửa prompt để yêu cầu rõ đủ 3 gate + tiêu chí chấm cho `eye_ratio`/`forbidden_traits`. Không cần sửa `face_validator.py` (logic assert đã đúng) hay OS (`requiredFaceGates` đã đúng từ trước).
+- **LOC-01 fixed — root cause.** `config/projects/venho_hotel/subjects/westlake.overrides.yaml` (curated) vẫn ghi "green lamp posts, green metal lakeshore railing" — nhưng thực tế 2026 (Harry xác nhận): đường Nguyễn Đình Thi đã cải tạo, lan can hiện là **trắng ngà, không còn cột đèn xanh**, khớp với `venho-os/src/lib/studio/constants.ts`. Đã sửa overlay + re-render DNA qua `venho vision observe --mode b --project venho_hotel --subject westlake --input assets/raw/westlake --confirm-one-subject` (10/10 cache hit, 0 API call, chỉ re-render overlay).
+- **Thêm cơ chế mới: scenario-aware overlay merge-at-validate-time.** `validator_studio/image_validator.py::validate_image` nhận thêm `scenario_profile_id` optional — nếu có file `config/projects/<project>/subjects/<subject>.<scenario_profile_id>.overrides.yaml`, merge overlay đó vào DNA **trong bộ nhớ lúc validate**, không đụng overlay chung, không ghi đè DNA JSON trên đĩa. Threaded qua `validation_pipeline.py`, CLI `--scenario-profile-id`, và `venho-os` (`ops/VenHoSocialManager/validate_generated.py`, `src/app/api/v1/studio/generate-image/route.ts` — `scenarioProfileId` dời lên tính sớm hơn, truyền vào `validationArgs`). File mới: `config/projects/venho_hotel/subjects/westlake.nguyen_dinh_thi_street_2026.overrides.yaml` (lan can trắng + mô tả cây khớp constants.ts).
+- **Live verify thật (case E1, controlled_live_matrix.json):** running front-facing / mint_green / Nguyễn Đình Thi / face ref ON → **Image/DNA score 100, verdict approve** (xác nhận LOC-01 fix hoạt động — trước đó 84.91/revise). **Face score 85, verdict revise** (KHÔNG còn lỗi `Face gates mismatch` — xác nhận VAL-01 fix hoạt động; nhưng vẫn dưới ngưỡng approve ≥90 theo `controlled_live_matrix.json`, cần cải thiện thêm — ngoài phạm vi 2 fix này).
+- **Case E5 bug fixed (2026-07-17, cùng phiên).** Root cause: `assets/Rooftop-Panorama-view.jpeg` là định dạng **MPO** (Multi Picture Object — ảnh iPhone portrait/burst chứa nhiều frame nhúng), không phải JPEG đơn thuần; `openai.images.edit` không parse được container này khi gửi làm ref-env thứ 2 → `400 invalid_image_file`. Đã convert sang PNG đơn-frame sạch (`assets/Rooftop-Panorama-view.png`, giữ nguyên file `.jpeg` gốc, không xoá) và cập nhật `ENV_REFERENCE_BY_SCENARIO["West Lake Landscape (Wide)"]` trong `constants.ts` trỏ sang file mới. **Live-verify lại E5 thành công:** HTTP 200, `referenceMode: face-and-environment`, Image/DNA score **100/approve**, Face score 83.5/revise (không lỗi contract). Lưu ý: 2 ảnh ref-env khác (`Rooftop-railing.png`, `View-Ho-room-from-inside.png`) đã kiểm tra là PNG chuẩn, không bị lỗi tương tự.
+- **VAL-02 implemented (2026-07-17, cùng phiên).** Face Validator giờ so ảnh sinh ra trực tiếp với **4 ảnh reference thật** (`B3_Hero.png` primary, `A2_Front.png`, `C_LeftProfile.png`, `D_RightProfile.png`) thay vì chỉ text DNA. Thêm `shared/vision/providers/openai_vision.py::analyze_many` (multi-image payload, N ảnh/message) + `VisionClient.analyze_images`; `face_validator.py` nhận `reference_image_paths` optional (None = hành vi cũ, không phá test); thiếu file reference → raise lỗi rõ ràng trước khi gọi API (không âm thầm fallback). `venho-os/ops/VenHoSocialManager/validate_generated.py` tự truyền 4 đường dẫn chuẩn khi có `--face` — không cần sửa `generate-image/route.ts`. Test mới: `tests/test_vision_multi_image.py` (multi-image payload) + 3 test trong `test_validator_studio.py` (dùng reference, thiếu file raise lỗi, không reference giữ hành vi cũ). **450/450 pass.**
+- **Live-verify E1 thật với reference thật:** report xác nhận `"compared against 4 approved reference image(s)"` và lý giải của model trích dẫn trực tiếp việc so sánh ảnh ("Comparison with reference images shows consistent facial shape..."). Face score = **82.5** (trước đó không có reference: 85) — **không cải thiện, thậm chí giảm nhẹ**. Đây là kết quả trung thực: điểm số giờ đáng tin cậy hơn (có căn cứ so sánh ảnh thật, không chỉ đoán theo text) nhưng bản thân model chấm khắt khe hơn ở `expression` (75) và `technical_quality` (70) khi có ảnh thật để đối chiếu — không phải bug, là giới hạn thật của chất lượng ảnh sinh ra.
+- **Kết luận:** production-ready gate (2 run approved liên tiếp/case E1–E6) **vẫn CHƯA đạt**. Đã verify 3/6 case-run (E1 x2, E5 x1), còn E2–E4/E6 chưa chạy. Face score (82.5–85, tuỳ run) vẫn dưới ngưỡng approve 90 dù đã có VAL-02 — gap còn lại là chất lượng ảnh sinh ra thật (expression/technical_quality), không còn là lỗi validator/contract.
+
+### QA/DOC — Phase 7 Closeout (2026-07-16)
 
 ## Tổng quan
 
@@ -19,7 +32,10 @@
 | M09 | Agent Studio | ✅ COMPLETE (offline planning/orchestration MVP) | 10 |
 | M10 | **VenHo OS Dashboard** (Next.js `localhost:3000/os`) | ✅ COMPLETE v3.0 — Next.js OS Stage A+B+C (2026-07-13) · Streamlit đã xóa (2026-07-13): Workbench (Mode A+B SSE), Creative Studio, Knowledge (DNA Library+Vault Search+Mode C), Reports (DNA Status+Social Log), Shared UI, 7 API routes, 0 TS error | 0 |
 
-> Tests ghi theo module-specific. Full suite = 443 (M01+M02+M03+M04+M05+M06+M07+M08+M09+shared — M10 runtime/API tests nằm ở repo `venho-os`).
+> Tests ghi theo module-specific. Full suite = 445 (443 + 2 test mới cho scenario overlay merge, 2026-07-17) — M01+M02+M03+M04+M05+M06+M07+M08+M09+shared — M10 runtime/API tests nằm ở repo `venho-os`.
+
+### OUTFIT-01 — đã hoàn thành từ trước, không cần build lại (xác nhận 2026-07-17)
+`venho-os/src/lib/studio/wardrobe-index.server.ts` đã đọc động từ `config/projects/linh_an/wardrobe_index.json` (có sẵn `mint_green` + `nike_pink_running`, `status: approved`); `constants.ts::OUTFIT_VARIANTS` chỉ còn là fallback an toàn khi thiếu file index, không phải nguồn chính. Thêm outfit mới ngày nay chỉ cần sửa `wardrobe_index.json`, không cần sửa TypeScript. Backlog item OUTFIT-01 trong roadmap v1.5 nên được đóng.
 
 ### QA/DOC — Phase 7 Closeout (2026-07-16)
 - Roadmap v1.5 chỉ có Phase 0–6; Phase 7 được map vào backlog `QA-01` + `DOC-01`.
