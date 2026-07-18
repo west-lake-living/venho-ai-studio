@@ -24,6 +24,24 @@ Phát hiện ban đầu: sau khi sửa prompt sinh ảnh (expression/technical_q
 
 **Đã xác nhận: KHÔNG PHẢI templating, mà là non-determinism thật (2026-07-17).** Thí nghiệm rẻ: chạy lại Face Validator 3 lần/ảnh trên 3 ảnh đã có sẵn (E3/E4/E6, chỉ gọi vision API chấm điểm, không tạo ảnh mới). Kết quả: E3 và E4 ổn định qua các lần lặp lại (đúng như run gốc). **E6 thì "lật kèo" thật** — cùng 1 file ảnh, cùng 4 ảnh reference, cùng code path, nhưng run gốc (qua venho-os) cho 0/reject (gates False) còn 3 lần lặp lại ngay sau đó đều cho 82.5/revise (gates True). Xác nhận: đây là non-determinism thật của GPT-4o vision-judge dù `temperature=0.0`, không phải bug code hay input khác nhau.
 
+### Full matrix v2 với sampling — kết quả cuối cùng (2026-07-18)
+
+Chạy lại toàn bộ E1–E6 với Face Validator sampling 3x mới (2 phiên, gián đoạn bởi 1 sự cố bảo mật — key OpenAI vô tình bị in ra transcript do lỗi lệnh `source <(...)`, đã yêu cầu Harry rotate key + kiểm tra billing — và 1 lần chạm billing hard limit thật của tài khoản, Harry đã xử lý xong cả 2):
+
+| Case | Image | Face (sampling 3x) | Ghi chú |
+|---|---:|---:|---|
+| E1 | 100/approve | 82.5/revise | |
+| E2 (lần 1) | 40/reject (green railing) | 83.5/revise | biến thiên ngẫu nhiên của model sinh ảnh |
+| E2 (retry) | 100/approve | **0/reject** (gates False, majority vote thật) | |
+| E3 | 100/approve | 82.5/revise | |
+| E4 | 100/approve | 82.5/revise | |
+| E5 | **40/reject** ("modern glass high-rise backdrop") | 82.83/revise | bỏ ref-env chỉ giảm bớt lỗi lẫn chi tiết sân thượng, KHÔNG giải quyết hết xu hướng model tự thêm nhà cao tầng ở góc panorama — cần siết thêm wording trong `ENV_BLOCKS` (chưa làm) |
+| E6 | 100/approve | 68/regenerate | |
+
+**Tổng kết trung thực toàn phiên (~13 run thật tính cả các vòng trước):** Face score **chưa từng đạt ngưỡng approve ≥90 dù chỉ 1 lần**, dao động 0–85 tuỳ run kể cả với cùng 1 ảnh (đã xác nhận non-determinism) và cùng sau khi có sampling 3x. Image/DNA validator giờ đáng tin cậy hơn nhiều (100/approve phần lớn, đúng khi reject — lamp post, high-rise, railing đều là lỗi thật được bắt đúng).
+
+**Khuyến nghị cần Harry quyết định:** ngưỡng `face_identity_min: 90` trong `controlled_live_matrix.json` có thể không thực tế với khả năng hiện tại của gpt-image-2 + rubric 07F hiện có — sau ~13 run thật, chưa run nào chạm 90. Cần cân nhắc: (a) hạ ngưỡng xuống mức thực tế hơn dựa trên dữ liệu thật (vd 80-85), (b) đầu tư sâu hơn vào face fidelity (kỹ thuật khác ngoài prompt, vd inpainting/face-swap), hoặc (c) chấp nhận range hiện tại là "good enough" và định nghĩa lại production-ready. Đây là quyết định business/threshold, không phải bug — tôi không tự ý đổi ngưỡng.
+
 **Đã fix (2026-07-17, commit `239e998` venho-ai-studio + `741f79d` venho-os):** thêm sampling — `validate_face()`/`_observe_face()` nhận tham số `samples` (mặc định 1, không đổi hành vi cũ); khi >1, gọi vision API nhiều lần và merge bằng `_merge_face_samples()`: majority-vote từng gate, trung bình từng weighted score — theo đúng pattern đã có sẵn cho Image Validator (`observe_adapter.py::_merge_samples`). `venho-os/validate_generated.py` mặc định `samples=3` cho mọi run thật (`--face-samples` để override). Live-verify qua CLI thật (3 lần gọi vision, không tạo ảnh mới) trên đúng ảnh E6 đã "lật kèo": sampling hoạt động đúng thiết kế, `observer.samples: 3`, note ghi rõ "aggregated from 3 vision samples". 451/451 test pass.
 
 ### GIT-01/GIT-02 — Đã commit theo nhóm scope (2026-07-17)
