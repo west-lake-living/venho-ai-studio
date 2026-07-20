@@ -3,6 +3,26 @@
   "project": "linh_an",
   "wardrobe_index": "config/projects/linh_an/wardrobe_index.json",
   "families": {
+    "cafe_girl": {
+      "schema_subject": "outfit_a_cafe",
+      "default_outfit_id": "cafe_girl_classic",
+      "outfit_ids": ["cafe_girl_classic"]
+    },
+    "west_lake_sunset": {
+      "schema_subject": "outfit_b_west_lake",
+      "default_outfit_id": "west_lake_sunset_classic",
+      "outfit_ids": ["west_lake_sunset_classic"]
+    },
+    "street_style": {
+      "schema_subject": "outfit_c_street",
+      "default_outfit_id": "street_style_classic",
+      "outfit_ids": ["street_style_classic"]
+    },
+    "business_travel": {
+      "schema_subject": "outfit_d_business",
+      "default_outfit_id": "business_travel_classic",
+      "outfit_ids": ["business_travel_classic"]
+    },
     "sport_active": {
       "schema_subject": "outfit_e_sport",
       "default_outfit_id": "mint_green",

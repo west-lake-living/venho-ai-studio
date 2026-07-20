@@ -4,7 +4,7 @@
 
 Audit completed against v1.4 reconciliation and v1.5 implementation roadmap.
 
-- AI Studio: `python3 -m pytest -q` → 443/443 pass, 0 API call
+- AI Studio: `PYTHONPATH=. /usr/bin/python3 -m pytest -q` → 454/454 pass, 0 API call (updated 2026-07-20)
 - VenHo OS: `npm test -- --run` → 65/65 pass
 - VenHo OS: `npm run lint`, `npx tsc --noEmit`, `npm run build` pass
 - Secret pattern scan over tracked files in both repos: no OpenAI key/client secret pattern found
@@ -14,7 +14,7 @@ Audit completed against v1.4 reconciliation and v1.5 implementation roadmap.
 1. `task_status.md` still contained stale “uncommitted”, `430/430`, `424/424`, and Streamlit-runtime wording.
    - Fixed by marking old Streamlit/M10 details as historical/superseded.
    - Updated current M10 source of truth to `venho-os`.
-   - Updated current verification to AI Studio 443/443 and OS 65/65.
+   - Updated current verification to AI Studio 454/454 and OS 65/65.
 
 2. `task_memory.md` stopped at Phase 2 and still implied older M09 missing-knowledge behavior.
    - Added Phase 3–7 memory entries.

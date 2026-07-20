@@ -9,6 +9,34 @@
   },
   "families": [
     {
+      "family_key": "cafe_girl",
+      "family_label": "A — Cafe Girl",
+      "default_outfit_id": "cafe_girl_classic",
+      "status": "approved",
+      "outfit_ids": ["cafe_girl_classic"]
+    },
+    {
+      "family_key": "west_lake_sunset",
+      "family_label": "B — West Lake Sunset",
+      "default_outfit_id": "west_lake_sunset_classic",
+      "status": "approved",
+      "outfit_ids": ["west_lake_sunset_classic"]
+    },
+    {
+      "family_key": "street_style",
+      "family_label": "C — Street Style",
+      "default_outfit_id": "street_style_classic",
+      "status": "approved",
+      "outfit_ids": ["street_style_classic"]
+    },
+    {
+      "family_key": "business_travel",
+      "family_label": "D — Business Travel",
+      "default_outfit_id": "business_travel_classic",
+      "status": "approved",
+      "outfit_ids": ["business_travel_classic"]
+    },
+    {
       "family_key": "sport_active",
       "family_label": "E — Sport & Active",
       "default_outfit_id": "mint_green",
@@ -17,6 +45,86 @@
     }
   ],
   "outfits": [
+    {
+      "outfit_id": "cafe_girl_classic",
+      "family_key": "cafe_girl",
+      "display_label": "Cafe Girl Classic",
+      "status": "approved",
+      "schema_subject": "outfit_a_cafe",
+      "source_kind": "manual_seed",
+      "source_images_dir": null,
+      "dna_artifacts": [],
+      "description": "cream knit top, beige A-line skirt, small luxury handbag",
+      "positive_lock": "Linh An wears a soft cafe lifestyle outfit: cream knit top, beige A-line skirt, and a small luxury handbag.",
+      "negative_lock": [
+        "no running outfit",
+        "no sport shorts",
+        "no sport tank top",
+        "no gym styling"
+      ],
+      "default": true,
+      "notes": "Restored baseline curated outfit so Dashboard keeps non-sport wardrobe choices before source-backed DNA is added."
+    },
+    {
+      "outfit_id": "west_lake_sunset_classic",
+      "family_key": "west_lake_sunset",
+      "display_label": "West Lake Sunset Classic",
+      "status": "approved",
+      "schema_subject": "outfit_b_west_lake",
+      "source_kind": "manual_seed",
+      "source_images_dir": null,
+      "dna_artifacts": [],
+      "description": "flowing white dress, minimal gold jewelry",
+      "positive_lock": "Linh An wears a graceful West Lake sunset outfit: flowing white dress with minimal gold jewelry.",
+      "negative_lock": [
+        "no running outfit",
+        "no sport shorts",
+        "no sport tank top",
+        "no gym styling"
+      ],
+      "default": true,
+      "notes": "Restored baseline curated outfit so Dashboard keeps non-sport wardrobe choices before source-backed DNA is added."
+    },
+    {
+      "outfit_id": "street_style_classic",
+      "family_key": "street_style",
+      "display_label": "Street Style Classic",
+      "status": "approved",
+      "schema_subject": "outfit_c_street",
+      "source_kind": "manual_seed",
+      "source_images_dir": null,
+      "dna_artifacts": [],
+      "description": "white button-up shirt, high-waist trousers, denim jacket",
+      "positive_lock": "Linh An wears a polished local street style outfit: white button-up shirt, high-waist trousers, and denim jacket.",
+      "negative_lock": [
+        "no running outfit",
+        "no sport shorts",
+        "no sport tank top",
+        "no gym styling"
+      ],
+      "default": true,
+      "notes": "Restored baseline curated outfit so Dashboard keeps non-sport wardrobe choices before source-backed DNA is added."
+    },
+    {
+      "outfit_id": "business_travel_classic",
+      "family_key": "business_travel",
+      "display_label": "Business Travel Classic",
+      "status": "approved",
+      "schema_subject": "outfit_d_business",
+      "source_kind": "manual_seed",
+      "source_images_dir": null,
+      "dna_artifacts": [],
+      "description": "light beige blazer, white blouse, elegant trousers",
+      "positive_lock": "Linh An wears an elegant business travel outfit: light beige blazer, white blouse, and elegant trousers.",
+      "negative_lock": [
+        "no running outfit",
+        "no sport shorts",
+        "no sport tank top",
+        "no gym styling"
+      ],
+      "default": true,
+      "notes": "Restored baseline curated outfit so Dashboard keeps non-sport wardrobe choices before source-backed DNA is added."
+    },
     {
       "outfit_id": "mint_green",
       "family_key": "sport_active",
