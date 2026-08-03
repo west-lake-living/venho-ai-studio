@@ -1,0 +1,16 @@
+version: 2
+timezone: Asia/Ho_Chi_Minh
+publish_time: "09:00"
+# Fixed 4 posts/week. TR-D2 (v3.1): Harry locked this in directly -- the
+# v1 ramp (A: 3/week -> B: 5/week -> C: 7/week) is removed. Going from the
+# prior real cadence (3/week) to 4/week is only +33%, so it does not need
+# a staged rollout the way 3 -> 7 would have.
+slots:
+  - { day: monday,    type: regular, lane: regular }
+  - { day: wednesday, type: regular, lane: regular }
+  - { day: friday,    type: regular, lane: regular }
+  - { day: saturday,  type: special, lane: special }
+weekly_blog_seo:
+  day: tuesday
+  target: website
+slot_creation_horizon_days: 14

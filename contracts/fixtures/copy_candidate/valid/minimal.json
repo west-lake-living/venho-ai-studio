@@ -1,0 +1,15 @@
+{
+  "id": "copy-001",
+  "creative_brief_id": "brief-001",
+  "platform": "facebook",
+  "language": "vi",
+  "angle_type": "emotional",
+  "hook": "Sáng Hồ Tây bắt đầu rất chậm.",
+  "body": "Ven Hồ Hotel giữ nhịp nghỉ nhẹ nhàng cạnh hồ.",
+  "cta": "Xem phòng phù hợp trên website.",
+  "hashtags": ["#VenHoHotel", "#HoTay"],
+  "alt_text": "Khung cảnh Hồ Tây buổi sáng.",
+  "claims": ["12 phòng boutique"],
+  "scene_summary": {"location": "west_lake", "time_of_day": "morning", "entities": ["west_lake"], "mood": "calm"},
+  "rubric": {"total": 9.1}
+}

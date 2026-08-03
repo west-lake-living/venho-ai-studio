@@ -1,0 +1,19 @@
+version: 1
+forbidden_trend_categories:
+  - politics_governance
+  - disaster_accident
+  - death_tragedy
+  - crime_scandal
+  - celebrity_personal
+  - health_crisis
+  - religion_ethnicity
+  - competitor_negative
+  - social_conflict
+required_intersection:
+  - travel_accommodation
+  - hanoi_westlake_local
+  - food_culinary
+  - seasonal_weather_nature
+  - culture_festival_positive
+min_relevance_score: 0.60
+human_approval: mandatory

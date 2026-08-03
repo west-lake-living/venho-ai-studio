@@ -1,0 +1,12 @@
+version: 1
+events:
+  runway_critical: { channel: telegram, severity: warning }
+  runway_empty: { channel: telegram, severity: critical }
+  evergreen_used: { channel: telegram, severity: info }
+  slot_missed: { channel: telegram, severity: critical }
+  fact_expired_revoked: { channel: telegram, severity: warning }
+  publication_published: { channel: telegram, severity: info }
+  publication_unknown: { channel: telegram, severity: warning }
+  publication_needs_operator: { channel: telegram, severity: critical }
+  heartbeat_missed: { channel: telegram, severity: critical }
+  budget_threshold_crossed: { channel: telegram, severity: warning }

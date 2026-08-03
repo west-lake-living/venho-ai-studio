@@ -1,0 +1,15 @@
+version: 1
+location:
+  name: "West Lake, Hanoi"
+  lat: 21.0583
+  lon: 105.8200
+horizon_hours: 72
+expiry_hours: 48
+scan_time: "06:00"
+scenario_mapping:
+  morning_mist: [venho_lake_view_room_sunrise, venho_rooftop_sunrise]
+  clear_sunrise: [venho_lake_view_room_sunrise, venho_rooftop_sunrise]
+  golden_sunset: [venho_rooftop_sunset]
+  rain: [venho_lobby_cozy]
+  heat: [venho_rooftop_shade]
+  cold_snap: [venho_lobby_cozy]

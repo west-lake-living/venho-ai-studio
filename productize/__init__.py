@@ -1,0 +1,2 @@
+"""Productized hotel skills."""
+

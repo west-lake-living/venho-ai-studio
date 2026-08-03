@@ -7,7 +7,7 @@ from analytics_feedback.schemas.delivery_receipt_ref import DeliveryReceiptRef
 from analytics_feedback.utils.time_windows import add_window
 
 
-DEFAULT_WINDOWS = ["24h", "72h", "7d", "14d"]
+DEFAULT_WINDOWS = ["1h", "24h", "72h", "7d", "28d"]
 
 
 @dataclass(frozen=True)

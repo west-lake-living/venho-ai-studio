@@ -1,0 +1,2 @@
+"""Shared budget ledger."""
+

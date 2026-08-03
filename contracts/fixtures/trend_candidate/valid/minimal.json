@@ -1,0 +1,13 @@
+{
+  "id": "trend-001",
+  "title": "Mùa sen Hồ Tây",
+  "domain": "social_trend",
+  "source_uri": "https://example.com/rss/item",
+  "collected_at": "2026-08-03T09:00:00+07:00",
+  "geographic": "westlake",
+  "thematic": "seasonal_weather",
+  "actionability": "direct",
+  "brand_safety_category": "seasonal_weather_nature",
+  "relevance_score": 0.72,
+  "status": "needs_human_approval"
+}

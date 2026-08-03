@@ -1,0 +1,8 @@
+version: 1
+relevance_dimensions:
+  geographic: {westlake: 1.0, hanoi: 0.7, vietnam: 0.4, global: 0.1}
+  thematic: {travel_stay: 1.0, food_local: 0.8, lifestyle_culture: 0.6, seasonal_weather: 0.5, unrelated: 0.0}
+  actionability: {direct: 1.0, adjacent: 0.6, stretch: 0.2}
+scoring: weighted_product
+min_score_to_vault: 0.35
+min_score_to_saturday_lane: 0.60

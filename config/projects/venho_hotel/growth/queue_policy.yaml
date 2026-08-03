@@ -1,0 +1,12 @@
+version: 2
+# Runway measured in slots (not days) since cadence is now fixed at 4
+# slots/week rather than a variable daily count (v3.1 PB-003).
+runway_slots:
+  healthy_min: 6
+  warning_min: 4
+  critical_min: 2
+alert_on:
+  critical: telegram
+  empty: telegram
+evergreen_reuse_cooldown_days: 90
+evergreen_pool_target_size: [8, 10]

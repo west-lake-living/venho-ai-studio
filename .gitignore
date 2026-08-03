@@ -32,3 +32,5 @@ output/
 # IDE
 .vscode/
 .idea/
+.claude/
+.obsidian/

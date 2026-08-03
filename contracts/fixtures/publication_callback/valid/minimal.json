@@ -1,0 +1,10 @@
+{
+  "publication_id": "publication-001",
+  "idempotency_key": "idem-001",
+  "platform": "facebook",
+  "status": "PUBLISHED",
+  "platform_post_id": "fb-001",
+  "permalink": "https://facebook.com/post/001",
+  "published_at": "2026-08-04T09:01:00+07:00",
+  "error_code": null
+}

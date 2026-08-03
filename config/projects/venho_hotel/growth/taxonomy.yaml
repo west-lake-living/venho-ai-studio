@@ -1,0 +1,6 @@
+version: 1
+audience_segments: [couple, family, business, solo, local_staycation]
+funnel_stages: [awareness, consideration, conversion, retention]
+content_angles: [local_experience, room_comfort, trust_proof, seasonal_context]
+formats: [feed_4_5, square_1_1, story_9_16]
+cta_types: [booking_link, dm, phone, none]

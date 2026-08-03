@@ -13,6 +13,7 @@ dependencies = [
     "pydantic>=2.0",
     "typer>=0.12",
     "pyyaml>=6.0",
+    "jsonschema>=4.0",
     "pillow>=10.0",
     "python-dotenv>=1.0",
 ]
@@ -26,10 +27,13 @@ venho-video = "video_studio.cli:app"
 venho-publish = "publishing_gateway.cli:app"
 venho-analytics = "analytics_feedback.cli:app"
 venho-agent = "agent_studio.cli:app"
+venho-research = "research_engine.cli:app"
+venho-trend = "research_engine.trend_radar.cli:app"
+venho-growth = "growth_orchestrator.cli:app"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["agent_studio*", "analytics_feedback*", "app*", "automation_studio*", "content_studio*", "core*", "dashboard*", "knowledge_studio*", "prompt_studio*", "providers*", "publishing_gateway*", "shared*", "validator_studio*", "video_studio*"]
+include = ["agent_studio*", "analytics_feedback*", "app*", "automation_studio*", "content_studio*", "controlled_rollout*", "core*", "dashboard*", "growth_orchestrator*", "image_studio_runtime*", "infra*", "knowledge_studio*", "productize*", "prompt_studio*", "providers*", "publishing_gateway*", "research_engine*", "shared*", "strategy_memory*", "validator_studio*", "video_studio*"]
 
 [tool.setuptools.package-data]
 "knowledge_studio.vision.prompts" = ["*.md"]

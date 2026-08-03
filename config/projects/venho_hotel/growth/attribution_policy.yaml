@@ -1,0 +1,5 @@
+version: 1
+direct_window_hours: 72
+assisted_window_days: 14
+dedupe_fields: [normalized_contact_hash, stay_date, guest_count]
+pseudonymization: sha256

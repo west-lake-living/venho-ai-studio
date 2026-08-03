@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0",
+  "id": "brief-001",
+  "version": 1,
+  "brand_id": "venho-hotel",
+  "campaign_id": "campaign-001",
+  "objective": "qualified_inquiry",
+  "platforms": ["facebook", "instagram"],
+  "audience_segment": "couple",
+  "funnel_stage": "consideration",
+  "single_minded_message": "Một buổi sáng chậm bên Hồ Tây.",
+  "proof_points": [{"text": "12 phòng boutique", "fact_key": "hotel.room_count"}],
+  "cta": {"type": "booking_link", "destination_key": "hotel.website", "strength": "soft"},
+  "visual": {"scenario_key": "venho_rooftop_sunrise", "required_entities": ["west_lake"], "forbidden_entities": ["bedroom_window"], "target_formats": ["feed_4_5"]},
+  "lane": "daily",
+  "status": "LOCKED",
+  "checksum": "sha256:test"
+}

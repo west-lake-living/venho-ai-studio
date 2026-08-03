@@ -1,0 +1,10 @@
+{
+  "rs_id": "RS-2026-08-0044",
+  "type": "weather",
+  "domain": "weather_signal",
+  "evidence_level": "R2-T",
+  "forecast_date": "2026-08-06",
+  "condition": "morning_mist",
+  "expires_at": "2026-08-07T00:00:00+07:00",
+  "fact_key": "hotel.weather_today"
+}

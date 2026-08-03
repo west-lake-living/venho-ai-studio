@@ -1,0 +1,6 @@
+version: 1
+levels: [R0, R1, R2, R2-T, R3, R4]
+citable_levels: [R3]
+context_only_levels: [R2, R2-T]
+requires_expiry: [R2, R2-T]
+auto_promotion_allowed: false

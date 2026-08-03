@@ -1,0 +1,11 @@
+{
+  "id": "package-001",
+  "brand_id": "venho-hotel",
+  "campaign_id": "campaign-001",
+  "creative_brief_id": "brief-001",
+  "state": "READY_FOR_REVIEW",
+  "copy_version_ids": ["copy-001"],
+  "asset_version_ids": ["asset-001"],
+  "validation_snapshot_id": "validation-001",
+  "approval_request_id": null
+}

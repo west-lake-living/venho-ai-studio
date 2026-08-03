@@ -1,0 +1,10 @@
+version: 1
+domains:
+  guest_voice: {cadence: weekly, default_expiry_days: 180}
+  competitor: {cadence: biweekly, default_expiry_days: 90}
+  local_intel: {cadence: monthly, default_expiry_days: 180}
+  platform_trend: {cadence: monthly, default_expiry_days: 90}
+  brand_visual: {cadence: monthly, default_expiry_days: 90}
+  market_pricing: {cadence: monthly, default_expiry_days: 120}
+  social_trend: {cadence: daily, default_expiry_days: 7}
+  local_events: {cadence: twice_weekly, default_expiry_days: event_end}

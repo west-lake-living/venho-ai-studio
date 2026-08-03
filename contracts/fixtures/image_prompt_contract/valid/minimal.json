@@ -1,0 +1,7 @@
+{
+  "schema_version": "1.0",
+  "creative_brief_id": "brief-001",
+  "scenario_key": "venho_rooftop_sunrise",
+  "base_prompt": "Photorealistic West Lake morning from Ven Ho Hotel.",
+  "target_formats": ["feed_4_5"]
+}

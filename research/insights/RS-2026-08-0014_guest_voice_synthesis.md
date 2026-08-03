@@ -1,0 +1,17 @@
+---
+rs_id: RS-2026-08-0014
+type: synthesis
+domain: guest_voice
+evidence_level: R2
+status: reviewed
+collected_at: 2026-08-03
+source_uri:
+confidence: 0.86
+expires_at: 2026-11-03
+promoted_fact_keys: []
+related_briefs: []
+verified_by_human: false
+tags: [westlake, boutique]
+---
+
+Guests respond to concrete boutique-hotel proof points better than generic luxury language.

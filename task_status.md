@@ -1,6 +1,186 @@
 # VENHO AI STUDIO — Task Status
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-07-17 (VAL-01/LOC-01/VAL-02/JOB-01/MAN-01 fixes + full E1–E6 controlled matrix live QA) · **Tests:** 450/450 pass (AI Studio) · 78/78 pass (venho-os) · 0 API call trong test
+**Cập nhật:** 2026-08-03 (Growth Agent v3.1 delta — cadence 4/tuần + weather + infra) · **Tests:** 549/549 pass (AI Studio) · 78/78 pass (venho-os) · 0 API call trong test
+
+---
+
+### Growth Agent v3.1 — Delta so với v3.0 (cadence, weather, infra) (2026-08-03)
+
+**Status: DONE (phần code/test) · Vật lý (Mac Mini thật, API key thật) là việc của Harry, ghi rõ bên dưới**
+
+Đọc `docs/Content agent/VENHO_GROWTH_AGENT_MASTER_PLAN_v3_1_CONSOLIDATED.md` và so khớp với những gì Codex đã build cho v3.0 (Phase 1–8). Phần lớn kiến trúc v3.1 đã có sẵn trong code cũ (contracts, jobs, budget, facts, image runtime, approval, scheduler, analytics, strategy memory, controlled rollout, và cả `research_engine/trend_radar/` với brand safety gate + relevance scoring + 5 collector stub). Delta thực sự cần build:
+
+- **Cadence 4 bài/tuần (TR-D2, PB-001):** `config/.../growth/cadence_policy.yaml` v1→v2 — bỏ ramp A(3)→B(5)→C(7), cố định T2/T4/T6 (regular) + T7 (special) + blog SEO thứ 3. `growth_orchestrator/domain/publishing_slot.py` — state machine `OPEN→DRAFT_ASSIGNED→PENDING_APPROVAL→FILLED→DISPATCHED→COMPLETED` + nhánh `EVERGREEN_FALLBACK` + `MISSED` (chỉ hợp lệ sau khi evergreen cạn — có assert riêng). `growth_orchestrator/application/manage_slots.py` — sinh slot xác định (deterministic, idempotent) trước 14 ngày từ cadence policy.
+- **Runway theo slot, không theo ngày (PB-003):** `queue_policy.yaml` đổi `runway_days`→`runway_slots` (healthy≥6, warning 4–5, critical 2–3, empty 0–1) theo đúng bảng §9.2; `manage_queue.runway_status()` cập nhật theo, giữ fallback đọc `runway_days` cũ nếu còn nơi nào dùng.
+- **Special lane T3→T7, 4 loại có fallback bắt buộc (PB-008):** `growth_orchestrator/application/special_lane.py` — `select_special_lane_candidate()` ưu tiên seasonal_nature > cultural_event (chỉ nhận nếu `verified_by_human`) > lifestyle_trend > feature_story (fallback bắt buộc, raise nếu không có); `special_lane_timeline_state()` — cutoff cứng T6 20:00 rơi về `fallback_evergreen` nếu chưa duyệt.
+- **Pre-flight 08:45 (PB-005):** `growth_orchestrator/application/preflight.py::run_preflight_check()` — kiểm fact hết hạn, approval còn hiệu lực, asset còn truy cập (hash khớp), event còn `verified_by_human` và chưa qua `event_end`, weather R2-T còn hạn. Trả về danh sách lý do fail cụ thể, không chỉ true/false.
+- **Weather signal — R2-T, không bao giờ là claim (§5.5, §6.6):** `research_engine/trend_radar/domain/weather_signal.py::WeatherSignal` — field `fact_key` khóa cứng `Literal[None]` (Pydantic tự raise nếu ai cố gán giá trị khác None — enforce ở tầng type, không chỉ ở validator). `contracts/weather_signal.schema.json` cũng khóa `fact_key: const null`. `research_engine/trend_radar/application/scan_weather.py::scan_weather()` — `expires_at` luôn tính từ `weather_policy.yaml["expiry_hours"]` (24–48h), **không bao giờ lấy từ provider** (chống provider trả về TTL dài hơn policy cho phép). Collector `weather_api.py` là stub rỗng như 5 collector khác đã có.
+- **Tavily/Exa collector (TR-002):** `tavily_search.py`, `exa_search.py` — stub rỗng cùng pattern với `news_rss.py`/`google_trends.py` đã có, feature-flag off, chờ API key thật.
+- **`shared/notify/telegram.py` (IN-D4):** `MockTelegramNotifier` (mặc định trong test) + `TelegramNotifier` thật (cần `bot_token` + `http_post` tiêm vào, chưa gọi network thật ở đâu). `send_alert()` đọc `shared/notify/alert_policy.yaml` để map event→severity/channel, raise nếu event không có trong registry (chống gõ sai tên event).
+- **`publishing_gateway/adapters/zalo_oa.py` (IN-D5):** mirror hệt `make_gateway.py` — `enabled=False` mặc định trả `DISABLED`, bật flag mới trả `GATEWAY_ACCEPTED` (không phải `PUBLISHED`).
+- **`infra/` package mới hoàn toàn (Phần 10, IN-001/002/003):**
+  - `heartbeat.py` — `build_heartbeat_payload()` + `send_heartbeat()` (nhận `http_post` tiêm vào, không tự gọi network) + `is_heartbeat_stale()`.
+  - `deadman_config.yaml` — ngưỡng heartbeat 5 phút/stale 15 phút, mốc dispatch check 09:15/09:30/10:00 đúng §9.4.
+  - `cloud_fallback/export_approved.py` — `export_approved_package()` chỉ nhận package đã `approval_status=approved`, ký HMAC-SHA256, ghi file; **không có tham số hay code path nào set `approval_status`** — bất biến bảo mật §10.4/§15.15 được enforce bằng cấu trúc hàm chứ không chỉ bằng lời hứa trong docstring. `verify_export_signature()` để bên nhận (cloud) verify trước khi replay.
+  - `backup.sh` — `sqlite3 .backup` + copy artifacts + `rclone` off-site nếu remote `venho-cloud` đã cấu hình (bỏ qua có log rõ nếu chưa).
+  - `launchd/*.plist` × 5 (research.daily, trend.scan, pipeline.worker, dashboard, dispatch) — đúng lịch trong §10.2.
+  - `setup_macmini.md` — runbook `pmset`/`launchd`/Tailscale cho Harry, không phải code, chỉ tài liệu.
+- **Contracts:** thêm `weather_signal.schema.json` + `publishing_slot.schema.json` + fixtures valid/invalid → tổng **17 schema** (đếm lại chính xác từ danh sách liệt kê §5.10 của plan — header ghi "16" nhưng liệt kê ra 17 mục, đây là lỗi đánh máy trong chính tài liệu v3.1, không phải lỗi ở đây).
+- `pyproject.toml` — thêm `infra*` vào package discovery.
+- Tests mới: `tests/test_growth_v3_1_cadence_infra.py` (31 test) — cadence/slot generation, PublishingSlot state machine (kể cả forbidden transition + MISSED-requires-evergreen-exhausted), runway theo slot, special lane 4 loại + fallback + cutoff, pre-flight (happy path + mọi lý do fail cùng lúc), weather signal không bao giờ có fact_key + expiry policy-driven, Telegram mock alert + unknown-event guard, Zalo adapter disabled/enabled, heartbeat + staleness, cloud fallback export (từ chối package chưa duyệt, ký/verify không tạo approval mới).
+
+**KHÔNG làm trong lượt này (cần Harry, ngoài phạm vi code):**
+- Mua/cấu hình Mac Mini M4 vật lý, chạy `pmset`/`launchd` thật, cài Tailscale — `infra/setup_macmini.md` là runbook, chưa có máy nào chạy nó.
+- Đăng ký + lấy API key thật: Tavily/Exa (search), Weather API, YouTube Data API, Telegram Bot Token, Zalo OA app — mọi collector/adapter vẫn ở dạng stub/mock/flag-off cho tới khi có key.
+- Cấu hình `healthchecks.io` hoặc Make.com data store làm endpoint heartbeat/cloud fallback thật.
+
+**Verify:** `python3 -m pytest -q` → 549 passed (518 prior + 31 new), 0 API call. `python3 -m compileall` sạch trên toàn bộ package đã đổi.
+
+### Growth Agent v3.0 — QC Pass on Phase 4–8 (2026-08-03)
+
+**Status: DONE**
+
+Senior QC review of the Codex-authored Phase 4–8 code (`shared/jobs` extensions, `shared/budget` extensions, `publishing_gateway/publication_registry.py` + `callback_receiver.py`/`reconciliation.py`/`adapters/make_gateway.py`, `automation_studio/approval_snapshot.py`, `controlled_rollout/`, `productize/`, `strategy_memory/`, `analytics_feedback` additions). 1 real bug fixed, covered by a new regression test in `tests/test_growth_qc_hardening.py`:
+
+- **Concurrency bug (`publishing_gateway/publication_registry.py`):** `reserve()` and `update()` did an unlocked JSON-file load → modify → save. Two concurrent callers (e.g. a retried dispatch racing an inbound webhook callback) could both read the same on-disk state before either write landed, so the second writer would silently clobber the first — defeating the exact idempotency guarantee the registry exists to provide. The Phase 4 "duplicate chaos" test (`test_duplicate_chaos_reserves_one_publication`) only calls `reserve()` sequentially in a single thread, so it never actually exercised this race. Fixed by wrapping both methods in an `fcntl.flock` exclusive lock on a sibling `.lock` file, serializing the read-modify-write across processes/threads. Added `test_publication_registry_reserve_is_race_free_under_concurrent_threads` (20 real threads via `ThreadPoolExecutor`) to prove exactly one publication survives.
+- Reviewed and found clean (no changes needed): `shared/jobs/job_store.py` extensions (heartbeat/lease-recovery/retry-requeue all remain single-atomic-statement SQLite ops, consistent with the earlier `claim()` fix), `shared/budget/ledger.py` (SQLite-backed, no cross-process race), `automation_studio/approval_snapshot.py` (pure deterministic checksum/revocation logic), `controlled_rollout/*`, `strategy_memory/*`, `analytics_feedback/attribution.py` + `metric_observation.py` + `meta_insights.py` + `research_question_generator.py` (the last already uses `shared/security.py::ensure_safe_slug()` from the Phase 1–3 QC pass — convention correctly picked up in new code).
+- `growth_orchestrator/` re-checked: still zero references from any other package (`grep -rln growth_orchestrator`), confirms it remains inert/unwired scaffolding as flagged in the prior QC pass — no new risk introduced by Phase 4–8.
+- `productize/hotel_content_engine.py` builds a path from a `project` string with no traversal guard, same pattern as the fixed `fact_key`/`rs_id` sinks — but `project` here is a deploy-time config identifier (like the existing `FactStore(project=...)` convention), not runtime-attacker-controlled input in current callers, so left as-is; worth revisiting with `ensure_safe_slug` if `project` ever becomes agent-/user-suppliable.
+- Verify: `python3 -m pytest -q` → 518 passed (517 prior + 1 new), 0 API calls. `python3 -m compileall` clean across all touched packages.
+
+### Growth Agent v3.0 — Phase 8 Controlled Rollout (2026-08-03)
+
+**Status: DONE**
+
+- Added `controlled_rollout/` with versioned golden scorecard evaluation, 90-day metrics readiness, rollout stage policy, rollback sequencing, and runbook validation.
+- Added P8 golden gate: scorecard requires versioned eval set and `>=9.3/10`; duplicate publication and empty-day gates hard-fail.
+- Added controlled rollout stages: `shadow -> pilot_25 -> pilot_50 -> pilot_100`, with human approval always required and trend lane blocked from auto-approval.
+- Added rollback rules in code: dispatch must be disabled before rollback, migrations are forward-only, compatible reads required, approved artifacts immutable.
+- Added `productize/hotel_content_engine.py` plus `.claude/skills/_productize/hotel-content-engine/SKILL.md`; verified hotel #2 runs by config only with `core_modified=False`.
+- Added docs: `docs/growth/controlled_rollout_runbook.md` and `docs/growth/eval_golden_sets.md`, covering runbook/rollback/budget/ownership.
+- Updated `pyproject.toml` package discovery for `controlled_rollout*`, `productize*`, and `strategy_memory*`.
+- Tests added: `test_growth_phase8_controlled_rollout.py`.
+- Verify: P8 tests -> 7 passed; Growth P1-P8/QC tests -> 63 passed; full `python3 -m pytest -q` -> 517 passed; compileall clean.
+
+### Growth Agent v3.0 — Phase 7 Growth Intelligence Pilot (2026-08-03)
+
+**Status: DONE**
+
+- Added `strategy_memory/` with Bayesian-smoothed QBSR pattern inference, confidence, scope, evidence, limitations, expiry, and approval-gated promotion.
+- Added `INCONCLUSIVE` handling: insufficient sample cannot become approved strategy memory.
+- Added QBSR guardrail: weekly recommendations are suppressed when candidate QBSR drops below baseline guardrail.
+- Added weekly strategy brief builder: advisory-only and `pending_approval` by default.
+- Added M08 -> Research OS loop: analytics signals create written research questions through `M08SignalBridge`.
+- Tests added: `test_growth_phase7_strategy_memory.py`.
+- Verify: P7 tests -> 6 passed; Growth P1-P7/QC tests -> 56 passed; full `python3 -m pytest -q` -> 510 passed; compileall clean.
+
+### Growth Agent v3.0 — Phase 6 Analytics + Attribution (2026-08-03)
+
+**Status: DONE**
+
+- Added M08 attribution helpers: `utm_content=publication_id`, direct/assisted/unattributed resolution, policy-driven dedupe fields, and SHA-256 contact pseudonymization.
+- Added metric observation normalization that preserves `VALUE`, `ZERO`, `NULL`, and `UNAVAILABLE` as distinct states.
+- Added source-match assertion so sample metric observations must match raw provider values.
+- Added Meta Insights provider gate: real provider remains feature-flagged off; mock adapter is default.
+- Updated collection windows to P6 set: `1h`, `24h`, `72h`, `7d`, `28d`.
+- Added M10-style content performance view builder that reads M08 snapshots/scores only.
+- Tests added: `test_growth_phase6_analytics_attribution.py`.
+- Verify: P6 tests -> 6 passed; analytics + P6 tests -> 13 passed; Growth P1-P6/QC tests -> 50 passed; full `python3 -m pytest -q` -> 504 passed; compileall clean.
+
+### Growth Agent v3.0 — Phase 5 Scheduler + Durable Ops (2026-08-03)
+
+**Status: DONE**
+
+- Extended `JobStore` with heartbeat tracking, lease extension, retryable-failure requeue, idempotency counting, and SQLite migration for existing DBs.
+- Extended `Worker` with heartbeat and recovery helpers.
+- Extended scheduler with idempotent daily dispatch enqueue and late-run alert payload.
+- Extended `BudgetLedger` with committed spend projection, override recording, and policy-driven paid-call reservation.
+- Added `BudgetPolicy` loader/evaluator for alert thresholds 70/85/100% and hard block at 100% unless manual override is recorded.
+- Added P5 exit-gate tests: duplicate trigger creates one job, restart recovers expired lease, retry matrix requeues then terminal-fails, late run alerts, budget cap blocks with override trail.
+- Tests added: `test_growth_phase5_scheduler_ops.py`.
+- Verify: P5 tests -> 5 passed; Growth P1-P5/QC tests -> 44 passed; full `python3 -m pytest -q` -> 498 passed; compileall clean.
+
+### Growth Agent v3.0 — Phase 4 Approval Exact-Versions + Reliable Publishing (2026-08-03)
+
+**Status: DONE**
+
+- Hardened M04 `approval_snapshot.py` with exact package-version checksum covering copy, asset, validation snapshot, fact versions, and brief version.
+- Added dispatch gate: any edit after approval revokes/blocks dispatch with a stable reason.
+- Added Final Review state builder for M10-style presentation: approved, pending approval, or blocked without recalculating validation in UI.
+- Added M07 `PublicationRegistry` with idempotent reserve/update/find and publishable-evidence guard.
+- Updated Make adapter semantics: `GATEWAY_ACCEPTED` means accepted by gateway only, never published.
+- Extended callback receiver with registry application and published callback post-id requirement.
+- Extended reconciliation to store `reconciliation_proof` when a platform post is found.
+- Added chaos duplicate coverage: ten duplicate dispatch attempts reserve exactly one publication.
+- Tests added: `test_growth_phase4_approval_publishing.py`.
+- Verify: P4 tests -> 5 passed; Growth P1-P4 tests -> 33 passed; full `python3 -m pytest -q` -> 493 passed; compileall clean.
+
+### Growth Agent v3.0 — QC Pass on Phase 1–3 (2026-08-03)
+
+**Status: DONE**
+
+Senior QC review of the Codex-authored Phase 1–3 code (`shared/jobs`, `shared/budget`, `knowledge_studio/facts`, `image_studio_runtime`, `research_engine`, `publishing_gateway` additions, `validator_studio` additions, `content_studio/generators`, `agent_studio/growth`). 4 real bugs fixed, all covered by new regression tests in `tests/test_growth_qc_hardening.py`:
+
+- **Concurrency bug (`shared/jobs/job_store.py`):** `JobStore.claim()` did SELECT-then-UPDATE across two separate implicit transactions — two concurrent workers could both read the same READY job before either UPDATE landed, and both would win the claim. Rewrote as a single atomic `UPDATE ... WHERE id = (SELECT ...) RETURNING` statement (SQLite 3.51 on this machine supports `RETURNING`). Also added `PRAGMA busy_timeout = 5000` to `JobStore` and `BudgetLedger` connections to avoid spurious "database is locked" errors under concurrent access.
+- **Security bug — replay protection bypass (`publishing_gateway/callback_receiver.py`):** `verify_callback_signature()` signed only the callback `body`, while `timestamp` (the actual replay-window guard) was passed in unsigned. An attacker could replay an old valid `(body, signature)` pair with a freshly forged `timestamp` and pass the "replay window" check untouched. Fixed by binding `timestamp` into the signed message (`f"{timestamp}." + body`), matching the existing HMAC convention already used in `publishing_gateway/approval_verifier.py`.
+- **Security hardening — path traversal (`knowledge_studio/facts/fact_store.py`, `research_engine/adapters/notebooklm_handoff.py`, `research_engine/application/collect_sources.py`, `research_engine/application/synthesize_notes.py`):** `fact_key`, `topic_slug`, `rs_id`, `domain`, `title` were used verbatim as filesystem path components with no validation — a value like `../../etc/passwd` would escape the intended `data/` or `research/` directory on read or write. Added `shared/security.py::ensure_safe_slug()` and applied it at every sink that turns one of these identifiers into a path segment.
+- `growth_orchestrator/` and `research_engine/trend_radar/` were reviewed and found to be **untested scaffolding for a later phase** (bridges return hardcoded stubs, e.g. `M07PublishingBridge.dispatch()` always returns `GATEWAY_ACCEPTED` without calling the real M07 gateway; `M05ContentBridge` reimplements a simplified 3-candidate generator instead of delegating to the real `content_studio/generators` rubric pipeline built in Phase 2). No tests reference either package. Left untouched — out of scope for this QC pass since they are not yet claimed "DONE," but flagged here so they are not mistaken for wired, safe-to-run code. `pyproject.toml` already exposes `venho-growth` as a real CLI entrypoint pointing at the stub dispatch bridge; do not run it expecting a real publish.
+- Verify: `python3 -m pytest -q` → 488 passed (482 prior + 6 new), 0 API calls. `python3 -m compileall` clean across all touched packages.
+
+### Growth Agent v3.0 — Phase 3 Image Runtime + Multimodal QC (2026-08-03)
+
+**Status: DONE**
+
+- Added `agent_studio/growth/scenario_registry.py` and expanded `scenario_registry.yaml` to resolve Visual DNA v2.7 subject, references, required/forbidden entities, and conflict rejection.
+- Hardened `image_studio_runtime/`: mock provider with transient failure simulation, provider model metadata, immutable run storage, full paid manifest, scenario-driven DNA/reference fields, and run listing.
+- Added paid image policy: one paid generation plus one targeted repair only; further repairs fail into review flow.
+- Added 429/5xx provider backoff behavior: transient failure raises without creating a new run/variant artifact.
+- Extended M03 `alignment_validator.py` and `derivative_validator.py` with required-subject omission, alignment score gate, crop safety, and OCR/critical text gate.
+- Added `aggregate_image_verdict()` for P3 image QC final state: incomplete -> `UNVALIDATED`, kill/low alignment -> `NEEDS_REVIEW`, clean -> `APPROVED`.
+- Tests added: `test_growth_phase3_image_runtime.py`.
+- Verify: P3 tests -> 5 passed; Growth P1-P3 tests -> 28 passed; full `python3 -m pytest -q` -> 482 passed; compileall clean.
+
+### Growth Agent v3.0 — Phase 1.5 Research OS Foundation (2026-08-03)
+
+**Status: DONE**
+
+- Added Research OS frontmatter validator and tightened `ResearchNote` invariants.
+- Added R0 source collection, R1 structured note collection, R2 synthesis path, NotebookLM handoff verification, and R2/R2-T promotion policy tests.
+- Added `venho-research promote` CLI path from reviewed R2 note to M01 approved KnowledgeFact through `M01FactsBridge`.
+- Added stale fact detection plus approval revocation helper for packages referencing expired facts.
+- Added repo seed research notes for `guest_voice`, `competitor`, and reviewed R2 guest voice synthesis.
+- Enabled `research_os_enabled: true`; real providers and trend radar remain off.
+- Tests added: `test_growth_phase15_research_os.py`.
+- Verify: Phase tests -> 23 passed; full `python3 -m pytest -q` -> 477 passed.
+
+### Growth Agent v3.0 — Phase 2 Knowledge Facts + Real Copy Foundation (2026-08-03)
+
+**Status: DONE**
+
+- Added tracked seed facts in `config/projects/venho_hotel/growth/seed_facts.json`: room count, address, Agoda review, website.
+- Extended M01 `FactStore` with seed loader; `FactResolver` now handles timezone-aware validity windows.
+- Improved M03 `ClaimValidator`: missing fact -> `UNSUPPORTED`, inactive/expired fact -> `EXPIRED`, critical unsupported claims kill publish path.
+- Added M09 growth brief compiler + brief lifecycle: lock brief with active R3 proof points, checksum, supersede-on-edit.
+- Added M05 text provider adapter, 3-candidate generator, rubric selector.
+- Golden factual gate covered in tests: price, policy, review, distance claims without approved facts are blocked; approved review fact verifies.
+- Harry approval gate covered: locked brief succeeds only with active R3 facts before paid generation.
+- Tests added: `test_growth_phase2_knowledge_copy.py`.
+- Verify: Phase tests -> 23 passed; full `python3 -m pytest -q` -> 477 passed.
+
+### Growth Agent v3.0 — Phase 1 Contracts + Policy Registry (2026-08-03)
+
+**Status: DONE**
+
+- Added repo-level `contracts/` with the 15 required schemas: `creative_brief`, `knowledge_fact`, `research_note`, `trend_candidate`, `copy_candidate`, `content_package`, `image_prompt_contract`, `image_manifest`, `validation_report`, `approval_snapshot`, `publication_command`, `publication_callback`, `metric_observation`, `conversion_event`, `strategy_memory`.
+- Added pass/fail fixtures under `contracts/fixtures/{schema_name}/{valid,invalid}/`.
+- Added config registry under `config/projects/venho_hotel/growth/`: quality, model, budget, taxonomy, scenario, attribution, cadence, queue, feature flags.
+- Added config registry under `config/projects/venho_hotel/research/`: domains, evidence, promotion, trend, brand safety, event sources.
+- Added `shared/jobs/` SQLite job queue with idempotent enqueue, lease claim, expired lease recovery, completion/failure state.
+- Added `shared/budget/` ledger with `RESERVE`, `COMMIT`, `RELEASE`, totals, and negative amount guard.
+- Added CLI/package wiring in `pyproject.toml` for Growth-era packages and `jsonschema` test dependency.
+- Tests added: `test_growth_phase1_contracts.py`, `test_growth_phase1_policy_registry.py`, `test_growth_phase1_jobs_and_budget.py`.
+- Verify: `python3 -m pytest -q tests/test_growth_phase1_contracts.py tests/test_growth_phase1_policy_registry.py tests/test_growth_phase1_jobs_and_budget.py` -> 11 passed.
+- Verify: `python3 -m pytest -q` -> 465 passed.
 
 ---
 

@@ -1,0 +1,24 @@
+version: 1
+image:
+  dna_min: 9.0
+  linh_an_identity_min: 9.0
+  action_geometry_min: 9.0
+  visual_quality_min: 8.5
+  conditional_band: [8.0, 8.9]
+copy:
+  brand_voice_min: 9.0
+  duplicate_similarity_block: 0.88
+alignment:
+  package_min: 9.0
+kill_switches:
+  - unsupported_critical_claim
+  - wrong_hotel_environment
+  - missing_required_identity
+  - location_mismatch
+  - critical_text_error
+  - unverified_event_claim
+  - forbidden_trend_category
+verdict_rules:
+  validator_incomplete: UNVALIDATED
+  any_kill_switch: NEEDS_REVISION
+  all_pass: READY_FOR_REVIEW

@@ -1,0 +1,9 @@
+version: 1
+image_provider: mock
+image_model: gpt-image-2
+default_quality: medium
+quality_routing:
+  low: low
+  medium: medium
+  high: high
+text_provider: mock

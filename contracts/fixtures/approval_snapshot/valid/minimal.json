@@ -1,0 +1,11 @@
+{
+  "approval_request_id": "approval-001",
+  "content_package_id": "package-001",
+  "copy_version_ids": ["copy-001"],
+  "asset_version_ids": ["asset-001"],
+  "validation_snapshot_id": "validation-001",
+  "status": "approved",
+  "checksum": "sha256:test",
+  "approved_by": "harry",
+  "approved_at": "2026-08-03T09:00:00+07:00"
+}

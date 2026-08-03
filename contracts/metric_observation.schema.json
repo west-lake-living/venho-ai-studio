@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","title":"MetricObservation","type":"object","required":["id","publication_id","window","observed_at","metrics"],"properties":{"id":{"type":"string"},"publication_id":{"type":"string"},"window":{"type":"string"},"observed_at":{"type":"string"},"metrics":{"type":"object"}},"additionalProperties":true}

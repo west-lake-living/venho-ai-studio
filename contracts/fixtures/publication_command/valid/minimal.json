@@ -1,0 +1,11 @@
+{
+  "publication_id": "publication-001",
+  "brand_id": "venho-hotel",
+  "platform": "facebook",
+  "account_id": "page-001",
+  "content_package_id": "package-001",
+  "copy_version_id": "copy-001",
+  "asset_version_id": "asset-001",
+  "scheduled_at": "2026-08-04T09:00:00+07:00",
+  "idempotency_key": "idem-001"
+}

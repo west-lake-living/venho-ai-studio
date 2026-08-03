@@ -1,0 +1,7 @@
+{
+  "id": "metric-001",
+  "publication_id": "publication-001",
+  "window": "24h",
+  "observed_at": "2026-08-05T09:00:00+07:00",
+  "metrics": {"reach": 1000, "qualified_signals": 4}
+}

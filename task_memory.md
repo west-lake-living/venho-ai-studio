@@ -22,6 +22,136 @@ Pipeline tổng quát:
 
 ## 2. Kiến trúc tổng thể
 
+### Growth Agent v3.0 Phase 1 Baseline (2026-08-03)
+
+Phase 1 is complete in `venho-ai-studio`.
+
+- Contract-first baseline is in `contracts/` with 15 schemas and pass/fail fixtures.
+- Growth policy registry is in `config/projects/venho_hotel/growth/`.
+- Research policy registry is in `config/projects/venho_hotel/research/`.
+- Durable local state foundation is `shared/jobs/` + `shared/budget/` using SQLite.
+- Real providers remain feature-flagged off by default; tests stay offline/mock.
+- Full verification after Phase 1: `465/465` AI Studio tests pass with 0 API calls.
+
+### Growth Agent v3.0 Phase 1.5 + Phase 2 Baseline (2026-08-03)
+
+Phase 1.5 and Phase 2 are complete in `venho-ai-studio`.
+
+- Research OS now supports validated vault frontmatter, R0/R1 collection, R2 synthesis, NotebookLM manual handoff verification, and controlled R2 -> R3 promotion.
+- R2-T remains context-only and cannot become R3.
+- Stale R3 facts can be detected and can revoke approvals that reference expired facts.
+- M01 Knowledge Facts has a seed loader and resolver with validity-window handling.
+- M03 Claim Validator blocks unsupported critical claims and distinguishes missing vs expired evidence.
+- M09 can compile and lock CreativeBriefs only when proof points resolve to active R3 facts.
+- M05 can generate three distinct mock/provider candidates and select one using a rubric.
+- Full verification after Phase 2: `477/477` AI Studio tests pass with 0 API calls.
+
+### Growth Agent v3.0 Phase 3 Baseline (2026-08-03)
+
+Phase 3 is complete in `venho-ai-studio`.
+
+- `agent_studio/growth/scenario_registry.py` resolves Visual DNA v2.7 scenario profiles from `config/projects/venho_hotel/growth/scenario_registry.yaml`.
+- `image_studio_runtime` now creates immutable image run folders with complete paid manifests, mock-provider artifacts, DNA/reference trace, and no overwrite path.
+- Paid image policy is enforced: maximum one paid generation plus one targeted repair; after that the package remains `NEEDS_REVIEW`.
+- 429/5xx provider failures back off without creating any variant artifact.
+- M03 alignment and derivative validators cover required-subject omission, forbidden entities, alignment score, crop safety, and OCR/critical text gates.
+- Full verification after Phase 3: `482/482` AI Studio tests pass with 0 API calls.
+
+### Growth Agent v3.0 Phase 4 Baseline (2026-08-03)
+
+Phase 4 is complete in `venho-ai-studio`.
+
+- M04 approval snapshots now bind exact package versions by checksum: copy, asset, validation snapshot, fact versions, and brief version.
+- Dispatch is blocked if any approved package version changes after approval; Final Review state can present approved/pending/blocked without duplicating M03 logic.
+- M07 keeps a local `PublicationRegistry` for idempotent publication reservation and status updates.
+- Make.com remains only an M07 adapter; `GATEWAY_ACCEPTED` is not published.
+- Callbacks require signed payloads and a post ID for `PUBLISHED`; reconciliation can close unknown states with proof.
+- Duplicate chaos test reserves exactly one publication for repeated idempotency key/platform attempts.
+- Full verification after Phase 4: `493/493` AI Studio tests pass with 0 API calls.
+
+### Growth Agent v3.0 Phase 5 Baseline (2026-08-03)
+
+Phase 5 is complete in `venho-ai-studio`.
+
+- `shared/jobs/JobStore` supports idempotent dispatch triggers, worker heartbeat/lease extension, expired lease recovery, retryable-failure requeue, and terminal failure after max attempts.
+- `shared/jobs/scheduler.py` can enqueue daily dispatch idempotently and emit structured late-run alerts.
+- `shared/budget/BudgetLedger` now supports policy evaluation, budget override audit records, and paid-call reservation through `BudgetPolicy`.
+- Budget policy alerts fire at 70/85/100%; 100% cap blocks paid calls unless an override with reason and approver is recorded.
+- Full verification after Phase 5: `498/498` AI Studio tests pass with 0 API calls.
+
+### Growth Agent v3.0 Phase 6 Baseline (2026-08-03)
+
+Phase 6 is complete in `venho-ai-studio`.
+
+- M08 attribution resolves inquiries through `utm_content=publication_id`, direct/assisted windows, policy dedupe fields, and SHA-256 pseudonymized contacts.
+- Metric observations preserve semantic state: real value, zero, null, and provider-unavailable are not collapsed together.
+- Sample metrics are asserted against raw source values before downstream reporting.
+- Meta Insights remains feature-flagged off; mock metrics adapter is still the default in tests and local execution.
+- Analytics collection windows are now `1h`, `24h`, `72h`, `7d`, and `28d`.
+- M10 content performance projection reads M08 snapshot/score outputs only and does not recalculate analytics.
+- Full verification after Phase 6: `504/504` AI Studio tests pass with 0 API calls.
+
+### Growth Agent v3.0 Phase 7 Baseline (2026-08-03)
+
+Phase 7 is complete in `venho-ai-studio`.
+
+- `strategy_memory/` now supports Bayesian-smoothed QBSR pattern inference with confidence, scope, evidence, limitations, expiry, and approval-gated promotion.
+- Strategy memories from insufficient samples return `INCONCLUSIVE` and cannot be promoted.
+- Weekly strategy briefs are advisory-only, `pending_approval`, and suppress recommendations if QBSR drops below guardrail.
+- M08 can generate a written research question into Research OS through `M08SignalBridge`, closing the analytics -> research loop.
+- Every recommendation in the weekly brief must carry evidence and limitations.
+- Full verification after Phase 7: `510/510` AI Studio tests pass with 0 API calls.
+
+### Growth Agent v3.0 Phase 8 Baseline (2026-08-03)
+
+Phase 8 is complete in `venho-ai-studio`.
+
+- `controlled_rollout/` evaluates versioned golden scorecards, confirms 90-day baseline/candidate metrics readiness, manages rollout stage decisions, enforces rollback sequencing, and validates rollout runbook docs.
+- P8 scorecard requires `>=9.3/10` on a versioned golden set; duplicate publication and unplanned empty days remain hard gates.
+- Rollout stage progression is `shadow -> pilot_25 -> pilot_50 -> pilot_100`; human approval remains required, and trend lane is blocked from auto-approval.
+- Rollback code requires dispatch disabled first, forward-only migrations, compatible reads, and immutable approved artifacts.
+- First `_productize` skill is present: `.claude/skills/_productize/hotel-content-engine/SKILL.md`; `productize/hotel_content_engine.py` runs for hotel #2 from config only without core changes.
+- Runbook docs are present under `docs/growth/controlled_rollout_runbook.md` and `docs/growth/eval_golden_sets.md`.
+- `pyproject.toml` now packages `controlled_rollout*`, `productize*`, and `strategy_memory*`.
+- Full verification after Phase 8: `517/517` AI Studio tests pass with 0 API calls.
+
+### Growth Agent v3.0 QC Pass on Phase 1–3 (2026-08-03)
+
+Senior QC review of all Codex-authored Growth Agent code. Fixed and regression-tested:
+
+- `JobStore.claim()` was SELECT-then-UPDATE (non-atomic across two implicit transactions) — two concurrent workers could claim the same job. Now a single atomic `UPDATE ... RETURNING`.
+- `publishing_gateway/callback_receiver.py` signed only `body`, leaving `timestamp` unauthenticated — defeated the "replay window" guard it was supposed to enforce. `timestamp` is now part of the signed message.
+- `fact_key` / `rs_id` / `domain` / `title` / `topic_slug` were used unvalidated as filesystem path components (path traversal risk) in `FactStore`, `NotebookLMHandoff`, `collect_source_note`, `collect_structured_note`, `synthesize_notes`. Added `shared/security.py::ensure_safe_slug()` at each sink.
+- `growth_orchestrator/` and `research_engine/trend_radar/` are untested scaffolding (stub bridges, e.g. `M07PublishingBridge` always fakes `GATEWAY_ACCEPTED`) — not yet wired to the real M03/M05/M07/M08 pipelines despite `pyproject.toml` exposing `venho-growth` as a live CLI entrypoint. Do not treat as production-ready; next phase must wire these bridges to the real modules instead of reimplementing simplified logic.
+- Verify: `488/488` AI Studio tests pass (482 prior + 6 new in `tests/test_growth_qc_hardening.py`), 0 API calls, `compileall` clean.
+
+### Growth Agent v3.0 QC Pass on Phase 4–8 (2026-08-03)
+
+Senior QC review of all Codex-authored Phase 4–8 code (job/budget extensions, publication registry, approval snapshot, controlled rollout, strategy memory, productize, analytics attribution). Fixed and regression-tested:
+
+- `publishing_gateway/publication_registry.py` did an unlocked JSON load → modify → save in `reserve()`/`update()` — two concurrent callers (retried dispatch vs. inbound webhook) could both read stale state and the second writer would silently clobber the first, breaking the idempotency guarantee the registry exists for. The existing "duplicate chaos" test only ran sequentially in one thread, so it never caught this. Fixed with an `fcntl.flock` exclusive lock around both methods; added a real 20-thread `ThreadPoolExecutor` regression test in `tests/test_growth_qc_hardening.py`.
+- Everything else in Phase 4–8 reviewed clean: `JobStore` heartbeat/lease-recovery/retry-requeue extensions stayed single-atomic-statement SQLite (consistent with the earlier `claim()` fix), `BudgetLedger`/`BudgetPolicy` SQLite-backed with no cross-process race, `approval_snapshot.py` pure deterministic logic, `controlled_rollout/*` and `strategy_memory/*` pure functions, and `analytics_feedback/research_question_generator.py` already reuses `shared/security.py::ensure_safe_slug()` from the Phase 1–3 QC pass.
+- `growth_orchestrator/` re-confirmed still zero references anywhere (`grep -rln growth_orchestrator` outside its own package) — unchanged from the prior QC finding, no new risk from Phase 4–8.
+- `productize/hotel_content_engine.py` builds a path from a `project` string with no `ensure_safe_slug` guard, same shape as the fixed sinks — left as-is because `project` is currently a deploy-time config identifier, not attacker-controlled input; revisit if `project` ever becomes agent-/user-suppliable.
+- Verify: `518/518` AI Studio tests pass (517 prior + 1 new), 0 API calls, `compileall` clean.
+
+### Growth Agent v3.1 — Delta vs v3.0 (2026-08-03)
+
+Read `docs/Content agent/VENHO_GROWTH_AGENT_MASTER_PLAN_v3_1_CONSOLIDATED.md` and diffed it against everything Codex already built for v3.0. Most of v3.1's architecture already existed (contracts, jobs, budget, facts, image runtime, approval, scheduler, analytics, strategy memory, controlled rollout, and `research_engine/trend_radar/` with a real brand-safety gate + relevance scorer + 5 empty collector stubs). The actual delta implemented this pass:
+
+- **Cadence 4 posts/week (TR-D2, PB-001):** `cadence_policy.yaml` v1->v2 -- removed the A(3)->B(5)->C(7) ramp entirely, fixed Mon/Wed/Fri (regular) + Sat (special) + Tue blog SEO. New `growth_orchestrator/domain/publishing_slot.py::PublishingSlot` state machine (`OPEN->DRAFT_ASSIGNED->PENDING_APPROVAL->FILLED->DISPATCHED->COMPLETED`, plus `EVERGREEN_FALLBACK` and a `MISSED` path that asserts the evergreen pool was actually exhausted first). New `growth_orchestrator/application/manage_slots.py::generate_slots()` -- deterministic, idempotent slot IDs from `(date, weekday)` so re-running over an overlapping horizon is safe.
+- **Slot-based runway (PB-003):** `queue_policy.yaml` `runway_days` -> `runway_slots` (healthy>=6, warning 4-5, critical 2-3, empty 0-1 per §9.2); `manage_queue.runway_status()` updated, with a fallback read of the old `runway_days` key in case anything else still uses it.
+- **Special lane T3->T7 with mandatory fallback (PB-008):** `growth_orchestrator/application/special_lane.py` -- priority order seasonal_nature > cultural_event (only if `verified_by_human`) > lifestyle_trend > feature_story (mandatory fallback, raises if absent -- this is what stops the Saturday slot from ever going empty or bending brand safety to force a trend). `special_lane_timeline_state()` enforces the hard Friday 20:00 cutoff -> `fallback_evergreen` if not yet approved.
+- **Pre-flight check (PB-005):** `growth_orchestrator/application/preflight.py::run_preflight_check()` -- fact expiry, approval validity, asset reachability/hash match, event `verified_by_human` + not-yet-passed, weather R2-T not expired. Returns every failing reason, not just a boolean.
+- **Weather signal is R2-T only, never a claim (§5.5, §6.6):** `research_engine/trend_radar/domain/weather_signal.py::WeatherSignal.fact_key` is typed `Literal[None]` -- Pydantic itself rejects any attempt to set it, enforced at the type level rather than only in a validator function. `contracts/weather_signal.schema.json` mirrors this with `fact_key: const null`. `scan_weather()` always derives `expires_at` from `weather_policy.yaml["expiry_hours"]`, never from the provider payload, so a provider can't hand back a signal that outlives policy. `weather_api.py` collector is an empty stub matching the existing 5.
+- **`shared/notify/telegram.py` (IN-D4):** `MockTelegramNotifier` (default everywhere) + real `TelegramNotifier` requiring an injected `http_post` (never called anywhere in this repo). `send_alert()` resolves severity/channel from `shared/notify/alert_policy.yaml`, raises on an unknown event name.
+- **`publishing_gateway/adapters/zalo_oa.py` (IN-D5):** mirrors `make_gateway.py` exactly -- disabled by default returns `DISABLED`, enabled returns `GATEWAY_ACCEPTED` (never `PUBLISHED`).
+- **New `infra/` package (§10, IN-001/002/003):** `heartbeat.py` (payload builder + injected-`http_post` sender + staleness check), `deadman_config.yaml` (5-min heartbeat / 15-min stale / 09:15-09:30-10:00 dispatch-check thresholds), `cloud_fallback/export_approved.py` (only exports packages already `approval_status: approved`, HMAC-signs, and -- critically -- has no parameter or code path that can set `approval_status`, so the security invariant "cloud never creates an approval" is structural, not just documented), `backup.sh`, 5 `launchd/*.plist` templates, `setup_macmini.md` runbook. `infra*` added to `pyproject.toml` package discovery.
+- **Contracts:** added `weather_signal.schema.json` + `publishing_slot.schema.json` + fixtures -> 17 schemas total. (The plan's own §5.10 header says "16" but its enumerated list has 17 entries -- a typo in the master plan itself, not a miscount here.)
+- New test file `tests/test_growth_v3_1_cadence_infra.py`, 31 tests covering every item above.
+- **Explicitly NOT done this pass (needs Harry, outside code scope):** buying/configuring a physical Mac Mini M4, running real `pmset`/`launchd`/Tailscale, registering real API keys (Tavily, Exa, Weather API, YouTube Data API, Telegram bot token, Zalo OA app), standing up a real healthchecks.io or Make.com data-store endpoint for heartbeat/cloud-fallback. Everything above is mock/stub/flag-off until those exist.
+- Verify: `549/549` AI Studio tests pass (518 prior + 31 new), 0 API calls, `compileall` clean.
+
 ### Module Roles (KHÔNG chồng lấn)
 
 | Module | Vai trò | KHÔNG làm |

@@ -1,0 +1,21 @@
+{
+  "schema_version": "2.2",
+  "run_id": "run-001",
+  "content_package_id": "package-001",
+  "creative_brief_id": "brief-001",
+  "model": "gpt-image-2",
+  "operation": "generate",
+  "quality": "medium",
+  "size": "1024x1280",
+  "prompt_contract_version": "1.0",
+  "base_prompt": "Photorealistic West Lake morning.",
+  "final_prompt": "Photorealistic West Lake morning. Scenario: venho_rooftop_sunrise",
+  "prompt_hash": "sha256:test",
+  "reference_asset_ids": [],
+  "reference_mode": "none",
+  "scenario_key": "venho_rooftop_sunrise",
+  "estimated_cost_minor": 0,
+  "artifacts": [],
+  "validation_run_ids": [],
+  "created_at": "2026-08-03T09:00:00+07:00"
+}

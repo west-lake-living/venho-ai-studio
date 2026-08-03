@@ -1,0 +1,5 @@
+version: 1
+min_confidence: 0.8
+requires_human_approval: true
+allowed_source_levels: [R2]
+blocked_source_levels: [R0, R1, R2-T]

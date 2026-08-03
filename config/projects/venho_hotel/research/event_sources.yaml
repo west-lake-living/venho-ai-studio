@@ -1,0 +1,6 @@
+version: 1
+approved_sources:
+  - official_city_pages
+  - venue_website
+  - public_news_rss
+  - google_business_profile

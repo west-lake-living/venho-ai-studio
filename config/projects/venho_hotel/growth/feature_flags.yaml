@@ -1,0 +1,25 @@
+version: 2
+final_approval_required: true
+m03_mandatory_before_review: true      # NEVER turn off (v3.1 Decision #15)
+canonical_publication_state: true
+multimodal_qc_enabled: true
+research_os_enabled: true
+trend_radar_enabled: false
+weather_signal_enabled: false          # v3.1 Phase 1.6
+growth_pipeline_enabled: false
+real_image_provider_enabled: false
+real_meta_insights_enabled: false
+make_gateway_adapter_enabled: false
+make_callback_enabled: false
+daily_cadence_enabled: false
+trend_lane_enabled: false
+special_lane_enabled: false            # v3.1 Phase 4.5 (T3-T7 lane)
+slot_scheduling_enabled: false          # v3.1 Phase 4.5 (PublishingSlot)
+deadman_switch_enabled: false           # v3.1 Phase 4.5 (infra)
+cloud_fallback_enabled: false           # v3.1 Phase 4.5 (infra)
+zalo_enabled: false                     # v3.1 -- needs adapter + quota, after Phase 4.5
+blog_seo_enabled: false
+external_scheduler_enabled: false
+meta_insights_enabled: false
+growth_recommendations_enabled: false
+legacy_agent_active: true

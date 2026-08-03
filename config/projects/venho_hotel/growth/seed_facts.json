@@ -1,0 +1,58 @@
+[
+  {
+    "fact_key": "hotel.room_count",
+    "value": 12,
+    "value_type": "integer",
+    "source_type": "owner_confirmed",
+    "source_rs_id": "RS-2026-08-0001",
+    "confidence": 1.0,
+    "valid_from": "2026-01-01T00:00:00+07:00",
+    "valid_to": null,
+    "status": "approved",
+    "version": 1,
+    "approved_by": "harry",
+    "approved_at": "2026-08-03T00:00:00+07:00"
+  },
+  {
+    "fact_key": "hotel.address",
+    "value": "181 Nguyen Dinh Thi, Tay Ho, Hanoi",
+    "value_type": "string",
+    "source_type": "owner_confirmed",
+    "source_rs_id": "RS-2026-08-0002",
+    "confidence": 1.0,
+    "valid_from": "2026-01-01T00:00:00+07:00",
+    "valid_to": null,
+    "status": "approved",
+    "version": 1,
+    "approved_by": "harry",
+    "approved_at": "2026-08-03T00:00:00+07:00"
+  },
+  {
+    "fact_key": "review.agoda_overall",
+    "value": "8.5/10",
+    "value_type": "string",
+    "source_type": "platform_verified",
+    "source_rs_id": "RS-2026-08-0003",
+    "confidence": 0.95,
+    "valid_from": "2026-07-01T00:00:00+07:00",
+    "valid_to": "2026-10-01T00:00:00+07:00",
+    "status": "approved",
+    "version": 1,
+    "approved_by": "harry",
+    "approved_at": "2026-08-03T00:00:00+07:00"
+  },
+  {
+    "fact_key": "hotel.website",
+    "value": "https://venhohotel.com",
+    "value_type": "url",
+    "source_type": "owner_confirmed",
+    "source_rs_id": "RS-2026-08-0004",
+    "confidence": 1.0,
+    "valid_from": "2026-01-01T00:00:00+07:00",
+    "valid_to": null,
+    "status": "approved",
+    "version": 1,
+    "approved_by": "harry",
+    "approved_at": "2026-08-03T00:00:00+07:00"
+  }
+]

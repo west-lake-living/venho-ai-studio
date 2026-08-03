@@ -1,0 +1,9 @@
+{
+  "id": "validation-001",
+  "target_id": "package-001",
+  "validator": "claim_validator",
+  "status": "completed",
+  "verdict": "READY_FOR_REVIEW",
+  "scores": {},
+  "kill_switches": []
+}

@@ -1,0 +1,42 @@
+version: 1
+scenarios:
+  venho_rooftop_sunrise:
+    display_name: Rooftop Ven Ho Hotel sunrise
+    dna_subject: outside
+    environment_reference: rooftop_railing
+    dna_version: "2.7"
+    reference_asset_ids: [venho_rooftop_railing_approved]
+    required_entities: [west_lake, rooftop_railing]
+    forbidden_entities: [bedroom_window, highrise_skyline]
+    reference_mode: environment
+    linh_an_allowed_actions: [standing, portrait, leaning, sitting]
+  venho_lake_view_room_sunrise:
+    display_name: Hotel room lake view sunrise
+    dna_subject: lake_view_room
+    environment_reference: room_view_from_inside
+    dna_version: "2.7"
+    reference_asset_ids: [venho_room_lake_view_approved]
+    required_entities: [bed, west_lake_view]
+    forbidden_entities: [generic_city_hotel]
+    reference_mode: environment
+    linh_an_allowed_actions: [standing, portrait, sitting]
+  venho_nguyen_dinh_thi_street:
+    display_name: Nguyen Dinh Thi street
+    dna_subject: westlake
+    environment_reference: null
+    dna_version: "2.7"
+    reference_asset_ids: []
+    required_entities: [west_lake, nguyen_dinh_thi_street]
+    forbidden_entities: [green_lamp_post, green_railing]
+    reference_mode: none
+    linh_an_allowed_actions: [standing, portrait, leaning, cycling, running]
+  venho_west_lake_landscape:
+    display_name: West Lake landscape
+    dna_subject: westlake
+    environment_reference: null
+    dna_version: "2.7"
+    reference_asset_ids: []
+    required_entities: [west_lake]
+    forbidden_entities: [tourist_postcard_aesthetic, modern_highrise_backdrop]
+    reference_mode: none
+    linh_an_allowed_actions: []
