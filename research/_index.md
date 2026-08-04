@@ -1,3 +1,8 @@
+# 🔬 Research Vault — Ghi chú nghiên cứu (R0–R4)
+
+> Vault này chứa ghi chú nghiên cứu (nguồn thô, synthesis, insight, fact đã duyệt) — **KHÔNG phải DNA thương hiệu**.
+> Muốn sửa DNA Ven Hồ Hotel / Linh An → mở [`Knowledge Vault/`](../Knowledge%20Vault/README.md) ở gốc repo.
+
 ## Can Promote
 ```dataview
 TABLE domain, confidence, expires_at

@@ -18,6 +18,9 @@ venv/
 # Data — media, observations, knowledge (không đẩy lên GitHub)
 data/
 
+# Knowledge Vault — symlinks tới data/, chỉ dùng local trong Obsidian
+Knowledge Vault/
+
 # Raw assets — ảnh gốc, quá lớn cho git
 assets/raw/
 
