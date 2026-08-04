@@ -1,6 +1,6 @@
 # VENHO AI STUDIO — Task Memory
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-08-04 (Growth Agent v3.1 — model gpt-5.5, Validator gate thật, fix hex-code leak, lên lịch tuần, xem mục 14d) · **Đọc bởi:** AI Engine, Claude Code sessions
+**Cập nhật:** 2026-08-04 (Growth Agent v3.1 — audit đối chiếu plan v3.1 CONSOLIDATED, sửa 5 lỗi thật + thêm Từ chối, xem mục 14e) · **Đọc bởi:** AI Engine, Claude Code sessions
 
 ---
 
@@ -806,6 +806,32 @@ Chuỗi yêu cầu liên tiếp của Harry: bài chờ duyệt sơ sài → sin
 **Verify:** 655/655 pass sau toàn bộ thay đổi trên. Batch thật cuối cùng verify qua `venho-growth list-pending` + grep hex-code trực tiếp trên `publication_registry.json` (0 match trong các entry `PENDING_APPROVAL`, chỉ còn trong entry `SUPERSEDED`/`DISABLED` cũ).
 
 **Việc liên quan ở `venho-os` (repo khác, xem `venho-os/task_memory.md`/`CHANGELOG.md` mục 2026-08-04):** redesign `GrowthApprovalQueue` trong `PublishingSection.tsx` — bảng gộp Ngày/Pillar/Chủ đề thay flat card list, expand xem chi tiết per-platform, nút Duyệt tất cả + Duyệt riêng.
+
+## 14e. Growth Agent v3.1 — Audit đối chiếu master plan CONSOLIDATED, sửa lỗi + Từ chối (2026-08-04)
+
+Harry: "Review và audit growth content agent đối chiếu với plan v3.1. Nếu tìm ra lỗi, sửa ngay. Bổ sung nút Từ chối/Sửa. Xoá file lỗi/temp/nháp." Đọc toàn bộ `docs/Content agent/VENHO_GROWTH_AGENT_MASTER_PLAN_v3_1_CONSOLIDATED.md` (1823 dòng) + dùng 1 agent con audit code thật (`growth_orchestrator/`, `agent_studio/growth/`, `publishing_gateway/`, `venho-os/src/components/os/sections/PublishingSection.tsx`).
+
+**Kết luận scope-reality:** plan v3.1 mô tả kiến trúc mục tiêu rất lớn (SQLite state machine, Obsidian Research OS đủ 9 domain, Trend Radar chạy thật, HMAC callback tự động...). Thực tế đã build là một MVP nhỏ hơn nhiều bên trong kiến trúc Studio hiện có (M01–M10) — nhiều mảnh hạ tầng plan mô tả (SQLite job queue, PublishingSlot state machine, HMAC callback receiver) **đã có code** nhưng **chưa được `daily_cycle.py`/`weekly_cycle.py` gọi tới** — không phải thiếu code, mà là code có sẵn chưa nối dây vào pipeline thật đang chạy cron. Đây không phải việc cần sửa trong phiên này (không phải bug, là gap kiến trúc lớn ngoài scope "audit + sửa lỗi") — chỉ ghi nhận.
+
+**5 lỗi thật đã sửa trong code đang chạy production:**
+
+1. **Race condition double-publish** — `approve_and_dispatch()` cũ là check-then-act không atomic (`registry.find()` đọc không khoá → check status → gọi webhook → `registry.update()` khoá riêng). Hai lần bấm Duyệt gần nhau (double-click, 2 tab) có thể cả hai đều đọc thấy `PENDING_APPROVAL` trước khi bên nào ghi lại → bắn webhook Make.com 2 lần thật. Sửa: thêm `PublicationRegistry.claim(expected_status, claimed_status)` — test-and-set atomic trong cùng 1 khoá `fcntl`; `approve_and_dispatch`/`retry_dispatch`/`reject_publication` đều claim trước khi làm bất cứ điều gì khác, bên thua cuộc raise `ValueError` ngay lập tức thay vì cùng dispatch. Test: `test_approve_and_dispatch_second_concurrent_call_cannot_double_dispatch`.
+2. **Dispatch fail = kẹt vĩnh viễn** — trước đây nếu Make.com webhook lỗi mạng thoáng qua, hàm `approve_and_dispatch` raise exception giữa chừng (status kẹt ở giá trị cũ hoặc lỗi không rõ), không có đường quay lại vì hàm chỉ chấp nhận `PENDING_APPROVAL`. Sửa: dispatch lỗi giờ luôn hạ cánh về `GATEWAY_ERROR` (bắt exception trong `_dispatch_claimed`), và thêm `retry_dispatch()` (CLI `venho-growth retry-dispatch --publication-id X`, tái dùng approval cũ, không hỏi lại approved_by).
+3. **1 platform lỗi sập cả ngày, 1 ngày lỗi sập cả tuần** — `run_daily_cycle()`'s vòng lặp per-platform và `run_weekly_cycle()`'s vòng lặp per-day trước đây không có try/except: một lỗi OpenAI rate-limit ở Instagram xoá luôn draft Facebook/Threads/Zalo cùng ngày; một lỗi ở thứ Tư xoá luôn thứ Sáu/Bảy. Sửa: mỗi platform/day giờ cô lập bằng try/except, lỗi ghi vào `DailyCycleResult.errors`/CLI JSON output, các platform/day khác vẫn chạy tiếp.
+4. **M03ValidatorBridge không fail-closed khi crash** — plan Part 2.1 quyết định #8: "Validator fail/timeout/malformed → fail-closed UNVALIDATED, không bao giờ APPROVED". Code thật: nếu `validate_content()` throw exception (network, markdown hỏng...), exception văng thẳng ra ngoài, không map về `UNVALIDATED` — vi phạm invariant (dù hậu quả thực tế là crash cả cycle chứ không phải APPROVE sai, vẫn sai theo đúng thiết kế). Sửa: bọc try/except quanh `validate_content()`, exception → `verdict="UNVALIDATED"`.
+5. **Nút Từ chối (reject) hoàn toàn chưa tồn tại** — trước đây `PENDING_APPROVAL` chỉ có action Approve; không có cách nào loại một bài sai chủ đề khỏi hàng chờ mà không tự tay sửa `publication_registry.json`. Thêm full-stack: `reject_publication()` (application layer, atomic claim giống approve) → CLI `venho-growth reject --publication-id X --rejected-by Y --reason "..."` → API `POST /api/v1/studio/growth/[id]/reject` (venho-os) → nút "Từ chối"/"Từ chối tất cả" trong `GrowthApprovalQueue` (per-platform + group-level, giống layout nút Duyệt). Rejected rows tự động rớt khỏi `list-pending` (chỉ filter `PENDING_APPROVAL`), không cần logic ẩn riêng.
+
+**"Sửa" (edit) — cố tình KHÔNG làm trong phiên này:** theo plan, sửa nội dung sau khi đã có `package_snapshot` phải tự động revoke approval cũ và chạy lại M03 validation trước khi cho vào hàng chờ lại (không được "sửa xong tự động duyệt lại"). Đây là 1 luồng lớn hơn (cần quyết định UX: sửa inline trên dashboard hay mở lại content_studio pipeline?) — để Harry quyết định approach trước khi build, tránh build sai hướng.
+
+**Đã điều tra, không phải lỗi:** `venho-os/src/bff/growth/growth-agent.client.ts` trỏ `http://127.0.0.1:8011` từng nghi là dead/legacy code (audit ban đầu đoán vậy) — xác minh lại: đây là client thật cho `venho-quangcao-agent` (repo riêng, FB/Google/TikTok paid-ads agent, `make run` → uvicorn port 8011 thật), khác hoàn toàn với Growth Content Agent v3.1 (`venho-growth` CLI) đang audit. Không đụng vào.
+
+**Gap đã biết, chưa làm (flag cho Harry, không tự ý xây):** ảnh generate ra (`image_run_path`, local file) không bao giờ được đính vào payload dispatch — `MakeGatewayAdapter.send()` chỉ gửi `{publication_id, idempotency_key, platform, content}`, không có URL ảnh. Toàn bộ pipeline generate + validate ảnh (gọi OpenAI thật, tốn phí) hiện sản xuất ra artifact không bao giờ lên bài thật. Cần một bước upload ảnh lên nơi có public URL (Google Drive như `venho-social-content-agent` legacy đã làm, hoặc nơi khác) để Make.com fetch được — quyết định kiến trúc cần Harry chốt trước khi build (secrets mới, chọn nhà cung cấp lưu trữ), không tự làm trong phiên audit này.
+
+**File lỗi/temp/nháp:** kiểm tra cả 2 repo — `git status --short` sạch cả trước và sau audit, không có `.orig`/`.bak`/`_old.`/`_draft.`/`.log` tracked, không `__pycache__` tracked, không file `/tmp/` nào bị commit nhầm, `data/` toàn bộ đã gitignore đúng. Không có gì cần xoá.
+
+**Verify:** 667/667 pytest pass (12 test mới: `test_growth_approve_and_dispatch.py` +8, `test_growth_m03_validator_bridge.py` mới +2, `test_growth_weekly_cycle.py` mới +1, `test_growth_daily_cycle.py` +1).
+
+**Việc liên quan ở `venho-os`:** xem `venho-os/task_memory.md`/`CHANGELOG.md` mục 2026-08-04 (audit) — API route `reject`/`retry-dispatch` mới, nút Từ chối trong `GrowthApprovalQueue`.
 
 ## 14. Task Closing Protocol
 

@@ -60,6 +60,7 @@ class DailyCycleResult:
     topic: dict[str, Any]
     publications: list[dict[str, Any]]
     packages: list[dict[str, Any]] = field(default_factory=list)
+    errors: list[dict[str, str]] = field(default_factory=list)
 
 
 def _rotation_state_path(project: str, data_root: Path) -> Path:
@@ -330,55 +331,60 @@ def run_daily_cycle(
 
     publications: list[dict[str, Any]] = []
     packages: list[dict[str, Any]] = []
+    errors: list[dict[str, str]] = []
     for platform in platforms or DEFAULT_PLATFORMS:
-        brief = _build_creative_brief(topic, platform, day, project, scenario_registry)
-        package = run_content_pipeline(brief, content_bridge=content_bridge, validator_bridge=validator_bridge)
-        for _attempt in range(MAX_TEXT_ATTEMPTS - 1):
-            if package["state"] == "READY_FOR_REVIEW":
-                break
+        try:
+            brief = _build_creative_brief(topic, platform, day, project, scenario_registry)
             package = run_content_pipeline(brief, content_bridge=content_bridge, validator_bridge=validator_bridge)
-        packages.append(package)
-        if package["state"] != "READY_FOR_REVIEW":
+            for _attempt in range(MAX_TEXT_ATTEMPTS - 1):
+                if package["state"] == "READY_FOR_REVIEW":
+                    break
+                package = run_content_pipeline(brief, content_bridge=content_bridge, validator_bridge=validator_bridge)
+            packages.append(package)
+            if package["state"] != "READY_FOR_REVIEW":
+                continue
+
+            selected = next(c for c in package["copy_candidates"] if c["id"] == package["selected_copy_candidate_id"])
+            publication_id = f"pub-{day}-{platform}-{uuid.uuid4().hex[:8]}"
+            idempotency_key = hashlib.sha256(f"{project}|{platform}|{package['id']}".encode("utf-8")).hexdigest()
+            # Canonical shape automation_studio.approval_snapshot expects (see
+            # ContentPackage domain model) -- frozen at queue time and carried on
+            # the registry row so approve_and_dispatch can build a real exact-
+            # version approval snapshot instead of just flipping a status string.
+            package_snapshot = {
+                "id": package["id"],
+                "copy_version_ids": [selected["id"]],
+                "asset_version_ids": asset_version_ids,
+                "validation_snapshot_id": hashlib.sha256(
+                    json.dumps(package["validation"], sort_keys=True, ensure_ascii=False).encode("utf-8")
+                ).hexdigest(),
+                "fact_version_ids": [],
+                "brief_version_id": f"{brief['id']}@{brief['version']}",
+            }
+            reserved = registry.reserve(
+                {
+                    "publication_id": publication_id,
+                    "content_package_id": package["id"],
+                    "idempotency_key": idempotency_key,
+                    "platform": platform,
+                }
+            )
+            publication = registry.update(
+                reserved["publication_id"],
+                status="PENDING_APPROVAL",
+                content=_content_payload(selected, image_run_path=image_run_path),
+                creative_brief_id=brief["id"],
+                package_snapshot=package_snapshot,
+                # day/pillar/topic so the dashboard can group same-day publications
+                # (one per platform) into a single reviewable row instead of a flat
+                # per-platform list -- see PublishingSection.tsx's GrowthApprovalQueue.
+                day=day,
+                pillar=topic["pillar"],
+                topic=topic["topic"],
+            )
+            publications.append(publication)
+        except Exception as exc:  # noqa: BLE001 - one platform's provider/network failure (rate limit, timeout) must not abort the other platforms' drafts for this day
+            errors.append({"platform": platform, "error": f"{type(exc).__name__}: {exc}"})
             continue
 
-        selected = next(c for c in package["copy_candidates"] if c["id"] == package["selected_copy_candidate_id"])
-        publication_id = f"pub-{day}-{platform}-{uuid.uuid4().hex[:8]}"
-        idempotency_key = hashlib.sha256(f"{project}|{platform}|{package['id']}".encode("utf-8")).hexdigest()
-        # Canonical shape automation_studio.approval_snapshot expects (see
-        # ContentPackage domain model) -- frozen at queue time and carried on
-        # the registry row so approve_and_dispatch can build a real exact-
-        # version approval snapshot instead of just flipping a status string.
-        package_snapshot = {
-            "id": package["id"],
-            "copy_version_ids": [selected["id"]],
-            "asset_version_ids": asset_version_ids,
-            "validation_snapshot_id": hashlib.sha256(
-                json.dumps(package["validation"], sort_keys=True, ensure_ascii=False).encode("utf-8")
-            ).hexdigest(),
-            "fact_version_ids": [],
-            "brief_version_id": f"{brief['id']}@{brief['version']}",
-        }
-        reserved = registry.reserve(
-            {
-                "publication_id": publication_id,
-                "content_package_id": package["id"],
-                "idempotency_key": idempotency_key,
-                "platform": platform,
-            }
-        )
-        publication = registry.update(
-            reserved["publication_id"],
-            status="PENDING_APPROVAL",
-            content=_content_payload(selected, image_run_path=image_run_path),
-            creative_brief_id=brief["id"],
-            package_snapshot=package_snapshot,
-            # day/pillar/topic so the dashboard can group same-day publications
-            # (one per platform) into a single reviewable row instead of a flat
-            # per-platform list -- see PublishingSection.tsx's GrowthApprovalQueue.
-            day=day,
-            pillar=topic["pillar"],
-            topic=topic["topic"],
-        )
-        publications.append(publication)
-
-    return DailyCycleResult(day=day, topic=topic, publications=publications, packages=packages)
+    return DailyCycleResult(day=day, topic=topic, publications=publications, packages=packages, errors=errors)

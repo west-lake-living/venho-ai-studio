@@ -8,7 +8,12 @@ from zoneinfo import ZoneInfo
 
 import typer
 
-from growth_orchestrator.application.approve_and_dispatch import approve_and_dispatch, list_pending
+from growth_orchestrator.application.approve_and_dispatch import (
+    approve_and_dispatch,
+    list_pending,
+    reject_publication,
+    retry_dispatch,
+)
 from growth_orchestrator.application.daily_cycle import CADENCE_DAYS, run_daily_cycle
 from growth_orchestrator.application.measure_publication import measure_publication
 from growth_orchestrator.application.reconcile_publication import reconcile_publication
@@ -47,7 +52,7 @@ def daily_cycle(
     result = run_daily_cycle(
         resolved_day, project=project, generate_image=generate_image, image_validation_provider="openai"
     )
-    typer.echo(json.dumps({"day": result.day, "topic": result.topic, "publications": result.publications}, ensure_ascii=False, indent=2))
+    typer.echo(json.dumps({"day": result.day, "topic": result.topic, "publications": result.publications, "errors": result.errors}, ensure_ascii=False, indent=2))
 
 
 @app.command("weekly-cycle")
@@ -72,7 +77,7 @@ def weekly_cycle(
         json.dumps(
             {
                 "days": [
-                    {"day": day.day, "topic": day.topic, "publications": day.publications}
+                    {"day": day.day, "topic": day.topic, "publications": day.publications, "errors": day.errors}
                     for day in result.days
                 ]
             },
@@ -102,6 +107,44 @@ def approve_and_dispatch_cmd(
     """
     try:
         result = approve_and_dispatch(publication_id, approved_by=approved_by, project=project)
+    except (KeyError, ValueError) as exc:
+        typer.echo(json.dumps({"ok": False, "error": str(exc)}), err=True)
+        raise typer.Exit(code=1)
+    typer.echo(json.dumps({"ok": True, "publication": result}, ensure_ascii=False, indent=2))
+
+
+@app.command("reject")
+def reject_cmd(
+    publication_id: str = typer.Option(..., "--publication-id"),
+    rejected_by: str = typer.Option(..., "--rejected-by"),
+    reason: Optional[str] = typer.Option(None, "--reason"),
+    project: str = typer.Option("venho_hotel"),
+) -> None:
+    """Reject a PENDING_APPROVAL publication -- no dispatch, no webhook call.
+
+    What the "Từ chối" button on VENHO OS Dashboard's Publishing & Schedule
+    section calls (via a local `venho-growth` subprocess). Rejected rows drop
+    out of `list-pending` automatically.
+    """
+    try:
+        result = reject_publication(publication_id, rejected_by=rejected_by, reason=reason, project=project)
+    except (KeyError, ValueError) as exc:
+        typer.echo(json.dumps({"ok": False, "error": str(exc)}), err=True)
+        raise typer.Exit(code=1)
+    typer.echo(json.dumps({"ok": True, "publication": result}, ensure_ascii=False, indent=2))
+
+
+@app.command("retry-dispatch")
+def retry_dispatch_cmd(
+    publication_id: str = typer.Option(..., "--publication-id"),
+    project: str = typer.Option("venho_hotel"),
+) -> None:
+    """Re-fire the Make.com dispatch for a publication stranded in GATEWAY_ERROR
+    (e.g. a transient webhook/network failure on the first approve). Reuses
+    the original approval -- does not ask for approved_by again.
+    """
+    try:
+        result = retry_dispatch(publication_id, project=project)
     except (KeyError, ValueError) as exc:
         typer.echo(json.dumps({"ok": False, "error": str(exc)}), err=True)
         raise typer.Exit(code=1)

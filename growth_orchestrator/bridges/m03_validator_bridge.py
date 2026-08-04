@@ -29,16 +29,20 @@ class M03ValidatorBridge:
         markdown_path = copy_candidate.get("content_package_paths", {}).get("markdown")
         dna_subject = copy_candidate.get("dna_subject")
         project = brief.get("project")
+        content_report_failed = False
         if markdown_path and dna_subject and project:
-            content_report = validate_content(
-                project,
-                dna_subject,
-                Path(markdown_path),
-                platform=copy_candidate.get("platform", "facebook"),
-                target_language=copy_candidate.get("language"),
-            )
+            try:
+                content_report = validate_content(
+                    project,
+                    dna_subject,
+                    Path(markdown_path),
+                    platform=copy_candidate.get("platform", "facebook"),
+                    target_language=copy_candidate.get("language"),
+                )
+            except Exception:  # noqa: BLE001 - Part 2.1 invariant #8: validator crash/malformed input must fail-closed to UNVALIDATED, never silently pass as APPROVED
+                content_report_failed = True
 
-        if "UNVALIDATED" in {claim_report["verdict"], alignment_report["verdict"]}:
+        if content_report_failed or "UNVALIDATED" in {claim_report["verdict"], alignment_report["verdict"]}:
             verdict = "UNVALIDATED"
         elif claim_report["kill_switches"] or alignment_report["kill_switches"]:
             verdict = "NEEDS_REVISION"

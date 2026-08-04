@@ -67,6 +67,30 @@ class PublicationRegistry:
             self._save(data)
             return publication
 
+    def claim(self, publication_id: str, *, expected_status: str, claimed_status: str) -> dict[str, Any]:
+        """Atomically test-and-set status inside the file lock.
+
+        Guards the approve/reject check-then-act sequence: two concurrent
+        callers racing on the same publication_id (double-click, two tabs, a
+        client retry after a timeout) must not both observe `expected_status`
+        and both proceed to dispatch. Only one claim can win; the loser raises
+        immediately instead of silently firing a second real webhook call.
+        """
+        with self._locked():
+            data = self.load()
+            for index, item in enumerate(data["publications"]):
+                if item.get("publication_id") == publication_id:
+                    if item.get("status") != expected_status:
+                        raise ValueError(
+                            f"publication_id {publication_id} is not {expected_status} "
+                            f"(status={item.get('status')})"
+                        )
+                    updated = {**item, "status": claimed_status, "updated_at": datetime.now(timezone.utc).isoformat()}
+                    data["publications"][index] = updated
+                    self._save(data)
+                    return updated
+            raise KeyError(f"Unknown publication_id: {publication_id}")
+
     def update(self, publication_id: str, **changes: Any) -> dict[str, Any]:
         with self._locked():
             data = self.load()

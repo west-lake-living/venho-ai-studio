@@ -64,21 +64,31 @@ def run_weekly_cycle(
     results: list[DailyCycleResult] = []
     for day in WEEKLY_CADENCE_ORDER:
         assert day in CADENCE_DAYS
-        results.append(
-            run_daily_cycle(
-                day,
-                project=project,
-                platforms=platforms,
-                config_root=config_root,
-                data_root=data_root,
-                registry=registry,
-                scenario_registry=scenario_registry,
-                image_provider=image_provider,
-                reference_resolver=reference_resolver,
-                generate_image=generate_image,
-                content_bridge=content_bridge,
-                validator_bridge=validator_bridge,
-                image_validation_provider=image_validation_provider,
+        try:
+            results.append(
+                run_daily_cycle(
+                    day,
+                    project=project,
+                    platforms=platforms,
+                    config_root=config_root,
+                    data_root=data_root,
+                    registry=registry,
+                    scenario_registry=scenario_registry,
+                    image_provider=image_provider,
+                    reference_resolver=reference_resolver,
+                    generate_image=generate_image,
+                    content_bridge=content_bridge,
+                    validator_bridge=validator_bridge,
+                    image_validation_provider=image_validation_provider,
+                )
             )
-        )
+        except Exception as exc:  # noqa: BLE001 - one day's uncaught failure (e.g. topic config error) must not drop the rest of the week's batch
+            results.append(
+                DailyCycleResult(
+                    day=day,
+                    topic={},
+                    publications=[],
+                    errors=[{"platform": "*", "error": f"{type(exc).__name__}: {exc}"}],
+                )
+            )
     return WeeklyCycleResult(days=results)

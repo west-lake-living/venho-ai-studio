@@ -1,6 +1,27 @@
 # VENHO AI STUDIO — Task Status
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-08-04 (gpt-5.5 generator, Validator gate thật cho text+ảnh, fix hex-code leak, weekly-cycle) · **Tests:** 655/655 pass (AI Studio) · 0 API call trong test
+**Cập nhật:** 2026-08-04 (audit đối chiếu plan v3.1 CONSOLIDATED — sửa race condition, fail-closed validator, cô lập lỗi platform/day, thêm Từ chối) · **Tests:** 667/667 pass (AI Studio) · 0 API call trong test
+
+---
+
+### Growth Agent v3.1 — Audit đối chiếu master plan CONSOLIDATED, sửa lỗi + Từ chối (2026-08-04)
+
+**Status: DONE**
+
+Harry yêu cầu: review/audit Growth Agent đối chiếu `docs/Content agent/VENHO_GROWTH_AGENT_MASTER_PLAN_v3_1_CONSOLIDATED.md`, sửa lỗi tìm được, thêm nút Từ chối/Sửa, dọn file rác.
+
+- [x] Sửa race condition double-publish trong `approve_and_dispatch()` — `PublicationRegistry.claim()` mới (atomic test-and-set trong khoá `fcntl`), 2 lần bấm Duyệt đồng thời chỉ 1 bên thắng.
+- [x] Sửa dispatch fail kẹt vĩnh viễn — lỗi mạng/webhook giờ hạ cánh `GATEWAY_ERROR` đúng cách + `retry_dispatch()` mới (CLI `retry-dispatch`) để thử lại không cần duyệt lại.
+- [x] Cô lập lỗi theo platform (`run_daily_cycle`) và theo ngày (`run_weekly_cycle`) — 1 platform/ngày lỗi không còn xoá các platform/ngày khác trong cùng batch; lỗi ghi vào `.errors`.
+- [x] `M03ValidatorBridge` fail-closed đúng thiết kế — exception trong `validate_content()` → `UNVALIDATED`, không văng ra ngoài (Part 2.1 quyết định #8 của plan).
+- [x] Nút **Từ chối** full-stack: `reject_publication()` → CLI `venho-growth reject` → API `POST .../[id]/reject` (venho-os) → UI "Từ chối"/"Từ chối tất cả" trong `GrowthApprovalQueue`. Rejected rows tự rớt khỏi `list-pending`.
+- [ ] **"Sửa" (edit) cố tình chưa làm** — cần chốt UX trước (inline edit vs mở lại content_studio pipeline) + phải tự động revoke approval + rerun M03 theo plan; để Harry quyết định approach.
+- [x] Điều tra `bff/growth/growth-agent.client.ts` (127.0.0.1:8011, nghi dead code) — xác nhận là client thật cho `venho-quangcao-agent` (agent quảng cáo trả phí, repo khác), không phải lỗi, không đụng vào.
+- [ ] **Gap đã biết, chưa làm:** ảnh generate ra không bao giờ đính vào payload dispatch thật (cần Google Drive/storage uploader mới — quyết định kiến trúc cần Harry chốt, không tự xây).
+- [x] File lỗi/temp/nháp: cả 2 repo `git status --short` sạch trước/sau — không có gì cần xoá.
+- [x] Verify: 667/667 pytest pass (venho-ai-studio) · `tsc --noEmit` + `eslint` sạch + 127/127 vitest pass (venho-os).
+
+Chi tiết đầy đủ từng lỗi: `task_memory.md` mục 14e. Việc liên quan `venho-os`: xem `venho-os/task_status.md`/`CHANGELOG.md` mục 2026-08-04.
 
 ---
 

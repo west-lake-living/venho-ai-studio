@@ -71,6 +71,35 @@ def test_run_daily_cycle_queues_one_pending_approval_publication_per_platform(tm
     assert len(stored) == len(DEFAULT_PLATFORMS)
 
 
+def test_run_daily_cycle_one_platform_failure_does_not_abort_the_others(tmp_path: Path) -> None:
+    """A provider blip on one platform (rate limit, network) must not drop the
+    other platforms' drafts for the same day -- regression test for the
+    previously-unguarded per-platform loop in run_daily_cycle."""
+    data_root = _tmp_data_root(tmp_path)
+
+    class _FlakyOnInstagramBridge:
+        def __init__(self, real_bridge: M05ContentBridge) -> None:
+            self._real_bridge = real_bridge
+
+        def generate_candidates(self, brief: dict) -> list[dict]:
+            if brief["platforms"] == ["instagram"]:
+                raise RuntimeError("simulated OpenAI rate limit")
+            return self._real_bridge.generate_candidates(brief)
+
+    result = run_daily_cycle(
+        "monday",
+        data_root=data_root,
+        generate_image=False,
+        content_bridge=_FlakyOnInstagramBridge(_mock_content_bridge(data_root)),
+        validator_bridge=_AlwaysApproveValidatorBridge(),
+    )
+
+    succeeded_platforms = [pub["platform"] for pub in result.publications]
+    assert "instagram" not in succeeded_platforms
+    assert set(DEFAULT_PLATFORMS) - {"instagram"} <= set(succeeded_platforms)
+    assert result.errors == [{"platform": "instagram", "error": "RuntimeError: simulated OpenAI rate limit"}]
+
+
 def test_run_daily_cycle_saturday_uses_special_topics(tmp_path: Path) -> None:
     data_root = _tmp_data_root(tmp_path)
     result = run_daily_cycle("saturday", platforms=["facebook"], data_root=data_root, generate_image=False, content_bridge=_mock_content_bridge(data_root), validator_bridge=_AlwaysApproveValidatorBridge())
