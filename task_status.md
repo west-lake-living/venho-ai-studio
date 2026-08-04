@@ -1,6 +1,44 @@
 # VENHO AI STUDIO — Task Status
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-08-04 (M07 platform routing + Make FB/IG/Threads adapter; audit cutover Growth Agent → thay VenHoSocialManager) · **Tests:** 572/572 pass (AI Studio) · 0 API call trong test
+**Cập nhật:** 2026-08-04 (3 gap cutover: daily-cycle cron, Approve→dispatch bridge, real gpt-image-2 provider) · **Tests:** 588/588 pass (AI Studio) · 0 API call trong test
+
+---
+
+### Growth Agent v3.1 — 3 gap cutover: lịch + Approve bridge + ảnh thật (2026-08-04)
+
+**Status: DONE (từng phần đúng scope, có test) · Xem "KHÔNG làm" cuối mỗi mục — vẫn còn việc thật trước khi tắt VenHoSocialManager**
+
+Harry: "Làm cả 3, theo thứ tự" (lịch T2/T4/T6/T7 → Approve trên Dashboard → ảnh). Cả 3 đều DONE ở mức "glue thật, có test, không giả vờ" — không phải rebuild toàn bộ v3.1 master plan (trend scanning thật, special-lane candidate typing đầy đủ vẫn chưa có).
+
+**1) `growth_orchestrator/application/daily_cycle.py::run_daily_cycle(day)` — mới:**
+- Đọc `config/projects/venho_hotel/content/content_pillars.yaml` (thêm `special_topics` cho lane Saturday — khớp đúng field `saturday: type=special, lane=special` đã có sẵn trong `growth/cadence_policy.yaml`, hoá ra Harry's "thêm T7" đã match thiết kế cũ có sẵn, không phải xây từ đầu).
+- Rotation cursor riêng cho lane `regular` (Mon/Wed/Fri) và `special` (Sat), lưu `data/projects/venho_hotel/growth/rotation_state.json`.
+- Với mỗi platform (facebook/instagram/threads/zalo) gọi thật `content_studio.generate_content()` (không phải giả) → 1 draft/publication.
+- Reserve 1 dòng `PENDING_APPROVAL` trong `PublicationRegistry` mỗi platform (tái dùng registry đã có, không tạo store mới) — **không dispatch gì cả**, đúng quyết định của Harry là publish do Approve kích hoạt chứ không phải cron.
+- CLI: `venho-growth daily-cycle [--day monday]` (tự resolve theo Asia/Ho_Chi_Minh nếu không truyền `--day`).
+- `.github/workflows/growth-daily-cycle.yml` mới: cron `0 1 * * 1,3,5,6` (01:00 UTC = 08:00 ICT, Mon/Wed/Fri/Sat) + `workflow_dispatch`. Vì `data/` bị gitignore, step cuối `git add -f` rotation_state.json + registry + content output rồi commit/push — cùng gotcha đã ghi nhận ở workflow cũ VenHoSocialManager.
+- **Lưu ý xung đột giờ:** Harry nói 8AM trong hội thoại này; `cadence_policy.yaml` (khoá từ trước, comment "TR-D2: Harry locked this in directly") ghi `publish_time: "09:00"` với preflight 08:45. Tôi dùng 8AM theo yêu cầu mới nhất — nếu 09:00 mới đúng thì chỉ cần sửa 1 dòng cron.
+- **KHÔNG làm:** brief thật từ trend-scanning (`trend_lane.py`/`special_lane.py` chưa có nguồn dữ liệu thật) — `special_topics` hiện là danh sách Harry tự biên soạn tay, không phải AI tự phát hiện sự kiện/xu hướng.
+
+**2) Approve trên VENHO OS Dashboard → dispatch thật — mới:**
+- `growth_orchestrator/application/approve_and_dispatch.py::approve_and_dispatch(publication_id, approved_by)` — chỉ approve được dòng đang `PENDING_APPROVAL`, gọi `M07PublishingBridge.dispatch()` thật (Make.com webhook, không phải mock), ghi `approved_by` + status mới vào registry. Lỗi dispatch → `GATEWAY_ERROR`, không tự revert approval (operator retry dispatch thay vì duyệt lại).
+- CLI: `venho-growth list-pending`, `venho-growth approve-and-dispatch --publication-id X --approved-by Y`.
+- **Cross-repo `venho-os` (Next.js, chạy `npm run dev` local trên máy Harry, chưa deploy public):** đọc code xong mới biết section "Publishing & Schedule" hiện tại là hệ thống **cũ** (duyệt topic cho VenHoSocialManager, không đụng Python). Đã thêm mới, theo đúng pattern shell-out `child_process.execFile` đã có sẵn cho `generate-image`/`observe` (không phải tự nghĩ ra cách mới):
+  - `src/app/api/v1/studio/growth/pending/route.ts` (GET, shell `venho-growth list-pending`)
+  - `src/app/api/v1/studio/growth/[id]/approve/route.ts` (POST, shell `venho-growth approve-and-dispatch`, `approved_by` lấy từ session email thật — không tin client gửi lên, giống pattern route Luna approve có sẵn)
+  - `PublishingSection.tsx` thêm block `GrowthApprovalQueue` (bảng bài chờ duyệt + nút "Duyệt và đăng") phía trên bảng topic-schedule cũ (đổi tên block cũ thành "(legacy)" cho rõ)
+  - Cả 3 file đã qua `tsc --noEmit` + `eslint` sạch. **`/api/v1/studio/**` đã có RBAC `studio:write` qua `proxy.ts` có sẵn — không cần thêm permission logic mới.**
+  - **CHƯA test qua browser thật** (không mở dev server song song vì có thể trùng port với phiên Harry đang chạy) — chỉ verify tĩnh (typecheck/lint).
+  - **⚠️ QUAN TRỌNG: KHÔNG commit gì bên `venho-os`.** Repo đó đang có rất nhiều thay đổi chưa commit của Harry (~60 file, có vẻ là 1 đợt refactor design-token/màu sắc xuyên suốt app) từ trước khi tôi động vào — trong đó `PublishingSection.tsx` cũng nằm trong đợt refactor đó. Diff của tôi giờ nằm lồng trên working tree hiện tại của Harry; tôi cố tình để nguyên chưa `git add`/`git commit` gì ở `venho-os` để Harry tự review và commit theo nhịp của Harry, tránh gộp nhầm 2 việc không liên quan vào 1 commit.
+
+**3) `image_studio_runtime/adapters/gpt_image_provider.py::GPTImageProvider` — thật, không còn `NotImplementedError`:**
+- `generate(prompt, size, quality, reference_images=None)` — text-to-image qua `client.images.generate()`, hoặc `client.images.edit()` khi có `reference_images` (khớp đúng yêu cầu CLAUDE.md "text-only 6-8.4/10, edit+ref 9/10"). `client` tiêm được (mặc định `openai.OpenAI()` đọc `OPENAI_API_KEY`) — test dùng fake client, 0 API call thật.
+- `map_api_size`/`map_api_quality`: prompt_contract dùng size kiểu "1024x1280" (không phải size hợp lệ của API) → snap về đúng 1 trong 4 size gpt-image hỗ trợ (`1024x1024`/`1024x1536`/`1536x1024`/`auto`).
+- `gpt_image_provider_from_env(env)` — chỉ bật khi có `OPENAI_API_KEY` thật (không phải placeholder `YOUR_...`).
+- `image_studio_runtime/application/generate_image.py::generate_image_run()` thêm param `reference_images: list[bytes] | None` — forward xuống provider khi có, không đổi behaviour cũ khi không truyền (test cũ `test_growth_phase3_image_runtime.py` không cần sửa).
+- **KHÔNG làm — gap thật còn lại:** chưa có bước resolve `reference_asset_ids` (chuỗi ID trong `scenario_registry.yaml`, ví dụ `venho_rooftop_railing_approved`) thành file ảnh thật trên đĩa để lấy `bytes` truyền vào `reference_images` — hiện tại `reference_images` phải truyền tay. Ảnh ref thật của Linh An/khách sạn nằm ở `venho-os/ops/VenHoSocialManager/assets/` (cross-repo). Và **`generate_image_run()` chưa được gọi từ `daily_cycle.py`** — content pipeline hàng ngày vẫn chưa tự sinh ảnh, chỉ mới "provider hoạt động thật khi được gọi".
+
+**Verify:** `/usr/bin/python3 -m pytest -q` → 588 passed (572 prior + 16 mới: 4 daily_cycle + 4 approve_and_dispatch + 8 image_provider). `compileall` sạch toàn repo.
 
 ---
 

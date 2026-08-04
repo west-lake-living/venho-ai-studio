@@ -1,13 +1,29 @@
 pillars:
   - id: west_lake_discovery
     name: Kham pha Ho Tay
+    dna_subject: westlake
     topics:
       - morning at West Lake
       - lake view room
       - quiet Hanoi stay
   - id: room_comfort
     name: Phong gon gang gan ho
+    dna_subject: lake_view_room
     topics:
       - lake view morning
       - simple hotel comfort
+
+# Saturday special lane (v3.1 cadence_policy.yaml "special" slot -- Harry's
+# T7 addition). Manually curated for now: real trend/event scanning
+# (growth_orchestrator.application.special_lane's seasonal_nature /
+# cultural_event / lifestyle_trend candidate types) is not wired to a live
+# source yet, so this is the feature_story fallback list Harry edits by hand.
+special_topics:
+  - id: weekend_feature
+    name: Cuoi tuan o Tay Ho
+    dna_subject: outside
+    topics:
+      - a quiet weekend morning walk around West Lake
+      - weekend brunch view at the hotel rooftop
+      - slow weekend at Ven Ho Hotel
 

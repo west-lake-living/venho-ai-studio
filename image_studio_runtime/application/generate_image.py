@@ -30,14 +30,18 @@ def generate_image_run(
     data_root: Path = Path("data/projects"),
     paid: bool = False,
     existing_runs: list[ImageRun] | None = None,
+    reference_images: list[bytes] | None = None,
 ) -> Path:
     if paid:
         enforce_paid_attempt_policy(existing_runs or [], operation="generate")
     final_prompt = build_final_prompt(prompt_contract)
     run_id = str(uuid.uuid4())
     selected_provider = provider or MockImageProvider()
+    generate_kwargs: dict = {"size": prompt_contract.get("size", "1024x1280"), "quality": prompt_contract.get("quality", "medium")}
+    if reference_images:
+        generate_kwargs["reference_images"] = reference_images
     try:
-        image_bytes = selected_provider.generate(final_prompt, size=prompt_contract.get("size", "1024x1280"), quality=prompt_contract.get("quality", "medium"))
+        image_bytes = selected_provider.generate(final_prompt, **generate_kwargs)
     except Exception as exc:
         if _is_transient_provider_error(exc):
             raise RuntimeError("Transient provider failure; backoff without creating a new variant") from exc

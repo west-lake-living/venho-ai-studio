@@ -755,7 +755,12 @@ Harry chốt: Growth Agent v3.1 (repo này) sẽ **thay thế hoàn toàn** `Ven
 2. **Approve trên VENHO OS Dashboard chưa nối vào đây.** Section "Publishing & Schedule" hiện tại (`venho-os/src/components/os/sections/PublishingSection.tsx` + API `/api/v1/studio/topic-schedule`) là hệ thống cũ — duyệt **topic** cho VenHoSocialManager, ghi thẳng vào 1 file JSON + `git commit`, hoàn toàn không đụng tới `PublicationRegistry`/M07 của repo Python này. Cần route/section mới ở `venho-os` gọi ngược vào Python (shell-out CLI hoặc API nội bộ) mới có "bấm Approve → dispatch thật".
 3. **Chưa có tạo ảnh thật.** `content_studio/builders/social_builder.py::mock_social_generator` là mock thuần. M02 Prompt Studio đã build prompt ảnh thật từ DNA (`venho prompt --type image`, complete) — còn thiếu đúng adapter gọi OpenAI images API (gpt-image-2 + ref ảnh), theo pattern dependency-injected-HTTP giống Tavily/Telegram/Zalo (§ test discipline).
 
-Chỉ tắt workflow `venho-os/.github/workflows/social-content.yml` sau khi cả 3 gap trên xong và test tay ít nhất 1 chu kỳ thật.
+**Cập nhật 2026-08-04 — cả 3 gap đã có glue thật (chi tiết đầy đủ: `task_status.md` mục cùng ngày):**
+1. `growth_orchestrator/application/daily_cycle.py::run_daily_cycle(day)` + CLI `venho-growth daily-cycle` + `.github/workflows/growth-daily-cycle.yml` (cron Mon/Wed/Fri/Sat 08:00 ICT) — sinh draft thật qua `content_studio.generate_content()`, queue `PENDING_APPROVAL` trong `PublicationRegistry`, KHÔNG dispatch.
+2. `growth_orchestrator/application/approve_and_dispatch.py` + CLI `venho-growth approve-and-dispatch` — Approve gọi `M07PublishingBridge.dispatch()` thật. Nối sang `venho-os` qua 2 route mới (`/api/v1/studio/growth/pending`, `/api/v1/studio/growth/[id]/approve`) shell-out `venho-growth` (pattern có sẵn từ `generate-image`/`observe`), UI thêm vào `PublishingSection.tsx`. **venho-os hiện có rất nhiều uncommitted WIP không liên quan (~60 file, có vẻ refactor design-token) — code mới nằm trong working tree đó nhưng CHƯA được `git add`/commit, cố tình để Harry tự commit.**
+3. `image_studio_runtime/adapters/gpt_image_provider.py::GPTImageProvider.generate()` hết `NotImplementedError` — gọi thật `client.images.generate()`/`.edit()` (dependency-injected client, mặc định `openai.OpenAI()`). Còn thiếu: resolve `reference_asset_ids` → file ảnh thật (ref ảnh nằm ở `venho-os/ops/VenHoSocialManager/assets/`, cross-repo, chưa nối), và `generate_image_run()` chưa được gọi từ `daily_cycle.py` (pipeline hàng ngày chưa tự sinh ảnh).
+
+Chỉ tắt workflow `venho-os/.github/workflows/social-content.yml` sau khi 3 gap trên hoàn thiện thật (đặc biệt: ref ảnh thật + daily_cycle gọi image gen + venho-os UI test qua browser) và test tay ít nhất 1 chu kỳ thật.
 
 ## 14. Task Closing Protocol
 

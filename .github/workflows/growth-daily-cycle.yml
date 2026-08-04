@@ -1,0 +1,59 @@
+name: Growth Agent Daily Cycle
+
+# Cadence day = T2/T4/T6/T7 (Mon/Wed/Fri regular lane + Sat special lane),
+# 08:00 Asia/Ho_Chi_Minh (UTC+7) == 01:00 UTC same calendar day.
+# This job only generates drafts and queues them PENDING_APPROVAL in
+# PublicationRegistry -- it does NOT publish anything. Actual posting is
+# triggered later by approving on VENHO OS Dashboard (see
+# growth_orchestrator/application/approve_and_dispatch.py), which calls
+# Make.com webhooks directly from wherever the dashboard backend runs, not
+# from this workflow.
+on:
+  schedule:
+    - cron: "0 1 * * 1,3,5,6"
+  workflow_dispatch:
+    inputs:
+      day:
+        description: "Override cadence day (monday/wednesday/friday/saturday). Leave empty to use today."
+        required: false
+
+jobs:
+  daily-cycle:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -e .
+
+      - name: Run daily cycle
+        run: |
+          if [ -n "${{ github.event.inputs.day }}" ]; then
+            venho-growth daily-cycle --day "${{ github.event.inputs.day }}"
+          else
+            venho-growth daily-cycle
+          fi
+
+      # data/ is gitignored (generated content, per-project knowledge/DNA
+      # output) so rotation_state.json and publication_registry.json would
+      # not persist across ephemeral runners without this -- same gotcha
+      # documented for the legacy VenHoSocialManager workflow: `git add -f`
+      # is required because .gitignore excludes data/ before pathspec
+      # resolution.
+      - name: Commit generated content and registry state
+        run: |
+          git config user.name "venho-growth-bot"
+          git config user.email "venho-growth-bot@users.noreply.github.com"
+          git add -f data/projects/*/growth/rotation_state.json \
+                     data/projects/*/publishing/publication_registry.json \
+                     data/projects/*/content/**/*.json \
+                     data/projects/*/content/**/*.md \
+                     data/projects/*/prompts/**/*.json 2>/dev/null || true
+          git diff --cached --quiet || git commit -m "chore: growth agent daily cycle $(date -u +%Y-%m-%d)"
+          git push
