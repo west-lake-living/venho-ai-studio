@@ -14,8 +14,9 @@ class MockImageProvider:
         self.fail_with_status = fail_with_status
         self.calls = 0
 
-    def generate(self, prompt: str, *, size: str, quality: str) -> bytes:
+    def generate(self, prompt: str, *, size: str, quality: str, reference_images: list[bytes] | None = None) -> bytes:
         self.calls += 1
         if self.fail_with_status:
             raise ImageProviderTransientError(self.fail_with_status)
-        return f"MOCK_IMAGE\nsize={size}\nquality={quality}\nprompt={prompt}\n".encode("utf-8")
+        ref_note = f"refs={len(reference_images)}\n" if reference_images else ""
+        return f"MOCK_IMAGE\nsize={size}\nquality={quality}\n{ref_note}prompt={prompt}\n".encode("utf-8")

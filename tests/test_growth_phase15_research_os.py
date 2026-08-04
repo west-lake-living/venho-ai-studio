@@ -110,6 +110,22 @@ def test_stale_fact_detection_and_approval_revocation(tmp_path) -> None:
     assert approvals[0]["status"] == "revoked"
 
 
+def test_load_seed_facts_cli_persists_repo_seed_file_and_resolves(tmp_path) -> None:
+    from typer.testing import CliRunner
+
+    from research_engine.cli import app
+
+    result = CliRunner().invoke(app, ["load-seed-facts", "--data-root", str(tmp_path / "data")])
+    assert result.exit_code == 0, result.output
+    assert "loaded 4 facts" in result.output
+
+    resolver = FactResolver(data_root=tmp_path / "data")
+    fact = resolver.resolve("hotel.room_count")
+    assert fact is not None
+    assert fact["value"] == 12
+    assert fact["approved_by"] == "harry"
+
+
 def test_notebooklm_handoff_requires_question_and_verifies_r2_export(tmp_path) -> None:
     handoff = NotebookLMHandoff(root=tmp_path / "research")
     with pytest.raises(ValueError):

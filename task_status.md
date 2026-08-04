@@ -1,6 +1,50 @@
 # VENHO AI STUDIO — Task Status
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-08-04 (3 gap cutover: daily-cycle cron, Approve→dispatch bridge, real gpt-image-2 provider) · **Tests:** 588/588 pass (AI Studio) · 0 API call trong test
+**Cập nhật:** 2026-08-04 (v3.1 audit + việc 1-5: hợp nhất pipeline thật, exact-version approval, Research OS seed thật, ảnh thật trong daily_cycle, M08 Analytics thật) · **Tests:** 598/598 pass (AI Studio) · 0 API call trong test
+
+---
+
+### Growth Agent v3.1 — Audit theo Definition of Done (27 điều kiện) + việc 1-5 (2026-08-04)
+
+**Status: DONE việc 1-5 (đúng scope glue thật, có test) · việc 6 (hạ tầng) và phần "chạy thật 9 domain research" CHƯA làm — cần quyết định của Harry**
+
+Đọc lại `docs/Content agent/VENHO_GROWTH_AGENT_MASTER_PLAN_v3_1_CONSOLIDATED.md` Phần 18 (27 DoD) để audit chính xác thay vì áng chừng. Kết quả: ~3/27 đạt chắc, phần lớn chưa chạm — hệ thống đang ở khoảng Phase 3-4/8 theo roadmap gốc.
+
+**Phát hiện quan trọng nhất trước khi sửa:** có 2 pipeline sinh nội dung song song chưa hợp nhất — `growth_orchestrator` chính thức (CreativeBrief LOCKED → M03 validate → approval_snapshot khoá version) và `daily_cycle.py` tôi build ở lượt trước (gọi thẳng `content_studio`, bỏ qua toàn bộ safety rail). Việc 1-2 dưới đây giải quyết đúng phát hiện này.
+
+**1) Hợp nhất pipeline — `growth_orchestrator/bridges/m05_content_bridge.py`:**
+- `M05ContentBridge.generate_candidates()` hết là stub 3-angle hard-code — giờ gọi `content_studio.generate_content()` thật, dựng `scene_summary.entities` từ `ScenarioRegistry` (không phải tự bịa).
+- `growth_orchestrator/application/run_content_pipeline.py` thêm DI (`content_bridge`, `validator_bridge`) để test/daily_cycle tiêm được.
+- `growth_orchestrator/application/daily_cycle.py` viết lại hoàn toàn: build `CreativeBrief` LOCKED thật cho từng platform (validate bằng `jsonschema` đúng `contracts/creative_brief.schema.json`), chạy qua `run_content_pipeline` → `M03ValidatorBridge` (claim + alignment gate) → **chỉ queue `PENDING_APPROVAL` khi package `READY_FOR_REVIEW`**; package `NEEDS_REVISION`/`UNVALIDATED` trả về trong `.packages` để thấy nhưng không lên hàng duyệt.
+- `contracts/creative_brief.schema.json`: thêm `threads`/`zalo` vào `platforms` enum (schema gốc v2.x chỉ có facebook/instagram/website_blog/google_business_profile — thiếu 2 platform thật hệ thống đang dùng).
+- Verify chạy thật (không phải chỉ test): `venho-growth daily-cycle --day friday` → 4/4 platform `READY_FOR_REVIEW`, nội dung đúng brand, Zalo đúng 0 hashtag.
+
+**2) Exact-version approval — `automation_studio/approval_snapshot.py` (đã có sẵn, chưa ai dùng) nối vào `approve_and_dispatch.py`:**
+- `daily_cycle.py` khi queue giờ đóng băng `package_snapshot` (copy_version_ids, asset_version_ids, validation_snapshot_id, brief_version_id) lên dòng registry.
+- `approve_and_dispatch()`: nếu có `package_snapshot` → gọi `create_approval_snapshot()` + `assert_dispatch_allowed()` thật, lưu `approval_snapshot` (có checksum, `approved_by`, `approved_at`) vào registry — đúng DoD #7 "owner approval tham chiếu exact version". Không có snapshot (dòng cũ/thủ công) → fallback hành vi cũ, không crash.
+- **Giới hạn thật:** chưa có store ContentPackage sống để so sánh "đã đổi chưa" tại thời điểm duyệt — hiện tại chưa có UI sửa nội dung sau khi queue nên check này chưa có gì để bắt thật; hạ tầng đã sẵn sàng cho khi có UI sửa.
+
+**3) Research OS chạy thật — KHÔNG dùng weather (R2-T không bao giờ lên R3 theo đúng thiết kế, xem Phần 6.6 "Ranh giới quyết định"):**
+- Phát hiện: `research/` vault đã có sẵn note thật (`RS-2026-08-0014` synthesis, `RS-2026-08-0001`/`RS-2026-08-0005` R1) và `config/projects/venho_hotel/growth/seed_facts.json` với 4 fact **đã ghi `approved_by: harry`** trong file git-committed — nhưng chưa từng được `FactStore` persist thật (`data/projects/venho_hotel/growth/facts/` rỗng trước khi tôi chạy).
+- Thêm CLI `venho-research load-seed-facts` (trước đây `FactStore.load_seed_facts()` có code + test nhưng không có CLI nào gọi) — **đã chạy thật**, verify `FactResolver().resolve("hotel.room_count")`/`"review.agoda_overall"` trả về đúng, `approved_by: harry`.
+- **KHÔNG tự ý promote fact MỚI nào** — `venho-research promote` yêu cầu `--approved-by` thật (founder gate, DoD #13 cấm auto-promote), tôi không tự ký thay Harry. Cần Harry xác nhận trước khi promote thêm — xem câu hỏi cuối báo cáo.
+- **Còn thiếu thật:** 8/9 domain nghiên cứu chưa có chu kỳ chạy thật nào (guest_voice mới có 1 note mẫu, competitor/local_intel/platform_trend/brand_visual/market_pricing/social_trend/local_events/weather đều trống) — đây là nghiên cứu kinh doanh thật của Harry, tôi không thể tự bịa dữ liệu cạnh tranh/giá/sự kiện.
+
+**4) Ảnh thật trong `daily_cycle.py`:**
+- `agent_studio/growth/reference_asset_resolver.py` mới + `config/projects/venho_hotel/growth/reference_assets.yaml` mới — map `reference_asset_ids` (chuỗi ID trong `scenario_registry.yaml`) sang file ảnh thật đã tìm thấy trong `assets/raw/` (không phải venho-os như tưởng — ảnh gốc nằm ngay trong repo này). **Ảnh chọn là mặc định tạm** (ảnh đầu tiên tìm thấy mỗi thư mục), chưa qua QC/duyệt như bộ ref Linh An B3/A2/C/D — Harry nên tự chọn lại.
+- `daily_cycle.py` sinh **1 ảnh thật/ngày** (dùng chung cho mọi platform, đúng thực tế Harry đăng cùng 1 ảnh nhiều nơi), qua `prompt_studio.build_image_prompt` (M02, đã có sẵn) → `GPTImageProvider`/`MockImageProvider` (tiêm được) → `generate_image_run`. Best-effort: provider tắt/ref thiếu → `image_run_path: None`, không chặn text vẫn lên hàng duyệt.
+- **Chưa làm:** ảnh chưa được đính vào payload webhook Make.com thật (`MakeGatewayAdapter`/`ZaloOAAdapter` payload hiện chỉ có text) — cần thêm bước upload ảnh lấy URL công khai (như Google Drive upload của VenHoSocialManager cũ) trước khi Make.com dùng được.
+
+**5) M08 Analytics thật — `growth_orchestrator/bridges/m08_analytics_bridge.py`:**
+- `observe(publication_id)` hết trả `pending_observation` giả — đọc `PublicationRegistry`, nếu có `platform_post_id` thật thì chạy đúng chain `analytics_feedback` đã có sẵn (standardize → baseline → score → sentiment → advisory → report), lưu vào các store thật.
+- **Giới hạn thật, nói rõ:** `metrics_adapter_factory` mặc định `MockMetricsAdapter` — **chưa có adapter thật gọi Facebook/Instagram Insights hay Zalo OA analytics** (cần API credentials riêng, là việc khác hẳn "nối M08 vào growth_orchestrator"). Khi có adapter thật, chỉ cần đổi factory, phần còn lại (scoring/sentiment/advisory) đã thật.
+
+**Sửa phụ trong lượt này:**
+- `image_studio_runtime/adapters/mock_image_provider.py`: thêm `reference_images` kwarg (không dùng) để cùng interface với `GPTImageProvider`, tránh `TypeError` khi test tiêm Mock vào code path có ref ảnh.
+- **Phát hiện + né rủi ro thật:** `providers/openai_provider.py` gọi `load_dotenv(BASE_DIR / ".env")` ở top-level module — nếu bất kỳ test nào import module này (vd `tests/test_phase8.py`), nó nạp `OPENAI_API_KEY` thật từ file `.env` (khác `.env.local`) vào `os.environ` cho **cả tiến trình pytest**, khiến `run_daily_cycle`'s test không tiêm provider rõ ràng vô tình gọi API thật → 401 lỗi (key có vẻ đã hết hạn/sai). Đã tự sửa phần của mình (mọi test daily_cycle giờ luôn truyền `generate_image=False` hoặc provider giả tường minh, không dựa vào default đọc env). **Chưa sửa `providers/openai_provider.py`** — nằm ngoài phạm vi việc 1-5, nhưng đây là rủi ro thật (secret thật rò vào toàn bộ tiến trình test) nên cần Harry biết.
+- `tests/test_growth_phase1_policy_registry.py`: thêm `reference_assets.yaml` vào danh sách file bắt buộc (test cũ enumerate chính xác, tôi thêm 1 file mới phải cập nhật theo).
+
+**Verify:** `/usr/bin/python3 -m pytest -q` → 598 passed (588 prior + 10 mới thật sự chạy, không tính lại các test cũ), `compileall` sạch, chạy tay `venho-growth daily-cycle`/`list-pending`/`approve-and-dispatch`/`venho-research load-seed-facts` đều đúng như mô tả.
 
 ---
 

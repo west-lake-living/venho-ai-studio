@@ -10,6 +10,7 @@ import typer
 
 from growth_orchestrator.application.approve_and_dispatch import approve_and_dispatch, list_pending
 from growth_orchestrator.application.daily_cycle import CADENCE_DAYS, run_daily_cycle
+from growth_orchestrator.application.measure_publication import measure_publication
 from growth_orchestrator.application.run_content_pipeline import run_content_pipeline
 
 app = typer.Typer(help="Ven Ho Growth Orchestrator")
@@ -63,6 +64,20 @@ def approve_and_dispatch_cmd(
         typer.echo(json.dumps({"ok": False, "error": str(exc)}), err=True)
         raise typer.Exit(code=1)
     typer.echo(json.dumps({"ok": True, "publication": result}, ensure_ascii=False, indent=2))
+
+
+@app.command("measure")
+def measure_cmd(
+    publication_id: str = typer.Option(..., "--publication-id"),
+    project: str = typer.Option("venho_hotel"),
+) -> None:
+    """Collect + score performance for a PUBLISHED publication (M08 Analytics)."""
+    try:
+        result = measure_publication(publication_id)
+    except KeyError as exc:
+        typer.echo(json.dumps({"ok": False, "error": str(exc)}), err=True)
+        raise typer.Exit(code=1)
+    typer.echo(json.dumps(result, ensure_ascii=False, indent=2))
 
 
 @app.command("version")

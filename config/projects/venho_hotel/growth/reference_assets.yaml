@@ -1,0 +1,12 @@
+# Maps scenario_registry.yaml's opaque reference_asset_ids to an actual file
+# under assets/raw/ so image_studio_runtime can load real bytes for
+# GPTImageProvider's edit-with-reference call.
+#
+# NOT a curation/approval workflow -- picks are provisional defaults (first
+# usable raw photo found per subject at the time this file was written,
+# 2026-08-04). Harry should review and swap paths for the actual best shot
+# per scenario; nothing here has been through a QC/approval gate the way
+# Linh An's B3/A2/C/D reference pack has (see projects/CLAUDE.md).
+assets:
+  venho_rooftop_railing_approved: assets/raw/outside/IMG_5125.jpg
+  venho_room_lake_view_approved: assets/raw/room/ViewHo-room-2/IMG_5193.jpeg

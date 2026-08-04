@@ -14,6 +14,25 @@ from research_engine.adapters.m01_facts_bridge import M01FactsBridge
 app = typer.Typer(help="Ven Ho Research OS")
 
 
+@app.command("load-seed-facts")
+def load_seed_facts(
+    seed_file: Path = typer.Option(Path("config/projects/venho_hotel/growth/seed_facts.json"), "--seed-file"),
+    project: str = "venho_hotel",
+    data_root: Path = Path("data/projects"),
+) -> None:
+    """Persist already-founder-approved bootstrap facts (seed_facts.json) into FactStore.
+
+    Not a promotion path -- seed_facts.json entries already carry
+    `status: approved` + `approved_by` committed to git; this only writes
+    them to the resolvable fact store so ClaimValidator can find them. New
+    facts still must go through `promote` (real founder y/N gate).
+    """
+    paths = M01FactsBridge(project=project, data_root=data_root).store.load_seed_facts(seed_file)
+    typer.echo(f"loaded {len(paths)} facts")
+    for path in paths:
+        typer.echo(str(path))
+
+
 @app.command("notebook-inbox")
 def notebook_inbox(topic: str, question: str, source: list[str] = typer.Option([])) -> None:
     folder = NotebookLMHandoff().create_inbox(topic, question, list(source))

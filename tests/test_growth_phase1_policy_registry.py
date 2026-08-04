@@ -25,6 +25,7 @@ def test_growth_policy_registry_has_required_files_and_thresholds() -> None:
         "cadence_policy.yaml",
         "queue_policy.yaml",
         "feature_flags.yaml",
+        "reference_assets.yaml",
     }
     assert {path.name for path in growth.glob("*.yaml")} == required
 
