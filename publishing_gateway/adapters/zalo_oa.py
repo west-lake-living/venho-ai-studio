@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import hashlib
+import hmac
 from typing import Any, Callable
 
-from shared.http import urllib_post_form
+from shared.http import HttpError, urllib_post, urllib_post_form
 
 ZALO_REFRESH_TOKEN_URL = "https://oauth.zalo.me/v4/oa/access_token"
 
@@ -35,29 +37,84 @@ def refresh_zalo_access_token(
     )
 
 
-class ZaloOAAdapter:
-    """Zalo OA channel adapter. Flag off by default (IN-D5) -- ships after
-    Phase 4.5 once a dedicated Zalo OA app/quota exists; MVP scope is FB+IG
-    only.
+def build_zalo_webhook_signature(secret: str, publication_id: str, idempotency_key: str) -> str:
+    """Same HMAC-SHA256-over-canonical-string convention as `approval_verifier.build_approval_signature`."""
+    message = f"{publication_id}:{idempotency_key}".encode("utf-8")
+    return hmac.new(secret.encode("utf-8"), message, hashlib.sha256).hexdigest()
 
-    NOTE: unlike Facebook/Instagram, Zalo OA has no public "feed post" API --
-    real message sending is scoped to a specific follower `user_id` (7-day
-    consultation window) or an approved broadcast template. The exact
-    endpoint/payload for this adapter's real `send()` is intentionally left
-    unimplemented until that target/use-case (P1 alert vs. broadcast) is
-    confirmed -- guessing here risks burning real OA quota or notifying the
-    wrong audience.
+
+class ZaloOAAdapter:
+    """Zalo OA channel adapter.
+
+    Real send does NOT call Zalo's API directly from this codebase. Per
+    Harry's integration decision, this adapter fires a webhook to a Make.com
+    scenario; Make's own HTTP / Custom API Request module (configured in the
+    Make UI, not here) makes the actual Zalo OA call right after the
+    "Approve" click on VENHO OS Dashboard. That split is deliberate: Zalo OA
+    has no public "feed post" API like Facebook Pages (real sending targets
+    a specific follower `user_id` or an approved broadcast template), so the
+    exact Zalo endpoint/payload shape is Harry's call to make inside Make.com
+    -- this adapter only needs to hand it a fresh access_token + the message.
+
+    `access_token_provider`, if given, is called once per `send()` to fetch
+    a live token (e.g. wrapping `refresh_zalo_access_token`) so Make.com
+    never has to manage Zalo OAuth itself. Without `webhook_url` configured,
+    `send()` keeps the old mock behavior (flag off by default, IN-D5).
     """
 
-    def __init__(self, enabled: bool = False) -> None:
+    def __init__(
+        self,
+        enabled: bool = False,
+        *,
+        webhook_url: str | None = None,
+        webhook_secret: str | None = None,
+        access_token_provider: Callable[[], str] | None = None,
+        http_post: Callable[..., dict[str, Any]] | None = None,
+    ) -> None:
         self.enabled = enabled
+        self.webhook_url = webhook_url
+        self.webhook_secret = webhook_secret
+        self._access_token_provider = access_token_provider
+        self._http_post = http_post or urllib_post
 
     def send(self, command: dict) -> dict:
+        publication_id = command.get("publication_id")
         if not self.enabled:
-            return {"status": "DISABLED", "command_id": command.get("publication_id"), "published": False}
+            return {"status": "DISABLED", "command_id": publication_id, "published": False}
+        if not self.webhook_url:
+            return {
+                "status": "GATEWAY_ACCEPTED",
+                "command_id": publication_id,
+                "published": False,
+                "message": "accepted by Zalo OA adapter; awaiting callback or reconciliation",
+            }
+        payload = {
+            "publication_id": publication_id,
+            "idempotency_key": command.get("idempotency_key"),
+            "platform": "zalo_oa",
+            "content": command.get("content"),
+        }
+        if self._access_token_provider is not None:
+            payload["access_token"] = self._access_token_provider()
+        headers = None
+        if self.webhook_secret and payload.get("idempotency_key"):
+            headers = {
+                "X-Venho-Signature": build_zalo_webhook_signature(
+                    self.webhook_secret, publication_id, payload["idempotency_key"]
+                )
+            }
+        try:
+            self._http_post(self.webhook_url, json=payload, headers=headers)
+        except HttpError as exc:
+            return {
+                "status": "GATEWAY_ERROR",
+                "command_id": publication_id,
+                "published": False,
+                "error": str(exc),
+            }
         return {
             "status": "GATEWAY_ACCEPTED",
-            "command_id": command.get("publication_id"),
+            "command_id": publication_id,
             "published": False,
-            "message": "accepted by Zalo OA adapter; awaiting callback or reconciliation",
+            "message": "forwarded to Make.com Zalo webhook; awaiting callback or reconciliation",
         }

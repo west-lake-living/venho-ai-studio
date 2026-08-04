@@ -164,6 +164,16 @@ Harry now has `TAVILY_API_KEY`, `TELEGRAM_BOT_TOKEN` + `TELEGRAM_CHAT_ID`, `ZALO
 - New test file `tests/test_growth_v3_1_real_providers.py`, 8 tests -- Telegram default transport identity check + correct URL/payload via injected fake + `from_env` missing-token raises; Tavily missing-key raises + result normalization; Zalo refresh missing-credential raises + correct form-body/header shape.
 - Verify: `557/557` AI Studio tests pass (549 prior + 8 new), 0 API calls, `compileall` clean.
 
+### Growth Agent v3.1 — Zalo OA publish via Make.com webhook (2026-08-03)
+
+Harry's integration decision: `ZaloOAAdapter` does not call the Zalo API directly -- it fires a webhook to Make.com, and Make's own HTTP / Custom API Request module (Harry configures this in the Make UI) makes the real Zalo OA call right after "Approve" is clicked on VENHO OS Dashboard. This resolves the endpoint ambiguity flagged in the prior pass -- Zalo OA has no public feed-post API, so picking the exact endpoint (broadcast/article/consultation message) is Harry's call inside Make.com, not a guess in code.
+
+- **`publishing_gateway/adapters/zalo_oa.py`:** `ZaloOAAdapter` gained `webhook_url`, `webhook_secret` (optional, HMAC-SHA256 signs an `X-Venho-Signature` header, same convention as `approval_verifier.build_approval_signature`), `access_token_provider` (called once per `send()` to fetch a live Zalo token, meant to wrap `refresh_zalo_access_token` -- keeps all OAuth refresh logic in Python instead of duplicating it in Make.com), and `http_post` (injectable). **No `webhook_url` -> old mock behavior unchanged**, so the existing `tests/test_growth_v3_1_cadence_infra.py` assertions still pass untouched. With `webhook_url` set, POSTs `{publication_id, idempotency_key, platform: "zalo_oa", content, access_token?}` to Make.com; an `HttpError` from the webhook returns `GATEWAY_ERROR` rather than raising, consistent with the existing accept-async-then-callback pattern in `callback_receiver.py`.
+- `.env.example`: added `ZALO_APP_ID`/`ZALO_APP_SECRET` (missed in the prior pass) + new `MAKE_ZALO_WEBHOOK_URL`/`MAKE_ZALO_WEBHOOK_SECRET`.
+- 4 new tests in `tests/test_growth_v3_1_real_providers.py`.
+- **Real remaining gap, not glossed over:** `growth_orchestrator/bridges/m07_publishing_bridge.py::M07PublishingBridge.dispatch()` is still a pure stub that returns a fake `GATEWAY_ACCEPTED` -- it does not call `ZaloOAAdapter` or any adapter, and there is no platform-based routing yet. The "Approve" button itself lives in `venho-os` (a separate TS/Next.js repo) and it's unconfirmed how/whether it calls into this Python M07 bridge at all. So "clicking Approve auto-posts to Zalo" is NOT true end-to-end yet -- only the adapter's webhook-trigger capability is real and tested. No Make.com scenario has been created/tested against a live `MAKE_ZALO_WEBHOOK_URL` either.
+- Verify: `561/561` AI Studio tests pass (557 prior + 4 new), 0 API calls, `compileall` clean.
+
 ### Module Roles (KHÔNG chồng lấn)
 
 | Module | Vai trò | KHÔNG làm |

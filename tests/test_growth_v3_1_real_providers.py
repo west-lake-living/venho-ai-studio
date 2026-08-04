@@ -4,9 +4,9 @@ from typing import Any
 
 import pytest
 
-from publishing_gateway.adapters.zalo_oa import refresh_zalo_access_token
+from publishing_gateway.adapters.zalo_oa import ZaloOAAdapter, build_zalo_webhook_signature, refresh_zalo_access_token
 from research_engine.trend_radar.collectors.tavily_search import collect_tavily_search
-from shared.http import urllib_post
+from shared.http import HttpError, urllib_post
 from shared.notify.telegram import TelegramNotifier, telegram_notifier_from_env
 
 
@@ -94,3 +94,54 @@ def test_refresh_zalo_access_token_uses_form_body_and_secret_header() -> None:
     call = fake.calls[0]
     assert call["data"] == {"app_id": "app-1", "refresh_token": "old-refresh", "grant_type": "refresh_token"}
     assert call["headers"] == {"secret_key": "shh"}
+
+
+# --- Zalo OA -> Make.com webhook trigger (Approve button flow) -------------
+
+
+def test_zalo_adapter_without_webhook_url_keeps_old_mock_behavior() -> None:
+    # Backward compat: existing callers that only pass enabled=True must not
+    # suddenly attempt a real network call.
+    adapter = ZaloOAAdapter(enabled=True)
+    result = adapter.send({"publication_id": "pub-1"})
+    assert result["status"] == "GATEWAY_ACCEPTED"
+    assert result["published"] is False
+
+
+def test_zalo_adapter_forwards_to_make_webhook_with_fresh_token() -> None:
+    fake = FakeHttpPost({"received": True})
+    adapter = ZaloOAAdapter(
+        enabled=True,
+        webhook_url="https://hook.us1.make.com/zalo-test",
+        access_token_provider=lambda: "fresh-access-token",
+        http_post=fake,
+    )
+    result = adapter.send({"publication_id": "pub-1", "idempotency_key": "idem-1", "content": {"text": "hello"}})
+    assert result["status"] == "GATEWAY_ACCEPTED"
+    call = fake.calls[0]
+    assert call["url"] == "https://hook.us1.make.com/zalo-test"
+    assert call["json"] == {
+        "publication_id": "pub-1",
+        "idempotency_key": "idem-1",
+        "platform": "zalo_oa",
+        "content": {"text": "hello"},
+        "access_token": "fresh-access-token",
+    }
+
+
+def test_zalo_adapter_signs_webhook_when_secret_configured() -> None:
+    fake = FakeHttpPost({"received": True})
+    adapter = ZaloOAAdapter(enabled=True, webhook_url="https://hook.example/zalo", webhook_secret="shh", http_post=fake)
+    adapter.send({"publication_id": "pub-1", "idempotency_key": "idem-1"})
+    expected_signature = build_zalo_webhook_signature("shh", "pub-1", "idem-1")
+    assert fake.calls[0]["headers"] == {"X-Venho-Signature": expected_signature}
+
+
+def test_zalo_adapter_returns_gateway_error_on_webhook_failure() -> None:
+    def failing_post(*args, **kwargs):
+        raise HttpError(500, "make.com down")
+
+    adapter = ZaloOAAdapter(enabled=True, webhook_url="https://hook.example/zalo", http_post=failing_post)
+    result = adapter.send({"publication_id": "pub-1", "idempotency_key": "idem-1"})
+    assert result["status"] == "GATEWAY_ERROR"
+    assert result["published"] is False

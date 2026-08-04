@@ -1,8 +1,26 @@
 # VENHO AI STUDIO — Task Status
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-08-03 (Real provider wiring: Tavily/Telegram/Zalo token refresh) · **Tests:** 557/557 pass (AI Studio) · 78/78 pass (venho-os) · 0 API call trong test
+**Cập nhật:** 2026-08-03 (Zalo OA → Make.com webhook trigger cho luồng Approve) · **Tests:** 561/561 pass (AI Studio) · 78/78 pass (venho-os) · 0 API call trong test
 
 ---
+
+### Growth Agent v3.1 — Zalo OA publish qua Make.com webhook (2026-08-03)
+
+**Status: DONE (adapter-level) · Cross-repo wiring (nút Approve trên VENHO OS Dashboard → gọi adapter này) CHƯA làm**
+
+Harry chốt quyết định kiến trúc: `ZaloOAAdapter` **không tự gọi API Zalo trực tiếp** — chỉ bắn webhook sang Make.com; module HTTP/Custom API Request trong Make.com (Harry tự cấu hình trong Make UI) mới là nơi gọi API Zalo OA thật, ngay sau khi bấm "Approve" trên VENHO OS Dashboard. Lý do hợp lý: Zalo OA không có API "đăng bài công khai" như Facebook Page, nên chọn đúng endpoint (broadcast/article/consultation message) là quyết định Harry tự làm trong Make.com, code không cần đoán.
+
+- **`publishing_gateway/adapters/zalo_oa.py`:** `ZaloOAAdapter` thêm `webhook_url`, `webhook_secret` (optional, ký HMAC-SHA256 header `X-Venho-Signature` — cùng convention với `approval_verifier.build_approval_signature`), `access_token_provider` (callable, gọi 1 lần/`send()` để lấy access_token Zalo tươi — dùng để wrap `refresh_zalo_access_token` đã có, giữ toàn bộ logic OAuth refresh trong Python thay vì lặp lại trong Make.com), `http_post` (tiêm được, test không gọi mạng thật). **Không có `webhook_url` → giữ nguyên hành vi mock cũ** (backward-compat với `tests/test_growth_v3_1_cadence_infra.py` đã có, không sửa test cũ). Có `webhook_url` → POST payload `{publication_id, idempotency_key, platform: "zalo_oa", content, access_token?}` sang Make.com, lỗi HTTP trả về `GATEWAY_ERROR` thay vì raise (đúng pattern accept-async-then-callback đã có ở `callback_receiver.py`).
+- `.env.example` thêm `ZALO_APP_ID`/`ZALO_APP_SECRET` (thiếu từ lượt trước) + `MAKE_ZALO_WEBHOOK_URL`/`MAKE_ZALO_WEBHOOK_SECRET` (mới).
+- Tests mới trong `tests/test_growth_v3_1_real_providers.py` (+4): không có webhook_url → mock cũ; có webhook_url + access_token_provider → đúng URL/payload; có webhook_secret → đúng chữ ký; webhook lỗi → `GATEWAY_ERROR`.
+
+**KHÔNG làm trong lượt này — đây là gap thật, không phải việc nhỏ:**
+- **`growth_orchestrator/bridges/m07_publishing_bridge.py::M07PublishingBridge.dispatch()` vẫn là stub thuần** — trả `GATEWAY_ACCEPTED` giả, **không gọi `ZaloOAAdapter` hay adapter nào cả**. Route theo platform (`command["platform"] == "zalo_oa"` → gọi `ZaloOAAdapter.send()`) chưa được nối.
+- **Nút "Approve" trên VENHO OS Dashboard nằm ở repo khác (`venho-os`, TypeScript/Next.js)** — chưa xác nhận nó gọi vào M07 của repo Python này bằng đường nào (CLI bridge? API nội bộ?). Đây là việc cross-repo, cần kiểm tra `venho-os` riêng trước khi nói "bấm Approve là tự đăng" đã hoạt động thật.
+- Chưa test tay với `MAKE_ZALO_WEBHOOK_URL` thật (chưa có scenario Make.com nào được tạo).
+- Callback ngược từ Make.com báo kết quả thật (PUBLISHED/FAILED) sau khi Zalo nhận tin — `callback_receiver.py` đã có sẵn cơ chế chung (HMAC + idempotency) nhưng chưa xác nhận Make.com scenario có gọi lại đúng shape.
+
+**Verify:** `python3 -m pytest -q` → 561 passed (557 prior + 4 new), 0 API call. `compileall` sạch.
 
 ### Growth Agent v3.1 — Real provider wiring: Tavily + Telegram + Zalo token refresh (2026-08-03)
 
