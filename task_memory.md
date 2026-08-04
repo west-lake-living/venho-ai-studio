@@ -744,6 +744,19 @@ VIDEO_SCRIPTS_DIR = VENHO_HOTEL_DIR / "local-generated" / "social-video" / "scri
 
 ---
 
+## 14b. Growth Agent v3.1 — Cutover thay VenHoSocialManager (2026-08-04)
+
+Harry chốt: Growth Agent v3.1 (repo này) sẽ **thay thế hoàn toàn** `VenHoSocialManager` (repo `venho-os`, GitHub Actions T2/T4/T6 8AM, đăng thẳng FB/IG/Threads qua Make.com không qua duyệt thủ công) — không chạy song song. Thêm T7 (nội dung đặc biệt) cùng giờ.
+
+**Đã nối trong repo này (2026-08-04):** `M07PublishingBridge.dispatch()` route theo `command["platform"]` → `ZaloOAAdapter` (zalo) hoặc `MakeGatewayAdapter` (facebook/instagram/threads, tái dùng scenario Make.com cũ của VenHoSocialManager qua `MAKE_WEBHOOK_URL`/`MAKE_WEBHOOK_SECRET`). Cả hai adapter dùng chung 1 pattern: bắn webhook có ký HMAC, không gọi API platform trực tiếp, trả `GATEWAY_ACCEPTED`/`GATEWAY_ERROR` ngay — trạng thái `PUBLISHED` thật đến sau qua `callback_receiver.py` hoặc `reconciliation.py`. `daily_dispatch()` nhận `bridge` tiêm được.
+
+**3 gap kiến trúc thật còn lại trước khi cutover được (không phải việc nhỏ, cần thiết kế riêng từng cái):**
+1. **Không có orchestrating command nào** nối `preflight → trend_lane/special_lane → run_content_pipeline → manage_queue → daily_dispatch` thành 1 lệnh chạy được — cần cho lịch T2/T4/T6/T7.
+2. **Approve trên VENHO OS Dashboard chưa nối vào đây.** Section "Publishing & Schedule" hiện tại (`venho-os/src/components/os/sections/PublishingSection.tsx` + API `/api/v1/studio/topic-schedule`) là hệ thống cũ — duyệt **topic** cho VenHoSocialManager, ghi thẳng vào 1 file JSON + `git commit`, hoàn toàn không đụng tới `PublicationRegistry`/M07 của repo Python này. Cần route/section mới ở `venho-os` gọi ngược vào Python (shell-out CLI hoặc API nội bộ) mới có "bấm Approve → dispatch thật".
+3. **Chưa có tạo ảnh thật.** `content_studio/builders/social_builder.py::mock_social_generator` là mock thuần. M02 Prompt Studio đã build prompt ảnh thật từ DNA (`venho prompt --type image`, complete) — còn thiếu đúng adapter gọi OpenAI images API (gpt-image-2 + ref ảnh), theo pattern dependency-injected-HTTP giống Tavily/Telegram/Zalo (§ test discipline).
+
+Chỉ tắt workflow `venho-os/.github/workflows/social-content.yml` sau khi cả 3 gap trên xong và test tay ít nhất 1 chu kỳ thật.
+
 ## 14. Task Closing Protocol
 
 Khi người dùng nói **"kết thúc task"**, Codex phải tự động:

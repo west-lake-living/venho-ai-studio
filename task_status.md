@@ -1,6 +1,30 @@
 # VENHO AI STUDIO — Task Status
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-08-03 (Zalo content: platform ngắn gọn hơn + CTA hotline riêng) · **Tests:** 564/564 pass (AI Studio) · 78/78 pass (venho-os) · 0 API call trong test
+**Cập nhật:** 2026-08-04 (M07 platform routing + Make FB/IG/Threads adapter; audit cutover Growth Agent → thay VenHoSocialManager) · **Tests:** 572/572 pass (AI Studio) · 0 API call trong test
+
+---
+
+### Growth Agent v3.1 — M07 platform routing + Make adapter real webhook, + audit cutover thay VenHoSocialManager (2026-08-04)
+
+**Status: DONE (phần trong repo này) · Cutover thật (schedule + Approve UI + ảnh) CHƯA làm — xem audit bên dưới**
+
+Harry chốt: Growth Agent v3.1 **thay thế hoàn toàn** hệ thống cũ `VenHoSocialManager` (GitHub Actions T2/T4/T6, đăng thẳng FB/IG/Threads qua Make.com), không chạy song song. Thêm T7 (1 bài content đặc biệt) cùng giờ 8AM. Yêu cầu cụ thể + việc đã làm/audit:
+
+**1+2. Nối M07 thật + tái dùng Make scenario cũ cho FB/IG/Threads — DONE:**
+- `growth_orchestrator/bridges/m07_publishing_bridge.py::M07PublishingBridge.dispatch()` hết là stub — giờ route theo `command["platform"]`: `zalo`/`zalo_oa` → `ZaloOAAdapter`, còn lại (`facebook`/`instagram`/`threads`) → `MakeGatewayAdapter`. Thêm `m07_publishing_bridge_from_env(env)` build cả 2 adapter từ `.env.local` (disabled mặc định nếu thiếu config — không raise, vì rollout theo từng platform).
+- `publishing_gateway/adapters/make_gateway.py::MakeGatewayAdapter` giờ bắn webhook thật (mirror y hệt pattern `ZaloOAAdapter` đã làm lượt trước) — `webhook_url`/`webhook_secret`/`http_post` tiêm được, ký HMAC `X-Venho-Signature` khi có secret, `GATEWAY_ERROR` khi webhook lỗi thay vì raise. `.env.example` thêm `MAKE_WEBHOOK_URL`/`MAKE_WEBHOOK_SECRET` — Harry trỏ vào đúng scenario Make.com cũ (Webhooks → HTTP Get a file → Facebook Pages Create a Post) để tái dùng thay vì tạo mới.
+- `growth_orchestrator/application/daily_dispatch.py::daily_dispatch()` nhận thêm `bridge` param tiêm được (mặc định `M07PublishingBridge()` — backward-compat).
+- Tests mới (+8) trong `tests/test_growth_v3_1_real_providers.py`: Make adapter forward/sign/error, bridge route đúng platform → đúng adapter, `daily_dispatch` dùng bridge tiêm vào, `m07_publishing_bridge_from_env` bật/tắt đúng theo env.
+
+**3. Lịch T2/T4/T6/T7 8AM — CHƯA làm, phát hiện gap kiến trúc thật:** repo này **chưa có `.github/workflows/` nào cả** và **chưa có lệnh orchestrate "chạy cả ngày" nào** — `growth_orchestrator/` có các bước rời (`preflight`, `trend_lane`, `special_lane`, `run_content_pipeline`, `manage_queue`, `daily_dispatch`...) nhưng không có 1 CLI/command nào nối chúng thành pipeline sinh nội dung → xếp hàng duyệt → dispatch. VenHoSocialManager hiện làm tất cả trong 1 script chạy 1 lần/cron; Growth Agent v3.1 chưa có tương đương. Cần thiết kế trước khi build workflow, không phải chỉ thêm dòng cron.
+
+**4. "Approve" trên VENHO OS Dashboard — CHƯA làm, phát hiện gap kiến trúc quan trọng hơn:** đã đọc `venho-os/src/components/os/sections/PublishingSection.tsx` + `venho-os/src/app/api/v1/studio/topic-schedule/route.ts` (cross-repo, chỉ đọc). Phần "Publishing & Schedule" hiện tại trên dashboard là **hệ thống cũ** — duyệt **topic** (title/brief/pillar) cho VenHoSocialManager generate sau, PATCH ghi + `git commit` thẳng vào 1 file JSON, **không hề gọi vào Python `venho-ai-studio` hay `PublicationRegistry`/M07 nào cả**. Nút "Approve" mà Harry mô tả (đăng ngay sau khi bấm) **không tồn tại** dưới dạng này trong code hiện tại — cần xây mới: 1 section/API route mới trong `venho-os` đọc `PublicationRegistry` (Python, qua CLI shell-out hoặc 1 API nội bộ) rồi gọi `M07PublishingBridge.dispatch()`.
+
+**5. Tạo ảnh — CHƯA làm, audit xác nhận gap:** `content_studio/builders/social_builder.py::mock_social_generator` chỉ trả text field giả, không hề gọi AI thật — **Growth Agent hiện không tạo ảnh**. Tin tốt: `prompt_studio` (M02) đã build prompt ảnh thật từ DNA (`venho prompt --type image`, complete, có test) — thiếu đúng 1 bước là adapter gọi OpenAI images API (gpt-image-2 + ref ảnh) từ prompt đó, theo đúng pattern dependency-injected-HTTP đã dùng cho Tavily/Telegram/Zalo lượt trước. Đây là việc lớn nhất còn lại, cần làm riêng 1 lượt.
+
+**6. Tắt VenHoSocialManager sau cutover — chưa tới, phụ thuộc 3+4+5 xong trước.**
+
+**Verify:** `/usr/bin/python3 -m pytest -q` → 572 passed (564 prior + 8 mới), `compileall` sạch.
 
 ---
 
