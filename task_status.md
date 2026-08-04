@@ -1,6 +1,28 @@
 # VENHO AI STUDIO — Task Status
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-08-04 (v3.1 review 2: đóng 7 gap thật trong 27 DoD — brand safety gate tests, special-lane fallback, asset version tracking, research-question feedback loop, cross-modal image validation, reconciliation CLI, blog SEO từ Research OS) · **Tests:** 636/636 pass (AI Studio) · 0 API call trong test
+**Cập nhật:** 2026-08-04 (gpt-5.5 generator, Validator gate thật cho text+ảnh, fix hex-code leak, weekly-cycle) · **Tests:** 655/655 pass (AI Studio) · 0 API call trong test
+
+---
+
+### Growth Agent v3.1 — gpt-5.5 generator, Validator gate thật, fix hex-code leak, lên lịch tuần (2026-08-04)
+
+**Status: DONE**
+
+Yêu cầu liên tiếp của Harry trong 1 phiên: bài chờ duyệt sơ sài → sinh lại + lên lịch tuần · chuyển generator sang gpt-5.5 · lỗi bấm Phê Duyệt · Validator phải chấm điểm thật (text+ảnh), không pass phải làm lại · bài viết lộ mã hex/tiếng Anh kỹ thuật · nạp thêm credit.
+
+- [x] `gpt_social_generator.py` (gpt-5.5, `response_format=json_object`) là generator mặc định thay `claude_social_generator.py`.
+- [x] `M03ValidatorBridge` gọi `validator_studio.content_validator.validate_content()` thật — chỉ `APPROVE` mới `READY_FOR_REVIEW`; `daily_cycle.py` retry `MAX_TEXT_ATTEMPTS=3`/platform.
+- [x] `_generate_topic_image()` retry `MAX_IMAGE_ATTEMPTS=2`, chỉ giữ ảnh khi qua `validate_image()` (kill-switch + APPROVE).
+- [x] `_score_brand_fit` sửa gốc — bỏ overlap với `dna["invariant"]` (English/hex, xung đột với rule chống copy-nguyên-văn), chỉ tính overlap `prompt_rules.brand_dna`. Verify script: overall_score 81.59→91.12, brand_fit 57.86→95.0.
+- [x] Hex-code/tiếng Anh kỹ thuật không còn lọt vào content — `content_prompt_builder.render_final_prompt()` + 3 system prompt trong `social_prompts.py` đều cấm copy nguyên văn.
+- [x] Root-cause fix lỗi bấm Phê Duyệt (`shared/http.py::urllib_post`) — Make.com trả plain-text "Accepted" chứ không phải JSON, gây đúng lỗi Harry báo (`Expecting value: line 1 column 1 (char 0)`). Bắt `JSONDecodeError`, trả `{"raw": raw}`.
+- [x] Fix ảnh MPO (iPhone portrait) không edit được — `reference_asset_resolver.py` re-encode PNG qua PIL trước khi gửi OpenAI.
+- [x] `weekly_cycle.py` + CLI `venho-growth weekly-cycle`; `.github/workflows/growth-daily-cycle.yml` đổi cron còn Thứ 2 duy nhất (`0 1 * * 1`), Harry duyệt cả tuần 1 lần.
+- [x] Registry rows ghi kèm `day`/`pillar`/`topic` để `venho-os` group theo chủ đề (đổi trong `daily_cycle.py`'s `registry.update()`).
+- [x] Batch cuối: 15 publication cũ (thiếu field mới, generator cũ) → `SUPERSEDED`; `weekly-cycle` chạy lại → 16 publication mới `PENDING_APPROVAL`, verify đủ `day`/`pillar`/`topic`, 0 hex-code (grep trực tiếp `publication_registry.json`).
+- [x] Verify: 655/655 pass; live `venho-growth list-pending` xác nhận 16 entry đúng field mới.
+
+Chi tiết đầy đủ: `task_memory.md` mục 14d. Việc liên quan bên `venho-os` (redesign `GrowthApprovalQueue` UI): `venho-os/task_status.md`/`CHANGELOG.md` mục 2026-08-04.
 
 ---
 

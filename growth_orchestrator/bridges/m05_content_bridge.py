@@ -3,12 +3,18 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 from agent_studio.growth.scenario_registry import ScenarioRegistry
 from content_studio.content_context import DEFAULT_CONFIG_ROOT, DEFAULT_DATA_ROOT, load_content_config
 from content_studio.content_engine import generate_content
+from content_studio.generators.gpt_social_generator import gpt_social_generator
 from content_studio.schemas.content_request import ContentRequest, SourceKnowledgeRef
+from growth_orchestrator.weekend_events import load_verified_weekend_events
+
+GeneratorFn = Callable[..., dict[str, Any]]
+
+SATURDAY_LANE = "saturday_trend"
 
 _PLATFORM_CONTENT_TYPES = {
     "facebook": "facebook_post",
@@ -40,10 +46,12 @@ class M05ContentBridge:
         config_root: Path = DEFAULT_CONFIG_ROOT,
         data_root: Path = DEFAULT_DATA_ROOT,
         scenario_registry: ScenarioRegistry | None = None,
+        generator_fn: GeneratorFn = gpt_social_generator,
     ) -> None:
         self.config_root = config_root
         self.data_root = data_root
         self.scenario_registry = scenario_registry or ScenarioRegistry.from_file()
+        self.generator_fn = generator_fn
 
     def _dna_source_ref(self, project: str, dna_subject: str) -> SourceKnowledgeRef:
         dna_path = self.data_root / project / "knowledge" / f"VENHO_HOTEL_{dna_subject.upper()}_DNA.json"
@@ -61,6 +69,10 @@ class M05ContentBridge:
         scenario_key = brief["visual"]["scenario_key"]
         scenario = self.scenario_registry.resolve(scenario_key)
         config = load_content_config(project, config_root=self.config_root)
+        lane = brief.get("lane", "daily")
+        verified_events = (
+            load_verified_weekend_events(project, config_root=self.config_root) if lane == SATURDAY_LANE else []
+        )
         request = ContentRequest(
             project=project,
             content_type=_PLATFORM_CONTENT_TYPES[platform],
@@ -71,8 +83,17 @@ class M05ContentBridge:
             target_language="vi",
             cta_type="booking_soft",
             source_knowledge=[self._dna_source_ref(project, scenario.dna_subject)],
+            lane=lane,
+            verified_events=verified_events,
+            dna_subject=scenario.dna_subject,
         )
-        result = generate_content(request, config_root=self.config_root, data_root=self.data_root, validate=False)
+        result = generate_content(
+            request,
+            config_root=self.config_root,
+            data_root=self.data_root,
+            generator_fn=self.generator_fn,
+            validate=False,
+        )
         output = result.output
 
         return [
@@ -80,6 +101,7 @@ class M05ContentBridge:
                 "id": f"{brief['id']}-content_studio",
                 "creative_brief_id": brief["id"],
                 "platform": platform,
+                "dna_subject": scenario.dna_subject,
                 "language": output.target_language,
                 "angle_type": "content_studio",
                 "hook": output.hook,

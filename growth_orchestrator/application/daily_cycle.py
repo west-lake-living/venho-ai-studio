@@ -16,6 +16,7 @@ from content_studio.content_context import DEFAULT_CONFIG_ROOT, DEFAULT_DATA_ROO
 from content_studio.prompt_bridge import slugify
 from growth_orchestrator.application.run_content_pipeline import run_content_pipeline
 from growth_orchestrator.application.special_lane import select_special_lane_candidate
+from growth_orchestrator.bridges.m03_validator_bridge import M03ValidatorBridge
 from growth_orchestrator.bridges.m05_content_bridge import M05ContentBridge
 from image_studio_runtime.adapters.gpt_image_provider import gpt_image_provider_from_env
 from image_studio_runtime.application.generate_image import generate_image_run
@@ -23,6 +24,13 @@ from prompt_studio.builders.image_prompt_builder import build_image_prompt
 from prompt_studio.knowledge_reader import read_dna
 from publishing_gateway.publication_registry import PublicationRegistry
 from validator_studio.image_validator import validate_image
+from validator_studio.schemas.validation_base import Recommendation
+
+# Harry's rule (2026-08-04): generated posts/images must pass real Validator
+# scoring, not just get queued as-is -- a failed attempt is regenerated from
+# scratch (fresh LLM/image call) up to this many times before giving up.
+MAX_TEXT_ATTEMPTS = 3
+MAX_IMAGE_ATTEMPTS = 2
 
 # Vietnamese weekday numbering used throughout this codebase (T2=Monday ...
 # T7=Saturday) matches config/projects/venho_hotel/growth/cadence_policy.yaml
@@ -185,13 +193,17 @@ def _generate_topic_image(
 
     After generation, the image is run through validator_studio's real
     DNA-match validator (cross-modal: does the photo actually match the DNA
-    subject it was supposed to depict, not just "an image exists"). A
-    kill_switch verdict (high-severity forbidden violation) discards the
-    image the same way a generation failure does -- text still queues. The
-    report is written next to the artifact as image_validation_report.json
-    for traceability. `image_validation_provider` defaults to "mock" (no
-    paid vision API call) to match this repo's 0-API-call test/cost
-    discipline; pass a real provider once Harry approves paid QC spend.
+    subject it was supposed to depict, not just "an image exists"). Per
+    Harry's rule (2026-08-04), only a real APPROVE verdict (score >= 90, see
+    validator_studio.scoring.verdict_for_score) counts as passing -- a
+    kill_switch or a sub-APPROVE score both discard the image and trigger a
+    fresh regenerate attempt, up to MAX_IMAGE_ATTEMPTS, before giving up and
+    queuing the text without a photo. The last attempt's report is written
+    next to the artifact as image_validation_report.json for traceability
+    even on final failure. `image_validation_provider` defaults to "mock"
+    (no paid vision API call) to match this repo's 0-API-call test/cost
+    discipline; pass "openai" (the real provider, see
+    growth_orchestrator.cli) once Harry approves paid QC spend.
     """
     try:
         scenario_key = SCENARIO_BY_DNA_SUBJECT[topic["dna_subject"]]
@@ -207,24 +219,25 @@ def _generate_topic_image(
             "size": "1024x1280",
             "quality": "medium",
         }
-        run_folder = generate_image_run(
-            prompt_contract,
-            content_package_id=f"daily-{day}-{slugify(topic['topic'])}",
-            provider=image_provider,
-            data_root=data_root,
-            reference_images=reference_images,
-        )
-        manifest = json.loads((run_folder / "manifest.json").read_text(encoding="utf-8"))
-        artifact_name = manifest["artifacts"][0]["path"]
-        report = validate_image(
-            project, topic["dna_subject"], run_folder / artifact_name, provider=image_validation_provider
-        )
-        (run_folder / "image_validation_report.json").write_text(
-            report.model_dump_json(indent=2), encoding="utf-8"
-        )
-        if report.kill_switch.triggered:
-            return None
-        return run_folder
+        for attempt in range(MAX_IMAGE_ATTEMPTS):
+            run_folder = generate_image_run(
+                prompt_contract,
+                content_package_id=f"daily-{day}-{slugify(topic['topic'])}",
+                provider=image_provider,
+                data_root=data_root,
+                reference_images=reference_images,
+            )
+            manifest = json.loads((run_folder / "manifest.json").read_text(encoding="utf-8"))
+            artifact_name = manifest["artifacts"][0]["path"]
+            report = validate_image(
+                project, topic["dna_subject"], run_folder / artifact_name, provider=image_validation_provider
+            )
+            (run_folder / "image_validation_report.json").write_text(
+                report.model_dump_json(indent=2), encoding="utf-8"
+            )
+            if not report.kill_switch.triggered and report.verdict == Recommendation.APPROVE:
+                return run_folder
+        return None
     except (RuntimeError, KeyError, FileNotFoundError):
         # RuntimeError: provider disabled (no OPENAI_API_KEY) or transient
         # provider failure. KeyError: no reference_assets.yaml mapping for
@@ -246,26 +259,44 @@ def run_daily_cycle(
     image_provider: Optional[Any] = None,
     reference_resolver: Optional[ReferenceAssetResolver] = None,
     generate_image: bool = True,
+    content_bridge: Optional[M05ContentBridge] = None,
+    validator_bridge: Optional[M03ValidatorBridge] = None,
+    image_validation_provider: str = "mock",
 ) -> DailyCycleResult:
     """Generate this cadence day's content drafts and queue them for approval.
 
     Real pipeline as of 2026-08-04: builds a LOCKED CreativeBrief per platform
     (contract-validated against creative_brief.schema.json), runs it through
     growth_orchestrator.run_content_pipeline -- M05ContentBridge (real
-    content_studio call) -> M03ValidatorBridge (claim + alignment gate) --
-    and only queues PENDING_APPROVAL in PublicationRegistry when the package
-    comes back READY_FOR_REVIEW. NEEDS_REVISION/UNVALIDATED packages are
-    returned in `.packages` for visibility but never reach the approval
-    queue. This is the cron-side half of the publish flow: it does NOT
-    dispatch anything -- publishing is Approve-triggered (see
-    approve_and_dispatch), not cron-triggered.
+    content_studio call) -> M03ValidatorBridge (claim + alignment + real
+    scored content rubric) -- and only queues PENDING_APPROVAL in
+    PublicationRegistry when the package comes back READY_FOR_REVIEW. Per
+    Harry's rule (2026-08-04), a draft that fails validation is regenerated
+    from scratch (fresh LLM call, new candidate) up to MAX_TEXT_ATTEMPTS
+    before being given up on; the last attempt's package is still returned
+    in `.packages` for visibility but never reaches the approval queue. This
+    is the cron-side half of the publish flow: it does NOT dispatch anything
+    -- publishing is Approve-triggered (see approve_and_dispatch), not
+    cron-triggered.
 
     One real image is generated per topic (shared across all platforms, same
     photo concept) via GPTImageProvider -- best-effort: if the provider is
     disabled (no OPENAI_API_KEY) or a reference asset is missing, publications
     are still queued with `content.image_run_path = None` rather than failing
     the whole cycle. Set `generate_image=False` to skip it outright (e.g. cost
-    control during rollout).
+    control during rollout). `image_validation_provider` defaults to "mock"
+    for test/cost safety -- pass "openai" for the real per-image vision QC
+    gate (see growth_orchestrator.cli, which does this for the actual
+    daily-cycle/weekly-cycle CLI commands).
+
+    `content_bridge` defaults to a real M05ContentBridge, whose default
+    `generator_fn` (gpt_social_generator) calls the OpenAI API (gpt-5.5) for
+    real -- pass a bridge built with a mock generator_fn (e.g. in tests) to
+    avoid billed calls. `validator_bridge` defaults to a real
+    M03ValidatorBridge (real scored content rubric, also billed-free but CPU
+    real) -- pass a bridge that always approves in tests that aren't
+    exercising validation itself, since mock-generated boilerplate text
+    reliably scores below the real APPROVE bar.
     """
     day = day.lower()
     if day not in CADENCE_DAYS:
@@ -275,7 +306,9 @@ def run_daily_cycle(
     topic = _pick_topic(config, day, project, data_root)
     registry = registry or PublicationRegistry(project, data_root=data_root)
     scenario_registry = scenario_registry or ScenarioRegistry.from_file()
-    content_bridge = M05ContentBridge(config_root=config_root, data_root=data_root, scenario_registry=scenario_registry)
+    content_bridge = content_bridge or M05ContentBridge(
+        config_root=config_root, data_root=data_root, scenario_registry=scenario_registry
+    )
 
     image_run_path: Optional[str] = None
     asset_version_ids: list[str] = []
@@ -285,6 +318,7 @@ def run_daily_cycle(
         run_folder = _generate_topic_image(
             topic, day, project, data_root, scenario_registry,
             image_provider=image_provider, reference_resolver=reference_resolver,
+            image_validation_provider=image_validation_provider,
         )
         if run_folder:
             image_run_path = str(run_folder)
@@ -298,7 +332,11 @@ def run_daily_cycle(
     packages: list[dict[str, Any]] = []
     for platform in platforms or DEFAULT_PLATFORMS:
         brief = _build_creative_brief(topic, platform, day, project, scenario_registry)
-        package = run_content_pipeline(brief, content_bridge=content_bridge)
+        package = run_content_pipeline(brief, content_bridge=content_bridge, validator_bridge=validator_bridge)
+        for _attempt in range(MAX_TEXT_ATTEMPTS - 1):
+            if package["state"] == "READY_FOR_REVIEW":
+                break
+            package = run_content_pipeline(brief, content_bridge=content_bridge, validator_bridge=validator_bridge)
         packages.append(package)
         if package["state"] != "READY_FOR_REVIEW":
             continue
@@ -334,6 +372,12 @@ def run_daily_cycle(
             content=_content_payload(selected, image_run_path=image_run_path),
             creative_brief_id=brief["id"],
             package_snapshot=package_snapshot,
+            # day/pillar/topic so the dashboard can group same-day publications
+            # (one per platform) into a single reviewable row instead of a flat
+            # per-platform list -- see PublishingSection.tsx's GrowthApprovalQueue.
+            day=day,
+            pillar=topic["pillar"],
+            topic=topic["topic"],
         )
         publications.append(publication)
 

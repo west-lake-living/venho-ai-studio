@@ -1,7 +1,11 @@
-name: Growth Agent Daily Cycle
+name: Growth Agent Weekly Cycle
 
-# Cadence day = T2/T4/T6/T7 (Mon/Wed/Fri regular lane + Sat special lane),
-# 08:00 Asia/Ho_Chi_Minh (UTC+7) == 01:00 UTC same calendar day.
+# Generates the whole week's cadence (Mon/Wed/Fri regular lane + Sat special
+# lane) in one run, once a week, so Harry reviews and approves the full
+# week's drafts together on VENHO OS Dashboard -- same "batch generate, one
+# approval session" pattern the old VenHoSocialManager topic_schedule.json
+# used, instead of one cadence day's draft trickling in per cron tick.
+# Runs Monday 08:00 Asia/Ho_Chi_Minh (UTC+7) == 01:00 UTC Monday.
 # This job only generates drafts and queues them PENDING_APPROVAL in
 # PublicationRegistry -- it does NOT publish anything. Actual posting is
 # triggered later by approving on VENHO OS Dashboard (see
@@ -10,15 +14,11 @@ name: Growth Agent Daily Cycle
 # from this workflow.
 on:
   schedule:
-    - cron: "0 1 * * 1,3,5,6"
+    - cron: "0 1 * * 1"
   workflow_dispatch:
-    inputs:
-      day:
-        description: "Override cadence day (monday/wednesday/friday/saturday). Leave empty to use today."
-        required: false
 
 jobs:
-  daily-cycle:
+  weekly-cycle:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -32,13 +32,10 @@ jobs:
       - name: Install dependencies
         run: pip install -e .
 
-      - name: Run daily cycle
-        run: |
-          if [ -n "${{ github.event.inputs.day }}" ]; then
-            venho-growth daily-cycle --day "${{ github.event.inputs.day }}"
-          else
-            venho-growth daily-cycle
-          fi
+      - name: Run weekly cycle
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: venho-growth weekly-cycle
 
       # data/ is gitignored (generated content, per-project knowledge/DNA
       # output) so rotation_state.json and publication_registry.json would

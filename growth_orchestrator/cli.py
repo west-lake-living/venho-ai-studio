@@ -14,6 +14,7 @@ from growth_orchestrator.application.measure_publication import measure_publicat
 from growth_orchestrator.application.reconcile_publication import reconcile_publication
 from growth_orchestrator.application.run_blog_pipeline import run_blog_pipeline
 from growth_orchestrator.application.run_content_pipeline import run_content_pipeline
+from growth_orchestrator.application.weekly_cycle import run_weekly_cycle
 
 app = typer.Typer(help="Ven Ho Growth Orchestrator")
 
@@ -28,18 +29,57 @@ def run(brief_file: Path) -> None:
 def daily_cycle(
     day: Optional[str] = typer.Option(None, help="Cadence day (monday/wednesday/friday/saturday). Defaults to today (Asia/Ho_Chi_Minh)."),
     project: str = typer.Option("venho_hotel"),
+    generate_image: bool = typer.Option(True, "--image/--no-image", help="Set --no-image to skip photo generation (e.g. OPENAI_API_KEY unavailable/invalid)."),
 ) -> None:
     """Generate this cadence day's drafts and queue them PENDING_APPROVAL (does not publish).
 
     Meant to run on the T2/T4/T6/T7 8AM cron -- actual publishing only
-    happens later when a human approves on VENHO OS Dashboard.
+    happens later when a human approves on VENHO OS Dashboard. Text and
+    images must both pass real Validator scoring (see M03ValidatorBridge /
+    validator_studio.image_validator, provider="openai") before queuing --
+    a failed draft is regenerated automatically, see daily_cycle's
+    MAX_TEXT_ATTEMPTS/MAX_IMAGE_ATTEMPTS.
     """
     resolved_day = day or datetime.now(ZoneInfo("Asia/Ho_Chi_Minh")).strftime("%A").lower()
     if resolved_day not in CADENCE_DAYS:
         typer.echo(f"'{resolved_day}' is not a cadence day ({sorted(CADENCE_DAYS)}); nothing to do today.")
         raise typer.Exit(code=0)
-    result = run_daily_cycle(resolved_day, project=project)
+    result = run_daily_cycle(
+        resolved_day, project=project, generate_image=generate_image, image_validation_provider="openai"
+    )
     typer.echo(json.dumps({"day": result.day, "topic": result.topic, "publications": result.publications}, ensure_ascii=False, indent=2))
+
+
+@app.command("weekly-cycle")
+def weekly_cycle(
+    project: str = typer.Option("venho_hotel"),
+    generate_image: bool = typer.Option(True, "--image/--no-image", help="Set --no-image to skip photo generation (e.g. OPENAI_API_KEY unavailable/invalid)."),
+) -> None:
+    """Generate a full week's cadence (Mon/Wed/Fri/Sat) in one run and queue
+    all of it PENDING_APPROVAL, so Harry can review/approve the whole week in
+    one VENHO OS Dashboard session instead of one cadence day at a time.
+
+    Meant to run on a single weekly cron tick (see
+    .github/workflows/growth-daily-cycle.yml) -- does not publish anything.
+    Text and images must both pass real Validator scoring before queuing --
+    a failed draft is regenerated automatically (see daily_cycle's
+    MAX_TEXT_ATTEMPTS/MAX_IMAGE_ATTEMPTS).
+    """
+    result = run_weekly_cycle(
+        project=project, generate_image=generate_image, image_validation_provider="openai"
+    )
+    typer.echo(
+        json.dumps(
+            {
+                "days": [
+                    {"day": day.day, "topic": day.topic, "publications": day.publications}
+                    for day in result.days
+                ]
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+    )
 
 
 @app.command("list-pending")

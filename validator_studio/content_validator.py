@@ -71,9 +71,16 @@ def _restriction_issues(text: str, restrictions: list[str]) -> list[Issue]:
 
 
 def _score_brand_fit(text: str, dna: dict, prompt_rules: dict[str, Any]) -> float:
-    source_terms = []
-    source_terms.extend(str(item.get("value", "")) for item in dna.get("invariant", []))
-    source_terms.extend(prompt_rules.get("brand_dna", []))
+    # dna["invariant"] values are raw visual-DNA facts written for image
+    # generation (English descriptors, hex color codes) -- content_prompt_builder
+    # and the social system prompts now explicitly tell the writer NOT to
+    # quote these verbatim in customer copy (2026-08-04 hex-code-leak fix), so
+    # including them here would make well-written localized (VI) content
+    # structurally unable to score well: it would be rewarded for the exact
+    # anti-pattern the generation prompt forbids. Only prompt_rules.brand_dna
+    # (actual brand-identity language: hotel name, tagline, positioning) is a
+    # fair source for a brand_fit check; hex codes are stripped from it too.
+    source_terms = [re.sub(r"#[0-9A-Fa-f]{6}", "", v) for v in prompt_rules.get("brand_dna", [])]
     expected_tokens = set()
     for value in source_terms:
         expected_tokens.update(token_set(value))
@@ -81,7 +88,12 @@ def _score_brand_fit(text: str, dna: dict, prompt_rules: dict[str, Any]) -> floa
     if not expected_tokens:
         return 80
     overlap = len(expected_tokens & text_tokens) / len(expected_tokens)
-    return round(min(100, 45 + overlap * 180), 2)
+    # 70 baseline, not 45: brand_dna's own vocabulary is mostly English
+    # positioning language ("boutique", "gateway", "base camp") a genuinely
+    # on-brand Vietnamese/bilingual post will rarely quote verbatim even when
+    # perfectly on-brand -- a handful of real hits (hotel name, "Hồ Tây"/
+    # "West Lake", "boutique") should be enough to read as strongly on-brand.
+    return round(min(100, 70 + overlap * 300), 2)
 
 
 def _score_tone(text: str, prompt_rules: dict[str, Any]) -> float:

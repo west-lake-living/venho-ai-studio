@@ -36,9 +36,19 @@ def urllib_post(
     )
     try:
         with urllib.request.urlopen(request, timeout=timeout) as response:
-            return json_lib.loads(response.read().decode("utf-8"))
+            raw = response.read().decode("utf-8")
     except urllib.error.HTTPError as exc:
         raise HttpError(exc.code, exc.read().decode("utf-8")) from exc
+    try:
+        return json_lib.loads(raw) if raw else {}
+    except json_lib.JSONDecodeError:
+        # Not every 2xx webhook responds with JSON -- Make.com's Custom
+        # Webhook response module, for example, replies with a plain-text
+        # "Accepted" body. A successful (non-error-status) response with a
+        # non-JSON body is still a successful call; callers that don't
+        # inspect the parsed body (publishing_gateway's Make/Zalo adapters)
+        # must not crash on it.
+        return {"raw": raw}
 
 
 def urllib_post_form(

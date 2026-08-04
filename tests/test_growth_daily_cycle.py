@@ -5,6 +5,7 @@ from pathlib import Path
 from shutil import copyfile
 
 from agent_studio.growth.reference_asset_resolver import ReferenceAssetResolver
+from content_studio.builders.social_builder import mock_social_generator
 from image_studio_runtime.adapters.mock_image_provider import MockImageProvider
 from publishing_gateway.publication_registry import PublicationRegistry
 
@@ -13,6 +14,21 @@ from growth_orchestrator.application.daily_cycle import (
     _pick_topic,
     run_daily_cycle,
 )
+from growth_orchestrator.bridges.m05_content_bridge import M05ContentBridge
+
+
+class _AlwaysApproveValidatorBridge:
+    """Bypasses M03ValidatorBridge's real content-scoring rubric.
+
+    mock_social_generator's boilerplate text reliably scores below the real
+    APPROVE bar (see validator_studio.content_validator), which would make
+    daily_cycle's retry loop burn through MAX_TEXT_ATTEMPTS and then drop
+    the publication -- these tests are about the daily_cycle/image/rotation
+    plumbing, not content-quality scoring, so they inject this instead.
+    """
+
+    def validate_package(self, brief: dict, copy_candidate: dict) -> dict:
+        return {"verdict": "READY_FOR_REVIEW", "reports": []}
 
 
 def _tmp_data_root(tmp_path: Path) -> Path:
@@ -24,9 +40,16 @@ def _tmp_data_root(tmp_path: Path) -> Path:
     return root
 
 
+def _mock_content_bridge(data_root: Path) -> M05ContentBridge:
+    """M05ContentBridge with a mock generator -- avoids billed Claude API
+    calls in tests (default generator_fn is the real gpt_social_generator)."""
+    return M05ContentBridge(data_root=data_root, generator_fn=mock_social_generator)
+
+
 def test_run_daily_cycle_rejects_non_cadence_day(tmp_path: Path) -> None:
+    data_root = _tmp_data_root(tmp_path)
     try:
-        run_daily_cycle("tuesday", data_root=_tmp_data_root(tmp_path))
+        run_daily_cycle("tuesday", data_root=data_root, content_bridge=_mock_content_bridge(data_root), validator_bridge=_AlwaysApproveValidatorBridge())
         assert False, "expected ValueError"
     except ValueError as exc:
         assert "cadence day" in str(exc)
@@ -34,7 +57,7 @@ def test_run_daily_cycle_rejects_non_cadence_day(tmp_path: Path) -> None:
 
 def test_run_daily_cycle_queues_one_pending_approval_publication_per_platform(tmp_path: Path) -> None:
     data_root = _tmp_data_root(tmp_path)
-    result = run_daily_cycle("monday", data_root=data_root, generate_image=False)
+    result = run_daily_cycle("monday", data_root=data_root, generate_image=False, content_bridge=_mock_content_bridge(data_root), validator_bridge=_AlwaysApproveValidatorBridge())
 
     assert result.day == "monday"
     assert result.topic["dna_subject"] == "westlake"
@@ -50,7 +73,7 @@ def test_run_daily_cycle_queues_one_pending_approval_publication_per_platform(tm
 
 def test_run_daily_cycle_saturday_uses_special_topics(tmp_path: Path) -> None:
     data_root = _tmp_data_root(tmp_path)
-    result = run_daily_cycle("saturday", platforms=["facebook"], data_root=data_root, generate_image=False)
+    result = run_daily_cycle("saturday", platforms=["facebook"], data_root=data_root, generate_image=False, content_bridge=_mock_content_bridge(data_root), validator_bridge=_AlwaysApproveValidatorBridge())
     assert result.topic["dna_subject"] == "outside"
     assert result.topic["pillar"] == "Cuoi tuan o Tay Ho"
 
@@ -61,7 +84,7 @@ def test_run_daily_cycle_saturday_runs_real_special_lane_fallback_selection(tmp_
     rotation index. With no live trend/event feed, every candidate defaults
     to type feature_story (loai 4) and selected_reason must say so."""
     data_root = _tmp_data_root(tmp_path)
-    result = run_daily_cycle("saturday", platforms=["facebook"], data_root=data_root, generate_image=False)
+    result = run_daily_cycle("saturday", platforms=["facebook"], data_root=data_root, generate_image=False, content_bridge=_mock_content_bridge(data_root), validator_bridge=_AlwaysApproveValidatorBridge())
     assert result.topic["special_lane_type"] == "feature_story"
     assert result.topic["special_lane_reason"] == "feature_story"
 
@@ -109,14 +132,14 @@ def test_pick_topic_special_lane_rejects_unverified_cultural_event(tmp_path: Pat
 
 def test_run_daily_cycle_rotation_advances_across_calls(tmp_path: Path) -> None:
     data_root = _tmp_data_root(tmp_path)
-    first = run_daily_cycle("monday", platforms=["facebook"], data_root=data_root, generate_image=False)
-    second = run_daily_cycle("monday", platforms=["facebook"], data_root=data_root, generate_image=False)
+    first = run_daily_cycle("monday", platforms=["facebook"], data_root=data_root, generate_image=False, content_bridge=_mock_content_bridge(data_root), validator_bridge=_AlwaysApproveValidatorBridge())
+    second = run_daily_cycle("monday", platforms=["facebook"], data_root=data_root, generate_image=False, content_bridge=_mock_content_bridge(data_root), validator_bridge=_AlwaysApproveValidatorBridge())
     assert first.topic["topic"] != second.topic["topic"]
 
 
 def test_run_daily_cycle_skips_image_generation_when_disabled(tmp_path: Path) -> None:
     data_root = _tmp_data_root(tmp_path)
-    result = run_daily_cycle("monday", platforms=["facebook"], data_root=data_root, generate_image=False)
+    result = run_daily_cycle("monday", platforms=["facebook"], data_root=data_root, generate_image=False, content_bridge=_mock_content_bridge(data_root), validator_bridge=_AlwaysApproveValidatorBridge())
     assert result.publications[0]["content"]["image_run_path"] is None
 
 
@@ -130,7 +153,7 @@ def test_run_daily_cycle_saturday_generates_real_image_with_injected_provider(tm
 
     result = run_daily_cycle(
         "saturday", platforms=["facebook"], data_root=data_root, image_provider=provider, reference_resolver=resolver
-    )
+    , content_bridge=_mock_content_bridge(data_root), validator_bridge=_AlwaysApproveValidatorBridge())
 
     assert provider.calls == 1
     image_path = result.publications[0]["content"]["image_run_path"]
@@ -172,7 +195,7 @@ def test_generate_topic_image_discards_image_on_kill_switch(tmp_path: Path, monk
 
     result = run_daily_cycle(
         "monday", platforms=["facebook"], data_root=data_root, image_provider=provider, reference_resolver=resolver
-    )
+    , content_bridge=_mock_content_bridge(data_root), validator_bridge=_AlwaysApproveValidatorBridge())
 
     assert result.publications[0]["content"]["image_run_path"] is None
     assert result.publications[0]["package_snapshot"]["asset_version_ids"] == []
@@ -180,20 +203,72 @@ def test_generate_topic_image_discards_image_on_kill_switch(tmp_path: Path, monk
 
 def test_run_daily_cycle_asset_version_ids_empty_when_image_generation_disabled(tmp_path: Path) -> None:
     data_root = _tmp_data_root(tmp_path)
-    result = run_daily_cycle("monday", platforms=["facebook"], data_root=data_root, generate_image=False)
+    result = run_daily_cycle("monday", platforms=["facebook"], data_root=data_root, generate_image=False, content_bridge=_mock_content_bridge(data_root), validator_bridge=_AlwaysApproveValidatorBridge())
     assert result.publications[0]["package_snapshot"]["asset_version_ids"] == []
 
 
-def test_run_daily_cycle_monday_has_no_reference_asset_but_still_generates(tmp_path: Path) -> None:
+def test_run_daily_cycle_monday_has_no_reference_asset_but_still_generates(tmp_path: Path, monkeypatch) -> None:
     # westlake's scenario (venho_west_lake_landscape) has reference_mode: none
     # -- text-to-image only, no reference asset lookup should happen.
+    import growth_orchestrator.application.daily_cycle as daily_cycle_module
+
+    class _FakeKillSwitch:
+        triggered = False
+
+    class _FakeReport:
+        kill_switch = _FakeKillSwitch()
+        verdict = daily_cycle_module.Recommendation.APPROVE
+
+        def model_dump_json(self, indent=2):
+            return "{}"
+
+    # This test is about the reference-asset-less image path, not the mock
+    # vision observer's score against westlake's DNA -- stub validate_image
+    # to always approve so it isn't at the mercy of that unrelated score.
+    monkeypatch.setattr(daily_cycle_module, "validate_image", lambda *a, **k: _FakeReport())
+
     data_root = _tmp_data_root(tmp_path)
     provider = MockImageProvider()
     resolver = ReferenceAssetResolver({}, assets_root=Path("."))
 
     result = run_daily_cycle(
         "monday", platforms=["facebook"], data_root=data_root, image_provider=provider, reference_resolver=resolver
-    )
+    , content_bridge=_mock_content_bridge(data_root), validator_bridge=_AlwaysApproveValidatorBridge())
 
     assert provider.calls == 1
     assert result.publications[0]["content"]["image_run_path"] is not None
+
+
+def test_run_daily_cycle_saturday_reaches_generator_with_saturday_trend_lane(tmp_path: Path) -> None:
+    """The Saturday special-lane brief must flag lane="saturday_trend" all
+    the way through to the content generator, so gpt_social_generator can
+    pick the weekend-events brief instead of the daily hotel brief."""
+    data_root = _tmp_data_root(tmp_path)
+    seen_requests = []
+
+    def recording_generator(request, prompt, config):
+        seen_requests.append(request)
+        return mock_social_generator(request, prompt, config)
+
+    bridge = M05ContentBridge(data_root=data_root, generator_fn=recording_generator)
+    run_daily_cycle("saturday", platforms=["facebook"], data_root=data_root, generate_image=False, content_bridge=bridge, validator_bridge=_AlwaysApproveValidatorBridge())
+
+    assert len(seen_requests) == 1
+    assert seen_requests[0].lane == "saturday_trend"
+
+
+def test_run_daily_cycle_monday_reaches_generator_with_daily_lane(tmp_path: Path) -> None:
+    data_root = _tmp_data_root(tmp_path)
+    seen_requests = []
+
+    def recording_generator(request, prompt, config):
+        seen_requests.append(request)
+        return mock_social_generator(request, prompt, config)
+
+    bridge = M05ContentBridge(data_root=data_root, generator_fn=recording_generator)
+    run_daily_cycle("monday", platforms=["facebook"], data_root=data_root, generate_image=False, content_bridge=bridge, validator_bridge=_AlwaysApproveValidatorBridge())
+
+    assert len(seen_requests) == 1
+    assert seen_requests[0].lane == "daily"
+    assert seen_requests[0].verified_events == []
+    assert seen_requests[0].dna_subject == "westlake"

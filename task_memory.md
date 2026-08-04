@@ -1,6 +1,6 @@
 # VENHO AI STUDIO — Task Memory
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-08-04 (Growth Agent v3.1 review lần 2 — đóng 7/8 gap DoD, xem mục 14c) · **Đọc bởi:** AI Engine, Claude Code sessions
+**Cập nhật:** 2026-08-04 (Growth Agent v3.1 — model gpt-5.5, Validator gate thật, fix hex-code leak, lên lịch tuần, xem mục 14d) · **Đọc bởi:** AI Engine, Claude Code sessions
 
 ---
 
@@ -787,6 +787,25 @@ Harry: "Review lại task đang làm so với plan v3.1. Phần nào chưa làm 
 **KHÔNG làm — DoD #26 (golden-set scorecard):** cơ chế tính điểm đã thật (`controlled_rollout/scorecard.py`), nhưng không có bộ dữ liệu golden thật nào — cần Harry tự chọn bài/ảnh đã publish làm chuẩn, không phải việc code tự bịa được, khác các gap khác.
 
 **Verify:** 636/636 pass (598 + 38 mới), 0 API call, compileall sạch, `venho-growth --help` có `blog`+`reconcile`, chạy tay `venho-growth blog` ra bài thật trích đúng 4 fact.
+
+## 14d. Growth Agent v3.1 — Model switch gpt-5.5, Validator gate thật, fix hex-code leak, lên lịch tuần (2026-08-04)
+
+Chuỗi yêu cầu liên tiếp của Harry: bài chờ duyệt sơ sài → sinh lại theo prompt mới + lên lịch tuần (giống content agent cũ, duyệt 1 lần/tuần); chuyển generator từ `claude-sonnet-5` sang `gpt-5.5` ("Sonnet 5 đang viết ở mức trung bình không đạt"); lỗi bấm Phê Duyệt (`JSONDecodeError`); Validator phải chấm điểm thật cả bài viết lẫn ảnh, không pass phải tự làm lại; bài viết lộ mã màu hex + tiếng Anh kỹ thuật; nạp thêm credit sau khi hết billing.
+
+1. **Generator đổi sang gpt-5.5** — `content_studio/generators/gpt_social_generator.py` mới là `generator_fn` mặc định trong `M05ContentBridge` (`chat.completions.create(model="gpt-5.5", response_format={"type":"json_object"}, max_completion_tokens=4096)`). 3 system prompt dùng chung (`content_studio/generators/social_prompts.py`) — `claude_social_generator.py` giữ lại làm fallback/A-B, không còn default.
+2. **Validator gate thật cho text** — `M03ValidatorBridge.validate_package()` giờ gọi `validator_studio.content_validator.validate_content()` thật (không chỉ claim/alignment như trước); chỉ `Recommendation.APPROVE` mới `READY_FOR_REVIEW`. `daily_cycle.run_daily_cycle()` retry tối đa `MAX_TEXT_ATTEMPTS=3` lần/platform nếu không pass, bỏ qua platform đó nếu vẫn fail sau 3 lần (không queue nội dung dưới chuẩn).
+3. **Validator gate thật cho ảnh** — `_generate_topic_image()` retry `MAX_IMAGE_ATTEMPTS=2`, chỉ giữ ảnh khi `not kill_switch.triggered and verdict == APPROVE`; hết lượt thì bỏ ảnh (bài vẫn queue, không có ảnh) thay vì giữ ảnh không đạt.
+4. **`_score_brand_fit` sửa gốc (`validator_studio/content_validator.py`)** — trước tính overlap token với `dna["invariant"]` (English/hex kỹ thuật cho ảnh AI) → xung đột trực tiếp với rule "không copy hex/tiếng Anh kỹ thuật vào content": bài viết càng đúng chuẩn (paraphrase hết) càng bị điểm thấp. Giờ chỉ tính overlap với `prompt_rules.brand_dna` (ngôn ngữ định vị thương hiệu thật: tên khách sạn, tagline...), hex đã strip khỏi nguồn, baseline 70 thay vì 45. Đã verify bằng script thật: 1 mẫu real content tăng từ overall 81.59/brand_fit 57.86 → overall 91.12/brand_fit 95.0, state `NEEDS_REVISION` → `READY_FOR_REVIEW`.
+5. **Fix leak hex-code/tiếng Anh kỹ thuật vào content** — root cause là `prompt_studio/builders/content_prompt_builder.py::render_final_prompt()` liệt kê `required_dna` (bao gồm hex + English visual descriptors) mà không cấm copy nguyên văn. Thêm dòng chỉ dẫn "never copy hex codes or raw English descriptors literally — paraphrase in the target language" (ngắn gọn để không vượt giới hạn 2000 ký tự faithfulness validation của prompt_studio). Đồng thời 3 system prompt trong `social_prompts.py` đều thêm bullet cấm hex/tiếng Anh kỹ thuật tương tự.
+6. **Fix lỗi bấm Phê Duyệt (root cause)** — `shared/http.py::urllib_post()` từng `json.loads()` thẳng response webhook Make.com, nhưng Make trả plain-text "Accepted" (không phải JSON) → `JSONDecodeError: Expecting value: line 1 column 1 (char 0)`, đúng y lỗi Harry báo. Sửa: bắt `JSONDecodeError`, trả `{"raw": raw}` thay vì crash. **Không sửa** `urllib_post_form` (chỉ dùng cho Zalo OAuth, luôn trả JSON thật — crash ở đó là đúng, không che lỗi).
+7. **Fix ảnh MPO không edit được** — `agent_studio/growth/reference_asset_resolver.py` re-encode mọi ref ảnh qua PIL thành PNG single-frame (`_load_as_png()`) trước khi gửi `images.edit()` — ảnh gốc iPhone portrait-mode là MPO container, OpenAI reject `BadRequestError: Invalid image file or mode`.
+8. **Lên lịch tuần** — `growth_orchestrator/application/weekly_cycle.py` mới (`run_weekly_cycle()`), CLI `venho-growth weekly-cycle`. `.github/workflows/growth-daily-cycle.yml` đổi tên "Growth Agent Weekly Cycle", cron `0 1 * * 1` (Thứ 2 duy nhất, thay vì 4 lần/tuần) — Harry duyệt cả tuần 1 lần giống content agent cũ. `--image/--no-image` flag thêm cho cả `daily-cycle`/`weekly-cycle`; CLI dùng `image_validation_provider="openai"` thật (vision QC thật), hàm-level default vẫn `"mock"` để test không tốn phí.
+9. **Registry rows thêm `day`/`pillar`/`topic`** — `daily_cycle.py`'s `registry.update()` giờ ghi kèm 3 field này (trước chỉ có trong `package_snapshot`/nội bộ), để `venho-os` group được publication theo ngày/pillar/chủ đề mà không cần parse content.
+10. **Batch cuối cùng của phiên** — 15 publication cũ (thiếu `day`/`pillar`/`topic`, generator Claude, chưa qua validator gate mới) bị `SUPERSEDED`; chạy `venho-growth weekly-cycle` lại → 16 publication mới (4 ngày × 4 platform) `PENDING_APPROVAL`, đã verify: đủ `day`/`pillar`/`topic`, 0 hex-code, qua Validator thật.
+
+**Verify:** 655/655 pass sau toàn bộ thay đổi trên. Batch thật cuối cùng verify qua `venho-growth list-pending` + grep hex-code trực tiếp trên `publication_registry.json` (0 match trong các entry `PENDING_APPROVAL`, chỉ còn trong entry `SUPERSEDED`/`DISABLED` cũ).
+
+**Việc liên quan ở `venho-os` (repo khác, xem `venho-os/task_memory.md`/`CHANGELOG.md` mục 2026-08-04):** redesign `GrowthApprovalQueue` trong `PublishingSection.tsx` — bảng gộp Ngày/Pillar/Chủ đề thay flat card list, expand xem chi tiết per-platform, nút Duyệt tất cả + Duyệt riêng.
 
 ## 14. Task Closing Protocol
 

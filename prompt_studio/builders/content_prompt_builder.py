@@ -50,7 +50,11 @@ def render_final_prompt(
     lines.append("")
 
     if required_dna:
-        lines.append("Required facts (must appear, do not alter):")
+        lines.append(
+            "Required facts (ground your writing in these, do not contradict them, but "
+            "never copy hex codes or raw English descriptors literally — paraphrase in the "
+            "target language):"
+        )
         lines.extend(f"- {item.key}: {item.value}" for item in required_dna)
         lines.append("")
 

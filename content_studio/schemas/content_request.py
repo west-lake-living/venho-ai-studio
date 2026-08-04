@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Literal, Optional
+from typing import Any, Dict, List, Literal, Optional
 
 from pydantic import BaseModel, Field
 
@@ -43,6 +43,9 @@ class ContentRequest(BaseModel):
     validation_required: bool = True
     subject: Optional[str] = None
     outfit_id: Optional[str] = None
+    lane: str = "daily"
+    verified_events: List[Dict[str, Any]] = Field(default_factory=list)
+    dna_subject: Optional[str] = None
 
     @property
     def platform(self) -> str:
