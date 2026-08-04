@@ -2,9 +2,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Callable, Protocol
+from typing import Any, Callable, Mapping, Protocol
 
 import yaml
+
+from shared.http import urllib_post
 
 
 class TelegramSender(Protocol):
@@ -24,17 +26,32 @@ class MockTelegramNotifier:
 
 
 class TelegramNotifier:
-    """Real Telegram Bot API sender (feature-flagged off by default, IN-D4)."""
+    """Real Telegram Bot API sender (feature-flagged off by default, IN-D4).
 
-    def __init__(self, *, bot_token: str, http_post: Callable[..., dict[str, Any]]) -> None:
+    `http_post` defaults to the stdlib transport (`shared.http.urllib_post`)
+    so real usage needs no extra wiring; tests always inject a fake to keep
+    the suite at 0 API calls.
+    """
+
+    def __init__(self, *, bot_token: str, http_post: Callable[..., dict[str, Any]] | None = None) -> None:
         if not bot_token:
             raise ValueError("Telegram bot token is required")
         self._bot_token = bot_token
-        self._http_post = http_post
+        self._http_post = http_post or urllib_post
 
     def send(self, *, chat_id: str, text: str) -> dict[str, Any]:
         url = f"https://api.telegram.org/bot{self._bot_token}/sendMessage"
         return self._http_post(url, json={"chat_id": chat_id, "text": text})
+
+
+def telegram_notifier_from_env(env: Mapping[str, str]) -> TelegramNotifier:
+    """Build a real TelegramNotifier from process env (e.g. `os.environ` after dotenv load).
+
+    Raises KeyError if TELEGRAM_BOT_TOKEN is missing -- callers must only use
+    this once `telegram_alerts_enabled`-style feature flag is on.
+    """
+    bot_token = env["TELEGRAM_BOT_TOKEN"]
+    return TelegramNotifier(bot_token=bot_token)
 
 
 def load_alert_policy(path: Path = Path("shared/notify/alert_policy.yaml")) -> dict[str, Any]:

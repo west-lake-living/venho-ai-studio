@@ -1,8 +1,28 @@
 # VENHO AI STUDIO — Task Status
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-08-03 (Growth Agent v3.1 delta — cadence 4/tuần + weather + infra) · **Tests:** 549/549 pass (AI Studio) · 78/78 pass (venho-os) · 0 API call trong test
+**Cập nhật:** 2026-08-03 (Real provider wiring: Tavily/Telegram/Zalo token refresh) · **Tests:** 557/557 pass (AI Studio) · 78/78 pass (venho-os) · 0 API call trong test
 
 ---
+
+### Growth Agent v3.1 — Real provider wiring: Tavily + Telegram + Zalo token refresh (2026-08-03)
+
+**Status: DONE (transport + Tavily + Telegram + Zalo refresh) · Zalo message-send CHƯA làm — cần Harry xác nhận use-case**
+
+Harry đã có `TAVILY_API_KEY`, `TELEGRAM_BOT_TOKEN` + `TELEGRAM_CHAT_ID`, `ZALO_ACCESS_TOKEN` + `ZALO_REFRESH_TOKEN` + `ZALO_APP_ID` + `ZALO_APP_SECRET` trong `.env.local`. **Phát hiện + vá ngay lỗ hổng bảo mật:** `.env.local` chưa từng nằm trong `.gitignore` (chỉ chặn đúng tên `.env`) — chưa từng bị commit (đã kiểm tra `git log`) nhưng có nguy cơ rò rỉ ở lần commit tới. Sửa `.gitignore` thành `.env.*` + `!.env.example`. Cũng đổi tên 2 biến gõ sai (`zalo_appp_id`, `app_secret_key`) thành `ZALO_APP_ID`/`ZALO_APP_SECRET` (chỉ đổi tên key, không đụng giá trị).
+
+- **`shared/http.py` (mới):** `urllib_post`/`urllib_post_form`/`urllib_get` — transport HTTP dùng chuẩn thư viện (`urllib`), không thêm dependency mới (project chưa có `requests`/`httpx`). Mọi adapter nhận transport qua tham số tiêm vào (`http_post=None` → mặc định dùng transport thật), test luôn tiêm fake nên vẫn giữ 0 API call trong suite.
+- **`shared/notify/telegram.py`:** `TelegramNotifier` giờ mặc định dùng `urllib_post` thật thay vì bắt buộc tiêm; thêm `telegram_notifier_from_env()` đọc `TELEGRAM_BOT_TOKEN` từ env, raise `KeyError` nếu thiếu.
+- **`research_engine/trend_radar/collectors/tavily_search.py`:** thêm `collect_tavily_search(query, api_key=..., http_post=...)` gọi `https://api.tavily.com/search` thật, chuẩn hoá kết quả thành entry R0 (`id`/`title`/`source_uri`/`snippet`/`relevance_hint`) — phân loại geographic/thematic/actionability/brand_safety_category vẫn ở downstream (`scan_trends`), không đoán ở tầng collector. Giữ nguyên `collect_tavily_search_stub()` cũ.
+- **`publishing_gateway/adapters/zalo_oa.py`:** thêm `refresh_zalo_access_token(app_id, app_secret, refresh_token)` — gọi đúng chuẩn Zalo OAuth v4 (`POST https://oauth.zalo.me/v4/oa/access_token`, body `x-www-form-urlencoded`, `app_secret` truyền qua header `secret_key`, không phải JSON/query string). **`ZaloOAAdapter.send()` thật (gửi tin) CHƯA làm** — Zalo OA không có API "đăng bài công khai" như Facebook Page; gửi tin thật cần nhắm vào một `user_id` follower cụ thể (cửa sổ tư vấn 7 ngày) hoặc template broadcast đã duyệt. Đoán sai endpoint/payload ở đây có thể tốn quota thật hoặc gửi nhầm đối tượng — để nguyên chờ Harry xác nhận: Zalo dùng làm kênh alert nội bộ (giống Telegram, gửi cho `user_id` của Harry) hay kênh publish content cho khách/follower?
+- **Không tự bật feature flag nào** (`trend_radar_enabled`, `zalo_enabled`, `real_meta_insights_enabled`...) — có key thật rồi nhưng bật flag nghĩa là bắt đầu gọi API/gửi tin thật, để Harry chủ động quyết định sau khi review.
+- Tests mới: `tests/test_growth_v3_1_real_providers.py` (8 test) — Telegram dùng đúng transport thật mặc định + gửi đúng URL/payload khi tiêm fake + `from_env` thiếu token raise; Tavily raise nếu thiếu key + chuẩn hoá đúng kết quả; Zalo refresh raise nếu thiếu credential + đúng form-body/header.
+
+**KHÔNG làm trong lượt này:**
+- `ZaloOAAdapter.send()` thật — cần Harry xác nhận use-case (alert nội bộ hay publish content) trước khi chọn đúng endpoint.
+- Weather API, Exa, YouTube Data — Harry chưa cung cấp key cho các dịch vụ này.
+- Bật bất kỳ feature flag nào hoặc gọi thử API thật (kể cả Telegram/Tavily) — chưa có test tay/manual smoke test với key thật.
+
+**Verify:** `python3 -m pytest -q` → 557 passed (549 prior + 8 new), 0 API call. `python3 -m compileall` sạch.
 
 ### Growth Agent v3.1 — Delta so với v3.0 (cadence, weather, infra) (2026-08-03)
 
