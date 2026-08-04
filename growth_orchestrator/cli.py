@@ -11,6 +11,8 @@ import typer
 from growth_orchestrator.application.approve_and_dispatch import approve_and_dispatch, list_pending
 from growth_orchestrator.application.daily_cycle import CADENCE_DAYS, run_daily_cycle
 from growth_orchestrator.application.measure_publication import measure_publication
+from growth_orchestrator.application.reconcile_publication import reconcile_publication
+from growth_orchestrator.application.run_blog_pipeline import run_blog_pipeline
 from growth_orchestrator.application.run_content_pipeline import run_content_pipeline
 
 app = typer.Typer(help="Ven Ho Growth Orchestrator")
@@ -60,6 +62,47 @@ def approve_and_dispatch_cmd(
     """
     try:
         result = approve_and_dispatch(publication_id, approved_by=approved_by, project=project)
+    except (KeyError, ValueError) as exc:
+        typer.echo(json.dumps({"ok": False, "error": str(exc)}), err=True)
+        raise typer.Exit(code=1)
+    typer.echo(json.dumps({"ok": True, "publication": result}, ensure_ascii=False, indent=2))
+
+
+@app.command("blog")
+def blog_cmd(
+    topic: str = typer.Option(..., "--topic"),
+    keyword: Optional[str] = typer.Option(None, "--keyword"),
+    dna_subject: str = typer.Option("westlake", "--dna-subject"),
+    project: str = typer.Option("venho_hotel"),
+) -> None:
+    """Generate a blog/SEO draft grounded in Research OS approved facts
+    (DoD #11). Manually invoked -- no scheduled blog cadence exists yet.
+    """
+    result = run_blog_pipeline(topic, keyword=keyword, dna_subject=dna_subject, project=project)
+    typer.echo(json.dumps(result, ensure_ascii=False, indent=2))
+
+
+@app.command("reconcile")
+def reconcile_cmd(
+    publication_id: str = typer.Option(..., "--publication-id"),
+    platform_post_id: str = typer.Option(..., "--platform-post-id"),
+    reconciled_by: str = typer.Option(..., "--reconciled-by"),
+    permalink: Optional[str] = typer.Option(None, "--permalink"),
+    project: str = typer.Option("venho_hotel"),
+) -> None:
+    """Manually record that a dispatched (GATEWAY_ACCEPTED) publication went
+    live for real -- no automatic Make.com callback receiver exists yet, so
+    this is the operator's reconciliation step after checking the real post.
+    Required before `measure` can observe anything (see DoD #3).
+    """
+    try:
+        result = reconcile_publication(
+            publication_id,
+            platform_post_id=platform_post_id,
+            reconciled_by=reconciled_by,
+            permalink=permalink,
+            project=project,
+        )
     except (KeyError, ValueError) as exc:
         typer.echo(json.dumps({"ok": False, "error": str(exc)}), err=True)
         raise typer.Exit(code=1)

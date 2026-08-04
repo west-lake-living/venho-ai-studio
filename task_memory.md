@@ -1,6 +1,6 @@
 # VENHO AI STUDIO — Task Memory
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-07-16 (AI Studio v1.5 closeout audit after Phase 7 QA/DOC) · **Đọc bởi:** AI Engine, Claude Code sessions
+**Cập nhật:** 2026-08-04 (Growth Agent v3.1 review lần 2 — đóng 7/8 gap DoD, xem mục 14c) · **Đọc bởi:** AI Engine, Claude Code sessions
 
 ---
 
@@ -770,6 +770,23 @@ Chỉ tắt workflow `venho-os/.github/workflows/social-content.yml` sau khi 3 g
 - **Rủi ro thật phát hiện, CHƯA sửa (ngoài phạm vi việc 1-5):** `providers/openai_provider.py` gọi `load_dotenv(BASE_DIR / ".env")` ở top-level module import — bất kỳ test nào import module này rò `OPENAI_API_KEY` thật (từ file `.env` gốc, khác `.env.local`) vào `os.environ` cho cả tiến trình pytest. Đã tự vệ trong test của mình (luôn tiêm provider/`generate_image=False` tường minh, không dựa vào env default), nhưng bug gốc vẫn còn đó — bất kỳ ai thêm code mới đọc `os.environ` cho default nhạy cảm sẽ dính lại.
 - **Audit tổng:** ~3/27 DoD đạt chắc chắn sau việc 1-5, phần lớn (Research OS 8/9 domain thật, hạ tầng Mac Mini/deadman switch, Analytics thật, blog SEO T3, 16-slot/4-tuần) vẫn chưa chạm — hệ thống ở khoảng Phase 3-4/8 theo roadmap gốc, không phải "growth agent hoàn chỉnh".
 - **Quyết định của Harry (2026-08-04):** (1) Hạ tầng — **giữ GitHub Actions**, không xây Mac Mini 24/7 + deadman switch như plan gốc v3.1 §10 (đơn giản hơn, chấp nhận không có heartbeat/cloud-fallback tự động — rủi ro chấp nhận được vì publish vẫn qua bước Approve thủ công). (2) Research OS — **không promote fact mới nào lúc này**, 4 fact seed hiện có (room_count/address/website/review.agoda_overall) là đủ cho content hiện tại; quay lại khi có nghiên cứu thật (guest_voice/competitor/...).
+
+## 14c. Growth Agent v3.1 — Review lần 2: đóng 7/8 gap DoD (2026-08-04)
+
+Harry: "Review lại task đang làm so với plan v3.1. Phần nào chưa làm xong, hoàn thiện nốt." Trước khi sửa, dùng 1 agent Explore verify lại 8 điểm còn mập mờ từ audit trước bằng đọc code thật (không tin note cũ) — full chi tiết từng gap + số dòng: `task_status.md` mục cùng ngày "Review lần 2".
+
+**Đóng được 7/8 (đều là glue code có sẵn từng phần, chưa nối, không cần dữ liệu kinh doanh mới):**
+1. `tests/test_growth_brand_safety_gate.py` — 24 test cho `BrandSafetyGate` (trước đó là 0, DoD #19 yêu cầu ≥15).
+2. `daily_cycle._pick_topic()` nối thật `special_lane.select_special_lane_candidate()` cho Thứ 7 — loại-4 fallback giờ chạy thật mỗi tuần (mặc định `feature_story` vì chưa có nguồn trend thật), không còn là code chết chỉ có test riêng.
+3. `package_snapshot["asset_version_ids"]` giờ lấy `run_folder.name` (run_id thật) thay vì luôn `[]`.
+4. `M08AnalyticsBridge.observe()` giờ gọi `generate_research_question_from_analytics()` thật sau advisory — ghi câu hỏi vào `research/questions/` (vault thật).
+5. `_generate_topic_image()` nối `validator_studio.image_validator.validate_image()` (DNA-match, provider mock mặc định) — kill_switch loại ảnh vi phạm, report ghi cạnh artifact.
+6. **Phát hiện quan trọng:** pipeline thật không bao giờ đạt status `PUBLISHED` (Make.com adapter fire-and-forget) → M08 Analytics nối ở lượt trước **không chạy được ngoài test**. Thêm `reconcile_publication()` + CLI `venho-growth reconcile` — thao tác tay của Harry sau khi kiểm tra bài đăng thật, chuyển GATEWAY_ACCEPTED → PUBLISHED. Đây là "reconciliation evidence" DoD #3 chấp nhận.
+7. `run_blog_pipeline()` mới + CLI `venho-growth blog` — nối `content_studio` blog builder với `knowledge_studio.facts.FactResolver` thật (4 fact seed đã duyệt), chỉ trích fact đã approved+còn hạn, không bịa. Verify chạy tay thật, không chỉ test.
+
+**KHÔNG làm — DoD #26 (golden-set scorecard):** cơ chế tính điểm đã thật (`controlled_rollout/scorecard.py`), nhưng không có bộ dữ liệu golden thật nào — cần Harry tự chọn bài/ảnh đã publish làm chuẩn, không phải việc code tự bịa được, khác các gap khác.
+
+**Verify:** 636/636 pass (598 + 38 mới), 0 API call, compileall sạch, `venho-growth --help` có `blog`+`reconcile`, chạy tay `venho-growth blog` ra bài thật trích đúng 4 fact.
 
 ## 14. Task Closing Protocol
 

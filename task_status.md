@@ -1,6 +1,48 @@
 # VENHO AI STUDIO — Task Status
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-08-04 (v3.1 audit + việc 1-5: hợp nhất pipeline thật, exact-version approval, Research OS seed thật, ảnh thật trong daily_cycle, M08 Analytics thật) · **Tests:** 598/598 pass (AI Studio) · 0 API call trong test
+**Cập nhật:** 2026-08-04 (v3.1 review 2: đóng 7 gap thật trong 27 DoD — brand safety gate tests, special-lane fallback, asset version tracking, research-question feedback loop, cross-modal image validation, reconciliation CLI, blog SEO từ Research OS) · **Tests:** 636/636 pass (AI Studio) · 0 API call trong test
+
+---
+
+### Growth Agent v3.1 — Review lần 2: đóng 7 gap DoD sau audit (2026-08-04)
+
+**Harry: "Review lại task đang làm so với plan v3.1. Phần nào chưa làm xong, hoàn thiện nốt."**
+
+Trước khi sửa, verify lại từng gap còn mập mờ trong audit trước bằng cách đọc code thật (không tin lại note cũ) — kết quả xác nhận 8 điểm cụ thể, sửa 7/8 (không sửa DoD #26 golden-set scorecard — xem lý do cuối).
+
+**1) Brand Safety Gate — DoD #19 (yêu cầu ≥15 test case, thực tế trước đó là 0):**
+- `tests/test_growth_brand_safety_gate.py` mới — 24 test: 9 category cấm × 1 (kill switch thắng cả khi giao với required_intersection hợp lệ), 5 required_intersection × 1, category khớp chính xác (không fuzzy "politics" vs "politics_governance"), gate rỗng, guard chính sách thật (`config/projects/venho_hotel/research/brand_safety.yaml` đủ 9 category, `human_approval: mandatory`), 3 test tích hợp qua `scan_trends()` thật (không có candidate nào lọt qua với status "approved" — chỉ "needs_human_approval"/"rejected", đúng TR-D3).
+
+**2) Saturday loại-4 fallback — DoD #10 (logic có sẵn trong `special_lane.py` nhưng chưa ai gọi từ `daily_cycle.py`):**
+- `daily_cycle._pick_topic()` giờ gọi thật `select_special_lane_candidate()` cho lane `special` — mỗi topic Thứ 7 giờ mang `special_lane_type`/`special_lane_reason`. Vì chưa có nguồn trend/event thật, mọi candidate mặc định `type: feature_story` (loại 4) — đúng thực tế, không giả vờ có trend scanning. Khi có nguồn thật, chỉ cần thêm `type: seasonal_nature/cultural_event/lifestyle_trend` vào 1 group trong `content_pillars.yaml`, logic ưu tiên có sẵn sẽ tự chọn đúng.
+- Test mới: ưu tiên `seasonal_nature` trên `feature_story`, `cultural_event` không `verified_by_human` bị từ chối (raise đúng như thiết kế).
+
+**3) `asset_version_ids` — DoD #7 (trước đó luôn là `[]` kể cả khi có ảnh thật):**
+- `daily_cycle.py` giờ lấy `run_folder.name` (chính là `run_id` thật của `RunStore`) làm asset version, gán vào `package_snapshot["asset_version_ids"]`. Rỗng khi tắt sinh ảnh, đúng 1 id khi có ảnh — có test cho cả 2 nhánh.
+
+**4) Feedback loop → research question mới — DoD #25 (code có sẵn từ Phase 7 nhưng chỉ dùng trong test riêng, `M08AnalyticsBridge.observe()` chưa từng gọi):**
+- `M08AnalyticsBridge.observe()` giờ luôn gọi `generate_research_question_from_analytics()` sau khi tạo advisory, ghi câu hỏi thật vào `research/questions/` (vault Obsidian thật — `questions_root` tiêm được cho test, mặc định production là path thật). `INSUFFICIENT_DATA` → map sang `"INCONCLUSIVE"` (đúng string generator cần), `UNDERPERFORM` → `qbsr_drop=True`, còn lại dùng `advisory.analysis_summary` làm pattern.
+
+**5) Cross-modal image validation — DoD #5 (validator có sẵn trong `validator_studio/`, `growth_orchestrator` chưa từng import):**
+- `_generate_topic_image()` giờ gọi `validator_studio.image_validator.validate_image()` (DNA-match, provider mặc định `"mock"` — không tốn tiền, đúng kỷ luật 0-API-call của repo) ngay sau khi có ảnh thật, ghi `image_validation_report.json` cạnh artifact. `kill_switch.triggered=True` → loại ảnh (giống hệt nhánh lỗi sinh ảnh cũ, text vẫn lên hàng chờ duyệt).
+- **Giới hạn thật:** provider mặc định `"mock"` không thực sự "nhìn" ảnh — chỉ đối chiếu tên file theo quy ước ("bad"/"forbidden"/"wrong"/"reject") để giả lập vi phạm, và `generate_image_run()` luôn đặt tên file cố định `generated.png` nên nhánh kill-switch trên thực tế không tự kích hoạt qua đường này (chỉ kiểm chứng được bằng cách tiêm thẳng report giả trong test). Cần Harry duyệt chi phí trước khi đổi sang provider vision thật.
+
+**6) Idempotency / platform post ID — DoD #3 (phát hiện quan trọng: pipeline thật KHÔNG BAO GIỜ đạt trạng thái `PUBLISHED`):**
+- Audit phát hiện `approve_and_dispatch()` chỉ đưa status tới `GATEWAY_ACCEPTED` (Make.com webhook bắn đi rồi bỏ qua response — xem docstring `MakeGatewayAdapter.send()`), không bao giờ set `platform_post_id`/`PUBLISHED`. Nghĩa là M08 Analytics tôi vừa nối ở lượt trước **không bao giờ chạy được thật ngoài test** (test cũ tự dựng row `PUBLISHED` giả, bỏ qua toàn bộ pipeline thật).
+- `growth_orchestrator/application/reconcile_publication.py` mới + CLI `venho-growth reconcile --publication-id X --platform-post-id Y --reconciled-by harry` — thao tác thủ công: sau khi Make.com đăng thật, Harry (hoặc sau này 1 callback receiver thật) tự kiểm tra bài đã đăng trên Facebook/Instagram/Threads/Zalo rồi ghi `platform_post_id` vào registry, chuyển status sang `PUBLISHED`. Đây chính là "reconciliation evidence" DoD #3 chấp nhận thay platform post ID tự động.
+- **Còn thiếu thật:** chưa có callback receiver tự động (`publishing_gateway/callback_receiver.py` có sẵn, cần HMAC signature/timestamp — thiết kế cho endpoint nhận webhook thật, không hợp để gọi tay) — cần venho-os deploy public URL để Make.com gọi ngược lại, là quyết định hạ tầng ngoài phạm vi code (tương tự quyết định Mac Mini đã hoãn).
+
+**7) Blog SEO từ Research OS — DoD #11 (trước đó `build_blog_draft()` chỉ dùng DNA visual fact, không đụng `knowledge_studio.facts`):**
+- `growth_orchestrator/application/run_blog_pipeline.py` mới + CLI `venho-growth blog --topic "..." --keyword "..."` — gọi `content_studio.generate_content()` thật (content_type="blog", không đổi gì trong content_studio), sau đó thêm 1 đoạn "grounded facts" build **chỉ từ fact đã `FactResolver` xác nhận approved + còn hiệu lực** (whitelist 4 key: room_count/address/website/agoda_overall — đúng 4 fact seed thật đã nạp). Fact chưa duyệt hoặc hết hạn tự động bị bỏ qua, không bịa.
+- Verify chạy thật (không chỉ test): `venho-growth blog --topic "Mot ngay o Ho Tay"` → bài viết thật trích đúng "12 phòng, toạ lạc tại 181 Nguyen Dinh Thi..., đánh giá 8.5/10 trên Agoda", `facts_cited` đủ 4 key với `source_rs_id` đúng.
+- **Chưa làm:** chưa có lịch blog cố định trong `cadence_policy.yaml` (Harry chưa quyết định tần suất/vị trí đăng blog) — đây là pipeline gọi tay, chưa vào cron.
+
+**8) DoD #26 (golden-set scorecard ≥9.3/10) — KHÔNG làm lượt này:**
+- `controlled_rollout/scorecard.py::evaluate_golden_set()` đã thật, đúng công thức 9 chiều theo `docs/growth/eval_golden_sets.md`, nhưng không có bộ dữ liệu golden thật nào trong repo — chỉ chạy trong test với dict giả lập. Xây bộ golden set cần Harry tự chọn ra các bài/ảnh "chuẩn" thật đã publish để làm chuẩn so sánh — không phải việc code có thể tự bịa, khác hẳn các gap còn lại (đều là glue code thuần).
+
+**Sửa phụ:** `contracts/creative_brief.schema.json` không đổi thêm; `DailyCycleResult.topic` đổi type hint từ `dict[str, str]` sang `dict[str, Any]` (topic Thứ 7 giờ có field `verified_by_human: bool`).
+
+**Verify:** `/usr/bin/python3 -m pytest -q` → 636 passed (598 cũ + 38 mới: 24 brand safety + 8 daily_cycle mới [3 special-lane + 1 asset_version rỗng + 2 image validation + đã tính lại] + 1 M08 research-question + 5 reconcile + 3 blog), `compileall` sạch toàn repo, `venho-growth --help` xác nhận 2 command mới (`blog`, `reconcile`) lên đúng CLI, chạy tay `venho-growth blog` cho ra bài thật trích đúng fact đã duyệt.
 
 ---
 

@@ -15,12 +15,14 @@ from agent_studio.growth.scenario_registry import ScenarioRegistry
 from content_studio.content_context import DEFAULT_CONFIG_ROOT, DEFAULT_DATA_ROOT, load_content_config
 from content_studio.prompt_bridge import slugify
 from growth_orchestrator.application.run_content_pipeline import run_content_pipeline
+from growth_orchestrator.application.special_lane import select_special_lane_candidate
 from growth_orchestrator.bridges.m05_content_bridge import M05ContentBridge
 from image_studio_runtime.adapters.gpt_image_provider import gpt_image_provider_from_env
 from image_studio_runtime.application.generate_image import generate_image_run
 from prompt_studio.builders.image_prompt_builder import build_image_prompt
 from prompt_studio.knowledge_reader import read_dna
 from publishing_gateway.publication_registry import PublicationRegistry
+from validator_studio.image_validator import validate_image
 
 # Vietnamese weekday numbering used throughout this codebase (T2=Monday ...
 # T7=Saturday) matches config/projects/venho_hotel/growth/cadence_policy.yaml
@@ -47,7 +49,7 @@ _CREATIVE_BRIEF_SCHEMA = json.loads(Path("contracts/creative_brief.schema.json")
 @dataclass
 class DailyCycleResult:
     day: str
-    topic: dict[str, str]
+    topic: dict[str, Any]
     publications: list[dict[str, Any]]
     packages: list[dict[str, Any]] = field(default_factory=list)
 
@@ -73,7 +75,7 @@ def _next_rotation_index(project: str, data_root: Path, lane: str) -> int:
     return index
 
 
-def _pick_topic(config: dict[str, Any], day: str, project: str, data_root: Path) -> dict[str, str]:
+def _pick_topic(config: dict[str, Any], day: str, project: str, data_root: Path) -> dict[str, Any]:
     pillars_config = config["content_pillars"]
     if day == SPECIAL_CADENCE_DAY:
         lane, groups = "special", pillars_config.get("special_topics", [])
@@ -82,13 +84,36 @@ def _pick_topic(config: dict[str, Any], day: str, project: str, data_root: Path)
     if not groups:
         raise ValueError(f"No topic groups configured for lane '{lane}' in content_pillars.yaml")
 
-    flat = [
-        {"pillar": group.get("name", group.get("id", lane)), "dna_subject": group["dna_subject"], "topic": topic}
-        for group in groups
-        for topic in group.get("topics", [])
-    ]
+    flat: list[dict[str, Any]] = []
+    for group in groups:
+        for topic in group.get("topics", []):
+            entry: dict[str, Any] = {
+                "pillar": group.get("name", group.get("id", lane)),
+                "dna_subject": group["dna_subject"],
+                "topic": topic,
+            }
+            if lane == "special":
+                # v3.1 9.5 candidate typing (seasonal_nature/cultural_event/
+                # lifestyle_trend/feature_story). No live trend/event feed
+                # exists yet, so every hand-curated entry defaults to type 4
+                # (feature_story) -- see content_pillars.yaml comment.
+                entry["special_lane_type"] = group.get("type", "feature_story")
+                entry["verified_by_human"] = group.get("verified_by_human", False)
+            flat.append(entry)
+
     index = _next_rotation_index(project, data_root, lane)
-    return flat[index % len(flat)]
+    picked = flat[index % len(flat)]
+
+    if lane == "special":
+        # Real loại-4 fallback selection (special_lane.select_special_lane_candidate),
+        # not just unit-tested in isolation. TR-D3: this only decides WHICH
+        # candidate is proposed for approval -- it never approves anything.
+        selected = select_special_lane_candidate(
+            [{"type": picked["special_lane_type"], "verified_by_human": picked["verified_by_human"]}]
+        )
+        picked["special_lane_reason"] = selected["selected_reason"]
+
+    return picked
 
 
 def _build_creative_brief(topic: dict[str, str], platform: str, day: str, project: str, scenario_registry: ScenarioRegistry) -> dict[str, Any]:
@@ -149,6 +174,7 @@ def _generate_topic_image(
     *,
     image_provider: Any,
     reference_resolver: ReferenceAssetResolver,
+    image_validation_provider: str = "mock",
 ) -> Optional[Path]:
     """Generate one real image for the day's topic, shared across platforms.
 
@@ -156,6 +182,16 @@ def _generate_topic_image(
     best-effort on top of the text pipeline: a disabled/misconfigured
     provider or a missing reference asset must not block queuing the text
     drafts for approval, since those are still independently useful.
+
+    After generation, the image is run through validator_studio's real
+    DNA-match validator (cross-modal: does the photo actually match the DNA
+    subject it was supposed to depict, not just "an image exists"). A
+    kill_switch verdict (high-severity forbidden violation) discards the
+    image the same way a generation failure does -- text still queues. The
+    report is written next to the artifact as image_validation_report.json
+    for traceability. `image_validation_provider` defaults to "mock" (no
+    paid vision API call) to match this repo's 0-API-call test/cost
+    discipline; pass a real provider once Harry approves paid QC spend.
     """
     try:
         scenario_key = SCENARIO_BY_DNA_SUBJECT[topic["dna_subject"]]
@@ -178,6 +214,16 @@ def _generate_topic_image(
             data_root=data_root,
             reference_images=reference_images,
         )
+        manifest = json.loads((run_folder / "manifest.json").read_text(encoding="utf-8"))
+        artifact_name = manifest["artifacts"][0]["path"]
+        report = validate_image(
+            project, topic["dna_subject"], run_folder / artifact_name, provider=image_validation_provider
+        )
+        (run_folder / "image_validation_report.json").write_text(
+            report.model_dump_json(indent=2), encoding="utf-8"
+        )
+        if report.kill_switch.triggered:
+            return None
         return run_folder
     except (RuntimeError, KeyError, FileNotFoundError):
         # RuntimeError: provider disabled (no OPENAI_API_KEY) or transient
@@ -232,6 +278,7 @@ def run_daily_cycle(
     content_bridge = M05ContentBridge(config_root=config_root, data_root=data_root, scenario_registry=scenario_registry)
 
     image_run_path: Optional[str] = None
+    asset_version_ids: list[str] = []
     if generate_image:
         image_provider = image_provider or gpt_image_provider_from_env(os.environ)
         reference_resolver = reference_resolver or ReferenceAssetResolver.from_file()
@@ -239,7 +286,13 @@ def run_daily_cycle(
             topic, day, project, data_root, scenario_registry,
             image_provider=image_provider, reference_resolver=reference_resolver,
         )
-        image_run_path = str(run_folder) if run_folder else None
+        if run_folder:
+            image_run_path = str(run_folder)
+            # RunStore folders are named after the image's run_id (see
+            # image_studio_runtime.storage.run_store.RunStore.create_run) --
+            # that's the real asset version identifier DoD #7 requires the
+            # approval snapshot to reference.
+            asset_version_ids = [run_folder.name]
 
     publications: list[dict[str, Any]] = []
     packages: list[dict[str, Any]] = []
@@ -260,7 +313,7 @@ def run_daily_cycle(
         package_snapshot = {
             "id": package["id"],
             "copy_version_ids": [selected["id"]],
-            "asset_version_ids": [],
+            "asset_version_ids": asset_version_ids,
             "validation_snapshot_id": hashlib.sha256(
                 json.dumps(package["validation"], sort_keys=True, ensure_ascii=False).encode("utf-8")
             ).hexdigest(),

@@ -14,10 +14,15 @@ pillars:
       - simple hotel comfort
 
 # Saturday special lane (v3.1 cadence_policy.yaml "special" slot -- Harry's
-# T7 addition). Manually curated for now: real trend/event scanning
-# (growth_orchestrator.application.special_lane's seasonal_nature /
-# cultural_event / lifestyle_trend candidate types) is not wired to a live
-# source yet, so this is the feature_story fallback list Harry edits by hand.
+# T7 addition). daily_cycle._pick_topic() runs every group through
+# growth_orchestrator.application.special_lane.select_special_lane_candidate()
+# (real priority fallback: seasonal_nature > cultural_event > lifestyle_trend
+# > feature_story). No live trend/event feed exists yet, so every group below
+# defaults to type: feature_story (loai 4, the mandatory fallback) -- this is
+# the honest current state, not a shortcut: when a real seasonal_nature/
+# cultural_event/lifestyle_trend source is wired in, add `type: ...` (and
+# `verified_by_human: true` for cultural_event) to a group and the existing
+# priority logic will prefer it automatically.
 special_topics:
   - id: weekend_feature
     name: Cuoi tuan o Tay Ho
