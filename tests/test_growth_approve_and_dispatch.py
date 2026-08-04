@@ -6,6 +6,7 @@ import pytest
 
 from growth_orchestrator.application.approve_and_dispatch import (
     approve_and_dispatch,
+    edit_publication,
     list_pending,
     reject_publication,
     retry_dispatch,
@@ -238,3 +239,97 @@ def test_registry_claim_unknown_publication_raises_keyerror(tmp_path: Path) -> N
     registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
     with pytest.raises(KeyError):
         registry.claim("nope", expected_status="PENDING_APPROVAL", claimed_status="DISPATCHING")
+
+
+def _reserve_pending_with_dna_subject(registry: PublicationRegistry, *, platform: str = "facebook") -> str:
+    reserved = registry.reserve(
+        {
+            "publication_id": f"pub-edit-{platform}-1",
+            "content_package_id": "pkg-edit-1",
+            "idempotency_key": f"idem-edit-{platform}-1",
+            "platform": platform,
+        }
+    )
+    registry.update(
+        reserved["publication_id"],
+        status="PENDING_APPROVAL",
+        content={"text": "old draft text", "hashtags": []},
+        dna_subject="westlake",
+    )
+    return reserved["publication_id"]
+
+
+# Real content_validator rubric rewards warm, specific, Vietnamese, on-brand
+# copy with a soft CTA -- mirrors what a real gpt-5.5 draft would produce.
+_GOOD_EDIT_TEXT = (
+    "Một buổi sáng chậm rãi bên Hồ Tây, sương còn vương trên mặt nước, Ven Hồ Hotel "
+    "đón bạn với không gian ấm áp và chân thật ngay giữa lòng Hà Nội. Đây là nơi bạn "
+    "có thể ngồi lặng nhìn hồ, thưởng một tách cà phê, và cảm nhận nhịp sống Tây Hồ "
+    "không vội vã. Nhắn tin cho chúng tôi để kiểm tra phòng trống nhé."
+)
+_BAD_EDIT_TEXT = "spam spam spam"
+
+
+def test_edit_publication_good_text_re_enters_pending_approval(tmp_path: Path) -> None:
+    registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
+    publication_id = _reserve_pending_with_dna_subject(registry)
+
+    result = edit_publication(
+        publication_id, edited_by="harry", new_text=_GOOD_EDIT_TEXT, data_root=tmp_path, registry=registry
+    )
+
+    assert result["status"] == "PENDING_APPROVAL"
+    assert result["content"]["text"] == _GOOD_EDIT_TEXT
+    assert result["edited_by"] == "harry"
+    assert result["edit_validation"]["verdict"] == "approve"
+
+
+def test_edit_publication_bad_text_lands_on_needs_revision_and_drops_from_pending(tmp_path: Path) -> None:
+    registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
+    publication_id = _reserve_pending_with_dna_subject(registry)
+
+    result = edit_publication(
+        publication_id, edited_by="harry", new_text=_BAD_EDIT_TEXT, data_root=tmp_path, registry=registry
+    )
+
+    assert result["status"] == "NEEDS_REVISION"
+    assert list_pending(project="venho_hotel", data_root=tmp_path, registry=registry) == []
+
+
+def test_edit_publication_clears_prior_approval_snapshot(tmp_path: Path) -> None:
+    registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
+    publication_id = _reserve_pending_with_dna_subject(registry)
+    registry.update(
+        publication_id,
+        status="GATEWAY_ERROR",
+        approved_by="harry",
+        gateway_status="GATEWAY_ERROR",
+        approval_snapshot={"status": "approved", "approved_by": "harry"},
+    )
+
+    result = edit_publication(
+        publication_id, edited_by="harry", new_text=_GOOD_EDIT_TEXT, data_root=tmp_path, registry=registry
+    )
+
+    assert result["approval_snapshot"] is None
+    assert result["approved_by"] is None
+    assert result["gateway_status"] is None
+
+
+def test_edit_publication_rejects_dispatched_status(tmp_path: Path) -> None:
+    registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
+    publication_id = _reserve_pending_with_dna_subject(registry)
+    registry.update(publication_id, status="GATEWAY_ACCEPTED")
+
+    with pytest.raises(ValueError):
+        edit_publication(publication_id, edited_by="harry", new_text=_GOOD_EDIT_TEXT, data_root=tmp_path, registry=registry)
+
+
+def test_edit_publication_without_dna_subject_fails_closed_to_needs_revision(tmp_path: Path) -> None:
+    registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
+    publication_id = _reserve_pending(registry)  # no dna_subject set
+
+    with pytest.raises(ValueError, match="dna_subject"):
+        edit_publication(publication_id, edited_by="harry", new_text=_GOOD_EDIT_TEXT, data_root=tmp_path, registry=registry)
+
+    assert registry.find(publication_id)["status"] == "NEEDS_REVISION"

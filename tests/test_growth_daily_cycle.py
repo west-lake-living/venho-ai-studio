@@ -201,6 +201,38 @@ def test_run_daily_cycle_saturday_generates_real_image_with_injected_provider(tm
     assert report["verdict"]
 
 
+def test_run_daily_cycle_uploads_validated_image_to_drive_and_stores_public_url(tmp_path: Path) -> None:
+    """Regression test: a validated image used to only be stored as a local
+    image_run_path, which Make.com's webhook payload never actually used --
+    generated photos never reached the real post. Now upload_and_publish is
+    called and its URL lands in content.image_public_url."""
+    from shared.storage.google_drive import MockDriveUploader
+
+    data_root = _tmp_data_root(tmp_path)
+    provider = MockImageProvider()
+    resolver = ReferenceAssetResolver(
+        {"venho_rooftop_railing_approved": "assets/raw/outside/IMG_5125.jpg"},
+        assets_root=Path("."),
+    )
+    uploader = MockDriveUploader()
+
+    result = run_daily_cycle(
+        "saturday",
+        platforms=["facebook"],
+        data_root=data_root,
+        image_provider=provider,
+        reference_resolver=resolver,
+        drive_uploader=uploader,
+        content_bridge=_mock_content_bridge(data_root),
+        validator_bridge=_AlwaysApproveValidatorBridge(),
+    )
+
+    assert len(uploader.uploads) == 1
+    public_url = result.publications[0]["content"]["image_public_url"]
+    assert public_url is not None
+    assert public_url.startswith("https://drive.google.com/")
+
+
 def test_generate_topic_image_discards_image_on_kill_switch(tmp_path: Path, monkeypatch) -> None:
     """A high-severity forbidden violation from the DNA-match validator must
     discard the generated image (same as a generation failure) rather than

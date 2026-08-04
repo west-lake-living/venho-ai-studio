@@ -10,6 +10,7 @@ import typer
 
 from growth_orchestrator.application.approve_and_dispatch import (
     approve_and_dispatch,
+    edit_publication,
     list_pending,
     reject_publication,
     retry_dispatch,
@@ -145,6 +146,27 @@ def retry_dispatch_cmd(
     """
     try:
         result = retry_dispatch(publication_id, project=project)
+    except (KeyError, ValueError) as exc:
+        typer.echo(json.dumps({"ok": False, "error": str(exc)}), err=True)
+        raise typer.Exit(code=1)
+    typer.echo(json.dumps({"ok": True, "publication": result}, ensure_ascii=False, indent=2))
+
+
+@app.command("edit")
+def edit_cmd(
+    publication_id: str = typer.Option(..., "--publication-id"),
+    edited_by: str = typer.Option(..., "--edited-by"),
+    text_file: Path = typer.Option(..., "--text-file", help="Path to a UTF-8 file containing the edited copy."),
+    project: str = typer.Option("venho_hotel"),
+) -> None:
+    """Edit a PENDING_APPROVAL/GATEWAY_ERROR publication's copy and re-run the
+    real content Validator gate. Only a fresh APPROVE re-enters the approval
+    queue; anything else lands on NEEDS_REVISION. Clears any prior approval
+    -- a later Approve always snapshots the edited content, never the old one.
+    """
+    try:
+        new_text = text_file.read_text(encoding="utf-8")
+        result = edit_publication(publication_id, edited_by=edited_by, new_text=new_text, project=project)
     except (KeyError, ValueError) as exc:
         typer.echo(json.dumps({"ok": False, "error": str(exc)}), err=True)
         raise typer.Exit(code=1)

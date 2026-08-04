@@ -23,6 +23,7 @@ from image_studio_runtime.application.generate_image import generate_image_run
 from prompt_studio.builders.image_prompt_builder import build_image_prompt
 from prompt_studio.knowledge_reader import read_dna
 from publishing_gateway.publication_registry import PublicationRegistry
+from shared.storage.google_drive import google_drive_uploader_from_env
 from validator_studio.image_validator import validate_image
 from validator_studio.schemas.validation_base import Recommendation
 
@@ -161,7 +162,9 @@ def _build_creative_brief(topic: dict[str, str], platform: str, day: str, projec
     return brief
 
 
-def _content_payload(candidate: dict[str, Any], *, image_run_path: Optional[str] = None) -> dict[str, Any]:
+def _content_payload(
+    candidate: dict[str, Any], *, image_run_path: Optional[str] = None, image_public_url: Optional[str] = None
+) -> dict[str, Any]:
     text = f"{candidate['hook']}\n\n{candidate['body']}\n\n{candidate['cta']}"
     if candidate.get("hashtags"):
         text += "\n\n" + " ".join(candidate["hashtags"])
@@ -171,7 +174,37 @@ def _content_payload(candidate: dict[str, Any], *, image_run_path: Optional[str]
         "hashtags": candidate.get("hashtags", []),
         "source_prompt_file": candidate.get("source_prompt_file"),
         "image_run_path": image_run_path,
+        # Local file paths mean nothing to Make.com's webhook -- it fetches
+        # by public URL (see MakeGatewayAdapter.send()'s "image_url" field).
+        # None until _upload_image_to_drive succeeds; the post still queues
+        # text-only if Drive is unconfigured/unreachable (best-effort, same
+        # policy as image generation itself).
+        "image_public_url": image_public_url,
     }
+
+
+def _upload_image_to_drive(
+    run_folder: Path, *, day: str, content_package_id: str, uploader: Any
+) -> Optional[str]:
+    """Upload the validated image artifact to Drive and return a public URL.
+
+    Best-effort like `_generate_topic_image`: Drive being unconfigured
+    (`MockDriveUploader`, returns a fake but harmless URL -- guarded by
+    `generate_image` config, not by this function) or a real upload failure
+    (network, expired/revoked OAuth token, quota) must not block queuing the
+    text drafts. Returns None on any failure; the text still queues with
+    `image_public_url=None`.
+    """
+    try:
+        manifest = json.loads((run_folder / "manifest.json").read_text(encoding="utf-8"))
+        artifact_name = manifest["artifacts"][0]["path"]
+        return uploader.upload_and_publish(
+            run_folder / artifact_name,
+            folder_path=[day, content_package_id],
+            mimetype="image/png",
+        )
+    except Exception:  # noqa: BLE001 - any Drive failure (network, auth, quota) must not abort text queuing
+        return None
 
 
 def _generate_topic_image(
@@ -263,6 +296,7 @@ def run_daily_cycle(
     content_bridge: Optional[M05ContentBridge] = None,
     validator_bridge: Optional[M03ValidatorBridge] = None,
     image_validation_provider: str = "mock",
+    drive_uploader: Optional[Any] = None,
 ) -> DailyCycleResult:
     """Generate this cadence day's content drafts and queue them for approval.
 
@@ -290,6 +324,15 @@ def run_daily_cycle(
     gate (see growth_orchestrator.cli, which does this for the actual
     daily-cycle/weekly-cycle CLI commands).
 
+    Once a photo passes validation, it is also uploaded to Google Drive and
+    made publicly readable (`content.image_public_url`) -- Make.com's "HTTP:
+    Get a file" step fetches by URL, so a local-only file path (the old
+    behavior) never reached the actual Facebook/Instagram post. `drive_uploader`
+    defaults to `google_drive_uploader_from_env` (real uploader if
+    GOOGLE_DRIVE_TOKEN_JSON is set, else a no-op Mock) -- best-effort like
+    image generation itself: an upload failure (network, expired token,
+    quota) still queues the text draft, just without a photo attached.
+
     `content_bridge` defaults to a real M05ContentBridge, whose default
     `generator_fn` (gpt_social_generator) calls the OpenAI API (gpt-5.5) for
     real -- pass a bridge built with a mock generator_fn (e.g. in tests) to
@@ -312,6 +355,7 @@ def run_daily_cycle(
     )
 
     image_run_path: Optional[str] = None
+    image_public_url: Optional[str] = None
     asset_version_ids: list[str] = []
     if generate_image:
         image_provider = image_provider or gpt_image_provider_from_env(os.environ)
@@ -328,6 +372,10 @@ def run_daily_cycle(
             # that's the real asset version identifier DoD #7 requires the
             # approval snapshot to reference.
             asset_version_ids = [run_folder.name]
+            drive_uploader = drive_uploader or google_drive_uploader_from_env(os.environ)
+            image_public_url = _upload_image_to_drive(
+                run_folder, day=day, content_package_id=f"daily-{day}-{slugify(topic['topic'])}", uploader=drive_uploader
+            )
 
     publications: list[dict[str, Any]] = []
     packages: list[dict[str, Any]] = []
@@ -372,7 +420,7 @@ def run_daily_cycle(
             publication = registry.update(
                 reserved["publication_id"],
                 status="PENDING_APPROVAL",
-                content=_content_payload(selected, image_run_path=image_run_path),
+                content=_content_payload(selected, image_run_path=image_run_path, image_public_url=image_public_url),
                 creative_brief_id=brief["id"],
                 package_snapshot=package_snapshot,
                 # day/pillar/topic so the dashboard can group same-day publications
@@ -381,6 +429,11 @@ def run_daily_cycle(
                 day=day,
                 pillar=topic["pillar"],
                 topic=topic["topic"],
+                # dna_subject alongside day/pillar/topic so edit_publication can
+                # re-run the real content_validator rubric against the correct
+                # DNA subject without needing the original CreativeBrief object
+                # persisted anywhere -- see approve_and_dispatch.edit_publication.
+                dna_subject=topic["dna_subject"],
             )
             publications.append(publication)
         except Exception as exc:  # noqa: BLE001 - one platform's provider/network failure (rate limit, timeout) must not abort the other platforms' drafts for this day

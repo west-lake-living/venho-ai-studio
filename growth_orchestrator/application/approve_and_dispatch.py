@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import tempfile
 from pathlib import Path
 from typing import Optional
 
@@ -10,11 +11,16 @@ from growth_orchestrator.bridges.m07_publishing_bridge import (
     m07_publishing_bridge_from_env,
 )
 from publishing_gateway.publication_registry import PublicationRegistry
+from validator_studio.content_validator import validate_content
+from validator_studio.schemas.validation_base import Recommendation
 
 PENDING_STATUS = "PENDING_APPROVAL"
 DISPATCHING_STATUS = "DISPATCHING"
 GATEWAY_ERROR_STATUS = "GATEWAY_ERROR"
 REJECTED_STATUS = "REJECTED"
+NEEDS_REVISION_STATUS = "NEEDS_REVISION"
+EDITING_STATUS = "EDITING"
+EDITABLE_STATUSES = {PENDING_STATUS, GATEWAY_ERROR_STATUS}
 
 
 def list_pending(
@@ -152,3 +158,81 @@ def reject_publication(
     registry = registry or PublicationRegistry(project, data_root=data_root)
     claimed = registry.claim(publication_id, expected_status=PENDING_STATUS, claimed_status=REJECTED_STATUS)
     return registry.update(claimed["publication_id"], rejected_by=rejected_by, rejected_reason=reason)
+
+
+def edit_publication(
+    publication_id: str,
+    *,
+    edited_by: str,
+    new_text: str,
+    project: str = "venho_hotel",
+    data_root: Path = Path("data/projects"),
+    registry: Optional[PublicationRegistry] = None,
+) -> dict:
+    """Edit a queued draft's copy and re-run the real content Validator gate
+    before it can re-enter the approval queue.
+
+    Per plan Part 2.1 decision #7 and the ContentPackage invariants (Part
+    4.3): "Sửa copy ... sau approval -> tự revoke" -- editing must never let
+    a changed draft ride through on a stale approval, and the edited text
+    must clear the same bar daily_cycle's own drafts do, not just get
+    silently re-queued. Concretely:
+
+    - Editable from PENDING_APPROVAL (not yet approved) or GATEWAY_ERROR (was
+      approved, dispatch failed) -- anything already DISPATCHING/
+      GATEWAY_ACCEPTED/PUBLISHED cannot be edited (the post already exists or
+      is in flight; reject and let a fresh cycle regenerate instead).
+    - Any prior `approval_snapshot`/`approved_by`/`gateway_status` is cleared
+      unconditionally, even if the edited text ends up re-passing -- a later
+      Approve always builds a fresh snapshot off the edited content, never
+      the pre-edit one.
+    - The edited text is re-scored by `validator_studio.content_validator`
+      (the same brand_fit/tone/clarity/cta/language_fit rubric
+      M03ValidatorBridge gates on in daily_cycle) against the row's own
+      `dna_subject` (persisted on the registry row since 2026-08-04
+      specifically so edits can be re-validated without needing the original
+      CreativeBrief object, which the registry does not retain). Only a real
+      Recommendation.APPROVE re-enters PENDING_APPROVAL; anything else lands
+      on NEEDS_REVISION and drops out of the approval queue, same as a
+      failed daily_cycle draft would.
+
+    Note: this re-runs the content-quality gate only, not the claim/
+    alignment validators (those score against the original CreativeBrief's
+    proof_points/scene_summary, which are not persisted on the registry row
+    -- persisting the full brief would be a larger change than this edit
+    feature warrants; flagged for Harry rather than silently skipped).
+    """
+    registry = registry or PublicationRegistry(project, data_root=data_root)
+    claimed = registry.claim(publication_id, expected_status=EDITABLE_STATUSES, claimed_status=EDITING_STATUS)
+
+    dna_subject = claimed.get("dna_subject")
+    if not dna_subject:
+        registry.update(publication_id, status=NEEDS_REVISION_STATUS, edit_error="missing dna_subject on record; cannot re-validate edit")
+        raise ValueError(f"publication_id {publication_id} has no dna_subject on record; cannot re-validate edit")
+
+    tmp_path: Optional[Path] = None
+    try:
+        with tempfile.NamedTemporaryFile("w", suffix=".md", delete=False, encoding="utf-8") as handle:
+            handle.write(new_text)
+            tmp_path = Path(handle.name)
+        report = validate_content(project, dna_subject, tmp_path, platform=claimed.get("platform", "facebook"))
+    finally:
+        if tmp_path is not None:
+            tmp_path.unlink(missing_ok=True)
+
+    new_content = dict(claimed.get("content") or {})
+    new_content["text"] = new_text
+    passed = not report.kill_switch.triggered and report.verdict == Recommendation.APPROVE
+    return registry.update(
+        publication_id,
+        content=new_content,
+        edited_by=edited_by,
+        edit_validation=report.model_dump(mode="json"),
+        status=PENDING_STATUS if passed else NEEDS_REVISION_STATUS,
+        # a fresh Approve must always build a new snapshot off the edited
+        # content -- never let it ride through on the pre-edit approval.
+        approval_snapshot=None,
+        approved_by=None,
+        gateway_status=None,
+        gateway_error=None,
+    )

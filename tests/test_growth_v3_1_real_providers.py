@@ -167,7 +167,27 @@ def test_make_adapter_forwards_to_make_webhook() -> None:
         "idempotency_key": "idem-1",
         "platform": "facebook",
         "content": {"text": "hello"},
+        "image_url": None,
     }
+
+
+def test_make_adapter_surfaces_image_public_url_at_top_level(tmp_path) -> None:
+    """Regression test: image_run_path (a local file, meaningless to Make.com)
+    used to be the only image reference in the dispatch payload -- generated
+    photos never reached the real post. content.image_public_url (set by
+    daily_cycle's Google Drive upload) is now also copied to a top-level
+    image_url field for easier Make.com field-mapping."""
+    fake = FakeHttpPost({"received": True})
+    adapter = MakeGatewayAdapter(enabled=True, webhook_url="https://hook.us1.make.com/fb-test", http_post=fake)
+    adapter.send(
+        {
+            "publication_id": "pub-1",
+            "idempotency_key": "idem-1",
+            "platform": "facebook",
+            "content": {"text": "hello", "image_public_url": "https://drive.google.com/uc?export=download&id=abc"},
+        }
+    )
+    assert fake.calls[0]["json"]["image_url"] == "https://drive.google.com/uc?export=download&id=abc"
 
 
 def test_make_adapter_signs_webhook_when_secret_configured() -> None:

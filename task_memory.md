@@ -1,6 +1,6 @@
 # VENHO AI STUDIO — Task Memory
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-08-04 (Growth Agent v3.1 — audit đối chiếu plan v3.1 CONSOLIDATED, sửa 5 lỗi thật + thêm Từ chối, xem mục 14e) · **Đọc bởi:** AI Engine, Claude Code sessions
+**Cập nhật:** 2026-08-04 (Growth Agent v3.1 — nút Sửa làm đúng plan + upload ảnh lên Google Drive, xem mục 14f) · **Đọc bởi:** AI Engine, Claude Code sessions
 
 ---
 
@@ -832,6 +832,32 @@ Harry: "Review và audit growth content agent đối chiếu với plan v3.1. N�
 **Verify:** 667/667 pytest pass (12 test mới: `test_growth_approve_and_dispatch.py` +8, `test_growth_m03_validator_bridge.py` mới +2, `test_growth_weekly_cycle.py` mới +1, `test_growth_daily_cycle.py` +1).
 
 **Việc liên quan ở `venho-os`:** xem `venho-os/task_memory.md`/`CHANGELOG.md` mục 2026-08-04 (audit) — API route `reject`/`retry-dispatch` mới, nút Từ chối trong `GrowthApprovalQueue`.
+
+## 14f. Growth Agent v3.1 — Nút Sửa đúng theo plan + upload ảnh lên Google Drive (2026-08-04)
+
+Harry, sau khi xem báo cáo audit mục 14e, chốt luôn 2 gap còn treo: "Nút Sửa: Làm đúng theo Plan." và "Ảnh generate ra không lên bài: Lưu vào Google drive."
+
+**1. `edit_publication()` — full-stack, đúng theo invariant Part 2.1/4.3 của plan:**
+- Editable từ `PENDING_APPROVAL` hoặc `GATEWAY_ERROR` (claim atomic qua `registry.claim()` mở rộng nhận `set[str]` thay vì chỉ 1 status). `DISPATCHING`/`GATEWAY_ACCEPTED`/`PUBLISHED` không sửa được (bài đã/đang đăng thật, phải Từ chối + để cycle mới sinh lại).
+- Text sửa được chấm lại bằng đúng rubric `validator_studio.content_validator.validate_content()` thật (brand_fit/tone/clarity/cta/language_fit) mà `M03ValidatorBridge` dùng để gate draft gốc — ghi tạm ra file `.md` (`tempfile.NamedTemporaryFile`) vì `validate_content()` đọc file, không nhận raw string. Chỉ `Recommendation.APPROVE` mới quay lại `PENDING_APPROVAL`; không đạt → `NEEDS_REVISION`, tự rớt khỏi hàng chờ giống draft gốc fail.
+- **Bất kỳ approval cũ nào cũng bị xoá vô điều kiện** khi sửa (`approval_snapshot`/`approved_by`/`gateway_status` = None) — kể cả khi bản sửa lại pass — đúng theo "sửa sau approval → tự revoke" của plan; lần Duyệt tiếp theo luôn build snapshot mới từ nội dung đã sửa.
+- Cần thêm `dna_subject` vào registry row (`daily_cycle.py`'s `registry.update()`, cạnh `day`/`pillar`/`topic`) — trước đây không có field này nên không biết chấm ảnh/text theo DNA nào khi sửa mà không giữ lại `CreativeBrief` gốc.
+- **Giới hạn đã ghi rõ trong docstring, không giấu:** chỉ chấm lại content rubric (chất lượng bài viết), KHÔNG chấm lại claim/alignment validator (2 validator đó cần `CreativeBrief` gốc với `proof_points`/`scene_summary` — registry không lưu lại brief đầy đủ; lưu cả brief là thay đổi lớn hơn phạm vi tính năng Sửa, để dành nếu Harry cần sau).
+- CLI: `venho-growth edit --publication-id X --edited-by Y --text-file path.md`. API: `POST /api/v1/studio/growth/[id]/edit` (venho-os) — ghi text vào file tạm rồi shell-out CLI, không truyền raw text qua argv (tránh escaping/giới hạn độ dài shell).
+- UI: nút "Sửa" mở textarea inline ngay trong hàng chi tiết per-platform (không phải modal riêng) — "Lưu và chấm lại" gọi API, "Huỷ" đóng không lưu. Có ghi chú cảnh báo Harry: lưu sẽ chấm lại qua Validator thật, không đạt sẽ rớt khỏi hàng chờ chứ không tự động giữ nguyên.
+
+**2. Upload ảnh lên Google Drive — gap "ảnh generate ra không lên bài" đã đóng:**
+- `shared/storage/google_drive.py` mới — `MockDriveUploader` (mặc định test/dev, 0 network call) + `GoogleDriveUploader` thật (import `googleapiclient`/`google.oauth2` trễ trong `__init__`, không bắt buộc cài cho test suite) + `google_drive_uploader_from_env()` (thật nếu có `GOOGLE_DRIVE_TOKEN_JSON`, không thì Mock). **Tái dùng đúng contract OAuth của `venho-social-content-agent/google_drive.py`** — `GOOGLE_DRIVE_TOKEN_JSON` là token JSON đầy đủ (`authorized_user` format, KHÔNG phải client secret), refresh qua `GOOGLE_OAUTH_CLIENT_ID`/`_SECRET` — Harry dùng lại đúng Google Cloud OAuth app cũ, không cần tạo app mới, chỉ cần chạy lại flow `python3 google_drive.py` (repo cũ) một lần để lấy token dán vào secret mới.
+- `daily_cycle.py`: sau khi ảnh qua validator thật (kill-switch=false, verdict=APPROVE), upload luôn file artifact (`generated.png`) lên Drive (`_upload_image_to_drive()`, best-effort — lỗi mạng/token hết hạn/quota không chặn queue text, giống triết lý generate ảnh). URL public lưu vào `content.image_public_url` (field mới cạnh `image_run_path` cũ — `image_run_path` là path local, không dùng được cho Make.com).
+- `MakeGatewayAdapter.send()` giờ copy `content.image_public_url` ra field top-level `image_url` trong payload gửi Make.com — dễ map field trong Make scenario hơn path lồng nhau. Payload cũ (chỉ có `content` object) vẫn giữ nguyên, chỉ thêm field mới.
+- `run_weekly_cycle()` share 1 `drive_uploader` cho cả 4 ngày (giống `content_bridge`/`registry`) — auth Google 1 lần/tuần, không phải 1 lần/ngày.
+- Deps: `pyproject.toml` optional group `drive` (`google-api-python-client`, `google-auth-oauthlib`, `google-auth`) — không phải core dependency vì `MockDriveUploader` không cần chúng. `.github/workflows/growth-daily-cycle.yml` đổi `pip install -e .` → `pip install -e ".[drive]"` + 3 env mới (`GOOGLE_DRIVE_TOKEN_JSON`/`GOOGLE_OAUTH_CLIENT_ID`/`GOOGLE_OAUTH_CLIENT_SECRET`) từ GitHub Secrets — **Harry cần tự thêm 3 secret này vào repo `venho-ai-studio` trên GitHub** (chưa set = uploader tự fallback Mock, không lỗi, chỉ không có ảnh thật).
+- **Phát hiện phụ, chưa sửa vì ngoài yêu cầu:** `.env.local` cục bộ có `GOOGLE_DRIVE_TOKEN_JSON=GOCSPX-...` — giá trị này giống client secret (không phải JSON token object), sẽ không hoạt động với uploader thật nếu Harry chạy local. Không tự sửa file (gitignored, chứa secret thật, không chắc Harry có đang dùng giá trị này cho việc khác) — Harry cần tự dán đúng token JSON vào đó nếu muốn chạy Drive upload thật ở local.
+- **Phát hiện phụ khác, chưa sửa:** `.github/workflows/growth-daily-cycle.yml` có bước `git add -f data/projects/*/publishing/publication_registry.json ... && git push` — nghĩa là `publication_registry.json` (chứa toàn bộ hàng chờ duyệt) commit thẳng vào git sau mỗi lần weekly-cycle chạy trên GitHub Actions runner. `venho-os`'s approve/reject/edit routes chạy `venho-growth` cục bộ (shell-out, xem `STUDIO_DIR`) — nếu chạy trên máy khác/checkout khác chưa `git pull` sau lần chạy Actions gần nhất, sẽ thao tác trên bản registry cũ. Không phải bug mới phát sinh từ session này, không thuộc phạm vi "Sửa"/"Google Drive" Harry vừa yêu cầu — chỉ ghi nhận để theo dõi nếu sau này registry "không khớp" giữa dashboard và Actions.
+
+**Verify:** 677/677 pytest pass (10 test mới: `test_growth_approve_and_dispatch.py` +6 cho edit, `test_growth_google_drive_uploader.py` mới +3, `test_growth_daily_cycle.py` +1, `test_growth_v3_1_real_providers.py` +1 mới/1 sửa). `tsc --noEmit`/`eslint` sạch, 127/127 vitest pass (venho-os).
+
+**Việc liên quan `venho-os`:** route mới `POST /api/v1/studio/growth/[id]/edit`, UI textarea inline "Sửa" trong `GrowthApprovalQueue` — xem `venho-os/task_memory.md`/`CHANGELOG.md` mục 2026-08-04.
 
 ## 14. Task Closing Protocol
 

@@ -5,7 +5,7 @@ import json
 from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Iterator
+from typing import Any, Iterable, Iterator
 
 
 TERMINAL_STATUSES = {"PUBLISHED", "FAILED", "NEEDS_OPERATOR"}
@@ -67,22 +67,28 @@ class PublicationRegistry:
             self._save(data)
             return publication
 
-    def claim(self, publication_id: str, *, expected_status: str, claimed_status: str) -> dict[str, Any]:
+    def claim(self, publication_id: str, *, expected_status: str | Iterable[str], claimed_status: str) -> dict[str, Any]:
         """Atomically test-and-set status inside the file lock.
 
-        Guards the approve/reject check-then-act sequence: two concurrent
+        Guards the approve/reject/edit check-then-act sequence: two concurrent
         callers racing on the same publication_id (double-click, two tabs, a
         client retry after a timeout) must not both observe `expected_status`
         and both proceed to dispatch. Only one claim can win; the loser raises
         immediately instead of silently firing a second real webhook call.
+
+        `expected_status` accepts either one status or a set/list of statuses
+        (edit_publication allows editing from either PENDING_APPROVAL or
+        GATEWAY_ERROR, for example) -- any status not in the accepted set
+        raises the same ValueError as a single-status mismatch.
         """
+        accepted = {expected_status} if isinstance(expected_status, str) else set(expected_status)
         with self._locked():
             data = self.load()
             for index, item in enumerate(data["publications"]):
                 if item.get("publication_id") == publication_id:
-                    if item.get("status") != expected_status:
+                    if item.get("status") not in accepted:
                         raise ValueError(
-                            f"publication_id {publication_id} is not {expected_status} "
+                            f"publication_id {publication_id} is not {' or '.join(sorted(accepted))} "
                             f"(status={item.get('status')})"
                         )
                     updated = {**item, "status": claimed_status, "updated_at": datetime.now(timezone.utc).isoformat()}

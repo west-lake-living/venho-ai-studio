@@ -1,6 +1,28 @@
 # VENHO AI STUDIO — Task Status
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-08-04 (audit đối chiếu plan v3.1 CONSOLIDATED — sửa race condition, fail-closed validator, cô lập lỗi platform/day, thêm Từ chối) · **Tests:** 667/667 pass (AI Studio) · 0 API call trong test
+**Cập nhật:** 2026-08-04 (nút Sửa đúng theo plan v3.1 + upload ảnh Google Drive) · **Tests:** 677/677 pass (AI Studio) · 0 API call trong test
+
+---
+
+### Growth Agent v3.1 — Nút Sửa đúng theo plan + upload ảnh lên Google Drive (2026-08-04)
+
+**Status: DONE (cần Harry set 3 GitHub Secrets để bật upload ảnh thật)**
+
+Harry chốt 2 gap từ báo cáo audit trước: "Nút Sửa: Làm đúng theo Plan." + "Ảnh generate ra không lên bài: Lưu vào Google drive."
+
+- [x] `edit_publication()` — editable từ `PENDING_APPROVAL`/`GATEWAY_ERROR`, chấm lại bằng content_validator thật, không đạt → `NEEDS_REVISION`, approval cũ luôn bị xoá vô điều kiện (đúng invariant "sửa sau approval → tự revoke" của plan).
+- [x] `registry.claim()` mở rộng nhận `set[str]` (không chỉ 1 status) để hỗ trợ edit từ 2 trạng thái.
+- [x] Thêm `dna_subject` vào registry row (`daily_cycle.py`) để edit biết chấm theo DNA nào.
+- [x] CLI `venho-growth edit --publication-id --edited-by --text-file`; API `POST /api/v1/studio/growth/[id]/edit` (venho-os); UI textarea inline "Sửa"/"Lưu và chấm lại"/"Huỷ" trong `GrowthApprovalQueue`.
+- [ ] **Giới hạn đã ghi rõ:** chỉ re-run content rubric, không re-run claim/alignment validator (cần persist CreativeBrief gốc — ngoài phạm vi tính năng này).
+- [x] `shared/storage/google_drive.py` — `MockDriveUploader` (test/dev mặc định) + `GoogleDriveUploader` thật (tái dùng OAuth app của `venho-social-content-agent`) + `google_drive_uploader_from_env()`.
+- [x] `daily_cycle.py` upload ảnh đã qua validator lên Drive, lưu `content.image_public_url`; `MakeGatewayAdapter` copy ra field `image_url` top-level trong payload gửi Make.com.
+- [x] `pyproject.toml` optional group `drive` + workflow `growth-daily-cycle.yml` cài `.[drive]` + 3 env secret mới.
+- [ ] **Cần Harry tự làm:** thêm 3 GitHub Secrets (`GOOGLE_DRIVE_TOKEN_JSON`, `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET`) vào repo `venho-ai-studio` — chưa set thì uploader tự fallback Mock (không lỗi, chỉ không có ảnh thật lên bài).
+- [ ] **Phát hiện phụ, chưa sửa (ngoài yêu cầu):** `.env.local` cục bộ có giá trị `GOOGLE_DRIVE_TOKEN_JSON` sai định dạng (giống client secret, không phải token JSON) — sẽ không hoạt động nếu Harry chạy Drive upload ở local, cần Harry tự dán lại đúng token.
+- [x] Verify: 677/677 pytest pass (10 test mới), `tsc`/`eslint` sạch, 127/127 vitest pass.
+
+Chi tiết đầy đủ: `task_memory.md` mục 14f. Việc liên quan `venho-os`: `task_status.md`/`CHANGELOG.md` mục cùng ngày.
 
 ---
 

@@ -48,11 +48,17 @@ class MakeGatewayAdapter:
                 "published": False,
                 "message": "accepted by Make adapter; awaiting callback or reconciliation",
             }
+        content = command.get("content") or {}
         payload = {
             "publication_id": publication_id,
             "idempotency_key": command.get("idempotency_key"),
             "platform": command.get("platform"),
-            "content": command.get("content"),
+            "content": content,
+            # Top-level convenience copy of content.image_public_url --
+            # Make.com's "HTTP: Get a file" module maps a flat field more
+            # easily than a nested path. None when no image was generated/
+            # uploaded (daily_cycle still queues text-only in that case).
+            "image_url": content.get("image_public_url"),
         }
         headers = None
         if self.webhook_secret and payload.get("idempotency_key"):

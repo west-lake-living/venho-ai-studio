@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Optional
@@ -11,6 +12,7 @@ from growth_orchestrator.application.daily_cycle import CADENCE_DAYS, DailyCycle
 from growth_orchestrator.bridges.m03_validator_bridge import M03ValidatorBridge
 from growth_orchestrator.bridges.m05_content_bridge import M05ContentBridge
 from publishing_gateway.publication_registry import PublicationRegistry
+from shared.storage.google_drive import google_drive_uploader_from_env
 
 # Cadence order matters for the rotation cursor (_next_rotation_index in
 # daily_cycle.py): running Mon/Wed/Fri/Sat in this order within a single
@@ -45,21 +47,25 @@ def run_weekly_cycle(
     content_bridge: Optional[M05ContentBridge] = None,
     validator_bridge: Optional[M03ValidatorBridge] = None,
     image_validation_provider: str = "mock",
+    drive_uploader: Optional[Any] = None,
 ) -> WeeklyCycleResult:
     """Generate a full week's cadence (Mon/Wed/Fri/Sat) in one run.
 
     Same per-day pipeline as run_daily_cycle -- called once per cadence day
     so a whole week's drafts land PENDING_APPROVAL together, instead of one
     day's worth appearing per cron tick across the week. Callers share one
-    registry/scenario_registry/content_bridge across all four days so the
-    rotation cursor and dashboard review list behave exactly as if this ran
-    from four separate `daily-cycle` invocations.
+    registry/scenario_registry/content_bridge/drive_uploader across all four
+    days so the rotation cursor and dashboard review list behave exactly as
+    if this ran from four separate `daily-cycle` invocations, and Drive auth
+    only happens once per run instead of once per day.
     """
     registry = registry or PublicationRegistry(project, data_root=data_root)
     scenario_registry = scenario_registry or ScenarioRegistry.from_file()
     content_bridge = content_bridge or M05ContentBridge(
         config_root=config_root, data_root=data_root, scenario_registry=scenario_registry
     )
+    if generate_image:
+        drive_uploader = drive_uploader or google_drive_uploader_from_env(os.environ)
 
     results: list[DailyCycleResult] = []
     for day in WEEKLY_CADENCE_ORDER:
@@ -80,6 +86,7 @@ def run_weekly_cycle(
                     content_bridge=content_bridge,
                     validator_bridge=validator_bridge,
                     image_validation_provider=image_validation_provider,
+                    drive_uploader=drive_uploader,
                 )
             )
         except Exception as exc:  # noqa: BLE001 - one day's uncaught failure (e.g. topic config error) must not drop the rest of the week's batch
