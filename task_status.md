@@ -1,8 +1,27 @@
 # VENHO AI STUDIO — Task Status
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-08-03 (Zalo OA → Make.com webhook trigger cho luồng Approve) · **Tests:** 561/561 pass (AI Studio) · 78/78 pass (venho-os) · 0 API call trong test
+**Cập nhật:** 2026-08-03 (Zalo content: platform ngắn gọn hơn + CTA hotline riêng) · **Tests:** 564/564 pass (AI Studio) · 78/78 pass (venho-os) · 0 API call trong test
 
 ---
+
+### Content Studio — Zalo platform rules + CTA hotline riêng (2026-08-03)
+
+**Status: DONE**
+
+Harry: khách Zalo ở Việt Nam thích ngắn gọn, trực diện, có thông tin liên hệ/đặt phòng rõ ràng — cần Zalo CTA riêng "Liên hệ Hotline/Zalo 0936871234 để đặt phòng view Hồ Tây ngay hôm nay". Thay vì dặn AI Agent bằng lời mỗi lần (dễ quên/không nhất quán), wire thẳng vào config + pipeline M02 Prompt Studio (deterministic, có test) — đúng nguyên tắc "config-first" của hệ thống.
+
+- **`content_studio/schemas/content_request.py`:** thêm `"zalo_post"` vào `ContentType` Literal (trước đó `ContentRequest` không thể biểu diễn Zalo — thiếu hoàn toàn).
+- **`content_studio/content_engine.py::_builder_for`:** route `zalo_post` vào `build_social_draft` (cùng nhóm social với facebook/instagram/threads/tiktok, không phải longform).
+- **`config/projects/venho_hotel/content/platform_rules.yaml`:** thêm `zalo:` — `max_length: 300` (ngắn hơn cả `threads` 500, đúng yêu cầu "ngắn gọn hơn Facebook"), `max_hashtags: 0` (văn hoá Zalo không hashtag-search như FB/IG).
+- **`config/projects/venho_hotel/prompt_rules.yaml`:** thêm `platform_cta_overrides.zalo` — đúng nguyên văn CTA Harry đưa, kèm SĐT `0936871234`. Đặt ở đây (prompt layer) chứ không phải `content/` — vì `load_content_config()` đã có sẵn quy tắc cứng cấm `content/cta_rules.yaml` tồn tại (raise `ContentConfigError`), buộc CTA phải sống ở tầng prompt.
+- **`prompt_studio/builders/content_prompt_builder.py`:** `render_final_prompt()`/`build_content_prompt()` thêm tham số `platform: Optional[str] = None`; dòng `Call-to-action:` trong `final_prompt` giờ chọn `platform_cta_overrides[platform]` nếu có, fallback về `cta_rule` chung — backward-compat 100% (không truyền `platform` → hành vi y hệt cũ, test cũ không cần sửa).
+- **`content_studio/prompt_bridge.py`:** truyền `platform=request.platform` (property có sẵn, tách từ `content_type`) vào `build_content_prompt`.
+- Verify validator: `validator_studio/content_validator.py::_score_cta` chấm theo từ khoá chung (`CTA_TERMS` có "liên hệ", "đặt phòng") chứ không so khớp chuỗi `cta_rule` cụ thể → CTA Zalo mới vẫn được chấm điểm đúng, không cần sửa validator.
+- Tests mới: 2 test trong `test_content_prompt_builder.py` (platform="zalo" → có override + SĐT; platform khác → giữ cta_rule chung, không có SĐT) + 1 test end-to-end trong `test_content_studio.py` (generate `zalo_post` → hashtags rỗng, `max_length` ngắn hơn facebook, `final_prompt` chứa SĐT).
+
+**Lưu ý phạm vi:** đây là tầng *sinh nội dung* (M02/M05, dùng cho pipeline Growth Agent v3.1 mới). Hệ thống social cũ (`VenHoSocialManager` ở repo `venho-os`, chạy T2/T4/T6 qua GitHub Actions cho FB/IG/Threads) là pipeline riêng, không đọc `platform_rules.yaml`/`prompt_rules.yaml` này — nếu muốn Zalo CTA áp dụng ở đó cũng phải sửa riêng bên `venho-os`.
+
+**Verify:** `python3 -m pytest -q` → 564 passed (561 prior + 3 new), 0 API call. `compileall` sạch.
 
 ### Growth Agent v3.1 — Zalo OA publish qua Make.com webhook (2026-08-03)
 

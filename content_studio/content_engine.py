@@ -46,7 +46,7 @@ def _file_stem(output: ContentOutput, topic: str) -> str:
 
 
 def _builder_for(content_type: str) -> BuilderFn:
-    if content_type in {"facebook_post", "instagram_post", "threads_post", "tiktok_caption"}:
+    if content_type in {"facebook_post", "instagram_post", "threads_post", "tiktok_caption", "zalo_post"}:
         return build_social_draft
     if content_type == "blog":
         return build_blog_draft

@@ -20,4 +20,10 @@ threads:
   hashtags:
     - "#hotay"
     - "#hanoi"
+zalo:
+  # Zalo audience in Vietnam reads short and direct, expects a phone/Zalo
+  # contact line, and does not hashtag-search the way FB/IG users do.
+  max_length: 300
+  max_hashtags: 0
+  hashtags: []
 

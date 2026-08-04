@@ -74,6 +74,7 @@ def build_content_prompt_for_request(
         target_language=request.target_language,
         outfit_id=request.outfit_id,
         character_id="linh_an" if request.outfit_id else None,
+        platform=request.platform,
     )
     paths = save_prompt(contract, root=prompts_root or data_root)
     return PromptBridgeResult(contract=contract, json_path=paths.json, markdown_path=paths.markdown)

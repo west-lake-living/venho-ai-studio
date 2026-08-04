@@ -10,6 +10,7 @@ ContentType = Literal[
     "instagram_post",
     "threads_post",
     "tiktok_caption",
+    "zalo_post",
     "blog",
     "website",
     "ota",

@@ -52,6 +52,26 @@ def test_final_prompt_has_audience_tone_brand_dna_cta_and_required_facts():
         assert item.value in contract.final_prompt
 
 
+def test_zalo_platform_uses_cta_override_with_hotline():
+    dna = read_dna(WESTLAKE_DNA)
+    dna_rules = load_prompt_rules("venho_hotel")
+    contract = build_content_prompt(
+        dna, BRIEF, brief_slug="zalo-stay", platform="zalo", generated_at="2026-07-08T00:00:00+00:00"
+    )
+    assert dna_rules["platform_cta_overrides"]["zalo"] in contract.final_prompt
+    assert "0936871234" in contract.final_prompt
+
+
+def test_non_zalo_platform_keeps_default_cta_rule():
+    dna = read_dna(WESTLAKE_DNA)
+    dna_rules = load_prompt_rules("venho_hotel")
+    contract = build_content_prompt(
+        dna, BRIEF, brief_slug="fb-stay-2", platform="facebook", generated_at="2026-07-08T00:00:00+00:00"
+    )
+    assert dna_rules["cta_rule"] in contract.final_prompt
+    assert "0936871234" not in contract.final_prompt
+
+
 def test_content_prompt_passes_structural_and_faithfulness_validation():
     dna, contract = _build()
     structural = validate_structural(

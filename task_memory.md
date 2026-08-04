@@ -174,6 +174,21 @@ Harry's integration decision: `ZaloOAAdapter` does not call the Zalo API directl
 - **Real remaining gap, not glossed over:** `growth_orchestrator/bridges/m07_publishing_bridge.py::M07PublishingBridge.dispatch()` is still a pure stub that returns a fake `GATEWAY_ACCEPTED` -- it does not call `ZaloOAAdapter` or any adapter, and there is no platform-based routing yet. The "Approve" button itself lives in `venho-os` (a separate TS/Next.js repo) and it's unconfirmed how/whether it calls into this Python M07 bridge at all. So "clicking Approve auto-posts to Zalo" is NOT true end-to-end yet -- only the adapter's webhook-trigger capability is real and tested. No Make.com scenario has been created/tested against a live `MAKE_ZALO_WEBHOOK_URL` either.
 - Verify: `561/561` AI Studio tests pass (557 prior + 4 new), 0 API calls, `compileall` clean.
 
+### Content Studio — Zalo platform rules + dedicated hotline CTA (2026-08-03)
+
+Harry: Vietnamese Zalo users want short, direct copy with a clear contact/booking line -- specifically "Liên hệ Hotline/Zalo 0936871234 để đặt phòng view Hồ Tây ngay hôm nay." Instead of a one-off manual instruction to an AI agent (easy to forget, inconsistent run to run), wired this into config + the M02 Prompt Studio pipeline so it's deterministic and test-covered -- consistent with the project's config-first principle.
+
+- **`content_studio/schemas/content_request.py`:** added `"zalo_post"` to the `ContentType` Literal -- `ContentRequest` could not represent Zalo at all before this.
+- **`content_studio/content_engine.py::_builder_for`:** routes `zalo_post` to `build_social_draft` (same social group as facebook/instagram/threads/tiktok).
+- **`config/projects/venho_hotel/content/platform_rules.yaml`:** added `zalo:` -- `max_length: 300` (shorter than `threads`'s 500, per "shorter than Facebook"), `max_hashtags: 0` (Zalo culture doesn't hashtag-search like FB/IG).
+- **`config/projects/venho_hotel/prompt_rules.yaml`:** added `platform_cta_overrides.zalo` with Harry's exact CTA text + phone number. Deliberately placed in the prompt layer, not `content/` -- `load_content_config()` already hard-forbids a `content/cta_rules.yaml` existing (raises `ContentConfigError`), so CTA wording has to live here.
+- **`prompt_studio/builders/content_prompt_builder.py`:** `render_final_prompt()`/`build_content_prompt()` gained an optional `platform` param; the `Call-to-action:` line in `final_prompt` now checks `platform_cta_overrides[platform]` first, falling back to the global `cta_rule` -- fully backward compatible (omitting `platform` reproduces the old behavior exactly, no existing test needed changes).
+- **`content_studio/prompt_bridge.py`:** now passes `platform=request.platform` (existing derived property) through to `build_content_prompt`.
+- Checked `validator_studio/content_validator.py::_score_cta` -- it scores on generic `CTA_TERMS` keywords ("liên hệ", "đặt phòng"), not an exact match against `cta_rule`, so the new Zalo CTA text scores correctly without touching the validator.
+- 3 new tests: 2 in `test_content_prompt_builder.py` (platform="zalo" gets the override + phone number; other platforms keep the generic rule, no phone number), 1 end-to-end in `test_content_studio.py` (generating a `zalo_post` produces empty hashtags, a shorter `max_length` than facebook, and the phone number in `final_prompt`).
+- **Scope note:** this only affects the new M02/M05 content-generation layer (Growth Agent v3.1 pipeline, this repo). The older `VenHoSocialManager` system (separate `venho-os` repo, GitHub Actions T2/T4/T6 for FB/IG/Threads) is a different pipeline that does not read `platform_rules.yaml`/`prompt_rules.yaml` here -- applying the Zalo CTA there would need a separate change in `venho-os`.
+- Verify: `564/564` AI Studio tests pass (561 prior + 3 new), 0 API calls, `compileall` clean.
+
 ### Module Roles (KHÔNG chồng lấn)
 
 | Module | Vai trò | KHÔNG làm |

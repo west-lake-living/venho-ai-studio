@@ -92,6 +92,21 @@ def test_content_engine_generates_social_draft_end_to_end(tmp_path: Path) -> Non
     assert "## SOURCE PROMPT" in result.markdown_path.read_text(encoding="utf-8")
 
 
+def test_content_engine_generates_zalo_draft_with_short_no_hashtag_platform_rules(tmp_path: Path) -> None:
+    request = _request().model_copy(update={"content_type": "zalo_post"})
+    result = generate_content(request, data_root=_tmp_data_root(tmp_path), config_root=Path("config/projects"), validate=False)
+    assert result.output.content_type == "zalo_post"
+    assert result.output.hashtags == []
+
+    config = load_content_config("venho_hotel")
+    zalo_rules = config["platform_rules"]["zalo"]
+    assert zalo_rules["max_hashtags"] == 0
+    assert zalo_rules["max_length"] < config["platform_rules"]["facebook"]["max_length"]
+
+    bridge = build_content_prompt_for_request(request, data_root=Path("data/projects"), prompts_root=tmp_path)
+    assert "0936871234" in bridge.contract.final_prompt
+
+
 @pytest.mark.parametrize("content_type", ["blog", "website", "ota", "faq", "email"])
 def test_content_engine_generates_all_planned_content_types(tmp_path: Path, content_type: str) -> None:
     request = _request().model_copy(update={"content_type": content_type, "keyword": "khách sạn gần Hồ Tây"})

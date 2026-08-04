@@ -14,6 +14,13 @@ brand_dna:
 
 cta_rule: "End with one soft call-to-action inviting the reader to check availability or message the page — never pushy, never a hard sell."
 
+# Per-platform override of cta_rule (§ platform_rules.yaml is Content Studio's
+# length/hashtag config; CTA wording must live here in the prompt layer, per
+# the existing rule that content/cta_rules.yaml is forbidden). Falls back to
+# cta_rule above when a platform has no entry.
+platform_cta_overrides:
+  zalo: "Ngắn gọn, trực diện hơn Facebook. Kết thúc bằng đúng dòng CTA: 'Liên hệ Hotline/Zalo 0936871234 để đặt phòng view Hồ Tây ngay hôm nay.'"
+
 restrictions:
   - "Do not claim '5 star' or 'best in Hanoi' — Ven Ho Hotel is boutique mid-range, not luxury."
   - "Do not use the phrase 'sang chảnh nhất' or overclaim luxury positioning."

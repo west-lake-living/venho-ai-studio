@@ -37,6 +37,7 @@ def render_final_prompt(
     required_dna: List[RequiredDnaItem],
     allowed_variations: List[AllowedVariationItem],
     contract_refs: Optional[ContractRefs] = None,
+    platform: Optional[str] = None,
 ) -> str:
     lines = [task_brief.strip(), "", f"Write the content in {_LANGUAGE_LABEL[target_language]}.", ""]
 
@@ -66,7 +67,8 @@ def render_final_prompt(
         lines.extend(f"- {item.key}: {' / '.join(item.value_range)}" for item in allowed_variations)
         lines.append("")
 
-    lines.append(f"Call-to-action: {prompt_rules['cta_rule']}")
+    cta_rule = prompt_rules.get("platform_cta_overrides", {}).get(platform, prompt_rules["cta_rule"])
+    lines.append(f"Call-to-action: {cta_rule}")
 
     return "\n".join(lines).strip()
 
@@ -83,6 +85,7 @@ def build_content_prompt(
     generated_at: Optional[str] = None,
     outfit_id: Optional[str] = None,
     character_id: Optional[str] = None,
+    platform: Optional[str] = None,
 ) -> ContentPromptContract:
     """Build a content Prompt JSON from one brand/location DNA + a brief (§7.1, §5.3)."""
     template = template or load_template("content")
@@ -123,6 +126,7 @@ def build_content_prompt(
             required_dna,
             allowed_variations,
             contract_refs,
+            platform,
         ),
         restrictions=restrictions,
         optimizer=OptimizerInfo(used=False),
