@@ -11,6 +11,7 @@ from growth_orchestrator.bridges.m07_publishing_bridge import (
     m07_publishing_bridge_from_env,
 )
 from publishing_gateway.publication_registry import PublicationRegistry
+from shared.jobs.slot_store import SlotStore
 from validator_studio.content_validator import validate_content
 from validator_studio.schemas.validation_base import Recommendation
 
@@ -41,12 +42,36 @@ def list_pending(
     return [item for item in registry.load()["publications"] if item.get("status") in actionable]
 
 
+def _advance_slot_on_dispatch_success(publication: dict, *, slot_store: Optional[SlotStore]) -> None:
+    """Best-effort PENDING_APPROVAL -> FILLED -> DISPATCHED on the slot this
+    publication's daily_cycle run recorded (`slot_id`, absent on older rows
+    or when daily_cycle ran without slot tracking). Never raises: a stale/
+    already-advanced slot or a missing slot_store must not block the real
+    dispatch this is just bookkeeping for.
+    """
+    slot_id = publication.get("slot_id")
+    if not slot_id or slot_store is None:
+        return
+    try:
+        slot = slot_store.get(slot_id)
+        if slot is None:
+            return
+        if slot.status == "PENDING_APPROVAL":
+            slot_store.transition(slot_id, "FILLED", content_package_id=publication.get("content_package_id"), filled_from="pipeline")
+            slot_store.transition(slot_id, "DISPATCHED")
+        elif slot.status == "FILLED":
+            slot_store.transition(slot_id, "DISPATCHED")
+    except Exception:  # noqa: BLE001 - slot bookkeeping must never block a real dispatch that already succeeded
+        pass
+
+
 def _dispatch_claimed(
     publication: dict,
     *,
     registry: PublicationRegistry,
     bridge: M07PublishingBridge,
     approved_by: Optional[str] = None,
+    slot_store: Optional[SlotStore] = None,
 ) -> dict:
     """Fire the real webhook for an already-claimed (status already flipped
     off PENDING_APPROVAL) row, and finalize its status from the response.
@@ -83,7 +108,10 @@ def _dispatch_claimed(
         updates["approved_by"] = approved_by
     if approval_snapshot is not None:
         updates["approval_snapshot"] = approval_snapshot
-    return registry.update(publication_id, **updates)
+    updated = registry.update(publication_id, **updates)
+    if response["status"] in ("GATEWAY_ACCEPTED", "PUBLISHED"):
+        _advance_slot_on_dispatch_success(updated, slot_store=slot_store)
+    return updated
 
 
 def approve_and_dispatch(
@@ -94,6 +122,7 @@ def approve_and_dispatch(
     data_root: Path = Path("data/projects"),
     registry: Optional[PublicationRegistry] = None,
     bridge: Optional[M07PublishingBridge] = None,
+    slot_store: Optional[SlotStore] = None,
 ) -> dict:
     """Approve a queued draft and immediately dispatch it (Approve-triggers-publish).
 
@@ -121,7 +150,8 @@ def approve_and_dispatch(
     registry = registry or PublicationRegistry(project, data_root=data_root)
     claimed = registry.claim(publication_id, expected_status=PENDING_STATUS, claimed_status=DISPATCHING_STATUS)
     bridge = bridge or m07_publishing_bridge_from_env(os.environ)
-    return _dispatch_claimed(claimed, registry=registry, bridge=bridge, approved_by=approved_by)
+    slot_store = slot_store or SlotStore(db_path=data_root / project / "growth" / "growth.db")
+    return _dispatch_claimed(claimed, registry=registry, bridge=bridge, approved_by=approved_by, slot_store=slot_store)
 
 
 def retry_dispatch(
@@ -131,6 +161,7 @@ def retry_dispatch(
     data_root: Path = Path("data/projects"),
     registry: Optional[PublicationRegistry] = None,
     bridge: Optional[M07PublishingBridge] = None,
+    slot_store: Optional[SlotStore] = None,
 ) -> dict:
     """Re-fire the webhook for a row stranded in GATEWAY_ERROR.
 
@@ -144,7 +175,8 @@ def retry_dispatch(
     registry = registry or PublicationRegistry(project, data_root=data_root)
     claimed = registry.claim(publication_id, expected_status=GATEWAY_ERROR_STATUS, claimed_status=DISPATCHING_STATUS)
     bridge = bridge or m07_publishing_bridge_from_env(os.environ)
-    return _dispatch_claimed(claimed, registry=registry, bridge=bridge)
+    slot_store = slot_store or SlotStore(db_path=data_root / project / "growth" / "growth.db")
+    return _dispatch_claimed(claimed, registry=registry, bridge=bridge, slot_store=slot_store)
 
 
 def reject_publication(

@@ -12,12 +12,14 @@ from growth_orchestrator.application.approve_and_dispatch import (
     retry_dispatch,
 )
 from growth_orchestrator.bridges.m07_publishing_bridge import M07PublishingBridge
+from growth_orchestrator.domain.publishing_slot import PublishingSlot
 from publishing_gateway.adapters.make_gateway import MakeGatewayAdapter
 from publishing_gateway.adapters.zalo_oa import ZaloOAAdapter
 from publishing_gateway.publication_registry import PublicationRegistry
+from shared.jobs.slot_store import SlotStore
 
 
-def _reserve_pending(registry: PublicationRegistry, *, platform: str = "facebook") -> str:
+def _reserve_pending(registry: PublicationRegistry, *, platform: str = "facebook", slot_id: str | None = None) -> str:
     reserved = registry.reserve(
         {
             "publication_id": f"pub-{platform}-1",
@@ -26,7 +28,7 @@ def _reserve_pending(registry: PublicationRegistry, *, platform: str = "facebook
             "platform": platform,
         }
     )
-    registry.update(reserved["publication_id"], status="PENDING_APPROVAL", content={"text": "hello"})
+    registry.update(reserved["publication_id"], status="PENDING_APPROVAL", content={"text": "hello"}, slot_id=slot_id)
     return reserved["publication_id"]
 
 
@@ -81,6 +83,45 @@ def test_approve_and_dispatch_calls_bridge_and_updates_status(tmp_path: Path) ->
     assert calls[0]["platform"] == "facebook"
     assert calls[0]["content"] == {"text": "hello"}
     assert list_pending(project="venho_hotel", data_root=tmp_path, registry=registry) == []
+
+
+def test_approve_and_dispatch_advances_slot_to_dispatched_on_success(tmp_path: Path) -> None:
+    registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
+    slot_store = SlotStore(db_path=tmp_path / "growth.db")
+    slot_store.ensure_slots([PublishingSlot(slot_id="slot-2026-08-10-monday", slot_date="2026-08-10", slot_type="regular", lane="regular")])
+    slot_store.transition("slot-2026-08-10-monday", "DRAFT_ASSIGNED")
+    slot_store.transition("slot-2026-08-10-monday", "PENDING_APPROVAL", content_package_id="pkg-1")
+    publication_id = _reserve_pending(registry, slot_id="slot-2026-08-10-monday")
+
+    make_adapter = MakeGatewayAdapter(enabled=True)
+    make_adapter.send = lambda command: {"status": "GATEWAY_ACCEPTED", "published": False}
+    bridge = M07PublishingBridge(make_adapter=make_adapter, zalo_adapter=ZaloOAAdapter(enabled=True))
+
+    approve_and_dispatch(
+        publication_id, approved_by="harry", project="venho_hotel", data_root=tmp_path,
+        registry=registry, bridge=bridge, slot_store=slot_store,
+    )
+
+    assert slot_store.get("slot-2026-08-10-monday").status == "DISPATCHED"
+
+
+def test_approve_and_dispatch_slot_bookkeeping_failure_never_blocks_a_real_dispatch(tmp_path: Path) -> None:
+    """slot_id points at a slot that doesn't exist (or slot_store is broken)
+    -- the real approval/dispatch must still succeed."""
+    registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
+    slot_store = SlotStore(db_path=tmp_path / "growth.db")
+    publication_id = _reserve_pending(registry, slot_id="slot-does-not-exist")
+
+    make_adapter = MakeGatewayAdapter(enabled=True)
+    make_adapter.send = lambda command: {"status": "GATEWAY_ACCEPTED", "published": False}
+    bridge = M07PublishingBridge(make_adapter=make_adapter, zalo_adapter=ZaloOAAdapter(enabled=True))
+
+    result = approve_and_dispatch(
+        publication_id, approved_by="harry", project="venho_hotel", data_root=tmp_path,
+        registry=registry, bridge=bridge, slot_store=slot_store,
+    )
+
+    assert result["status"] == "GATEWAY_ACCEPTED"
 
 
 def test_approve_and_dispatch_rejects_unknown_publication(tmp_path: Path) -> None:

@@ -15,6 +15,7 @@ from growth_orchestrator.application.daily_cycle import (
     run_daily_cycle,
 )
 from growth_orchestrator.bridges.m05_content_bridge import M05ContentBridge
+from shared.jobs.slot_store import SlotStore
 
 
 class _AlwaysApproveValidatorBridge:
@@ -98,6 +99,65 @@ def test_run_daily_cycle_one_platform_failure_does_not_abort_the_others(tmp_path
     assert "instagram" not in succeeded_platforms
     assert set(DEFAULT_PLATFORMS) - {"instagram"} <= set(succeeded_platforms)
     assert result.errors == [{"platform": "instagram", "error": "RuntimeError: simulated OpenAI rate limit"}]
+
+
+def test_run_daily_cycle_fills_slot_and_stores_slot_id_on_publications(tmp_path: Path) -> None:
+    data_root = _tmp_data_root(tmp_path)
+    slot_store = SlotStore(db_path=tmp_path / "growth.db")
+
+    result = run_daily_cycle(
+        "monday",
+        data_root=data_root,
+        generate_image=False,
+        content_bridge=_mock_content_bridge(data_root),
+        validator_bridge=_AlwaysApproveValidatorBridge(),
+        slot_store=slot_store,
+        slot_date="2026-08-10",
+    )
+
+    assert len(result.publications) == len(DEFAULT_PLATFORMS)
+    for pub in result.publications:
+        assert pub["slot_id"] == "slot-2026-08-10-monday"
+
+    slot = slot_store.get("slot-2026-08-10-monday")
+    assert slot is not None
+    assert slot.status == "PENDING_APPROVAL"
+    assert slot.content_package_id == result.publications[0]["content_package_id"]
+
+
+def test_run_daily_cycle_marks_slot_missed_when_every_platform_fails(tmp_path: Path) -> None:
+    data_root = _tmp_data_root(tmp_path)
+    slot_store = SlotStore(db_path=tmp_path / "growth.db")
+
+    class _AlwaysFailsBridge:
+        def generate_candidates(self, brief: dict) -> list[dict]:
+            raise RuntimeError("simulated total outage")
+
+    result = run_daily_cycle(
+        "monday",
+        data_root=data_root,
+        generate_image=False,
+        content_bridge=_AlwaysFailsBridge(),
+        validator_bridge=_AlwaysApproveValidatorBridge(),
+        slot_store=slot_store,
+        slot_date="2026-08-10",
+    )
+
+    assert result.publications == []
+    slot = slot_store.get("slot-2026-08-10-monday")
+    assert slot is not None
+    assert slot.status == "MISSED"
+
+
+def test_run_daily_cycle_without_slot_store_is_unaffected(tmp_path: Path) -> None:
+    """slot_store/slot_date are opt-in -- omitting them must behave exactly
+    like before this feature existed (no slot_id key surprise, no crash)."""
+    data_root = _tmp_data_root(tmp_path)
+    result = run_daily_cycle(
+        "monday", data_root=data_root, generate_image=False,
+        content_bridge=_mock_content_bridge(data_root), validator_bridge=_AlwaysApproveValidatorBridge(),
+    )
+    assert result.publications[0]["slot_id"] is None
 
 
 def test_run_daily_cycle_saturday_uses_special_topics(tmp_path: Path) -> None:

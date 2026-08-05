@@ -82,6 +82,13 @@ def test_publishing_slot_rejects_forbidden_transition() -> None:
         slot.transition("DISPATCHED")
 
 
+def test_publishing_slot_draft_assigned_can_go_missed_when_generation_totally_fails() -> None:
+    slot = PublishingSlot(slot_id="s4", slot_date="2026-08-10", slot_type="regular", lane="regular")
+    slot = slot.transition("DRAFT_ASSIGNED")
+    slot = slot.transition("MISSED")
+    assert slot.status == "MISSED"
+
+
 def test_publishing_slot_missed_requires_evergreen_exhausted() -> None:
     slot = PublishingSlot(slot_id="s4", slot_date="2026-08-03", slot_type="regular", lane="regular")
     with pytest.raises(ValueError, match="evergreen pool"):

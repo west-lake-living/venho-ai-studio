@@ -32,7 +32,14 @@ class PublishingSlot(BaseModel):
     def transition(self, target: PublishingSlotStatus, **updates: object) -> "PublishingSlot":
         allowed: dict[str, set[str]] = {
             "OPEN": {"DRAFT_ASSIGNED", "EVERGREEN_FALLBACK", "MISSED"},
-            "DRAFT_ASSIGNED": {"PENDING_APPROVAL"},
+            # DRAFT_ASSIGNED -> MISSED: every platform's generation attempt
+            # failed after a draft was assigned to this slot (no surviving
+            # content to review). Distinct from the plan's original
+            # OPEN -> MISSED ("evergreen pool also exhausted") path, which
+            # still applies once evergreen_pool.py is wired in -- until then
+            # this is the only MISSED path a real generation failure can
+            # reach without evergreen ever being consulted.
+            "DRAFT_ASSIGNED": {"PENDING_APPROVAL", "MISSED"},
             "PENDING_APPROVAL": {"FILLED", "DRAFT_ASSIGNED"},
             "FILLED": {"DISPATCHED"},
             "EVERGREEN_FALLBACK": {"DISPATCHED"},

@@ -22,8 +22,10 @@ from image_studio_runtime.adapters.gpt_image_provider import gpt_image_provider_
 from image_studio_runtime.application.generate_image import generate_image_run
 from prompt_studio.builders.image_prompt_builder import build_image_prompt
 from prompt_studio.knowledge_reader import read_dna
+from growth_orchestrator.domain.publishing_slot import PublishingSlot
 from publishing_gateway.publication_registry import PublicationRegistry
 from shared.storage.google_drive import google_drive_uploader_from_env
+from shared.jobs.slot_store import SlotStore
 from validator_studio.image_validator import validate_image
 from validator_studio.schemas.validation_base import Recommendation
 
@@ -281,6 +283,32 @@ def _generate_topic_image(
         return None
 
 
+def _slot_id_for(day: str, slot_date: str) -> str:
+    # Matches growth_orchestrator.application.manage_slots.generate_slots'
+    # deterministic slot_id scheme so a slot ensured by the weekly batch and
+    # one ensured ad-hoc here always agree on identity.
+    return f"slot-{slot_date}-{day}"
+
+
+def _ensure_slot_best_effort(slot_store: SlotStore, *, day: str, slot_date: str) -> Optional[str]:
+    """Get-or-create the slot for this cadence day, never raising.
+
+    Prefers an already-ensured slot (weekly_cycle normally ensures the whole
+    week's slots up front); falls back to inserting one directly here so
+    run_daily_cycle stays usable standalone (CLI `daily-cycle`, tests) without
+    requiring the caller to pre-run manage_slots.
+    """
+    slot_id = _slot_id_for(day, slot_date)
+    try:
+        if slot_store.get(slot_id) is None:
+            slot_type = "special" if day == SPECIAL_CADENCE_DAY else "regular"
+            lane = "special" if day == SPECIAL_CADENCE_DAY else "regular"
+            slot_store.ensure_slots([PublishingSlot(slot_id=slot_id, slot_date=slot_date, slot_type=slot_type, lane=lane)])
+        return slot_id
+    except Exception:  # noqa: BLE001 - slot bookkeeping must never block real content generation
+        return None
+
+
 def run_daily_cycle(
     day: str,
     *,
@@ -297,6 +325,8 @@ def run_daily_cycle(
     validator_bridge: Optional[M03ValidatorBridge] = None,
     image_validation_provider: str = "mock",
     drive_uploader: Optional[Any] = None,
+    slot_store: Optional[SlotStore] = None,
+    slot_date: Optional[str] = None,
 ) -> DailyCycleResult:
     """Generate this cadence day's content drafts and queue them for approval.
 
@@ -341,6 +371,17 @@ def run_daily_cycle(
     real) -- pass a bridge that always approves in tests that aren't
     exercising validation itself, since mock-generated boilerplate text
     reliably scores below the real APPROVE bar.
+
+    `slot_store`/`slot_date` wire this cadence day into the PublishingSlot
+    state machine (plan v3.1 §4.4) so the dashboard has real per-slot
+    visibility (filled / stranded / missed) instead of only inferring it
+    from PublicationRegistry rows. Adapted for the ephemeral GitHub Actions
+    cron model (see shared.jobs.slot_store.SlotStore's module docstring):
+    both are optional and default to a no-op (slot tracking skipped) so
+    existing callers/tests that don't care about calendar dates are
+    unaffected. Slot bookkeeping is always best-effort -- a bad transition
+    or a missing slot never raises out of this function; it's diagnostic,
+    not a gate on real content generation.
     """
     day = day.lower()
     if day not in CADENCE_DAYS:
@@ -349,6 +390,16 @@ def run_daily_cycle(
     config = load_content_config(project, config_root=config_root)
     topic = _pick_topic(config, day, project, data_root)
     registry = registry or PublicationRegistry(project, data_root=data_root)
+
+    slot_id: Optional[str] = None
+    if slot_store is not None and slot_date is not None:
+        slot_id = _ensure_slot_best_effort(slot_store, day=day, slot_date=slot_date)
+        if slot_id is not None:
+            try:
+                slot_store.transition(slot_id, "DRAFT_ASSIGNED")
+            except Exception:  # noqa: BLE001 - see _ensure_slot_best_effort
+                pass
+
     scenario_registry = scenario_registry or ScenarioRegistry.from_file()
     content_bridge = content_bridge or M05ContentBridge(
         config_root=config_root, data_root=data_root, scenario_registry=scenario_registry
@@ -434,10 +485,28 @@ def run_daily_cycle(
                 # DNA subject without needing the original CreativeBrief object
                 # persisted anywhere -- see approve_and_dispatch.edit_publication.
                 dna_subject=topic["dna_subject"],
+                slot_id=slot_id,
             )
             publications.append(publication)
         except Exception as exc:  # noqa: BLE001 - one platform's provider/network failure (rate limit, timeout) must not abort the other platforms' drafts for this day
             errors.append({"platform": platform, "error": f"{type(exc).__name__}: {exc}"})
             continue
+
+    if slot_id is not None:
+        try:
+            if publications:
+                # One PublishingSlot maps to N per-platform ContentPackages
+                # here (daily_cycle builds a separate CreativeBrief per
+                # platform) -- the slot isn't tied 1:1 to a single package,
+                # so this just records the first as a traceability pointer.
+                slot_store.transition(slot_id, "PENDING_APPROVAL", content_package_id=publications[0]["content_package_id"])
+            else:
+                # Evergreen pool fallback (plan v3.1 §9.3) isn't wired yet --
+                # a day with zero surviving platforms goes straight to MISSED
+                # rather than through EVERGREEN_FALLBACK. Flagged as a known
+                # gap, not silently skipped.
+                slot_store.transition(slot_id, "MISSED")
+        except Exception:  # noqa: BLE001 - see _ensure_slot_best_effort
+            pass
 
     return DailyCycleResult(day=day, topic=topic, publications=publications, packages=packages, errors=errors)

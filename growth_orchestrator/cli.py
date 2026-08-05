@@ -21,6 +21,7 @@ from growth_orchestrator.application.reconcile_publication import reconcile_publ
 from growth_orchestrator.application.run_blog_pipeline import run_blog_pipeline
 from growth_orchestrator.application.run_content_pipeline import run_content_pipeline
 from growth_orchestrator.application.weekly_cycle import run_weekly_cycle
+from shared.jobs.slot_store import SlotStore
 
 app = typer.Typer(help="Ven Ho Growth Orchestrator")
 
@@ -77,15 +78,48 @@ def weekly_cycle(
     typer.echo(
         json.dumps(
             {
+                "skipped_already_run": result.skipped_already_run,
                 "days": [
                     {"day": day.day, "topic": day.topic, "publications": day.publications, "errors": day.errors}
                     for day in result.days
-                ]
+                ],
             },
             ensure_ascii=False,
             indent=2,
         )
     )
+
+
+@app.command("slots")
+def slots_cmd(
+    project: str = typer.Option("venho_hotel"),
+    weeks_ahead: int = typer.Option(1, help="How many ISO weeks from today to show (1 = this week only)."),
+) -> None:
+    """Read-only view of PublishingSlot state for the dashboard/CLI operator
+    -- which cadence slots got filled, which are still pending, which were
+    missed. See shared.jobs.slot_store.SlotStore / growth_orchestrator.
+    domain.publishing_slot.PublishingSlot (plan v3.1 §4.4)."""
+    from datetime import date, timedelta
+
+    from growth_orchestrator.application.weekly_cycle import WEEKLY_CADENCE_ORDER, _next_occurrence
+
+    slot_store = SlotStore(db_path=Path("data/projects") / project / "growth" / "growth.db")
+    today = date.today()
+    rows = []
+    for week_offset in range(weeks_ahead):
+        week_start = today + timedelta(days=7 * week_offset)
+        for day in WEEKLY_CADENCE_ORDER:
+            slot_date = _next_occurrence(day, on_or_after=week_start)
+            slot = slot_store.get(f"slot-{slot_date.isoformat()}-{day}")
+            rows.append(
+                {
+                    "slot_date": slot_date.isoformat(),
+                    "day": day,
+                    "status": slot.status if slot else "NOT_CREATED",
+                    "content_package_id": slot.content_package_id if slot else None,
+                }
+            )
+    typer.echo(json.dumps(rows, ensure_ascii=False, indent=2))
 
 
 @app.command("list-pending")
