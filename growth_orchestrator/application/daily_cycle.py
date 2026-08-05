@@ -87,6 +87,31 @@ def _next_rotation_index(project: str, data_root: Path, lane: str) -> int:
     return index
 
 
+def _trend_candidate_topic_entries(project: str, data_root: Path) -> list[dict[str, Any]]:
+    """Approved Trend Radar candidates (venho-growth trend-approve), shaped
+    to slot into the same rotation pool as content_pillars.yaml's hand-
+    curated special_topics. Best-effort: a broken/missing trend store must
+    never block the Saturday pipeline, which has always worked off the
+    hand-curated list alone."""
+    try:
+        from research_engine.trend_radar.trend_candidate_store import TrendCandidateStore
+
+        store = TrendCandidateStore(project, data_root=data_root)
+        return [
+            {
+                "pillar": "Trend Radar",
+                "dna_subject": candidate.get("dna_subject", "westlake"),
+                "topic": candidate.get("title", ""),
+                "special_lane_type": candidate.get("type", "feature_story"),
+                "verified_by_human": True,
+                "trend_candidate_id": candidate["id"],
+            }
+            for candidate in store.list_eligible_for_saturday()
+        ]
+    except Exception:  # noqa: BLE001 - see docstring
+        return []
+
+
 def _pick_topic(config: dict[str, Any], day: str, project: str, data_root: Path) -> dict[str, Any]:
     pillars_config = config["content_pillars"]
     if day == SPECIAL_CADENCE_DAY:
@@ -106,12 +131,16 @@ def _pick_topic(config: dict[str, Any], day: str, project: str, data_root: Path)
             }
             if lane == "special":
                 # v3.1 9.5 candidate typing (seasonal_nature/cultural_event/
-                # lifestyle_trend/feature_story). No live trend/event feed
-                # exists yet, so every hand-curated entry defaults to type 4
-                # (feature_story) -- see content_pillars.yaml comment.
+                # lifestyle_trend/feature_story). Hand-curated entries
+                # default to type 4 (feature_story) -- see content_pillars
+                # .yaml comment. Real Trend Radar candidates (see below) get
+                # their type from Claude's classification instead.
                 entry["special_lane_type"] = group.get("type", "feature_story")
                 entry["verified_by_human"] = group.get("verified_by_human", False)
             flat.append(entry)
+
+    if lane == "special":
+        flat.extend(_trend_candidate_topic_entries(project, data_root))
 
     index = _next_rotation_index(project, data_root, lane)
     picked = flat[index % len(flat)]
@@ -124,6 +153,13 @@ def _pick_topic(config: dict[str, Any], day: str, project: str, data_root: Path)
             [{"type": picked["special_lane_type"], "verified_by_human": picked["verified_by_human"]}]
         )
         picked["special_lane_reason"] = selected["selected_reason"]
+        if picked.get("trend_candidate_id"):
+            try:
+                from research_engine.trend_radar.trend_candidate_store import TrendCandidateStore
+
+                TrendCandidateStore(project, data_root=data_root).mark_used(picked["trend_candidate_id"])
+            except Exception:  # noqa: BLE001 - marking used is bookkeeping, never a gate on the real pick
+                pass
 
     return picked
 

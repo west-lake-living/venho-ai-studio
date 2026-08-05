@@ -199,6 +199,39 @@ def test_pick_topic_special_lane_prefers_seasonal_over_feature_story(tmp_path: P
     assert picked2["special_lane_reason"] == "seasonal_nature"
 
 
+def test_pick_topic_special_lane_includes_approved_trend_candidates(tmp_path: Path) -> None:
+    """An approved (verified_by_human) Trend Radar candidate must join the
+    Saturday rotation pool alongside the hand-curated list, and get marked
+    used once picked so it doesn't repeat forever."""
+    from research_engine.trend_radar.trend_candidate_store import TrendCandidateStore
+
+    config = {
+        "content_pillars": {
+            "special_topics": [
+                {"id": "a", "name": "Feature", "dna_subject": "outside", "topics": ["t1"]},
+            ]
+        }
+    }
+    data_root = _tmp_data_root(tmp_path)
+    store = TrendCandidateStore("venho_hotel", data_root=data_root)
+    store.merge_new([
+        {"id": "trend-1", "title": "Mùa sen Hồ Tây", "type": "seasonal_nature", "status": "needs_human_approval", "dna_subject": "westlake"},
+    ])
+    store.approve("trend-1", approved_by="harry")
+
+    first = _pick_topic(config, "saturday", "venho_hotel", data_root)  # rotation index 0 -> hand-curated
+    second = _pick_topic(config, "saturday", "venho_hotel", data_root)  # rotation index 1 -> trend candidate
+
+    assert first["pillar"] == "Feature"
+    assert second["pillar"] == "Trend Radar"
+    assert second["topic"] == "Mùa sen Hồ Tây"
+    assert second["dna_subject"] == "westlake"
+    assert second["special_lane_type"] == "seasonal_nature"
+
+    # Picked once -> excluded from future eligible pools.
+    assert store.list_eligible_for_saturday() == []
+
+
 def test_pick_topic_special_lane_rejects_unverified_cultural_event(tmp_path: Path) -> None:
     """Eligibility guard: a cultural_event candidate without
     verified_by_human=true must not be selectable -- with no other type

@@ -262,6 +262,63 @@ def measure_cmd(
     typer.echo(json.dumps(result, ensure_ascii=False, indent=2))
 
 
+@app.command("trend-scan")
+def trend_scan_cmd(
+    project: str = typer.Option("venho_hotel"),
+    config_root: Path = typer.Option(Path("config/projects/venho_hotel/research")),
+) -> None:
+    """Real Tavily search -> Claude classification -> scan_trends scoring
+    for the Saturday special lane, merged into trend_candidates.json as
+    unapproved proposals. Requires TAVILY_API_KEY + ANTHROPIC_API_KEY in
+    env; does not queue/publish anything and does not skip human approval
+    (brand_safety.yaml's `human_approval: mandatory`) -- see `trend-approve`.
+    """
+    import os
+
+    import yaml
+
+    from research_engine.trend_radar.application.fetch_saturday_candidates import fetch_and_score_saturday_candidates
+    from research_engine.trend_radar.trend_candidate_store import TrendCandidateStore
+
+    tavily_api_key = os.environ.get("TAVILY_API_KEY", "")
+    if not tavily_api_key:
+        typer.echo(json.dumps({"ok": False, "error": "TAVILY_API_KEY not set"}), err=True)
+        raise typer.Exit(code=1)
+    trend_policy = yaml.safe_load((config_root / "trend_policy.yaml").read_text(encoding="utf-8"))
+    safety_policy = yaml.safe_load((config_root / "brand_safety.yaml").read_text(encoding="utf-8"))
+    scored = fetch_and_score_saturday_candidates(tavily_api_key=tavily_api_key, trend_policy=trend_policy, safety_policy=safety_policy)
+    inserted = TrendCandidateStore(project).merge_new(scored)
+    typer.echo(json.dumps({"ok": True, "scanned": len(scored), "inserted_new": inserted}, ensure_ascii=False, indent=2))
+
+
+@app.command("trend-list")
+def trend_list_cmd(project: str = typer.Option("venho_hotel")) -> None:
+    """List all Trend Radar candidates (approved and pending) for review."""
+    from research_engine.trend_radar.trend_candidate_store import TrendCandidateStore
+
+    typer.echo(json.dumps(TrendCandidateStore(project).load(), ensure_ascii=False, indent=2))
+
+
+@app.command("trend-approve")
+def trend_approve_cmd(
+    candidate_id: str = typer.Option(..., "--candidate-id"),
+    approved_by: str = typer.Option(..., "--approved-by"),
+    project: str = typer.Option("venho_hotel"),
+) -> None:
+    """Mark one scanned trend candidate verified_by_human=True -- required
+    before it can ever be picked as a Saturday topic (see _pick_topic in
+    daily_cycle.py). This is the human-approval gate brand_safety.yaml
+    mandates; nothing in trend-scan can skip it."""
+    from research_engine.trend_radar.trend_candidate_store import TrendCandidateStore
+
+    try:
+        result = TrendCandidateStore(project).approve(candidate_id, approved_by=approved_by)
+    except KeyError as exc:
+        typer.echo(json.dumps({"ok": False, "error": str(exc)}), err=True)
+        raise typer.Exit(code=1)
+    typer.echo(json.dumps({"ok": True, "candidate": result}, ensure_ascii=False, indent=2))
+
+
 @app.command("version")
 def version() -> None:
     typer.echo("growth_orchestrator 0.1.0")
