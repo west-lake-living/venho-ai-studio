@@ -1,6 +1,29 @@
 # VENHO AI STUDIO — Task Status
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-08-06 (Phase 7 Growth Intelligence pilot — xem mục dưới) · **Tests:** 724/724 pass (+7 test mới) · 0 API call trong test
+**Cập nhật:** 2026-08-06 (Phase 8 Rollout + Productize — ROADMAP v3.1 HOÀN THÀNH 0→8 — xem mục dưới) · **Tests:** 736/736 pass (+12 test mới) · 0 API call trong test
+
+### Growth Agent v3.1 — Phase 8 Rollout + Productize: venho-rollout CLI + scorecard thật + fix .gitignore skills (2026-08-06)
+
+**Status: DONE — toàn bộ roadmap 0→8 hoàn thành theo cơ chế — commit local, chờ Harry xác nhận trước khi push**
+
+Tiếp nối Phase 7 cùng phiên, theo yêu cầu "hoàn thành tất cả để đưa vào vận hành thật". Audit `controlled_rollout/`+`productize/` (Codex build 2026-08-03) — cùng lỗ hổng như mọi phase trước: code+test đầy đủ, 0 caller thật, không CLI.
+
+- [x] `daily_cycle.py::_scorecard_signals()` (mới) — trích claim kill-switch + content_validator brand_fit thật từ `package["validation"]`, persist lên mỗi registry row qua `scorecard_signals` field (trước đây dữ liệu này bị vứt ngay sau khi hash hoá vào `validation_snapshot_id`).
+- [x] `SlotStore.list_all(status=...)` (mới) — đọc tất cả slot MISSED trong toàn bộ lịch sử, không chỉ tuần hiện tại.
+- [x] `controlled_rollout/collect_real_scorecard_metrics.py` (mới) — join thật `PublicationRegistry`+`SlotStore` thành golden-set shape cho `evaluate_golden_set()`. Chấm được 6/9 chỉ tiêu (`critical_factual_precision`/`brand_adherence`/`duplicate_publication`/`publication_post_id_rate`/`human_acceptance_no_major_edit`/`unplanned_empty_days`); 3/9 chỉ tiêu ảnh thiếu thật vì Vision QC mặc định `mock` (giữ ngân sách 500k/tháng) — ghi rõ trong `data_gaps`, không giả số.
+- [x] `controlled_rollout/rollout_state_store.py` (mới) — JSON store, mặc định `"shadow"`, chỉ advance khi decision `allowed=True`.
+- [x] CLI mới `venho-rollout` (`scorecard`/`rollout-status`/`rollout-advance`/`rollback-plan`/`runbook-validate`/`productize-run`), script entry mới trong `pyproject.toml`.
+- [x] `.claude/skills/_productize/hotel-content-engine/SKILL.md` gắn CLI trigger + ghi rõ giới hạn (chưa chạy full M02/M05 pipeline).
+- [x] **Gap phụ phát hiện + sửa:** `.gitignore` chặn toàn bộ `.claude/` từ trước tới giờ — 10 skill trong `.claude/skills/` (kể cả `hotel-content-engine`, tồn tại từ 2026-08-03) **chưa từng được commit vào repo** dù plan §8.1/RS-F1/RS-F4 yêu cầu. Sửa `.gitignore` thành `.claude/*` + negate `!.claude/skills` + `!.claude/CLAUDE.md.proposed`, giữ nguyên phần còn lại (settings local) bị ignore. Đã `git add` + commit 10 skill + `CLAUDE.md.proposed`.
+- [x] Runbook (`docs/growth/controlled_rollout_runbook.md`) + eval docs (`docs/growth/eval_golden_sets.md`) viết lại khớp kiến trúc GitHub Actions thật (không còn Mac Mini), ghi rõ bảng 9 chỉ tiêu — nguồn nào có thật, nguồn nào thiếu.
+- [x] **Trạng thái thật hiện tại (chạy tay xác nhận qua CLI):** rollout stage vẫn `shadow`, `rollout-advance` bị chặn đúng thiết kế (scorecard chưa qua gate ≥9.3/10 vì thiếu 3/9 chỉ tiêu ảnh + sample size còn nhỏ) — cùng kiểu honest gate như Phase 7's `INCONCLUSIVE`, không phải bug.
+- [x] Verify: `/usr/bin/python3 -m pytest -q` → 736/736 pass (724 + 12 test mới), 0 API call.
+
+**Ý nghĩa "hoàn thành":** cả 9 phase roadmap (0→8) giờ có code thật, CLI thật, nối dây thật tới dữ liệu thật — không còn phase nào ở trạng thái "code+test cô lập, 0 caller". Việc còn lại (rollout stage tiến lên `pilot_25`, golden eval set >=100 case reviewer-scored, Vision QC thật, backup verify-restore, lateness alert, GA4/FB attribution) là **vận hành theo thời gian thật + quyết định của Harry**, không phải việc code còn thiếu — liệt kê đầy đủ trong runbook.
+
+Chi tiết đầy đủ: `task_memory.md` mục 14m.
+
+---
 
 ---
 

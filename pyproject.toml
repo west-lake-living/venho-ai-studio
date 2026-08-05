@@ -39,6 +39,7 @@ venho-research = "research_engine.cli:app"
 venho-trend = "research_engine.trend_radar.cli:app"
 venho-growth = "growth_orchestrator.cli:app"
 venho-strategy = "strategy_memory.cli:app"
+venho-rollout = "controlled_rollout.cli:app"
 
 [tool.setuptools.packages.find]
 where = ["."]

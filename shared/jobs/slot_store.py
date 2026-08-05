@@ -109,6 +109,27 @@ class SlotStore:
             )
         return updated
 
+    def list_all(self, *, status: Optional[str] = None) -> list[PublishingSlot]:
+        """All slots ever created, optionally filtered by status.
+
+        Added for Phase 8's real scorecard (`controlled_rollout.collect_real_scorecard_metrics`):
+        `unplanned_empty_days` (Part 13.4/DoD #9) needs a real count of
+        `MISSED` slots across the whole pilot window, not just the current
+        week `list_for_week` was built for.
+        """
+        query = "SELECT slot_id, slot_date, slot_type, lane, status, content_package_id, filled_from FROM publishing_slots"
+        params: tuple[Any, ...] = ()
+        if status is not None:
+            query += " WHERE status=?"
+            params = (status,)
+        query += " ORDER BY slot_date"
+        with self._connect() as db:
+            rows = db.execute(query, params).fetchall()
+        return [
+            PublishingSlot(slot_id=r[0], slot_date=r[1], slot_type=r[2], lane=r[3], status=r[4], content_package_id=r[5], filled_from=r[6])
+            for r in rows
+        ]
+
     def list_for_week(self, slot_dates: Iterable[str]) -> list[PublishingSlot]:
         dates = list(slot_dates)
         if not dates:

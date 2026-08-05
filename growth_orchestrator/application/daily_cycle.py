@@ -248,6 +248,40 @@ def _content_payload(
     }
 
 
+def _scorecard_signals(validation: dict[str, Any]) -> dict[str, Any]:
+    """Pull the real, already-computed M03 scores out of a package's
+    validation result so they survive on the registry row instead of being
+    thrown away as soon as `package_snapshot`'s hash is taken (Phase 8,
+    2026-08-06). Without this, `controlled_rollout.collect_real_scorecard_metrics`
+    would have zero historical signal to build a real golden scorecard from
+    -- every publication's validation had already happened and passed, the
+    numbers just weren't kept anywhere.
+
+    `validation["reports"]` is `[claim_report, alignment_report, content_report?]`
+    (see M03ValidatorBridge.validate_package) -- content_report is only
+    present when the package had a real markdown/dna_subject/project to
+    validate against, so its absence here is a real "not scored" state, not
+    a bug.
+    """
+    reports = validation.get("reports") or []
+    claim_report = reports[0] if reports else {}
+    content_report = next((r for r in reports if isinstance(r, dict) and "overall_score" in r), None)
+    return {
+        # ClaimValidator kill-switches = UNSUPPORTED/CONFLICTED/EXPIRED
+        # critical claims -- a real proxy for "critical factual precision"
+        # per publication (Part 1.3's north-star quality gate), computed
+        # today, not retrofitted.
+        "claim_kill_switch_triggered": bool(claim_report.get("kill_switches")),
+        # brand_fit is the real weighted brand-adherence dimension inside
+        # content_validator's rubric (Part 5.6/5.7) -- an honest proxy for
+        # the plan's "brand_adherence" gate, not the same measurement
+        # instrument the plan originally imagined (human/reviewer scored),
+        # but it is a real number computed on every real draft today.
+        "content_brand_fit": content_report.get("dna_match_score") if content_report else None,
+        "content_overall_score": content_report.get("overall_score") if content_report else None,
+    }
+
+
 def _upload_image_to_drive(
     run_folder: Path, *, day: str, content_package_id: str, uploader: Any
 ) -> Optional[str]:
@@ -739,6 +773,10 @@ def run_daily_cycle(
                 creative_brief=brief,
                 claims=selected.get("claims", []),
                 scene_summary=selected.get("scene_summary", {}),
+                # Real M03 scores kept alongside the snapshot hash so Phase 8's
+                # scorecard can aggregate real historical signal instead of
+                # rebuilding validation after the fact -- see _scorecard_signals.
+                scorecard_signals=_scorecard_signals(package["validation"]),
             )
             publications.append(publication)
         except Exception as exc:  # noqa: BLE001 - one platform's provider/network failure (rate limit, timeout) must not abort the other platforms' drafts for this day

@@ -37,5 +37,11 @@ output/
 # IDE
 .vscode/
 .idea/
-.claude/
+# Ignore local Claude Code state (settings.local.json, session cache, etc.)
+# but keep .claude/skills/ and .claude/CLAUDE.md.proposed tracked -- plan
+# Part 8.1/RS-F1/RS-F4 requires skills + governance diffs live in the repo,
+# not just on Harry's machine (found untracked 2026-08-06, Phase 8 audit).
+.claude/*
+!.claude/skills
+!.claude/CLAUDE.md.proposed
 .obsidian/
