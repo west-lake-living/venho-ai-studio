@@ -29,8 +29,16 @@ def list_pending(
     data_root: Path = Path("data/projects"),
     registry: Optional[PublicationRegistry] = None,
 ) -> list[dict]:
+    """Rows the operator has an action to take on right now.
+
+    Includes both PENDING_APPROVAL (needs Duyệt/Từ chối/Sửa) and GATEWAY_ERROR
+    (approved already, dispatch failed -- needs Thử lại gửi/Sửa) so a stranded
+    row is never invisible on the dashboard. The `status` field on each item
+    tells the caller which state it's in.
+    """
     registry = registry or PublicationRegistry(project, data_root=data_root)
-    return [item for item in registry.load()["publications"] if item.get("status") == PENDING_STATUS]
+    actionable = {PENDING_STATUS, GATEWAY_ERROR_STATUS}
+    return [item for item in registry.load()["publications"] if item.get("status") in actionable]
 
 
 def _dispatch_claimed(

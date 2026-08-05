@@ -30,7 +30,7 @@ def _reserve_pending(registry: PublicationRegistry, *, platform: str = "facebook
     return reserved["publication_id"]
 
 
-def test_list_pending_only_returns_pending_approval_rows(tmp_path: Path) -> None:
+def test_list_pending_returns_pending_approval_rows_only(tmp_path: Path) -> None:
     registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
     pending_id = _reserve_pending(registry)
     other = registry.reserve(
@@ -41,6 +41,25 @@ def test_list_pending_only_returns_pending_approval_rows(tmp_path: Path) -> None
     pending = list_pending(project="venho_hotel", data_root=tmp_path, registry=registry)
 
     assert [item["publication_id"] for item in pending] == [pending_id]
+
+
+def test_list_pending_also_surfaces_gateway_error_rows_so_they_are_never_invisible(tmp_path: Path) -> None:
+    registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
+    pending_id = _reserve_pending(registry, platform="facebook")
+    stranded = registry.reserve(
+        {"publication_id": "pub-stranded", "content_package_id": "pkg-2", "idempotency_key": "idem-2", "platform": "instagram"}
+    )
+    registry.update(stranded["publication_id"], status="GATEWAY_ERROR", gateway_error="timeout")
+    other = registry.reserve(
+        {"publication_id": "pub-published", "content_package_id": "pkg-3", "idempotency_key": "idem-3", "platform": "threads"}
+    )
+    registry.update(other["publication_id"], status="PUBLISHED")
+
+    pending = list_pending(project="venho_hotel", data_root=tmp_path, registry=registry)
+
+    assert {item["publication_id"] for item in pending} == {pending_id, "pub-stranded"}
+    stranded_row = next(item for item in pending if item["publication_id"] == "pub-stranded")
+    assert stranded_row["status"] == "GATEWAY_ERROR"
 
 
 def test_approve_and_dispatch_calls_bridge_and_updates_status(tmp_path: Path) -> None:
