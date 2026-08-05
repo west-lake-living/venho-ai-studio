@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
 from shutil import copyfile
 
 import growth_orchestrator.application.weekly_cycle as weekly_cycle_module
 from growth_orchestrator.application.daily_cycle import DailyCycleResult
 from growth_orchestrator.application.weekly_cycle import WEEKLY_CADENCE_ORDER, run_weekly_cycle
+from shared.jobs.job_store import JobStore
 from shared.jobs.slot_store import SlotStore
 
 
@@ -87,3 +88,41 @@ def test_run_weekly_cycle_is_idempotent_per_iso_week(tmp_path: Path, monkeypatch
     third = run_weekly_cycle(data_root=data_root, start_date=next_monday)
     assert third.skipped_already_run is False
     assert call_count["n"] == 2 * len(WEEKLY_CADENCE_ORDER)
+
+
+def test_run_weekly_cycle_recovers_a_week_stuck_running_from_a_crashed_prior_attempt(
+    tmp_path: Path, monkeypatch
+) -> None:
+    """Regression test (Phase 5, stale-job recovery): before this fix, a
+    previous real run that crashed/was cancelled mid-flight (never reaching
+    job_store.complete()/fail()) left the week's job stuck RUNNING under an
+    expired lease forever -- every future trigger for that ISO week would
+    silently no-op (skipped_already_run=True) instead of ever retrying."""
+    data_root = _tmp_data_root(tmp_path)
+
+    def _fake_run_daily_cycle(day: str, **kwargs):
+        return DailyCycleResult(day=day, topic={"topic": "ok"}, publications=[{"platform": "facebook"}])
+
+    monkeypatch.setattr(weekly_cycle_module, "run_daily_cycle", _fake_run_daily_cycle)
+
+    monday = date(2026, 8, 10)
+    project = "venho_hotel"
+    iso_year, iso_week, _ = monday.isocalendar()
+    week_key = f"{project}-weekly-{iso_year}-W{iso_week:02d}"
+
+    growth_db = data_root / project / "growth" / "growth.db"
+    job_store = JobStore(db_path=growth_db)
+    job_store.enqueue(
+        job_id=week_key, idempotency_key=week_key, job_type="weekly_cycle",
+        version="1", scheduled_at=datetime.now().isoformat(), trace_id=week_key, payload={"project": project},
+    )
+    # Simulate a crashed prior attempt: claimed, never completed/failed, and
+    # its lease is already in the past.
+    job_store.claim(owner="stale-worker", lease_seconds=-100)
+    assert job_store.get(week_key)["status"] == "RUNNING"
+
+    result = run_weekly_cycle(data_root=data_root, start_date=monday)
+
+    assert result.skipped_already_run is False
+    assert len(result.days) == len(WEEKLY_CADENCE_ORDER)
+    assert job_store.get(week_key)["status"] == "SUCCEEDED"

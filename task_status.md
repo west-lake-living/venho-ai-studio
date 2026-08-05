@@ -1,6 +1,24 @@
 # VENHO AI STUDIO — Task Status
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-08-06 (Rà soát Phase 1-3 + hoàn thiện Phase 4/4.5 — xem mục dưới) · **Tests:** 709/709 pass (+7 test mới) · 0 API call trong test
+**Cập nhật:** 2026-08-06 (Phase 5 Durable Ops — xem mục dưới) · **Tests:** 714/714 pass (+4 test mới) · 0 API call trong test
+
+---
+
+### Growth Agent v3.1 — Phase 5 Durable Ops: stale-job recovery + budget cap thật (2026-08-06)
+
+**Status: DONE — commit local, chưa push (Harry: "sẽ commit và push khi nào hoàn thành tất cả")**
+
+Tiếp nối rà soát Phase 1-3/4/4.5 cùng phiên. Audit Phase 5 (Codex build 2026-08-03, "DONE" theo note cũ) bằng grep caller thật — cùng phát hiện như Phase 4.5: `BudgetLedger`/`BudgetPolicy`/`JobStore.recover_expired_leases`/`heartbeat` có code + unit test nhưng 0 caller thật, nghĩa là mọi real OpenAI call (gpt-5.5/gpt-image-2/GPT-4o vision) chạy không đo/không chặn budget, và 1 run bị crash giữa chừng có thể kẹt job `RUNNING` vĩnh viễn.
+
+- [x] **Stale-job recovery + heartbeat:** `run_weekly_cycle` gọi `recover_expired_leases()` trước `claim()`, lease tăng lên 3600s (từ 300s mặc định), `heartbeat()` gia hạn sau mỗi ngày trong tuần. Test mới xác nhận 1 job kẹt từ lần chạy crash trước tự phục hồi thay vì khoá `skipped_already_run=True` vĩnh viễn.
+- [x] **`BudgetGate` (mới) chặn cứng real OpenAI call:** wrap reserve/commit/release quanh 3 điểm gọi API thật trong `daily_cycle.py` (text gen, image gen, vision QC). Chạm cap → `RuntimeError` → platform đó rơi vào `errors`, không crash cả pipeline. Cap thật **500,000 VND/tháng** (Harry chốt qua AskUserQuestion, thay giá trị cũ 2 tỷ VND vô nghĩa) trong `budget_policy.yaml`. Chi phí ước tính/lệnh gọi trong `paid_call_costs.yaml` (mới) — 300/1200/400 VND cho text/ảnh/vision, ghi rõ là estimate thô chưa đối chiếu hoá đơn thật.
+- [x] Alert Telegram `budget_threshold_crossed` (event có sẵn, chưa ai gọi trước đây) bắn khi cán mốc 70/85/100%.
+- [x] **`Worker` class + `scheduler.py` đánh dấu superseded** (không xoá, không ép nối) — giả định worker 24/7 + cửa sổ dispatch cố định 09:00, không khớp kiến trúc GitHub Actions on-demand thật.
+- [ ] **Chủ động không làm** (cần hạ tầng/thời gian riêng): lateness alert (cần 1 vòng polling, kiến trúc push-based hiện tại không có chỗ tự nhiên gắn vào), backup tự động verify-restore (cùng gap DoD #24 cũ).
+- [x] Doc: Phần 12 Phase 5 viết lại + CHANGELOG "v3.1 (2026-08-06 revision, Phase 5)".
+- [x] Verify: `/usr/bin/python3 -m pytest -q` → 714/714 pass (710 + 4 test mới), 0 API call.
+
+Chi tiết đầy đủ: `task_memory.md` mục 14j.
 
 ---
 

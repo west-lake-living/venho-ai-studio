@@ -1,5 +1,10 @@
-version: 1
+version: 2
 currency: VND
-monthly_cap_minor: 2000000000
+# 500,000 VND/month -- Harry's call (2026-08-06) when BudgetLedger/
+# BudgetPolicy were wired into daily_cycle.py for real for the first time
+# (before this: real code + real tests, 0 real caller -- the old 2,000,000,000
+# cap could never actually bite). "minor" = plain VND, no sub-unit (VND has
+# none, unlike cents for USD).
+monthly_cap_minor: 500000
 alert_thresholds: [0.70, 0.85, 1.0]
 ledger_transitions: [RESERVE, COMMIT, RELEASE]

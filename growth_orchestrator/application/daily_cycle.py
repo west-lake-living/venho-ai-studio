@@ -14,6 +14,7 @@ from agent_studio.growth.reference_asset_resolver import ReferenceAssetResolver
 from agent_studio.growth.scenario_registry import ScenarioRegistry
 from content_studio.content_context import DEFAULT_CONFIG_ROOT, DEFAULT_DATA_ROOT, load_content_config
 from content_studio.prompt_bridge import slugify
+from growth_orchestrator.application.budget_gate import BudgetGate
 from growth_orchestrator.application.evergreen_pool import choose_evergreen
 from growth_orchestrator.application.run_content_pipeline import run_content_pipeline
 from growth_orchestrator.application.special_lane import select_special_lane_candidate
@@ -257,6 +258,7 @@ def _generate_topic_image(
     image_provider: Any,
     reference_resolver: ReferenceAssetResolver,
     image_validation_provider: str = "mock",
+    budget_gate: Optional[BudgetGate] = None,
 ) -> Optional[Path]:
     """Generate one real image for the day's topic, shared across platforms.
 
@@ -278,7 +280,16 @@ def _generate_topic_image(
     (no paid vision API call) to match this repo's 0-API-call test/cost
     discipline; pass "openai" (the real provider, see
     growth_orchestrator.cli) once Harry approves paid QC spend.
+
+    `budget_gate` (Phase 5, 2026-08-06) reserves against the real monthly
+    cap before each real image-generation and vision-QC call; a blocked
+    reservation raises RuntimeError, which the outer except below already
+    treats as a normal recoverable failure -- a budget-blocked day degrades
+    to "no image" exactly like a disabled provider does, never a crash.
+    Defaults to a fresh BudgetGate so existing callers that don't pass one
+    still get metered against the real ledger/policy files.
     """
+    budget_gate = budget_gate or BudgetGate(project=project, data_root=data_root)
     try:
         scenario_key = SCENARIO_BY_DNA_SUBJECT[topic["dna_subject"]]
         scenario = scenario_registry.resolve(scenario_key)
@@ -294,18 +305,47 @@ def _generate_topic_image(
             "quality": "medium",
         }
         for attempt in range(MAX_IMAGE_ATTEMPTS):
-            run_folder = generate_image_run(
-                prompt_contract,
-                content_package_id=f"daily-{day}-{slugify(topic['topic'])}",
-                provider=image_provider,
-                data_root=data_root,
-                reference_images=reference_images,
-            )
+            image_reservation_id = f"image-{day}-{slugify(topic['topic'])}-{uuid.uuid4().hex[:8]}"
+            image_reserved, image_evaluation = budget_gate.try_reserve("image_generation_minor", image_reservation_id)
+            _alert_on_budget_threshold(image_evaluation)
+            if not image_reserved:
+                raise RuntimeError(f"budget cap reached ({image_evaluation['ratio']:.0%}) -- image generation skipped")
+            try:
+                run_folder = generate_image_run(
+                    prompt_contract,
+                    content_package_id=f"daily-{day}-{slugify(topic['topic'])}",
+                    provider=image_provider,
+                    data_root=data_root,
+                    reference_images=reference_images,
+                )
+            except Exception:
+                budget_gate.release(image_reservation_id, "image_generation_minor")
+                raise
+            budget_gate.commit(image_reservation_id, "image_generation_minor")
+
             manifest = json.loads((run_folder / "manifest.json").read_text(encoding="utf-8"))
             artifact_name = manifest["artifacts"][0]["path"]
-            report = validate_image(
-                project, topic["dna_subject"], run_folder / artifact_name, provider=image_validation_provider
-            )
+
+            # Only the real "openai" provider spends real money -- "mock"
+            # (test/dev default) never reaches VisionClient, so metering it
+            # would just add ledger noise for a call that never happens.
+            vision_reservation_id = f"vision-{day}-{slugify(topic['topic'])}-{uuid.uuid4().hex[:8]}"
+            if image_validation_provider != "mock":
+                vision_reserved, vision_evaluation = budget_gate.try_reserve("vision_qc_minor", vision_reservation_id)
+                _alert_on_budget_threshold(vision_evaluation)
+                if not vision_reserved:
+                    raise RuntimeError(f"budget cap reached ({vision_evaluation['ratio']:.0%}) -- vision QC skipped")
+            try:
+                report = validate_image(
+                    project, topic["dna_subject"], run_folder / artifact_name, provider=image_validation_provider
+                )
+            except Exception:
+                if image_validation_provider != "mock":
+                    budget_gate.release(vision_reservation_id, "vision_qc_minor")
+                raise
+            if image_validation_provider != "mock":
+                budget_gate.commit(vision_reservation_id, "vision_qc_minor")
+
             (run_folder / "image_validation_report.json").write_text(
                 report.model_dump_json(indent=2), encoding="utf-8"
             )
@@ -319,6 +359,22 @@ def _generate_topic_image(
         # image file missing on disk. All three are expected, recoverable
         # conditions during rollout -- anything else should still raise.
         return None
+
+
+def _alert_on_budget_threshold(evaluation: dict[str, Any]) -> None:
+    """Fire the (previously-defined, never-called) `budget_threshold_crossed`
+    alert the first time -- and every time, no dedupe -- a reservation's
+    evaluation reports 70%/85%/100% crossed (BudgetPolicy.evaluate's
+    `alerts` list). Not deduped per month: acceptable at this cadence (a
+    handful of real paid calls/week), and erring toward "too many alerts"
+    is safer than silently going over budget unnoticed."""
+    alerts = evaluation.get("alerts") or []
+    if not alerts:
+        return
+    _send_alert_best_effort(
+        "budget_threshold_crossed",
+        f"VENHO Growth budget {'/'.join(alerts)}: {evaluation['ratio']:.0%} of {evaluation['monthly_cap_minor']:,} {evaluation['currency']} monthly cap.",
+    )
 
 
 def _send_alert_best_effort(event: str, message: str) -> None:
@@ -434,6 +490,35 @@ def _fill_slot_from_evergreen(
     return publication
 
 
+def _run_content_pipeline_budgeted(
+    brief: dict[str, Any],
+    *,
+    budget_gate: BudgetGate,
+    day: str,
+    platform: str,
+    content_bridge: Optional[M05ContentBridge],
+    validator_bridge: Optional[M03ValidatorBridge],
+) -> dict[str, Any]:
+    """Meter one real text-generation call (Phase 5, 2026-08-06) -- each
+    call to this is 1 real gpt-5.5 call via M05ContentBridge's default
+    generator_fn. A blocked reservation raises RuntimeError, caught by the
+    per-platform try/except in `run_daily_cycle`'s loop exactly like any
+    other real generation failure (recorded in `errors`, other platforms
+    unaffected)."""
+    reservation_id = f"text-{day}-{platform}-{uuid.uuid4().hex[:8]}"
+    reserved, evaluation = budget_gate.try_reserve("text_generation_minor", reservation_id)
+    _alert_on_budget_threshold(evaluation)
+    if not reserved:
+        raise RuntimeError(f"budget cap reached ({evaluation['ratio']:.0%}) -- text generation for {platform}/{day} skipped")
+    try:
+        package = run_content_pipeline(brief, content_bridge=content_bridge, validator_bridge=validator_bridge)
+    except Exception:
+        budget_gate.release(reservation_id, "text_generation_minor")
+        raise
+    budget_gate.commit(reservation_id, "text_generation_minor")
+    return package
+
+
 def run_daily_cycle(
     day: str,
     *,
@@ -452,6 +537,7 @@ def run_daily_cycle(
     drive_uploader: Optional[Any] = None,
     slot_store: Optional[SlotStore] = None,
     slot_date: Optional[str] = None,
+    budget_gate: Optional[BudgetGate] = None,
 ) -> DailyCycleResult:
     """Generate this cadence day's content drafts and queue them for approval.
 
@@ -515,6 +601,7 @@ def run_daily_cycle(
     config = load_content_config(project, config_root=config_root)
     topic = _pick_topic(config, day, project, data_root)
     registry = registry or PublicationRegistry(project, data_root=data_root)
+    budget_gate = budget_gate or BudgetGate(project=project, data_root=data_root, config_root=config_root)
 
     slot_id: Optional[str] = None
     if slot_store is not None and slot_date is not None:
@@ -540,6 +627,7 @@ def run_daily_cycle(
             topic, day, project, data_root, scenario_registry,
             image_provider=image_provider, reference_resolver=reference_resolver,
             image_validation_provider=image_validation_provider,
+            budget_gate=budget_gate,
         )
         if run_folder:
             image_run_path = str(run_folder)
@@ -559,11 +647,17 @@ def run_daily_cycle(
     for platform in platforms or DEFAULT_PLATFORMS:
         try:
             brief = _build_creative_brief(topic, platform, day, project, scenario_registry)
-            package = run_content_pipeline(brief, content_bridge=content_bridge, validator_bridge=validator_bridge)
+            package = _run_content_pipeline_budgeted(
+                brief, budget_gate=budget_gate, day=day, platform=platform,
+                content_bridge=content_bridge, validator_bridge=validator_bridge,
+            )
             for _attempt in range(MAX_TEXT_ATTEMPTS - 1):
                 if package["state"] == "READY_FOR_REVIEW":
                     break
-                package = run_content_pipeline(brief, content_bridge=content_bridge, validator_bridge=validator_bridge)
+                package = _run_content_pipeline_budgeted(
+                    brief, budget_gate=budget_gate, day=day, platform=platform,
+                    content_bridge=content_bridge, validator_bridge=validator_bridge,
+                )
             packages.append(package)
             if package["state"] != "READY_FOR_REVIEW":
                 continue

@@ -970,6 +970,44 @@ Hỏi Harry 1 quyết định trước khi code (AskUserQuestion): khi evergreen
 
 **Verify:** `/usr/bin/python3 -m pytest -q` → 709/709 pass (702 + 7 test mới: evergreen fallback wiring, DRAFT_ASSIGNED guard, check_runway ×2, preflight blocks dispatch ×2). 0 API call. Chưa chạm `venho-os` (không cần đổi UI cho lượt này). Commit local, **chưa push** (Harry tự quyết định khi nào đẩy lên, vì thay đổi chạm publish path thật).
 
+## 14j. Phase 5 Durable Ops — audit + nối thật (2026-08-06)
+
+Harry: "Tiếp tục làm Phase 5. Sẽ commit và push khi nào hoàn thành tất cả." (tiếp nối 14i, cùng phiên).
+
+**Audit trước khi code — cùng phương pháp 14i (grep caller thật ngoài test, không tin note cũ):** Phase 5 được Codex build 2026-08-03, `task_status.md` ghi "DONE" với 498/498 test pass. Grep thật phát hiện `BudgetLedger`/`BudgetPolicy` (`shared/budget/ledger.py`) và `JobStore.recover_expired_leases()`/`heartbeat()` **0 caller thật** ngoài chính chúng và test riêng — cùng loại lỗ hổng đã tìm thấy ở Phase 4.5 (evergreen_pool/preflight/runway) lần trước. Hệ quả thật: mọi real OpenAI call (gpt-5.5/gpt-image-2/GPT-4o vision) trong `daily_cycle.py` chạy hoàn toàn không đo/không chặn budget — `budget_policy.yaml` có cap 2,000,000,000 VND/tháng (không ai từng chỉnh, cao tới mức vô nghĩa). Và: `weekly_cycle`'s job claim dùng `lease_seconds` mặc định 300s (5 phút) trong khi 1 run thật (4 ngày × N platform × real LLM/image/vision call) có thể mất lâu hơn nhiều — nếu 1 run bị crash/cancel giữa chừng (GitHub Actions timeout) thì job kẹt `RUNNING` vĩnh viễn vì không có gì gọi `recover_expired_leases()`, khoá cứng idempotency guard của tuần đó mãi mãi.
+
+Hỏi Harry 1 quyết định thật cần trước khi code (AskUserQuestion, vì đụng tiền thật): mức trần chi tiêu AI/tháng bao nhiêu? **Harry chọn 500,000 VND/tháng.**
+
+**Việc đã làm (tất cả có test mới, 714/714 pass tổng, +4 test):**
+
+1. **Stale-job recovery + heartbeat nối thật vào `run_weekly_cycle`:**
+   - `job_store.recover_expired_leases()` gọi trước `claim()` — job kẹt RUNNING từ lần chạy crash trước được giải phóng về READY trước khi thử claim tuần này.
+   - `claim(..., lease_seconds=3600)` thay mặc định 300s (run thật có thể lâu hơn nhiều).
+   - `job_store.heartbeat(week_key, owner="weekly-cycle", lease_seconds=3600)` gọi sau mỗi ngày trong loop 4 ngày — gia hạn lease liên tục để 1 run đang thật sự tiến triển không bị 1 trigger đồng thời tưởng nhầm là chết.
+   - Test mới: `test_run_weekly_cycle_recovers_a_week_stuck_running_from_a_crashed_prior_attempt` — giả lập job bị claim rồi bỏ dở (không complete/fail), lease đã hết hạn, xác nhận lần chạy tiếp theo tự phục hồi và chạy bình thường thay vì `skipped_already_run=True` mãi mãi.
+   - Retry matrix (`requeue_retryable_failures()`) đã nối sẵn từ trước — không cần sửa.
+
+2. **`BudgetGate` (mới, `growth_orchestrator/application/budget_gate.py`) — chặn cứng real OpenAI call khi chạm cap:**
+   - Bọc reserve→commit (thành công)/release (lỗi) quanh đúng 3 điểm gọi API thật trong `daily_cycle.py`:
+     - `_run_content_pipeline_budgeted()` (mới) quanh mỗi lần `run_content_pipeline()` trong retry loop text (tối đa `MAX_TEXT_ATTEMPTS`).
+     - `_generate_topic_image()` — quanh mỗi `generate_image_run()` VÀ mỗi `validate_image()` (chỉ khi `image_validation_provider != "mock"`, vì mock không tốn tiền thật) trong retry loop ảnh (tối đa `MAX_IMAGE_ATTEMPTS`).
+   - Reservation bị chặn → `RuntimeError` → rơi vào except handler có sẵn của từng platform/ngày (không crash cả pipeline, xử lý y hệt 1 lỗi generation thật khác).
+   - `config/projects/venho_hotel/growth/budget_policy.yaml`: `monthly_cap_minor: 500000` (Harry chốt), version bump 1→2, comment giải thích tại sao đổi từ 2 tỷ.
+   - `config/projects/venho_hotel/growth/paid_call_costs.yaml` (mới, file thứ 11 trong `growth/`) — ước tính thô 300/1200/400 VND cho text/ảnh/vision, ghi rõ là estimate chưa đối chiếu hoá đơn thật, không phải per-call accounting chính xác. `tests/test_growth_phase1_policy_registry.py`'s file-registry test cập nhật theo (set required files +1).
+   - `_alert_on_budget_threshold()` (mới) — bắn `budget_threshold_crossed` Telegram alert (event đã định nghĩa sẵn trong `alert_policy.yaml` từ trước, chưa ai gọi) mỗi khi 1 reservation cán mốc 70/85/100%, không dedupe (chấp nhận trade-off ở tần suất hiện tại — vài chục call thật/tuần).
+   - Test mới (`tests/test_growth_budget_gate.py`, 4 test): block khi chạm cap, release giải phóng cho lần thử lại, commit giữ nguyên đã tính vào spend, và 1 test end-to-end qua `run_daily_cycle` xác nhận cap=0 khiến mọi platform rơi vào `errors` với message "budget cap reached" thay vì crash.
+   - **Chưa có UI/CLI riêng cho override vượt cap** — dùng thẳng `BudgetLedger.record_override(reservation_id, amount, reason=..., approved_by=...)` nếu Harry cần vượt cap có ghi nhận lý do.
+
+3. **`Worker` class + `shared/jobs/scheduler.py` — đánh dấu superseded, không ép nối:** cả hai giả định kiến trúc worker 24/7 + cửa sổ dispatch cố định 09:00 (`next_dispatch_at`) — đúng thiết kế Mac Mini đã bị thay bởi GitHub Actions on-demand (Phần 10, 2026-08-05). `weekly_cycle`/`approve_and_dispatch` đã dùng thẳng `JobStore`/`PublicationRegistry`, không qua `Worker`, nên nối `Worker` vào giờ sẽ không khớp với cách hệ thống thật đang chạy. Giữ code (đã có test riêng từ 2026-08-03), không xoá, không ép nối — chỉ đánh dấu trong doc.
+
+4. **Chủ động không làm (cần thời gian/hạ tầng thật, không phải quên):**
+   - Lateness alert (`scheduler.lateness_alert()`) — cần 1 vòng polling "giờ này lẽ ra chạy xong chưa", kiến trúc push-based hiện tại (cron kích hoạt, không có gì đứng canh) không có chỗ tự nhiên để gắn mà không thêm hẳn 1 tiến trình giám sát riêng.
+   - Backup tự động verify được — cùng gap với DoD #24 (Phần 10/18, 2026-08-05), chưa đụng.
+
+5. **Doc:** Phần 12 Phase 5 viết lại đầy đủ (rewrite section + audit note), thêm dòng CHANGELOG "v3.1 (2026-08-06 revision, Phase 5)".
+
+**Verify:** `/usr/bin/python3 -m pytest -q` → 714/714 pass (710 + 4 test mới). 0 API call. Chưa push — Harry: "sẽ commit và push khi nào hoàn thành tất cả" (đang giữa Phase 5, chưa xong toàn bộ roadmap).
+
 ## 14. Task Closing Protocol
 
 Khi người dùng nói **"kết thúc task"**, Codex phải tự động:

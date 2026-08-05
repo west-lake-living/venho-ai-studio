@@ -121,6 +121,15 @@ def run_weekly_cycle(
     today = start_date or date.today()
     iso_year, iso_week, _ = today.isocalendar()
     week_key = f"{project}-weekly-{iso_year}-W{iso_week:02d}"
+    # Stale-job recovery (Phase 5, plan §14 "worker heartbeat / stale-job
+    # recovery"): if a previous real run of this exact week's job crashed or
+    # was cancelled mid-flight (GitHub Actions timeout/manual cancel) without
+    # ever reaching job_store.complete()/fail(), it's stuck RUNNING under an
+    # expired lease forever -- nothing else in this codebase calls
+    # recover_expired_leases(), so without this the week's idempotency guard
+    # would permanently block every future weekly-cycle trigger. Must run
+    # before claim() below.
+    job_store.recover_expired_leases()
     job_store.requeue_retryable_failures()
     job_store.enqueue(
         # scheduled_at must be "now" (not the business slot_date) -- JobStore
@@ -130,7 +139,12 @@ def run_weekly_cycle(
         job_id=week_key, idempotency_key=week_key, job_type="weekly_cycle",
         version="1", scheduled_at=datetime.now().isoformat(), trace_id=week_key, payload={"project": project},
     )
-    claimed = job_store.claim(owner="weekly-cycle")
+    # lease_seconds default (300s) assumes a fast worker poll loop -- a real
+    # weekly run does up to 4 days x N platforms of real LLM/image/vision
+    # calls and can genuinely take longer. Claimed generously (1h) and
+    # extended per-day below via heartbeat() so a run that's still making
+    # real progress is never mistaken for dead by a concurrent trigger.
+    claimed = job_store.claim(owner="weekly-cycle", lease_seconds=3600)
     if claimed is None or claimed["id"] != week_key:
         # Either nothing was READY (this week already SUCCEEDED, or is
         # currently RUNNING under another lease) or a *different* job won
@@ -186,6 +200,14 @@ def run_weekly_cycle(
                         errors=[{"platform": "*", "error": f"{type(exc).__name__}: {exc}"}],
                     )
                 )
+            try:
+                # Extend the lease after every real day's work so a run
+                # that's genuinely still progressing is never recovered out
+                # from under itself by a concurrent trigger's
+                # recover_expired_leases() call.
+                job_store.heartbeat(week_key, owner="weekly-cycle", lease_seconds=3600)
+            except Exception:  # noqa: BLE001 - heartbeat bookkeeping must never block the real content run
+                pass
     except Exception as exc:  # noqa: BLE001 - truly unexpected failure outside the per-day guard above -- mark the week retryable rather than leaving it stuck RUNNING forever
         job_store.fail(week_key, f"{type(exc).__name__}: {exc}")
         raise

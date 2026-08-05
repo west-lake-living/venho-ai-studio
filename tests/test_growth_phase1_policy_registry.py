@@ -26,6 +26,7 @@ def test_growth_policy_registry_has_required_files_and_thresholds() -> None:
         "queue_policy.yaml",
         "feature_flags.yaml",
         "reference_assets.yaml",
+        "paid_call_costs.yaml",  # added 2026-08-06 when BudgetGate wired real paid-call metering into daily_cycle.py
     }
     assert {path.name for path in growth.glob("*.yaml")} == required
 
