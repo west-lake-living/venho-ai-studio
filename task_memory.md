@@ -1,6 +1,6 @@
 # VENHO AI STUDIO — Task Memory
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-08-04 (Growth Agent v3.1 — nút Sửa làm đúng plan + upload ảnh lên Google Drive, xem mục 14f) · **Đọc bởi:** AI Engine, Claude Code sessions
+**Cập nhật:** 2026-08-05 (Growth Agent v3.1 — 6 hạng mục còn lại từ audit trước: Retry UI, SQLite/PublishingSlot, HMAC callback quyết định, claim/alignment re-check, Trend Radar thật, Research OS 9 domain, xem mục 14g) · **Đọc bởi:** AI Engine, Claude Code sessions
 
 ---
 
@@ -858,6 +858,46 @@ Harry, sau khi xem báo cáo audit mục 14e, chốt luôn 2 gap còn treo: "Nú
 **Verify:** 677/677 pytest pass (10 test mới: `test_growth_approve_and_dispatch.py` +6 cho edit, `test_growth_google_drive_uploader.py` mới +3, `test_growth_daily_cycle.py` +1, `test_growth_v3_1_real_providers.py` +1 mới/1 sửa). `tsc --noEmit`/`eslint` sạch, 127/127 vitest pass (venho-os).
 
 **Việc liên quan `venho-os`:** route mới `POST /api/v1/studio/growth/[id]/edit`, UI textarea inline "Sửa" trong `GrowthApprovalQueue` — xem `venho-os/task_memory.md`/`CHANGELOG.md` mục 2026-08-04.
+
+## 14g. Growth Agent v3.1 — 6 hạng mục còn lại từ audit 14e (2026-08-05)
+
+Harry: "Làm tất cả" 6 gap còn treo sau câu hỏi "growth plan v3.1 đã hoàn thành 100% chưa?". Mỗi mục lớn đều dừng lại hỏi Harry trước khi code khi phát hiện xung đột kiến trúc thật (không đoán mò).
+
+**1. Retry UI cho GATEWAY_ERROR** — `list_pending()` giờ trả cả `PENDING_APPROVAL` lẫn `GATEWAY_ERROR` (trước chỉ pending, nên bài kẹt dispatch lỗi vô hình trên dashboard). `venho-os`: badge đỏ "Lỗi gửi" + nút "Thử lại gửi" (per-item + gộp nhóm) trong `GrowthApprovalQueue`, gọi route `/retry-dispatch` đã có sẵn từ 14f nhưng chưa có UI.
+
+**2. SQLite JobStore + PublishingSlot — nối vào `weekly_cycle` thật (không phải plan gốc):**
+- Phát hiện xung đột: plan v3.1 Phần 10 thiết kế cho **Mac Mini M4 24/7 + launchd worker daemon + deadman switch** — hạ tầng hoàn toàn khác GitHub Actions ephemeral cron đang chạy thật (Harry chọn GitHub Actions có chủ ý, "không cần Mac bật"). Hỏi Harry → **giữ GitHub Actions, thiết kế lại cho ephemeral** (không xây `worker.py`/`scheduler.py`/`launchd` — sẽ là code chết).
+- `shared/jobs/slot_store.py` mới — SQLite persist `PublishingSlot`, `ensure_slots()` idempotent, `transition()` optimistic.
+- `weekly_cycle.py`: ensure 4 slot/tuần trước khi chạy; **JobStore idempotency guard theo ISO week** (`job_id=f"{project}-weekly-{year}-W{week}"`) — chạy lại workflow thủ công trong cùng tuần sẽ SKIP (không sinh trùng batch, không tốn budget lần 2) thay vì âm thầm generate lại.
+- `daily_cycle.py`: slot OPEN→DRAFT_ASSIGNED→PENDING_APPROVAL/MISSED theo kết quả platform loop; publications giờ có `slot_id`.
+- `approve_and_dispatch.py`: dispatch thành công → slot PENDING_APPROVAL→FILLED→DISPATCHED (best-effort, không bao giờ chặn dispatch thật).
+- `publishing_slot.py`: thêm transition `DRAFT_ASSIGNED→MISSED` (đường thật khi mọi platform fail, evergreen_pool.py chưa nối nên chưa có fallback evergreen).
+- CLI `venho-growth slots`. `venho-os`: panel "Slot tuần này" read-only trong Publishing section (`/api/v1/studio/growth/slots`).
+
+**3. HMAC callback receiver — quyết định KHÔNG xây (giữ reconcile thủ công):**
+- Phát hiện: `venho-os` chưa deploy công khai (`localhost:3000` cục bộ) — Make.com (cloud) không gọi được vào endpoint local. Xây callback receiver trong `venho-os` sẽ là code chết y hệt lỗi Research Vault panel trước đó.
+- Hỏi Harry → giữ nguyên `venho-growth reconcile` thủ công. Không code gì thêm, chỉ ghi nhận quyết định để không bị hiểu nhầm là "chưa làm".
+
+**4. Sửa chấm lại claim/alignment (không chỉ content quality):**
+- `daily_cycle.py` giờ lưu thêm `creative_brief`/`claims`/`scene_summary` vào registry row lúc tạo (trước chỉ có `dna_subject`).
+- `edit_publication()`: re-run `ClaimValidator`/`validate_alignment` thật với `claims`/`scene_summary`/`creative_brief` đã lưu (không phải regenerate CreativeBrief) — kill-switch (claim không có fact_key hợp lệ, scene thiếu/có entity cấm) vẫn chặn quay lại `PENDING_APPROVAL` dù content-quality rubric pass. Field `edit_validation.claim_alignment_skipped=true` cho row cũ (trước 2026-08-05) không có brief lưu lại.
+- **Giới hạn còn ghi rõ:** `claims`/`scene_summary` là metadata GỐC từ lúc generate, không re-derive từ bản text Harry sửa tay — không bắt được claim bịa MỚI Harry tự gõ thêm, chỉ bắt được claim gốc mất fact support.
+
+**5. Trend Radar thật (Tavily + Claude) nối vào chọn Thứ 7:**
+- Phát hiện gap thật: `scan_trends.py` cần input đã phân loại sẵn (`geographic`/`thematic`/`actionability`/`brand_safety_category`/`intersections`) nhưng comment "downstream, not here" — downstream cũng chưa ai viết. `collect_tavily_search()` chỉ trả raw title/snippet.
+- Hỏi Harry → xây bộ phân loại thật bằng AI. `research_engine/trend_radar/classifiers/claude_classifier.py` mới — 1 lệnh Claude batch-classify raw Tavily results, fail-closed (item Claude không phân loại được thì bị loại, không default).
+- `fetch_saturday_candidates.py` — Tavily collect (dedupe theo id) → Claude classify → `scan_trends` score/gate, tất cả injectable cho test.
+- `trend_candidate_store.py` — JSON store, enforce `brand_safety.yaml`'s `human_approval: mandatory` bằng CODE (không chỉ docs): `merge_new()` không bao giờ ghi đè `verified_by_human` đã approve; chỉ candidate đã `approve()` + chưa `mark_used()` mới vào pool Saturday.
+- `daily_cycle._pick_topic`: candidate Trend Radar đã duyệt tham gia cùng rotation pool với `content_pillars.yaml`'s special_topics hand-curated; pick xong tự `mark_used()` để không lặp lại mãi.
+- CLI: `venho-growth trend-scan` / `trend-list` / `trend-approve`.
+- **Chưa nối vào GitHub Actions cron** — cần thêm `ANTHROPIC_API_KEY`/`TAVILY_API_KEY` làm GitHub secret (hiện chỉ có local `.env.local`), là quyết định của Harry chưa hỏi. Chưa có UI duyệt trend candidate trên `venho-os` (CLI-only).
+
+**6. Research OS 9 domain — khung, không bịa nội dung (theo đúng quyết định của Harry):**
+- Phát hiện gap thật: `domains.yaml` chỉ có 8 domain, thiếu `weather_signal` (plan v3.1 gọi là domain mới) — và `ResearchNote`'s `ResearchDomain` Literal hardcode độc lập cùng 8 domain đó, 2 nguồn sự thật đã lệch nhau. Đã sửa cả 2 + thêm test regression khoá đồng bộ.
+- `collect_source_note`/`collect_structured_note` (`research_engine/application/collect_sources.py`) vốn đã domain-agnostic nhưng KHÔNG có CLI nào gọi tới — không có cách ingest note vào vault ngoài `load-seed-facts`/`notebook-inbox`. Thêm `venho-research collect-source` (R0) + `collect-note` (R1), validate `--domain` theo `domains.yaml`, từ chối domain không đăng ký.
+- **Không tự bịa nội dung domain nào** — vẫn chỉ ~2/9 domain (guest_voice, competitor) có note thật trong vault, đúng quyết định Harry chọn ("Anh cung cấp dần từng domain").
+
+**Verify tổng:** 706/706 pytest pass (33 test mới cả 6 mục), tsc/eslint sạch, 127/127 vitest (venho-os). Commit riêng từng mục, đã push cả 2 repo.
 
 ## 14. Task Closing Protocol
 
