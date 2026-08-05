@@ -1489,21 +1489,23 @@ M04 `approval_snapshot.py` + revocation · M07 `callback_receiver.py`, `reconcil
 
 **Exit:** duplicate = 0 trong chaos tests · edit sau approval chặn dispatch · Make acceptance không hiển thị published · mỗi publication có post ID hoặc reconciliation proof.
 
-## Phase 4.5 — Nhịp 4 bài/tuần + Deadman (tuần 13–15)
+## Phase 4.5 — Nhịp 4 bài/tuần + an toàn hàng đợi (tuần 13–15)
+
+**★ viết lại 2026-08-06 — PB-006/PB-007 gốc (launchd 09:00 + deadman switch cloud) giả định Mac Mini 24/7, đã bị thay bởi kiến trúc GitHub Actions on-demand ở Phần 10 (2026-08-05). Không có cửa sổ dispatch cố định để launchd canh giờ, và không có tiến trình 24/7 nào để deadman switch giám sát — cả hai mục tiêu gốc (idempotent dispatch, không publish khi hạ tầng chết) đã đạt bằng cơ chế khác, xem cột "Nội dung" bên dưới.**
 
 | Task | Nội dung |
 |---|---|
 | PB-001 | `PublishingSlot` domain + `manage_slots.py` (tạo trước 14 ngày) |
 | PB-002 | Queue UI + batch approval + 3 hành động |
 | PB-003 | Runway policy theo slot + Telegram alert |
-| PB-004 | Evergreen Pool (8–10 bài duyệt trước) |
-| PB-005 | Pre-flight check 08:45 |
-| PB-006 | launchd dispatch 09:00 idempotent |
-| PB-007 | **Deadman switch cloud + fallback dispatch** ★ |
+| PB-004 | Evergreen Pool (8–10 bài duyệt trước) — fallback vẫn qua PENDING_APPROVAL, không auto-dispatch (Harry chốt 2026-08-06, giữ đúng bất biến DoD #23) |
+| PB-005 | Pre-flight = revalidate claim/alignment thật ngay trước dispatch (`_dispatch_claimed`), không phải một job giờ cố định 08:45 vì không còn cửa sổ 09:00 |
+| PB-006 | ~~launchd dispatch 09:00~~ → **superseded**: idempotency đạt qua `registry.claim()` atomic test-and-set (đã có từ Phase 4), dispatch xảy ra on-demand khi Harry bấm Duyệt trên `venho-os`, không cần lịch cố định |
+| PB-007 | ~~Deadman switch cloud + fallback dispatch~~ → **superseded**: không có tiến trình 24/7 để giám sát; "không publish khi hạ tầng chết" đạt tự nhiên vì publish chỉ xảy ra trong chính request Harry bấm Duyệt (không có background dispatcher có thể "chết") |
 | PB-008 | Special lane T3→T7 (4 loại, loại 4 fallback) |
 | PB-009 | Blog SEO thứ 3 (kích hoạt M05 blog builder) |
 
-**Exit:** 4 tuần liên tục đủ 16 slot, 0 duplicate, 0 slot `MISSED` · pre-flight bắt được fact hết hạn · deadman switch báo đúng khi tắt Mac Mini thử nghiệm · cloud fallback publish được bài đã ký, **không** tạo được approval mới.
+**Exit:** 4 tuần liên tục đủ 16 slot, 0 duplicate, 0 slot `MISSED` không rõ nguyên nhân · revalidate claim/alignment bắt được fact hết hạn ngay trước dispatch · `registry.claim()` đảm bảo dispatch idempotent kể cả khi 2 request chạy đồng thời · evergreen fallback không bao giờ tự đăng bài chưa qua duyệt.
 
 ## Phase 5 — Durable ops (tuần 16–17)
 
@@ -1785,3 +1787,4 @@ Cho tới khi đủ 27 điều kiện, hệ thống phải được mô tả the
 | v3.0 | Hợp nhất một file; 17 quyết định; 26 DoD |
 | **v3.1** | **★ Nhịp cố định 4 bài/tuần (T2/T4/T6 + T7 đặc biệt) — gỡ bỏ ramp A/B/C · ★ Phần 10 Kiến trúc triển khai vật lý (Mac Mini M4 24/7 + launchd + deadman switch + cloud fallback + backup + Tailscale) · ★ Tavily/Exa làm collector chính · ★ domain `weather_signal` + contract weather · ★ Telegram alerts · ★ Zalo OA flag off · ★ `PublishingSlot` aggregate + state machine · ★ Lane đặc biệt mở rộng 4 loại với loại 4 fallback · ★ M03 bắt buộc trước dashboard (invariant 15) · ★ Sửa nhanh phải chạy lại M03 · ★ Làm rõ ranh giới sở hữu vault vs knowledge_studio · 6 decision hạ tầng IN-D1→D6 · 27 DoD** |
 | **v3.1 (2026-08-05 revision)** | **★ Viết lại Phần 10 + DoD 21–24: xoá thiết kế Mac Mini 24/7/launchd/deadman switch/cloud fallback HMAC/Tailscale chưa từng triển khai, thay bằng kiến trúc thật đang chạy — GitHub Actions cron (`growth-daily-cycle.yml` T2, `growth-trend-scan.yml` T6) + git-sync 2 chiều qua GitHub Contents API (local luôn thắng khi merge) + duyệt/dispatch on-demand local trên `venho-os`, không có cửa sổ đăng cố định 09:00 · Trend Radar classifier đổi Claude → Gemini Flash (chi phí) · DoD 24 (backup artifacts + verify-restore) và truy cập mobile (§10.5) ghi nhận rõ là CHƯA làm, không tự nhận đã xong** |
+| **v3.1 (2026-08-06 revision)** | **★ Rà soát Phase 1–3 xác nhận xong (702/702 test, code thật). Phase 4.5 PB-006/PB-007 viết lại — superseded bởi kiến trúc GitHub Actions on-demand, không phải "chưa làm" · PB-005 nối claim/alignment revalidation thật vào `_dispatch_claimed` (bắt fact hết hạn giữa lúc sinh nội dung và lúc Harry bấm Duyệt — trước đó chỉ `edit_publication` mới revalidate) · PB-004 Evergreen Pool nối thật (`shared/storage/evergreen_pool_store.py` + CLI `evergreen-add`/`evergreen-list`), fallback khi 1 slot mất trắng nội dung vẫn phải qua PENDING_APPROVAL — không tự động DISPATCHED (Harry chốt, giữ bất biến DoD #23) · PB-003 `runway_status()` nối vào `weekly_cycle` + Telegram alert khi critical/empty, CLI `check-runway`** |

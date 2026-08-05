@@ -14,6 +14,7 @@ from agent_studio.growth.reference_asset_resolver import ReferenceAssetResolver
 from agent_studio.growth.scenario_registry import ScenarioRegistry
 from content_studio.content_context import DEFAULT_CONFIG_ROOT, DEFAULT_DATA_ROOT, load_content_config
 from content_studio.prompt_bridge import slugify
+from growth_orchestrator.application.evergreen_pool import choose_evergreen
 from growth_orchestrator.application.run_content_pipeline import run_content_pipeline
 from growth_orchestrator.application.special_lane import select_special_lane_candidate
 from growth_orchestrator.bridges.m03_validator_bridge import M03ValidatorBridge
@@ -24,6 +25,7 @@ from prompt_studio.builders.image_prompt_builder import build_image_prompt
 from prompt_studio.knowledge_reader import read_dna
 from growth_orchestrator.domain.publishing_slot import PublishingSlot
 from publishing_gateway.publication_registry import PublicationRegistry
+from shared.storage.evergreen_pool_store import EvergreenPoolStore
 from shared.storage.google_drive import google_drive_uploader_from_env
 from shared.jobs.slot_store import SlotStore
 from validator_studio.image_validator import validate_image
@@ -319,6 +321,24 @@ def _generate_topic_image(
         return None
 
 
+def _send_alert_best_effort(event: str, message: str) -> None:
+    """Fire a real Telegram alert if TELEGRAM_BOT_TOKEN/TELEGRAM_CHAT_ID are
+    set, else silently no-op (MockTelegramNotifier / missing chat_id) --
+    never raises. Mirrors `manage_queue.check_runway`'s alert convention;
+    used here for the `evergreen_used`/`slot_missed` events already defined
+    in `shared/notify/alert_policy.yaml` but previously never fired by any
+    real caller."""
+    from shared.notify.telegram import send_alert, telegram_notifier_or_mock_from_env
+
+    chat_id = os.environ.get("TELEGRAM_CHAT_ID")
+    if not chat_id:
+        return
+    try:
+        send_alert(event, message, notifier=telegram_notifier_or_mock_from_env(os.environ), chat_id=chat_id)
+    except Exception:  # noqa: BLE001 - an alert failure must never block real slot bookkeeping
+        pass
+
+
 def _slot_id_for(day: str, slot_date: str) -> str:
     # Matches growth_orchestrator.application.manage_slots.generate_slots'
     # deterministic slot_id scheme so a slot ensured by the weekly batch and
@@ -343,6 +363,75 @@ def _ensure_slot_best_effort(slot_store: SlotStore, *, day: str, slot_date: str)
         return slot_id
     except Exception:  # noqa: BLE001 - slot bookkeeping must never block real content generation
         return None
+
+
+def _fill_slot_from_evergreen(
+    *,
+    project: str,
+    data_root: Path,
+    config_root: Path,
+    registry: PublicationRegistry,
+    slot_store: SlotStore,
+    slot_id: str,
+    day: str,
+) -> Optional[dict[str, Any]]:
+    """Evergreen Pool fallback (plan v3.1 §9.3, PB-004) -- tried once every
+    platform's real generation attempt has failed for this slot, before the
+    slot is allowed to go MISSED.
+
+    Reuses a pre-approved past publication (added by Harry via CLI
+    `evergreen-add`, never invented here) as this slot's draft. It still
+    lands on PENDING_APPROVAL like any fresh draft -- Harry decided
+    2026-08-06 that reused content gets exactly the same one-click Duyệt
+    gate as new content, no auto-dispatch, so this can never itself publish
+    anything (DoD #23 invariant holds regardless of pool contents).
+
+    Returns the new publication row, or None if the pool has nothing
+    eligible (empty, or every item still inside its reuse cooldown) -- the
+    caller treats None as "evergreen pool exhausted" and proceeds to MISSED.
+    """
+    import yaml  # local import matches the existing pattern in cli.py's trend-scan command
+
+    policy_path = config_root / project / "growth" / "queue_policy.yaml"
+    cooldown_days = 90
+    if policy_path.exists():
+        policy = yaml.safe_load(policy_path.read_text(encoding="utf-8")) or {}
+        cooldown_days = policy.get("evergreen_reuse_cooldown_days", cooldown_days)
+
+    pool = EvergreenPoolStore(project, data_root=data_root)
+    item = choose_evergreen(pool.list_items(), cooldown_days=cooldown_days)
+    if item is None:
+        return None
+
+    content = item.get("content") or {}
+    publication_id = f"pub-{day}-evergreen-{uuid.uuid4().hex[:8]}"
+    content_package_id = f"evergreen-{item['id']}-{day}"
+    idempotency_key = hashlib.sha256(f"{project}|{item['platform']}|{content_package_id}".encode("utf-8")).hexdigest()
+    reserved = registry.reserve(
+        {
+            "publication_id": publication_id,
+            "content_package_id": content_package_id,
+            "idempotency_key": idempotency_key,
+            "platform": item["platform"],
+        }
+    )
+    publication = registry.update(
+        reserved["publication_id"],
+        status="PENDING_APPROVAL",
+        content=content,
+        day=day,
+        dna_subject=item.get("dna_subject"),
+        slot_id=slot_id,
+        filled_from="evergreen",
+        evergreen_source_publication_id=item.get("source_publication_id"),
+        # No creative_brief/claims on a reused post -- _preflight_claim_alignment
+        # and edit_publication both already treat this as claim_alignment_skipped
+        # rather than silently passing, same as any pre-2026-08-05 manual row.
+    )
+    slot_store.transition(slot_id, "EVERGREEN_FALLBACK", filled_from="evergreen", content_package_id=content_package_id)
+    slot_store.transition(slot_id, "PENDING_APPROVAL")
+    pool.mark_used(item["id"])
+    return publication
 
 
 def run_daily_cycle(
@@ -544,11 +633,30 @@ def run_daily_cycle(
                 # so this just records the first as a traceability pointer.
                 slot_store.transition(slot_id, "PENDING_APPROVAL", content_package_id=publications[0]["content_package_id"])
             else:
-                # Evergreen pool fallback (plan v3.1 §9.3) isn't wired yet --
-                # a day with zero surviving platforms goes straight to MISSED
-                # rather than through EVERGREEN_FALLBACK. Flagged as a known
-                # gap, not silently skipped.
-                slot_store.transition(slot_id, "MISSED")
+                # Every platform's real generation attempt failed -- try the
+                # Evergreen Pool (v3.1 §9.3, PB-004) before giving up on this
+                # slot. `assert_missed_only_after_evergreen_exhausted` is the
+                # domain-level guard for this invariant; calling it here
+                # (rather than only in its own unit test) is what actually
+                # enforces "no MISSED before evergreen is exhausted" in
+                # production.
+                evergreen_publication = _fill_slot_from_evergreen(
+                    project=project, data_root=data_root, config_root=config_root,
+                    registry=registry, slot_store=slot_store, slot_id=slot_id, day=day,
+                )
+                if evergreen_publication is not None:
+                    publications.append(evergreen_publication)
+                    _send_alert_best_effort(
+                        "evergreen_used", f"Slot {slot_id} ({day}) filled from Evergreen Pool -- cần Duyệt.",
+                    )
+                else:
+                    slot = slot_store.get(slot_id)
+                    if slot is not None:
+                        slot.assert_missed_only_after_evergreen_exhausted(evergreen_exhausted=True)
+                    slot_store.transition(slot_id, "MISSED")
+                    _send_alert_best_effort(
+                        "slot_missed", f"Slot {slot_id} ({day}) MISSED -- mọi platform + Evergreen Pool đều không có nội dung.",
+                    )
         except Exception:  # noqa: BLE001 - see _ensure_slot_best_effort
             pass
 

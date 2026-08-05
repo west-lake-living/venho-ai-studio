@@ -59,12 +59,44 @@ def _advance_slot_on_dispatch_success(publication: dict, *, slot_store: Optional
         if slot is None:
             return
         if slot.status == "PENDING_APPROVAL":
-            slot_store.transition(slot_id, "FILLED", content_package_id=publication.get("content_package_id"), filled_from="pipeline")
+            filled_from = publication.get("filled_from") or "pipeline"
+            slot_store.transition(slot_id, "FILLED", content_package_id=publication.get("content_package_id"), filled_from=filled_from)
             slot_store.transition(slot_id, "DISPATCHED")
         elif slot.status == "FILLED":
             slot_store.transition(slot_id, "DISPATCHED")
     except Exception:  # noqa: BLE001 - slot bookkeeping must never block a real dispatch that already succeeded
         pass
+
+
+def _preflight_claim_alignment(
+    publication: dict,
+    *,
+    project: str,
+    data_root: Path,
+) -> dict:
+    """Re-run ClaimValidator/validate_alignment right before the real
+    webhook fires (PB-005 pre-flight, v3.1 §9.4).
+
+    `daily_cycle` queues a draft once; Harry may approve it days later once
+    the weekly batch is reviewed. A Knowledge Fact backing a claim can
+    expire in that window (DoD #15: "fact hết hạn ... revoke approval của
+    package chưa publish") -- before this, only `edit_publication` re-ran
+    this check, so an *unedited* approved row could ride a since-expired
+    fact straight to a real Facebook/Instagram post. This closes that gap
+    at the last possible moment: inside the same atomic claim, before
+    `bridge.dispatch()` is ever called.
+
+    Rows written before 2026-08-05 (no persisted `creative_brief`) skip this
+    -- same convention as `edit_publication` -- and are reported as
+    `claim_alignment_skipped: true`, not silently treated as passing.
+    """
+    creative_brief = publication.get("creative_brief")
+    if creative_brief is None:
+        return {"claim_alignment_skipped": True, "passed": True}
+    claim_report = ClaimValidator(project=project, data_root=data_root).validate(publication.get("claims") or [])
+    alignment_report = validate_alignment(creative_brief, publication.get("scene_summary") or {})
+    passed = not claim_report["kill_switches"] and not alignment_report["kill_switches"]
+    return {"claim_report": claim_report, "alignment_report": alignment_report, "passed": passed}
 
 
 def _dispatch_claimed(
@@ -74,6 +106,8 @@ def _dispatch_claimed(
     bridge: M07PublishingBridge,
     approved_by: Optional[str] = None,
     slot_store: Optional[SlotStore] = None,
+    project: str = "venho_hotel",
+    data_root: Path = Path("data/projects"),
 ) -> dict:
     """Fire the real webhook for an already-claimed (status already flipped
     off PENDING_APPROVAL) row, and finalize its status from the response.
@@ -83,6 +117,15 @@ def _dispatch_claimed(
     sequence without re-deriving a fresh approval_snapshot each retry.
     """
     publication_id = publication["publication_id"]
+
+    preflight = _preflight_claim_alignment(publication, project=project, data_root=data_root)
+    if not preflight["passed"]:
+        return registry.update(
+            publication_id,
+            status=NEEDS_REVISION_STATUS,
+            preflight_report=preflight,
+        )
+
     approval_snapshot = publication.get("approval_snapshot")
     package_snapshot = publication.get("package_snapshot")
     if approval_snapshot is None and package_snapshot is not None and approved_by is not None:
@@ -134,6 +177,12 @@ def approve_and_dispatch(
     revert the approval: the row is marked GATEWAY_ERROR so the operator can
     retry the dispatch (see `retry_dispatch`) instead of re-approving.
 
+    Before the webhook ever fires, `_preflight_claim_alignment` re-runs
+    ClaimValidator/validate_alignment against the row's persisted claims
+    (PB-005 pre-flight, DoD #15) -- a fact that expired in the days between
+    queueing and this click lands the row on NEEDS_REVISION instead of
+    publishing a since-unsupported claim.
+
     The PENDING_APPROVAL -> DISPATCHING transition is claimed atomically via
     `registry.claim()` *before* the network call, so two concurrent callers
     for the same publication_id (double-click, two browser tabs, a client
@@ -153,7 +202,10 @@ def approve_and_dispatch(
     claimed = registry.claim(publication_id, expected_status=PENDING_STATUS, claimed_status=DISPATCHING_STATUS)
     bridge = bridge or m07_publishing_bridge_from_env(os.environ)
     slot_store = slot_store or SlotStore(db_path=data_root / project / "growth" / "growth.db")
-    return _dispatch_claimed(claimed, registry=registry, bridge=bridge, approved_by=approved_by, slot_store=slot_store)
+    return _dispatch_claimed(
+        claimed, registry=registry, bridge=bridge, approved_by=approved_by, slot_store=slot_store,
+        project=project, data_root=data_root,
+    )
 
 
 def retry_dispatch(
@@ -178,7 +230,10 @@ def retry_dispatch(
     claimed = registry.claim(publication_id, expected_status=GATEWAY_ERROR_STATUS, claimed_status=DISPATCHING_STATUS)
     bridge = bridge or m07_publishing_bridge_from_env(os.environ)
     slot_store = slot_store or SlotStore(db_path=data_root / project / "growth" / "growth.db")
-    return _dispatch_claimed(claimed, registry=registry, bridge=bridge, slot_store=slot_store)
+    return _dispatch_claimed(
+        claimed, registry=registry, bridge=bridge, slot_store=slot_store,
+        project=project, data_root=data_root,
+    )
 
 
 def reject_publication(

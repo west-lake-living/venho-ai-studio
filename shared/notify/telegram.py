@@ -54,6 +54,17 @@ def telegram_notifier_from_env(env: Mapping[str, str]) -> TelegramNotifier:
     return TelegramNotifier(bot_token=bot_token)
 
 
+def telegram_notifier_or_mock_from_env(env: Mapping[str, str]) -> "TelegramNotifier | MockTelegramNotifier":
+    """Real notifier if TELEGRAM_BOT_TOKEN is set, else the disabled/dev-safe
+    Mock -- same graceful-fallback convention as
+    `shared.storage.google_drive.google_drive_uploader_from_env`. Used by
+    best-effort callers (e.g. `manage_queue.check_runway`) that must never
+    raise just because Harry hasn't set the bot token yet."""
+    if not env.get("TELEGRAM_BOT_TOKEN"):
+        return MockTelegramNotifier()
+    return telegram_notifier_from_env(env)
+
+
 def load_alert_policy(path: Path = Path("shared/notify/alert_policy.yaml")) -> dict[str, Any]:
     return yaml.safe_load(path.read_text(encoding="utf-8")) or {}
 

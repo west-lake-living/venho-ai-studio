@@ -190,4 +190,14 @@ def run_weekly_cycle(
         job_store.fail(week_key, f"{type(exc).__name__}: {exc}")
         raise
     job_store.complete(week_key)
+
+    try:
+        # Re-check the horizon this run just (re)ensured (PB-003) -- best
+        # effort, never blocks a week that already generated successfully.
+        from growth_orchestrator.application.manage_queue import check_runway
+
+        check_runway(project=project, data_root=data_root, config_root=config_root, slot_store=slot_store)
+    except Exception:  # noqa: BLE001 - runway alerting must never fail a real weekly run
+        pass
+
     return WeeklyCycleResult(days=results)

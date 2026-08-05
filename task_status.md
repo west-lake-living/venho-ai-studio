@@ -1,6 +1,26 @@
 # VENHO AI STUDIO — Task Status
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-08-05 (Post-audit follow-up: viết lại Phần 10/18 + dọn code chết — xem mục dưới) · **Tests:** 702/702 pass (sau khi xoá `infra/`) · 0 API call trong test
+**Cập nhật:** 2026-08-06 (Rà soát Phase 1-3 + hoàn thiện Phase 4/4.5 — xem mục dưới) · **Tests:** 709/709 pass (+7 test mới) · 0 API call trong test
+
+---
+
+### Growth Agent v3.1 — Rà soát Phase 1–3 (xác nhận xong) + hoàn thiện Phase 4/4.5 (2026-08-06)
+
+**Status: DONE — commit local, chưa push**
+
+Harry: "Rà soát lại phase 1,2,3. Nếu đã xong hết thì chuyển sang hoàn thiện Phase 4 và 4.5" (đối chiếu `docs/Content agent/VENHO_GROWTH_AGENT_MASTER_PLAN_v3_1_CONSOLIDATED.md`).
+
+- [x] **Rà soát Phase 1–3:** xác nhận xong bằng code + test thật (16 contract schema, 9+7 YAML policy, `shared/{budget,jobs,notify}`, `knowledge_studio/facts`, `claim_validator.py`, generator thật gpt-5.5, `image_studio_runtime/` + alignment/derivative validator — tất cả wired vào `daily_cycle.py`, 702/702 pass trước khi sửa gì).
+- [x] **Doc fix:** Phần 12 Phase 4.5 (PB-006/PB-007) viết lại — "launchd 09:00"/"deadman switch cloud" đánh dấu superseded, khớp với kiến trúc GitHub Actions Phần 10 đã đổi từ 2026-08-05.
+- [x] **PB-005 pre-flight thật:** `approve_and_dispatch._dispatch_claimed` giờ re-run `ClaimValidator`/`validate_alignment` ngay trước khi gọi webhook thật — trước đây chỉ `edit_publication()` mới revalidate, một publication chưa sửa nhưng approve trễ (batch cả tuần) có thể publish claim dựa trên fact đã hết hạn. Kill-switch → `NEEDS_REVISION`, 0 dispatch.
+- [x] **`PublishingSlot` domain — sửa 2 lỗi thật:** `assert_missed_only_after_evergreen_exhausted` trước chỉ guard `status=="OPEN"`, nhưng path MISSED thật luôn từ `DRAFT_ASSIGNED` — guard chưa từng fire trong production dù test riêng pass. `EVERGREEN_FALLBACK -> DISPATCHED` đổi thành `-> PENDING_APPROVAL` (Harry chốt qua AskUserQuestion: evergreen fallback vẫn cần 1 click Duyệt, không auto-publish, giữ đúng DoD #23).
+- [x] **PB-004 Evergreen Pool nối thật:** `shared/storage/evergreen_pool_store.py` mới + CLI `evergreen-add`/`evergreen-list`, wired vào `daily_cycle.py::_fill_slot_from_evergreen` (gọi khi mọi platform sinh nội dung thất bại, trước khi cho MISSED). Pool trống mặc định — cơ chế chạy thật, chưa kích hoạt vì Harry chưa curate item nào.
+- [x] **PB-003 Runway + Telegram alert nối thật:** `manage_queue.check_runway` đếm slot `OPEN` trong horizon 14 ngày (canary hạ tầng — chỉ tụt nếu chính job `weekly-cycle` ngừng chạy), gọi best-effort cuối `run_weekly_cycle` + CLI `check-runway`. `evergreen_used`/`slot_missed` alert cũng bắn từ `daily_cycle.py` (event đã định nghĩa sẵn trong `alert_policy.yaml`, chưa ai gọi trước đây).
+- [ ] **Cần Harry set 2 secret** để alert Telegram chạy thật: `TELEGRAM_BOT_TOKEN` + `TELEGRAM_CHAT_ID` (local `.env.local` + GitHub Actions secret) — hiện tại cơ chế live nhưng luôn no-op (Mock) vì thiếu token.
+- [ ] **Chủ động không làm** (cần quyết định/thời gian riêng, không phải quên): DoD #24 (backup ảnh + verify-restore), DoD #26 (golden-set scorecard — cần dataset thật), "4 tuần liên tục 16 slot 0 duplicate" (cần thời gian vận hành thật), `preflight.py` asset/event/weather tổng quát (registry chưa track event_claims/weather_context per publication — để dành Phase 6/7 khi Trend Radar content thật bắt đầu publish).
+- [x] Verify: `/usr/bin/python3 -m pytest -q` → 709/709 pass (702 + 7 test mới: evergreen wiring, DRAFT_ASSIGNED guard, check_runway ×2, preflight blocks dispatch ×2), 0 API call. Không đổi `venho-os` lượt này.
+
+Chi tiết đầy đủ: `task_memory.md` mục 14i.
 
 ---
 

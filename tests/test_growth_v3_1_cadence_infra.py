@@ -67,8 +67,15 @@ def test_publishing_slot_happy_path_transitions() -> None:
 
 
 def test_publishing_slot_evergreen_fallback_path() -> None:
+    # As of 2026-08-06, evergreen fallback still lands in PENDING_APPROVAL
+    # (Harry's decision: one Duyệt click required, no auto-dispatch even for
+    # a previously-approved post -- see PublishingSlot.transition's docstring
+    # and DoD #23) rather than jumping straight to DISPATCHED.
     slot = PublishingSlot(slot_id="s2", slot_date="2026-08-08", slot_type="special", lane="special")
+    slot = slot.transition("DRAFT_ASSIGNED")
     slot = slot.transition("EVERGREEN_FALLBACK", filled_from="evergreen")
+    slot = slot.transition("PENDING_APPROVAL")
+    slot = slot.transition("FILLED", content_package_id="pkg-evergreen-1", filled_from="evergreen")
     slot = slot.transition("DISPATCHED")
     assert slot.status == "DISPATCHED"
     assert slot.filled_from == "evergreen"
@@ -94,6 +101,27 @@ def test_publishing_slot_missed_requires_evergreen_exhausted() -> None:
     slot.assert_missed_only_after_evergreen_exhausted(evergreen_exhausted=True)  # does not raise
 
 
+def test_publishing_slot_missed_requires_evergreen_exhausted_from_draft_assigned_too() -> None:
+    # Before 2026-08-06 this guard only checked status == "OPEN", which never
+    # fired for the real daily_cycle failure path (DRAFT_ASSIGNED) -- dead
+    # code in production despite a passing unit test. See publishing_slot.py.
+    slot = PublishingSlot(slot_id="s5", slot_date="2026-08-03", slot_type="regular", lane="regular")
+    slot = slot.transition("DRAFT_ASSIGNED")
+    with pytest.raises(ValueError, match="evergreen pool"):
+        slot.assert_missed_only_after_evergreen_exhausted(evergreen_exhausted=False)
+    slot.assert_missed_only_after_evergreen_exhausted(evergreen_exhausted=True)  # does not raise
+
+
+def test_publishing_slot_evergreen_fallback_requires_draft_assigned_first() -> None:
+    # OPEN -> EVERGREEN_FALLBACK directly is still allowed (kept for the
+    # domain model's completeness/future callers) but the real daily_cycle
+    # path always goes through DRAFT_ASSIGNED first -- both are exercised so
+    # neither silently breaks.
+    slot = PublishingSlot(slot_id="s6", slot_date="2026-08-03", slot_type="regular", lane="regular")
+    slot = slot.transition("EVERGREEN_FALLBACK", filled_from="evergreen")
+    assert slot.status == "EVERGREEN_FALLBACK"
+
+
 # --- runway policy, slot-based (§9.2 / PB-003) ---------------------------
 
 
@@ -103,6 +131,53 @@ def test_publishing_slot_missed_requires_evergreen_exhausted() -> None:
 )
 def test_runway_status_uses_slot_thresholds(open_slots: int, expected: str) -> None:
     assert runway_status(open_slots, QUEUE_POLICY) == expected
+
+
+def test_check_runway_counts_open_slots_in_horizon_and_reports_status() -> None:
+    from growth_orchestrator.application.manage_queue import check_runway
+
+    tmp_db = Path("/tmp") / f"check_runway_test_{id(object())}.db"
+    try:
+        from shared.jobs.slot_store import SlotStore
+
+        store = SlotStore(db_path=tmp_db)
+        today = date.today()
+        # 3 OPEN slots inside the default 14-day horizon -> "critical" per QUEUE_POLICY thresholds.
+        for offset in range(3):
+            slot_date = (today + timedelta(days=offset)).isoformat()
+            store.ensure_slots([PublishingSlot(slot_id=f"slot-{slot_date}-x", slot_date=slot_date, slot_type="regular", lane="regular")])
+
+        result = check_runway(project="venho_hotel", slot_store=store, chat_id=None)
+
+        assert result["open_slot_count"] == 3
+        assert result["status"] == "critical"
+        assert "alert" not in result  # no chat_id resolved -> no alert attempt
+    finally:
+        tmp_db.unlink(missing_ok=True)
+
+
+def test_check_runway_sends_telegram_alert_when_critical() -> None:
+    from growth_orchestrator.application.manage_queue import check_runway
+    from shared.notify.telegram import MockTelegramNotifier
+
+    tmp_db = Path("/tmp") / f"check_runway_alert_test_{id(object())}.db"
+    try:
+        from shared.jobs.slot_store import SlotStore
+
+        store = SlotStore(db_path=tmp_db)
+        today = date.today()
+        slot_date = today.isoformat()
+        store.ensure_slots([PublishingSlot(slot_id=f"slot-{slot_date}-x", slot_date=slot_date, slot_type="regular", lane="regular")])
+
+        notifier = MockTelegramNotifier()
+        result = check_runway(project="venho_hotel", slot_store=store, notifier=notifier, chat_id="123456")
+
+        assert result["status"] == "empty"
+        assert len(notifier.sent) == 1
+        assert notifier.sent[0]["chat_id"] == "123456"
+        assert "empty" in notifier.sent[0]["text"].lower()
+    finally:
+        tmp_db.unlink(missing_ok=True)
 
 
 # --- special lane T3->T7 (§9.5 / PB-008) ---------------------------------

@@ -248,6 +248,52 @@ def reconcile_cmd(
     typer.echo(json.dumps({"ok": True, "publication": result}, ensure_ascii=False, indent=2))
 
 
+@app.command("evergreen-add")
+def evergreen_add_cmd(
+    publication_id: str = typer.Option(..., "--publication-id", help="An existing publication row to promote into the pool."),
+    added_by: str = typer.Option(..., "--added-by"),
+    project: str = typer.Option("venho_hotel"),
+) -> None:
+    """Curate a real, already-dispatched publication into the Evergreen Pool
+    (PB-004). Nothing is invented here -- only a human-picked existing
+    publication row can enter the pool; see `EvergreenPoolStore.add_from_publication`.
+    """
+    from publishing_gateway.publication_registry import PublicationRegistry
+    from shared.storage.evergreen_pool_store import EvergreenPoolStore
+
+    registry = PublicationRegistry(project)
+    match = next((p for p in registry.load()["publications"] if p.get("publication_id") == publication_id), None)
+    if match is None:
+        typer.echo(json.dumps({"ok": False, "error": f"Unknown publication_id: {publication_id}"}), err=True)
+        raise typer.Exit(code=1)
+    item = EvergreenPoolStore(project).add_from_publication(match, added_by=added_by)
+    typer.echo(json.dumps({"ok": True, "item": item}, ensure_ascii=False, indent=2))
+
+
+@app.command("evergreen-list")
+def evergreen_list_cmd(project: str = typer.Option("venho_hotel")) -> None:
+    """List everything currently in the Evergreen Pool (PB-004)."""
+    from shared.storage.evergreen_pool_store import EvergreenPoolStore
+
+    typer.echo(json.dumps(EvergreenPoolStore(project).list_items(), ensure_ascii=False, indent=2))
+
+
+@app.command("check-runway")
+def check_runway_cmd(
+    project: str = typer.Option("venho_hotel"),
+    horizon_days: int = typer.Option(14, "--horizon-days"),
+) -> None:
+    """On-demand runway check (PB-003) -- same logic `weekly-cycle` runs
+    automatically at the end of every real run, exposed standalone so Harry
+    (or a debug session) can check the queue's buffer without waiting for
+    the next cron tick. Fires the real Telegram alert if TELEGRAM_BOT_TOKEN/
+    TELEGRAM_CHAT_ID are set and the runway is critical/empty."""
+    from growth_orchestrator.application.manage_queue import check_runway
+
+    result = check_runway(project=project, horizon_days=horizon_days)
+    typer.echo(json.dumps(result, ensure_ascii=False, indent=2))
+
+
 @app.command("measure")
 def measure_cmd(
     publication_id: str = typer.Option(..., "--publication-id"),

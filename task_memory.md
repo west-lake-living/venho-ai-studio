@@ -929,6 +929,47 @@ Sau khi công bố audit hoàn thành v3.1 (artifact `growth-v31-audit.html`), H
 
 **Verify:** `python3 -m pytest -q` → 702 passed, 0 fail. Không chạm `venho-os` lần này.
 
+## 14i. Rà soát Phase 1–3 v3.1 + hoàn thiện Phase 4/4.5 (2026-08-06)
+
+Harry: "Rà soát lại phase 1,2,3. Nếu đã xong hết thì chuyển sang hoàn thiện Phase 4 và 4.5" (đối chiếu `VENHO_GROWTH_AGENT_MASTER_PLAN_v3_1_CONSOLIDATED.md`, không phải roadmap OTA).
+
+**Rà soát Phase 1–3: xác nhận XONG bằng code + test thật (702/702 pass trước khi sửa gì).** Không dựa lại note cũ — check trực tiếp: 16 contract schema, 9 YAML `growth/` + 7 YAML `research/`, `shared/{budget,jobs,notify}/`, `knowledge_studio/facts/`, `validator_studio/claim_validator.py`, `content_studio/generators/gpt_social_generator.py` (real), `image_studio_runtime/` + `alignment_validator.py`/`derivative_validator.py` — tất cả tồn tại và wired vào `daily_cycle.py`.
+
+**Rà soát Phase 4/4.5: Phase 4 (approval/publishing) về cơ bản xong. Phase 4.5 phát hiện 3 module có code + unit test riêng nhưng KHÔNG có caller thật (orphaned) -- claim "unit-tested" trong status comment cũ của `evergreen_pool.py` sai, grep xác nhận 0 test import nó.** PB-006/PB-007 trong bảng roadmap Phần 12 vẫn ghi "launchd 09:00"/"deadman switch cloud" dù Phần 10 đã đổi kiến trúc sang GitHub Actions từ 2026-08-05 -- tài liệu chưa đồng bộ.
+
+Hỏi Harry 1 quyết định trước khi code (AskUserQuestion): khi evergreen fallback lấp 1 slot mất trắng nội dung, có tự DISPATCHED luôn hay vẫn cần 1 click Duyệt? **Harry chọn: vẫn cần 1 click** (giữ đúng bất biến DoD #23 "publish chỉ khi Harry chủ động duyệt" đã chốt 2026-08-05) -- khác nguyên văn plan gốc §9.3 (evergreen coi như đã duyệt sẵn, auto-dispatch).
+
+**Việc đã làm (tất cả có test mới, 709/709 pass tổng, +7 test):**
+
+1. **Doc:** Phần 12 Phase 4.5 viết lại — PB-006/PB-007 đổi thành "superseded", giải thích tại sao (không có tiến trình 24/7 để launchd/deadman canh, idempotency đạt qua `registry.claim()` atomic). Thêm dòng CHANGELOG "v3.1 (2026-08-06 revision)".
+
+2. **PB-005 pre-flight = claim/alignment revalidation thật ngay trước dispatch** (`approve_and_dispatch.py::_preflight_claim_alignment`, gọi từ `_dispatch_claimed` trước khi `bridge.dispatch()`). Trước đây chỉ `edit_publication()` mới re-run `ClaimValidator`/`validate_alignment` -- một publication CHƯA edit, đã approve nhưng dispatch trễ (batch duyệt cả tuần) có thể publish 1 claim dựa trên fact đã hết hạn giữa lúc sinh nội dung và lúc Harry bấm Duyệt. Giờ kill-switch → `NEEDS_REVISION`, không gọi webhook thật, không dispatch. Rows không có `creative_brief` (trước 2026-08-05 hoặc evergreen) skip gracefully (`claim_alignment_skipped`), không coi là pass ngầm.
+
+3. **`PublishingSlot` state machine sửa 2 lỗi thật:**
+   - `assert_missed_only_after_evergreen_exhausted` chỉ guard `status=="OPEN"` — nhưng path MISSED thật trong `daily_cycle.py` luôn đi từ `DRAFT_ASSIGNED`, nên guard này **chưa bao giờ fire trong production** dù unit test của nó pass. Sửa để guard cả `DRAFT_ASSIGNED`.
+   - `EVERGREEN_FALLBACK -> DISPATCHED` (transition trực tiếp, đúng plan gốc) đổi thành `EVERGREEN_FALLBACK -> PENDING_APPROVAL` theo quyết định Harry ở trên; test cũ `test_publishing_slot_evergreen_fallback_path` cập nhật theo full funnel (`DRAFT_ASSIGNED → EVERGREEN_FALLBACK → PENDING_APPROVAL → FILLED → DISPATCHED`).
+
+4. **PB-004 Evergreen Pool nối thật:**
+   - `shared/storage/evergreen_pool_store.py` mới (JSON, cùng convention với `TrendCandidateStore`) — chỉ nạp item qua `add_from_publication()`, không tự bịa nội dung.
+   - `daily_cycle.py::_fill_slot_from_evergreen` — gọi khi mọi platform sinh nội dung thất bại hoàn toàn cho 1 slot, trước khi cho phép MISSED. Đọc `evergreen_reuse_cooldown_days` từ `queue_policy.yaml` (mặc định 90). Item chọn ra chưa có `creative_brief`/`claims` → preflight/edit đều skip gracefully, không coi là đã verify.
+   - CLI `venho-growth evergreen-add --publication-id X --added-by harry` / `evergreen-list`.
+   - Pool trống mặc định (Harry chưa curate gì) — cơ chế chạy thật nhưng không kích hoạt cho tới khi có item.
+
+5. **PB-003 Runway + Telegram alert nối thật (trước đây `runway_status()`/`send_alert()` có code, 0 caller thật ngoài test):**
+   - `manage_queue.py::check_runway` — đếm slot còn `OPEN` trong horizon 14 ngày (không phải "generated nhưng chưa duyệt") — chủ đích: `run_weekly_cycle` luôn ensure lại horizon 14 ngày mỗi lần chạy thật, nên số OPEN chỉ tụt về 0 nếu chính job đó NGỪNG chạy (cron chết, token hết hạn) → đây là canary hạ tầng thật, không chỉ đếm backlog nội dung.
+   - Gọi best-effort ở cuối `run_weekly_cycle` (đã ensure_slots xong). CLI `check-runway` để check tay.
+   - `shared/notify/telegram.py::telegram_notifier_or_mock_from_env` mới (cùng convention `google_drive_uploader_from_env`) — trả Mock nếu thiếu `TELEGRAM_BOT_TOKEN`, không raise.
+   - Bắn thêm `evergreen_used`/`slot_missed` alert trong `daily_cycle.py` (2 event đã định nghĩa sẵn trong `shared/notify/alert_policy.yaml` từ trước nhưng chưa ai gọi) — best-effort, no-op nếu thiếu `TELEGRAM_CHAT_ID`.
+   - **Chưa có ai set `TELEGRAM_BOT_TOKEN`/`TELEGRAM_CHAT_ID` thật** — cơ chế live nhưng hiện tại luôn no-op (Mock). Cần Harry set 2 secret này (local `.env.local` + GitHub Actions secret) để alert thật chạy.
+
+**Chủ động không làm (ngoài phạm vi câu hỏi, cần quyết định riêng của Harry hoặc cần thời gian thật):**
+- DoD #24 (backup ảnh + verify-restore) — vẫn ghi nhận chưa làm, không đụng.
+- DoD #26 (golden-set scorecard ≥9.3/10) — cần dataset thật, không tự chấm giả.
+- "4 tuần liên tục đủ 16 slot 0 duplicate" (Exit Phase 4.5) — cần thời gian vận hành thật, không code được.
+- `preflight.py` (asset/event/weather check tổng quát) — vẫn KHÔNG wire thêm ngoài phần claim/alignment: registry hiện chưa track `event_claims`/`weather_context` per publication, wire nó vào giờ sẽ luôn trả "pass" giả (không có dữ liệu thật để check) — để dành khi Trend Radar/weather content thật bắt đầu publish (Phase 6/7 territory).
+
+**Verify:** `/usr/bin/python3 -m pytest -q` → 709/709 pass (702 + 7 test mới: evergreen fallback wiring, DRAFT_ASSIGNED guard, check_runway ×2, preflight blocks dispatch ×2). 0 API call. Chưa chạm `venho-os` (không cần đổi UI cho lượt này). Commit local, **chưa push** (Harry tự quyết định khi nào đẩy lên, vì thay đổi chạm publish path thật).
+
 ## 14. Task Closing Protocol
 
 Khi người dùng nói **"kết thúc task"**, Codex phải tự động:

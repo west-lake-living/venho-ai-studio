@@ -149,6 +149,51 @@ def test_run_daily_cycle_marks_slot_missed_when_every_platform_fails(tmp_path: P
     assert slot.status == "MISSED"
 
 
+def test_run_daily_cycle_fills_slot_from_evergreen_pool_when_every_platform_fails(tmp_path: Path) -> None:
+    """PB-004: when the pool has an eligible item, a total generation
+    failure lands the slot in PENDING_APPROVAL (still needs Harry's one
+    Duyệt click, per the 2026-08-06 decision) instead of MISSED."""
+    from shared.storage.evergreen_pool_store import EvergreenPoolStore
+
+    data_root = _tmp_data_root(tmp_path)
+    slot_store = SlotStore(db_path=tmp_path / "growth.db")
+    pool = EvergreenPoolStore("venho_hotel", data_root=data_root)
+    pool.add_from_publication(
+        {
+            "publication_id": "pub-old-1",
+            "platform": "facebook",
+            "dna_subject": "westlake",
+            "content": {"text": "Một buổi sáng chậm bên Hồ Tây."},
+        },
+        added_by="harry",
+    )
+
+    class _AlwaysFailsBridge:
+        def generate_candidates(self, brief: dict) -> list[dict]:
+            raise RuntimeError("simulated total outage")
+
+    result = run_daily_cycle(
+        "monday",
+        data_root=data_root,
+        generate_image=False,
+        content_bridge=_AlwaysFailsBridge(),
+        validator_bridge=_AlwaysApproveValidatorBridge(),
+        slot_store=slot_store,
+        slot_date="2026-08-10",
+    )
+
+    assert len(result.publications) == 1
+    assert result.publications[0]["filled_from"] == "evergreen"
+    assert result.publications[0]["status"] == "PENDING_APPROVAL"
+    slot = slot_store.get("slot-2026-08-10-monday")
+    assert slot is not None
+    assert slot.status == "PENDING_APPROVAL"
+    assert slot.filled_from == "evergreen"
+    # The item is consumed (last_used_at set) so it won't be picked again
+    # inside its cooldown window.
+    assert pool.list_items()[0]["last_used_at"] is not None
+
+
 def test_run_daily_cycle_without_slot_store_is_unaffected(tmp_path: Path) -> None:
     """slot_store/slot_date are opt-in -- omitting them must behave exactly
     like before this feature existed (no slot_id key surprise, no crash)."""

@@ -85,6 +85,67 @@ def test_approve_and_dispatch_calls_bridge_and_updates_status(tmp_path: Path) ->
     assert list_pending(project="venho_hotel", data_root=tmp_path, registry=registry) == []
 
 
+def test_approve_and_dispatch_blocks_real_dispatch_when_referenced_fact_expired_since_queueing(tmp_path: Path) -> None:
+    """PB-005 pre-flight (DoD #15): a fact that expired in the days between
+    daily_cycle queueing the draft and Harry clicking Duyệt must never let
+    the since-unsupported claim reach the real Make.com webhook."""
+    from knowledge_studio.facts.fact_store import FactStore
+
+    FactStore("venho_hotel", data_root=tmp_path).save(
+        {
+            "fact_key": "promo.expired_deal",
+            "value": "Giảm 20% cuối tuần",
+            "status": "approved",
+            "valid_from": "2020-01-01T00:00:00+00:00",
+            "valid_to": "2020-01-31T00:00:00+00:00",  # long expired
+        },
+        overwrite=True,
+    )
+
+    registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
+    publication_id = _reserve_pending(registry)
+    registry.update(
+        publication_id,
+        creative_brief={"id": "brief-x", "visual": {}},
+        claims=[{"text": "Giảm 20% cuối tuần", "fact_key": "promo.expired_deal"}],
+        scene_summary={},
+    )
+
+    calls = []
+    make_adapter = MakeGatewayAdapter(enabled=True)
+    make_adapter.send = lambda command: calls.append(command) or {"status": "GATEWAY_ACCEPTED", "published": False}
+    bridge = M07PublishingBridge(make_adapter=make_adapter, zalo_adapter=ZaloOAAdapter(enabled=True))
+
+    result = approve_and_dispatch(
+        publication_id, approved_by="harry", project="venho_hotel", data_root=tmp_path, registry=registry, bridge=bridge
+    )
+
+    assert calls == []  # the real webhook was never called
+    assert result["status"] == "NEEDS_REVISION"
+    assert result["preflight_report"]["claim_report"]["kill_switches"] == ["unsupported_critical_claim"]
+    # dropped out of the approval queue, same as a failed edit_publication would
+    assert list_pending(project="venho_hotel", data_root=tmp_path, registry=registry) == []
+
+
+def test_approve_and_dispatch_still_dispatches_when_claims_are_absent_or_valid(tmp_path: Path) -> None:
+    """Rows without a persisted creative_brief (pre-2026-08-05 convention)
+    skip the check gracefully instead of blocking every legacy row."""
+    registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
+    publication_id = _reserve_pending(registry)  # no creative_brief/claims set
+
+    calls = []
+    make_adapter = MakeGatewayAdapter(enabled=True)
+    make_adapter.send = lambda command: calls.append(command) or {"status": "GATEWAY_ACCEPTED", "published": False}
+    bridge = M07PublishingBridge(make_adapter=make_adapter, zalo_adapter=ZaloOAAdapter(enabled=True))
+
+    result = approve_and_dispatch(
+        publication_id, approved_by="harry", project="venho_hotel", data_root=tmp_path, registry=registry, bridge=bridge
+    )
+
+    assert len(calls) == 1
+    assert result["status"] == "GATEWAY_ACCEPTED"
+
+
 def test_approve_and_dispatch_advances_slot_to_dispatched_on_success(tmp_path: Path) -> None:
     registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
     slot_store = SlotStore(db_path=tmp_path / "growth.db")

@@ -1,10 +1,10 @@
-# STATUS (2026-08-05 audit): implemented and unit-tested (Phase 4.5, §9.3
-# "Evergreen Pool — mạng an toàn") but NOT wired into any real caller yet.
-# `publishing_slot.py` references it only in a comment ("still applies once
-# evergreen_pool.py is wired in") -- the MISSED-requires-evergreen-exhausted
-# transition currently has no real evergreen pool feeding it. Wire this in
-# before relying on the "slot never goes MISSED while evergreen has stock"
-# guarantee in production.
+# STATUS (2026-08-06): wired into growth_orchestrator.application.daily_cycle
+# ._fill_slot_from_evergreen -- called when every platform's real generation
+# attempt has failed for a slot, before that slot is allowed to go MISSED
+# (Phase 4.5, §9.3 "Evergreen Pool — mạng an toàn"). Population is entirely
+# manual (`shared/storage/evergreen_pool_store.py` + CLI `evergreen-add`) --
+# the pool is empty by default and this fallback simply never fires until
+# Harry curates items into it.
 from __future__ import annotations
 
 from datetime import date, datetime
