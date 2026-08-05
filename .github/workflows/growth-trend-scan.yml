@@ -1,0 +1,54 @@
+name: Growth Agent Trend Radar Scan
+
+# Real Tavily search -> Gemini Flash classification -> scan_trends scoring
+# for the Saturday special lane (research_engine/trend_radar). Runs Friday
+# so Harry has the whole weekend to review/approve on VENHO OS Dashboard
+# ("Trend Radar" panel, Publishing section) BEFORE Monday 08:00's weekly
+# cycle picks that week's Saturday topic (see growth-daily-cycle.yml and
+# growth_orchestrator/application/daily_cycle.py::_pick_topic).
+#
+# `human_approval: mandatory` (brand_safety.yaml) is enforced in code, not
+# by this workflow: trend-scan only writes candidates with
+# status="needs_human_approval"/"rejected" to trend_candidates.json --
+# nothing here can make a candidate eligible for Saturday's rotation pool.
+# Only an explicit `venho-growth trend-approve` (human action, via the
+# dashboard or CLI) can do that.
+#
+# Runs Friday 08:00 Asia/Ho_Chi_Minh (UTC+7) == 01:00 UTC Friday.
+on:
+  schedule:
+    - cron: "0 1 * * 5"
+  workflow_dispatch:
+
+jobs:
+  trend-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -e ".[gemini]"
+
+      - name: Run trend scan
+        env:
+          TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: venho-growth trend-scan
+
+      # data/ is gitignored -- same gotcha as growth-daily-cycle.yml: `git
+      # add -f` is required because .gitignore excludes data/ before
+      # pathspec resolution, otherwise trend_candidates.json would not
+      # persist across ephemeral runners.
+      - name: Commit trend candidates
+        run: |
+          git config user.name "venho-growth-bot"
+          git config user.email "venho-growth-bot@users.noreply.github.com"
+          git add -f data/projects/*/research/trend_candidates.json 2>/dev/null || true
+          git diff --cached --quiet || git commit -m "chore: trend radar scan $(date -u +%Y-%m-%d)"
+          git push
