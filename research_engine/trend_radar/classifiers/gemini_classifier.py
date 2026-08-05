@@ -4,11 +4,11 @@ import json
 import os
 from typing import Any, Callable, Optional
 
-# The taxonomy scan_trends/score_relevance/BrandSafetyGate expect on every
-# candidate -- see config/projects/venho_hotel/research/trend_policy.yaml
-# and brand_safety.yaml. Raw Tavily results (title/snippet/url only) don't
-# carry any of this; this is the missing classification step scan_trends'
-# own comments flagged as "downstream, not here" but nothing actually built.
+# Same taxonomy as the (now retired) claude_classifier -- see
+# config/projects/venho_hotel/research/trend_policy.yaml and brand_safety.yaml.
+# Switched to Gemini Flash on 2026-08-05 (Harry: Anthropic cost too high for
+# a startup's classification-only workload; content generation elsewhere in
+# the codebase stays on Claude -- this swap is scoped to Trend Radar only).
 _GEOGRAPHIC = ["westlake", "hanoi", "vietnam", "global"]
 _THEMATIC = ["travel_stay", "food_local", "lifestyle_culture", "seasonal_weather", "unrelated"]
 _ACTIONABILITY = ["direct", "adjacent", "stretch"]
@@ -34,49 +34,62 @@ Với MỖI item đầu vào, trả về đúng các field sau (không thêm fie
 
 Trả về JSON array, mỗi phần tử có "id" (giữ nguyên id đầu vào) + 6 field trên. Không thêm text ngoài JSON."""
 
+DEFAULT_MODEL = os.environ.get("GEMINI_TREND_MODEL", "gemini-flash-latest")
+
 
 def classify_candidates(
     candidates: list[dict[str, Any]],
     *,
     api_key: str,
-    model: str = "claude-sonnet-5",
+    model: str = DEFAULT_MODEL,
     client_fn: Optional[Callable[..., Any]] = None,
 ) -> list[dict[str, Any]]:
     """Classify raw Tavily results into the taxonomy scan_trends() needs.
 
-    One batched call for all candidates (cheaper than one call per result).
-    `client_fn` is injectable so tests never hit the real Anthropic API --
-    matches content_studio.generators.claude_generator's convention ("Never
-    call this in pytest"). Returns the original candidate dicts merged with
-    the classification fields; a candidate Claude's response is missing or
-    malformed for is dropped (fail-closed -- an unclassified candidate must
-    never silently reach scan_trends with default/empty taxonomy values,
-    since that could accidentally pass the brand-safety gate).
+    One batched call for all candidates. `client_fn` is injectable so tests
+    never hit the real Gemini API. Returns the original candidate dicts
+    merged with the classification fields; a candidate Gemini's response is
+    missing or malformed for is dropped (fail-closed -- an unclassified
+    candidate must never silently reach scan_trends with default/empty
+    taxonomy values, since that could accidentally pass the brand-safety
+    gate).
     """
     if not candidates:
         return []
     if not api_key:
-        raise RuntimeError("ANTHROPIC_API_KEY not set in environment")
+        raise RuntimeError("GEMINI_API_KEY not set in environment")
 
     if client_fn is None:
         try:
-            from anthropic import Anthropic
+            from google import genai
+            from google.genai import types
         except ImportError as exc:
-            raise RuntimeError("anthropic package not installed — run: pip install anthropic") from exc
-        client = Anthropic(api_key=api_key)
-        client_fn = lambda **kwargs: client.messages.create(**kwargs)  # noqa: E731
+            raise RuntimeError(
+                "google-genai package not installed — run: pip install 'venho-ai-studio[gemini]'"
+            ) from exc
+        client = genai.Client(api_key=api_key)
+
+        def client_fn(*, model: str, system: str, contents: str) -> str:  # noqa: ANN001
+            response = client.models.generate_content(
+                model=model,
+                contents=contents,
+                config=types.GenerateContentConfig(
+                    system_instruction=system,
+                    temperature=0,
+                    response_mime_type="application/json",
+                ),
+            )
+            return response.text
 
     payload = [{"id": c["id"], "title": c.get("title", ""), "snippet": c.get("snippet", "")} for c in candidates]
-    response = client_fn(
+    raw = client_fn(
         model=model,
-        max_tokens=4096,
-        temperature=0,
         system=_SYSTEM_PROMPT,
-        messages=[{"role": "user", "content": json.dumps(payload, ensure_ascii=False)}],
-    )
-    raw = response.content[0].text.strip()
+        contents=json.dumps(payload, ensure_ascii=False),
+    ).strip()
     if raw.startswith("```"):
         raw = raw.split("\n", 1)[1].rsplit("```", 1)[0].strip()
+
     classified_by_id = {}
     for entry in json.loads(raw):
         entry_id = entry.get("id")
@@ -93,13 +106,13 @@ def classify_candidates(
 
 
 def classify_candidates_from_env(candidates: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """Best-effort wrapper: returns [] (not an exception) if ANTHROPIC_API_KEY
+    """Best-effort wrapper: returns [] (not an exception) if GEMINI_API_KEY
     is unset or the call fails, matching the graceful-degradation convention
     already used for OPENAI_API_KEY/GOOGLE_DRIVE_TOKEN_JSON elsewhere in this
     codebase -- a Trend Radar hiccup must never block the regular daily_cycle
     text/image pipeline it feeds a Saturday topic suggestion into.
     """
-    api_key = os.environ.get("ANTHROPIC_API_KEY", "")
+    api_key = os.environ.get("GEMINI_API_KEY", "")
     if not api_key:
         return []
     try:

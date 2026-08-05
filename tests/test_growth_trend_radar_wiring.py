@@ -2,10 +2,9 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from types import SimpleNamespace
 
 from research_engine.trend_radar.application.fetch_saturday_candidates import fetch_and_score_saturday_candidates
-from research_engine.trend_radar.classifiers.claude_classifier import classify_candidates, classify_candidates_from_env
+from research_engine.trend_radar.classifiers.gemini_classifier import classify_candidates, classify_candidates_from_env
 from research_engine.trend_radar.trend_candidate_store import TrendCandidateStore
 
 _TREND_POLICY = {
@@ -22,9 +21,8 @@ _SAFETY_POLICY = {
 }
 
 
-def _fake_client_response(classified: list[dict]) -> SimpleNamespace:
-    text = json.dumps(classified, ensure_ascii=False)
-    return SimpleNamespace(content=[SimpleNamespace(text=text)])
+def _fake_client_response(classified: list[dict]) -> str:
+    return json.dumps(classified, ensure_ascii=False)
 
 
 def test_classify_candidates_merges_taxonomy_onto_raw_results() -> None:
@@ -54,7 +52,7 @@ def test_classify_candidates_drops_unclassified_ids_fail_closed() -> None:
 
 
 def test_classify_candidates_from_env_returns_empty_without_api_key(monkeypatch) -> None:
-    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
     assert classify_candidates_from_env([{"id": "t1", "title": "x"}]) == []
 
 

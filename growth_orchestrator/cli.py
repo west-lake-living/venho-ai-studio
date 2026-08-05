@@ -267,9 +267,9 @@ def trend_scan_cmd(
     project: str = typer.Option("venho_hotel"),
     config_root: Path = typer.Option(Path("config/projects/venho_hotel/research")),
 ) -> None:
-    """Real Tavily search -> Claude classification -> scan_trends scoring
-    for the Saturday special lane, merged into trend_candidates.json as
-    unapproved proposals. Requires TAVILY_API_KEY + ANTHROPIC_API_KEY in
+    """Real Tavily search -> Gemini Flash classification -> scan_trends
+    scoring for the Saturday special lane, merged into trend_candidates.json
+    as unapproved proposals. Requires TAVILY_API_KEY + GEMINI_API_KEY in
     env; does not queue/publish anything and does not skip human approval
     (brand_safety.yaml's `human_approval: mandatory`) -- see `trend-approve`.
     """

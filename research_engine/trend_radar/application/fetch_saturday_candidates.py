@@ -25,18 +25,22 @@ def fetch_and_score_saturday_candidates(
     collect_fn: Optional[Callable[..., list[dict]]] = None,
     classify_fn: Optional[Callable[[list[dict]], list[dict]]] = None,
 ) -> list[dict[str, Any]]:
-    """Real Tavily search -> Claude classification -> scan_trends scoring.
+    """Real Tavily search -> Gemini classification -> scan_trends scoring.
 
     `human_approval: mandatory` in brand_safety.yaml is a hard invariant this
     function does not (and must not) route around: a "needs_human_approval"
     result here is a *proposal*, not a usable topic -- only
     trend_candidate_store.approve() (an explicit operator action) makes one
     eligible for daily_cycle's Saturday rotation. `collect_fn`/`classify_fn`
-    are injectable so tests never hit the real Tavily/Anthropic APIs.
+    are injectable so tests never hit the real Tavily/Gemini APIs.
+
+    Classifier is Gemini Flash, not Claude (switched 2026-08-05 -- cost;
+    content generation elsewhere in the codebase is unaffected, this is
+    scoped to Trend Radar's classification step only).
     """
     collect_fn = collect_fn or collect_tavily_search
     if classify_fn is None:
-        from research_engine.trend_radar.classifiers.claude_classifier import classify_candidates_from_env
+        from research_engine.trend_radar.classifiers.gemini_classifier import classify_candidates_from_env
         classify_fn = classify_candidates_from_env
 
     raw: list[dict] = []

@@ -1,6 +1,6 @@
 # VENHO AI STUDIO — Task Status
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-08-05 (6 hạng mục còn lại từ audit trước — xem mục dưới) · **Tests:** 706/706 pass (AI Studio) · 0 API call trong test
+**Cập nhật:** 2026-08-05 (Trend Radar classifier chuyển Claude → Gemini Flash — xem mục dưới) · **Tests:** 706/706 pass (AI Studio) · 0 API call trong test
 
 ---
 
@@ -14,8 +14,9 @@ Harry: "Làm tất cả" sau khi hỏi growth v3.1 có 100% chưa. Chi tiết đ
 - [x] 2) `SlotStore` (SQLite) + `JobStore` idempotency theo ISO week nối vào `weekly_cycle` thật — **thiết kế lại cho GitHub Actions ephemeral**, không phải Mac Mini 24/7 của plan gốc (Harry xác nhận giữ GitHub Actions). CLI `venho-growth slots`, panel "Slot tuần này" trên dashboard.
 - [x] 3) HMAC callback — **quyết định giữ `reconcile` thủ công** (Harry xác nhận), không xây endpoint vì `venho-os` chưa deploy công khai, Make.com không gọi được vào localhost.
 - [x] 4) `edit_publication()` giờ re-run claim/alignment validator thật (không chỉ content rubric) — cần `daily_cycle.py` lưu thêm `creative_brief`/`claims`/`scene_summary` vào registry row.
-- [x] 5) Trend Radar thật: xây bộ phân loại Claude còn thiếu (`classifiers/claude_classifier.py`) + `fetch_saturday_candidates.py` + `trend_candidate_store.py` (enforce human-approval mandatory bằng code) + nối vào `_pick_topic` Thứ 7. CLI `trend-scan`/`trend-list`/`trend-approve`.
-  - [ ] **Chưa nối cron** — cần Harry thêm `ANTHROPIC_API_KEY`/`TAVILY_API_KEY` vào GitHub Secrets nếu muốn tự động hoá; hiện chạy tay local.
+- [x] 5) Trend Radar thật: xây bộ phân loại + `fetch_saturday_candidates.py` + `trend_candidate_store.py` (enforce human-approval mandatory bằng code) + nối vào `_pick_topic` Thứ 7. CLI `trend-scan`/`trend-list`/`trend-approve`.
+  - [x] **2026-08-05 — chuyển classifier từ Claude sang Gemini Flash** (Harry: chi phí Anthropic cao, không phù hợp startup). `classifiers/claude_classifier.py` đã xoá, thay bằng `classifiers/gemini_classifier.py` — cùng interface/taxonomy, dùng `google-genai` SDK (`pip install "venho-ai-studio[gemini]"`), model mặc định `gemini-flash-latest` (override qua `GEMINI_TREND_MODEL`), env `GEMINI_API_KEY` (Harry cần tự điền vào `.env.local`, chưa có). Content generation ở nơi khác trong repo vẫn dùng Claude — đổi chỉ giới hạn trong Trend Radar classification.
+  - [ ] **Chưa nối cron** — cần Harry thêm `GEMINI_API_KEY`/`TAVILY_API_KEY` vào GitHub Secrets nếu muốn tự động hoá; hiện chạy tay local.
   - [ ] Chưa có UI duyệt trend candidate trên `venho-os` (CLI-only).
 - [x] 6) Research OS: đăng ký domain thứ 9 (`weather_signal`, thiếu ở cả `domains.yaml` lẫn `ResearchNote`'s Literal — 2 nguồn sự thật đã lệch nhau, đã đồng bộ + test khoá). Thêm CLI `venho-research collect-source`/`collect-note` (trước đây không có cách ingest note nào ngoài `load-seed-facts`).
   - [ ] **Không bịa nội dung** — vẫn ~2/9 domain có note thật (đúng quyết định Harry: cung cấp dần từng domain).

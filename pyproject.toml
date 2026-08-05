@@ -24,6 +24,10 @@ ui = ["streamlit>=1.28"]
 # -- imports are deferred into __init__ so the 0-API-call test suite and
 # MockDriveUploader default never require these installed.
 drive = ["google-api-python-client>=2.100", "google-auth-oauthlib>=1.0", "google-auth>=2.23"]
+# Only needed for the real GeminiClassifier (research_engine/trend_radar/classifiers/gemini_classifier.py)
+# -- import is deferred into the function so the 0-API-call test suite never
+# requires it installed (client_fn injection covers tests).
+gemini = ["google-genai>=0.3"]
 
 [project.scripts]
 venho = "knowledge_studio.vision.cli:app"

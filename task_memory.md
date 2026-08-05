@@ -1,6 +1,6 @@
 # VENHO AI STUDIO — Task Memory
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-08-05 (Growth Agent v3.1 — 6 hạng mục còn lại từ audit trước: Retry UI, SQLite/PublishingSlot, HMAC callback quyết định, claim/alignment re-check, Trend Radar thật, Research OS 9 domain, xem mục 14g) · **Đọc bởi:** AI Engine, Claude Code sessions
+**Cập nhật:** 2026-08-05 (Growth Agent v3.1 — 6 hạng mục còn lại từ audit trước: Retry UI, SQLite/PublishingSlot, HMAC callback quyết định, claim/alignment re-check, Trend Radar thật + đổi classifier Claude→Gemini Flash, Research OS 9 domain, xem mục 14g) · **Đọc bởi:** AI Engine, Claude Code sessions
 
 ---
 
@@ -883,14 +883,14 @@ Harry: "Làm tất cả" 6 gap còn treo sau câu hỏi "growth plan v3.1 đã h
 - `edit_publication()`: re-run `ClaimValidator`/`validate_alignment` thật với `claims`/`scene_summary`/`creative_brief` đã lưu (không phải regenerate CreativeBrief) — kill-switch (claim không có fact_key hợp lệ, scene thiếu/có entity cấm) vẫn chặn quay lại `PENDING_APPROVAL` dù content-quality rubric pass. Field `edit_validation.claim_alignment_skipped=true` cho row cũ (trước 2026-08-05) không có brief lưu lại.
 - **Giới hạn còn ghi rõ:** `claims`/`scene_summary` là metadata GỐC từ lúc generate, không re-derive từ bản text Harry sửa tay — không bắt được claim bịa MỚI Harry tự gõ thêm, chỉ bắt được claim gốc mất fact support.
 
-**5. Trend Radar thật (Tavily + Claude) nối vào chọn Thứ 7:**
+**5. Trend Radar thật (Tavily + AI classifier) nối vào chọn Thứ 7:**
 - Phát hiện gap thật: `scan_trends.py` cần input đã phân loại sẵn (`geographic`/`thematic`/`actionability`/`brand_safety_category`/`intersections`) nhưng comment "downstream, not here" — downstream cũng chưa ai viết. `collect_tavily_search()` chỉ trả raw title/snippet.
-- Hỏi Harry → xây bộ phân loại thật bằng AI. `research_engine/trend_radar/classifiers/claude_classifier.py` mới — 1 lệnh Claude batch-classify raw Tavily results, fail-closed (item Claude không phân loại được thì bị loại, không default).
-- `fetch_saturday_candidates.py` — Tavily collect (dedupe theo id) → Claude classify → `scan_trends` score/gate, tất cả injectable cho test.
+- Hỏi Harry → xây bộ phân loại thật bằng AI. `fetch_saturday_candidates.py` — Tavily collect (dedupe theo id) → AI classify → `scan_trends` score/gate, tất cả injectable cho test.
 - `trend_candidate_store.py` — JSON store, enforce `brand_safety.yaml`'s `human_approval: mandatory` bằng CODE (không chỉ docs): `merge_new()` không bao giờ ghi đè `verified_by_human` đã approve; chỉ candidate đã `approve()` + chưa `mark_used()` mới vào pool Saturday.
 - `daily_cycle._pick_topic`: candidate Trend Radar đã duyệt tham gia cùng rotation pool với `content_pillars.yaml`'s special_topics hand-curated; pick xong tự `mark_used()` để không lặp lại mãi.
 - CLI: `venho-growth trend-scan` / `trend-list` / `trend-approve`.
-- **Chưa nối vào GitHub Actions cron** — cần thêm `ANTHROPIC_API_KEY`/`TAVILY_API_KEY` làm GitHub secret (hiện chỉ có local `.env.local`), là quyết định của Harry chưa hỏi. Chưa có UI duyệt trend candidate trên `venho-os` (CLI-only).
+- **2026-08-05 — classifier đổi từ Claude sang Gemini Flash** (Harry: "Dùng Anthropic chi phí cao, không phù hợp cho startup"). Xoá `classifiers/claude_classifier.py`, thêm `classifiers/gemini_classifier.py` — cùng interface (`classify_candidates(candidates, *, api_key, model, client_fn)` / `classify_candidates_from_env`), cùng taxonomy/system prompt, chỉ đổi client: `google-genai` SDK (`from google import genai`), `client.models.generate_content(model=..., contents=..., config=types.GenerateContentConfig(system_instruction=..., temperature=0, response_mime_type="application/json"))`. Model mặc định `gemini-flash-latest`, override qua env `GEMINI_TREND_MODEL` (đặt tên model chính xác của Google có thể đổi theo thời gian — Harry nên xác nhận lại tên model hiện hành trước lần chạy thật đầu tiên). Env key mới: `GEMINI_API_KEY` (chưa có trong `.env.local`, Harry cần tự điền — không tự ý ghi placeholder vào file secrets thật). Optional dependency mới trong `pyproject.toml`: `pip install "venho-ai-studio[gemini]"`. Đã cài `google-genai` vào interpreter test (`/Library/Developer/CommandLineTools/usr/bin/python3`). Content generation ở các module khác (content_studio, prompt_studio optimizer, v.v.) **không đổi** — vẫn dùng Claude, đổi này chỉ giới hạn trong Trend Radar classification (workload phân loại text ngắn, không cần model mạnh/đắt).
+- **Chưa nối vào GitHub Actions cron** — cần thêm `GEMINI_API_KEY`/`TAVILY_API_KEY` làm GitHub secret (hiện chỉ có local `.env.local`), là quyết định của Harry chưa hỏi. Chưa có UI duyệt trend candidate trên `venho-os` (CLI-only).
 
 **6. Research OS 9 domain — khung, không bịa nội dung (theo đúng quyết định của Harry):**
 - Phát hiện gap thật: `domains.yaml` chỉ có 8 domain, thiếu `weather_signal` (plan v3.1 gọi là domain mới) — và `ResearchNote`'s `ResearchDomain` Literal hardcode độc lập cùng 8 domain đó, 2 nguồn sự thật đã lệch nhau. Đã sửa cả 2 + thêm test regression khoá đồng bộ.
