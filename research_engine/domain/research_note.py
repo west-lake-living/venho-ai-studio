@@ -18,6 +18,7 @@ ResearchDomain = Literal[
     "market_pricing",
     "social_trend",
     "local_events",
+    "weather_signal",
 ]
 ResearchStatus = Literal["draft", "reviewed", "promoted", "archived"]
 

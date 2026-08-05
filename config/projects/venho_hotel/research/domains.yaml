@@ -8,3 +8,7 @@ domains:
   market_pricing: {cadence: monthly, default_expiry_days: 120}
   social_trend: {cadence: daily, default_expiry_days: 7}
   local_events: {cadence: twice_weekly, default_expiry_days: event_end}
+  # 9th domain, plan v3.1 ★ addition -- backs research_engine.trend_radar's
+  # scan_weather.py/weather_signal.py collectors (not wired into a cron yet,
+  # same "manual for now" status as trend-scan -- see growth_orchestrator/cli.py).
+  weather_signal: {cadence: daily, default_expiry_days: 1}
