@@ -486,6 +486,13 @@ def run_daily_cycle(
                 # persisted anywhere -- see approve_and_dispatch.edit_publication.
                 dna_subject=topic["dna_subject"],
                 slot_id=slot_id,
+                # Persisted so edit_publication can re-run the real claim +
+                # alignment validators (not just the content-quality rubric)
+                # against an edited draft without needing to regenerate the
+                # CreativeBrief from scratch -- see approve_and_dispatch.
+                creative_brief=brief,
+                claims=selected.get("claims", []),
+                scene_summary=selected.get("scene_summary", {}),
             )
             publications.append(publication)
         except Exception as exc:  # noqa: BLE001 - one platform's provider/network failure (rate limit, timeout) must not abort the other platforms' drafts for this day

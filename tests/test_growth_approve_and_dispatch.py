@@ -341,7 +341,58 @@ def test_edit_publication_good_text_re_enters_pending_approval(tmp_path: Path) -
     assert result["status"] == "PENDING_APPROVAL"
     assert result["content"]["text"] == _GOOD_EDIT_TEXT
     assert result["edited_by"] == "harry"
-    assert result["edit_validation"]["verdict"] == "approve"
+    assert result["edit_validation"]["content_report"]["verdict"] == "approve"
+    # Row has no persisted creative_brief (predates 2026-08-05) -- claim/
+    # alignment re-check is skipped, not silently treated as passing.
+    assert result["edit_validation"]["claim_alignment_skipped"] is True
+
+
+def test_edit_publication_passes_when_persisted_claims_are_fact_backed(tmp_path: Path) -> None:
+    from knowledge_studio.facts.fact_store import FactStore
+
+    FactStore(project="venho_hotel", data_root=tmp_path).save(
+        {"fact_key": "hotel.room_count", "value": 12, "value_type": "integer", "source_type": "owner_confirmed",
+         "confidence": 1.0, "status": "approved", "version": 1, "valid_from": "2026-01-01T00:00:00+07:00", "valid_to": None}
+    )
+    registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
+    publication_id = _reserve_pending_with_dna_subject(registry)
+    registry.update(
+        publication_id,
+        creative_brief={"visual": {"required_entities": [], "forbidden_entities": []}},
+        claims=[{"text": "Khách sạn có 12 phòng", "fact_key": "hotel.room_count"}],
+        scene_summary={"entities": []},
+    )
+
+    result = edit_publication(
+        publication_id, edited_by="harry", new_text=_GOOD_EDIT_TEXT, data_root=tmp_path, registry=registry
+    )
+
+    assert result["edit_validation"]["claim_report"]["kill_switches"] == []
+    assert result["edit_validation"]["alignment_report"]["kill_switches"] == []
+    assert result["status"] == "PENDING_APPROVAL"
+
+
+def test_edit_publication_reruns_claim_alignment_when_brief_is_persisted(tmp_path: Path) -> None:
+    registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
+    publication_id = _reserve_pending_with_dna_subject(registry)
+    registry.update(
+        publication_id,
+        creative_brief={"visual": {"required_entities": [], "forbidden_entities": []}},
+        claims=[{"text": "Khách sạn có 12 phòng", "fact_key": "room_count"}],
+        scene_summary={"entities": []},
+    )
+
+    result = edit_publication(
+        publication_id, edited_by="harry", new_text=_GOOD_EDIT_TEXT, data_root=tmp_path, registry=registry
+    )
+
+    assert "claim_alignment_skipped" not in result["edit_validation"]
+    assert result["edit_validation"]["claim_report"]["kill_switches"] == ["unsupported_critical_claim"]
+    # The persisted claim has a fact_key pointing at a fact that doesn't
+    # exist in this test's (empty) fact store -- ClaimValidator correctly
+    # kill-switches it, and that must still block re-entering the queue
+    # even though the content-quality rubric alone would have passed.
+    assert result["status"] == "NEEDS_REVISION"
 
 
 def test_edit_publication_bad_text_lands_on_needs_revision_and_drops_from_pending(tmp_path: Path) -> None:

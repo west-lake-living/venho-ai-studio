@@ -12,6 +12,8 @@ from growth_orchestrator.bridges.m07_publishing_bridge import (
 )
 from publishing_gateway.publication_registry import PublicationRegistry
 from shared.jobs.slot_store import SlotStore
+from validator_studio.alignment_validator import validate_alignment
+from validator_studio.claim_validator import ClaimValidator
 from validator_studio.content_validator import validate_content
 from validator_studio.schemas.validation_base import Recommendation
 
@@ -231,16 +233,29 @@ def edit_publication(
       M03ValidatorBridge gates on in daily_cycle) against the row's own
       `dna_subject` (persisted on the registry row since 2026-08-04
       specifically so edits can be re-validated without needing the original
-      CreativeBrief object, which the registry does not retain). Only a real
-      Recommendation.APPROVE re-enters PENDING_APPROVAL; anything else lands
-      on NEEDS_REVISION and drops out of the approval queue, same as a
-      failed daily_cycle draft would.
+      CreativeBrief object, which the registry did not retain at the time).
+    - The row's persisted `claims`/`scene_summary`/`creative_brief` (added
+      2026-08-05 to daily_cycle's registry.update call specifically for this)
+      are also re-run through the same ClaimValidator/validate_alignment
+      M03ValidatorBridge calls -- a kill-switch on either (unsupported claim,
+      forbidden/missing scene entity) still blocks re-entering the queue.
+      Rows written before 2026-08-05 won't have these fields; that half of
+      the gate is skipped for them (logged on the report as
+      `claim_alignment_skipped: true`), not silently treated as passing.
+    - Important limitation: claims/scene_summary are structured metadata
+      captured from the *original* LLM generation, not re-derived from the
+      edited prose -- there is no claim-extraction step in this codebase
+      that turns arbitrary edited text back into structured claims. So this
+      catches "the original claims still have no supporting fact_key" or
+      "the original scene plan still uses a forbidden entity", but it
+      cannot catch a brand-new false claim Harry types into the edit by
+      hand. That is caught by the content-quality rubric's brand_fit/clarity
+      checks on a best-effort basis, not guaranteed.
 
-    Note: this re-runs the content-quality gate only, not the claim/
-    alignment validators (those score against the original CreativeBrief's
-    proof_points/scene_summary, which are not persisted on the registry row
-    -- persisting the full brief would be a larger change than this edit
-    feature warrants; flagged for Harry rather than silently skipped).
+    Only a real Recommendation.APPROVE from content_validator *and* no
+    claim/alignment kill-switch re-enters PENDING_APPROVAL; anything else
+    lands on NEEDS_REVISION and drops out of the approval queue, same as a
+    failed daily_cycle draft would.
     """
     registry = registry or PublicationRegistry(project, data_root=data_root)
     claimed = registry.claim(publication_id, expected_status=EDITABLE_STATUSES, claimed_status=EDITING_STATUS)
@@ -260,14 +275,29 @@ def edit_publication(
         if tmp_path is not None:
             tmp_path.unlink(missing_ok=True)
 
+    content_passed = not report.kill_switch.triggered and report.verdict == Recommendation.APPROVE
+    edit_validation: dict = {"content_report": report.model_dump(mode="json")}
+
+    claim_alignment_passed = True
+    creative_brief = claimed.get("creative_brief")
+    if creative_brief is None:
+        edit_validation["claim_alignment_skipped"] = True
+    else:
+        claim_report = ClaimValidator(project=project, data_root=data_root).validate(claimed.get("claims") or [])
+        alignment_report = validate_alignment(creative_brief, claimed.get("scene_summary") or {})
+        edit_validation["claim_report"] = claim_report
+        edit_validation["alignment_report"] = alignment_report
+        if claim_report["kill_switches"] or alignment_report["kill_switches"]:
+            claim_alignment_passed = False
+
     new_content = dict(claimed.get("content") or {})
     new_content["text"] = new_text
-    passed = not report.kill_switch.triggered and report.verdict == Recommendation.APPROVE
+    passed = content_passed and claim_alignment_passed
     return registry.update(
         publication_id,
         content=new_content,
         edited_by=edited_by,
-        edit_validation=report.model_dump(mode="json"),
+        edit_validation=edit_validation,
         status=PENDING_STATUS if passed else NEEDS_REVISION_STATUS,
         # a fresh Approve must always build a new snapshot off the edited
         # content -- never let it ride through on the pre-edit approval.
