@@ -1,10 +1,12 @@
-# STATUS (2026-08-05 audit): implemented and unit-tested but NOT called by
-# `m08_analytics_bridge.py` or `analytics_feedback/cli.py` -- `measure_cmd`
-# (the real entry point, growth_orchestrator/cli.py) always uses
-# `MockMetricsAdapter` directly, never `build_metrics_adapter()` below. Real
-# Meta Graph API metrics are not flowing into any published report yet, even
-# though `feature_flags.yaml` has `meta_insights_enabled` (currently false
-# and unenforced -- see Phần 14 audit note in the master plan).
+# STATUS (2026-08-06): wired into growth_orchestrator.bridges.m08_analytics
+# _bridge.M08AnalyticsBridge as the default metrics_adapter_factory -- the
+# real `measure`/`observe()` entry point now goes through this function
+# instead of hardcoding MockMetricsAdapter, so `meta_insights_enabled` /
+# `real_meta_insights_enabled` actually has an effect. Still returns Mock
+# while the flag is off (today's honest state -- no real Facebook/Instagram
+# Insights or Zalo OA analytics API integration is implemented below);
+# flipping the flag on without first building a real Graph API call in
+# this function will raise loudly, which is the correct behavior.
 from __future__ import annotations
 
 from pathlib import Path

@@ -1,5 +1,11 @@
-version: 1
+version: 2
 direct_window_hours: 72
 assisted_window_days: 14
 dedupe_fields: [normalized_contact_hash, stay_date, guest_count]
 pseudonymization: sha256
+# Real venhohotel.com contact page a Zalo CTA links to, tagged with
+# ?utm_content=<publication_id> per publication (2026-08-06, Harry's call:
+# build minimal attribution via the Zalo channel first -- FB/IG posts carry
+# no clickable link at all today, and the booking form doesn't capture utm
+# params yet, see attribution.py's module docstring for the full gap).
+tracking_base_url: "https://venhohotel.com/lien-he"

@@ -6,6 +6,7 @@ from analytics_feedback.attribution import (
     AttributionPolicy,
     attribute_conversion_event,
     build_content_performance_view,
+    build_tracking_url,
     build_utm_content,
     dedupe_conversion_events,
     pseudonymize_contact,
@@ -59,6 +60,22 @@ def test_assisted_and_unattributed_windows_are_distinct() -> None:
     assert assisted["publication_id"] == "pub-p6-002"
     assert unattributed["attribution_status"] == "unattributed"
     assert unattributed["publication_id"] is None
+
+
+def test_build_tracking_url_embeds_publication_id_as_utm_content() -> None:
+    url = build_tracking_url("pub-p6-004", base_url="https://venhohotel.com/lien-he", platform="zalo")
+
+    assert url.startswith("https://venhohotel.com/lien-he?")
+    assert "utm_source=zalo" in url
+    assert "utm_medium=social" in url
+    assert "utm_content=pub-p6-004" in url
+
+    # A real inbound event carrying this exact utm_content must attribute
+    # back to exactly the one publication_id it was built for (DoD #25).
+    event = {"id": "conv-4", "event_type": "qualified_dm", "occurred_at": "2026-08-04T09:00:00Z", "utm_content": build_utm_content("pub-p6-004")}
+    publications = [{"publication_id": "pub-p6-004", "published_at": "2026-08-03T09:00:00Z"}]
+    attributed = attribute_conversion_event(event, publications, _policy())
+    assert attributed["publication_id"] == "pub-p6-004"
 
 
 def test_conversion_dedupe_uses_policy_fields() -> None:

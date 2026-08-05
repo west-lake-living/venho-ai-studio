@@ -14,6 +14,7 @@ from agent_studio.growth.reference_asset_resolver import ReferenceAssetResolver
 from agent_studio.growth.scenario_registry import ScenarioRegistry
 from content_studio.content_context import DEFAULT_CONFIG_ROOT, DEFAULT_DATA_ROOT, load_content_config
 from content_studio.prompt_bridge import slugify
+from analytics_feedback.attribution import AttributionPolicy, build_tracking_url
 from growth_orchestrator.application.budget_gate import BudgetGate
 from growth_orchestrator.application.evergreen_pool import choose_evergreen
 from growth_orchestrator.application.run_content_pipeline import run_content_pipeline
@@ -204,11 +205,33 @@ def _build_creative_brief(topic: dict[str, str], platform: str, day: str, projec
 
 
 def _content_payload(
-    candidate: dict[str, Any], *, image_run_path: Optional[str] = None, image_public_url: Optional[str] = None
+    candidate: dict[str, Any],
+    *,
+    image_run_path: Optional[str] = None,
+    image_public_url: Optional[str] = None,
+    publication_id: Optional[str] = None,
+    platform: Optional[str] = None,
 ) -> dict[str, Any]:
     text = f"{candidate['hook']}\n\n{candidate['body']}\n\n{candidate['cta']}"
     if candidate.get("hashtags"):
         text += "\n\n" + " ".join(candidate["hashtags"])
+
+    # Minimal attribution (Phase 6, Harry's call 2026-08-06): only Zalo can
+    # carry a real clickable deep-link -- FB/IG posts here are plain text
+    # (no link at all), so this is the one channel a real
+    # ?utm_content=<publication_id> tracking URL can go out on today. See
+    # analytics_feedback/attribution.py's module docstring for what's still
+    # missing on the receiving side.
+    tracking_url: Optional[str] = None
+    if platform == "zalo" and publication_id:
+        try:
+            policy = AttributionPolicy.from_file()
+            if policy.tracking_base_url:
+                tracking_url = build_tracking_url(publication_id, base_url=policy.tracking_base_url, platform=platform)
+                text += f"\n\n{tracking_url}"
+        except Exception:  # noqa: BLE001 - a missing/malformed attribution_policy.yaml must not block queuing the text draft
+            pass
+
     return {
         "title": candidate.get("title", ""),
         "text": text,
@@ -221,6 +244,7 @@ def _content_payload(
         # text-only if Drive is unconfigured/unreachable (best-effort, same
         # policy as image generation itself).
         "image_public_url": image_public_url,
+        "tracking_url": tracking_url,
     }
 
 
@@ -690,7 +714,10 @@ def run_daily_cycle(
             publication = registry.update(
                 reserved["publication_id"],
                 status="PENDING_APPROVAL",
-                content=_content_payload(selected, image_run_path=image_run_path, image_public_url=image_public_url),
+                content=_content_payload(
+                    selected, image_run_path=image_run_path, image_public_url=image_public_url,
+                    publication_id=publication_id, platform=platform,
+                ),
                 creative_brief_id=brief["id"],
                 package_snapshot=package_snapshot,
                 # day/pillar/topic so the dashboard can group same-day publications

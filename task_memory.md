@@ -1008,6 +1008,35 @@ Hỏi Harry 1 quyết định thật cần trước khi code (AskUserQuestion, v
 
 **Verify:** `/usr/bin/python3 -m pytest -q` → 714/714 pass (710 + 4 test mới). 0 API call. Chưa push — Harry: "sẽ commit và push khi nào hoàn thành tất cả" (đang giữa Phase 5, chưa xong toàn bộ roadmap).
 
+## 14k. Phase 6 Analytics + Attribution — audit + attribution tối thiểu qua Zalo (2026-08-06)
+
+Harry: "ok, làm tiếp P[hase 6]" (tiếp nối 14j, cùng phiên).
+
+**Audit trước khi code — cùng phương pháp 14i/14j:** Phase 6 Codex build 2026-08-03, `task_status.md` ghi "DONE". Grep caller thật phát hiện `analytics_feedback/meta_insights.py` và `analytics_feedback/attribution.py` **0 caller thật** (cả hai đã có status comment tự nhận từ 1 audit trước đó ngày 2026-08-05 xác nhận đúng điều này — không phải phát hiện mới của phiên này, mà là confirm lại + hành động). Khác Phase 4.5/5 (chỉ cần nối dây), đào sâu thêm phát hiện: **grep `utm_content`/`build_utm_content` toàn repo → chỉ xuất hiện trong chính `attribution.py`, không đâu khác** — nghĩa là không có bài đăng nào từng mang link có gắn utm cả. Kiểm tra tiếp `_content_payload()` (nơi build text bài đăng): CTA chỉ là câu chữ LLM sinh ra ("soft call-to-action sentence"), không có URL nào được chèn. Kiểm tra chéo sang repo `Ven Ho Hotel` (`grep utm_source/utm_content src/`) — chỉ có utm cho link ra Agoda (`ota.ts`), không có gì bắt utm vào từ traffic bên ngoài. Kết luận: attribution DoD #25 cần xây mới thật sự (link tracking + nơi nhận sự kiện), không phải chỉ nối `attribute_conversion_event()` đã có sẵn.
+
+Hỏi Harry phạm vi (AskUserQuestion, 3 lựa chọn: hoãn / xây tối thiểu qua Zalo / để anh quyết sau). **Harry chọn: xây tối thiểu qua Zalo.** Lý do hợp lý về mặt kỹ thuật: Zalo OA publish qua Make.com webhook (`ZaloOAAdapter`) — message thật do Make.com tự soạn dựa trên `content` payload gửi từ đây, nên đây là kênh duy nhất có thể mang 1 URL click được thật (Facebook/Instagram feed post trong pipeline này không hề có link, chỉ text).
+
+**Việc đã làm (717/717 pass, +3 test mới):**
+
+1. **`meta_insights.build_metrics_adapter` nối thật vào `M08AnalyticsBridge`:**
+   - Trước đây bridge hardcode `metrics_adapter_factory = MockMetricsAdapter` trực tiếp trong `__init__`, bỏ qua hoàn toàn `meta_insights.py::build_metrics_adapter()` (hàm factory tôn trọng flag `meta_insights_enabled`/`real_meta_insights_enabled`). Đổi default thành `build_metrics_adapter` — flag giờ thật sự có tác dụng: tắt (mặc định) → vẫn Mock (đúng trạng thái thật, chưa có real Graph API client); bật mà chưa implement real adapter → raise `RuntimeError` rõ ràng thay vì âm thầm return Mock (đúng fail-mode mong muốn, tránh Harry tưởng nhầm real data đang chạy).
+   - Cập nhật status comment đầu file `meta_insights.py` phản ánh đã nối.
+
+2. **Attribution tối thiểu qua Zalo:**
+   - `attribution_policy.yaml` version 1→2, thêm `tracking_base_url: "https://venhohotel.com/lien-he"` (route `/lien-he` xác nhận có thật trong `Ven Ho Hotel/src/app/lien-he/`).
+   - `attribution.py::build_tracking_url(publication_id, base_url, platform)` (mới) — tái dùng `build_utm_content()` sẵn có, sinh `{base_url}?utm_source={platform}&utm_medium=social&utm_content={publication_id}`. `AttributionPolicy` dataclass thêm field `tracking_base_url`.
+   - `daily_cycle.py::_content_payload()` — thêm param `publication_id`/`platform`; khi `platform=="zalo"` và có `tracking_base_url` trong policy, nối link vào cuối `text` + lưu riêng field `content["tracking_url"]` (để Make.com/Harry lấy ra làm URL nút bấm thật trong Zalo message — bản thân code này không cấu hình message Zalo, Make.com scenario làm việc đó, xem `ZaloOAAdapter`'s docstring). Bọc try/except best-effort — thiếu/hỏng `attribution_policy.yaml` không được chặn queue bài text.
+   - `growth_orchestrator/cli.py`'s call site truyền `publication_id=publication_id, platform=platform` vào `_content_payload()`.
+   - CLI mới `venho-analytics attribute <events.json>` (`analytics_feedback/cli.py`) — đọc publication đã **RECONCILED thật** (`published_at` có giá trị thật, set bởi `venho-growth reconcile` sau khi Harry xác nhận bài đã lên thật) từ `PublicationRegistry`, pseudonymize contact nếu có, dedupe theo policy, chạy `attribute_conversion_event()` thật, in JSON kết quả. Đây là nửa "chạy được thật" của DoD #25.
+   - **Gap còn lại, ghi rõ ràng không giả vờ đã xong:** không có nguồn sự kiện chuyển đổi tự động nào feed vào CLI `attribute` — Harry phải tự cung cấp `events.json` (export tay từ GA4/hộp thư/Zalo). Tự động hoá thật cần 1 trong 2: (a) GA4 Data API pull (cần service account credentials, quota, quyết định riêng) hoặc (b) sửa form đặt phòng trên `Ven Ho Hotel` website để bắt `utm_content` từ query string và forward vào booking API — đây là thay đổi **production website đang chạy thật** (`venhohotel.com`), thuộc phạm vi CLAUDE.md riêng của repo đó ("Hỏi trước khi làm"), không tự ý đụng vào trong phiên này.
+   - `test_end_to_end_report_and_cli_stay_offline` (test cũ) phải sửa: `runner.invoke(app, [...])` không còn tự động chọn lệnh `collect` nữa vì app giờ có 2 lệnh (Typer/Click chỉ auto-invoke khi app chỉ có đúng 1 command) — thêm `"collect"` làm arg đầu.
+
+3. **M10 performance view** (`build_content_performance_view`) — đã real từ trước (đọc M08 output, không tính lại), không cần sửa.
+
+4. **Doc:** Phần 12 Phase 6 viết lại đầy đủ (audit note + phạm vi Harry chốt + gap còn lại), thêm dòng CHANGELOG "v3.1 (2026-08-06 revision, Phase 6)".
+
+**Verify:** `/usr/bin/python3 -m pytest -q` → 717/717 pass (714 + 3 test mới: `build_tracking_url` + attribution nối tiếp thật, Zalo có link/FB không có link qua `run_daily_cycle` thật, CLI `attribute` end-to-end qua `PublicationRegistry` thật). 0 API call. Chưa push (Harry: "sẽ commit và push khi nào hoàn thành tất cả").
+
 ## 14. Task Closing Protocol
 
 Khi người dùng nói **"kết thúc task"**, Codex phải tự động:

@@ -1,6 +1,23 @@
 # VENHO AI STUDIO — Task Status
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-08-06 (Phase 5 Durable Ops — xem mục dưới) · **Tests:** 714/714 pass (+4 test mới) · 0 API call trong test
+**Cập nhật:** 2026-08-06 (Phase 6 Analytics + Attribution — xem mục dưới) · **Tests:** 717/717 pass (+3 test mới) · 0 API call trong test
+
+---
+
+### Growth Agent v3.1 — Phase 6 Analytics + Attribution: meta_insights flag thật + attribution tối thiểu qua Zalo (2026-08-06)
+
+**Status: DONE (phạm vi Harry chốt) — commit local, chưa push**
+
+Tiếp nối Phase 5 cùng phiên. Audit Phase 6 (Codex build 2026-08-03) — cùng loại lỗ hổng: `meta_insights.py`/`attribution.py` có code + unit test nhưng 0 caller thật. Đào sâu hơn phát hiện: bài đăng Growth Agent hiện **không có link nào cả** (FB/IG chỉ có CTA chữ, form đặt phòng trên website chưa bắt utm param) — nghĩa là attribution end-to-end thật cần **xây mới**, không chỉ nối dây có sẵn như Phase 4.5/5. Hỏi Harry phạm vi (AskUserQuestion) — Harry chọn: xây tối thiểu qua kênh Zalo (kênh duy nhất có deep-link click được thật, khác FB/IG).
+
+- [x] `meta_insights.build_metrics_adapter` nối vào `M08AnalyticsBridge` default factory — flag `meta_insights_enabled` giờ có tác dụng thật (trước đó bridge hardcode Mock, bỏ qua flag hoàn toàn). Vẫn Mock khi flag tắt (đúng trạng thái thật hiện tại).
+- [x] `attribution.py::build_tracking_url()` (mới) + `tracking_base_url` trong `attribution_policy.yaml` — sinh link `venhohotel.com/lien-he?utm_source=zalo&utm_medium=social&utm_content=<publication_id>`.
+- [x] `daily_cycle.py::_content_payload()` nhúng link này vào cuối bài **Zalo** (chỉ Zalo — FB/IG/Threads vẫn không có link, đúng thực tế content hiện tại).
+- [x] CLI mới `venho-analytics attribute <events.json>` — chạy attribution thật trên publication đã **reconciled** (có `published_at` thật) từ `PublicationRegistry`.
+- [ ] **Gap còn lại, không giả vờ đã xong:** không có nguồn sự kiện chuyển đổi tự động — Harry vẫn phải tự cung cấp `events.json` bằng tay. Tự động hoá cần GA4 Data API (credentials + quyết định riêng) hoặc sửa form đặt phòng trên website `Ven Ho Hotel` để bắt utm (chạm production website, cần approval riêng của dự án đó — không tự làm).
+- [x] Verify: `/usr/bin/python3 -m pytest -q` → 717/717 pass (714 + 3 test mới: build_tracking_url + attribution end-to-end, Zalo content có link/FB không có, CLI attribute end-to-end).
+
+Chi tiết đầy đủ: `task_memory.md` mục 14k.
 
 ---
 

@@ -6,6 +6,7 @@ from typing import Any, Callable, Optional
 from analytics_feedback.adapters.base_metrics_adapter import BaseMetricsAdapter
 from analytics_feedback.adapters.mock_metrics import MockMetricsAdapter
 from analytics_feedback.baseline_calculator import calculate_baseline
+from analytics_feedback.meta_insights import build_metrics_adapter
 from analytics_feedback.feedback_advisory_generator import generate_feedback_advisory
 from analytics_feedback.metrics_standardizer import standardize_metrics
 from analytics_feedback.performance_scorer import score_snapshot
@@ -22,12 +23,17 @@ MetricsAdapterFactory = Callable[[str], BaseMetricsAdapter]
 class M08AnalyticsBridge:
     """Real bridge to analytics_feedback (M08) -- replaces the `pending_observation` stub.
 
-    `metrics_adapter_factory` defaults to `MockMetricsAdapter` -- there is no
-    real Facebook/Instagram Insights or Zalo OA analytics API integration
-    built (that needs its own credentialed adapter, a separate task from
-    "wire M08 into growth_orchestrator"). Swap the factory for a real one
-    once that adapter exists; everything downstream (standardize/score/
-    sentiment/advisory/report/stores) is already real, not mocked.
+    `metrics_adapter_factory` defaults to `meta_insights.build_metrics_adapter`
+    (2026-08-06 -- previously hardcoded `MockMetricsAdapter` directly, which
+    meant `feature_flags.yaml`'s `meta_insights_enabled` flag existed but
+    had zero effect on this real entry point). `build_metrics_adapter`
+    itself still returns `MockMetricsAdapter` while the flag is off (the
+    default, and the honest state today -- no real Facebook/Instagram
+    Insights or Zalo OA analytics API integration is built); flipping the
+    flag on without first implementing a real Graph API adapter makes it
+    raise loudly instead of silently mocking, which is the correct failure
+    mode. Everything downstream (standardize/score/sentiment/advisory/
+    report/stores) is already real, not mocked.
     """
 
     def __init__(
@@ -42,7 +48,7 @@ class M08AnalyticsBridge:
         self.project = project
         self.data_root = data_root
         self.registry = registry or PublicationRegistry(project, data_root=data_root)
-        self.metrics_adapter_factory = metrics_adapter_factory or MockMetricsAdapter
+        self.metrics_adapter_factory = metrics_adapter_factory or build_metrics_adapter
         # research/questions is the real Research OS vault (see research/README.md
         # ownership split) -- every observation feeds a "why" question back
         # into research, closing DoD #25's advisory -> new-research-question loop.

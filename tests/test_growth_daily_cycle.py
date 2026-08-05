@@ -72,6 +72,22 @@ def test_run_daily_cycle_queues_one_pending_approval_publication_per_platform(tm
     assert len(stored) == len(DEFAULT_PLATFORMS)
 
 
+def test_run_daily_cycle_zalo_post_carries_a_real_utm_tracking_link(tmp_path: Path) -> None:
+    """Phase 6 minimal attribution (Harry's call, 2026-08-06): only the Zalo
+    post gets a real clickable ?utm_content=<publication_id> link -- FB/IG
+    posts carry no link at all in this pipeline."""
+    data_root = _tmp_data_root(tmp_path)
+    result = run_daily_cycle("monday", data_root=data_root, generate_image=False, content_bridge=_mock_content_bridge(data_root), validator_bridge=_AlwaysApproveValidatorBridge())
+
+    zalo = next(pub for pub in result.publications if pub["platform"] == "zalo")
+    assert zalo["content"]["tracking_url"] is not None
+    assert f"utm_content={zalo['publication_id']}" in zalo["content"]["tracking_url"]
+    assert zalo["content"]["tracking_url"] in zalo["content"]["text"]
+
+    facebook = next(pub for pub in result.publications if pub["platform"] == "facebook")
+    assert facebook["content"]["tracking_url"] is None
+
+
 def test_run_daily_cycle_one_platform_failure_does_not_abort_the_others(tmp_path: Path) -> None:
     """A provider blip on one platform (rate limit, network) must not drop the
     other platforms' drafts for the same day -- regression test for the

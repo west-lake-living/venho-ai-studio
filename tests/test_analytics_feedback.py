@@ -138,6 +138,42 @@ def test_end_to_end_report_and_cli_stay_offline(tmp_path: Path) -> None:
     RawMetricsStore("venho_hotel", data_root=tmp_path / "data" / "projects").save(snapshot.snapshot_id, raw)
     assert "Analytics Report" in report
 
-    result = runner.invoke(app, [str(receipt_path), "--data-root", str(tmp_path / "data" / "projects")])
+    # "collect" must be named explicitly now that the app has a second
+    # command ("attribute", added 2026-08-06) -- Typer/Click only
+    # auto-invokes a single-command app without naming it.
+    result = runner.invoke(app, ["collect", str(receipt_path), "--data-root", str(tmp_path / "data" / "projects")])
     assert result.exit_code == 0, result.output
     assert "Analytics package:" in result.output
+
+
+def test_attribute_cli_traces_a_real_inquiry_to_exactly_one_publication(tmp_path: Path) -> None:
+    """DoD #25 end-to-end via the real CLI: a real conversion event JSON
+    file + a real reconciled PublicationRegistry row must attribute to
+    exactly that one publication_id -- not a hand-built in-memory list."""
+    from publishing_gateway.publication_registry import PublicationRegistry
+
+    data_root = tmp_path / "data" / "projects"
+    registry = PublicationRegistry("venho_hotel", data_root=data_root)
+    reserved = registry.reserve(
+        {"publication_id": "pub-attr-1", "content_package_id": "pkg-1", "idempotency_key": "idem-1", "platform": "zalo"}
+    )
+    registry.update(reserved["publication_id"], status="PUBLISHED", published_at="2026-08-03T09:00:00+00:00")
+    # A second, unreconciled publication (no published_at) must be excluded
+    # from the candidate list entirely -- it has no real timeline to match.
+    registry.reserve({"publication_id": "pub-attr-2", "content_package_id": "pkg-2", "idempotency_key": "idem-2", "platform": "facebook"})
+
+    events_path = tmp_path / "events.json"
+    events_path.write_text(
+        json.dumps(
+            [{"id": "conv-cli-1", "event_type": "zalo_dm", "occurred_at": "2026-08-04T09:00:00+00:00", "utm_content": "pub-attr-1"}]
+        ),
+        encoding="utf-8",
+    )
+
+    result = runner.invoke(app, ["attribute", str(events_path), "--data-root", str(data_root)])
+
+    assert result.exit_code == 0, result.output
+    attributed = json.loads(result.output)
+    assert len(attributed) == 1
+    assert attributed[0]["publication_id"] == "pub-attr-1"
+    assert attributed[0]["attribution_status"] == "direct"
