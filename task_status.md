@@ -1,6 +1,24 @@
 # VENHO AI STUDIO — Task Status
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-08-06 (Phase 6 Analytics + Attribution — xem mục dưới) · **Tests:** 717/717 pass (+3 test mới) · 0 API call trong test
+**Cập nhật:** 2026-08-06 (Phase 7 Growth Intelligence pilot — xem mục dưới) · **Tests:** 724/724 pass (+7 test mới) · 0 API call trong test
+
+---
+
+### Growth Agent v3.1 — Phase 7 Growth Intelligence pilot: strategy_memory nối thật (2026-08-06)
+
+**Status: DONE — commit local, chưa push**
+
+Tiếp nối Phase 6 cùng phiên. Audit `strategy_memory/` (Codex build 2026-08-03) — cùng lỗ hổng như Phase 4.5/5/6: `pattern_inference.py`/`weekly_brief.py`/`qbsr_guardrail.py` có code + unit test đầy đủ nhưng 0 caller thật, và package này chưa từng có CLI nào cả.
+
+- [x] CLI mới `venho-strategy` (`strategy_memory/cli.py`, script entry mới trong `pyproject.toml`): `weekly-brief`, `promote`, `list-promoted`.
+- [x] `strategy_memory/collect_pilot_evidence.py::collect_pilot_snapshots()` (mới) — join thật `PublicationRegistry` + M08 `SnapshotStore` (reach thật) + `AttributionEventStore` (mới) theo (pillar, platform), một dòng/publication (đúng "sample size" thống kê, không gộp tổng trước).
+- [x] `AttributionEventStore` (mới) — Phase 6's CLI `venho-analytics attribute` giờ **lưu lại** kết quả attribution thật thay vì chỉ in ra rồi bỏ.
+- [x] Vòng phản hồi `INCONCLUSIVE` → `research/questions/` mở rộng cho strategy pattern (hàm `generate_research_question_from_analytics` đã có test đúng shape từ trước, chưa ai gọi ngoài M08's per-publication path).
+- [x] **Gap phụ phát hiện + sửa:** `M08AnalyticsBridge.observe()` chưa từng đọc `pillar` thật từ publication row (dù `daily_cycle.py` ghi field này từ 2026-08-04) → mọi snapshot trước đây có `pillar="unknown"`, group theo pillar bất khả thi. Đã sửa.
+- [x] Verify: `/usr/bin/python3 -m pytest -q` → 724/724 pass (717 + 7 test mới), 0 API call. Đã tự phát hiện + sửa 1 lỗi trong lúc viết test — test đầu chạy CLI `weekly-brief` không truyền `--questions-root`, vô tình ghi file thật vào `research/questions/` của repo → sửa test truyền `--questions-root` trỏ `tmp_path`, xoá file rác đã lỡ tạo, xác nhận `git status research/` sạch.
+- [x] **Trạng thái thật hiện tại (chạy tay xác nhận):** `weekly-brief` trả về 0 recommendation — đúng thiết kế `INCONCLUSIVE`, không phải bug, vì Growth Agent mới chạy thật từ 2026-08-03/04, chưa đủ `min_sample_size` publication có cả snapshot thật lẫn sự kiện attribute thật ở bất kỳ scope nào.
+
+Chi tiết đầy đủ: `task_memory.md` mục 14l.
 
 ---
 

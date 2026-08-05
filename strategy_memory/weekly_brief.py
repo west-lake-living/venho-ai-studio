@@ -21,6 +21,10 @@ def build_weekly_strategy_brief(
             raise ValueError("recommendation requires evidence and limitations")
         recommendations.append(
             {
+                # id (2026-08-06): carried through from the source
+                # StrategyPattern so a promote step can reference this exact
+                # recommendation later without re-deriving/guessing its id.
+                "id": memory["id"],
                 "pattern": memory["pattern"],
                 "confidence": memory["confidence"],
                 "scope": memory.get("scope", {}),

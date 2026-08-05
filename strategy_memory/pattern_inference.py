@@ -1,8 +1,12 @@
-# STATUS (2026-08-05 audit): whole strategy_memory/ package is Phase 7
-# ("Growth Intelligence pilot") scope -- implemented + unit-tested
-# (tests/test_growth_phase7_strategy_memory.py) but NOT called from any CLI,
-# cron, or bridge. Nothing produces a real StrategyPattern from live
-# analytics data yet; there is no promoted strategy memory in the repo.
+# STATUS (2026-08-06): wired -- CLI `venho-strategy weekly-brief` (real
+# entry point) calls `infer_strategy_pattern` per (pillar, platform) scope
+# using `strategy_memory.collect_pilot_evidence.collect_pilot_snapshots`'s
+# real join of PublicationRegistry + M08 SnapshotStore + AttributionEventStore.
+# `venho-strategy promote` is the separate, explicit founder-approval step
+# (plan §14: advisory-only, nothing auto-applies). Still correctly produces
+# 0 promotable patterns today: real pilot traffic + attributed inquiries
+# have not yet crossed any scope's min_sample_size (Growth Agent went live
+# 2026-08-03/04) -- that is the honest state, not a wiring gap.
 from __future__ import annotations
 
 from dataclasses import dataclass

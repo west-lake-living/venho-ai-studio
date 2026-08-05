@@ -13,7 +13,7 @@ from analytics_feedback.metrics_standardizer import standardize_metrics
 from analytics_feedback.performance_scorer import score_snapshot
 from analytics_feedback.report_generator import generate_report
 from analytics_feedback.sentiment_scorer import score_comments
-from analytics_feedback.stores import AdvisoryStore, RawMetricsStore, ReportStore, ScoreStore, SnapshotStore
+from analytics_feedback.stores import AdvisoryStore, AttributionEventStore, RawMetricsStore, ReportStore, ScoreStore, SnapshotStore
 
 app = typer.Typer(help="Module 08 Analytics & Feedback Loop")
 
@@ -66,6 +66,11 @@ def attribute(
     bar ("an inquiry test traces to exactly one publication") once Harry
     supplies real event data (e.g. exported from the booking inbox/GA4 by
     hand, or a phone/Zalo inquiry logged manually).
+
+    Results are persisted to `AttributionEventStore` (2026-08-06) -- not
+    just printed once and discarded -- so Phase 7's
+    `strategy_memory.collect_pilot_evidence` can read real attributed
+    events back as evidence for a strategy pattern.
     """
     from analytics_feedback.attribution import AttributionPolicy, attribute_conversion_event, dedupe_conversion_events, pseudonymize_contact
     from publishing_gateway.publication_registry import PublicationRegistry
@@ -88,4 +93,7 @@ def attribute(
     deduped = dedupe_conversion_events(pseudonymized_events, policy)
 
     results = [attribute_conversion_event(event, publications, policy) for event in deduped]
+    store = AttributionEventStore(project, data_root)
+    for result in results:
+        store.save(result["id"], result, overwrite=True)
     typer.echo(json.dumps(results, ensure_ascii=False, indent=2))

@@ -72,6 +72,12 @@ class M08AnalyticsBridge:
             package_id=publication["content_package_id"],
             project=self.project,
             published_timestamp=publication.get("updated_at") or publication.get("created_at"),
+            # pillar (2026-08-06): daily_cycle.py has set this on the
+            # registry row since 2026-08-04, but observe() never read it
+            # back -- DeliveryReceiptRef.pillar defaulted to "unknown" on
+            # every real snapshot, making pillar-based grouping (Phase 7's
+            # strategy_memory.collect_pilot_evidence) impossible.
+            pillar=publication.get("pillar") or "unknown",
             platform_results={
                 platform: PlatformReceiptRef(
                     success=True,

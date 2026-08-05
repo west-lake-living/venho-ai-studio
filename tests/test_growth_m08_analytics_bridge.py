@@ -62,6 +62,25 @@ def test_observe_published_publication_scores_and_saves_snapshot(tmp_path: Path)
     assert list(snapshot_path.glob("*.json"))
 
 
+def test_observe_carries_the_publication_pillar_onto_the_saved_snapshot(tmp_path: Path) -> None:
+    """Regression test (2026-08-06, Phase 7 prep): before this, observe()
+    never read `pillar` off the registry row, so every real snapshot's
+    `pillar` defaulted to "unknown" -- making pillar-based grouping
+    (strategy_memory.collect_pilot_evidence) impossible."""
+    registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
+    publication_id = _reserve_published(registry)
+    registry.update(publication_id, pillar="lake_view_rooms")
+    bridge = M08AnalyticsBridge(data_root=tmp_path, registry=registry, questions_root=tmp_path / "research_questions")
+
+    result = bridge.observe(publication_id)
+
+    snapshot_path = tmp_path / "venho_hotel" / "analytics" / "snapshots" / f"{result['snapshot_id']}.json"
+    import json
+
+    saved = json.loads(snapshot_path.read_text(encoding="utf-8"))
+    assert saved["pillar"] == "lake_view_rooms"
+
+
 def test_observe_generates_a_new_research_question(tmp_path: Path) -> None:
     """DoD #25: the feedback loop must not stop at 'advisory pending_approval'
     -- every real observation should also write a new research question back

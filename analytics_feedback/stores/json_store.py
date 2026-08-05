@@ -26,3 +26,13 @@ class JsonDirectoryStore:
         if not path.exists():
             return None
         return json.loads(path.read_text(encoding="utf-8"))
+
+    def list_all(self) -> list[dict]:
+        """All saved items in this store, unordered. Added 2026-08-06 for
+        `strategy_memory.collect_pilot_evidence`'s real cross-record
+        aggregation -- callers that only ever needed one record at a time
+        (save/load by id) predate this and are unaffected."""
+        items = []
+        for path in sorted(self.path.glob("*.json")):
+            items.append(json.loads(path.read_text(encoding="utf-8")))
+        return items

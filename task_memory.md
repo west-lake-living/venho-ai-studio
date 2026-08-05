@@ -1037,6 +1037,35 @@ Hỏi Harry phạm vi (AskUserQuestion, 3 lựa chọn: hoãn / xây tối thi�
 
 **Verify:** `/usr/bin/python3 -m pytest -q` → 717/717 pass (714 + 3 test mới: `build_tracking_url` + attribution nối tiếp thật, Zalo có link/FB không có link qua `run_daily_cycle` thật, CLI `attribute` end-to-end qua `PublicationRegistry` thật). 0 API call. Chưa push (Harry: "sẽ commit và push khi nào hoàn thành tất cả").
 
+## 14l. Phase 7 Growth Intelligence pilot — strategy_memory nối thật (2026-08-06)
+
+Harry: "làm tiếp P7" (tiếp nối 14k, cùng phiên).
+
+**Audit trước khi code — cùng phương pháp 14i/14j/14k:** `strategy_memory/` (Codex build 2026-08-03) có status comment tự nhận từ 1 audit trước (2026-08-05, không phải phiên này) xác nhận `pattern_inference.py` "implemented + unit-tested but NOT called from any CLI, cron, or bridge" — confirm lại bằng grep thật: đúng, 0 caller ngoài chính module và test riêng. Khác biệt so với việc chỉ "nối dây": package `strategy_memory` **chưa từng có CLI nào cả** (không có trong `[project.scripts]`), nên phải xây cả entry point mới, không chỉ đổi 1 default factory như Phase 6.
+
+**Thiết kế trước khi code:** `infer_strategy_pattern(snapshots, ...)` tính `min_sample_size` bằng `len(snapshots)` — nghĩa là hàm collect evidence PHẢI trả về 1 dòng/publication (sample thống kê thật), không được gộp tổng trước rồi coi là "1 sample" (lỗi thiết kế suýt mắc phải ở bản nháp đầu). Sửa `collect_pilot_snapshots()` để trả về list theo publication, filter theo (pillar, platform) ở tầng CLI trước khi truyền vào `infer_strategy_pattern`.
+
+**Việc đã làm (724/724 pass, +7 test mới):**
+
+1. **CLI mới `venho-strategy`** (`strategy_memory/cli.py`, thêm script entry `venho-strategy = "strategy_memory.cli:app"` vào `pyproject.toml` — package này chưa có script entry nào từ trước):
+   - `weekly-brief --week-id ... [--baseline-qbsr] [--min-sample-size] [--questions-root]` — chạy `collect_pilot_snapshots()` → group theo scope → `infer_strategy_pattern()` từng scope → `qbsr_rate()` tổng → `build_weekly_strategy_brief()` → lưu `StrategyBriefStore` (mới, `strategy_memory/stores.py`, JSON dưới `data/projects/{project}/strategy/weekly_briefs/`) → in JSON.
+   - `promote --week-id ... --pattern ... --approved-by ...` — chỉ promote được recommendation đã tồn tại thật trong 1 brief đã lưu (không nhận pattern tự bịa), gọi `promote_strategy_memory()` thật, lưu `PromotedStrategyStore` (mới).
+   - `list-promoted` — liệt kê những gì đã thật sự được duyệt, tách biệt khỏi brief hàng tuần (brief có thể chứa recommendation chưa/không được promote).
+
+2. **`strategy_memory/collect_pilot_evidence.py::collect_pilot_snapshots()` (mới)** — join thật `PublicationRegistry` + M08 `SnapshotStore` (đọc field `metrics.reach` thật) + `AttributionEventStore` (mới, xem mục 3) qua `content_package_id`/`publication_id`. Trả về **1 dòng/publication** (không gộp tổng), mỗi dòng có `pillar`/`platform`/`qualified_booking_signals`/`eligible_reach`. `qualified_booking_signals` chỉ đếm attribution status `direct`/`assisted` (bỏ `unattributed` — không chứng minh được gì về 1 publication cụ thể).
+
+3. **`AttributionEventStore` (mới, `analytics_feedback/stores/attribution_event_store.py`)** — Phase 6's CLI `venho-analytics attribute` (mục 14k) trước đây chỉ in kết quả JSON ra màn hình rồi bỏ, không có nơi nào đọc lại. Giờ mỗi kết quả attribute lưu qua store này (`overwrite=True`, key = event id) để `collect_pilot_snapshots()` đọc lại được. Thêm `JsonDirectoryStore.list_all()` (generic, dùng chung cho `SnapshotStore` + `AttributionEventStore`).
+
+4. **Vòng phản hồi `INCONCLUSIVE` → `research/questions/` cho strategy pattern:** `analytics_feedback/research_question_generator.py::generate_research_question_from_analytics()` đã có sẵn + đã có test đúng shape strategy pattern (`test_analytics_signal_generates_research_question`) từ trước — nhưng grep xác nhận **chỉ `M08AnalyticsBridge.observe()` gọi nó**, chưa ai gọi cho strategy-pattern-level "tại sao vẫn INCONCLUSIVE". `weekly-brief` giờ gọi hàm này cho mọi scope INCONCLUSIVE (best-effort, không chặn brief nếu ghi file lỗi).
+
+5. **Gap phụ phát hiện + sửa trong lúc nối:** `M08AnalyticsBridge.observe()` build `DeliveryReceiptRef` chưa từng truyền `pillar` — `daily_cycle.py` đã ghi field `pillar` vào registry row từ 2026-08-04, nhưng `observe()` không đọc lại, nên mọi snapshot thật trước đây có `pillar="unknown"` (default của schema), khiến group theo pillar bất khả thi. Sửa 1 dòng: `pillar=publication.get("pillar") or "unknown"`. Test mới `test_observe_carries_the_publication_pillar_onto_the_saved_snapshot` xác nhận.
+
+6. **Tự phát hiện + tự sửa 1 lỗi test của chính mình:** viết xong `test_weekly_brief_cli_produces_a_real_recommendation_once_sample_size_is_met` và chạy full suite — pass, nhưng `git status research/` cho thấy 1 file thật `research/questions/m08_strategy-lake_view_rooms-zalo.md` đã bị tạo ra trong repo thật (vì test không truyền `--questions-root`, CLI dùng default `Path("research/questions")` = thư mục thật của repo). Xoá file rác, sửa toàn bộ 4 lời gọi CLI trong test file để truyền `--questions-root` trỏ vào `tmp_path`, verify lại `git status research/` sạch trước khi tiếp tục. Bài học: mọi CLI test có ghi file với default path trỏ vào thư mục thật của repo phải luôn override path đó trong test, không giả định best-effort try/except đủ để an toàn.
+
+7. **Doc:** Phần 12 Phase 7 viết lại đầy đủ (audit note + thiết kế + trạng thái thật), thêm dòng CHANGELOG "v3.1 (2026-08-06 revision, Phase 7)".
+
+**Verify:** `/usr/bin/python3 -m pytest -q` → 724/724 pass (717 + 7 test mới: `collect_pilot_snapshots` join thật ×2 (bao gồm loại bỏ unattributed + snapshot mồ côi), CLI `weekly-brief` đủ mẫu → có recommendation thật + ghi research question, CLI `weekly-brief` thiếu mẫu → INCONCLUSIVE + vẫn ghi research question, `promote`→`list-promoted` round-trip, `promote` từ chối pattern bịa, `observe()` gán pillar thật). 0 API call. `git status research/` sạch. Chưa push (Harry: "sẽ commit và push khi nào hoàn thành tất cả").
+
 ## 14. Task Closing Protocol
 
 Khi người dùng nói **"kết thúc task"**, Codex phải tự động:
