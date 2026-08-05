@@ -1422,133 +1422,29 @@ venho-social-content-agent/                   # LEGACY — chỉ Phase 0, sau đ
 
 # PHẦN 12 — ROADMAP
 
-> **Gap-based, không greenfield.** Mỗi phase dừng ở MVP milestone chờ Harry accept. 430 tests hiện có phải pass sau MỖI phase.
+> **Gap-based, không greenfield.** Mỗi phase dừng ở MVP milestone chờ Harry accept. Tests hiện có phải pass sau MỖI phase. **Cập nhật 2026-08-06:** Phase 0–7 audit xong + nối dây thật, 724/724 test pass, 0 API call — chi tiết đầy đủ từng phase ở CHANGELOG cuối file. Chỉ còn Phase 8.
 
-## Phase 0 — Containment legacy (tuần 1)
+- [x] **Phase 0 — Containment legacy.** Tách topic vs final approval · bỏ `approved=true` hard-code · threshold policy-driven 9.0 · `UNVALIDATED` fail-closed · Make `200`=`GATEWAY_ACCEPTED`.
 
-Tách topic vs final approval · bỏ `approved=true` hard-code · threshold policy-driven 9.0 · `UNVALIDATED` fail-closed · guard location alignment · Make `200` = `GATEWAY_ACCEPTED` · feature flag rollback.
+- [x] **Phase 1 — Contracts + Policy + Infra.** 16 schema `contracts/` + fixtures · 16 YAML policy (`growth/`+`research/`) · `shared/budget/ledger.py` + `shared/jobs/` (SQLite WAL) + `shared/notify/telegram.py`. (Mục `infra/` launchd/Mac Mini gốc đã superseded bởi Phần 10 — GitHub Actions.)
 
-**Exit:** rooftop brief + bedroom image không thể publish · điểm 8 không hiển thị approved · 0 paid call trong verification.
+- [x] **Phase 1.5 — Research OS foundation.** Evidence Ladder R0→R4 + promotion policy · `vault_reader`/`collect_sources` · `notebooklm_handoff` · `propose_fact`+CLI duyệt · `detect_stale_knowledge` (revoke+Telegram) · seed `guest_voice`/`competitor`.
 
-## Phase 1 — Contracts + Policy + Infra (tuần 2–3)
+- [x] **Phase 1.6 — Trend Radar + Weather.** `trend_policy`/`brand_safety`+relevance model · Tavily (chính)/RSS (fallback) · YouTube metadata · `weather_signal` domain · `verify_event` gate · R2-T auto-expiry · Trend Digest.
 
-- `contracts/` 16 schema + fixtures.
-- `config/.../growth/` (9 YAML) + `config/.../research/` (7 YAML).
-- `shared/budget/ledger.py` + `shared/jobs/` (SQLite WAL) + `shared/notify/telegram.py`.
-- **`infra/` — launchd plists, heartbeat, backup script, `setup_macmini.md`.** ★
+- [x] **Phase 2 — Knowledge Facts + Copy thật.** `knowledge_studio/facts/` · M05 generators (3 candidates+rubric) · M03 `claim_validator.py` · seed facts từ dữ liệu Ven Hồ.
 
-**Exit:** mọi fixture pass/fail đúng · không threshold/model string lặp ngoài registry · Mac Mini chạy launchd service ổn định 72h · heartbeat tới cloud · Telegram nhận được alert test.
+- [x] **Phase 3 — Image runtime + Multimodal QC.** `image_studio_runtime/` (provider+mock+quality router+immutable runs) · `scenario_registry` map Visual DNA v2.7 · M03 `alignment_validator`+`derivative_validator`.
 
-## Phase 1.5 — Research OS foundation (tuần 3–5)
+- [x] **Phase 4 — Approval + Publishing tin cậy.** M04 `approval_snapshot`+revocation · M07 `callback_receiver`/`reconciliation`/`make_gateway` · M10 Final Review 3 hành động (duyệt/sửa nhanh/viết lại) · sửa nhanh bắt buộc chạy lại M03.
 
-| Task | Nội dung |
-|---|---|
-| RS-001 | `CLAUDE.md` + `.obsidian/` config + 6 template |
-| RS-002 | `research_note.schema.json` + frontmatter validator |
-| RS-003 | `research_engine/domain/` — Evidence Ladder + promotion policy |
-| RS-004 | `vault_reader.py` + `collect_sources.py` |
-| RS-005 | `notebooklm_handoff.py` — inbox + export verifier |
-| RS-006 | `propose_fact.py` + `m01_facts_bridge.py` + promotion CLI |
-| RS-007 | `detect_stale_knowledge.py` + hook revoke + Telegram |
-| RS-008 | Skill atomic: source-collect, synth, fact-propose |
-| RS-009 | Seed: `guest_voice` (review hiện có) + `competitor` (5–8 đối thủ) |
+- [x] **Phase 4.5 — Nhịp 4 bài/tuần + an toàn hàng đợi.** `PublishingSlot` state machine + `manage_slots` (tạo trước 14 ngày) · Evergreen Pool nối thật, fallback vẫn qua `PENDING_APPROVAL` (Harry chốt 2026-08-06, không auto-dispatch) · runway policy + Telegram alert · pre-flight = revalidate claim/alignment thật trước dispatch. PB-006/PB-007 (launchd 09:00 + deadman switch) **superseded** bởi kiến trúc GitHub Actions on-demand (Phần 10), không phải "chưa làm".
 
-**Exit:** một câu hỏi chạy trọn R0→R3, fact xuất hiện trong CreativeBrief · R2 không tự lên R3 (có test) · fact hết hạn revoke đúng · vault mở được trong Obsidian, Dataview đúng · 430 + RS tests pass, 0 API call.
+- [x] **Phase 5 — Durable ops.** Stale-job recovery + heartbeat nối vào `run_weekly_cycle` (job kẹt `RUNNING` sau crash được giải phóng) · `BudgetGate` (mới) chặn cứng real API call ở cap **500,000 VND/tháng** (Harry chốt) + alert Telegram 70/85/100% · `Worker`/`scheduler.py` đánh dấu superseded (giả định worker 24/7 không còn đúng) · lateness alert + backup verify-restore vẫn deferred (chưa làm, không giả vờ xong).
 
-## Phase 1.6 — Trend Radar + Weather (tuần 6–8)
+- [x] **Phase 6 — Analytics + Attribution.** `meta_insights.build_metrics_adapter` nối thật vào M08 bridge (flag có tác dụng thật) · Attribution xây tối thiểu qua Zalo (Harry chốt phạm vi): `build_tracking_url()` nhúng UTM vào bài Zalo, CLI `venho-analytics attribute` chạy attribution thật trên publication đã reconciled. Gap còn lại: FB/IG/Threads chưa có link để attribute; GA4/booking-form ingestion tự động chưa làm (ngoài phạm vi production website).
 
-| Task | Nội dung |
-|---|---|
-| TR-001 | `trend_policy.yaml` + `brand_safety.yaml` + relevance model |
-| TR-002 | `tavily_search.py` (collector chính) + `news_rss.py` (fallback) |
-| TR-003 | `youtube_data.py` (metadata + transcript) |
-| TR-004 | `weather_api.py` + `weather_signal` domain + scenario mapping ★ |
-| TR-005 | `local_events` + `verify_event.py` gate |
-| TR-006 | R2-T evidence level + auto-expiry |
-| TR-007 | Trend Digest generator → dashboard |
-| TR-008 | Skill `venho-trend-scan`, `venho-weather-scan`, `venho-special-lane` |
-
-**Exit:** một trend chạy trọn scan → score → digest → duyệt → bài T7 · danh mục cấm chặn 100% trên test set (≥15 case) · sự kiện chưa verify không lọt · R2-T và weather không thể thành claim.
-
-## Phase 2 — Knowledge Facts + Copy thật (tuần 4–6, song song 1.5)
-
-`knowledge_studio/facts/` · M05 `generators/` (tiêm adapter, mock trong tests, 3 candidates, rubric) · M03 `claim_validator.py` · seed facts từ dữ liệu Ven Hồ.
-
-**Exit:** critical factual error = 0 trên golden content set v1 · giá/policy/review/khoảng cách không nguồn bị chặn.
-
-## Phase 3 — Image runtime + Multimodal QC (tuần 7–10) — cần GR-D2
-
-`image_studio_runtime/` (provider + mock + quality router + immutable runs + overlay + `flow_manual_import.py`) · `scenario_registry` map Visual DNA v2.7 · M03 `alignment_validator.py` + `derivative_validator.py`. Chính sách paid: 1 generation + 1 targeted repair → `NEEDS_REVIEW`.
-
-**Exit:** required-subject omission = 0 · alignment ≥95% · mọi paid run có manifest · không artifact bị overwrite.
-
-## Phase 4 — Approval + Publishing tin cậy (tuần 11–13)
-
-M04 `approval_snapshot.py` + revocation · M07 `callback_receiver.py`, `reconciliation.py`, `make_gateway.py` · M10 Final Review + 3 hành động (duyệt/sửa nhanh/viết lại) · **sửa nhanh bắt buộc chạy lại M03**.
-**Migration gate legacy:** Studio publish 4 tuần, 0 duplicate → legacy standby.
-
-**Exit:** duplicate = 0 trong chaos tests · edit sau approval chặn dispatch · Make acceptance không hiển thị published · mỗi publication có post ID hoặc reconciliation proof.
-
-## Phase 4.5 — Nhịp 4 bài/tuần + an toàn hàng đợi (tuần 13–15)
-
-**★ viết lại 2026-08-06 — PB-006/PB-007 gốc (launchd 09:00 + deadman switch cloud) giả định Mac Mini 24/7, đã bị thay bởi kiến trúc GitHub Actions on-demand ở Phần 10 (2026-08-05). Không có cửa sổ dispatch cố định để launchd canh giờ, và không có tiến trình 24/7 nào để deadman switch giám sát — cả hai mục tiêu gốc (idempotent dispatch, không publish khi hạ tầng chết) đã đạt bằng cơ chế khác, xem cột "Nội dung" bên dưới.**
-
-| Task | Nội dung |
-|---|---|
-| PB-001 | `PublishingSlot` domain + `manage_slots.py` (tạo trước 14 ngày) |
-| PB-002 | Queue UI + batch approval + 3 hành động |
-| PB-003 | Runway policy theo slot + Telegram alert |
-| PB-004 | Evergreen Pool (8–10 bài duyệt trước) — fallback vẫn qua PENDING_APPROVAL, không auto-dispatch (Harry chốt 2026-08-06, giữ đúng bất biến DoD #23) |
-| PB-005 | Pre-flight = revalidate claim/alignment thật ngay trước dispatch (`_dispatch_claimed`), không phải một job giờ cố định 08:45 vì không còn cửa sổ 09:00 |
-| PB-006 | ~~launchd dispatch 09:00~~ → **superseded**: idempotency đạt qua `registry.claim()` atomic test-and-set (đã có từ Phase 4), dispatch xảy ra on-demand khi Harry bấm Duyệt trên `venho-os`, không cần lịch cố định |
-| PB-007 | ~~Deadman switch cloud + fallback dispatch~~ → **superseded**: không có tiến trình 24/7 để giám sát; "không publish khi hạ tầng chết" đạt tự nhiên vì publish chỉ xảy ra trong chính request Harry bấm Duyệt (không có background dispatcher có thể "chết") |
-| PB-008 | Special lane T3→T7 (4 loại, loại 4 fallback) |
-| PB-009 | Blog SEO thứ 3 (kích hoạt M05 blog builder) |
-
-**Exit:** 4 tuần liên tục đủ 16 slot, 0 duplicate, 0 slot `MISSED` không rõ nguyên nhân · revalidate claim/alignment bắt được fact hết hạn ngay trước dispatch · `registry.claim()` đảm bảo dispatch idempotent kể cả khi 2 request chạy đồng thời · evergreen fallback không bao giờ tự đăng bài chưa qua duyệt.
-
-## Phase 5 — Durable ops (tuần 16–17)
-
-**★ viết lại 2026-08-06 — bản gốc (Codex, 2026-08-03) build đủ code + unit test cho toàn bộ mục dưới, nhưng audit thật (grep caller ngoài test) phát hiện `BudgetLedger`/`BudgetPolicy` và `JobStore.recover_expired_leases()`/`heartbeat()` có 0 caller thật trong `daily_cycle.py`/`weekly_cycle.py` — mọi real OpenAI call (gpt-5.5/gpt-image-2/GPT-4o vision) chạy hoàn toàn không đo/không chặn budget, và một run thật bị crash giữa chừng (GitHub Actions timeout/cancel) sẽ kẹt `RUNNING` vĩnh viễn vì không có gì gọi recovery. Đã nối thật 2026-08-06, xem chi tiết dưới.**
-
-- **Stale-job recovery + heartbeat (nối thật):** `run_weekly_cycle` gọi `job_store.recover_expired_leases()` trước `claim()` (giải phóng job kẹt từ lần chạy trước bị crash), lease tăng lên 3600s (thay 300s mặc định — 1 tuần thật có thể mất >5 phút) + `heartbeat()` gia hạn lease sau mỗi ngày.
-- **Retry matrix:** đã nối sẵn từ trước (`requeue_retryable_failures()` gọi mỗi lần `run_weekly_cycle` chạy) — không cần sửa.
-- **Budget ledger 70/85/100% (nối thật):** `growth_orchestrator/application/budget_gate.py::BudgetGate` bọc reserve/commit/release quanh 3 điểm gọi API thật trong `daily_cycle.py` (text gen, image gen, vision QC) — chặn cứng khi chạm cap (`RuntimeError`, platform đó rơi vào `errors`, không crash cả ngày), bắn `budget_threshold_crossed` alert Telegram khi cán mốc 70/85/100%. Cap thật **500,000 VND/tháng** (Harry chốt 2026-08-06, `budget_policy.yaml`, thay giá trị cũ 2 tỷ VND không bao giờ chặn được gì) · chi phí ước tính/lệnh gọi trong `paid_call_costs.yaml` (300/1200/400 VND cho text/ảnh/vision — ước lượng thô, chưa đối chiếu hoá đơn thật, cần Harry hiệu chỉnh sau khi có billing thật) · override chưa có UI/CLI riêng (dùng `BudgetLedger.record_override()` trực tiếp nếu cần vượt cap có ghi nhận lý do + người duyệt).
-- **Worker class + `scheduler.py` (superseded, không nối):** `Worker`/`enqueue_idempotent_dispatch`/`next_dispatch_at` giả định publish theo cửa sổ cố định 09:00 do 1 worker 24/7 canh — kiến trúc GitHub Actions on-demand (Phần 10) không có cửa sổ cố định lẫn worker 24/7 nên cả hai module này không có chỗ gắn vào thật; `weekly_cycle`/`approve_and_dispatch` dùng thẳng `JobStore`/`PublicationRegistry`, không qua `Worker`. Giữ code (có test riêng), không xoá, không ép nối.
-- **Lateness alert (deferred):** `scheduler.lateness_alert()` cần một vòng lặp polling "giờ này lẽ ra phải chạy xong chưa" — kiến trúc hiện tại là push-based (cron kích hoạt, không có gì đứng canh), chưa có nơi tự nhiên để gắn mà không thêm 1 tiến trình giám sát riêng. Chưa làm, không giả vờ đã xong.
-- **Backup tự động verify được (deferred — cùng gap với DoD #24):** vẫn chưa làm, đã ghi nhận từ Phần 10/18 (2026-08-05).
-
-## Phase 6 — Analytics + Attribution (tuần 18–21)
-
-M08 `meta_insights.py` (flag off), windows 1h/24h/72h/7d/28d · `attribution/` UTM + DM keyword + pseudonymization · M10 performance view (đọc M08, không tính lại).
-
-**★ viết lại 2026-08-06 — audit phát hiện `meta_insights.py` (real Meta Insights factory) và `attribution.py` (UTM/DM attribution) có code + unit test từ trước nhưng 0 caller thật, giống lỗ hổng Phase 4.5/5. Khác Phase 4.5/5: đây không chỉ là "thiếu dây nối" — audit đi sâu hơn phát hiện bài đăng Growth Agent hiện KHÔNG có link nào cả (FB/IG chỉ có câu CTA chữ, form đặt phòng trên website chưa bắt utm param) nên attribution end-to-end thật cần xây mới, không chỉ nối code có sẵn. Hỏi Harry phạm vi (AskUserQuestion) — Harry chọn: xây tối thiểu qua kênh Zalo (kênh duy nhất có deep-link click được thật).**
-
-- **`meta_insights.build_metrics_adapter` nối thật** vào `M08AnalyticsBridge`'s default `metrics_adapter_factory` (trước đó bridge hardcode `MockMetricsAdapter` trực tiếp, khiến flag `meta_insights_enabled` tồn tại nhưng vô tác dụng). Vẫn trả Mock khi flag tắt (mặc định, đúng trạng thái thật — chưa có real Graph API client nào được viết); bật flag mà chưa viết real adapter sẽ raise rõ ràng thay vì âm thầm mock — đúng hành vi mong muốn.
-- **Attribution — chỉ nối phần Zalo (Harry chốt phạm vi):**
-  - `analytics_feedback/attribution.py::build_tracking_url()` (mới) — sinh link `https://venhohotel.com/lien-he?utm_source=zalo&utm_medium=social&utm_content=<publication_id>`, `tracking_base_url` mới trong `attribution_policy.yaml`.
-  - `daily_cycle.py::_content_payload()` nhúng link này vào cuối text bài Zalo (chỉ Zalo — FB/IG/Threads vẫn không có link, đúng thực tế hiện tại của content).
-  - CLI mới `venho-analytics attribute <events.json>` — đọc publication đã RECONCILED thật (có `published_at` thật) từ `PublicationRegistry`, chạy `attribute_conversion_event()` thật, in kết quả. Đây là nửa "chạy được thật" của DoD #25 — nửa còn lại (tự động đưa inquiry thật vào) vẫn cần Harry cung cấp `events.json` bằng tay (chưa có GA4 Data API pull hay webhook từ form đặt phòng).
-  - **Gap còn lại, ghi rõ không giả vờ đã xong:** không có nguồn sự kiện chuyển đổi tự động nào (GA4 Data API cần credentials + quyết định riêng; form đặt phòng trên `Ven Ho Hotel` website chưa bắt utm — đổi cái đó là thay đổi production website, cần approval riêng của dự án đó). FB/IG/Threads hoàn toàn chưa có cách nào gắn attribution vì bài không có link.
-- **M10 performance view** (`build_content_performance_view`) — đã có code thật từ trước (đọc M08 output, không tính lại), không cần sửa gì thêm lượt này.
-
-**Exit:** một inquiry test truy được về đúng một publication (đạt qua CLI `attribute` + test end-to-end thật, chưa đạt ở mức tự động hoá toàn trình) · null ≠ unavailable ≠ zero (đã đạt từ trước, có test `test_null_unavailable_and_zero_metric_states_are_distinct`).
-
-## Phase 7 — Growth Intelligence pilot (tuần 22–25)
-
-`strategy_memory/` Bayesian smoothing + confidence + decay + expiry · weekly brief **advisory-only** · sample thiếu → `INCONCLUSIVE` · vòng phản hồi analytics → `research/questions/`.
-
-**★ viết lại 2026-08-06 — audit phát hiện `strategy_memory/` (3 file: `pattern_inference.py`, `weekly_brief.py`, `qbsr_guardrail.py`) có code + unit test đầy đủ nhưng 0 caller thật, cùng lỗ hổng Phase 4.5/5/6. Nối thật:**
-
-- **CLI mới `venho-strategy`** (`strategy_memory/cli.py`, script entry mới trong `pyproject.toml`, trước đó package `strategy_memory` không có CLI nào cả):
-  - `weekly-brief --week-id ...` — thu thập bằng chứng thật qua `strategy_memory/collect_pilot_evidence.py::collect_pilot_snapshots()` (mới) — join thật `PublicationRegistry` + M08 `SnapshotStore` (đọc `reach` thật) + `AttributionEventStore` (mới, xem dưới) theo (pillar, platform), chạy `infer_strategy_pattern()` cho từng scope, lưu brief vào `StrategyBriefStore` (mới).
-  - `promote --week-id ... --pattern ... --approved-by ...` — bước duyệt riêng, bắt buộc (đúng "advisory-only", không có code path nào tự động promote).
-  - `list-promoted` — xem những gì đã thật sự được duyệt.
-- **Vòng phản hồi analytics → `research/questions/` mở rộng cho strategy pattern:** `generate_research_question_from_analytics()` đã có sẵn + test đúng shape strategy pattern từ trước, nhưng trước đây chỉ `M08AnalyticsBridge.observe()` gọi (cho từng publication) — `weekly-brief` giờ cũng gọi cho mọi scope `INCONCLUSIVE`, ghi câu hỏi "tại sao chưa đủ bằng chứng, cần thu thập gì tiếp" thật vào vault.
-- **2 gap phụ phát hiện + sửa trong lúc nối:**
-  - `M08AnalyticsBridge.observe()` chưa từng đọc `pillar` từ publication row (dù `daily_cycle.py` đã ghi field này từ 2026-08-04) → mọi snapshot thật trước đây có `pillar="unknown"`, khiến group theo pillar bất khả thi. Đã sửa.
-  - `venho-analytics attribute` (CLI Phase 6) chỉ in kết quả ra rồi bỏ, không lưu lại → không có nơi nào đọc lại sự kiện đã attribute thật. Thêm `AttributionEventStore` (mới) để `attribute` lưu thật, `collect_pilot_snapshots()` đọc lại.
-- **Trạng thái thật hiện tại — đúng như thiết kế, không phải bug:** `weekly-brief` chạy thật trả về 0 recommendation (mọi scope `INCONCLUSIVE`) vì Growth Agent mới chạy thật từ 2026-08-03/04, chưa đủ `min_sample_size` publication có cả snapshot thật lẫn sự kiện attribute thật ở bất kỳ (pillar, platform) nào. Đây chính xác là hành vi `INCONCLUSIVE` module được thiết kế để thể hiện.
+- [x] **Phase 7 — Growth Intelligence pilot.** CLI mới `venho-strategy` (`weekly-brief`/`promote`/`list-promoted`) + `collect_pilot_evidence.py` join thật registry+snapshot+attribution theo (pillar, platform) · vòng phản hồi `INCONCLUSIVE`→`research/questions/` mở rộng cho strategy pattern · sửa gap phụ `M08AnalyticsBridge` giờ đọc `pillar` thật. Trạng thái thật: 0 recommendation hôm nay (đúng thiết kế `INCONCLUSIVE`, Growth Agent mới chạy vài ngày).
 
 ## Phase 8 — Rollout + Productize (tuần 26+)
 
