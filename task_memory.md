@@ -905,6 +905,30 @@ Harry: "Làm tất cả" 6 gap còn treo sau câu hỏi "growth plan v3.1 đã h
 
 **Verify tổng:** 706/706 pytest pass (33 test mới cả 6 mục), tsc/eslint sạch, 127/127 vitest (venho-os). Commit riêng từng mục, đã push cả 2 repo.
 
+## 14h. Post-audit follow-up: Phần 10/18 rewrite, dọn code chết, phát hiện audit trước sai về Image runtime (2026-08-05)
+
+Sau khi công bố audit hoàn thành v3.1 (artifact `growth-v31-audit.html`), Harry giao 3 việc trong 1 tin nhắn: (1) viết lại DoD Phần 10/18 khớp kiến trúc thật; (2) dọn code chết; (3) "Làm Image runtime + Multimodal QC".
+
+**1. Phần 10 + DoD 21–24 viết lại** trong `VENHO_GROWTH_AGENT_MASTER_PLAN_v3_1_CONSOLIDATED.md`. Xoá mô tả Mac Mini 24/7/launchd/pmset/deadman switch/HMAC cloud fallback/Tailscale — chưa từng có máy nào chạy nó. Thay bằng kiến trúc thật đang chạy: bảng phân chia trách nhiệm GitHub Actions cron / local `venho-os`, cơ chế git-sync 2 chiều (đã build ở phiên trước — merge rule "local luôn thắng"), bảng rủi ro thật (khác hẳn rủi ro Mac Mini: risk giờ là "Harry không mở dashboard", không phải "máy ngủ"), backup thật (chỉ git, chưa có backup artifacts ảnh — ghi rõ là gap chưa làm, không tự nhận đã xong), và trung thực ghi §10.5 "truy cập mobile: CHƯA GIẢI QUYẾT". DoD #21–24 viết lại tương ứng — #24 (backup + verify-restore) explicit đánh dấu **chưa đạt**.
+
+**2. Dọn code chết — quyết định xoá vs đánh dấu dựa trên grep thật, không đoán:**
+- Trước khi động tay, `grep -rln` từng module ứng viên để xác nhận có/không caller thật ngoài chính nó và test của nó.
+- `infra/` (Mac Mini): **0 caller** ngoài `tests/test_growth_v3_1_cadence_infra.py` → xoá hẳn (`git rm -r infra/`), gỡ `"infra*"` khỏi `pyproject.toml`. Test file đó có 28/32 test không liên quan gì Mac Mini (cadence/slot/special-lane/preflight/weather/zalo — test code thật) nên **không xoá cả file**, chỉ cắt 4 test cuối (heartbeat + cloud_fallback export) và 2 dòng import `infra.*`.
+- `evergreen_pool.py`: **0 import** thật, chỉ 1 dòng comment nhắc tới trong `publishing_slot.py`. Giữ lại + thêm header comment giải thích rõ trạng thái "implemented, chưa wired" — đây là code thật cho Phase 4.5, khác hẳn tính chất `infra/` (thiết kế đã bị bỏ hoàn toàn).
+- `analytics_feedback/meta_insights.py` + `attribution.py`: **0 caller** từ `m08_analytics_bridge.py` hay `cli.py` (chỉ dùng `MockMetricsAdapter` trực tiếp) — giữ + header comment. Đây là Phase 6 chưa tới lượt, không phải lỗi.
+- `strategy_memory/*`: chỉ được import bởi test file riêng (`test_growth_phase7_strategy_memory.py`), 0 caller thật — giữ + header comment, Phase 7 chưa tới lượt.
+- **Không đụng** `image_studio_runtime/` — grep xác nhận `gpt_image_provider.py` (real GPT-image-2) ĐANG được `daily_cycle.py` import và gọi thật, không phải dead code như audit trước ghi.
+- `python3 -m pytest -q` sau khi xoá `infra/`: 702 passed (giảm đúng 4 so với 706 trước, không có test nào fail bất ngờ).
+
+**3. "Image runtime + Multimodal QC" — quyết định KHÔNG làm gì mới, sau khi tự phát hiện lỗi trong chính audit trước đó:**
+- Trước khi build bất cứ gì, dùng `AskUserQuestion` hỏi Harry scope cụ thể — vì audit trước (mục "Đã viết code, nhưng chưa nối") ghi "Image runtime thật (Phase 3) — vẫn chỉ có Mock provider". Câu hỏi lần 1 dựa trên phát hiện `alignment_validator.py` (dùng trong `M03ValidatorBridge`) chỉ so sánh entity list (copy vs brief), không có ảnh thật, không phải AI vision — Harry chọn "làm vision QC thật".
+- Trước khi code, đi tìm chỗ nối image validation vào `daily_cycle.py` thật (`_generate_image_for_topic`) để biết chèn code mới ở đâu — và phát hiện **đã có sẵn một pipeline vision QC khác, thật**, không liên quan `alignment_validator`: `validate_image()` (`validator_studio/image_validator.py`) → `observe_image_against_dna()` (`validator_studio/observe_adapter.py`) → khi `provider != "mock"`, gọi `VisionClient(image_provider=provider)` (`shared/vision/client.py`) → `OpenAIVisionProvider` model `gpt-4o` — **API call GPT-4o vision thật**, so ảnh sinh ra với DNA subject (dna_matches/forbidden/allowed_imperfections), không phải mock, không phải chỉ metadata.
+- Đi tiếp một bước: `growth_orchestrator/cli.py` — lệnh `daily-cycle` và `weekly-cycle` (chính là lệnh mà `.github/workflows/growth-daily-cycle.yml` chạy thật mỗi Thứ 2) **hardcode `image_validation_provider="openai"`** ở cả 2 command. Nghĩa là: real gpt-image-2 generation + real GPT-4o vision QC đã chạy production từ commit `ab2b1de` (2026-08-03/04), tốn phí thật mỗi tuần — không phải "chưa làm" như câu hỏi lần 1 tôi đặt cho Harry ngụ ý.
+- Quay lại hỏi Harry lần 2, trình bày rõ sai lầm trong câu hỏi lần 1 (đã lẫn 2 validator khác nhau: `alignment_validator` thật là entity-based, nhưng `image_validator`/`VisionClient` mới là cái quyết định câu hỏi và nó ĐÃ real). Harry chọn "Dừng — không xây gì thêm".
+- **Sửa artifact audit đã publish** (`growth-v31-audit.html`, URL giữ nguyên `.../22e15a4a-...`): xoá mục sai trong "Đã viết code, nhưng chưa nối", thêm mục correction trong "Đang chạy thật, đã verify", đổi phase-status-table Phase 3 từ "Chưa đạt" → "Đạt", đổi DoD #5 (cross-modal validation) từ "Chưa rõ" → "Đạt", cập nhật stat tile 6–7/27 → 7–8/27, thêm correction log rõ ràng ở footer thay vì âm thầm sửa. **Bài học tự áp dụng cho chính mình:** cùng nguyên tắc grep-trước-khi-kết-luận mà audit gốc tự đặt ra ("không dựa vào task_memory.md của phiên trước mà không đối chiếu code thật") lại chính là thứ audit gốc đã vi phạm ở mục Image runtime — vì đã dừng lại ở `generate_image.py`/`repair_image.py` import `MockImageProvider` mà không grep tiếp xem `daily_cycle.py` có dùng provider khác hay không.
+
+**Verify:** `python3 -m pytest -q` → 702 passed, 0 fail. Không chạm `venho-os` lần này.
+
 ## 14. Task Closing Protocol
 
 Khi người dùng nói **"kết thúc task"**, Codex phải tự động:

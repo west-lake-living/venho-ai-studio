@@ -11,8 +11,6 @@ from growth_orchestrator.application.manage_slots import generate_slots
 from growth_orchestrator.application.preflight import run_preflight_check
 from growth_orchestrator.application.special_lane import select_special_lane_candidate, special_lane_timeline_state
 from growth_orchestrator.domain.publishing_slot import PublishingSlot
-from infra.cloud_fallback.export_approved import export_approved_package, verify_export_signature
-from infra.heartbeat import build_heartbeat_payload, is_heartbeat_stale, send_heartbeat
 from publishing_gateway.adapters.zalo_oa import ZaloOAAdapter
 from research_engine.trend_radar.application.scan_weather import scan_weather
 from research_engine.trend_radar.domain.weather_signal import WeatherSignal
@@ -243,51 +241,9 @@ def test_zalo_adapter_accepted_when_enabled() -> None:
     assert result["status"] == "GATEWAY_ACCEPTED"
     assert result["published"] is False
 
-
-# --- infra: heartbeat + deadman + cloud fallback export ------------------
-
-
-def test_heartbeat_payload_and_send_use_injected_http_client() -> None:
-    calls = []
-
-    def fake_http_post(endpoint, *, json):
-        calls.append((endpoint, json))
-        return {"ok": True}
-
-    now = datetime(2026, 8, 3, 3, 15, tzinfo=timezone.utc)
-    result = send_heartbeat(host_id="macmini-01", http_post=fake_http_post, endpoint="https://cloud.example/heartbeat", now=now)
-    assert result == {"ok": True}
-    assert calls == [("https://cloud.example/heartbeat", {"host_id": "macmini-01", "sent_at": now.isoformat(), "status": "alive"})]
-
-
-def test_is_heartbeat_stale_detects_missed_window() -> None:
-    now = datetime(2026, 8, 3, 3, 31, tzinfo=timezone.utc)
-    last = datetime(2026, 8, 3, 3, 15, tzinfo=timezone.utc)
-    assert is_heartbeat_stale(last.isoformat(), now=now, stale_after_minutes=15) is True
-    assert is_heartbeat_stale(last.isoformat(), now=now - timedelta(minutes=10), stale_after_minutes=15) is False
-
-
-def test_export_approved_package_requires_prior_approval(tmp_path: Path) -> None:
-    package = {"content_package_id": "pkg-1", "publication_command": {}, "approved_at": "2026-08-03T00:00:00+00:00", "approval_status": "pending_approval"}
-    with pytest.raises(ValueError, match="only approved packages"):
-        export_approved_package(package, secret="s3cr3t", export_root=tmp_path)
-
-
-def test_export_approved_package_signs_and_verifies_without_creating_approval(tmp_path: Path) -> None:
-    package = {
-        "content_package_id": "pkg-1",
-        "publication_command": {"idempotency_key": "k1"},
-        "approved_at": "2026-08-03T00:00:00+00:00",
-        "approval_status": "approved",
-    }
-    now = datetime(2026, 8, 3, 9, 0, tzinfo=timezone.utc)
-    path = export_approved_package(package, secret="s3cr3t", export_root=tmp_path, now=now)
-    assert path.exists()
-
-    import json
-
-    exported = json.loads(path.read_text(encoding="utf-8"))
-    assert "approval_status" not in exported  # export carries no approval field to mutate
-    signature = exported.pop("signature")
-    assert verify_export_signature(exported, signature, secret="s3cr3t") is True
-    assert verify_export_signature(exported, signature, secret="wrong-secret") is False
+# NOTE (2026-08-05): tests for infra/heartbeat.py and infra/cloud_fallback/
+# (Mac Mini deadman switch + HMAC-signed cloud fallback export) removed here
+# along with the module itself -- that design was superseded by the real
+# GitHub Actions + git-sync architecture documented in Phần 10 of
+# VENHO_GROWTH_AGENT_MASTER_PLAN_v3_1_CONSOLIDATED.md. Neither module had any
+# caller outside this test file.

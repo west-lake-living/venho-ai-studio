@@ -41,7 +41,7 @@ venho-growth = "growth_orchestrator.cli:app"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["agent_studio*", "analytics_feedback*", "app*", "automation_studio*", "content_studio*", "controlled_rollout*", "core*", "dashboard*", "growth_orchestrator*", "image_studio_runtime*", "infra*", "knowledge_studio*", "productize*", "prompt_studio*", "providers*", "publishing_gateway*", "research_engine*", "shared*", "strategy_memory*", "validator_studio*", "video_studio*"]
+include = ["agent_studio*", "analytics_feedback*", "app*", "automation_studio*", "content_studio*", "controlled_rollout*", "core*", "dashboard*", "growth_orchestrator*", "image_studio_runtime*", "knowledge_studio*", "productize*", "prompt_studio*", "providers*", "publishing_gateway*", "research_engine*", "shared*", "strategy_memory*", "validator_studio*", "video_studio*"]
 
 [tool.setuptools.package-data]
 "knowledge_studio.vision.prompts" = ["*.md"]

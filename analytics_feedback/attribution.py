@@ -1,3 +1,7 @@
+# STATUS (2026-08-05 audit): implemented and unit-tested (publication →
+# qualified inquiry/booking signal, DoD #25) but NOT called from
+# `m08_analytics_bridge.py`, `measure_cmd`, or any other real entry point.
+# No attribution evidence currently reaches a published report or advisory.
 from __future__ import annotations
 
 import hashlib

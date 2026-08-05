@@ -1,8 +1,24 @@
 # VENHO AI STUDIO — Task Status
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-08-05 (Trend Radar classifier chuyển Claude → Gemini Flash + nối cron GitHub Actions + UI duyệt trên venho-os — xem mục dưới) · **Tests:** 706/706 pass (AI Studio) · 0 API call trong test
+**Cập nhật:** 2026-08-05 (Post-audit follow-up: viết lại Phần 10/18 + dọn code chết — xem mục dưới) · **Tests:** 702/702 pass (sau khi xoá `infra/`) · 0 API call trong test
 
 ---
+
+### Growth Agent v3.1 — Post-audit follow-up: viết lại Phần 10/18, dọn code chết, soi lại "Image runtime + Multimodal QC" (2026-08-05)
+
+**Status: DONE (2/3 việc Harry yêu cầu) — việc 3 hoá ra không cần làm, xem correction bên dưới**
+
+Sau khi báo cáo audit hoàn thành v3.1 (mục ngay dưới), Harry yêu cầu 3 việc: (1) viết lại DoD Phần 10/18 cho đúng kiến trúc GitHub Actions; (2) dọn code chết; (3) "Làm Image runtime + Multimodal QC".
+
+- [x] **1) Viết lại Phần 10 + DoD 21–24** trong `docs/Content agent/VENHO_GROWTH_AGENT_MASTER_PLAN_v3_1_CONSOLIDATED.md` — xoá toàn bộ thiết kế Mac Mini 24/7/launchd/pmset/deadman switch/HMAC cloud fallback/Tailscale (chưa từng triển khai), thay bằng kiến trúc thật: GitHub Actions cron (`growth-daily-cycle.yml` T2, `growth-trend-scan.yml` T6) + git-sync 2 chiều qua GitHub Contents API (local luôn thắng khi merge) + duyệt/dispatch on-demand trên `venho-os` local, không có cửa sổ đăng cố định 09:00. Ghi rõ 2 gap thật chưa làm: backup artifacts + verify-restore (DoD #24), truy cập mobile (§10.5). Thêm dòng CHANGELOG "v3.1 (2026-08-05 revision)".
+- [x] **2) Dọn code chết:**
+  - **Xoá hẳn `infra/`** (`heartbeat.py`, `deadman_config.yaml`, `cloud_fallback/`, `backup.sh`, `launchd/*.plist`, `setup_macmini.md`) — 0 caller thật ngoài 1 file test của chính nó, thiết kế đã bị thay thế hoàn toàn ở việc (1). Gỡ `"infra*"` khỏi `pyproject.toml` package discovery. Test file `tests/test_growth_v3_1_cadence_infra.py` (293 dòng) **không xoá** — chỉ cắt 4 test cuối (heartbeat + cloud_fallback export), 28 test còn lại (cadence/slot/special-lane/preflight/weather/alert/zalo) vẫn test code thật đang chạy, giữ nguyên.
+  - **Đánh dấu "chưa nối" bằng comment đầu file** (không xoá — code thật, test thật, dành cho phase sau, chỉ chưa có caller): `growth_orchestrator/application/evergreen_pool.py` (Phase 4.5, DoD #10), `analytics_feedback/meta_insights.py` + `analytics_feedback/attribution.py` (Phase 6, DoD #25), `strategy_memory/pattern_inference.py` (Phase 7).
+  - **Xác nhận KHÔNG phải dead code** (sửa nhầm lẫn từ audit trước): `image_studio_runtime/` — xem việc 3.
+  - Verify: `python3 -m pytest -q` toàn bộ → 702 passed (từ 706, giảm đúng 4 test bị cắt), 0 lỗi.
+- [x] **3) "Làm Image runtime + Multimodal QC" — kết luận: KHÔNG cần làm, đã live từ trước.** Trước khi build, hỏi lại Harry 2 vòng và phát hiện báo cáo audit trước đó (mục "Đã viết code, nhưng chưa nối" → "Image runtime thật (Phase 3) — vẫn chỉ có Mock provider") **sai**. Kiểm tra lại code thật: `image_studio_runtime/adapters/gpt_image_provider.py` (gpt-image-2 thật, `images.generate`/`images.edit`) đã nối vào `daily_cycle.py`; QC ảnh dùng `validator_studio/image_validator.py` → `observe_adapter.py` → `shared/vision/client.py::VisionClient` gọi **GPT-4o thật** để so ảnh sinh ra với DNA (không phải mock, không phải chỉ entity/OCR như tôi nhầm tưởng ban đầu khi hỏi Harry lần 1). `growth_orchestrator/cli.py` (`daily-cycle`/`weekly-cycle` — chính lệnh GitHub Actions cron đang chạy thật) hardcode `image_validation_provider="openai"` — nghĩa là **QC ảnh thật đã chạy và tốn phí thật mỗi tuần từ 2026-08-03/04**, không phải chưa làm. Harry xác nhận "Dừng — không xây gì thêm" sau khi nghe correction. Đã sửa artifact audit đã publish trước đó (URL không đổi, có correction log ở footer).
+
+Chi tiết đầy đủ: `task_memory.md` mục 14h.
 
 ### Growth Agent v3.1 — 6 hạng mục còn lại từ audit (2026-08-05)
 

@@ -1,3 +1,8 @@
+# STATUS (2026-08-05 audit): whole strategy_memory/ package is Phase 7
+# ("Growth Intelligence pilot") scope -- implemented + unit-tested
+# (tests/test_growth_phase7_strategy_memory.py) but NOT called from any CLI,
+# cron, or bridge. Nothing produces a real StrategyPattern from live
+# analytics data yet; there is no promoted strategy memory in the repo.
 from __future__ import annotations
 
 from dataclasses import dataclass

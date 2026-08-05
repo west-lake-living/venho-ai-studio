@@ -1,9 +1,0 @@
-version: 1
-heartbeat_interval_minutes: 5
-heartbeat_stale_after_minutes: 15
-dispatch_check:
-  expected_publish_time: "09:00"
-  timezone: Asia/Ho_Chi_Minh
-  first_check_offset_minutes: 15    # 09:15 -- Telegram alert if not PUBLISHED
-  cloud_fallback_offset_minutes: 30 # 09:30 -- still UNKNOWN -> reconciliation
-  needs_operator_offset_minutes: 60 # 10:00 -- still UNKNOWN -> NEEDS_OPERATOR + Telegram

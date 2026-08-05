@@ -1073,98 +1073,62 @@ Nhịp 4 bài/tuần cho phép timeline thoải mái hơn v3.0 (bắt đầu T3 
 
 ---
 
-# PHẦN 10 — KIẾN TRÚC TRIỂN KHAI VẬT LÝ (★ mới trong v3.1)
+# PHẦN 10 — KIẾN TRÚC TRIỂN KHAI VẬT LÝ (★ viết lại 2026-08-05 — thay Mac Mini 24/7 bằng GitHub Actions)
 
-## 10.1. Phân chia trách nhiệm
+> **Quyết định đã đổi so với bản gốc v3.1:** đoạn dưới đây thay thế toàn bộ thiết kế "Mac Mini M4 chạy 24/7 + launchd + deadman switch + cloud fallback + Tailscale" ở các bản v3.1 trước. Harry đã chọn **không** giữ một máy chạy liên tục — kiến trúc thật đang chạy trong repo là **GitHub Actions (ephemeral) + git-sync 2 chiều + duyệt thủ công tại chỗ trên `venho-os`**. Phần này mô tả đúng cái đang chạy, không phải cái plan gốc hình dung.
+
+## 10.1. Phân chia trách nhiệm (thật)
 
 | Thành phần | Chạy ở đâu | Vì sao |
 |---|---|---|
-| Research OS, Trend Radar, collectors | **Mac Mini M4** | Nặng, không gấp, cần vault local |
-| Obsidian vault | **Mac Mini M4** | File local, git sync |
-| M01–M06, M09, `image_studio_runtime` | **Mac Mini M4** | Generation + validation, cần GPU/CPU |
-| SQLite `growth.db` | **Mac Mini M4** | Zero-ops, local-first |
-| M10 Dashboard (Streamlit) | **Mac Mini M4** | Truy cập LAN + Tailscale từ điện thoại |
-| **Scheduler 09:00 + deadman switch** | **Cloud** | Không phụ thuộc tình trạng máy cục bộ |
-| M07 dispatch | Mac Mini (chính) / cloud (fallback) | Xem §10.3 |
-| Make.com adapter | **Cloud** | Bản chất là dịch vụ cloud |
-| Telegram alerts | **Cloud** | Phải hoạt động kể cả khi Mac Mini chết |
+| `venho-growth weekly-cycle` (sinh brief/copy/ảnh cho cả tuần) | **GitHub Actions**, cron `growth-daily-cycle.yml` (T2 08:00 ICT) | Ephemeral, không cần máy bật, chi phí runner miễn phí trong hạn mức |
+| `venho-growth trend-scan` (Tavily + Gemini Flash) | **GitHub Actions**, cron `growth-trend-scan.yml` (T6 08:00 ICT) | Chạy trước Chủ nhật để Harry có cả cuối tuần duyệt trước khi chọn topic T7 |
+| `publication_registry.json`, `trend_candidates.json`, `rotation_state.json` | **File JSON trong repo**, đồng bộ 2 chiều qua GitHub Contents API | Không có DB server; CI chỉ *append* record mới, local là nơi duy nhất mutate — xem §10.2 |
+| Duyệt/từ chối/sửa + **dispatch thật lên Facebook/Zalo qua Make.com** | **`venho-os` chạy local trên máy Harry** (`localhost:3000/os`, Next.js) | Owner approval + publish luôn xảy ra đồng bộ trong cùng một request khi Harry bấm nút — không có cửa sổ 09:00 cố định cần dispatch tự động |
+| Obsidian vault (Research OS) | **Local trên máy Harry**, git-tracked | File thật, không cần lúc nào cũng online |
+| M07 Publishing Gateway, M03 Validator | **In-process trong `venho-os` API route** khi duyệt | Không phải service độc lập chạy nền |
 
-## 10.2. Mac Mini M4 chạy 24/7 — cấu hình bắt buộc
+**Không còn tồn tại trong kiến trúc thật:** Mac Mini 24/7, `launchd`, `pmset`, deadman switch/heartbeat, cloud fallback dispatch có HMAC, Tailscale, `growth.db` SQLite server riêng, Streamlit dashboard. Các mục này ở §10.2–10.6 bản gốc đã bị xoá khỏi tài liệu vì mô tả sai hệ thống đang chạy.
 
-Máy chạy 24/7 giải quyết phần lớn lo ngại về lịch đăng. Nhưng cần cấu hình đúng:
+## 10.2. Git-sync 2 chiều — cơ chế thay cho "một máy luôn online"
 
-```bash
-# Chống ngủ (bắt buộc)
-sudo pmset -a sleep 0 disksleep 0 displaysleep 10
-sudo pmset -a womp 1              # wake on network
-sudo pmset -a autorestart 1       # tự khởi động lại sau mất điện
-
-# Tắt auto-update macOS trong giờ làm việc (tránh reboot bất ngờ)
-sudo softwareupdate --schedule off
-```
-
-**Chạy service bằng `launchd`** (không dùng cron — launchd tự khởi động lại khi crash):
+Vì CI (GitHub Actions) và local (`venho-os`) không chia sẻ filesystem hay DB, hai bên đồng bộ qua chính git repo, dùng GitHub Contents API (không phải `git pull`/`git push` thô để tránh xung đột merge giữa checkout ephemeral của CI và checkout lâu dài trên máy Harry):
 
 ```text
-infra/launchd/
-  com.venho.research.daily.plist     # 06:00 weather · 07:00 stale check
-  com.venho.trend.scan.plist         # T3 09:00 trend scan
-  com.venho.pipeline.worker.plist    # worker liên tục, KeepAlive=true
-  com.venho.dashboard.plist          # Streamlit, KeepAlive=true
-  com.venho.dispatch.plist           # 08:45 pre-flight · 09:00 dispatch
+CI (cron)  → chỉ APPEND record mới (candidate mới, publication RESERVED mới)
+                → commit trực tiếp vào repo, message có "[skip ci]"
+
+venho-os   → trước mỗi thao tác đọc: PULL bằng `gh api .../contents/{path}` (base64 + sha)
+           → trước mỗi thao tác ghi (approve/reject/edit/retry-dispatch): PUSH bằng
+             `gh api --method PUT ... -f sha=<sha cũ>` (optimistic concurrency)
+           → merge rule: union theo id, LOCAL LUÔN THẮNG khi trùng id
+             (đúng vì CI chỉ append, chỉ local mutate record đã tồn tại)
 ```
 
-**Bốn rủi ro còn lại kể cả khi 24/7:**
+Áp dụng cho hai file: `trend_candidates.json` (`TrendCandidateStore.approve()` — idempotent, retry an toàn bằng cách gọi lại approve) và `publication_registry.json` (`PublicationRegistry.claim()` — **không** idempotent, nên có route `resync` riêng chỉ đẩy lại git, không replay hành động CLI). Cờ tắt khẩn cấp: `TREND_CANDIDATES_GIT_SYNC=0` / `PUBLICATION_REGISTRY_GIT_SYNC=0`.
 
-| Rủi ro | Xác suất | Giảm thiểu |
+## 10.3. Rủi ro thật của kiến trúc này (khác rủi ro Mac Mini)
+
+| Rủi ro | Giảm thiểu hiện tại | Còn thiếu |
 |---|---|---|
-| Mất điện / mất mạng | Trung bình (Hà Nội) | UPS nhỏ + `autorestart 1` + deadman switch |
-| macOS update tự reboot | Thấp sau khi tắt schedule | `softwareupdate --schedule off` |
-| Process chết im lặng | Trung bình | `launchd KeepAlive` + heartbeat |
-| Ổ đầy / DB lock | Thấp | Alert dung lượng <10GB, WAL mode SQLite |
+| GitHub Actions cron không chạy (outage, quota) | `workflow_dispatch` cho phép chạy tay | Chưa có alert nào báo "cron tuần này không chạy" |
+| Sync push thất bại (sha conflict, mạng) | Response trả `synced:false` + `sync_error`, banner đỏ trên `venho-os` + nút "Đồng bộ lại" cho registry | Chưa có alert chủ động (Telegram/email) — Harry phải tự thấy banner khi mở dashboard |
+| Harry không mở `venho-os` đúng lúc | Không có — dispatch chỉ xảy ra khi Harry chủ động duyệt | Đây là đánh đổi có chủ đích: không có "tự đăng lúc 09:00 dù không ai duyệt" — đúng invariant "không publish bài chưa duyệt", nhưng nghĩa là **không có gì tự chạy nếu Harry không mở máy** |
+| Máy Harry tắt/offline | Không cần — `venho-os` chỉ cần chạy lúc duyệt, không cần 24/7 | — |
 
-## 10.3. Deadman switch — cơ chế then chốt
+**Đánh đổi cốt lõi:** kiến trúc cũ (Mac Mini + deadman switch) đổi lấy đảm bảo "bài luôn đăng đúng giờ kể cả khi không ai theo dõi". Kiến trúc thật đổi lấy sự đơn giản và chi phí gần bằng 0, nhưng bỏ đảm bảo đó — hệ thống publish **on-demand khi Harry duyệt**, không phải theo lịch cố định 09:00. Đây là quyết định đã chấp nhận, không phải gap cần vá bằng deadman switch giả.
 
-Đây là thứ biến "hy vọng máy chạy" thành "biết chắc khi nào máy không chạy".
-
-```text
-Mac Mini gửi heartbeat mỗi 5 phút → cloud endpoint (Make.com webhook hoặc healthchecks.io)
-
-Cloud kiểm tra:
-  Không nhận heartbeat 15 phút        → Telegram 🚨 "Mac Mini mất kết nối"
-  09:15 chưa có publication PUBLISHED → Telegram 🚨 "Slot T2 chưa đăng"
-  09:30 vẫn chưa                       → Cloud fallback dispatch (§10.4)
-```
-
-**Vì sao heartbeat quan trọng hơn scheduler:** nếu Mac Mini chết lúc 3 giờ sáng, không có heartbeat thì đến 9:15 anh mới biết — và lúc đó đã trễ. Với heartbeat, anh biết lúc 3:15 và có 6 tiếng để xử lý.
-
-## 10.4. Cloud fallback dispatch
-
-Bài đã `APPROVED` được **export sang cloud queue** (Make.com data store hoặc GitHub repo private) ngay khi duyệt. Nếu Mac Mini không dispatch được lúc 09:15:
-
-```text
-Cloud đọc approved package đã export → gọi M07 API (hoặc Make scenario trực tiếp
-với payload đã ký HMAC từ trước) → publish → callback về khi Mac Mini sống lại
-```
-
-**Ràng buộc bảo mật:** payload export đã được ký HMAC tại thời điểm approve trên Mac Mini. Cloud **không** có quyền tạo approval mới — nó chỉ thực thi approval đã ký. Điều này giữ nguyên invariant "không publish bài chưa duyệt" kể cả trong kịch bản fallback.
-
-## 10.5. Backup
+## 10.4. Backup
 
 | Dữ liệu | Cơ chế | Tần suất |
 |---|---|---|
-| Repo + vault + contracts + config | Git push lên GitHub private | Mỗi commit |
-| `growth.db` | `sqlite3 .backup` → Time Machine + rclone lên cloud | Hằng ngày 02:00 |
-| Artifacts ảnh | rclone → cloud storage | Hằng ngày 02:00 |
-| Secrets | **KHÔNG backup tự động** — quản lý riêng | — |
+| Repo + vault + contracts + config + registry JSON | Git push lên GitHub (public/private tuỳ repo) | Mỗi commit — cả từ CI và từ `venho-os` |
+| Artifacts ảnh | Chưa có backup riêng ngoài git | **Gap — chưa làm** |
+| Secrets | Quản lý qua `gh secret set` / `.env.local`, không backup tự động | — |
 
-## 10.6. Truy cập từ điện thoại
+## 10.5. Truy cập từ điện thoại
 
-Harry mobile-first. Dashboard chạy trên Mac Mini nhưng cần duyệt từ điện thoại:
-
-- **Tailscale** (khuyến nghị) — VPN mesh, không mở port ra internet, có app iOS/Android.
-- Không dùng port forwarding trực tiếp — Streamlit không có auth mặc định.
-- Telegram bot làm kênh notify + link nhanh vào dashboard.
+**Chưa giải quyết.** `venho-os` chỉ chạy trên `localhost` của máy Harry (`STUDIO_DIR` trỏ tới thư mục sibling local, không phải service deploy). Duyệt bài hiện chỉ làm được khi ngồi trước máy đó. Không có Tailscale, không có deploy public, không có auth middleware cho `/os` (ghi nhận trong `venho-os/CLAUDE.md`). Nếu cần duyệt từ điện thoại, đây là việc chưa bắt đầu, không phải việc đã làm rồi quên cập nhật tài liệu.
 
 ---
 
@@ -1793,11 +1757,11 @@ Documentation updates:      task_memory.md · task_status.md
 19. Mọi trend thuộc danh mục cấm bị chặn ở gate, có test chứng minh (≥15 case).
 20. R2-T và weather signal không có code path nào trở thành claim publish.
 
-### Hạ tầng
-21. Mac Mini chạy launchd service ổn định; `pmset` cấu hình đúng; không sleep.
-22. Heartbeat tới cloud mỗi 5 phút; mất 15 phút → Telegram alert.
-23. **Cloud fallback publish được bài đã ký HMAC nhưng KHÔNG tạo được approval mới.**
-24. Backup `growth.db` + artifacts hằng ngày, đã verify restore được ít nhất một lần.
+### Hạ tầng (★ viết lại 2026-08-05 — khớp kiến trúc GitHub Actions, xem Phần 10)
+21. Cron GitHub Actions (`growth-daily-cycle.yml`, `growth-trend-scan.yml`) chạy đúng lịch, có `workflow_dispatch` để chạy tay khi cần.
+22. Git-sync 2 chiều (`trend_candidates.json`, `publication_registry.json`) không mất record khi push thất bại: có cờ `synced`/`sync_error` trả về API, cảnh báo hiển thị trên `venho-os`, và route tự đồng bộ lại (`resync`) cho trường hợp registry không idempotent.
+23. **Publish chỉ xảy ra khi Harry chủ động duyệt trên `venho-os`; không có code path nào tự đăng bài chưa qua bước duyệt đó** (thay cho HMAC cloud-fallback — invariant "không publish bài chưa duyệt" giữ nguyên, chỉ đổi cơ chế).
+24. Backup: repo + registry JSON qua git đã có; **artifacts ảnh và verify-restore chưa có — DoD này chưa đạt**, không tự nhận là "đã xong" cho tới khi thật sự implement.
 
 ### Analytics & Learning
 25. Analytics nối publication → qualified inquiry/booking signal khi có evidence; mọi recommendation advisory chờ duyệt; vòng phản hồi sinh câu hỏi nghiên cứu mới.
@@ -1820,3 +1784,4 @@ Cho tới khi đủ 27 điều kiện, hệ thống phải được mô tả the
 | v2.4 | Sửa 4 lỗi v2.3; Trend Radar, R2-T, 8 domain, Brand Safety Gate, queue, evergreen, cadence ramp, 3 bề mặt SEO |
 | v3.0 | Hợp nhất một file; 17 quyết định; 26 DoD |
 | **v3.1** | **★ Nhịp cố định 4 bài/tuần (T2/T4/T6 + T7 đặc biệt) — gỡ bỏ ramp A/B/C · ★ Phần 10 Kiến trúc triển khai vật lý (Mac Mini M4 24/7 + launchd + deadman switch + cloud fallback + backup + Tailscale) · ★ Tavily/Exa làm collector chính · ★ domain `weather_signal` + contract weather · ★ Telegram alerts · ★ Zalo OA flag off · ★ `PublishingSlot` aggregate + state machine · ★ Lane đặc biệt mở rộng 4 loại với loại 4 fallback · ★ M03 bắt buộc trước dashboard (invariant 15) · ★ Sửa nhanh phải chạy lại M03 · ★ Làm rõ ranh giới sở hữu vault vs knowledge_studio · 6 decision hạ tầng IN-D1→D6 · 27 DoD** |
+| **v3.1 (2026-08-05 revision)** | **★ Viết lại Phần 10 + DoD 21–24: xoá thiết kế Mac Mini 24/7/launchd/deadman switch/cloud fallback HMAC/Tailscale chưa từng triển khai, thay bằng kiến trúc thật đang chạy — GitHub Actions cron (`growth-daily-cycle.yml` T2, `growth-trend-scan.yml` T6) + git-sync 2 chiều qua GitHub Contents API (local luôn thắng khi merge) + duyệt/dispatch on-demand local trên `venho-os`, không có cửa sổ đăng cố định 09:00 · Trend Radar classifier đổi Claude → Gemini Flash (chi phí) · DoD 24 (backup artifacts + verify-restore) và truy cập mobile (§10.5) ghi nhận rõ là CHƯA làm, không tự nhận đã xong** |

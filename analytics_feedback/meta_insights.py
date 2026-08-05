@@ -1,3 +1,10 @@
+# STATUS (2026-08-05 audit): implemented and unit-tested but NOT called by
+# `m08_analytics_bridge.py` or `analytics_feedback/cli.py` -- `measure_cmd`
+# (the real entry point, growth_orchestrator/cli.py) always uses
+# `MockMetricsAdapter` directly, never `build_metrics_adapter()` below. Real
+# Meta Graph API metrics are not flowing into any published report yet, even
+# though `feature_flags.yaml` has `meta_insights_enabled` (currently false
+# and unenforced -- see Phần 14 audit note in the master plan).
 from __future__ import annotations
 
 from pathlib import Path
