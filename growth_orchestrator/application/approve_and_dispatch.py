@@ -197,6 +197,9 @@ def _dispatch_claimed(
     updates: dict = {
         "status": response["status"],
         "gateway_status": response["status"],
+        # A retried row keeps the error text from the attempt that failed,
+        # so a row that has since gone through still reads as broken.
+        "gateway_error": None,
     }
     if approved_by is not None:
         updates["approved_by"] = approved_by
