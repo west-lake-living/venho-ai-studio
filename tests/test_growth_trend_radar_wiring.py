@@ -3,6 +3,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
+
 from research_engine.trend_radar.application.fetch_saturday_candidates import fetch_and_score_saturday_candidates
 from research_engine.trend_radar.classifiers.gemini_classifier import classify_candidates, classify_candidates_from_env
 from research_engine.trend_radar.trend_candidate_store import TrendCandidateStore
@@ -137,3 +139,29 @@ def test_trend_candidate_store_approve_unknown_id_raises(tmp_path: Path) -> None
         assert False, "expected KeyError"
     except KeyError:
         pass
+
+
+def test_a_rejected_candidate_can_never_reach_a_saturday_brief(tmp_path: Path) -> None:
+    store = TrendCandidateStore(data_root=tmp_path)
+    store.merge_new([{"id": "c1", "title": "Lễ hội đã qua", "status": "needs_human_approval"}])
+    store.approve("c1", approved_by="harry")
+
+    store.reject("c1", rejected_by="harry")
+
+    assert store.list_eligible_for_saturday() == []
+    assert store.load()[0]["verified_by_human"] is False
+
+
+def test_rejecting_survives_the_next_scan_instead_of_being_re_proposed(tmp_path: Path) -> None:
+    """A real delete would come back every Friday -- merge_new dedupes on id."""
+    store = TrendCandidateStore(data_root=tmp_path)
+    store.merge_new([{"id": "c1", "title": "Lễ hội đã qua", "status": "needs_human_approval"}])
+    store.reject("c1", rejected_by="harry")
+
+    assert store.merge_new([{"id": "c1", "title": "Lễ hội đã qua", "status": "needs_human_approval"}]) == 0
+    assert store.load()[0]["status"] == "rejected"
+
+
+def test_rejecting_an_unknown_candidate_is_an_error_not_a_silent_no_op(tmp_path: Path) -> None:
+    with pytest.raises(KeyError):
+        TrendCandidateStore(data_root=tmp_path).reject("nope", rejected_by="harry")

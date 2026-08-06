@@ -470,6 +470,27 @@ def trend_approve_cmd(
     typer.echo(json.dumps({"ok": True, "candidate": result}, ensure_ascii=False, indent=2))
 
 
+@app.command("trend-reject")
+def trend_reject_cmd(
+    candidate_id: str = typer.Option(..., "--candidate-id"),
+    rejected_by: str = typer.Option(..., "--rejected-by"),
+    project: str = typer.Option("venho_hotel"),
+) -> None:
+    """Take one scanned trend candidate out of circulation permanently.
+
+    The row stays in the file as a tombstone so the next Friday scan does not
+    re-propose it (merge_new dedupes on id); it is gone from the dashboard and
+    can never reach a Saturday brief."""
+    from research_engine.trend_radar.trend_candidate_store import TrendCandidateStore
+
+    try:
+        result = TrendCandidateStore(project).reject(candidate_id, rejected_by=rejected_by)
+    except KeyError as exc:
+        typer.echo(json.dumps({"ok": False, "error": str(exc)}), err=True)
+        raise typer.Exit(code=1)
+    typer.echo(json.dumps({"ok": True, "candidate": result}, ensure_ascii=False, indent=2))
+
+
 @app.command("version")
 def version() -> None:
     typer.echo("growth_orchestrator 0.1.0")

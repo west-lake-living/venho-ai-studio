@@ -59,6 +59,27 @@ class TrendCandidateStore:
                 return candidate
         raise KeyError(f"Unknown trend candidate id: {candidate_id}")
 
+    def reject(self, candidate_id: str, *, rejected_by: str) -> dict[str, Any]:
+        """Take a candidate out of circulation for good.
+
+        Kept as a tombstone rather than deleted from the file (2026-08-06),
+        which looks like a deletion from the dashboard but behaves better:
+        `merge_new` dedupes on id, so a row that is actually removed comes
+        straight back on the next Friday scan, and Harry would reject the
+        same stale festival every week. `status: rejected` also drops it out
+        of `list_eligible_for_saturday` on its own.
+        """
+        candidates = self.load()
+        for candidate in candidates:
+            if candidate["id"] == candidate_id:
+                candidate["status"] = "rejected"
+                candidate["verified_by_human"] = False
+                candidate["rejected_by"] = rejected_by
+                candidate["rejected_at"] = datetime.now(timezone.utc).isoformat()
+                self._save(candidates)
+                return candidate
+        raise KeyError(f"Unknown trend candidate id: {candidate_id}")
+
     def list_eligible_for_saturday(self) -> list[dict[str, Any]]:
         """Approved, still-scored-eligible (status != rejected), not-yet-used
         candidates, shaped for special_lane.select_special_lane_candidate
