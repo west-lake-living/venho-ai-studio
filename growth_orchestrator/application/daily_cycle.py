@@ -27,6 +27,7 @@ from prompt_studio.builders.image_prompt_builder import build_image_prompt
 from prompt_studio.knowledge_reader import read_dna
 from growth_orchestrator.domain.publishing_slot import PublishingSlot
 from publishing_gateway.fallback_images import fallback_image_url
+from publishing_gateway.image_constraints import aspect_ratio_rejection
 from publishing_gateway.publication_registry import PublicationRegistry
 from shared.storage.evergreen_pool_store import EvergreenPoolStore
 from shared.storage.google_drive import google_drive_uploader_from_env
@@ -301,6 +302,18 @@ def _upload_image_to_drive(
     try:
         manifest = json.loads((run_folder / "manifest.json").read_text(encoding="utf-8"))
         artifact_name = manifest["artifacts"][0]["path"]
+        # Instagram rejects an out-of-window photo inside Make, long after this
+        # code has recorded success, so the ratio is checked on the real bytes
+        # here -- while there is still a good alternative. Declining to publish
+        # falls through to the on-brand fallback photo, which beats a post that
+        # dies on the platform's side.
+        rejection = aspect_ratio_rejection(run_folder / artifact_name)
+        if rejection:
+            _send_alert_best_effort(
+                "image_rejected_by_constraint",
+                f"VENHO Growth: generated photo not published -- {rejection}. Fell back to a hotel photo.",
+            )
+            return None
         return uploader.upload_and_publish(
             run_folder / artifact_name,
             folder_path=[day, content_package_id],

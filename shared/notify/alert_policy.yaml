@@ -10,3 +10,4 @@ events:
   publication_needs_operator: { channel: telegram, severity: critical }
   heartbeat_missed: { channel: telegram, severity: critical }
   budget_threshold_crossed: { channel: telegram, severity: warning }
+  image_rejected_by_constraint: { channel: telegram, severity: warning }
