@@ -113,10 +113,11 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-08-06-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "approved",
     "proposed_at": "2026-08-06T13:58:38.934907+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "hpham1504@gmail.com",
+    "decided_at": "2026-08-06T15:04:30.524154+00:00",
+    "fact_path": "data/projects/venho_hotel/growth/facts/attraction__cho_hoa_quang_ba.json"
   },
   {
     "fact_key": "cafe.santorini_vibes",
@@ -443,7 +444,7 @@
   },
   {
     "fact_key": "customer_review.overall_rating",
-    "value": 8.0,
+    "value": 8,
     "value_type": "number",
     "rationale": "Nguồn Booking.com ghi nhận Ven Hồ Hotel đạt điểm đánh giá tổng quan 8,0/10 từ 60 đánh giá của khách.",
     "source_index": 0,
@@ -596,7 +597,7 @@
   },
   {
     "fact_key": "competitor.4u_homestay_cleanliness_rating",
-    "value": 8.0,
+    "value": 8,
     "value_type": "number",
     "rationale": "Nguồn Agoda thể hiện 4U Homestay có điểm đánh giá độ sạch sẽ là 8,0 trên 10.",
     "source_index": 0,
@@ -613,7 +614,7 @@
   },
   {
     "fact_key": "competitor.4u_homestay_facilities_rating",
-    "value": 8.0,
+    "value": 8,
     "value_type": "number",
     "rationale": "Nguồn Agoda thể hiện 4U Homestay có điểm đánh giá cơ sở vật chất là 8,0 trên 10.",
     "source_index": 0,
@@ -630,7 +631,7 @@
   },
   {
     "fact_key": "competitor.4u_homestay_service_rating",
-    "value": 8.0,
+    "value": 8,
     "value_type": "number",
     "rationale": "Nguồn Agoda thể hiện 4U Homestay có điểm đánh giá thái độ phục vụ là 8,0 trên 10.",
     "source_index": 0,
