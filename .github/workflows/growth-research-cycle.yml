@@ -14,7 +14,13 @@ name: Growth Agent Research Cycle
 # the weekend is available to the week's drafts.
 on:
   schedule:
+    # Thursday: the full sweep of every automated domain.
     - cron: "0 1 * * 4"
+    # Daily 06:00 Asia/Ho_Chi_Minh: weather only. A forecast expires in 48h
+    # (weather_policy.yaml), so a weekly refresh would leave the Saturday
+    # special lane with a stale signal or none at all. Open-Meteo is free and
+    # keyless, so this costs nothing but a runner minute.
+    - cron: "0 23 * * *"
   workflow_dispatch:
     inputs:
       domain:
@@ -49,6 +55,8 @@ jobs:
         run: |
           if [ -n "${{ github.event.inputs.domain }}" ]; then
             venho-research cycle --domain "${{ github.event.inputs.domain }}"
+          elif [ "${{ github.event.schedule }}" = "0 23 * * *" ]; then
+            venho-research cycle --domain weather_signal
           else
             venho-research cycle --all
           fi
@@ -61,6 +69,7 @@ jobs:
           git config user.name "venho-growth-bot"
           git config user.email "venho-growth-bot@users.noreply.github.com"
           git add research/
-          git add -f data/projects/*/research/proposed_facts.json 2>/dev/null || true
+          git add -f data/projects/*/research/proposed_facts.json \
+                     data/projects/*/research/weather_signals.json 2>/dev/null || true
           git diff --cached --quiet || git commit -m "chore: research cycle $(date -u +%Y-%m-%d)"
           git push

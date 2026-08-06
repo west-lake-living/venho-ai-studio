@@ -3,7 +3,15 @@ location:
   name: "West Lake, Hanoi"
   lat: 21.0583
   lon: 105.8200
-horizon_hours: 72
+# 7 days, not 3 (2026-08-06): the Saturday special post is drafted by
+# Monday's weekly cycle, and a 72h horizon never reaches that Saturday -- the
+# one day the whole weather path exists to serve.
+horizon_hours: 168
+# Unchanged at 48h, deliberately. A 6-day-out forecast is a real forecast but
+# not a reliable one, and letting it live longer would only mean shooting a
+# sunrise scene into a rainstorm. A signal that expires before dispatch
+# simply drops the weather angle (see daily_cycle._weather_context_for_saturday);
+# regenerating the Saturday draft on Thursday or Friday gets a live one.
 expiry_hours: 48
 scan_time: "06:00"
 scenario_mapping:

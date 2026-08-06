@@ -20,6 +20,42 @@ scenarios:
     forbidden_entities: [generic_city_hotel]
     reference_mode: environment
     linh_an_allowed_actions: [standing, portrait, sitting]
+  # Weather-driven scenarios (2026-08-06). weather_policy.yaml has mapped
+  # rain/heat/cold_snap/golden_sunset to these three keys since it was
+  # written, but they did not exist here -- so four of the six forecast
+  # conditions could not influence a brief at all, including rain, which is
+  # what Hanoi actually has this week. Each mirrors the approved scenario for
+  # the same environment; only the time of day and the weather change.
+  venho_lobby_cozy:
+    display_name: Lobby, warm interior (rain / cold)
+    dna_subject: lobby
+    environment_reference: lobby_seating
+    dna_version: "2.7"
+    reference_asset_ids: [venho_lobby_approved]
+    required_entities: [lobby]
+    forbidden_entities: [generic_city_hotel, outdoor_scene]
+    reference_mode: environment
+    linh_an_allowed_actions: [sitting, standing, portrait]
+  venho_rooftop_sunset:
+    display_name: Rooftop Ven Ho Hotel sunset
+    dna_subject: outside
+    environment_reference: rooftop_railing
+    dna_version: "2.7"
+    reference_asset_ids: [venho_rooftop_railing_approved]
+    required_entities: [west_lake, rooftop_railing]
+    forbidden_entities: [bedroom_window, highrise_skyline]
+    reference_mode: environment
+    linh_an_allowed_actions: [standing, portrait, leaning, sitting]
+  venho_rooftop_shade:
+    display_name: Rooftop Ven Ho Hotel, shade (hot day)
+    dna_subject: outside
+    environment_reference: rooftop_railing
+    dna_version: "2.7"
+    reference_asset_ids: [venho_rooftop_railing_approved]
+    required_entities: [west_lake, rooftop_railing]
+    forbidden_entities: [bedroom_window, highrise_skyline, harsh_midday_glare]
+    reference_mode: environment
+    linh_an_allowed_actions: [sitting, standing, portrait]
   venho_nguyen_dinh_thi_street:
     display_name: Nguyen Dinh Thi street
     dna_subject: westlake

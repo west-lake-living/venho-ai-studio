@@ -36,6 +36,7 @@ from typing import Any, Callable, Optional
 
 import yaml
 
+from research_engine.adapters.vault_reader import VaultReader
 from research_engine.application.collect_sources import collect_source_note
 from research_engine.application.extract_facts import extract_fact_proposals
 from research_engine.application.synthesize_notes import synthesize_notes
@@ -92,6 +93,17 @@ def _collect_tavily(config: dict[str, Any], *, api_key: str, http_post: Optional
     return list(collected.values())
 
 
+def _collect_urls(
+    urls: list[str], *, api_key: str, http_post: Optional[Callable[..., Any]]
+) -> list[dict[str, Any]]:
+    from research_engine.trend_radar.collectors.tavily_extract import extract_urls
+
+    try:
+        return extract_urls(urls, api_key=api_key, http_post=http_post)
+    except Exception:  # noqa: BLE001 - a dead extract must not lose a domain that also has queries
+        return []
+
+
 def _collect_from_file(input_file: Path) -> list[dict[str, Any]]:
     text = input_file.read_text(encoding="utf-8")
     return [
@@ -104,6 +116,76 @@ def _collect_from_file(input_file: Path) -> list[dict[str, Any]]:
     ]
 
 
+def _run_weather_cycle(
+    result: ResearchCycleResult,
+    *,
+    project: str,
+    config_root: Path,
+    data_root: Path,
+    vault_root: Path,
+    today: date,
+    http_get: Optional[Callable[..., Any]] = None,
+) -> ResearchCycleResult:
+    """The `weather_signal` domain: real forecast -> R2-T notes + a store the
+    Saturday lane reads.
+
+    Produces zero fact proposals, by design and not by omission. A
+    WeatherSignal is R2-T: it shapes which scenario a post is shot in, and it
+    can never become a citable claim (DoD #20, §6.6 "R2-T shapes the ANGLE,
+    R3 supplies the FACT"). There is deliberately no path from here into
+    ProposedFactStore.
+    """
+    from datetime import datetime
+
+    from research_engine.trend_radar.application.scan_weather import scan_weather
+    from research_engine.trend_radar.collectors.weather_api import collect_weather_forecast_from_policy
+    from shared.storage.weather_signal_store import WeatherSignalStore
+
+    policy_path = config_root / "weather_policy.yaml"
+    policy = yaml.safe_load(policy_path.read_text(encoding="utf-8")) if policy_path.exists() else {}
+    forecasts = collect_weather_forecast_from_policy(policy, http_get=http_get, today=today)
+    if not forecasts:
+        result.skipped_reason = "weather provider returned no forecast"
+        return result
+
+    signals = scan_weather(forecasts, policy=policy, generated_at=datetime.now())
+    result.sources_collected = len(signals)
+
+    for signal in signals:
+        try:
+            path = VaultReader(vault_root).write_note(
+                Path("notes") / "weather_signal" / f"{signal.rs_id}.md",
+                {
+                    "rs_id": signal.rs_id,
+                    "type": "trend",
+                    "domain": "weather_signal",
+                    "evidence_level": "R2-T",
+                    "status": "draft",
+                    "collected_at": today.isoformat(),
+                    "source_uri": "https://api.open-meteo.com/v1/forecast",
+                    "confidence": 0.6,
+                    # A forecast note that outlives its forecast is worse than
+                    # no note: expiry comes from policy, never from the provider.
+                    "expires_at": signal.expires_at[:10],
+                    "promoted_fact_keys": [],
+                    "related_briefs": [],
+                    "verified_by_human": False,
+                    "tags": ["weather", signal.condition],
+                },
+                f"# {signal.forecast_date} — {signal.condition}\n\n"
+                f"- {signal.visual_opportunity}\n"
+                f"- Scenario: {', '.join(signal.matching_scenario_keys) or 'chưa map'}\n",
+            )
+        except Exception:  # noqa: BLE001 - a note that will not write must not lose the store update below
+            continue
+        result.source_notes.append(str(path))
+
+    WeatherSignalStore(project=project, data_root=data_root).replace(
+        [signal.model_dump() for signal in signals]
+    )
+    return result
+
+
 def run_research_cycle(
     domain: str,
     *,
@@ -112,10 +194,12 @@ def run_research_cycle(
     vault_root: Path = DEFAULT_VAULT_ROOT,
     data_root: Path = Path("data/projects"),
     input_file: Optional[Path] = None,
+    source_urls: Optional[list[str]] = None,
     today: Optional[date] = None,
     tavily_api_key: Optional[str] = None,
     gemini_api_key: Optional[str] = None,
     http_post: Optional[Callable[..., Any]] = None,
+    http_get: Optional[Callable[..., Any]] = None,
     extract_fn: Optional[Callable[..., list[dict[str, Any]]]] = None,
     store: Optional[ProposedFactStore] = None,
 ) -> ResearchCycleResult:
@@ -133,16 +217,38 @@ def run_research_cycle(
     today = today or date.today()
     collector = config.get("collector", "tavily")
 
+    # URLs Harry named beat any search: for the hotel's own OTA review pages
+    # and a curated competitor list, the address is already known.
+    urls = list(source_urls or config.get("urls") or [])
     if input_file is not None:
         sources = _collect_from_file(input_file)
+    elif urls:
+        api_key = tavily_api_key if tavily_api_key is not None else os.environ.get("TAVILY_API_KEY", "")
+        if not api_key:
+            result.skipped_reason = "TAVILY_API_KEY not set"
+            return result
+        sources = _collect_urls(urls, api_key=api_key, http_post=http_post)
+        if config.get("collector") == "tavily" and config.get("queries"):
+            # A domain can have both: named pages plus a search sweep.
+            sources = sources + [
+                source
+                for source in _collect_tavily(config, api_key=api_key, http_post=http_post)
+                if source["source_uri"] not in {s["source_uri"] for s in sources}
+            ]
     elif collector == "tavily":
         api_key = tavily_api_key if tavily_api_key is not None else os.environ.get("TAVILY_API_KEY", "")
         if not api_key:
             result.skipped_reason = "TAVILY_API_KEY not set"
             return result
         sources = _collect_tavily(config, api_key=api_key, http_post=http_post)
+    elif collector == "weather":
+        return _run_weather_cycle(
+            result, project=project, config_root=config_root, data_root=data_root,
+            vault_root=vault_root, today=today, http_get=http_get,
+        )
     else:
-        # weather/manual: no automated web source is permitted or applicable.
+        # manual: §7.2 permits no automated source (OTA reviews are an
+        # explicit manual export).
         result.skipped_reason = f"collector '{collector}' needs --input-file (see manual_source_hint)"
         return result
 
@@ -180,7 +286,13 @@ def run_research_cycle(
     extract = extract_fn or extract_fact_proposals
     api_key = gemini_api_key if gemini_api_key is not None else os.environ.get("GEMINI_API_KEY", "")
     try:
-        raw_proposals = extract(question=question, sources=sources, api_key=api_key)
+        raw_proposals = extract(
+            question=question,
+            sources=sources,
+            api_key=api_key,
+            today=today,
+            reject_past_dates=bool(config.get("reject_past_dates", True)),
+        )
     except Exception:  # noqa: BLE001 - the vault notes above are the durable output; a failed extraction is a missing convenience, not a failed cycle
         raw_proposals = []
 

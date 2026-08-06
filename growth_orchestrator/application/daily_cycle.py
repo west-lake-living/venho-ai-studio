@@ -5,6 +5,7 @@ import json
 import os
 import uuid
 from dataclasses import dataclass, field
+from datetime import date
 from pathlib import Path
 from typing import Any, Optional
 
@@ -122,6 +123,37 @@ def _trend_candidate_topic_entries(project: str, data_root: Path) -> list[dict[s
         return []
 
 
+def _weather_context_for_saturday(project: str, data_root: Path) -> Optional[dict[str, Any]]:
+    """The still-valid forecast for the coming Saturday, if the research
+    cycle has produced one.
+
+    This is what makes the Saturday post specific to the weekend it goes out
+    on -- "sương sớm trên mặt hồ" versus "hoàng hôn vàng" is the difference
+    between a post about this Saturday and a post about any Saturday. It is
+    R2-T: it picks the angle and the scenario, never a claim in the copy.
+
+    Best-effort by design: no forecast means the special lane runs the way it
+    always did, on the curated topic alone.
+    """
+    try:
+        from research_engine.trend_radar.collectors.weather_api import next_saturday, signal_for_date
+        from shared.storage.weather_signal_store import WeatherSignalStore
+
+        signals = WeatherSignalStore(project=project, data_root=data_root).valid_signals()
+        signal = signal_for_date(signals, next_saturday(date.today()))
+        if signal is None:
+            return None
+        return {
+            "rs_id": signal.get("rs_id"),
+            "condition": signal.get("condition"),
+            "visual_opportunity": signal.get("visual_opportunity"),
+            "matching_scenario_keys": signal.get("matching_scenario_keys", []),
+            "expires_at": signal.get("expires_at"),
+        }
+    except Exception:  # noqa: BLE001 - a weather hint must never be able to fail a content run
+        return None
+
+
 def _pick_topic(config: dict[str, Any], day: str, project: str, data_root: Path) -> dict[str, Any]:
     pillars_config = config["content_pillars"]
     if day == SPECIAL_CADENCE_DAY:
@@ -163,6 +195,9 @@ def _pick_topic(config: dict[str, Any], day: str, project: str, data_root: Path)
             [{"type": picked["special_lane_type"], "verified_by_human": picked["verified_by_human"]}]
         )
         picked["special_lane_reason"] = selected["selected_reason"]
+        weather = _weather_context_for_saturday(project, data_root)
+        if weather:
+            picked["weather_context"] = weather
         if picked.get("trend_candidate_id"):
             try:
                 from research_engine.trend_radar.trend_candidate_store import TrendCandidateStore
@@ -202,6 +237,31 @@ def _build_creative_brief(topic: dict[str, str], platform: str, day: str, projec
         "checksum": "",
         "project": project,
     }
+
+    # Weather rides in as context, not as a proof point: `context_refs` is
+    # the contract's slot for R2/R2-T material that shapes the angle, while
+    # `proof_points` is for citable claims. A forecast is never a claim.
+    weather = topic.get("weather_context")
+    if weather:
+        brief["context_refs"] = [
+            {"rs_id": weather.get("rs_id", "weather"), "evidence_level": "R2-T", "role": "weather_angle"}
+        ]
+        if weather.get("visual_opportunity"):
+            brief["hook_hypothesis"] = weather["visual_opportunity"]
+        scenario_keys = weather.get("matching_scenario_keys") or []
+        if scenario_keys:
+            # The forecast decides which of the hotel's scenarios is even
+            # shootable that Saturday -- a rooftop sunset brief on a rainy
+            # weekend produces an image the weather contradicts.
+            resolved = next((key for key in scenario_keys if key in scenario_registry.scenarios), None)
+            if resolved:
+                weather_scenario = scenario_registry.resolve(resolved)
+                brief["visual"] = {
+                    "scenario_key": resolved,
+                    "required_entities": list(weather_scenario.required_entities),
+                    "forbidden_entities": list(weather_scenario.forbidden_entities),
+                    "target_formats": ["feed_4_5"],
+                }
     payload_for_checksum = {key: value for key, value in brief.items() if key != "checksum"}
     brief["checksum"] = "sha256:" + hashlib.sha256(
         json.dumps(payload_for_checksum, sort_keys=True, ensure_ascii=False).encode("utf-8")

@@ -10,3 +10,6 @@
 assets:
   venho_rooftop_railing_approved: assets/raw/outside/IMG_5125.jpg
   venho_room_lake_view_approved: assets/raw/room/ViewHo-room-2/IMG_5193.jpeg
+  # Provisional on the same terms as the two above -- first usable lobby
+  # shot, not a QC'd pick. Added 2026-08-06 with venho_lobby_cozy.
+  venho_lobby_approved: assets/raw/lobby/IMG_5175.jpeg

@@ -108,6 +108,7 @@ def cycle_cmd(
     domain: str = typer.Option(None, "--domain", help="One of the 9 registered domains. Omit with --all."),
     all_domains: bool = typer.Option(False, "--all", help="Run every domain that has an automated collector."),
     input_file: Path = typer.Option(None, "--input-file", help="Source file for manual-collector domains (e.g. an OTA review export)."),
+    source_url: List[str] = typer.Option([], "--source-url", help="Repeatable. Read these exact pages instead of searching (e.g. the hotel's Agoda review page, a competitor's listing)."),
     project: str = typer.Option("venho_hotel"),
     config_root: Path = typer.Option(Path("config/projects/venho_hotel/research"), "--config-root"),
     vault_root: Path = typer.Option(Path("research"), "--vault-root"),
@@ -125,7 +126,12 @@ def cycle_cmd(
         results = run_all_research_cycles(project=project, config_root=config_root, vault_root=vault_root)
     else:
         _assert_known_domain(domain, config_root=config_root)
-        results = [run_research_cycle(domain, project=project, config_root=config_root, vault_root=vault_root, input_file=input_file)]
+        results = [
+            run_research_cycle(
+                domain, project=project, config_root=config_root, vault_root=vault_root,
+                input_file=input_file, source_urls=list(source_url) or None,
+            )
+        ]
     typer.echo(
         json.dumps(
             [

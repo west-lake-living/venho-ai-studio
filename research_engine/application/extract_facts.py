@@ -21,10 +21,17 @@ from __future__ import annotations
 import json
 import os
 import re
+from datetime import date
 from typing import Any, Callable, Optional
 
 _MAX_SNIPPET_CHARS = 1200
 _MAX_SOURCES = 12
+# dd/mm/yyyy (and dd-mm-yyyy) plus ISO. Vietnamese event listings use the
+# first form almost exclusively.
+_DATE_PATTERNS = (
+    re.compile(r"\b(\d{1,2})[/-](\d{1,2})[/-](\d{4})\b"),
+    re.compile(r"\b(\d{4})-(\d{2})-(\d{2})\b"),
+)
 _ALLOWED_VALUE_TYPES = {"string", "number", "boolean", "date"}
 # fact_key becomes a filesystem path component downstream (FactStore writes
 # `{fact_key}.json`), so it is constrained here rather than trusted.
@@ -47,8 +54,44 @@ Quy tắc bắt buộc:
 - Chỉ trích xuất điều nguồn NÓI RÕ. Không suy đoán, không làm tròn, không tổng hợp từ kiến thức riêng của bạn.
 - Nếu nguồn không đủ để trả lời câu hỏi, trả về mảng rỗng. Mảng rỗng là câu trả lời hợp lệ và tốt hơn là bịa.
 - Không trích xuất fact về chính Ven Ho Hotel từ nguồn bên thứ ba trừ khi nguồn nêu đích danh khách sạn.
+- HÔM NAY là {today}. Với sự kiện, chỉ trích xuất sự kiện đang diễn ra hoặc sắp diễn ra kể từ hôm nay. Bỏ qua mọi sự kiện đã kết thúc, kể cả khi nguồn viết rất chi tiết về nó.
+- Chỉ trích xuất sự kiện ở Hà Nội. Bỏ qua sự kiện ở tỉnh thành khác.
 
 Trả về JSON array, không có text ngoài JSON."""
+
+
+def dates_in(value: str) -> list[date]:
+    """Every calendar date mentioned in a proposal's value."""
+    found: list[date] = []
+    for index, pattern in enumerate(_DATE_PATTERNS):
+        for match in pattern.finditer(value):
+            try:
+                if index == 0:
+                    day, month, year = (int(part) for part in match.groups())
+                else:
+                    year, month, day = (int(part) for part in match.groups())
+                found.append(date(year, month, day))
+            except ValueError:
+                continue  # 31/02/2026 and friends
+    return found
+
+
+def is_stale_dated(value: Any, *, today: date) -> bool:
+    """True when a value names dates and every one of them is in the past.
+
+    Why (2026-08-06): the first real `local_events` cycle proposed the Hanoi
+    Creative Design Festival *2024* and the Autumn Festival *2024* -- Tavily
+    happily returns evergreen listicles, and a model reading them has no idea
+    what today is. Publishing a hotel post about a festival that ended two
+    years ago is the kind of error that costs more trust than the post could
+    ever have earned.
+
+    A value with no date at all is not stale ("Tháng 10 đến tháng 2" is a
+    seasonal answer, not an expired one), and a range whose end is still
+    ahead is live.
+    """
+    dates = dates_in(str(value))
+    return bool(dates) and all(found < today for found in dates)
 
 
 def _sanitize_sources(sources: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -98,12 +141,19 @@ def extract_fact_proposals(
     api_key: str,
     model: str = DEFAULT_MODEL,
     client_fn: Optional[Callable[..., str]] = None,
+    today: Optional[date] = None,
+    reject_past_dates: bool = True,
 ) -> list[dict[str, Any]]:
     """Candidate facts answering `question`, drawn only from `sources`.
 
     Fail-closed on every axis: no sources, no key, an unparseable response,
     or an entry that misses the schema all yield fewer proposals, never a
     lower-quality one. `client_fn` is injectable so tests never call Gemini.
+
+    Staleness is checked twice on purpose. The prompt tells the model today's
+    date and to skip finished events; `is_stale_dated` then drops anything
+    that slipped through anyway. The instruction is the part that works most
+    of the time; the code is the part that always works.
     """
     if not question.strip():
         raise ValueError("Research starts with one written question")
@@ -136,10 +186,11 @@ def extract_fact_proposals(
             )
             return response.text
 
+    today = today or date.today()
     raw = (
         client_fn(
             model=model,
-            system=_SYSTEM_PROMPT,
+            system=_SYSTEM_PROMPT.format(today=today.isoformat()),
             contents=json.dumps({"question": question.strip(), "sources": payload}, ensure_ascii=False),
         )
         or ""
@@ -157,6 +208,8 @@ def extract_fact_proposals(
     for entry in entries:
         valid = _valid_proposal(entry, source_count=len(payload))
         if valid is None:
+            continue
+        if reject_past_dates and is_stale_dated(valid["value"], today=today):
             continue
         source = payload[valid["source_index"]]
         proposals.append({**valid, "source_uri": source["url"], "source_title": source["title"]})
