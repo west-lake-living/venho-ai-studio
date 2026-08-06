@@ -524,5 +524,342 @@
     "rejection_reason": null,
     "verified_by_human": false,
     "scanned_at": "2026-08-05T03:10:58.062341+00:00"
+  },
+  {
+    "id": "tavily-https://vnexpress.net/chu-de/ho-tay-6590-ap1",
+    "title": "Tin tức Hồ Tây mới nhất hôm nay trên VnExpress",
+    "source_uri": "https://vnexpress.net/chu-de/ho-tay-6590-ap1",
+    "snippet": "Ngày 14/6, trong báo cáo thẩm tra đề án cải tạo Hồ Ty đang được quan tm rộng rãi, HĐND Thành phố Hà Nội khẳng định Hồ Ty là \"không gian mặt nước có giá trị cảnh quan, văn hóa tm linh và sinh thái đặc biệt\", đồng thời yêu cầu đánh giá tác động môi trường, giảm thiểu ảnh hưởng tới hệ sinh thái tự nhiên.\n\nĐường ven Hồ Ty trước kế hoạch thay đổi diện mạo\n\n### Đường ven Hồ Ty trước kế hoạch thay đổi diện mạo [...] ### Khởi công xy dựng Nhà hát Opera Hà Nội bên Hồ Ty\n\nDự án Nhà hát Opera Hà Nội và Công viên văn hóa - nghệ thuật chuyên đề quy mô 19 ha, tổng vốn hơn 12.700 tỷ đồng, được Sun Group khởi công sáng 5/10, dự kiến hoàn thành năm 2027.\n\nNhà hát Ngọc Trai nửa tỷ USD ở Hồ Ty sắp được triển khai\n\n### Nhà hát Ngọc Trai nửa tỷ USD ở Hồ Ty sắp được triển khai\n\nHà NộiDự án nhà hát Ngọc Trai và công viên văn hóa nghệ thuật vốn nửa tỷ USD ở phường Ty Hồ sẽ được khởi công vào đầu tháng 10. [...] Hà NộiDự án Celestine Westlake trên đường Võ Chí Công khai thác lợi thế vị trí và tầm nhìn hướng Hồ Ty, sông Hồng, đồng thời phát triển hệ thống tiện ích hướng nhóm khách hàng cao cấp.\n\nKhách đổ xô check in quả cầu lơ lửng ở Hồ Ty\n\n### Khách đổ xô check in quả cầu lơ lửng ở Hồ Ty\n\nHà NộiQuả địa cầu khổng lồ có tên Gaia của nghệ sĩ người Anh được dựng tại vườn hoa Lạc Long Qun, Ty Hồ, thu hút hàng nghìn khách chiêm ngưỡng.\n\nKhởi công xy dựng Nhà hát Opera Hà Nội bên Hồ Ty",
+    "relevance_hint": 0.6877354,
+    "geographic": "westlake",
+    "thematic": "lifestyle_culture",
+    "actionability": "adjacent",
+    "type": "feature_story",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local"
+    ],
+    "relevance_score": 0.36,
+    "status": "rejected",
+    "rejection_reason": "passed",
+    "verified_by_human": false,
+    "scanned_at": "2026-08-06T13:33:34.529267+00:00"
+  },
+  {
+    "id": "tavily-https://www.traveloka.com/vi-vn/explore/destination/thung-lung-hoa-ho-tay/286448",
+    "title": "Bỏ túi kinh nghiệm du lịch thung lũng hoa Hồ Tây từ A đến Z",
+    "source_uri": "https://www.traveloka.com/vi-vn/explore/destination/thung-lung-hoa-ho-tay/286448",
+    "snippet": "Theo cẩm nang du lịch Hà Nội, thời tiết và cảnh sắc ở Hà Nội vào mùa nào cũng đẹp, bạn có thể đến tham quan thung lũng hoa vào bất kỳ thời điểm nào trong năm. Tuy nhiên, mỗi mùa sẽ có một số loài hoa nở khác nhau. Và thường tiết trời mùa thu tháng 8,9,10 là dễ chịu và nhiều hoa nở đẹp nhất. Vì thế, một chuyến du lịch Hà Nội vào thời gian này để có thể cảm nhận hết những thi vị của thung lũng hoa Hồ Ty sẽ thật tuyệt vời.\n\nthung lũng hoa hồ ty [...] Ngắm hoa: Nếu bạn là một người yêu thích thiên nhiên, hoa lá, thì đy là thiên đường dành cho bạn. Có rất nhiều loài hoa đẹp để bạn chiêm ngưỡng. Chẳng hạn như: vào tháng 6-9 có hoa sen nở rộ; tháng 7 thì có hoa hướng dương; tháng 11 đến tháng 2 năm sau là mùa của cúc Họa Mi; đầu xun thì hoa violet khoe sắc…\n\nthung lũng hoa hồ ty\n\nThung lũng hoa thu hút rất nhiều du khách tham quan. @Sưu tầm [...] Chụp ảnh: Vườn hoa Hồ Ty là một thiên đường bạt ngàn hoa, rất thích hợp đến bạn chụp ảnh, check in sống ảo. Ngoài vườn hoa rộng lớn, khắp nơi trong thung lũng hoa còn bố trí rất nhiều mô hình để du khách chụp ảnh như: cối xay gió, cầu, khúc gỗ, đàn dê…\n\nthung lũng hoa hồ ty\n\nThung lũng hoa Hồ Ty mùa hướng dương.@hoa.vn",
+    "relevance_hint": 0.83225065,
+    "geographic": "westlake",
+    "thematic": "travel_stay",
+    "actionability": "direct",
+    "type": "seasonal_nature",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "travel_accommodation",
+      "hanoi_westlake_local",
+      "seasonal_weather_nature"
+    ],
+    "relevance_score": 1.0,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "verified_by_human": false,
+    "scanned_at": "2026-08-06T13:33:34.529267+00:00"
+  },
+  {
+    "id": "tavily-https://greenfuture.tech/tin-tuc/thung-lung-hoa-ho-tay",
+    "title": "Thung lũng hoa Hồ Tây: Điểm check-in rực rỡ giữa Hà Nội",
+    "source_uri": "https://greenfuture.tech/tin-tuc/thung-lung-hoa-ho-tay",
+    "snippet": "Khoảnh khắc tuyệt vời nhất để ghé thăm. Hoa đào hồng rực, mai vàng tươi tắn cùng không khí mát mẻ đầu năm tạo nên khung cảnh vừa rộn ràng, vừa dịu dàng. Đi dạo giữa thảm hoa xun và lưu lại vài bức hình, thật sự rất đáng!\n\n### Mùa hè (tháng 5-7)\n\nSen nở ngập tràn mặt hồ, xen lẫn sắc vàng rực của hướng dương tạo nên một không gian bình yên và tươi mới. Dù trời hơi oi, nhưng với những ai mê chụp ảnh, cắm trại hay ngắm hoàng hôn, đy là khoảng thời gian không thể bỏ lỡ.\n\n### Mùa thu (tháng 8-11) [...] Những bông cúc họa mi trắng muốt bắt đầu nở rộ, nhẹ nhàng và tinh khôi như chính mùa thu Hà Nội. Thêm vào đó là hoa cải vàng trải rộng, khung cảnh lãng mạn đến nao lòng.\n\n### Mùa đông (tháng 12-1)\n\nTrời se lạnh nhưng không kém phần quyến rũ. Hoa violet tím ngát và bách nhật rực rỡ nhiều màu cùng nhau khoe sắc, mang đến một không gian yên bình, trầm lắng mà vẫn nên thơ.\n\n## Có gì chơi ở thung lũng hoa Hồ Ty? [...] Cách 1: Đặt xe qua đường link: \n Cách 2: Sử dụng ứng dụng thuê xe Green Future Car Rental.\n Cách 3: Liên hệ trực tiếp tới Fanpage/Hotline 19001877.\n\nDịch vụ thuê xe điện tự lái hoặc có tài xế uy tín tại Green Future\n\n## Mỗi mùa một vẻ – Khi nào nên ghé thăm thung lũng hoa?\n\nThung lũng hoa Hồ Ty mang đến vẻ đẹp khác nhau qua từng mùa, mỗi thời điểm đều có những loài hoa đặc trưng và không khí riêng biệt:\n\nVẻ đẹp thung lũng hoa Hồ Ty từng mùa\n\n### Mùa xun (tháng 2-4)",
+    "relevance_hint": 0.8306082,
+    "geographic": "westlake",
+    "thematic": "seasonal_weather",
+    "actionability": "direct",
+    "type": "seasonal_nature",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "seasonal_weather_nature"
+    ],
+    "relevance_score": 0.5,
+    "status": "rejected",
+    "rejection_reason": "passed",
+    "verified_by_human": false,
+    "scanned_at": "2026-08-06T13:33:34.529267+00:00"
+  },
+  {
+    "id": "tavily-https://dantri.com.vn/du-lich/ho-tay-ruc-ro-trong-mua-hoa-da-sac-mau-20240601185039602.htm",
+    "title": "Hồ Tây rực rỡ trong mùa hoa đa sắc màu | Báo Dân trí",
+    "source_uri": "https://dantri.com.vn/du-lich/ho-tay-ruc-ro-trong-mua-hoa-da-sac-mau-20240601185039602.htm",
+    "snippet": "Hồ Ty 4 mùa đều cho vẻ đẹp riêng, mùa hè đẹp nổi bật bởi sắc màu đa dạng của các loại hoa. Mùa đông mang vẻ thm trầm khi mặt nước lảng bảng sương khói bên những cành cy khẳng khiu. Hoặc vẻ đẹp đầy sức sống của cy lộc vừng khi mùa xun đến.\n\nNgười dn tập thể thao, thư giãn dưới những chùm hoa phượng vĩ đỏ rực. [...] Vòng quanh Hồ Ty có chiều dài khoảng 17km, gần như tất cả các con đường ven hồ đều có màu sắc rực rỡ của các loại hoa mùa hè.\n\nHồ Ty là hồ nước lớn nhất nằm ở phía Ty Bắc Hà Nội, có diện tích 500ha. Khi thời tiết đẹp, người dn đổ ra ven hồ có thể quan sát rất rõ cảnh sắc vào những buổi hoàng hôn.\n\nCy bằng lăng cô đơn nở hoa rực rỡ.\n\nRặng cy muồng hoàng yến hoa vàng tươi ở đoạn phố Quảng An.\n\nNhững cành hoa phượng đỏ rực chìa ra mặt nước Hồ Ty lộng gió. [...] Những hàng cy hoa phượng, hoa bằng lăng và muồng hoàng yến đan xen nhau, đang vào mùa nở rộ ở hồ Đồng Chiệc (thành phố Thanh Hóa, Thanh Hóa), thu hút đông đảo người dn đến chụp ảnh.\n\nHà Nội rực rỡ trong mùa hoa tháng 5' %2F%3E%3C%2Fsvg%3E)\n\n### Hà Nội rực rỡ trong mùa hoa tháng 5\n\nHè về, Hà Nội rực rỡ trong sắc màu của các loài hoa nở trong tháng 5. Đỏ rực rỡ của hoa phượng, tím lịm là màu của hoa bằng lăng, hay vàng tươi dưới nắng màu của hoa muồng.",
+    "relevance_hint": 0.7859175,
+    "geographic": "westlake",
+    "thematic": "seasonal_weather",
+    "actionability": "adjacent",
+    "type": "seasonal_nature",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "seasonal_weather_nature"
+    ],
+    "relevance_score": 0.3,
+    "status": "rejected",
+    "rejection_reason": "passed",
+    "verified_by_human": false,
+    "scanned_at": "2026-08-06T13:33:34.529267+00:00"
+  },
+  {
+    "id": "tavily-https://mia.vn/cam-nang-du-lich/thung-lung-hoa-ho-tay-13066",
+    "title": "Kinh nghiệm check-in thung lũng hoa Hồ Tây đẹp ngút ngàn",
+    "source_uri": "https://mia.vn/cam-nang-du-lich/thung-lung-hoa-ho-tay-13066",
+    "snippet": "Hầu như đến thung lũng hoa Hồ Tây vào thời điểm nào bạn cũng sẽ đều thu được nhiều bức ảnh đẹp. Tuy nhiên, có một số khoảng thời gian bạn cần lưu tâm để có những trải nghiệm thú vị. Chẳng hạn, từ tháng 6 đến tháng 9 là mùa hoa sen nở rộ, tạo nên một bức tranh sống động và thơ mộng. Từ tháng 11 kéo dài đến tháng 2 năm sau là lúc mùa đông buốt giá tràn về miền Bắc nước ta. Đây cũng là thời điểm thích hợp để bạn đi ngắm những bông cúc họa vị nở trắng xóa khắp thung lũng trong cực kỳ lãng mạn. [...] Thung lũng hoa Hồ Tây được ví như trái tim quận Tây Hồ, Hà Nội và là một kỳ quan thiên nhiên giữa lòng đô thị sôi động. Cách công viên nước Hồ Tây chỉ 600m, khu vực này rộng đến 7.000m2, chuyên phô diễn bức tranh sống động với hàng trăm loài hoa độc đáo từ những bông hướng dương rực rỡ đến những bông oải hương dịu dàng.\n\nKinh nghiệm check-in thung lũng hoa Hồ Tây đẹp ngút ngàn 2\n\nĐến thung lũng hoa Hồ Tây để được thỏa sức sống ảo bên muôn ngàn hoa rực rỡ sắc màu. Ảnh: Ruby Vinh [...] Được mệnh danh là \"thiên đường hoa\" của Thủ đô Hà Nội, thung lũng này không chỉ thu hút những người yêu thiên nhiên mà còn là điểm đến lý tưởng cho những \"tín đồ\" sống ảo và các cặp đôi sắp cưới.",
+    "relevance_hint": 0.78054583,
+    "geographic": "westlake",
+    "thematic": "travel_stay",
+    "actionability": "direct",
+    "type": "seasonal_nature",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "travel_accommodation",
+      "hanoi_westlake_local",
+      "seasonal_weather_nature"
+    ],
+    "relevance_score": 1.0,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "verified_by_human": false,
+    "scanned_at": "2026-08-06T13:33:34.529267+00:00"
+  },
+  {
+    "id": "tavily-https://tayho360.vn/chi_tiet_danh_lam/thung-lung-hoa-tay-ho.html",
+    "title": "THUNG LŨNG HOA TÂY HỒ",
+    "source_uri": "https://tayho360.vn/chi_tiet_danh_lam/thung-lung-hoa-tay-ho.html",
+    "snippet": "Không chỉ mùa xun ngắm hoa đào nở, đầu đông ngắm cúc họa mi tinh khôi, mà thung lũng hoa Hồ Ty bất kể thời điểm nào, mùa nào trong năm cũng đón chào du khách bằng nhiều cánh hoa khoe sắc khác nhau. Thung lũng hoa Hồ Ty được ví như thiên đường của các loài hoa nằm ngay trong trung tm thành phố Hà Nội. Đy cũng là một trong những nơi được các bạn trẻ vô cùng yêu thích và lựa chọn làm một trong những địa điểm có khung cảnh đẹp để tha hồ chụp ảnh, check-in bên những bông hoa tươi thắm. [...] Thung lũng hoa Hồ Ty nằm ngay tại ngã 3 đường Nhật Chiêu gần Công viên nước Hồ Ty. Với diện tích hàng ngàn m2 trồng hàng trăm loài hoa luôn là điểm đến ưa thích của rất nhiều người dn Hà Nội, đặc biệt là các bạn trẻ. [...] 2.33Km\n\n.png)\n\nKHÔNG GIAN BIỂU DIỄN NGHỆ THUẬT ẨM THỰC ĐƯỜNG PHỐ QUẬN TY HỒ (PHỐ ĐI BỘ TRỊNH CÔNG SƠN)\n\nPhường Ty Hồ\n\n0.4Km\n\n.png)\n\nCÔNG VIÊN HỒ TY (GỒM CÔNG VIÊN NƯỚC + CÔNG VIÊN MẶT TRỜI MỚI)\n\nSố 238 u Cơ, P. Ty Hồ\n\n0.29Km\n\n.png)\n\nĐẦM SEN HỒ TY\n\nNằm gần công viên nước Hồ Ty (thuộc phường Ty Hồ, Hà Nội)\n\n0.11Km\n\n.png)\n\nVƯỜN HOA LÝ TỰ TRỌNG\n\nSố 2 đường Thụy Khuê, phường Ty Hồ",
+    "relevance_hint": 0.7734393,
+    "geographic": "westlake",
+    "thematic": "travel_stay",
+    "actionability": "direct",
+    "type": "feature_story",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "travel_accommodation",
+      "hanoi_westlake_local",
+      "seasonal_weather_nature"
+    ],
+    "relevance_score": 1.0,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "verified_by_human": false,
+    "scanned_at": "2026-08-06T13:33:34.529267+00:00"
+  },
+  {
+    "id": "tavily-https://www.youtube.com/watch?v=5lqv7nWswW4",
+    "title": "Thung lũng hoa Hồ Tây – Sắc mầu trong lòng phố",
+    "source_uri": "https://www.youtube.com/watch?v=5lqv7nWswW4",
+    "snippet": "Cách trung tâm phố cổ chưa đầy 15 phút chạy xe, có một thung lũng ngập tràn sắc hoa. Bốn mùa Xuân, Hạ, Thu , Đông, nơi đây trở thành điểm",
+    "relevance_hint": 0.72042775,
+    "geographic": "westlake",
+    "thematic": "travel_stay",
+    "actionability": "adjacent",
+    "type": "seasonal_nature",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "seasonal_weather_nature"
+    ],
+    "relevance_score": 0.6,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "verified_by_human": false,
+    "scanned_at": "2026-08-06T13:33:34.529267+00:00"
+  },
+  {
+    "id": "tavily-https://www.facebook.com/100064582395910/videos/thung-l%C5%A9ng-hoa-h%E1%BB%93-t%C3%A2y/719842358417301",
+    "title": "thung lũng hoa hồ tây",
+    "source_uri": "https://www.facebook.com/100064582395910/videos/thung-l%C5%A9ng-hoa-h%E1%BB%93-t%C3%A2y/719842358417301",
+    "snippet": "Thung lũng Hoa Hồ Tây (Hà Nội) là điểm đến lý tưởng cho mùa du lịch này. Nằm ở ngã 3 Nhật Chiêu, Tây Hồ, Hà Nội. Cách công viên nước hồ tây 600m ...Read more",
+    "relevance_hint": 0.6999322,
+    "geographic": "westlake",
+    "thematic": "travel_stay",
+    "actionability": "adjacent",
+    "type": "lifestyle_trend",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local"
+    ],
+    "relevance_score": 0.6,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "verified_by_human": false,
+    "scanned_at": "2026-08-06T13:33:34.529267+00:00"
+  },
+  {
+    "id": "tavily-https://www.tiktok.com/@lumhaydi/video/7608923437242912007",
+    "title": "Trải nghiệm Khu Vui Chơi Vườn Hoa Ánh Sáng tại Hà Nội",
+    "source_uri": "https://www.tiktok.com/@lumhaydi/video/7608923437242912007",
+    "snippet": "Hồ Tây Hà Nội Thung lũng hoa Hồ Tây vào buổi tối toả sáng lung linh, mang vẻ đẹp thơ mộng độc đáo. Mua ly cafe và trải nghiệm cực chill tại đây.",
+    "relevance_hint": 0.6139086,
+    "geographic": "westlake",
+    "thematic": "lifestyle_culture",
+    "actionability": "direct",
+    "type": "lifestyle_trend",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "food_culinary"
+    ],
+    "relevance_score": 0.6,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "verified_by_human": false,
+    "scanned_at": "2026-08-06T13:33:34.529267+00:00"
+  },
+  {
+    "id": "tavily-https://www.facebook.com/ThungLungHoaHoTayandRestaurants",
+    "title": "Thung Lũng Hoa Hồ Tây and Restaurants | Hanoi",
+    "source_uri": "https://www.facebook.com/ThungLungHoaHoTayandRestaurants",
+    "snippet": "Thung Lũng Hoa Hồ Tây and Restaurants, Hanoi. Ngã 3 Nhật Chiêu Tây Hồ Hà Nội Liên hệ 0839968968/0889362525",
+    "relevance_hint": 0.27407852,
+    "geographic": "westlake",
+    "thematic": "food_local",
+    "actionability": "direct",
+    "type": "feature_story",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "food_culinary"
+    ],
+    "relevance_score": 0.8,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "verified_by_human": false,
+    "scanned_at": "2026-08-06T13:33:34.529267+00:00"
+  },
+  {
+    "id": "tavily-https://www.tiktok.com/@lthivanh/video/7472236345704942869",
+    "title": "Quán Cafe View Đẹp Tại Hồ Tây",
+    "source_uri": "https://www.tiktok.com/@lthivanh/video/7472236345704942869",
+    "snippet": "Khám phá KATINAT, quán cà phê mới mở với không gian tuyệt đẹp view Hồ Tây. ... quán cà phê đẹp Hồ Tây, KATINAT Hà Nội mới mở, cà phê view",
+    "relevance_hint": 0.89302075,
+    "geographic": "westlake",
+    "thematic": "food_local",
+    "actionability": "direct",
+    "type": "lifestyle_trend",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "food_culinary"
+    ],
+    "relevance_score": 0.8,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "verified_by_human": false,
+    "scanned_at": "2026-08-06T13:33:34.529267+00:00"
+  },
+  {
+    "id": "tavily-https://www.tiktok.com/@annievu259/video/7523179433474149639",
+    "title": "Cafe Rooftop View Hồ Tây: Trải Nghiệm tuyệt vời",
+    "source_uri": "https://www.tiktok.com/@annievu259/video/7523179433474149639",
+    "snippet": "Khám phá KATINAT, quán cà phê mới mở với không gian tuyệt đẹp view Hồ Tây. ... quán cà phê đẹp Hồ Tây, KATINAT Hà Nội mới mở, cà phê view",
+    "relevance_hint": 0.88564163,
+    "geographic": "westlake",
+    "thematic": "food_local",
+    "actionability": "direct",
+    "type": "lifestyle_trend",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "food_culinary"
+    ],
+    "relevance_score": 0.8,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "verified_by_human": false,
+    "scanned_at": "2026-08-06T13:33:34.529267+00:00"
+  },
+  {
+    "id": "tavily-https://senvanggroup.com/5-quan-cafe-view-dep-ngat-ngay-ngam-tron-ho-tay-long-gio.html",
+    "title": "5 quán cafe view đẹp ngất ngây ngắm trọn Hồ Tây lộng gió - Sen Vàng Group - Đơn vị tư vấn phát triển dự án Bất động sản uy tín tại Việt Nam",
+    "source_uri": "https://senvanggroup.com/5-quan-cafe-view-dep-ngat-ngay-ngam-tron-ho-tay-long-gio.html",
+    "snippet": "Quán Tháng Mười là một trong những quán cafe đẹp ở hồ Ty mà hội sống ảo chắc chắn không thể bỏ qua. Quán có 2 cơ sở đều sở hữu vị trí tuyệt đẹp nằm ven Hồ Ty: cơ sở 1 tại 115 Nguyễn Đình Thi và cơ sở 2 vừa mới khai trương tại 29 Trịnh Công Sơn. Cả 2 cơ sở của Quán Tháng Mười đều mang phong cách hoài cổ, cổ điển, là một nơi “trốn” hoàn hảo cho những ai muốn tìm sự bình yên giữa bộn bề cuộc sống. Không gian quán ngập tràn những món đồ trang trí handmade mang đậm chất vintage khiến bất kì ai bước [...] Nằm trên đường Nguyễn Đình Thi, Ty Hồ, Cup of Tea là cơ sở mới được khai trường vào tháng 9 sau cơ sở ở Nguyễn Khang vốn là một địa chỉ quen thuộc của các bạn trẻ. Ra đời chỉ mới khoảng một tháng nhưng Cup of Tea Nguyễn Đình Thi đã làm các tín đồ “sống ảo” chạy đua đến check – in tại quán cafe “đẹp không góc chết” này. Cup of Tea có tất cả 5 tầng với tông màu trắng, vàng chủ đạo tạo cảm giác ấm áp, gần gũi. Decor của quán không quá cầu kì, màu mè nhưng lại rất nhẹ nhàng, tinh tế, hiện đại tạo [...] Sở hữu một vị trí vô cùng đắc địa trên con phố Nghi Tàm, 6 Degrees Cafe là một điểm đến không còn xa lạ với các bạn trẻ Hà thành. Quán có không gian rộng 15.000m2 với thiết kế hiện đại, sang trọng theo phong cách phương Ty nhưng không kém phần lãng mạn. Sở hữu view toàn cảnh Hồ Ty, Hồ Trúc Bạch và đường Thanh Niên từ tầng 8, 6 Degrees là một lựa chọn hoàn hảo cho những bạn trẻ muốn có một bữa tối tại quán cafe sang chảnh không kém bất kì nhà hàng nào. Quán có phục vụ các món ăn từ Á đến u cùng",
+    "relevance_hint": 0.8755427,
+    "geographic": "westlake",
+    "thematic": "food_local",
+    "actionability": "direct",
+    "type": "lifestyle_trend",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "food_culinary"
+    ],
+    "relevance_score": 0.8,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "verified_by_human": false,
+    "scanned_at": "2026-08-06T13:33:34.529267+00:00"
+  },
+  {
+    "id": "tavily-https://vinpearl.com/vi/ca-phe-ho-tay",
+    "title": "Cà phê Hồ Tây: 21 quán view đỉnh cho team mê sống ảo",
+    "source_uri": "https://vinpearl.com/vi/ca-phe-ho-tay",
+    "snippet": "Quán cà phê view Hồ Tây Bonjour có không gian rộng rãi với thiết kế độc đáo cùng 2 tone màu chủ đạo là trắng và gỗ. Đến đây, bạn có thể ngồi trong nhà hoặc ban công ngoài trời để ngắm nhìn quang cảnh hồ lộng gió. Thực đơn của tiệm có nhiều loại đồ uống như cafe pha máy, trà, smoothie… Tuy giá thành cao hơn so với mặt bằng chung nhưng với cách phục vụ thân thiện cùng vị trí đắc địa, quán cà phê Hồ Tây này vẫn được giới trẻ yêu thích. [...] Quán Nhà Trong Ngõ tại cơ sở Hà Đông được nhiều tín đồ cafe biết đến và yêu thích, nay mở thêm một địa chỉ mới tại phố Trích Sài với không gian rộng rãi, thoáng mát hơn.\n\nImage 46: Cà phê Hồ Tây\nĐiểm nhấn của quán cà phê Hồ Tây Hà Nội này là bức tường với dòng chữ “Nhà trong ngõ” rất đẹp. Bên cạnh đó, thực khách cũng có thể nhâm nhi những thức uống quen thuộc và ngắm nhìn quang cảnh hồ từ trên tầng tầng thượng của quán cà phê Hồ Tây này. [...] Địa chỉ: số 13 phố Nhật Chiêu, thành phố Hà Nội\n   Giờ mở cửa: 7h00 - 23h00\n   Giá bán: từ 30.000 VNĐ - 50.000 VNĐ\n\nVoila cafe là quán cà phê view Hồ Tây được rất nhiều bạn trẻ biết tới bởi không gian sống ảo cực đẹp. Quán có vị trí đắc địa trên đường Nhật Chiêu, với thiết kế 5 tầng rộng rãi.",
+    "relevance_hint": 0.8729662,
+    "geographic": "westlake",
+    "thematic": "food_local",
+    "actionability": "direct",
+    "type": "lifestyle_trend",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "food_culinary"
+    ],
+    "relevance_score": 0.8,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "verified_by_human": false,
+    "scanned_at": "2026-08-06T13:33:34.529267+00:00"
+  },
+  {
+    "id": "tavily-https://cafesongao.com/cap-nhat-10-quan-cafe-dep-o-ho-tay-view-song-ao-lung-linh",
+    "title": "Cập nhật 10 quán cafe đẹp ở Hồ Tây, view sống ảo lung linh",
+    "source_uri": "https://cafesongao.com/cap-nhat-10-quan-cafe-dep-o-ho-tay-view-song-ao-lung-linh",
+    "snippet": "Nov 14, 2021 — Cập nhật 10 quán cafe đẹp ở Hồ Tây, view sống ảo lung linh · 1. G-Kim's Coffee and Tea · 2. Ami Garden Cafe · 3. Quán trà Thảnh Thơi · 4. Bonjour",
+    "relevance_hint": 0.8409005,
+    "geographic": "westlake",
+    "thematic": "food_local",
+    "actionability": "direct",
+    "type": "lifestyle_trend",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "food_culinary"
+    ],
+    "relevance_score": 0.8,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "verified_by_human": false,
+    "scanned_at": "2026-08-06T13:33:34.529267+00:00"
+  },
+  {
+    "id": "tavily-https://www.tiktok.com/@juongdidau/video/7471911467009248520",
+    "title": "Khám Phá Quán Coffee Với View Hồ Đỉnh Tại Tây Hồ",
+    "source_uri": "https://www.tiktok.com/@juongdidau/video/7471911467009248520",
+    "snippet": "- Vị trí trung tâm: nằm trong thành phố, dễ tiếp cận từ nhiều quận. - Không gian rộng rãi: phù hợp cho các hoạt động cả trong nhà và ngoài trời,",
+    "relevance_hint": 0.65252984,
+    "geographic": "westlake",
+    "thematic": "food_local",
+    "actionability": "adjacent",
+    "type": "lifestyle_trend",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "food_culinary"
+    ],
+    "relevance_score": 0.48,
+    "status": "rejected",
+    "rejection_reason": "passed",
+    "verified_by_human": false,
+    "scanned_at": "2026-08-06T13:33:34.529267+00:00"
   }
 ]
