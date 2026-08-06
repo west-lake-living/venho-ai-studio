@@ -82,13 +82,27 @@ domains:
 
   guest_voice:
     question: "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?"
+    # Still `manual` as the fallback collector, but `urls:` below is filled in
+    # now, so this domain runs automatically with the weekly sweep. It falls
+    # back to waiting for an export only if every URL stops extracting.
     collector: manual
     # Ven Ho Hotel's own public review pages, read directly. Fill these in
     # and the domain runs automatically like the others; leave them empty and
     # it waits for an export file. Reading the hotel's own listing through a
     # documented API is not the scraping §7.2 forbids -- see
     # collectors/tavily_extract.py.
-    urls: []
+    #
+    # Canonical listing URLs only -- Harry's links carried per-visit junk
+    # (Agoda `asq=`/`ds=`, Booking `aid=`/`sid=`/`checkin=`) that would rot.
+    # The stable parts are the hotel ids: agoda h37351491, booking
+    # ven-ho-tay-ho. Booking needs the `.vi.html` variant; the bare `.html`
+    # fails to fetch. TripAdvisor was not supplied by Harry -- it was found by
+    # search and confirmed to be the right hotel by the 181 Nguyễn Đình Thi
+    # address in the extracted page, so it is a third review corpus for free.
+    urls:
+      - "https://www.agoda.com/vi-vn/ven-ho-hotel-h37351491/hotel/hanoi-vn.html"
+      - "https://www.booking.com/hotel/vn/ven-ho-tay-ho.vi.html"
+      - "https://www.tripadvisor.com/Hotel_Review-g21301834-d26443777-Reviews-Ven_Ho_Hotel-Tay_Ho_Hanoi.html"
     manual_source_hint: "Điền `urls:` (trang review Agoda/Booking của Ven Ho Hotel) trong research_questions.yaml, hoặc chạy: venho-research cycle --domain guest_voice --source-url <url>, hoặc --input-file <file export>"
 
   weather_signal:

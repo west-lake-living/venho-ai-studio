@@ -17,6 +17,7 @@ is not in play: there is no account to lose.
 
 from __future__ import annotations
 
+import re
 from typing import Any, Callable, Optional
 
 from shared.http import urllib_post
@@ -26,7 +27,37 @@ TAVILY_EXTRACT_URL = "https://api.tavily.com/extract"
 # Extracted pages are whole documents, not search snippets. The cap keeps one
 # long review page from crowding out every other source in the extractor's
 # window (and from carrying a wall of untrusted text into the prompt).
-MAX_CONTENT_CHARS = 6000
+#
+# Raised 6000 -> 12000 (2026-08-06) together with the noise stripping below.
+# An OTA listing is 17-40k raw chars of which 60-75% is markdown link and
+# image syntax; head-truncating the raw form kept the cookie banner and the
+# nav bar and cut off before a single guest review, which is why the first
+# real guest_voice run produced 0 proposals from 3 good pages. Stripped, all
+# three pages fit under this cap whole.
+MAX_CONTENT_CHARS = 12000
+
+_IMAGE_RE = re.compile(r"!\[[^\]]*\]\([^)]*\)")
+_LINK_RE = re.compile(r"\[([^\]]*)\]\([^)]*\)")
+_BARE_URL_RE = re.compile(r"https?://\S+")
+
+
+def strip_markdown_noise(text: str) -> str:
+    """Drop image/link markup and bare URLs, keeping the visible words.
+
+    Not cosmetic: the removed bytes are what pushed the actual page content
+    past the truncation cap, and tracking URLs are pure noise to a fact
+    extractor.
+    """
+    text = _IMAGE_RE.sub("", text)
+    text = _LINK_RE.sub(r"\1", text)
+    text = _BARE_URL_RE.sub("", text)
+    return "\n".join(line for line in (ln.strip() for ln in text.split("\n")) if line)
+
+# "advanced", not the "basic" default (2026-08-06). Basic returns
+# `Failed to fetch url` for Agoda -- i.e. for the first page this collector was
+# built to read. Advanced renders the page and returns it. Both OTA listings
+# are JS-heavy, so basic is not a useful fast path to try first.
+EXTRACT_DEPTH = "advanced"
 
 
 def extract_urls(
@@ -35,6 +66,7 @@ def extract_urls(
     api_key: str,
     http_post: Optional[Callable[..., dict[str, Any]]] = None,
     max_content_chars: int = MAX_CONTENT_CHARS,
+    extract_depth: str = EXTRACT_DEPTH,
 ) -> list[dict[str, Any]]:
     """Page contents for `urls`, in the same shape the search collector returns.
 
@@ -49,13 +81,13 @@ def extract_urls(
     post = http_post or urllib_post
     payload = post(
         TAVILY_EXTRACT_URL,
-        json={"api_key": api_key, "urls": urls},
+        json={"api_key": api_key, "urls": urls, "extract_depth": extract_depth},
         timeout=60.0,  # extraction fetches and renders; the 10s default is not enough
     )
     results = []
     for entry in payload.get("results", []):
         url = entry.get("url")
-        content = entry.get("raw_content") or entry.get("content") or ""
+        content = strip_markdown_noise(entry.get("raw_content") or entry.get("content") or "")
         if not url or not content.strip():
             continue
         results.append(

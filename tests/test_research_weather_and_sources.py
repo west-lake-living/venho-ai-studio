@@ -14,7 +14,7 @@ import yaml
 
 from research_engine.application.extract_facts import dates_in, extract_fact_proposals, is_stale_dated
 from research_engine.application.run_research_cycle import run_research_cycle
-from research_engine.trend_radar.collectors.tavily_extract import extract_urls
+from research_engine.trend_radar.collectors.tavily_extract import MAX_CONTENT_CHARS, extract_urls
 from research_engine.trend_radar.collectors.weather_api import (
     collect_weather_forecast,
     next_saturday,
@@ -378,7 +378,25 @@ def test_a_long_page_is_capped_before_it_reaches_the_prompt() -> None:
 
     sources = extract_urls(["https://a.com"], api_key="fake", http_post=http_post)
 
-    assert len(sources[0]["snippet"]) == 6000
+    assert len(sources[0]["snippet"]) == MAX_CONTENT_CHARS
+
+
+def test_link_and_image_markup_is_stripped_before_the_cap_applies() -> None:
+    """The bug that made the first real guest_voice run return 0 proposals.
+
+    An OTA listing is mostly markdown link syntax; head-truncating the raw
+    form kept the nav bar and cut off before any guest review.
+    """
+    noise = "".join(f"[nav {i}](https://booking.com/x?aid={i}&sid=abc)\n" for i in range(200))
+    body = "Khách khen nhân viên thân thiện."
+
+    def http_post(url, **kwargs):  # noqa: ANN001
+        return {"results": [{"url": "https://a.com", "raw_content": noise + body}]}
+
+    snippet = extract_urls(["https://a.com"], api_key="fake", http_post=http_post)[0]["snippet"]
+
+    assert "https://" not in snippet
+    assert body in snippet
 
 
 def test_named_urls_take_priority_and_merge_with_the_domains_search(tmp_path: Path) -> None:
