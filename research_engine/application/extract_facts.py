@@ -24,7 +24,16 @@ import re
 from datetime import date
 from typing import Any, Callable, Optional
 
+# Per-source budget for a batched search sweep: Tavily search snippets are a
+# few hundred chars, and a dozen of them share one prompt.
 _MAX_SNIPPET_CHARS = 1200
+# Per-source budget when reading ONE named page per call. 1200 was silently
+# the binding constraint on every named-URL cycle (2026-08-06): the collector
+# stored 12k chars of stripped page, and this cut it back to 1200 before the
+# model saw any of it. An Homestay's score sits at char 859 and came through;
+# The Urban Tranquil's at 3194 and Lake View's at 24985 never did, which read
+# as "the extractor is unreliable" when it had simply never been shown them.
+_MAX_SNIPPET_CHARS_PER_SOURCE = 30000
 _MAX_SOURCES = 12
 # dd/mm/yyyy (and dd-mm-yyyy) plus ISO. Vietnamese event listings use the
 # first form almost exclusively.
@@ -94,7 +103,9 @@ def is_stale_dated(value: Any, *, today: date) -> bool:
     return bool(dates) and all(found < today for found in dates)
 
 
-def _sanitize_sources(sources: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def _sanitize_sources(
+    sources: list[dict[str, Any]], *, max_snippet_chars: int = _MAX_SNIPPET_CHARS
+) -> list[dict[str, Any]]:
     """Trim to what the model needs. Long pages are the main injection
     surface and the main token cost, and neither is worth carrying."""
     trimmed = []
@@ -104,7 +115,7 @@ def _sanitize_sources(sources: list[dict[str, Any]]) -> list[dict[str, Any]]:
                 "index": index,
                 "title": str(source.get("title", ""))[:300],
                 "url": str(source.get("source_uri", ""))[:500],
-                "snippet": str(source.get("snippet", ""))[:_MAX_SNIPPET_CHARS],
+                "snippet": str(source.get("snippet", ""))[:max_snippet_chars],
             }
         )
     return trimmed
@@ -143,6 +154,8 @@ def extract_fact_proposals(
     client_fn: Optional[Callable[..., str]] = None,
     today: Optional[date] = None,
     reject_past_dates: bool = True,
+    per_source: bool = False,
+    max_snippet_chars: int = _MAX_SNIPPET_CHARS,
 ) -> list[dict[str, Any]]:
     """Candidate facts answering `question`, drawn only from `sources`.
 
@@ -162,7 +175,31 @@ def extract_fact_proposals(
     if not api_key:
         raise RuntimeError("GEMINI_API_KEY not set in environment")
 
-    payload = _sanitize_sources(sources)
+    if per_source:
+        # One call per page instead of one call over all of them (2026-08-06).
+        # Four named competitor listings, each plainly stating its own guest
+        # score, batched into a single 48k-char prompt yielded ONE proposal:
+        # the model skims a wall of pages and answers from whichever it read
+        # first. Asked about one page at a time it answers about that page.
+        # Only for named-URL domains -- for a search sweep the batch is the
+        # point, since the interesting fact is the one several pages agree on.
+        merged: list[dict[str, Any]] = []
+        for source in sources[:_MAX_SOURCES]:
+            merged.extend(
+                extract_fact_proposals(
+                    question=question,
+                    sources=[source],
+                    api_key=api_key,
+                    model=model,
+                    client_fn=client_fn,
+                    today=today,
+                    reject_past_dates=reject_past_dates,
+                    max_snippet_chars=_MAX_SNIPPET_CHARS_PER_SOURCE,
+                )
+            )
+        return merged
+
+    payload = _sanitize_sources(sources, max_snippet_chars=max_snippet_chars)
 
     if client_fn is None:
         try:

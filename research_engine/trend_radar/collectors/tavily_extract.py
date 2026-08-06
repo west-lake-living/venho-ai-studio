@@ -34,7 +34,11 @@ TAVILY_EXTRACT_URL = "https://api.tavily.com/extract"
 # nav bar and cut off before a single guest review, which is why the first
 # real guest_voice run produced 0 proposals from 3 good pages. Stripped, all
 # three pages fit under this cap whole.
-MAX_CONTENT_CHARS = 12000
+#
+# Then 12000 -> 32000 (same day): a named page is read one per model call, so
+# it does not compete for room with anything, and an OTA listing buries its
+# guest score deep -- Lake View Hotel's sits at char 24985 of 30764 stripped.
+MAX_CONTENT_CHARS = 32000
 
 _IMAGE_RE = re.compile(r"!\[[^\]]*\]\([^)]*\)")
 _LINK_RE = re.compile(r"\[([^\]]*)\]\([^)]*\)")

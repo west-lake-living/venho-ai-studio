@@ -25,10 +25,31 @@ domains:
     queries:
       - "giá phòng khách sạn Tây Hồ Hà Nội một đêm bao nhiêu"
       - "boutique hotel West Lake Hanoi room rate per night"
-    # Named competitor listings, read directly instead of searched for. Add
-    # the OTA page of each nearby hotel Harry actually competes with; they are
-    # merged with the query results above, named pages first.
-    urls: []
+    # Deliberately no `urls:` -- the named rival listings live in
+    # competitor_rating below, because an OTA page carries no price. Rates
+    # here come from the search queries above, which do hit pages that quote
+    # them.
+
+  competitor_rating:
+    question: "Các khách sạn cạnh tranh gần Ven Ho Hotel được khách chấm bao nhiêu điểm?"
+    collector: manual
+    # The 4 nearest rivals, named by Harry 2026-08-06. Canonical URLs: the
+    # originals carried a checkIn=2026-07-28 already in the past plus per-visit
+    # cid/ds/sid tokens.
+    #
+    # The working URL form differs per page and is not guessable -- Agoda's
+    # `/vi-vn/` prefix works for some listings and fails for others, Booking
+    # needs a language suffix that is `.vi.html` for one hotel and
+    # `.en-us.html` for another. Each of these four was confirmed to extract
+    # before being written down; do not "normalise" them.
+    urls:
+      # Lake View Hotel, 65 Trich Sai -- address confirmed in the page
+      - "https://www.agoda.com/lake-view-hotel/hotel/hanoi-vn.html"
+      # An Homestay Lakeview Apartment, 47 Trich Sai
+      - "https://www.booking.com/hotel/vn/47-trich-sai-ha-noi-capital.en-us.html"
+      - "https://www.agoda.com/vi-vn/the-urban-tranquil/hotel/hanoi-vn.html"
+      - "https://www.agoda.com/vi-vn/4u-homestay/hotel/all/hanoi-vn.html"
+    manual_source_hint: "Điền `urls:` (trang OTA của đối thủ) trong research_questions.yaml, hoặc chạy: venho-research cycle --domain competitor_rating --source-url <url>"
 
   local_intel:
     question: "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?"

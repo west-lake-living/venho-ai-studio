@@ -12,7 +12,7 @@ runner = CliRunner()
 _CONFIG_ROOT = Path("config/projects/venho_hotel/research")
 
 
-def test_all_9_domains_are_registered_in_both_domains_yaml_and_the_pydantic_literal() -> None:
+def test_all_domains_are_registered_in_both_domains_yaml_and_the_pydantic_literal() -> None:
     """Regression guard against exactly the drift this feature closed:
     weather_signal existed as a collector but was missing from both
     domains.yaml and ResearchNote's ResearchDomain Literal."""
@@ -21,7 +21,7 @@ def test_all_9_domains_are_registered_in_both_domains_yaml_and_the_pydantic_lite
     domains_yaml = set(yaml.safe_load((_CONFIG_ROOT / "domains.yaml").read_text(encoding="utf-8"))["domains"])
     literal_domains = set(ResearchDomain.__args__)
     assert domains_yaml == literal_domains
-    assert len(domains_yaml) == 9
+    assert len(domains_yaml) == 10
     assert "weather_signal" in domains_yaml
 
 

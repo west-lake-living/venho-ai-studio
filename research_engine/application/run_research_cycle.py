@@ -292,6 +292,9 @@ def run_research_cycle(
             api_key=api_key,
             today=today,
             reject_past_dates=bool(config.get("reject_past_dates", True)),
+            # Named pages get read one at a time; a search sweep is batched.
+            # See extract_fact_proposals' per_source branch for why.
+            per_source=bool(urls) and not config.get("queries"),
         )
     except Exception:  # noqa: BLE001 - the vault notes above are the durable output; a failed extraction is a missing convenience, not a failed cycle
         raw_proposals = []

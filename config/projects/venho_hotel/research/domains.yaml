@@ -2,6 +2,13 @@ version: 1
 domains:
   guest_voice: {cadence: weekly, default_expiry_days: 180}
   competitor: {cadence: biweekly, default_expiry_days: 90}
+  # Split out of `competitor` (2026-08-06) when Harry supplied 4 named rival
+  # listings. Same subject, different question: a named OTA page answers
+  # "what score does this hotel have" but NOT "what does a night cost" --
+  # Agoda/Booking render prices client-side per date query and the extracted
+  # page contains none. Two questions, two domains, per the one-answerable-
+  # question rule in research_questions.yaml.
+  competitor_rating: {cadence: biweekly, default_expiry_days: 90}
   local_intel: {cadence: monthly, default_expiry_days: 180}
   platform_trend: {cadence: monthly, default_expiry_days: 90}
   brand_visual: {cadence: monthly, default_expiry_days: 90}

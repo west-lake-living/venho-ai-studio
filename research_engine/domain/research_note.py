@@ -12,6 +12,7 @@ ResearchType = Literal["source", "note", "synthesis", "insight", "event", "trend
 ResearchDomain = Literal[
     "guest_voice",
     "competitor",
+    "competitor_rating",
     "local_intel",
     "platform_trend",
     "brand_visual",

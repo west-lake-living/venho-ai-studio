@@ -351,6 +351,33 @@ def test_extractor_truncates_long_pages_before_sending_them(tmp_path: Path) -> N
     assert len(json.loads(captured["contents"])["sources"][0]["snippet"]) == 1200
 
 
+def test_a_named_page_read_alone_gets_the_whole_page_not_a_snippet() -> None:
+    """1200 chars was silently the binding limit on every named-URL cycle.
+
+    An OTA listing buries its guest score well past that -- Lake View
+    Hotel's sits at char 24985 -- so the model was being asked about pages
+    it had only seen the nav bar of.
+    """
+    captured = []
+
+    def client_fn(*, model, system, contents):  # noqa: ANN001
+        captured.append(json.loads(contents)["sources"][0]["snippet"])
+        return "[]"
+
+    extract_fact_proposals(
+        question="Q",
+        sources=[
+            {"title": "A", "source_uri": "a", "snippet": "x" * 50_000},
+            {"title": "B", "source_uri": "b", "snippet": "y" * 50_000},
+        ],
+        api_key="fake",
+        client_fn=client_fn,
+        per_source=True,
+    )
+
+    assert [len(snippet) for snippet in captured] == [30000, 30000]
+
+
 def test_extractor_requires_a_question() -> None:
     with pytest.raises(ValueError, match="one written question"):
         extract_fact_proposals(question="  ", sources=[{"title": "A"}], api_key="fake", client_fn=lambda **k: "[]")
@@ -367,3 +394,53 @@ def test_every_registered_domain_has_a_written_question() -> None:
     assert set(questions) == set(domains)
     for domain, config in questions.items():
         assert config.get("question", "").strip(), f"{domain} has no written question"
+
+
+def _proposal(pid: str, fact_key: str, value: str, *, domain: str = "guest_voice") -> dict:
+    return {"id": pid, "domain": domain, "fact_key": fact_key, "value": value,
+            "source_uri": "https://booking.com/x"}
+
+
+def test_a_renamed_proposal_is_not_a_second_proposal(tmp_path: Path) -> None:
+    """The extractor renames the same fact between runs; Harry should see one row."""
+    store = ProposedFactStore(data_root=tmp_path)
+    store.merge_new([_proposal("a", "competitor.rating_an_homestay_lakeview", "8.8")])
+
+    inserted = store.merge_new([
+        _proposal("b", "competitor.an_homestay_lakeview_apartment_rating", "8.8"),
+        _proposal("c", "competitor.an_homestay_rating", "8.8"),
+    ])
+
+    assert inserted == 0
+    assert [item["fact_key"] for item in store.list_items()] == [
+        "competitor.rating_an_homestay_lakeview"
+    ]
+
+
+def test_two_different_facts_that_share_a_value_both_survive(tmp_path: Path) -> None:
+    """One OTA listing scores cleanliness and value-for-money both 7.9."""
+    store = ProposedFactStore(data_root=tmp_path)
+    store.merge_new([_proposal("a", "review.cleanliness_rating", "7.9")])
+
+    inserted = store.merge_new([_proposal("b", "review.value_for_money_rating", "7.9")])
+
+    assert inserted == 1
+
+
+def test_dedupe_does_not_reach_across_sources(tmp_path: Path) -> None:
+    """Two rivals both scoring 8.8 are two findings, not one."""
+    store = ProposedFactStore(data_root=tmp_path)
+    store.merge_new([_proposal("a", "competitor.rival_one_rating", "8.8", domain="competitor_rating")])
+
+    other = _proposal("b", "competitor.rival_two_rating", "8.8", domain="competitor_rating")
+    other["source_uri"] = "https://agoda.com/y"
+
+    assert store.merge_new([other]) == 1
+
+
+def test_an_all_noise_key_does_not_swallow_unrelated_facts(tmp_path: Path) -> None:
+    """`overall_rating` reduces to no tokens; the empty set must not match everything."""
+    store = ProposedFactStore(data_root=tmp_path)
+    store.merge_new([_proposal("a", "customer_review.overall_rating", "8.0")])
+
+    assert store.merge_new([_proposal("b", "review.breakfast_rating", "8.0")]) == 1

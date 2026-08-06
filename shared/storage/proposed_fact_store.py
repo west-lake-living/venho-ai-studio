@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
@@ -37,6 +38,53 @@ def proposal_id(domain: str, fact_key: str, value: str) -> str:
     copy of a proposal Harry has already rejected."""
     digest = hashlib.sha256(f"{domain}:{fact_key}:{value}".encode("utf-8")).hexdigest()[:10]
     return f"fact-{domain}-{digest}"
+
+
+# Words that carry no distinguishing meaning in a fact_key -- they are what
+# the extractor adds or drops at random between runs.
+_KEY_NOISE = frozenset({"rating", "ratings", "review", "reviews", "customer", "guest",
+                        "competitor", "hotel", "score", "diem", "danh", "gia",
+                        "overall", "average", "avg", "total"})
+
+
+def _finding(proposal: dict[str, Any]) -> tuple[str, str, str, frozenset[str]]:
+    """What identifies a proposal as a finding, independent of its naming."""
+    tokens = frozenset(re.split(r"[^a-z0-9]+", str(proposal.get("fact_key", "")).lower())) - _KEY_NOISE
+    return (
+        str(proposal.get("domain", "")),
+        str(proposal.get("source_uri", "")),
+        str(proposal.get("value", "")).strip().lower(),
+        tokens - {""},
+    )
+
+
+def is_same_finding(a: dict[str, Any], b: dict[str, Any]) -> bool:
+    """True when two proposals say the same thing under different names.
+
+    The id alone is not enough (2026-08-06). The extractor renames the same
+    fact between runs -- one Booking page's 8.8 arrived as
+    `competitor.rating_an_homestay_lakeview`, then
+    `competitor.an_homestay_lakeview_apartment_rating`, then
+    `competitor.an_homestay_rating` -- so an id keyed on fact_key put three
+    rows of the same number in front of Harry.
+
+    Same domain, same page and same value is necessary but NOT sufficient:
+    on one OTA listing `cleanliness` and `value_for_money` are both 7.9 and
+    are different facts. So the meaningful tokens of the key must also line
+    up, by subset rather than equality -- the model's renames add or drop
+    words (`..._apartment_rating`) but do not contradict.
+    """
+    domain_a, uri_a, value_a, tokens_a = _finding(a)
+    domain_b, uri_b, value_b, tokens_b = _finding(b)
+    if (domain_a, uri_a, value_a) != (domain_b, uri_b, value_b):
+        return False
+    if not tokens_a or not tokens_b:
+        # A key made entirely of noise words (`customer_review.overall_rating`)
+        # has nothing left to compare, and the empty set is a subset of
+        # everything -- which would swallow any unrelated fact that happens to
+        # share its number. Only an equally empty key matches it.
+        return tokens_a == tokens_b
+    return tokens_a <= tokens_b or tokens_b <= tokens_a
 
 
 class ProposedFactStore:
@@ -60,10 +108,11 @@ class ProposedFactStore:
         decision: a re-scan must never resurrect something Harry rejected,
         nor reset an approved row back to pending."""
         existing = {item["id"]: item for item in self.load()}
+        kept = list(existing.values())
         now = datetime.now(timezone.utc).isoformat()
         inserted = 0
         for proposal in proposals:
-            if proposal["id"] in existing:
+            if proposal["id"] in existing or any(is_same_finding(proposal, item) for item in kept):
                 continue
             existing[proposal["id"]] = {
                 **proposal,
@@ -72,6 +121,7 @@ class ProposedFactStore:
                 "decided_by": None,
                 "decided_at": None,
             }
+            kept.append(existing[proposal["id"]])
             inserted += 1
         self._save(list(existing.values()))
         return inserted
