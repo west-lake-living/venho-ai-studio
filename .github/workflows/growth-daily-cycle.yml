@@ -17,6 +17,15 @@ on:
     - cron: "0 1 * * 1"
   workflow_dispatch:
 
+# Without this the default GITHUB_TOKEN is read-only and the "Commit
+# generated content" step below dies with `Permission to ... denied to
+# github-actions[bot] (403)` -- after the run has already spent real API
+# budget generating a week of drafts. The first real dispatch of the sister
+# workflow (2026-08-06) failed exactly this way: the scan succeeded, and the
+# results were discarded when the runner was torn down.
+permissions:
+  contents: write
+
 jobs:
   weekly-cycle:
     runs-on: ubuntu-latest

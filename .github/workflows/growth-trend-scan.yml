@@ -20,6 +20,14 @@ on:
     - cron: "0 1 * * 5"
   workflow_dispatch:
 
+# The default GITHUB_TOKEN is read-only, so the commit step below 403'd on
+# the first real dispatch (2026-08-06): Tavily and Gemini were called for
+# real, 274 lines of candidates were produced, and every one of them was
+# lost when the runner was torn down. The scheduled run would have done the
+# same silently every Friday.
+permissions:
+  contents: write
+
 jobs:
   trend-scan:
     runs-on: ubuntu-latest
