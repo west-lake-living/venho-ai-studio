@@ -19,6 +19,14 @@ keeps the fallback on-brand -- these are photos of the actual hotel, not stock.
 A fallback is a real hotel photo, so posting one is honest; it is still second
 best to a generated image, hence `image_is_fallback` is carried on the content
 payload so the dashboard/reviewer can see which posts got one.
+
+Aspect ratio is a hard constraint, not a preference: Instagram rejects anything
+outside 4:5 (0.80) to 1.91:1 with `(36003) The aspect ratio is not supported`,
+and it does so *inside* Make, after this codebase has already recorded
+GATEWAY_ACCEPTED. The first real IG dispatch died that way on a 659x1440 (0.46)
+facade shot; it was padded to 1200x1440 (0.83) on cream #F7F4EF. Any photo added
+here must be checked against that window -- including generated ones, since
+gpt-image-2's portrait size is 1024x1536 (0.67) and would fail identically.
 """
 
 from __future__ import annotations
