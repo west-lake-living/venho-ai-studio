@@ -15,6 +15,7 @@ from growth_orchestrator.bridges.m07_publishing_bridge import M07PublishingBridg
 from growth_orchestrator.domain.publishing_slot import PublishingSlot
 from publishing_gateway.adapters.make_gateway import MakeGatewayAdapter
 from publishing_gateway.adapters.zalo_oa import ZaloOAAdapter
+from controlled_rollout.rollout_state_store import RolloutStateStore
 from publishing_gateway.publication_registry import PublicationRegistry
 from shared.jobs.slot_store import SlotStore
 
@@ -30,6 +31,17 @@ def _reserve_pending(registry: PublicationRegistry, *, platform: str = "facebook
     )
     registry.update(reserved["publication_id"], status="PENDING_APPROVAL", content={"text": "hello"}, slot_id=slot_id)
     return reserved["publication_id"]
+
+
+def _past_shadow(tmp_path: Path) -> None:
+    """Move the rollout stage off `shadow` for tests about the dispatch path
+    itself. `_dispatch_claimed` withholds the webhook while the stage is
+    shadow (the real default), so without this every dispatch assertion below
+    would be asserting the gate rather than the behaviour it names.
+    """
+    RolloutStateStore("venho_hotel", tmp_path).record_decision(
+        {"current_stage": "shadow", "next_stage": "pilot_25", "allowed": True}
+    )
 
 
 def test_list_pending_returns_pending_approval_rows_only(tmp_path: Path) -> None:
@@ -65,6 +77,7 @@ def test_list_pending_also_surfaces_gateway_error_rows_so_they_are_never_invisib
 
 
 def test_approve_and_dispatch_calls_bridge_and_updates_status(tmp_path: Path) -> None:
+    _past_shadow(tmp_path)
     registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
     publication_id = _reserve_pending(registry)
 
@@ -130,6 +143,7 @@ def test_approve_and_dispatch_blocks_real_dispatch_when_referenced_fact_expired_
 def test_approve_and_dispatch_still_dispatches_when_claims_are_absent_or_valid(tmp_path: Path) -> None:
     """Rows without a persisted creative_brief (pre-2026-08-05 convention)
     skip the check gracefully instead of blocking every legacy row."""
+    _past_shadow(tmp_path)
     registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
     publication_id = _reserve_pending(registry)  # no creative_brief/claims set
 
@@ -147,6 +161,7 @@ def test_approve_and_dispatch_still_dispatches_when_claims_are_absent_or_valid(t
 
 
 def test_approve_and_dispatch_advances_slot_to_dispatched_on_success(tmp_path: Path) -> None:
+    _past_shadow(tmp_path)
     registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
     slot_store = SlotStore(db_path=tmp_path / "growth.db")
     slot_store.ensure_slots([PublishingSlot(slot_id="slot-2026-08-10-monday", slot_date="2026-08-10", slot_type="regular", lane="regular")])
@@ -169,6 +184,7 @@ def test_approve_and_dispatch_advances_slot_to_dispatched_on_success(tmp_path: P
 def test_approve_and_dispatch_slot_bookkeeping_failure_never_blocks_a_real_dispatch(tmp_path: Path) -> None:
     """slot_id points at a slot that doesn't exist (or slot_store is broken)
     -- the real approval/dispatch must still succeed."""
+    _past_shadow(tmp_path)
     registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
     slot_store = SlotStore(db_path=tmp_path / "growth.db")
     publication_id = _reserve_pending(registry, slot_id="slot-does-not-exist")
@@ -280,6 +296,7 @@ def test_approve_and_dispatch_second_concurrent_call_cannot_double_dispatch(tmp_
 
 
 def test_dispatch_failure_lands_on_gateway_error_not_stuck_dispatching(tmp_path: Path) -> None:
+    _past_shadow(tmp_path)
     registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
     publication_id = _reserve_pending(registry)
 
@@ -300,6 +317,7 @@ def test_dispatch_failure_lands_on_gateway_error_not_stuck_dispatching(tmp_path:
 
 
 def test_retry_dispatch_recovers_a_gateway_error_row(tmp_path: Path) -> None:
+    _past_shadow(tmp_path)
     registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
     publication_id = _reserve_pending(registry)
     registry.update(publication_id, status="GATEWAY_ERROR", approved_by="harry")
@@ -505,3 +523,92 @@ def test_edit_publication_without_dna_subject_fails_closed_to_needs_revision(tmp
         edit_publication(publication_id, edited_by="harry", new_text=_GOOD_EDIT_TEXT, data_root=tmp_path, registry=registry)
 
     assert registry.find(publication_id)["status"] == "NEEDS_REVISION"
+
+
+def _bridge_recording(sent: list) -> M07PublishingBridge:
+    make_adapter = MakeGatewayAdapter(enabled=True)
+    make_adapter.send = lambda command: (sent.append(command), {"status": "GATEWAY_ACCEPTED", "published": False})[1]
+    return M07PublishingBridge(make_adapter=make_adapter, zalo_adapter=ZaloOAAdapter(enabled=True))
+
+
+def test_shadow_stage_withholds_the_webhook_entirely(tmp_path: Path) -> None:
+    """Rollout stage `shadow` must be enforced in code, not just documented.
+
+    Until 2026-08-06 the stage was a governance record only: the sole thing
+    stopping a shadow-stage agent from posting to the real Facebook page was
+    an unset MAKE_GROWTH_WEBHOOK_URL. Approval is still recorded here -- only
+    the outbound call is withheld.
+    """
+    registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
+    publication_id = _reserve_pending(registry)
+    sent: list = []
+
+    result = approve_and_dispatch(
+        publication_id, approved_by="harry", data_root=tmp_path, registry=registry, bridge=_bridge_recording(sent),
+    )
+
+    assert sent == []
+    assert result["status"] == "SHADOW_HELD"
+    assert result["rollout_stage"] == "shadow"
+    assert result["approved_by"] == "harry"
+
+
+def test_shadow_held_row_stays_visible_to_the_operator(tmp_path: Path) -> None:
+    registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
+    publication_id = _reserve_pending(registry)
+    approve_and_dispatch(
+        publication_id, approved_by="harry", data_root=tmp_path, registry=registry, bridge=_bridge_recording([]),
+    )
+
+    pending = list_pending(project="venho_hotel", data_root=tmp_path, registry=registry)
+
+    assert [item["publication_id"] for item in pending] == [publication_id]
+
+
+def test_allow_shadow_publishes_and_records_who_overrode(tmp_path: Path) -> None:
+    registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
+    publication_id = _reserve_pending(registry)
+    sent: list = []
+
+    result = approve_and_dispatch(
+        publication_id, approved_by="harry", data_root=tmp_path, registry=registry,
+        bridge=_bridge_recording(sent), allow_shadow=True,
+    )
+
+    assert len(sent) == 1
+    assert result["status"] == "GATEWAY_ACCEPTED"
+    assert result["shadow_override_by"] == "harry"
+
+
+def test_shadow_held_row_is_released_by_retry_once_the_stage_advances(tmp_path: Path) -> None:
+    """A held row keeps its approval, so releasing it is a dispatch retry --
+    Harry does not re-review content he already approved."""
+    registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
+    publication_id = _reserve_pending(registry)
+    approve_and_dispatch(
+        publication_id, approved_by="harry", data_root=tmp_path, registry=registry, bridge=_bridge_recording([]),
+    )
+    _past_shadow(tmp_path)
+    sent: list = []
+
+    result = retry_dispatch(publication_id, data_root=tmp_path, registry=registry, bridge=_bridge_recording(sent))
+
+    assert len(sent) == 1
+    assert result["status"] == "GATEWAY_ACCEPTED"
+
+
+def test_unreadable_rollout_state_fails_closed(tmp_path: Path) -> None:
+    """Corrupt rollout state must hold the post, never publish it."""
+    registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
+    publication_id = _reserve_pending(registry)
+    state_path = tmp_path / "venho_hotel" / "rollout" / "rollout_state.json"
+    state_path.parent.mkdir(parents=True, exist_ok=True)
+    state_path.write_text("{not json", encoding="utf-8")
+    sent: list = []
+
+    result = approve_and_dispatch(
+        publication_id, approved_by="harry", data_root=tmp_path, registry=registry, bridge=_bridge_recording(sent),
+    )
+
+    assert sent == []
+    assert result["status"] == "SHADOW_HELD"

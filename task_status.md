@@ -1,6 +1,26 @@
 # VENHO AI STUDIO — Task Status
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-08-06 (Phase 8 Rollout + Productize — ROADMAP v3.1 HOÀN THÀNH 0→8 — xem mục dưới) · **Tests:** 736/736 pass (+12 test mới) · 0 API call trong test
+**Cập nhật:** 2026-08-06 (Scenario Make riêng cho Growth + cổng rollout stage thật — xem mục ngay dưới) · **Tests:** 744/744 pass · 0 API call trong test
+
+### Growth Agent v3.1 — Scenario Make riêng + cổng `shadow` chặn thật + dọn 12 row kẹt (2026-08-06, chiều)
+
+**Status: DONE — Growth đã có đường ra Make riêng, chạy thật, nhưng cổng rollout đang giữ mọi bài lại**
+
+Tiếp nối việc tách webhook + ảnh fallback cùng ngày. Harry thao tác trực tiếp trên Make, Claude sửa code + hướng dẫn.
+
+- [x] **Scenario Make riêng cho Growth — verify chạy thật.** Webhook `hook.us2.make.com/jw62ij…` (đã điền `MAKE_GROWTH_WEBHOOK_URL` trong `.env.local`). Clone scenario legacy, giữ 5 module, đổi mapping sang schema Growth: HTTP URL `{{2.image_url}}`, FB Post caption + IG Caption `{{2.content.text}}`, filter router đổi từ `publish_to_facebook`/`publish_to_instagram` sang `{{2.platform}}` = `facebook`/`instagram`, thêm chốt AND `{{2.publication_id}}` **Does not contain** `test` trên cả 2 nhánh.
+- [x] **Lỗi `BundleValidationError: url` đã hết** — module `HTTP - Download a file` tải được ảnh fallback từ `venhohotel.com`, verify bằng execution thật.
+- [x] **Cổng rollout stage.** `shadow` giờ chặn thật trong `_dispatch_claimed()`: không gọi webhook, row đậu ở status mới `SHADOW_HELD` (vẫn ghi approval + snapshot, vẫn hiện trong `list_pending`). Fail closed khi state file hỏng. Thoát cổng: `venho-rollout rollout-advance` rồi `retry_dispatch`, hoặc `venho-growth approve-and-dispatch --allow-shadow` (ghi `shadow_override_by` lên row).
+- [x] **12 row `GATEWAY_ACCEPTED` sai từ 2026-08-04 → `GATEWAY_ERROR`** kèm `gateway_error` ghi rõ nguyên nhân; gửi lại được qua `retry_dispatch`.
+- [x] Verify: `PYTHONPATH=. pytest -q` → 744/744 pass (+5 test cổng shadow, +6 test cũ seed stage qua helper `_past_shadow`), 0 API call.
+
+**Sự cố cần nhớ:** 4 bài test đã đăng nhầm lên Facebook/Instagram thật trong lúc dò scenario (đã xoá). Nguyên nhân: (1) suy đoán logic filter của scenario legacy thay vì mở ra đọc; (2) sửa filter nhưng chưa bấm Save của **scenario** (nút 💾 dưới đáy canvas, khác Save trong panel filter) nên bản đang chạy vẫn là bản cũ. Phiên bản Make hiện tại không có mục Disable module trong menu chuột phải → không thể tắt module đích khi test.
+
+**Chưa kiểm được:** bundle `platform: "facebook"` thật có vào đúng nhánh FB không — không thể kiểm mà không đăng thật. Lần đăng đầu nên là bài Growth Harry duyệt có chủ ý, chạy `--allow-shadow`.
+
+Chi tiết đầy đủ: `task_memory.md` mục 14n.
+
+---
 
 ### Growth Agent v3.1 — Phase 8 Rollout + Productize: venho-rollout CLI + scorecard thật + fix .gitignore skills (2026-08-06)
 

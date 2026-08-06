@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Optional
 
 from automation_studio.approval_snapshot import assert_dispatch_allowed, create_approval_snapshot
+from controlled_rollout.rollout_state_store import RolloutStateStore
 from growth_orchestrator.bridges.m07_publishing_bridge import (
     M07PublishingBridge,
     m07_publishing_bridge_from_env,
@@ -23,7 +24,23 @@ GATEWAY_ERROR_STATUS = "GATEWAY_ERROR"
 REJECTED_STATUS = "REJECTED"
 NEEDS_REVISION_STATUS = "NEEDS_REVISION"
 EDITING_STATUS = "EDITING"
-EDITABLE_STATUSES = {PENDING_STATUS, GATEWAY_ERROR_STATUS}
+SHADOW_HELD_STATUS = "SHADOW_HELD"
+EDITABLE_STATUSES = {PENDING_STATUS, GATEWAY_ERROR_STATUS, SHADOW_HELD_STATUS}
+# Rows a dispatch can be (re-)attempted from: a failed one, and one the
+# rollout gate below parked. Approval itself is not repeated for either.
+REDISPATCHABLE_STATUSES = {GATEWAY_ERROR_STATUS, SHADOW_HELD_STATUS}
+
+SHADOW_STAGE = "shadow"
+
+
+def _rollout_stage(*, project: str, data_root: Path) -> str:
+    """Current `controlled_rollout` stage, defaulting to `shadow` on any
+    read failure -- an unreadable/corrupt rollout state must fail closed
+    (hold the post) rather than open (publish it)."""
+    try:
+        return RolloutStateStore(project, data_root).status().get("current_stage", SHADOW_STAGE)
+    except Exception:  # noqa: BLE001 - see docstring: unreadable state means hold, not publish
+        return SHADOW_STAGE
 
 
 def list_pending(
@@ -40,7 +57,7 @@ def list_pending(
     tells the caller which state it's in.
     """
     registry = registry or PublicationRegistry(project, data_root=data_root)
-    actionable = {PENDING_STATUS, GATEWAY_ERROR_STATUS}
+    actionable = {PENDING_STATUS, GATEWAY_ERROR_STATUS, SHADOW_HELD_STATUS}
     return [item for item in registry.load()["publications"] if item.get("status") in actionable]
 
 
@@ -108,6 +125,7 @@ def _dispatch_claimed(
     slot_store: Optional[SlotStore] = None,
     project: str = "venho_hotel",
     data_root: Path = Path("data/projects"),
+    allow_shadow: bool = False,
 ) -> dict:
     """Fire the real webhook for an already-claimed (status already flipped
     off PENDING_APPROVAL) row, and finalize its status from the response.
@@ -115,6 +133,11 @@ def _dispatch_claimed(
     Split out of `approve_and_dispatch` so `retry_dispatch` (GATEWAY_ERROR ->
     retry) can reuse the exact same snapshot-check + dispatch + finalize
     sequence without re-deriving a fresh approval_snapshot each retry.
+
+    While the rollout stage is `shadow` the webhook does not fire at all and
+    the row parks on SHADOW_HELD (see the gate below). `allow_shadow=True` is
+    the deliberate, recorded override for publishing a specific post before
+    the stage advances.
     """
     publication_id = publication["publication_id"]
 
@@ -132,6 +155,32 @@ def _dispatch_claimed(
         approval_snapshot = create_approval_snapshot(package_snapshot, approved_by=approved_by)
     if approval_snapshot is not None and package_snapshot is not None:
         assert_dispatch_allowed(approval_snapshot, package_snapshot)
+
+    # Rollout gate (2026-08-06). `shadow` is the stage the Growth Agent has
+    # been in since it went live, and until now it meant nothing in code:
+    # RolloutStateStore was a governance record, so the only thing standing
+    # between a stage-shadow agent and a real Facebook post was an empty
+    # MAKE_GROWTH_WEBHOOK_URL in .env.local -- configuration, not logic. Now
+    # the stage decides. Everything upstream still runs (generation,
+    # validation, approval, snapshot) so shadow exercises the whole pipeline;
+    # only the outbound webhook is withheld.
+    #
+    # Advance the stage with `venho-rollout rollout-advance` (requires a real
+    # passing scorecard) to publish normally; `allow_shadow=True` publishes
+    # one specific row now and records who overrode it.
+    stage = _rollout_stage(project=project, data_root=data_root)
+    if stage == SHADOW_STAGE and not allow_shadow:
+        updates: dict = {
+            "status": SHADOW_HELD_STATUS,
+            "gateway_status": SHADOW_HELD_STATUS,
+            "rollout_stage": stage,
+            "shadow_held_reason": "rollout stage is shadow; dispatch withheld",
+        }
+        if approved_by is not None:
+            updates["approved_by"] = approved_by
+        if approval_snapshot is not None:
+            updates["approval_snapshot"] = approval_snapshot
+        return registry.update(publication_id, **updates)
 
     command = {
         "publication_id": publication_id,
@@ -153,6 +202,10 @@ def _dispatch_claimed(
         updates["approved_by"] = approved_by
     if approval_snapshot is not None:
         updates["approval_snapshot"] = approval_snapshot
+    if stage == SHADOW_STAGE:
+        # Published despite shadow -- keep the audit trail on the row itself,
+        # not only in whatever CLI invocation happened to carry the flag.
+        updates["shadow_override_by"] = approved_by or publication.get("approved_by")
     updated = registry.update(publication_id, **updates)
     if response["status"] in ("GATEWAY_ACCEPTED", "PUBLISHED"):
         _advance_slot_on_dispatch_success(updated, slot_store=slot_store)
@@ -168,6 +221,7 @@ def approve_and_dispatch(
     registry: Optional[PublicationRegistry] = None,
     bridge: Optional[M07PublishingBridge] = None,
     slot_store: Optional[SlotStore] = None,
+    allow_shadow: bool = False,
 ) -> dict:
     """Approve a queued draft and immediately dispatch it (Approve-triggers-publish).
 
@@ -197,6 +251,10 @@ def approve_and_dispatch(
     matches, so an edit made after queuing can never silently ride through on
     a stale approval. Rows without a snapshot (older/manual reservations)
     fall back to the plain status-flip behavior.
+
+    Approval is recorded even when the rollout stage is `shadow` -- the row
+    lands on SHADOW_HELD with its approval snapshot intact, so advancing the
+    stage later turns it into a plain `retry_dispatch` rather than a re-review.
     """
     registry = registry or PublicationRegistry(project, data_root=data_root)
     claimed = registry.claim(publication_id, expected_status=PENDING_STATUS, claimed_status=DISPATCHING_STATUS)
@@ -204,7 +262,7 @@ def approve_and_dispatch(
     slot_store = slot_store or SlotStore(db_path=data_root / project / "growth" / "growth.db")
     return _dispatch_claimed(
         claimed, registry=registry, bridge=bridge, approved_by=approved_by, slot_store=slot_store,
-        project=project, data_root=data_root,
+        project=project, data_root=data_root, allow_shadow=allow_shadow,
     )
 
 
@@ -216,8 +274,9 @@ def retry_dispatch(
     registry: Optional[PublicationRegistry] = None,
     bridge: Optional[M07PublishingBridge] = None,
     slot_store: Optional[SlotStore] = None,
+    allow_shadow: bool = False,
 ) -> dict:
-    """Re-fire the webhook for a row stranded in GATEWAY_ERROR.
+    """Re-fire the webhook for a row stranded in GATEWAY_ERROR or SHADOW_HELD.
 
     Before this existed, a transient Make.com/network failure permanently
     stranded a publication -- approve_and_dispatch refuses non-PENDING_APPROVAL
@@ -225,14 +284,18 @@ def retry_dispatch(
     approval_snapshot (approved_by is not re-collected -- the original
     approval still stands, only the dispatch attempt is repeated) and the
     same atomic claim as the first attempt.
+
+    This is also the path a SHADOW_HELD row takes once the rollout stage
+    advances: the approval it already carries is still valid, so releasing it
+    is a dispatch retry, not a second approval.
     """
     registry = registry or PublicationRegistry(project, data_root=data_root)
-    claimed = registry.claim(publication_id, expected_status=GATEWAY_ERROR_STATUS, claimed_status=DISPATCHING_STATUS)
+    claimed = registry.claim(publication_id, expected_status=REDISPATCHABLE_STATUSES, claimed_status=DISPATCHING_STATUS)
     bridge = bridge or m07_publishing_bridge_from_env(os.environ)
     slot_store = slot_store or SlotStore(db_path=data_root / project / "growth" / "growth.db")
     return _dispatch_claimed(
         claimed, registry=registry, bridge=bridge, slot_store=slot_store,
-        project=project, data_root=data_root,
+        project=project, data_root=data_root, allow_shadow=allow_shadow,
     )
 
 

@@ -133,15 +133,23 @@ def approve_and_dispatch_cmd(
     publication_id: str = typer.Option(..., "--publication-id"),
     approved_by: str = typer.Option(..., "--approved-by"),
     project: str = typer.Option("venho_hotel"),
+    allow_shadow: bool = typer.Option(
+        False, "--allow-shadow", help="Publish this row even though the rollout stage is still shadow. Recorded on the row as shadow_override_by."
+    ),
 ) -> None:
     """Approve a PENDING_APPROVAL publication and fire the real Make.com webhook dispatch.
 
     This is what the "Approve" button on VENHO OS Dashboard's Publishing &
     Schedule section calls (via a local `venho-growth` subprocess) right after
     the click -- see growth_orchestrator/application/approve_and_dispatch.py.
+
+    While the rollout stage is `shadow` the dashboard's plain click approves
+    but withholds the webhook (row -> SHADOW_HELD). Publishing for real is
+    therefore a deliberate `--allow-shadow` from the terminal, or advancing
+    the stage with `venho-rollout rollout-advance`.
     """
     try:
-        result = approve_and_dispatch(publication_id, approved_by=approved_by, project=project)
+        result = approve_and_dispatch(publication_id, approved_by=approved_by, project=project, allow_shadow=allow_shadow)
     except (KeyError, ValueError) as exc:
         typer.echo(json.dumps({"ok": False, "error": str(exc)}), err=True)
         raise typer.Exit(code=1)
@@ -173,13 +181,17 @@ def reject_cmd(
 def retry_dispatch_cmd(
     publication_id: str = typer.Option(..., "--publication-id"),
     project: str = typer.Option("venho_hotel"),
+    allow_shadow: bool = typer.Option(
+        False, "--allow-shadow", help="Release this row even though the rollout stage is still shadow."
+    ),
 ) -> None:
     """Re-fire the Make.com dispatch for a publication stranded in GATEWAY_ERROR
-    (e.g. a transient webhook/network failure on the first approve). Reuses
-    the original approval -- does not ask for approved_by again.
+    (e.g. a transient webhook/network failure on the first approve) or parked
+    on SHADOW_HELD by the rollout gate. Reuses the original approval -- does
+    not ask for approved_by again.
     """
     try:
-        result = retry_dispatch(publication_id, project=project)
+        result = retry_dispatch(publication_id, project=project, allow_shadow=allow_shadow)
     except (KeyError, ValueError) as exc:
         typer.echo(json.dumps({"ok": False, "error": str(exc)}), err=True)
         raise typer.Exit(code=1)
