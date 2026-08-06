@@ -131,10 +131,11 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-08-06-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "approved",
     "proposed_at": "2026-08-06T13:58:38.934907+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "hpham1504@gmail.com",
+    "decided_at": "2026-08-06T15:04:37.253080+00:00",
+    "fact_path": "data/projects/venho_hotel/growth/facts/cafe__santorini_vibes.json"
   },
   {
     "fact_key": "cafe.abc_coffee_roasters",
