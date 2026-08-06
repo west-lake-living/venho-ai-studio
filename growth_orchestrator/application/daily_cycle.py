@@ -26,6 +26,7 @@ from image_studio_runtime.application.generate_image import generate_image_run
 from prompt_studio.builders.image_prompt_builder import build_image_prompt
 from prompt_studio.knowledge_reader import read_dna
 from growth_orchestrator.domain.publishing_slot import PublishingSlot
+from publishing_gateway.fallback_images import fallback_image_url
 from publishing_gateway.publication_registry import PublicationRegistry
 from shared.storage.evergreen_pool_store import EvergreenPoolStore
 from shared.storage.google_drive import google_drive_uploader_from_env
@@ -209,6 +210,7 @@ def _content_payload(
     *,
     image_run_path: Optional[str] = None,
     image_public_url: Optional[str] = None,
+    image_is_fallback: bool = False,
     publication_id: Optional[str] = None,
     platform: Optional[str] = None,
 ) -> dict[str, Any]:
@@ -240,10 +242,12 @@ def _content_payload(
         "image_run_path": image_run_path,
         # Local file paths mean nothing to Make.com's webhook -- it fetches
         # by public URL (see MakeGatewayAdapter.send()'s "image_url" field).
-        # None until _upload_image_to_drive succeeds; the post still queues
-        # text-only if Drive is unconfigured/unreachable (best-effort, same
-        # policy as image generation itself).
+        # Never None since 2026-08-06: when image generation or the Drive
+        # upload doesn't produce one, the caller substitutes an on-brand
+        # hotel photo and sets image_is_fallback so a reviewer can tell the
+        # two apart on the dashboard.
         "image_public_url": image_public_url,
+        "image_is_fallback": image_is_fallback,
         "tracking_url": tracking_url,
     }
 
@@ -699,6 +703,15 @@ def run_daily_cycle(
                 run_folder, day=day, content_package_id=f"daily-{day}-{slugify(topic['topic'])}", uploader=drive_uploader
             )
 
+    # No generated image (image generation off/failed, or Drive upload failed)
+    # still has to reach Make.com with a fetchable photo URL -- FB/IG's photo
+    # post modules require one and the scenario's HTTP module rejects a null
+    # `url` outright, taking the text down with it. See
+    # publishing_gateway.fallback_images for the why and the image set.
+    image_is_fallback = image_public_url is None
+    if image_is_fallback:
+        image_public_url = fallback_image_url(topic.get("dna_subject"))
+
     publications: list[dict[str, Any]] = []
     packages: list[dict[str, Any]] = []
     errors: list[dict[str, str]] = []
@@ -750,6 +763,7 @@ def run_daily_cycle(
                 status="PENDING_APPROVAL",
                 content=_content_payload(
                     selected, image_run_path=image_run_path, image_public_url=image_public_url,
+                    image_is_fallback=image_is_fallback,
                     publication_id=publication_id, platform=platform,
                 ),
                 creative_brief_id=brief["id"],

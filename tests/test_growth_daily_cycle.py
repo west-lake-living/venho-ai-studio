@@ -387,6 +387,29 @@ def test_run_daily_cycle_uploads_validated_image_to_drive_and_stores_public_url(
     assert public_url.startswith("https://drive.google.com/")
 
 
+def test_run_daily_cycle_falls_back_to_hotel_photo_when_no_image_generated(tmp_path: Path) -> None:
+    """Regression (2026-08-06): with image generation off, content.image_public_url
+    was None, and Make.com's HTTP module rejects a null `url` (BundleValidationError)
+    -- the text post died with it. An on-brand hotel photo now stands in, flagged
+    so a reviewer can tell it apart from a generated image."""
+    from publishing_gateway.fallback_images import fallback_image_url
+
+    data_root = _tmp_data_root(tmp_path)
+
+    result = run_daily_cycle(
+        "monday",
+        platforms=["facebook"],
+        data_root=data_root,
+        generate_image=False,
+        content_bridge=_mock_content_bridge(data_root),
+        validator_bridge=_AlwaysApproveValidatorBridge(),
+    )
+
+    content = result.publications[0]["content"]
+    assert content["image_public_url"] == fallback_image_url("lake_view_room")
+    assert content["image_is_fallback"] is True
+
+
 def test_generate_topic_image_discards_image_on_kill_switch(tmp_path: Path, monkeypatch) -> None:
     """A high-severity forbidden violation from the DNA-match validator must
     discard the generated image (same as a generation failure) rather than

@@ -10,6 +10,7 @@ from growth_orchestrator.bridges.m07_publishing_bridge import (
     m07_publishing_bridge_from_env,
 )
 from publishing_gateway.adapters.make_gateway import MakeGatewayAdapter, build_make_webhook_signature
+from publishing_gateway.fallback_images import fallback_image_url
 from publishing_gateway.adapters.zalo_oa import ZaloOAAdapter, build_zalo_webhook_signature, refresh_zalo_access_token
 from research_engine.trend_radar.collectors.tavily_search import collect_tavily_search
 from shared.http import HttpError, urllib_post
@@ -167,8 +168,28 @@ def test_make_adapter_forwards_to_make_webhook() -> None:
         "idempotency_key": "idem-1",
         "platform": "facebook",
         "content": {"text": "hello"},
-        "image_url": None,
+        "image_url": fallback_image_url(),
     }
+
+
+def test_make_adapter_never_sends_null_image_url() -> None:
+    """Regression (2026-08-06): a publication with no generated image sent
+    image_url: null, and Make's "HTTP: Download a file" module rejects a null
+    `url` with BundleValidationError -- killing the whole dispatch, text
+    included. An on-brand hotel photo now stands in."""
+    fake = FakeHttpPost({"received": True})
+    adapter = MakeGatewayAdapter(enabled=True, webhook_url="https://hook.us1.make.com/fb-test", http_post=fake)
+    adapter.send(
+        {
+            "publication_id": "pub-1",
+            "idempotency_key": "idem-1",
+            "platform": "facebook",
+            "content": {"text": "hello", "image_public_url": None},
+        }
+    )
+    image_url = fake.calls[0]["json"]["image_url"]
+    assert image_url == fallback_image_url()
+    assert image_url.startswith("https://venhohotel.com/images/Social-fallback/")
 
 
 def test_make_adapter_surfaces_image_public_url_at_top_level(tmp_path) -> None:
@@ -254,8 +275,8 @@ def test_daily_dispatch_uses_injected_bridge_for_all_commands() -> None:
 
 def test_m07_bridge_from_env_wires_real_adapters_when_configured() -> None:
     env = {
-        "MAKE_WEBHOOK_URL": "https://hook.example/fb",
-        "MAKE_WEBHOOK_SECRET": "fb-secret",
+        "MAKE_GROWTH_WEBHOOK_URL": "https://hook.example/fb",
+        "MAKE_GROWTH_WEBHOOK_SECRET": "fb-secret",
         "MAKE_ZALO_WEBHOOK_URL": "https://hook.example/zalo",
         "MAKE_ZALO_WEBHOOK_SECRET": "zalo-secret",
         "ZALO_APP_ID": "app-1",
@@ -269,6 +290,19 @@ def test_m07_bridge_from_env_wires_real_adapters_when_configured() -> None:
     assert bridge._zalo_adapter.enabled is True
     assert bridge._zalo_adapter.webhook_url == "https://hook.example/zalo"
     assert bridge._zalo_adapter._access_token_provider is not None
+
+
+def test_m07_bridge_from_env_ignores_legacy_social_agent_webhook() -> None:
+    """Regression (2026-08-04): growth used to reuse venho-social-content-agent's
+    MAKE_WEBHOOK_URL, whose scenario requires a flat `url` field growth never
+    sends -> BundleValidationError on every dispatch. Legacy var alone must
+    leave the adapter disabled."""
+    bridge = m07_publishing_bridge_from_env(
+        {"MAKE_WEBHOOK_URL": "https://hook.example/legacy-social", "MAKE_WEBHOOK_SECRET": "legacy"}
+    )
+
+    assert bridge._make_adapter.enabled is False
+    assert bridge._make_adapter.webhook_url is None
 
 
 def test_m07_bridge_from_env_disables_adapters_when_unconfigured() -> None:

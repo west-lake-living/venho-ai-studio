@@ -4,6 +4,7 @@ import hashlib
 import hmac
 from typing import Any, Callable
 
+from publishing_gateway.fallback_images import fallback_image_url
 from shared.http import HttpError, urllib_post
 
 
@@ -17,11 +18,16 @@ class MakeGatewayAdapter:
     """Facebook/Instagram/Threads channel adapter.
 
     Real send does not call any platform API directly from this codebase --
-    it fires a webhook to the same Make.com relay pattern as `ZaloOAAdapter`
-    (reusing the existing Make.com scenario Harry already runs for the legacy
-    VenHoSocialManager FB posting flow). Make's own HTTP / Custom API Request
-    module makes the actual platform call. Without `webhook_url` configured,
-    `send()` keeps the old mock behavior (flag off by default).
+    it fires a webhook to the same Make.com relay pattern as `ZaloOAAdapter`,
+    and Make's own modules make the actual platform call. Without
+    `webhook_url` configured, `send()` keeps the old mock behavior (flag off
+    by default).
+
+    The webhook must be a Make scenario dedicated to growth
+    (`MAKE_GROWTH_WEBHOOK_URL`), NOT the legacy VenHoSocialManager one: that
+    scenario is built around a flat legacy payload (`url`, `message`,
+    `publish_to_facebook`) this adapter never sends. Sharing one webhook made
+    every growth dispatch fail Make-side (2026-08-04).
     """
 
     def __init__(
@@ -55,10 +61,13 @@ class MakeGatewayAdapter:
             "platform": command.get("platform"),
             "content": content,
             # Top-level convenience copy of content.image_public_url --
-            # Make.com's "HTTP: Get a file" module maps a flat field more
-            # easily than a nested path. None when no image was generated/
-            # uploaded (daily_cycle still queues text-only in that case).
-            "image_url": content.get("image_public_url"),
+            # Make.com's "HTTP: Download a file" module maps a flat field more
+            # easily than a nested path, and its `url` is a required parameter:
+            # sending null fails the whole bundle with BundleValidationError
+            # (2026-08-06 incident). daily_cycle already substitutes an
+            # on-brand hotel photo at queue time; this second layer covers rows
+            # queued before that existed, and any other caller of this adapter.
+            "image_url": content.get("image_public_url") or fallback_image_url(),
         }
         headers = None
         if self.webhook_secret and payload.get("idempotency_key"):

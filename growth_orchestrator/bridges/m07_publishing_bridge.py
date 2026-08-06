@@ -13,8 +13,7 @@ class M07PublishingBridge:
 
     Routing key is `command["platform"]`: `zalo`/`zalo_oa` goes to `ZaloOAAdapter`
     (Make.com Zalo webhook), everything else (facebook/instagram/threads) goes to
-    `MakeGatewayAdapter` (Make.com FB/IG/Threads webhook, reusing the legacy
-    VenHoSocialManager scenario). Both adapters only ever return
+    `MakeGatewayAdapter` (Make.com FB/IG/Threads webhook). Both adapters only ever return
     GATEWAY_ACCEPTED/GATEWAY_ERROR/DISABLED here -- actual PUBLISHED status still
     arrives later via `publishing_gateway.callback_receiver` or `reconciliation`.
     """
@@ -41,12 +40,19 @@ def m07_publishing_bridge_from_env(env: Mapping[str, str]) -> M07PublishingBridg
     (`enabled=False`) rather than raising, since this is meant to be called from
     process startup where partial configuration (e.g. Zalo ready, FB not yet) is
     expected during rollout.
+
+    The FB/IG/Threads adapter reads `MAKE_GROWTH_WEBHOOK_URL`, deliberately NOT
+    the legacy `MAKE_WEBHOOK_URL` that venho-social-content-agent posts to. The
+    two payload schemas are incompatible: the legacy scenario's "HTTP: Get a
+    file" module requires a flat `url` field, which this adapter never sends, so
+    sharing one webhook made every growth dispatch fail Make-side with
+    BundleValidationError (2026-08-04). Growth needs its own Make scenario.
     """
-    make_url = env.get("MAKE_WEBHOOK_URL")
+    make_url = env.get("MAKE_GROWTH_WEBHOOK_URL")
     make_adapter = MakeGatewayAdapter(
         enabled=bool(make_url),
         webhook_url=make_url,
-        webhook_secret=env.get("MAKE_WEBHOOK_SECRET"),
+        webhook_secret=env.get("MAKE_GROWTH_WEBHOOK_SECRET"),
     )
 
     zalo_url = env.get("MAKE_ZALO_WEBHOOK_URL")
