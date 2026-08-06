@@ -97,10 +97,11 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-08-06-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "approved",
     "proposed_at": "2026-08-06T13:58:38.934907+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "hpham1504@gmail.com",
+    "decided_at": "2026-08-06T15:05:29.886917+00:00",
+    "fact_path": "data/projects/venho_hotel/growth/facts/attraction__chua_kim_lien.json"
   },
   {
     "fact_key": "attraction.cho_hoa_quang_ba",
