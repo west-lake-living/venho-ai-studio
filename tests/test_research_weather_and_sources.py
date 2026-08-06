@@ -272,6 +272,48 @@ def test_dates_are_read_out_of_vietnamese_event_values() -> None:
     assert dates_in("Tháng 10 đến tháng 2") == []
 
 
+def test_dates_written_without_a_year_are_read_against_today() -> None:
+    """The forms Vietnamese listings actually use. Every one of these was
+    invisible until 2026-08-07, which is why the Lotus Festival sat in the
+    Trend Radar six weeks after it ended."""
+    today = date(2026, 8, 7)
+
+    # The exact title Harry was looking at.
+    assert dates_in("Lễ hội Sen Hà Nội diễn ra từ ngày 26-28/6", today=today) == [
+        date(2026, 6, 26), date(2026, 6, 28),
+    ]
+    # Nearest June, not next June.
+    assert dates_in("từ 26-28/6", today=date(2026, 5, 1)) == [date(2026, 6, 26), date(2026, 6, 28)]
+    assert dates_in("ngày 15/8", today=today) == [date(2026, 8, 15)]
+    # Vietnamese month names, the Sputnik index page's format.
+    assert dates_in("5 Tháng Ba 2024, 08:49", today=today) == [date(2024, 3, 5)]
+    assert dates_in("17 Tháng Mười Một 2021", today=today) == [date(2021, 11, 17)]
+    assert dates_in("ngày 15 tháng 8 năm 2024", today=today) == [date(2024, 8, 15)]
+    # Without `today` a yearless date is skipped rather than guessed at.
+    assert dates_in("từ ngày 26-28/6") == []
+
+
+def test_a_rating_is_not_read_as_a_date() -> None:
+    """"8/10" is why the bare dd/mm form requires an explicit "ngày" cue --
+    guest_voice snippets are full of scores, and each one would otherwise
+    date-stamp its candidate to October."""
+    today = date(2026, 8, 7)
+    assert dates_in("Agoda 8.5/10, vị trí 9/10", today=today) == []
+    assert is_stale_dated("Điểm sạch sẽ 8/10", today=today) is False
+    # A real year is still not swallowed by the range form either way round.
+    assert dates_in("09/11/2024 - 17/11/2024", today=today) == [date(2024, 11, 9), date(2024, 11, 17)]
+
+
+def test_a_bare_month_is_still_a_season_not_a_date() -> None:
+    """The seasonal-answer guarantee has to survive the new patterns: a
+    `local_events` value of "Tháng 10 đến tháng 2" is an answer about when to
+    visit, and marking it expired would delete a correct fact."""
+    today = date(2026, 8, 7)
+    assert dates_in("Tháng 10 đến tháng 2", today=today) == []
+    assert is_stale_dated("Tháng 10 đến tháng 2", today=today) is False
+    assert is_stale_dated("mùa sen tháng 6", today=today) is False
+
+
 def test_an_event_that_already_ended_is_stale_and_a_seasonal_answer_is_not() -> None:
     today = date(2026, 8, 6)
 

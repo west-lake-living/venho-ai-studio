@@ -5,6 +5,7 @@ human_approval mandatory forever, even for passing candidates.
 """
 from __future__ import annotations
 
+from datetime import date
 from pathlib import Path
 
 import pytest
@@ -168,3 +169,70 @@ def test_scan_trends_low_relevance_score_rejected_even_if_brand_safe() -> None:
     ]
     results = scan_trends(candidates, _trend_policy(), _policy())
     assert results[0]["status"] == "rejected"
+
+
+# --- Stale candidates (2026-08-07) -----------------------------------------
+
+
+def _live_candidate(**overrides: object) -> dict:
+    return {
+        "id": "cand",
+        "brand_safety_category": "lifestyle_culture",
+        "intersections": ["hanoi_westlake_local"],
+        "geographic": "westlake",
+        "thematic": "travel_stay",
+        "actionability": "direct",
+        **overrides,
+    }
+
+
+def test_scan_trends_rejects_a_candidate_whose_event_already_ended() -> None:
+    """The one Harry was looking at on 2026-08-07: brand-safe, well scored,
+    and six weeks expired."""
+    candidates = [
+        _live_candidate(
+            id="lotus",
+            title="Lễ hội Sen Hà Nội diễn ra từ ngày 26-28/6 tại các không gian ven Hồ Tây",
+        )
+    ]
+    results = scan_trends(candidates, _trend_policy(), _policy(), today=date(2026, 8, 7))
+    assert results[0]["status"] == "rejected"
+    assert results[0]["rejection_reason"] == "stale_dated"
+
+
+def test_scan_trends_reads_the_snippet_not_just_the_title() -> None:
+    """A news index dates itself in the body, never in the headline."""
+    candidates = [
+        _live_candidate(
+            id="sputnik",
+            title="Hồ Tây - tin tức mới nhất hôm nay",
+            snippet="Chiêm ngưỡng show drones\n\n5 Tháng Ba 2024, 08:49\n\nHàng tấn cá\n\n17 Tháng Mười Một 2021, 14:15",
+        )
+    ]
+    results = scan_trends(candidates, _trend_policy(), _policy(), today=date(2026, 8, 7))
+    assert results[0]["status"] == "rejected"
+    assert results[0]["rejection_reason"] == "stale_dated"
+
+
+def test_scan_trends_keeps_an_upcoming_event_and_an_undated_evergreen() -> None:
+    """Both halves matter: the filter must not eat next month's festival, and
+    it must not eat the undated cafe guides that carry the evergreen pool."""
+    candidates = [
+        _live_candidate(id="upcoming", title="Lễ hội áo dài Hồ Tây ngày 12-14/9"),
+        _live_candidate(id="evergreen", title="25 quán cafe view Hồ Tây đẹp"),
+    ]
+    results = scan_trends(candidates, _trend_policy(), _policy(), today=date(2026, 8, 7))
+    assert {r["id"]: r["status"] for r in results} == {
+        "upcoming": "needs_human_approval",
+        "evergreen": "needs_human_approval",
+    }
+
+
+def test_a_stale_candidate_is_still_reported_as_forbidden_when_it_is_both() -> None:
+    """Brand safety is the more serious finding and must not be masked by a
+    date -- the audit trail for a blocked category has to say so."""
+    candidates = [
+        _live_candidate(id="both", brand_safety_category="crime_scandal", title="Vụ án ngày 26-28/6")
+    ]
+    results = scan_trends(candidates, _trend_policy(), _policy(), today=date(2026, 8, 7))
+    assert results[0]["rejection_reason"] == "forbidden_trend_category"

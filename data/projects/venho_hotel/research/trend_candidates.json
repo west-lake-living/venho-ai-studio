@@ -165,10 +165,12 @@
       "culture_festival_positive"
     ],
     "relevance_score": 0.6,
-    "status": "needs_human_approval",
-    "rejection_reason": null,
+    "status": "rejected",
+    "rejection_reason": "stale_dated",
     "verified_by_human": false,
-    "scanned_at": "2026-08-05T03:10:58.062341+00:00"
+    "scanned_at": "2026-08-05T03:10:58.062341+00:00",
+    "rejected_by": "backfill:stale_filter",
+    "rejected_at": "2026-08-06T23:58:31.470798+00:00"
   },
   {
     "id": "tavily-https://tayho360.vn/su_kien",
@@ -186,10 +188,12 @@
       "culture_festival_positive"
     ],
     "relevance_score": 0.6,
-    "status": "needs_human_approval",
-    "rejection_reason": null,
+    "status": "rejected",
+    "rejection_reason": "stale_dated",
     "verified_by_human": false,
-    "scanned_at": "2026-08-05T03:10:58.062341+00:00"
+    "scanned_at": "2026-08-05T03:10:58.062341+00:00",
+    "rejected_by": "backfill:stale_filter",
+    "rejected_at": "2026-08-06T23:58:31.470798+00:00"
   },
   {
     "id": "tavily-https://www.facebook.com/hotaypark.fanpage",

@@ -41,6 +41,32 @@ _DATE_PATTERNS = (
     re.compile(r"\b(\d{1,2})[/-](\d{1,2})[/-](\d{4})\b"),
     re.compile(r"\b(\d{4})-(\d{2})-(\d{2})\b"),
 )
+# The forms above only cover dates that carry a year. Vietnamese prose mostly
+# does not (2026-08-07): the festival Harry saw sitting in the Trend Radar six
+# weeks after it ended was titled "Lễ hội Sen Hà Nội diễn ra từ ngày 26-28/6",
+# and every date on the Sputnik index page reads "17 Tháng Mười Một 2021".
+# Neither matched anything, so neither looked stale.
+_VI_MONTHS = {
+    "một": 1, "hai": 2, "ba": 3, "tư": 4, "bốn": 4, "năm": 5, "sáu": 6,
+    "bảy": 7, "tám": 8, "chín": 9, "mười": 10, "mười một": 11, "mười hai": 12,
+}
+# Longest-first, so "Mười Hai" is never read as "Mười" followed by stray text.
+_VI_MONTH_ALTERNATION = "|".join(
+    name.replace(" ", r"\s+") for name in sorted(_VI_MONTHS, key=len, reverse=True)
+)
+# "26-28/6" and "26-28/6/2026". The lookbehind stops the "24" of a trailing
+# year being read as a range start ("09/11/2024 - 17/11/2024"), and the
+# lookahead stops a bare dd/mm from being carved out of a full dd/mm/yyyy.
+_DAY_RANGE_PATTERN = re.compile(r"(?<!\d)(\d{1,2})\s*[-–]\s*(\d{1,2})/(\d{1,2})(?:/(\d{4}))?(?![/\d])")
+# Bare dd/mm, but only behind an explicit "ngày" -- without that cue "8/10"
+# in a review snippet parses as the 8th of October.
+_CUED_DAY_MONTH_PATTERN = re.compile(r"ngày\s+(\d{1,2})/(\d{1,2})(?![/\d])", re.IGNORECASE)
+# "5 Tháng Ba 2024" / "ngày 15 tháng 8 năm 2024". A day is required: a bare
+# "tháng 10" is a season, not a date, and must stay out of `dates_in`.
+_VI_WORD_DATE_PATTERN = re.compile(
+    rf"(?<!\d)(\d{{1,2}})\s+tháng\s+({_VI_MONTH_ALTERNATION})\s+(\d{{4}})", re.IGNORECASE
+)
+_VI_NUMERIC_DATE_PATTERN = re.compile(r"(?<!\d)(\d{1,2})\s+tháng\s+(\d{1,2})\s+năm\s+(\d{4})", re.IGNORECASE)
 _ALLOWED_VALUE_TYPES = {"string", "number", "boolean", "date"}
 # fact_key becomes a filesystem path component downstream (FactStore writes
 # `{fact_key}.json`), so it is constrained here rather than trusted.
@@ -69,19 +95,64 @@ Quy tắc bắt buộc:
 Trả về JSON array, không có text ngoài JSON."""
 
 
-def dates_in(value: str) -> list[date]:
-    """Every calendar date mentioned in a proposal's value."""
+def _nearest_year(day: int, month: int, *, today: date) -> Optional[date]:
+    """Resolve a day/month written without a year to the nearest such date.
+
+    "Lễ hội Sen từ ngày 26-28/6" means the June closest to when it was
+    written, and we have no publication date to anchor on -- so we anchor on
+    today. Read in August 2026 that is June 2026, six weeks past, not June
+    2027. The failure mode is dropping an announcement made ten months early,
+    which is not Saturday-lane material anyway; the alternative failure mode
+    is a hotel post about a festival that already ended.
+    """
+    candidates = []
+    for year in (today.year - 1, today.year, today.year + 1):
+        try:
+            candidates.append(date(year, month, day))
+        except ValueError:
+            continue  # 29/02 in a common year
+    return min(candidates, key=lambda found: abs((found - today).days)) if candidates else None
+
+
+def dates_in(value: str, *, today: Optional[date] = None) -> list[date]:
+    """Every calendar date mentioned in a value.
+
+    `today` only matters for the forms that omit a year; without it those are
+    skipped rather than guessed at.
+    """
     found: list[date] = []
+
+    def add(day: int, month: int, year: Optional[int]) -> None:
+        if year is None:
+            resolved = _nearest_year(day, month, today=today) if today else None
+        else:
+            try:
+                resolved = date(year, month, day)
+            except ValueError:
+                resolved = None  # 31/02/2026 and friends
+        if resolved is not None:
+            found.append(resolved)
+
     for index, pattern in enumerate(_DATE_PATTERNS):
         for match in pattern.finditer(value):
-            try:
-                if index == 0:
-                    day, month, year = (int(part) for part in match.groups())
-                else:
-                    year, month, day = (int(part) for part in match.groups())
-                found.append(date(year, month, day))
-            except ValueError:
-                continue  # 31/02/2026 and friends
+            day, month, year = (int(part) for part in match.groups())
+            add(*((day, month, year) if index == 0 else (year, month, day)))
+
+    for match in _DAY_RANGE_PATTERN.finditer(value):
+        first, last, month, year = match.groups()
+        for day in (first, last):
+            add(int(day), int(month), int(year) if year else None)
+
+    for match in _CUED_DAY_MONTH_PATTERN.finditer(value):
+        add(int(match.group(1)), int(match.group(2)), None)
+
+    for match in _VI_WORD_DATE_PATTERN.finditer(value):
+        month = _VI_MONTHS[re.sub(r"\s+", " ", match.group(2).strip().lower())]
+        add(int(match.group(1)), month, int(match.group(3)))
+
+    for match in _VI_NUMERIC_DATE_PATTERN.finditer(value):
+        add(int(match.group(1)), int(match.group(2)), int(match.group(3)))
+
     return found
 
 
@@ -99,7 +170,7 @@ def is_stale_dated(value: Any, *, today: date) -> bool:
     seasonal answer, not an expired one), and a range whose end is still
     ahead is live.
     """
-    dates = dates_in(str(value))
+    dates = dates_in(str(value), today=today)
     return bool(dates) and all(found < today for found in dates)
 
 
