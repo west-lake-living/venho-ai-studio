@@ -612,3 +612,51 @@ def test_unreadable_rollout_state_fails_closed(tmp_path: Path) -> None:
 
     assert sent == []
     assert result["status"] == "SHADOW_HELD"
+
+
+def test_registry_records_the_real_post_id_when_make_answers_with_one(tmp_path: Path) -> None:
+    _past_shadow(tmp_path)
+    registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
+    publication_id = _reserve_pending(registry)
+
+    make_adapter = MakeGatewayAdapter(enabled=True)
+    make_adapter.send = lambda command: {
+        "status": "PUBLISHED",
+        "published": True,
+        "platform_post_id": "1122",
+        "permalink": "https://facebook.com/p/1122",
+    }
+    bridge = M07PublishingBridge(make_adapter=make_adapter, zalo_adapter=ZaloOAAdapter(enabled=True))
+
+    result = approve_and_dispatch(
+        publication_id, approved_by="harry", project="venho_hotel", data_root=tmp_path, registry=registry, bridge=bridge
+    )
+
+    assert result["status"] == "PUBLISHED"
+    assert result["platform_post_id"] == "1122"
+    assert result["permalink"] == "https://facebook.com/p/1122"
+
+
+def test_platform_rejection_lands_on_gateway_error_not_a_false_accept(tmp_path: Path) -> None:
+    """The 2026-08-06 incident in registry terms: Make returns HTTP 200, the
+    platform refuses the post. The row must read GATEWAY_ERROR with the reason
+    and stay actionable, instead of looking published."""
+    _past_shadow(tmp_path)
+    registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
+    publication_id = _reserve_pending(registry, platform="instagram")
+
+    make_adapter = MakeGatewayAdapter(enabled=True)
+    make_adapter.send = lambda command: {
+        "status": "GATEWAY_ERROR",
+        "published": False,
+        "error": "(36003) The aspect ratio is not supported.",
+    }
+    bridge = M07PublishingBridge(make_adapter=make_adapter, zalo_adapter=ZaloOAAdapter(enabled=True))
+
+    result = approve_and_dispatch(
+        publication_id, approved_by="harry", project="venho_hotel", data_root=tmp_path, registry=registry, bridge=bridge
+    )
+
+    assert result["status"] == "GATEWAY_ERROR"
+    assert "36003" in result["gateway_error"]
+    assert [row["publication_id"] for row in list_pending(project="venho_hotel", data_root=tmp_path, registry=registry)] == [publication_id]

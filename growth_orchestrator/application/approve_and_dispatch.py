@@ -201,6 +201,14 @@ def _dispatch_claimed(
         # so a row that has since gone through still reads as broken.
         "gateway_error": None,
     }
+    # Only present when the Make scenario answers synchronously with the real
+    # platform outcome (see make_gateway.interpret_make_response). Never blank
+    # out a value an earlier reconciliation already established.
+    for field in ("platform_post_id", "permalink"):
+        if response.get(field):
+            updates[field] = response[field]
+    if response["status"] == GATEWAY_ERROR_STATUS:
+        updates["gateway_error"] = response.get("error")
     if approved_by is not None:
         updates["approved_by"] = approved_by
     if approval_snapshot is not None:

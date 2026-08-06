@@ -311,3 +311,48 @@ def test_m07_bridge_from_env_disables_adapters_when_unconfigured() -> None:
     assert bridge._make_adapter.enabled is False
     assert bridge._zalo_adapter.enabled is False
     assert bridge._zalo_adapter._access_token_provider is None
+
+
+# --- Make.com synchronous outcome (2026-08-06) ------------------------------
+
+
+def test_make_adapter_reports_published_when_scenario_returns_a_post_id() -> None:
+    fake = FakeHttpPost({"status": "PUBLISHED", "platform_post_id": "1122", "permalink": "https://fb.com/p/1122"})
+    adapter = MakeGatewayAdapter(enabled=True, webhook_url="https://hook.example/fb", http_post=fake)
+    result = adapter.send({"publication_id": "pub-1", "idempotency_key": "idem-1", "platform": "facebook"})
+    assert result["status"] == "PUBLISHED"
+    assert result["published"] is True
+    assert result["platform_post_id"] == "1122"
+    assert result["permalink"] == "https://fb.com/p/1122"
+
+
+def test_make_adapter_reports_gateway_error_when_the_platform_rejected_the_post() -> None:
+    """The failure this was built for: Make accepts the bundle (HTTP 200), then
+    Instagram rejects the photo with (36003) aspect ratio not supported. Without
+    reading the reply that post was recorded GATEWAY_ACCEPTED and had to be
+    corrected by hand."""
+    fake = FakeHttpPost({"status": "GATEWAY_ERROR", "error": "(36003) The aspect ratio is not supported."})
+    adapter = MakeGatewayAdapter(enabled=True, webhook_url="https://hook.example/ig", http_post=fake)
+    result = adapter.send({"publication_id": "pub-1", "idempotency_key": "idem-1", "platform": "instagram"})
+    assert result["status"] == "GATEWAY_ERROR"
+    assert result["published"] is False
+    assert "36003" in result["error"]
+
+
+def test_make_adapter_keeps_accepting_a_scenario_without_response_modules() -> None:
+    """Routes get built one platform at a time. A scenario replying with Make's
+    plain-text "Accepted" must keep the old optimistic behaviour rather than
+    start reporting failures."""
+    adapter = MakeGatewayAdapter(enabled=True, webhook_url="https://hook.example/fb", http_post=FakeHttpPost({"raw": "Accepted"}))
+    assert adapter.send({"publication_id": "pub-1", "idempotency_key": "idem-1", "platform": "facebook"})["status"] == "GATEWAY_ACCEPTED"
+    adapter = MakeGatewayAdapter(enabled=True, webhook_url="https://hook.example/fb", http_post=FakeHttpPost({}))
+    assert adapter.send({"publication_id": "pub-2", "idempotency_key": "idem-2", "platform": "facebook"})["status"] == "GATEWAY_ACCEPTED"
+
+
+def test_make_adapter_waits_longer_than_the_default_transport_timeout() -> None:
+    """A synchronous response only arrives after FB/IG have really run (6-8s
+    each), so the 10s default would time out a post that in fact succeeded."""
+    fake = FakeHttpPost({"raw": "Accepted"})
+    adapter = MakeGatewayAdapter(enabled=True, webhook_url="https://hook.example/fb", http_post=fake)
+    adapter.send({"publication_id": "pub-1", "idempotency_key": "idem-1", "platform": "facebook"})
+    assert fake.calls[0]["timeout"] >= 30
