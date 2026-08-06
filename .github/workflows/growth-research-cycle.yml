@@ -1,0 +1,66 @@
+name: Growth Agent Research Cycle
+
+# Real Tavily collection -> R0 source notes + R2 synthesis into the vault ->
+# candidate facts queued `pending_approval` for Harry to approve or reject on
+# VENHO OS (research_engine/application/run_research_cycle.py).
+#
+# Nothing here can create a KnowledgeFact. The cycle stops at a proposal;
+# promotion R2 -> R3 requires a named human and still passes PromotionPolicy
+# (DoD #13). Domains whose only legal source is a manual export (guest_voice)
+# are reported as skipped rather than guessed at.
+#
+# Runs Thursday 08:00 Asia/Ho_Chi_Minh (UTC+7) == 01:00 UTC Thursday -- ahead
+# of Friday's trend scan and Monday's content cycle, so a fact approved over
+# the weekend is available to the week's drafts.
+on:
+  schedule:
+    - cron: "0 1 * * 4"
+  workflow_dispatch:
+    inputs:
+      domain:
+        description: "Single domain to run (blank = every automated domain)"
+        required: false
+        default: ""
+
+# Read-only by default, which silently discarded the trend scan's whole
+# output on 2026-08-06 -- see growth-trend-scan.yml.
+permissions:
+  contents: write
+
+jobs:
+  research-cycle:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -e ".[gemini]"
+
+      - name: Run research cycle
+        env:
+          TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          if [ -n "${{ github.event.inputs.domain }}" ]; then
+            venho-research cycle --domain "${{ github.event.inputs.domain }}"
+          else
+            venho-research cycle --all
+          fi
+
+      # research/ is tracked normally (unlike data/), but proposed_facts.json
+      # lives under the gitignored data/ tree and needs -f -- the same gotcha
+      # documented in the sister workflows.
+      - name: Commit vault notes and proposed facts
+        run: |
+          git config user.name "venho-growth-bot"
+          git config user.email "venho-growth-bot@users.noreply.github.com"
+          git add research/
+          git add -f data/projects/*/research/proposed_facts.json 2>/dev/null || true
+          git diff --cached --quiet || git commit -m "chore: research cycle $(date -u +%Y-%m-%d)"
+          git push

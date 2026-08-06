@@ -47,6 +47,9 @@ def test_research_policy_registry_has_evidence_and_safety_rules() -> None:
         "brand_safety.yaml",
         "event_sources.yaml",
         "weather_policy.yaml",
+        # The one written question per domain that run_research_cycle refuses
+        # to run without (plan §6.7 guardrail).
+        "research_questions.yaml",
     }
     assert {path.name for path in research.glob("*.yaml")} == required
 

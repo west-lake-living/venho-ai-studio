@@ -1,0 +1,84 @@
+version: 1
+
+# One written question per research domain (plan v3.1 §6.7 guardrail:
+# "mỗi chu kỳ nghiên cứu bắt đầu bằng đúng một câu hỏi viết ra. Không có câu
+# hỏi → không chạy research"). run_research_cycle refuses to run a domain
+# whose question is missing or blank -- that is the guardrail, in code.
+#
+# `collector: tavily` domains run automatically. `collector: manual` domains
+# have no legal automated source (§7.2 forbids scraping FB/IG/TikTok, and OTA
+# reviews are an explicit manual export), so a cycle for them ingests a file
+# Harry supplies rather than inventing one.
+#
+# Write questions that have an ANSWER, not a discussion. The extractor is
+# instructed to return nothing rather than fabricate, and it holds to that:
+# "5–8 đối thủ định vị và định giá thế nào so với Ven Ho Hotel?" produced 0
+# proposals from 16 real sources, because no page answers a comparative essay
+# question. Narrowing it to "Giá phòng một đêm quanh Hồ Tây ở mức nào?"
+# produced 4 sourced proposals from the same kind of pages (2026-08-06).
+
+domains:
+  competitor:
+    question: "Giá phòng một đêm của các khách sạn quanh Hồ Tây hiện ở mức nào?"
+    collector: tavily
+    max_results: 8
+    queries:
+      - "giá phòng khách sạn Tây Hồ Hà Nội một đêm bao nhiêu"
+      - "boutique hotel West Lake Hanoi room rate per night"
+
+  local_intel:
+    question: "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?"
+    collector: tavily
+    max_results: 8
+    queries:
+      - "quán cà phê view Hồ Tây đáng đi"
+      - "địa điểm tham quan quanh Hồ Tây Hà Nội"
+
+  local_events:
+    question: "Sự kiện hoặc lễ hội nào sắp diễn ra ở Hà Nội, vào ngày nào?"
+    collector: tavily
+    max_results: 8
+    queries:
+      - "lịch sự kiện Hà Nội sắp diễn ra ngày nào"
+      - "lễ hội Tây Hồ Hà Nội thời gian tổ chức"
+
+  social_trend:
+    question: "Điểm đến hoặc trải nghiệm nào ở Hà Nội đang được nhắc đến nhiều tuần này?"
+    collector: tavily
+    max_results: 10
+    queries:
+      - "địa điểm Hà Nội đang hot tuần này"
+      - "trending places Hanoi this week"
+
+  market_pricing:
+    question: "Tháng nào trong năm là cao điểm và thấp điểm du lịch của Hà Nội?"
+    collector: tavily
+    max_results: 8
+    queries:
+      - "mùa cao điểm thấp điểm du lịch Hà Nội tháng nào"
+      - "best time to visit Hanoi peak season months"
+
+  platform_trend:
+    question: "Định dạng nội dung nào đang được Facebook và Instagram phân phối mạnh nhất?"
+    collector: tavily
+    max_results: 6
+    queries:
+      - "Instagram reels vs carousel reach 2026 data"
+      - "Facebook page organic reach best format 2026"
+
+  brand_visual:
+    question: "Yếu tố hình ảnh nào khiến ảnh khách sạn boutique đạt tương tác cao?"
+    collector: tavily
+    max_results: 6
+    queries:
+      - "hotel photography engagement social media what works"
+
+  # No automated source is permitted for these two (§7.2).
+  guest_voice:
+    question: "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?"
+    collector: manual
+    manual_source_hint: "Export review Agoda/Booking/Google ra file .txt rồi chạy: venho-research cycle --domain guest_voice --input-file <file>"
+
+  weather_signal:
+    question: "Thời tiết Hồ Tây 3 ngày tới tạo cơ hội hình ảnh gì?"
+    collector: weather

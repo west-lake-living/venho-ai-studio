@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from typing import List
 
@@ -100,6 +101,106 @@ def collect_note_cmd(
         observations=observation, vault_root=vault_root,
     )
     typer.echo(str(path))
+
+
+@app.command("cycle")
+def cycle_cmd(
+    domain: str = typer.Option(None, "--domain", help="One of the 9 registered domains. Omit with --all."),
+    all_domains: bool = typer.Option(False, "--all", help="Run every domain that has an automated collector."),
+    input_file: Path = typer.Option(None, "--input-file", help="Source file for manual-collector domains (e.g. an OTA review export)."),
+    project: str = typer.Option("venho_hotel"),
+    config_root: Path = typer.Option(Path("config/projects/venho_hotel/research"), "--config-root"),
+    vault_root: Path = typer.Option(Path("research"), "--vault-root"),
+) -> None:
+    """Run a research cycle: question -> real sources -> R0/R2 notes in the
+    vault -> candidate facts queued for approval.
+
+    Nothing here creates a fact. Proposals land `pending_approval`; see
+    `pending`/`approve`/`reject`, or the VENHO OS dashboard."""
+    from research_engine.application.run_research_cycle import run_all_research_cycles, run_research_cycle
+
+    if not domain and not all_domains:
+        raise typer.BadParameter("pass --domain <name> or --all")
+    if all_domains:
+        results = run_all_research_cycles(project=project, config_root=config_root, vault_root=vault_root)
+    else:
+        _assert_known_domain(domain, config_root=config_root)
+        results = [run_research_cycle(domain, project=project, config_root=config_root, vault_root=vault_root, input_file=input_file)]
+    typer.echo(
+        json.dumps(
+            [
+                {
+                    "domain": r.domain,
+                    "ran": r.ran,
+                    "skipped_reason": r.skipped_reason,
+                    "sources_collected": r.sources_collected,
+                    "source_notes": len(r.source_notes),
+                    "synthesis_note": r.synthesis_note,
+                    "proposals_created": r.proposals_created,
+                }
+                for r in results
+            ],
+            ensure_ascii=False,
+            indent=2,
+        )
+    )
+
+
+@app.command("pending")
+def pending_cmd(
+    project: str = typer.Option("venho_hotel"),
+    data_root: Path = typer.Option(Path("data/projects"), "--data-root"),
+    status: str = typer.Option("pending_approval", "--status", help="pending_approval | approved | rejected | all"),
+) -> None:
+    """Facts a research cycle proposed, waiting for a decision."""
+    from shared.storage.proposed_fact_store import ProposedFactStore
+
+    store = ProposedFactStore(project=project, data_root=data_root)
+    items = store.list_items(status=None if status == "all" else status)
+    typer.echo(json.dumps(items, ensure_ascii=False, indent=2))
+
+
+@app.command("approve")
+def approve_cmd(
+    proposal_id: str = typer.Option(..., "--id"),
+    approved_by: str = typer.Option(..., "--approved-by"),
+    project: str = typer.Option("venho_hotel"),
+    data_root: Path = typer.Option(Path("data/projects"), "--data-root"),
+    vault_root: Path = typer.Option(Path("research"), "--vault-root"),
+) -> None:
+    """Approve a proposed fact -> real R3 KnowledgeFact.
+
+    Runs the same PromotionPolicy gate as a hand-typed `promote`: only an R2
+    synthesis note above the confidence threshold can become a fact."""
+    from research_engine.application.decide_proposed_fact import approve_proposed_fact
+
+    try:
+        result = approve_proposed_fact(
+            proposal_id, approved_by=approved_by, project=project, data_root=data_root, vault_root=vault_root
+        )
+    except (KeyError, ValueError) as exc:
+        typer.echo(json.dumps({"ok": False, "error": str(exc)}, ensure_ascii=False), err=True)
+        raise typer.Exit(code=1)
+    typer.echo(json.dumps({"ok": True, "fact_path": result["fact_path"]}, ensure_ascii=False, indent=2))
+
+
+@app.command("reject")
+def reject_cmd(
+    proposal_id: str = typer.Option(..., "--id"),
+    rejected_by: str = typer.Option(..., "--rejected-by"),
+    reason: str = typer.Option(None, "--reason"),
+    project: str = typer.Option("venho_hotel"),
+    data_root: Path = typer.Option(Path("data/projects"), "--data-root"),
+) -> None:
+    """Reject a proposed fact. Recorded so the next cycle does not re-propose it."""
+    from research_engine.application.decide_proposed_fact import reject_proposed_fact
+
+    try:
+        item = reject_proposed_fact(proposal_id, rejected_by=rejected_by, reason=reason, project=project, data_root=data_root)
+    except (KeyError, ValueError) as exc:
+        typer.echo(json.dumps({"ok": False, "error": str(exc)}, ensure_ascii=False), err=True)
+        raise typer.Exit(code=1)
+    typer.echo(json.dumps({"ok": True, "proposal": item}, ensure_ascii=False, indent=2))
 
 
 @app.command("promote")
