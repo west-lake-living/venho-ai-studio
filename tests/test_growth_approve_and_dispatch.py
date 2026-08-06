@@ -181,6 +181,32 @@ def test_approve_and_dispatch_advances_slot_to_dispatched_on_success(tmp_path: P
     assert slot_store.get("slot-2026-08-10-monday").status == "DISPATCHED"
 
 
+def test_slot_reaches_completed_only_when_the_platform_confirmed_the_post(tmp_path: Path) -> None:
+    """A Make scenario that answers with a real platform_post_id closes the
+    slot; a bare GATEWAY_ACCEPTED leaves it at DISPATCHED. Before this,
+    COMPLETED had no caller at all, so the cadence table could not tell a
+    post Facebook accepted from one that died inside the scenario."""
+    _past_shadow(tmp_path)
+    registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
+    slot_store = SlotStore(db_path=tmp_path / "growth.db")
+    slot_store.ensure_slots([PublishingSlot(slot_id="slot-2026-08-10-monday", slot_date="2026-08-10", slot_type="regular", lane="regular")])
+    slot_store.transition("slot-2026-08-10-monday", "DRAFT_ASSIGNED")
+    slot_store.transition("slot-2026-08-10-monday", "PENDING_APPROVAL", content_package_id="pkg-1")
+    publication_id = _reserve_pending(registry, slot_id="slot-2026-08-10-monday")
+
+    make_adapter = MakeGatewayAdapter(enabled=True)
+    make_adapter.send = lambda command: {"status": "PUBLISHED", "published": True, "platform_post_id": "1122334455"}
+    bridge = M07PublishingBridge(make_adapter=make_adapter, zalo_adapter=ZaloOAAdapter(enabled=True))
+
+    result = approve_and_dispatch(
+        publication_id, approved_by="harry", project="venho_hotel", data_root=tmp_path,
+        registry=registry, bridge=bridge, slot_store=slot_store,
+    )
+
+    assert result["platform_post_id"] == "1122334455"
+    assert slot_store.get("slot-2026-08-10-monday").status == "COMPLETED"
+
+
 def test_approve_and_dispatch_slot_bookkeeping_failure_never_blocks_a_real_dispatch(tmp_path: Path) -> None:
     """slot_id points at a slot that doesn't exist (or slot_store is broken)
     -- the real approval/dispatch must still succeed."""

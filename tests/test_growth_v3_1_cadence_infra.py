@@ -46,6 +46,35 @@ def test_generate_slots_produces_4_slots_per_week_over_horizon() -> None:
     assert len(special) == 2
 
 
+def test_ensure_slot_horizon_persists_the_full_horizon_and_is_idempotent(tmp_path: Path) -> None:
+    """The regression that made check_runway useless: nothing in production
+    ever called generate_slots, so the slots table held zero OPEN rows and
+    the runway canary read `empty` forever."""
+    from shared.jobs.slot_store import SlotStore
+
+    from growth_orchestrator.application.manage_slots import ensure_slot_horizon
+
+    store = SlotStore(db_path=tmp_path / "growth.db")
+    first = ensure_slot_horizon(
+        config_root=ROOT / "config/projects", slot_store=store, start_date=date(2026, 8, 3)
+    )
+    assert first["horizon_days"] == 14
+    assert first["slots_created"] == 8
+    assert len([s for s in store.list_all() if s.status == "OPEN"]) == 8
+
+    second = ensure_slot_horizon(
+        config_root=ROOT / "config/projects", slot_store=store, start_date=date(2026, 8, 3)
+    )
+    assert second["slots_created"] == 0  # nothing duplicated on a re-run
+
+
+def test_ensured_horizon_reads_healthy_on_the_runway_canary() -> None:
+    """8 OPEN slots over the 14-day horizon must clear `healthy_min`, or the
+    fix above would still leave the alert firing."""
+    assert runway_status(8, QUEUE_POLICY) == "healthy"
+    assert runway_status(0, QUEUE_POLICY) == "empty"
+
+
 def test_generate_slots_is_deterministic_and_idempotent() -> None:
     first = generate_slots(CADENCE_POLICY, start_date=date(2026, 8, 3), horizon_days=7)
     second = generate_slots(CADENCE_POLICY, start_date=date(2026, 8, 3), horizon_days=7)

@@ -72,20 +72,29 @@ def test_run_daily_cycle_queues_one_pending_approval_publication_per_platform(tm
     assert len(stored) == len(DEFAULT_PLATFORMS)
 
 
-def test_run_daily_cycle_zalo_post_carries_a_real_utm_tracking_link(tmp_path: Path) -> None:
-    """Phase 6 minimal attribution (Harry's call, 2026-08-06): only the Zalo
-    post gets a real clickable ?utm_content=<publication_id> link -- FB/IG
-    posts carry no link at all in this pipeline."""
+def test_facebook_and_zalo_posts_carry_a_real_clickable_utm_tracking_link(tmp_path: Path) -> None:
+    """DoD #25 needs a live emitter. Until 2026-08-06 only Zalo got a
+    tracking link -- and Zalo is DISABLED, so in practice nothing that ever
+    published carried one."""
     data_root = _tmp_data_root(tmp_path)
     result = run_daily_cycle("monday", data_root=data_root, generate_image=False, content_bridge=_mock_content_bridge(data_root), validator_bridge=_AlwaysApproveValidatorBridge())
 
-    zalo = next(pub for pub in result.publications if pub["platform"] == "zalo")
-    assert zalo["content"]["tracking_url"] is not None
-    assert f"utm_content={zalo['publication_id']}" in zalo["content"]["tracking_url"]
-    assert zalo["content"]["tracking_url"] in zalo["content"]["text"]
+    for platform in ("zalo", "facebook"):
+        publication = next(pub for pub in result.publications if pub["platform"] == platform)
+        assert f"utm_content={publication['publication_id']}" in publication["content"]["tracking_url"]
+        assert publication["content"]["tracking_url"] in publication["content"]["text"]
 
-    facebook = next(pub for pub in result.publications if pub["platform"] == "facebook")
-    assert facebook["content"]["tracking_url"] is None
+
+def test_instagram_records_a_tracking_url_but_keeps_it_out_of_the_caption(tmp_path: Path) -> None:
+    """Instagram renders caption URLs as inert text: pasting one there costs
+    a caption line and buys no click. The row still carries the URL so a
+    link-in-bio or manual match can use it."""
+    data_root = _tmp_data_root(tmp_path)
+    result = run_daily_cycle("monday", data_root=data_root, generate_image=False, content_bridge=_mock_content_bridge(data_root), validator_bridge=_AlwaysApproveValidatorBridge())
+
+    instagram = next(pub for pub in result.publications if pub["platform"] == "instagram")
+    assert f"utm_content={instagram['publication_id']}" in instagram["content"]["tracking_url"]
+    assert instagram["content"]["tracking_url"] not in instagram["content"]["text"]
 
 
 def test_run_daily_cycle_one_platform_failure_does_not_abort_the_others(tmp_path: Path) -> None:

@@ -51,8 +51,22 @@ def daily_cycle(
     if resolved_day not in CADENCE_DAYS:
         typer.echo(f"'{resolved_day}' is not a cadence day ({sorted(CADENCE_DAYS)}); nothing to do today.")
         raise typer.Exit(code=0)
+    # Bind this run to a real PublishingSlot. Without both slot_store and
+    # slot_date, run_daily_cycle records `slot_id=None` on every publication
+    # it queues, and `_advance_slot_on_dispatch_success` then has nothing to
+    # advance on approval -- which is why 102 registry rows carried no slot_id
+    # and the cadence table could never evidence DoD #9. weekly-cycle always
+    # passed these; the daily CLI never did.
+    from growth_orchestrator.application.weekly_cycle import _next_occurrence
+
+    slot_date = _next_occurrence(resolved_day, on_or_after=datetime.now(ZoneInfo("Asia/Ho_Chi_Minh")).date())
     result = run_daily_cycle(
-        resolved_day, project=project, generate_image=generate_image, image_validation_provider="openai"
+        resolved_day,
+        project=project,
+        generate_image=generate_image,
+        image_validation_provider="openai",
+        slot_store=SlotStore(db_path=Path("data/projects") / project / "growth" / "growth.db"),
+        slot_date=slot_date.isoformat(),
     )
     typer.echo(json.dumps({"day": result.day, "topic": result.topic, "publications": result.publications, "errors": result.errors}, ensure_ascii=False, indent=2))
 
@@ -120,6 +134,85 @@ def slots_cmd(
                 }
             )
     typer.echo(json.dumps(rows, ensure_ascii=False, indent=2))
+
+
+@app.command("ensure-slots")
+def ensure_slots_cmd(
+    project: str = typer.Option("venho_hotel"),
+    horizon_days: Optional[int] = typer.Option(None, "--horizon-days", help="Override cadence_policy.slot_creation_horizon_days."),
+) -> None:
+    """Materialise the rolling horizon of OPEN PublishingSlots (DoD #9).
+
+    `weekly-cycle` does this itself on every real run; this exposes it
+    standalone so the horizon can be (re)created without spending a content
+    run's API budget -- e.g. after a gap in the cron, or to seed the table
+    on a machine that has never run a full week."""
+    from growth_orchestrator.application.manage_slots import ensure_slot_horizon
+
+    typer.echo(json.dumps(ensure_slot_horizon(project=project, horizon_days=horizon_days), ensure_ascii=False, indent=2))
+
+
+@app.command("backup")
+def backup_cmd(
+    project: str = typer.Option("venho_hotel"),
+    dest: Optional[Path] = typer.Option(None, "--dest", help="Backup root (default: $VENHO_BACKUP_DIR or ~/VenHo-Backups/venho-ai-studio)."),
+    keep: int = typer.Option(30, "--keep", help="Snapshots to retain before pruning."),
+    verify: bool = typer.Option(True, "--verify/--no-verify", help="Restore + check the snapshot immediately after taking it."),
+) -> None:
+    """Snapshot growth state -- database, registry, facts, photos -- and prove
+    it restores (DoD #24).
+
+    `data/` is gitignored in full, so nothing here was ever covered by the
+    "git is our backup" assumption. Alerts Telegram if the verify fails: a
+    backup that silently stopped restoring is worse than no backup, because
+    it stops anyone from noticing."""
+    from shared.backup.growth_backup import create_backup, prune_backups, verify_restore
+
+    manifest = create_backup(project=project, backup_dir=dest)
+    result: dict = {
+        "snapshot_dir": manifest["snapshot_dir"],
+        "counts": manifest["counts"],
+        "database_row_counts": (manifest.get("database") or {}).get("row_counts"),
+    }
+    if verify:
+        report = verify_restore(Path(manifest["snapshot_dir"]), backup_dir=dest)
+        result["verify"] = report
+        if not report["ok"]:
+            import os
+
+            from shared.notify.telegram import send_alert, telegram_notifier_or_mock_from_env
+
+            chat_id = os.environ.get("TELEGRAM_CHAT_ID")
+            if chat_id:
+                send_alert(
+                    "backup_verify_failed",
+                    f"VENHO Growth backup verify FAILED: {'; '.join(report['errors'][:3])}",
+                    notifier=telegram_notifier_or_mock_from_env(os.environ),
+                    chat_id=chat_id,
+                )
+    result["prune"] = prune_backups(project=project, backup_dir=dest, keep=keep)
+    typer.echo(json.dumps(result, ensure_ascii=False, indent=2))
+    if verify and not result["verify"]["ok"]:
+        raise typer.Exit(code=1)
+
+
+@app.command("backup-verify")
+def backup_verify_cmd(
+    project: str = typer.Option("venho_hotel"),
+    snapshot: Optional[Path] = typer.Option(None, "--snapshot", help="Snapshot directory (default: the most recent one)."),
+    dest: Optional[Path] = typer.Option(None, "--dest"),
+) -> None:
+    """Restore an existing snapshot into a scratch directory and verify it."""
+    from shared.backup.growth_backup import latest_backup, verify_restore
+
+    target = snapshot or latest_backup(project=project, backup_dir=dest)
+    if target is None:
+        typer.echo(json.dumps({"ok": False, "error": "no backups found"}, ensure_ascii=False))
+        raise typer.Exit(code=1)
+    report = verify_restore(Path(target), backup_dir=dest)
+    typer.echo(json.dumps(report, ensure_ascii=False, indent=2))
+    if not report["ok"]:
+        raise typer.Exit(code=1)
 
 
 @app.command("list-pending")

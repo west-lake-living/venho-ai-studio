@@ -15,6 +15,7 @@ from growth_orchestrator.application.daily_cycle import (
     DailyCycleResult,
     run_daily_cycle,
 )
+from growth_orchestrator.application.manage_slots import ensure_slot_horizon
 from growth_orchestrator.bridges.m03_validator_bridge import M03ValidatorBridge
 from growth_orchestrator.bridges.m05_content_bridge import M05ContentBridge
 from growth_orchestrator.domain.publishing_slot import PublishingSlot
@@ -154,6 +155,16 @@ def run_weekly_cycle(
 
     day_dates = {day: _next_occurrence(day, on_or_after=today) for day in WEEKLY_CADENCE_ORDER}
     try:
+        # The full cadence horizon (14 days = 8 slots), not just the four
+        # days this run is about to fill. Ensuring only the current week left
+        # zero OPEN rows behind, which made check_runway's canary read `empty`
+        # permanently -- see manage_slots.ensure_slot_horizon.
+        ensure_slot_horizon(
+            project=project, config_root=config_root, data_root=data_root,
+            slot_store=slot_store, start_date=today,
+        )
+        # Belt and braces for a horizon shorter than this week's own dates
+        # (a policy edit, or a Saturday run reaching next Saturday).
         slot_store.ensure_slots(
             PublishingSlot(
                 slot_id=f"slot-{day_dates[day].isoformat()}-{day}",

@@ -61,12 +61,22 @@ def list_pending(
     return [item for item in registry.load()["publications"] if item.get("status") in actionable]
 
 
-def _advance_slot_on_dispatch_success(publication: dict, *, slot_store: Optional[SlotStore]) -> None:
+def _advance_slot_on_dispatch_success(
+    publication: dict, *, slot_store: Optional[SlotStore], confirmed_published: bool = False
+) -> None:
     """Best-effort PENDING_APPROVAL -> FILLED -> DISPATCHED on the slot this
     publication's daily_cycle run recorded (`slot_id`, absent on older rows
     or when daily_cycle ran without slot tracking). Never raises: a stale/
     already-advanced slot or a missing slot_store must not block the real
     dispatch this is just bookkeeping for.
+
+    `confirmed_published` carries it the last step to COMPLETED. That
+    transition existed in the state machine with no production caller, so
+    every slot stopped at DISPATCHED -- "handed to Make" -- and the table
+    could not distinguish a post the platform actually accepted from one
+    that died inside the scenario. It is only true when Make answered
+    synchronously with a real platform outcome
+    (make_gateway.interpret_make_response -> PUBLISHED).
     """
     slot_id = publication.get("slot_id")
     if not slot_id or slot_store is None:
@@ -81,6 +91,8 @@ def _advance_slot_on_dispatch_success(publication: dict, *, slot_store: Optional
             slot_store.transition(slot_id, "DISPATCHED")
         elif slot.status == "FILLED":
             slot_store.transition(slot_id, "DISPATCHED")
+        if confirmed_published and (slot_store.get(slot_id) or slot).status == "DISPATCHED":
+            slot_store.transition(slot_id, "COMPLETED")
     except Exception:  # noqa: BLE001 - slot bookkeeping must never block a real dispatch that already succeeded
         pass
 
@@ -219,7 +231,9 @@ def _dispatch_claimed(
         updates["shadow_override_by"] = approved_by or publication.get("approved_by")
     updated = registry.update(publication_id, **updates)
     if response["status"] in ("GATEWAY_ACCEPTED", "PUBLISHED"):
-        _advance_slot_on_dispatch_success(updated, slot_store=slot_store)
+        _advance_slot_on_dispatch_success(
+            updated, slot_store=slot_store, confirmed_published=response["status"] == "PUBLISHED"
+        )
     return updated
 
 

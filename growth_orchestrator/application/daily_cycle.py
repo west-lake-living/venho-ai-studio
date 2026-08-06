@@ -51,6 +51,10 @@ CADENCE_DAYS = REGULAR_CADENCE_DAYS | {SPECIAL_CADENCE_DAY}
 
 DEFAULT_PLATFORMS = ["facebook", "instagram", "threads", "zalo"]
 
+# Where a URL pasted into the post body is a real, tappable link. Instagram
+# is the notable exclusion: it renders caption URLs as inert text.
+CLICKABLE_LINK_PLATFORMS = {"facebook", "zalo", "threads"}
+
 # One scenario per DNA subject used by content_pillars.yaml. Real scenario
 # selection (multiple angles per subject) is future work -- this is the
 # minimum needed so every CreativeBrief has a valid, DNA-backed scenario_key.
@@ -219,19 +223,25 @@ def _content_payload(
     if candidate.get("hashtags"):
         text += "\n\n" + " ".join(candidate["hashtags"])
 
-    # Minimal attribution (Phase 6, Harry's call 2026-08-06): only Zalo can
-    # carry a real clickable deep-link -- FB/IG posts here are plain text
-    # (no link at all), so this is the one channel a real
-    # ?utm_content=<publication_id> tracking URL can go out on today. See
-    # analytics_feedback/attribution.py's module docstring for what's still
-    # missing on the receiving side.
+    # Attribution (Phase 6; extended to Facebook 2026-08-06 after Zalo was
+    # left DISABLED, which meant the only channel carrying a tracking link
+    # was one that never publishes -- DoD #25 had no live emitter at all).
+    #
+    # Every platform gets a tracking_url recorded on the row; only the
+    # platforms where a URL in the caption is actually clickable get it
+    # appended to the text. Instagram renders caption URLs as plain text, so
+    # pasting one there buys nothing and costs a line of caption -- its
+    # tracking_url exists for a link-in-bio or a manual match instead.
     tracking_url: Optional[str] = None
-    if platform == "zalo" and publication_id:
+    if publication_id:
         try:
             policy = AttributionPolicy.from_file()
             if policy.tracking_base_url:
-                tracking_url = build_tracking_url(publication_id, base_url=policy.tracking_base_url, platform=platform)
-                text += f"\n\n{tracking_url}"
+                tracking_url = build_tracking_url(
+                    publication_id, base_url=policy.tracking_base_url, platform=platform or "unknown"
+                )
+                if platform in CLICKABLE_LINK_PLATFORMS:
+                    text += f"\n\n{tracking_url}"
         except Exception:  # noqa: BLE001 - a missing/malformed attribution_policy.yaml must not block queuing the text draft
             pass
 

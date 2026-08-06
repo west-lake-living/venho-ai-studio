@@ -3,9 +3,12 @@ direct_window_hours: 72
 assisted_window_days: 14
 dedupe_fields: [normalized_contact_hash, stay_date, guest_count]
 pseudonymization: sha256
-# Real venhohotel.com contact page a Zalo CTA links to, tagged with
-# ?utm_content=<publication_id> per publication (2026-08-06, Harry's call:
-# build minimal attribution via the Zalo channel first -- FB/IG posts carry
-# no clickable link at all today, and the booking form doesn't capture utm
-# params yet, see attribution.py's module docstring for the full gap).
+# Real venhohotel.com contact page every post's CTA links to, tagged with
+# ?utm_content=<publication_id> per publication. Facebook and Zalo get the
+# link in the post body; Instagram records one on the row but keeps it out of
+# the caption, where URLs are inert (see daily_cycle.CLICKABLE_LINK_PLATFORMS).
+# The booking form now captures and forwards these params into the enquiry
+# email (Ven Ho Hotel repo: src/lib/tracking/attribution.ts), so an enquiry
+# carries the publication_id that produced it. The last mile is still manual:
+# someone feeds the event to `venho-analytics attribute`.
 tracking_base_url: "https://venhohotel.com/lien-he"
