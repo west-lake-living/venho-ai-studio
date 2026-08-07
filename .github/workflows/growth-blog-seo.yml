@@ -1,0 +1,43 @@
+name: Growth Agent Blog SEO
+
+# DoD #11: Tuesday SEO is generated from the same approved Research OS facts
+# as the rest of Growth. It creates a draft only; no website publish path is
+# present here, so a scheduled run can never bypass editorial approval.
+on:
+  schedule:
+    # Tuesday 08:00 Asia/Ho_Chi_Minh (UTC+7).
+    - cron: "0 1 * * 2"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  blog-seo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -e .
+
+      - name: Generate grounded blog draft
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: >-
+          venho-growth blog
+          --topic "Một ngày chậm rãi bên Hồ Tây"
+          --keyword "khách sạn gần Hồ Tây Hà Nội"
+          --dna-subject westlake
+
+      - name: Commit blog draft
+        run: |
+          git config user.name "venho-growth-bot"
+          git config user.email "venho-growth-bot@users.noreply.github.com"
+          git add -f data/projects/*/content/**/*.json data/projects/*/content/**/*.md 2>/dev/null || true
+          git diff --cached --quiet || git commit -m "chore: growth blog SEO $(date -u +%Y-%m-%d)"
+          git push
