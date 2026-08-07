@@ -1,6 +1,24 @@
 # VENHO AI STUDIO — Task Status
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-08-07 (Research OS/Trend Radar audit closeout) · **Tests:** 834/834 pass · 0 API call trong test
+**Cập nhật:** 2026-08-07 (FORBIDDEN policy hygiene + face gate hair/expression fix) · **Tests:** 841/841 pass · 0 API call trong test
+
+### FORBIDDEN hygiene + face gate (2026-08-07)
+
+- [x] `knowledge_studio/vision/forbidden_policy.py` — chỉ câu phủ định mới là FORBIDDEN; sanitize ở `pass2_consolidate` và `overlay_merge`.
+- [x] `validator_studio/observe_adapter.py` — validator chỉ dùng rule `curated`; fallback sang `observed` nếu subject không có rule curated nào.
+- [x] `venho vision clean-forbidden` — dọn 21 mục rác trên 4 subject (dry-run mặc định, `--apply` mới ghi). 4 mục của `linh_an` được migrate sang overlay curated trước khi xoá.
+- [x] `prompts/observe_face_against_dna.md` — `identity_structure` không xét tóc/biểu cảm. Master face 0.0 → 88.26.
+- [x] Overlay scenario `outside.venho_rooftop_terrace_2026.overrides.yaml` — nới `street_trees_visible`, `sky_condition`, `lighting_condition` cho rooftop.
+- [x] Siết instruction `forbidden_hints` trong `observe_universal.md` / `observe_face.md` / `observe_linh_an.md` (`prompt_version` lấy từ config nên không kích hoạt regenerate).
+- [x] Verify: `/usr/bin/python3 -m pytest -q` → **841/841 pass**, 0 API call. Ảnh rooftop thật validate lại sau khi dọn DNA: **100/approve**, prompt validate 3056 → 2303 token.
+
+### DoD 11/24/25/26 follow-up (2026-08-07)
+
+- [x] **DoD #11:** thêm GitHub Actions `growth-blog-seo.yml`, chạy thứ 3 08:00 ICT, chỉ sinh và commit blog draft từ R3 facts; không có dispatch/publish path.
+- [x] **DoD #24 — mechanism:** re-verified `shared/backup/growth_backup.py` từ commit `b7409a3`: online SQLite snapshot, artifact CAS, checksum + `PRAGMA integrity_check` restore, CLI `venho-growth backup`/`backup-verify`, giữ 30 snapshot. Trạng thái DR chỉ đạt khi `VENHO_BACKUP_DIR` trỏ tới storage ngoài máy và có lịch chạy thật.
+- [ ] **DoD #25:** không có code gap ở phía Growth (UTM, attribution CLI, store đã có). Còn thiếu source event production: GA4 Data API credential hoặc booking-form event feed. Không tự sửa repo website đang dirty hay bịa credentials.
+- [ ] **DoD #26:** scorecard/rollout code đã có; golden set reviewer-scored và 3 signal Vision QC thật không thể tạo bằng code. Rollout giữ `shadow` đến khi có data đạt gate.
+- [x] Verify: `PYTHONPATH=. /usr/bin/python3 -m pytest -q` → **835/835 pass**, 0 API call.
 
 ### Audit closeout — Research OS/Trend Radar (2026-08-07)
 

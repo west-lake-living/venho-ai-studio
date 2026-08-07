@@ -1152,6 +1152,43 @@ Cả arc từ commit `8b36845` → `f6599a0`. Điểm chung của mọi lỗi tr
 - **Verification closeout:** `PYTHONPATH=. /usr/bin/python3 -m pytest -q` → **834/834 pass**, 0 API call; `venho-os: npm test -- --run` → **150/150 pass**; `npx tsc --noEmit` pass.
 - **Cleanup:** xoá cache/dev artifacts không track (`__pycache__`, `.pytest_cache`, `.DS_Store`, `.log`, `.tmp`); không xoá docs/config hay JSON trong `data/`/knowledge stores. Không phát hiện unused import trong Python thay đổi (trừ `from __future__ import annotations`).
 
+## 14q. DoD 11/24/25/26 follow-up (2026-08-07)
+
+- **DoD #11:** `.github/workflows/growth-blog-seo.yml` mới chạy thứ 3 08:00 ICT. Workflow chỉ sinh/commit blog draft qua `venho-growth blog`; không có Make webhook hay dispatch path, nên không bypass editorial approval.
+- **DoD #24:** audit phát hiện implementation đã tồn tại trong commit `b7409a3` nhưng roadmap/status cũ chưa phản ánh: `shared/backup/growth_backup.py` snapshot SQLite online, copy registry/facts/research, artifact CAS, restore vào scratch + `PRAGMA integrity_check` + row-count/checksum; CLI backup verify mặc định. Còn điều kiện vận hành: `VENHO_BACKUP_DIR` phải được Founder trỏ ra storage ngoài máy và job phải chạy định kỳ.
+- **DoD #25/#26 không được làm giả:** code attribution/scorecard đã có. Hoàn tất đòi GA4 credential hoặc event feed từ booking form, một golden set do người review chấm và Vision QC thật; repo website đang có dirty changes nên không được tự ý sửa. Rollout giữ `shadow` đúng fail-closed.
+- **Verify:** `PYTHONPATH=. /usr/bin/python3 -m pytest -q` → **835/835 pass**, 0 API call.
+
+## 14r. FORBIDDEN = policy, và face gate không xét tóc/biểu cảm (2026-08-07)
+
+- **FORBIDDEN chỉ nhận câu phủ định.** `knowledge_studio/vision/forbidden_policy.py`:
+  rule phải bắt đầu bằng no/not/never/without/avoid/exclude. Model khi được hỏi "thứ rõ ràng
+  KHÔNG có trong ảnh" trả về tên feature trần cũng nhiều như trả về lệnh cấm — DNA `outside`
+  từng liệt `lake view`, `railing`, `Rooftop terrace`, `Cityscape` làm FORBIDDEN, tức là cấm
+  đúng những thứ làm nên chủ thể. Sanitizer chạy ở 2 chỗ: `pass2_consolidate` (lúc build) và
+  `overlay_merge` (lúc render — cứu các DNA sinh trước khi có policy này).
+- **Validator chỉ dùng rule `curated`.** `validator_studio/observe_adapter.py::_forbidden_rules_for_validation`.
+  Trước đó toàn bộ rule kể cả `observed` được gửi sang validator, nên `outside` đang cấm
+  `No visible lake or cityscape` và `No visible railing` — đúng ngữ pháp nên sanitizer không bắt
+  được. Một rule bị vi phạm = severity high = kill-switch = tốn thêm nguyên một ảnh. Subject
+  không có overlay (không có rule curated nào) mới rơi về `observed`.
+- **`venho vision clean-forbidden --project venho_hotel [--subject X] [--apply]`** — dry-run mặc
+  định, tất định, 0 vision call, không bump version; re-render .md/.json/_COMPACT.md từ object đã
+  dọn. Đã dọn 21 mục (outside 12, linh_an 4, room_1 3, lake_view_room 2).
+- **Rule viết sai dạng nhưng đúng ý thì MIGRATE, đừng xoá.** 4 mục của `linh_an`
+  (`glasses`, `hat`, `visible tattoos`, `visible piercings other than earrings`) là chính sách
+  thật — đã viết lại thành rule curated trong `linh_an.overrides.yaml` trước khi cho sanitizer xoá.
+- **Face gate không được trượt vì tóc hoặc biểu cảm.** `prompts/observe_face_against_dna.md`:
+  `identity_structure` chỉ xét xương và ngũ quan. DNA duyệt nhiều kiểu tóc và nhiều biểu cảm, nên
+  xét chúng như tín hiệu nhận dạng là sai theo chính DNA — bằng chứng: `linh-an-master-face.png`
+  (ảnh gốc dùng để sinh mọi ảnh Linh An) bị chính gate của nó hard-reject 0.0 chỉ vì để tóc xoã.
+  Sau khi sửa: master face 0.0 → 88.26, ảnh rooftop 0.0 → 84.83. Đây cũng là nguồn của hiện tượng
+  "không tất định" từng phải băng bó bằng sampling 3 lần trong `validate_generated.py`.
+- **Overlay theo scenario:** `config/projects/venho_hotel/subjects/<subject>.<scenario_profile_id>.overrides.yaml`,
+  merge in-memory lúc validate, không ghi đè DNA. **Bắt buộc khai lại `forbidden:`** — `apply_overlay`
+  dựng lại danh sách từ overlay hiện tại + observed, nên overlay thiếu `forbidden:` sẽ làm rơi sạch
+  rule curated (đo được: forbidden 100 → 0 trên một ảnh rooftop tốt).
+
 ## 14. Task Closing Protocol
 
 Khi người dùng nói **"kết thúc task"**, Codex phải tự động:
