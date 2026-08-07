@@ -50,7 +50,7 @@ OUTPUT FORMAT — return only valid JSON, no preamble, no markdown:
   ],
   "notable_features": ["free-form structural observations"],
   "uncertainty": ["features that are unclear"],
-  "forbidden_hints": ["things clearly NOT present in this image"]
+  "forbidden_hints": ["each entry MUST be a prohibition written as a negative sentence starting with 'no' or 'not' — e.g. 'no infinity pool', 'no marble interior'. NEVER write a bare feature name such as 'lake view', 'railing' or 'Rooftop terrace': those are features of the subject, not prohibitions, and non-negative entries are discarded. Do NOT list features that ARE present in the image."]
 }
 
 Observe all visible structural features. Aim for 15-25 feature entries.

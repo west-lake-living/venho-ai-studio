@@ -369,6 +369,74 @@ def vault_export_cmd(
         typer.echo(text)
 
 
+@vision_app.command("clean-forbidden")
+def clean_forbidden_cmd(
+    project: str = typer.Option("venho_hotel", "--project", "-p", help="Project name"),
+    subject: Optional[str] = typer.Option(None, "--subject", "-s", help="Single subject (default: every DNA in the project)"),
+    apply: bool = typer.Option(False, "--apply", help="Write the cleaned DNA. Without this flag, only reports."),
+) -> None:
+    """Drop observed FORBIDDEN entries that name a feature instead of prohibiting one.
+
+    Repairs DNA written before forbidden_policy existed. Deterministic, no vision calls,
+    no version bump: re-renders .md/.json/_COMPACT.md from the cleaned object.
+    """
+    import json as _json
+
+    from knowledge_studio.vision import subject_resolver
+    from knowledge_studio.vision.forbidden_policy import is_prohibition
+    from knowledge_studio.vision.pipeline import BASE_DIR
+    from knowledge_studio.vision.renderers.dna_md import write_dna_output
+
+    knowledge_dir = BASE_DIR / f"data/projects/{project}/knowledge"
+    if not knowledge_dir.exists():
+        typer.secho(f"No knowledge dir for project '{project}'", fg=typer.colors.RED, err=True)
+        raise typer.Exit(1)
+
+    subjects = [subject] if subject else sorted(
+        p.name.replace("dna_manifest_", "").replace(".json", "")
+        for p in knowledge_dir.glob("dna_manifest_*.json")
+    )
+
+    total_dropped = 0
+    for subj in subjects:
+        try:
+            subject_def = subject_resolver.resolve(project, subj)
+        except (FileNotFoundError, ValueError) as e:
+            typer.secho(f"  [skip] {subj}: {e}", fg=typer.colors.YELLOW)
+            continue
+
+        json_path = knowledge_dir / f"{subject_def.dna_filename}.json"
+        if not json_path.exists():
+            typer.secho(f"  [skip] {subj}: no DNA json", fg=typer.colors.YELLOW)
+            continue
+
+        dna = subject_def.dna_cls.model_validate(_json.loads(json_path.read_text(encoding="utf-8")))
+        dropped = [f.rule for f in dna.forbidden if f.source == "observed" and not is_prohibition(f.rule)]
+        if not dropped:
+            typer.echo(f"  {subj}: clean")
+            continue
+
+        total_dropped += len(dropped)
+        typer.secho(f"  {subj}: {len(dropped)} non-prohibition entr{'y' if len(dropped) == 1 else 'ies'}", fg=typer.colors.YELLOW)
+        for rule in dropped:
+            typer.echo(f"      - {rule!r}")
+
+        if apply:
+            dna.forbidden = [
+                f for f in dna.forbidden if f.source != "observed" or is_prohibition(f.rule)
+            ]
+            write_compact = (knowledge_dir / f"{subject_def.dna_filename}_COMPACT.md").exists()
+            write_dna_output(dna, knowledge_dir, subject_def.dna_filename, project, write_compact=write_compact)
+            typer.secho(f"      → rewritten ({'md+json+compact' if write_compact else 'md+json'})", fg=typer.colors.GREEN)
+
+    if total_dropped == 0:
+        typer.secho("All FORBIDDEN lists are clean.", fg=typer.colors.GREEN)
+    elif apply:
+        typer.secho(f"Removed {total_dropped} non-prohibition entries.", fg=typer.colors.GREEN)
+    else:
+        typer.secho(f"{total_dropped} non-prohibition entries found. Re-run with --apply to remove them.", fg=typer.colors.YELLOW)
+
+
 # --- Legacy command (backward compat) ---
 @vision_app.command("analyze")
 def analyze(

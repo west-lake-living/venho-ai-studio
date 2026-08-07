@@ -43,7 +43,7 @@ OUTPUT FORMAT — return only valid JSON, no preamble, no markdown:
   ],
   "notable_features": ["free-form notable detail 1", "notable detail 2"],
   "uncertainty": ["anything unclear or ambiguous"],
-  "forbidden_hints": ["things that are clearly NOT present, to prevent AI hallucination"]
+  "forbidden_hints": ["each entry MUST be a prohibition written as a negative sentence starting with 'no' or 'not' — e.g. 'no infinity pool', 'no marble interior'. NEVER write a bare feature name such as 'lake view', 'railing' or 'Rooftop terrace': those are features of the subject, not prohibitions, and non-negative entries are discarded. Do NOT list features that ARE present in the image."]
 }
 
 Observe all visible features. Aim for 10-25 feature entries. Use type "free" unless the value fits a small set of categories.

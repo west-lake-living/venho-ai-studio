@@ -13,6 +13,7 @@ from typing import Optional
 
 import yaml
 
+from knowledge_studio.vision.forbidden_policy import is_prohibition
 from knowledge_studio.vision.schemas.base import (
     BaseDNA,
     AllowedImperfection,
@@ -58,9 +59,14 @@ def apply_overlay(dna: BaseDNA, overlay: Optional[dict]) -> BaseDNA:
         {"rule": r, "source": "curated"}
         for r in overlay.get("forbidden", [])
     ]
+    # Observed rules are re-checked here, not only at build time: DNA files generated before
+    # forbidden_policy existed still carry feature names ("lake view", "railing") in this list,
+    # and this merge is what puts them in front of the validator.
     observed_forbidden = [
         f for f in data["forbidden"]
-        if f["source"] == "observed" and f["rule"].strip().lower() not in curated_rules_lower
+        if f["source"] == "observed"
+        and f["rule"].strip().lower() not in curated_rules_lower
+        and is_prohibition(f["rule"])
     ]
     data["forbidden"] = curated_forbidden + observed_forbidden
 

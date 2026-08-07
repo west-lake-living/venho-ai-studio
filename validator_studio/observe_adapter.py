@@ -45,6 +45,22 @@ def _assert_no_ai_scores(payload: Any) -> None:
             _assert_no_ai_scores(item)
 
 
+def _forbidden_rules_for_validation(dna: dict) -> list[dict]:
+    """Curated rules only, whenever the subject has any.
+
+    "FORBIDDEN = policy (curated)" is the documented contract, but every rule in the DNA
+    was being sent to the validator — including machine-observed ones that merely record
+    what one photo happened to lack. For `outside` those included "No visible lake or
+    cityscape" and "No visible railing": the lake and the railing are the subject. A
+    violation there scores severity=high, which trips the kill-switch and forces a
+    regenerate, so junk policy costs a full extra image. Subjects with no curated rules
+    (no overlay) keep the observed list rather than validating against nothing.
+    """
+    rules = dna.get("forbidden", [])
+    curated = [item for item in rules if item.get("source", "curated") == "curated"]
+    return curated or rules
+
+
 def _build_image_observe_prompt(dna: dict) -> str:
     prompt_path = BASE_DIR / "validator_studio" / "prompts" / "observe_image_against_dna.md"
     base_prompt = prompt_path.read_text(encoding="utf-8")
@@ -65,7 +81,7 @@ def _build_image_observe_prompt(dna: dict) -> str:
                 "source": item.get("source", "curated"),
                 "severity": _severity_for_rule(str(item.get("rule", ""))).value,
             }
-            for item in dna.get("forbidden", [])
+            for item in _forbidden_rules_for_validation(dna)
         ],
         "allowed_imperfections": [
             {"item": item.get("value"), "source": item.get("source", "curated")}
@@ -136,7 +152,7 @@ def _mock_observe_once(image_path: Path, dna: dict) -> ImageObservation:
             confidence=1.0,
             reason="Mock forced violation from artifact filename." if forced_bad and index == 0 else "No violation observed by mock provider.",
         )
-        for index, item in enumerate(dna.get("forbidden", []))
+        for index, item in enumerate(_forbidden_rules_for_validation(dna))
     ]
     allowed = [
         AllowedImperfectionObservation(

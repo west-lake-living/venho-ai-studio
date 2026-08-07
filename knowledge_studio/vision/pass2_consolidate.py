@@ -16,6 +16,7 @@ from pathlib import Path
 
 from shared.logging import log
 from shared.vision.client import VisionClient
+from knowledge_studio.vision.forbidden_policy import sanitize_forbidden
 from knowledge_studio.vision.schemas.base import (
     BaseObservation,
     BaseDNA,
@@ -113,12 +114,12 @@ def _pass2a(
             unique_normalized = sorted(set(normalized))
             variable_raw[key] = {"value_set": unique_normalized}
 
-    # FORBIDDEN observed: union of all forbidden_hints from observations + defaults
-    all_forbidden: list[str] = list(forbidden_defaults)
-    for obs in observations:
-        for hint in obs.forbidden_hints:
-            if hint not in all_forbidden:
-                all_forbidden.append(hint)
+    # FORBIDDEN observed: union of all forbidden_hints from observations + defaults.
+    # Sanitized: hints that name a feature instead of prohibiting one are not policy
+    # (see forbidden_policy) and must never reach the DNA.
+    all_forbidden: list[str] = sanitize_forbidden(
+        list(forbidden_defaults) + [hint for obs in observations for hint in obs.forbidden_hints]
+    )
 
     # ALLOWED IMPERFECTIONS observed: collect all non-null values of key 'allowed_imperfection'
     ai_seen: list[str] = []

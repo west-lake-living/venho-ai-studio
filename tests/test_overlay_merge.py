@@ -60,9 +60,9 @@ class TestApplyOverlayEmpty:
         assert result.invariant[0].value == "dark wood"
 
     def test_empty_dict_overlay_returns_same_dna(self):
-        dna = _minimal_dna(forbidden=[ForbiddenRule(rule="carpet", source="observed")])
+        dna = _minimal_dna(forbidden=[ForbiddenRule(rule="no carpet", source="observed")])
         result = apply_overlay(dna, {})
-        assert result.forbidden[0].rule == "carpet"
+        assert result.forbidden[0].rule == "no carpet"
 
 
 # ---------------------------------------------------------------------------
@@ -72,13 +72,13 @@ class TestApplyOverlayEmpty:
 class TestForbiddenMerge:
     def test_curated_forbidden_prepends_observed(self):
         dna = _minimal_dna(
-            forbidden=[ForbiddenRule(rule="carpet", source="observed")]
+            forbidden=[ForbiddenRule(rule="no carpet", source="observed")]
         )
         overlay = {"forbidden": ["no wallpaper"]}
         result = apply_overlay(dna, overlay)
         assert result.forbidden[0].rule == "no wallpaper"
         assert result.forbidden[0].source == "curated"
-        assert result.forbidden[1].rule == "carpet"
+        assert result.forbidden[1].rule == "no carpet"
         assert result.forbidden[1].source == "observed"
 
     def test_curated_deduplicates_observed_same_rule(self):
@@ -101,7 +101,7 @@ class TestForbiddenMerge:
 
     def test_multiple_curated_forbidden_prepend_all(self):
         dna = _minimal_dna(
-            forbidden=[ForbiddenRule(rule="carpet", source="observed")]
+            forbidden=[ForbiddenRule(rule="no carpet", source="observed")]
         )
         overlay = {"forbidden": ["no flowers", "no wallpaper"]}
         result = apply_overlay(dna, overlay)

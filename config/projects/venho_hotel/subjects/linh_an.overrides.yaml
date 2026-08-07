@@ -13,6 +13,14 @@ forbidden:
   - "no high-arch eyebrows (must be low-position, minimal arch)"
   - "no thick upper eyelid"
   - "no generic influencer look — must be distinctly Vietnamese"
+  # Migrated 2026-08-07 from machine-observed entries that stated the item name only
+  # ("glasses", "hat", "visible tattoos", "visible piercings other than earrings").
+  # They were real policy in the wrong grammatical form, so they are restated here as
+  # curated rules rather than dropped by `venho vision clean-forbidden`.
+  - "no eyeglasses or sunglasses"
+  - "no hat or headwear"
+  - "no visible tattoos"
+  - "no visible piercings other than the signature small pearl drop earrings"
 
 allowed_imperfections:
   - "very subtle natural eye asymmetry is correct and required"
