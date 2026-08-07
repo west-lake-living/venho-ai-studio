@@ -1,6 +1,29 @@
 # VENHO AI STUDIO — Task Status
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-08-06 (Scenario Make riêng cho Growth + cổng rollout stage thật — xem mục ngay dưới) · **Tests:** 744/744 pass · 0 API call trong test
+**Cập nhật:** 2026-08-07 (Research OS chạy thật + lọc ngày cũ cho Trend Radar — xem mục ngay dưới) · **Tests:** 834/834 pass · 0 API call trong test
+
+### Research OS chạy thật lần đầu + Trend Radar lọc ngày cũ (2026-08-06 → 07)
+
+**Status: DONE — commit `f6599a0`, đã push**
+
+Arc từ `8b36845` → `f6599a0`. Điểm chung mọi lỗi: mỗi lớp đều trả về "một cái gì đó" nên không lớp nào trông hỏng.
+
+- [x] **Chu kỳ nghiên cứu tự động** — `run_research_cycle`: `queries:` → Tavily Search, `urls:` → `tavily_extract`; ra R0 note + R2 synthesis trong vault + proposal `pending_approval`. DoD #13 nguyên vẹn (không auto-promote R2→R3).
+- [x] **Đường URL đích danh sửa 3 lỗi chồng nhau** (trước đó chưa từng thật sự hoạt động): `extract_depth` `basic`→`advanced` (Agoda trả `Failed to fetch url`); `strip_markdown_noise()` trước khi cắt + cap 6000→32000 (60–75% ký tự là cú pháp link/ảnh, 6000 đầu chỉ là nav chrome); `per_source=True` + `_MAX_SNIPPET_CHARS_PER_SOURCE=30000` (1200 cắt lần hai trước khi Gemini nhìn thấy — điểm của An Homestay ở ký tự 859 lọt, của Lake View ở 24985 không bao giờ).
+- [x] **URL giữ nguyên xi** — Agoda `/vi-vn/` chạy trang này hỏng trang kia; Booking cần `.vi.html` cho Ven Hồ nhưng `.en-us.html` cho An Homestay. YAML ghi rõ "do not normalise them".
+- [x] **Domain mới `competitor_rating`** — trang OTA có điểm nhưng không bao giờ có giá (render client-side theo ngày), một domain không trả lời được cả hai câu. `competitor` giữ câu hỏi giá + search; `competitor_rating` giữ 4 URL đối thủ. `ResearchDomain` + `domains.yaml` (biweekly/90d) cập nhật theo.
+- [x] **`is_same_finding()` — dedupe không phụ thuộc tên** (`(domain, source_uri, value)` + tập token `fact_key` là tập con của nhau, sau khi bỏ `_KEY_NOISE`). Gemini đặt tên cùng một con số khác nhau mỗi lần. Có guard cho tập rỗng: `overall_rating` rút hết token thì không được nuốt mọi thứ.
+- [x] **Nút "Từ chối" trên Trend Radar** — `TrendCandidateStore.reject()` + CLI `venho-growth trend-reject` + route `api/v1/studio/growth/trend-candidates/reject` (venho-os). Ghi tombstone, **không xoá dòng** — `merge_new` dedupe theo id nên dòng xoá thật sẽ quay lại lần quét sau. Panel cũng ẩn 17 candidate brand-safety đã tự loại.
+- [x] **Lọc ngày cũ áp vào `scan_trends`** — gốc rễ ở bộ đọc ngày, không ở chỗ nối dây: dạng tiếng Việt thật không có năm (`ngày 26-28/6`) hoặc viết chữ (`17 Tháng Mười Một 2021`) đều không khớp gì. Thêm 4 pattern; `dd/mm` trần bắt buộc có chữ "ngày" (không thì `8/10` trong đoạn review thành ngày); ngày thiếu năm quy về năm gần hôm nay nhất; tháng trần vẫn là mùa. Trên 24 bài chờ thật: bắt 3, giữ 21 bài không hạn dùng.
+- [x] Verify: `PYTHONPATH=. pytest -q` → 834/834 pass, 0 API call. `npx tsc --noEmit` sạch bên `venho-os`.
+
+**Xung đột đã xử lý:** backfill 3 dòng cũ chạy đúng lúc Harry duyệt trên dashboard một bài mà nó vừa loại (Lễ hội Sen đã kết thúc) → rebase xong **khôi phục approval của Harry**. Quyết định của người thắng bộ lọc tự động, không phải ngược lại.
+
+**Giới hạn thật:** bài không ghi ngày nào trong nội dung ("cuối tuần này ghé hồ Tây…") thì bộ lọc ngày bó tay — vẫn cần mắt người ở khâu duyệt.
+
+Chi tiết đầy đủ: `task_memory.md` mục 14o.
+
+---
 
 ### Growth Agent v3.1 — Scenario Make riêng + cổng `shadow` chặn thật + dọn 12 row kẹt (2026-08-06, chiều)
 

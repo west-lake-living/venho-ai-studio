@@ -1118,6 +1118,33 @@ Tiếp nối hai ghi chú "Sửa 2026-08-06" trong mục 14b (tách webhook + �
 
 **Verify:** `PYTHONPATH=. pytest -q` → **744 passed** (737 + 5 test cổng shadow + 2 test ảnh fallback đã có). 0 API call.
 
+## 14o. Research OS chạy thật lần đầu — URL đích danh + tách domain + lọc ngày cũ (2026-08-06 → 07)
+
+Cả arc từ commit `8b36845` → `f6599a0`. Điểm chung của mọi lỗi trong mục này: **mỗi lớp đều trả về "một cái gì đó", nên không lớp nào trông hỏng** — hệ thống chạy đủ chu kỳ, ghi note vào vault, sinh proposal, mà nội dung thì rỗng.
+
+**1. Chu kỳ nghiên cứu tự động + collector URL đích danh.** `run_research_cycle` đọc `config/projects/venho_hotel/research/research_questions.yaml`: domain có `queries:` → Tavily Search (quét rộng); domain có `urls:` → `collectors/tavily_extract.py` (đọc đúng trang Harry đưa). Kết quả → R0 source note + R2 synthesis trong vault → `ProposedFactStore` `pending_approval` → Harry duyệt trên VenHo OS. **DoD #13 giữ nguyên:** không code path nào promote R2→R3 tự động.
+
+**2. Ba lỗi làm đường URL đích danh chưa từng thật sự hoạt động** (phát hiện khi guest_voice đọc 3 trang tốt mà ra 0 proposal):
+- `extract_depth` mặc định `"basic"` → Agoda trả `Failed to fetch url`. Đổi sang `"advanced"`.
+- Cap `MAX_CONTENT_CHARS = 6000` cắt **markdown thô**, mà 60–75% ký tự là cú pháp link/ảnh → 6000 ký tự đầu chỉ toàn nav chrome. Thêm `strip_markdown_noise()` (bỏ `![]()`, giữ text trong `[]()`, bỏ URL trần) **trước** khi cắt, nâng cap → 32000.
+- `_MAX_SNIPPET_CHARS = 1200` trong `extract_facts` cắt tiếp lần hai trước khi Gemini nhìn thấy. Thêm `_MAX_SNIPPET_CHARS_PER_SOURCE = 30000` + tham số `per_source=True` (bật khi domain có `urls` và không có `queries`): mỗi trang đích danh đi **một prompt riêng**, không gộp 4 trang vào một prompt 48k.
+
+**3. Dạng URL không suy đoán được.** Agoda `/vi-vn/` chạy với trang này, hỏng với trang khác; Booking cần `.vi.html` cho Ven Hồ nhưng `.en-us.html` cho An Homestay. YAML có comment "**do not 'normalise' them**" — URL Harry đưa phải giữ nguyên xi.
+
+**4. Tách `competitor` → thêm domain `competitor_rating`.** Phát hiện thật: trang OTA **có điểm đánh giá nhưng không bao giờ có giá** (cả Agoda lẫn Booking render giá client-side theo ngày). Một domain không thể trả lời cả hai câu dưới luật "một câu hỏi trả lời được". `competitor` giữ câu hỏi giá + search queries (cố ý không có `urls`), `competitor_rating` giữ 4 URL đối thủ. Kèm theo: `ResearchDomain` Literal thêm `competitor_rating`, `domains.yaml` thêm cadence biweekly/90 ngày. Test đếm domain đổi 9→10 — chốt chống trôi này bắt đúng việc nó sinh ra để bắt.
+
+**5. Dedupe không phụ thuộc cách đặt tên** (`proposed_fact_store.is_same_finding`). Gemini gọi cùng một con số là `review.overall_rating` lần này, `agoda.customer_rating` lần sau → trùng lặp tràn hàng đợi duyệt. Rule: cùng `(domain, source_uri, value)` **và** tập token của `fact_key` (sau khi bỏ `_KEY_NOISE`) là tập con của nhau. Hai bẫy đã dính rồi sửa: (a) chỉ so `(domain, uri, value)` thì `value_for_money=7.9` bị nuốt vì `cleanliness` cũng 7.9 cùng trang; (b) sau khi thêm `overall` vào noise, `overall_rating` rút về tập rỗng — mà tập rỗng là tập con của mọi thứ → thêm guard `if not tokens_a or not tokens_b: return tokens_a == tokens_b`.
+
+**6. `TrendCandidateStore.reject()` + CLI `venho-growth trend-reject` + nút "Từ chối" trên VenHo OS** (route mới `api/v1/studio/growth/trend-candidates/reject`, mirror của approve). **Cố ý làm khác lời Harry ("bấm Cancel thì xoá luôn"): ghi tombstone `status: rejected`, không xoá dòng** — `merge_new` dedupe theo id, nên dòng bị xoá thật sẽ quay lại ở lần quét Thứ 6 kế tiếp và Harry phải từ chối cùng một lễ hội cũ mỗi tuần. Nhìn từ dashboard là biến mất như nhau. Panel cũng lọc luôn 17 candidate do brand-safety tự loại.
+
+**7. Lọc ngày cũ ở `scan_trends` (2026-08-07).** Luật `is_stale_dated` trước chỉ nối vào fact proposal của `local_events`, nên Trend Radar tích Lễ hội Sen 26-28/6/2026, bài Trung thu 2024, trang tin có headline mới nhất 2021 — tất cả brand-safe, điểm cao, chờ Harry từ chối tay hàng tuần. **Gốc rễ không nằm ở chỗ nối dây mà ở bộ đọc ngày:** dạng tiếng Việt thật hoặc không có năm (`ngày 26-28/6`) hoặc viết chữ (`17 Tháng Mười Một 2021`) → `dates_in` khớp 0 → không gì trông cũ. Bổ sung: khoảng ngày `dd-dd/mm[/yyyy]`, `ngày dd/mm` (**bắt buộc có chữ "ngày"** — nếu không `8/10` trong đoạn review khách sạn thành ngày 8/10), tháng viết chữ + tháng số `dd tháng M năm yyyy`. Ngày thiếu năm quy về năm **gần hôm nay nhất** (đọc tháng 8/2026 thì `26/6` = 2026, đã qua). **Tháng trần vẫn là mùa, không phải ngày** — `"Tháng 10 đến tháng 2"` phải giữ nguyên non-stale, có test riêng. `scan_trends(..., today=)` nhận `today` inject được; đọc cả `title` lẫn `snippet` (tiêu đề hiếm khi tự ghi ngày); brand-safety vẫn được báo trước `stale_dated` khi một candidate dính cả hai.
+
+**Backfill + xung đột với quyết định của người.** Lọc chỉ chạy lúc quét, mà `merge_new` bỏ qua id đã có → 3 dòng cũ sẽ nằm mãi. Chạy backfill một lần. Trong lúc đó Harry duyệt trên dashboard đúng một bài mà backfill vừa loại (Lễ hội Sen đã kết thúc) → rebase xong **khôi phục lại approval của Harry**: quyết định của người thắng bộ lọc tự động, không phải ngược lại. Đã báo Harry để tự quyết.
+
+**Giới hạn thật, không phải sót:** bài *"Cuối tuần này ghé hồ Tây trải nghiệm Lễ hội sen"* không ghi ngày nào trong toàn bộ nội dung → bộ lọc ngày không thể bắt. Vẫn cần mắt người ở khâu duyệt.
+
+**Verify:** `PYTHONPATH=. pytest -q` → **834 passed**. 0 API call. `npx tsc --noEmit` sạch bên `venho-os`.
+
 ## 14. Task Closing Protocol
 
 Khi người dùng nói **"kết thúc task"**, Codex phải tự động:
