@@ -1,6 +1,14 @@
 # VENHO AI STUDIO — Task Status
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-08-07 (Research OS chạy thật + lọc ngày cũ cho Trend Radar — xem mục ngay dưới) · **Tests:** 834/834 pass · 0 API call trong test
+**Cập nhật:** 2026-08-07 (Research OS/Trend Radar audit closeout) · **Tests:** 834/834 pass · 0 API call trong test
+
+### Audit closeout — Research OS/Trend Radar (2026-08-07)
+
+**Status: CLOSED**
+
+- [x] Architecture boundary clean: Research chỉ R0/R2 + `pending_approval`; M04 không viết content; M10 không có DB riêng; publish giữ tại M07 sau human approval.
+- [x] Studio: `834/834` pass, 0 API call. VenHo OS: `150/150` pass; `npx tsc --noEmit` pass.
+- [x] Đã dọn cache/log/tmp không track; không đụng docs/config/data JSON.
 
 ### Research OS chạy thật lần đầu + Trend Radar lọc ngày cũ (2026-08-06 → 07)
 

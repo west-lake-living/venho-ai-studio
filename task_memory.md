@@ -1,6 +1,6 @@
 # VENHO AI STUDIO — Task Memory
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-08-05 (Growth Agent v3.1 — 6 hạng mục còn lại từ audit trước: Retry UI, SQLite/PublishingSlot, HMAC callback quyết định, claim/alignment re-check, Trend Radar thật + đổi classifier Claude→Gemini Flash, Research OS 9 domain, xem mục 14g) · **Đọc bởi:** AI Engine, Claude Code sessions
+**Cập nhật:** 2026-08-07 (Growth Agent Research OS/Trend Radar audit closeout, xem mục 14p) · **Đọc bởi:** AI Engine, Claude Code sessions
 
 ---
 
@@ -1144,6 +1144,13 @@ Cả arc từ commit `8b36845` → `f6599a0`. Điểm chung của mọi lỗi tr
 **Giới hạn thật, không phải sót:** bài *"Cuối tuần này ghé hồ Tây trải nghiệm Lễ hội sen"* không ghi ngày nào trong toàn bộ nội dung → bộ lọc ngày không thể bắt. Vẫn cần mắt người ở khâu duyệt.
 
 **Verify:** `PYTHONPATH=. pytest -q` → **834 passed**. 0 API call. `npx tsc --noEmit` sạch bên `venho-os`.
+
+## 14p. Audit closeout — Research OS/Trend Radar (2026-08-07)
+
+- **Architecture:** audit toàn bộ arc `8b36845`→`f6599a0` và các route UI tương ứng trong `venho-os`. `run_research_cycle` chỉ ghi R0/R2 và proposal `pending_approval`; không có đường tự R2/R2-T→R3. M04 không tự sinh content; M10 chỉ đọc/đồng bộ artifact và gọi CLI có policy, không có DB riêng; publish vẫn thuộc M07 sau quyết định người duyệt.
+- **Data contract cần nhớ:** proposal tiếp tục là JSON artifact id-keyed ở `data/projects/{project}/research/proposed_facts.json`, local decision thắng khi git-sync conflict. Trend reject là tombstone `status: rejected`, không được xoá record vì scan sau sẽ re-propose. `competitor_rating` là domain riêng (biweekly, expiry 90 ngày), tách khỏi `competitor` pricing.
+- **Verification closeout:** `PYTHONPATH=. /usr/bin/python3 -m pytest -q` → **834/834 pass**, 0 API call; `venho-os: npm test -- --run` → **150/150 pass**; `npx tsc --noEmit` pass.
+- **Cleanup:** xoá cache/dev artifacts không track (`__pycache__`, `.pytest_cache`, `.DS_Store`, `.log`, `.tmp`); không xoá docs/config hay JSON trong `data/`/knowledge stores. Không phát hiện unused import trong Python thay đổi (trừ `from __future__ import annotations`).
 
 ## 14. Task Closing Protocol
 
