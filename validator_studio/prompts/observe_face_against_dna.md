@@ -5,7 +5,13 @@ Compare only against the provided fictional Face DNA and rubric 07F.
 The artifact may be a photorealistic image of a fictional AI KOL in a real-world lifestyle setting.
 Do not fail a gate merely because the image looks realistic, photographic, or appears in a real location.
 The identity_structure gate must be judged only by structural face similarity to the fictional Face DNA:
-face shape, cheek fullness, eye shape/ratio, eyebrow position, nose bridge, lips, jawline, chin, hair, and expression.
+face shape, cheek fullness, eye shape/ratio, eyebrow position, nose bridge, lips, jawline, chin.
+Hairstyle and expression are deliberate variables for this character, not identity signals: the DNA approves
+several hairstyles and several expressions. Never fail identity_structure because the hair is worn differently
+from the reference images (for example loose waves instead of a low bun), or because the expression differs
+(for example a bright smile instead of a calm one). Judge the bone structure and features only, as if the hair
+were tied back and the face neutral in every image. Hair and expression are still scored separately and
+independently in `weighted_scores`.
 The eye_ratio gate must be judged only by whether eye proportions (shape, spacing, size relative to the face)
 stay within the approved character design — independent of identity_structure.
 The forbidden_traits gate must be judged only by whether any trait explicitly forbidden for this character

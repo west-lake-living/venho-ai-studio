@@ -1,0 +1,56 @@
+# Ven Hồ Hotel — Outdoor Spaces — Rooftop Terrace, 2026
+# Scenario-specific overlay, merged in-memory only at validate time via
+# validator_studio/image_validator.py::_apply_scenario_overlay (does NOT touch
+# the general outside.overrides.yaml, does NOT rewrite the persisted DNA file).
+# Source of truth for exact wording: venho-os/src/lib/studio/constants.ts
+# ENV_BLOCKS["Rooftop Ven Hồ Hotel"].
+# This file is curated by humans. Never overwrite via DNA regeneration.
+#
+# WHY THIS EXISTS (2026-08-07):
+# The `outside` subject merges rooftop_terrace, balcony, entrance_area and
+# street_level_exterior into one schema (space_type is a VARIABLE). Its INVARIANTs
+# were machine-derived from 14 mixed images, so street-level facts leaked in and
+# became "always true" for rooftop shots too. A verified rooftop image scored only
+# 89.44/revise, and the sole penalty was `street_trees_visible` — a fact that can
+# never hold five floors up. The same run showed `sky_condition: clear blue sky`
+# and `lighting_condition: natural daylight` fighting a "Hoàng hôn" (sunset) brief.
+# These overrides scope those three keys to what is actually invariant on a rooftop.
+
+# MUST be restated here. apply_overlay() rebuilds `forbidden` as
+# (curated rules from THIS overlay) + (machine-observed rules), so an overlay that omits
+# `forbidden` silently drops every curated policy rule from outside.overrides.yaml and lets
+# machine-observed junk take their place. Measured 2026-08-07: omitting this block flipped the
+# forbidden category 100 → 0 on a good rooftop image, because the observed list contains the
+# entry "lake view" — which is the hotel's entire selling point, not a prohibition.
+# Keep in sync with outside.overrides.yaml.
+forbidden:
+  - "no infinity pool or resort-style pool deck — hotel has no pool"
+  - "no rooftop bar with full commercial bar setup"
+  - "no luxury resort terrace furniture (cabanas, daybeds)"
+  - "no city high-rise skyline — West Lake area is low-rise"
+  - "no generic rooftop lounge aesthetic — this is a simple urban terrace"
+  - "no manicured hotel garden — space is compact and urban"
+
+allowed_imperfections:
+  - "Hanoi haze over lake view acceptable and authentic"
+  - "weathered tiles or concrete surface acceptable"
+  - "visible neighboring rooftops acceptable"
+  - "natural sky variation (clouds, smog) acceptable"
+  - "modest outdoor furniture showing wear acceptable"
+
+wording_overrides:
+  street_trees_visible: >-
+    no street trees at rooftop level; tree canopies may be visible far below,
+    along the far shore, or across the lake — their absence is correct and expected
+  sky_condition: >-
+    large open sky whose condition follows the requested time of day — clear blue,
+    soft Hanoi haze, golden hour, and sunset are all authentic and equally valid
+  lighting_condition: >-
+    natural outdoor light matching the requested time of day, including golden hour,
+    sunset and blue hour — not restricted to midday daylight
+
+notes:
+  - "Rooftop terrace of a 5-floor boutique hotel — terracotta floor tiles, black metal railing with simple circular details on the top bar."
+  - "Elevation is the point: West Lake spread out below, modest low/mid-rise Hanoi skyline across the water, large open sky."
+  - "Time of day is a VARIABLE driven by the brief, never an invariant — sunset over West Lake is a core brand scene."
+  - "Reference photo: venho-social-content-agent/assets/Rooftop-railing.png"
