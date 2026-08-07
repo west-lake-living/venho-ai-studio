@@ -867,5 +867,48 @@
     "rejection_reason": "passed",
     "verified_by_human": false,
     "scanned_at": "2026-08-06T13:33:34.529267+00:00"
+  },
+  {
+    "id": "tavily-https://www.youtube.com/watch?v=ah-WAC_6zFk",
+    "title": "Sen Tây Hồ: Tinh hoa văn hoá Việt | Văn hoá và sự kiện",
+    "source_uri": "https://www.youtube.com/watch?v=ah-WAC_6zFk",
+    "snippet": "của đồng bào dân tộc Tày nói riêng Cũng như đồng bào các dân tộc Việt Nam hình ảnh tinh tế của cây đàn tính tượng trưng cho nét đẹp văn hóa truyền thống của đồng bào dân tộc Tà cũng đã khép lại chương trình Văn hóa Sự kiện tuần này của đài Hà Nội hãy đồng hành và đón xem chương trình của chúng tôi vào lúc 9:30 sáng thứ Bảy hàng tuần quý vị có thể Xem lại chương trình trên trang web Hanoi online.vn hoặc xem lại trên nền tảng hànoi on Còn bây giờ Xin kính chào tạm biệt quý vị for [...] Hoa sen trong tâm thức của người Việt là biểu tượng của sự thuần khiết, trong sáng, được xem là quốc hoa Việt Nam, tượng trưng cho khí phách, bản sắc tâm hồn Việt. Hoa sen đã đi vào lòng người, đi vào cuộc sống và văn hóa của người Việt. Đặc biệt, Sen Tây Hồ chính niềm tự hào của người dân Tây Hồ nói riêng và Thủ đô Hà Nội nói chung. Gìn giữ và phát triển, lan tỏa nét đẹp, giá trị của sen Tây Hồ là nội dung được chuyển tải tới quý vị và các bạn trong chuyên mục Văn hoá và sự kiện tuần này. [...] chúng tôi sẽ tuyên truyền để động viên những người dân làm nghề từ nghề chồng cũng như quá trình để ướp làm trà thì làm sao để phải phát huy một cách tốt nhất trên cơ sở là có sự hỗ trợ của nhà nước của các cơ quan tổ chức để đồng hành trong cái việc là quá trình trồng này quá trình Vào quản và quá trình để x để duy trì và phát triển đặc biệt là lễ hội Hà Nội 2024 một sự kiện văn hóa đặc sắc của thủ đô được tổ chức Nhằm quảng bá tôn vinh những nét đẹp giá trị văn hóa của Thăng Long Hà Nội của",
+    "relevance_hint": 0.74273956,
+    "geographic": "westlake",
+    "thematic": "lifestyle_culture",
+    "actionability": "direct",
+    "type": "cultural_event",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "culture_festival_positive",
+      "food_culinary"
+    ],
+    "relevance_score": 0.6,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "verified_by_human": false,
+    "scanned_at": "2026-08-07T03:46:05.336638+00:00"
+  },
+  {
+    "id": "tavily-https://atravel.vn/thung-lung-hoa-ho-tay",
+    "title": "Thung lũng hoa Hồ Tây - Thiên đường sống ảo check in",
+    "source_uri": "https://atravel.vn/thung-lung-hoa-ho-tay",
+    "snippet": "Thung lũng hoa Hồ Tây là một trong những địa điểm du lịch nổi bật giữa lòng Hà Nội, nổi tiếng với không gian hoa ngập tràn sắc màu. Mỗi mùa, nơi đây lại khoác ...Read more",
+    "relevance_hint": 0.62303346,
+    "geographic": "westlake",
+    "thematic": "travel_stay",
+    "actionability": "adjacent",
+    "type": "seasonal_nature",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "seasonal_weather_nature"
+    ],
+    "relevance_score": 0.6,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "verified_by_human": false,
+    "scanned_at": "2026-08-07T03:46:05.336638+00:00"
   }
 ]
