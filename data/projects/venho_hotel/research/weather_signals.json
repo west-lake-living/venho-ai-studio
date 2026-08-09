@@ -1,24 +1,6 @@
 {
-  "generated_at": "2026-08-08T23:32:21.263224",
+  "generated_at": "2026-08-09T23:34:52.534334",
   "signals": [
-    {
-      "rs_id": "RS-weather-2026-08-09",
-      "type": "weather",
-      "domain": "weather_signal",
-      "evidence_level": "R2-T",
-      "forecast_date": "2026-08-09",
-      "condition": "rain",
-      "temperature_range": [
-        27.2,
-        35.1
-      ],
-      "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
-      "matching_scenario_keys": [
-        "venho_lobby_cozy"
-      ],
-      "expires_at": "2026-08-10T23:32:21.257733",
-      "fact_key": null
-    },
     {
       "rs_id": "RS-weather-2026-08-10",
       "type": "weather",
@@ -27,14 +9,14 @@
       "forecast_date": "2026-08-10",
       "condition": "rain",
       "temperature_range": [
-        27.7,
-        33.9
+        27.1,
+        34.1
       ],
       "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
       "matching_scenario_keys": [
         "venho_lobby_cozy"
       ],
-      "expires_at": "2026-08-10T23:32:21.257733",
+      "expires_at": "2026-08-11T23:34:52.530582",
       "fact_key": null
     },
     {
@@ -45,14 +27,14 @@
       "forecast_date": "2026-08-11",
       "condition": "rain",
       "temperature_range": [
-        27.9,
-        35.1
+        28.3,
+        34.3
       ],
       "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
       "matching_scenario_keys": [
         "venho_lobby_cozy"
       ],
-      "expires_at": "2026-08-10T23:32:21.257733",
+      "expires_at": "2026-08-11T23:34:52.530582",
       "fact_key": null
     },
     {
@@ -63,14 +45,14 @@
       "forecast_date": "2026-08-12",
       "condition": "rain",
       "temperature_range": [
-        27.6,
-        34.2
+        27.7,
+        35.0
       ],
       "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
       "matching_scenario_keys": [
         "venho_lobby_cozy"
       ],
-      "expires_at": "2026-08-10T23:32:21.257733",
+      "expires_at": "2026-08-11T23:34:52.530582",
       "fact_key": null
     },
     {
@@ -82,13 +64,13 @@
       "condition": "rain",
       "temperature_range": [
         27.3,
-        35.3
+        34.2
       ],
       "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
       "matching_scenario_keys": [
         "venho_lobby_cozy"
       ],
-      "expires_at": "2026-08-10T23:32:21.257733",
+      "expires_at": "2026-08-11T23:34:52.530582",
       "fact_key": null
     },
     {
@@ -99,14 +81,14 @@
       "forecast_date": "2026-08-14",
       "condition": "rain",
       "temperature_range": [
-        27.3,
-        34.0
+        28.3,
+        34.6
       ],
       "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
       "matching_scenario_keys": [
         "venho_lobby_cozy"
       ],
-      "expires_at": "2026-08-10T23:32:21.257733",
+      "expires_at": "2026-08-11T23:34:52.530582",
       "fact_key": null
     },
     {
@@ -115,16 +97,34 @@
       "domain": "weather_signal",
       "evidence_level": "R2-T",
       "forecast_date": "2026-08-15",
-      "condition": "heat",
+      "condition": "rain",
       "temperature_range": [
-        27.1,
-        33.6
+        27.6,
+        34.8
       ],
-      "visual_opportunity": "Nắng gắt — bóng râm rooftop, đồ uống mát",
+      "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
       "matching_scenario_keys": [
-        "venho_rooftop_shade"
+        "venho_lobby_cozy"
       ],
-      "expires_at": "2026-08-10T23:32:21.257733",
+      "expires_at": "2026-08-11T23:34:52.530582",
+      "fact_key": null
+    },
+    {
+      "rs_id": "RS-weather-2026-08-16",
+      "type": "weather",
+      "domain": "weather_signal",
+      "evidence_level": "R2-T",
+      "forecast_date": "2026-08-16",
+      "condition": "rain",
+      "temperature_range": [
+        27.8,
+        33.7
+      ],
+      "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
+      "matching_scenario_keys": [
+        "venho_lobby_cozy"
+      ],
+      "expires_at": "2026-08-11T23:34:52.530582",
       "fact_key": null
     }
   ]
