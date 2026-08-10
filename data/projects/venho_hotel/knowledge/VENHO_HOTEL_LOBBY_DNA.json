@@ -1,0 +1,266 @@
+{
+  "contract_version": "1.1",
+  "mode": "B",
+  "project": "venho_hotel",
+  "subject": "lobby",
+  "dna_version": "1.1",
+  "schema_id": "venho_hotel.lobby",
+  "schema_version": "1.0",
+  "prompt_version": "1.1",
+  "provider": "claude",
+  "model": "claude-sonnet-4-6",
+  "generated_at": "2026-07-07T16:31:18.690623",
+  "source_images": [
+    "703d1ff74db85914e778534f30ca235672171a562a5a9c519c7a911160b4f823",
+    "2156a3250f8f206b4ddb27d61b9cc50aef4d7784c735d9825f28ac2660491b14",
+    "66ccee6634b7f9fc230e087fe5ec7c31bb19ce6be410e33d523deb4c88cd9aa0",
+    "9c456b5148f7272d2259b699491bdb7f24ca8cce9e73dd771ca906f0c3d4c503",
+    "db22898aaf744a07afcad78f4e6802eb41fa26617bdfeb26a5c2a4e3cb661e63",
+    "6ac57b854fdd5b69f73c3e80fca483dfdd6b8d13783e472cab15f551c01fc874"
+  ],
+  "invariant": [
+    {
+      "key": "ceiling_treatment",
+      "value": "flat_white",
+      "value_source": "machine",
+      "evidence_count": 6,
+      "coverage": 1.0,
+      "consistency": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "key": "cleanliness",
+      "value": "clean",
+      "value_source": "machine",
+      "evidence_count": 6,
+      "coverage": 1.0,
+      "consistency": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "key": "wall_artwork",
+      "value": "present",
+      "value_source": "machine",
+      "evidence_count": 6,
+      "coverage": 1.0,
+      "consistency": 0.8333,
+      "confidence": 1.0
+    },
+    {
+      "key": "ambient_lighting",
+      "value": "neutral",
+      "value_source": "machine",
+      "evidence_count": 6,
+      "coverage": 1.0,
+      "consistency": 0.8333,
+      "confidence": 1.0
+    },
+    {
+      "key": "hotel_signage",
+      "value": "logo_visible",
+      "value_source": "machine",
+      "evidence_count": 5,
+      "coverage": 0.8333,
+      "consistency": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "key": "floor_material",
+      "value": "tile",
+      "value_source": "machine",
+      "evidence_count": 6,
+      "coverage": 1.0,
+      "consistency": 0.8333,
+      "confidence": 1.0
+    },
+    {
+      "key": "floor_color",
+      "value": "brown with circular patterns",
+      "value_source": "machine",
+      "evidence_count": 6,
+      "coverage": 1.0,
+      "consistency": 0.8333,
+      "confidence": 1.0
+    },
+    {
+      "key": "entrance_door",
+      "value": "glass_door",
+      "value_source": "machine",
+      "evidence_count": 4,
+      "coverage": 0.6667,
+      "consistency": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "key": "hotel_tier_impression",
+      "value": "mid_range",
+      "value_source": "machine",
+      "evidence_count": 6,
+      "coverage": 1.0,
+      "consistency": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "key": "furniture_wood_tone",
+      "value": "dark_reddish_brown",
+      "value_source": "machine",
+      "evidence_count": 4,
+      "coverage": 0.6667,
+      "consistency": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "key": "staircase_visible",
+      "value": "False",
+      "value_source": "machine",
+      "evidence_count": 6,
+      "coverage": 1.0,
+      "consistency": 0.8333,
+      "confidence": 1.0
+    }
+  ],
+  "variable": [
+    {
+      "key": "wall_treatment",
+      "value_range": [
+        "painted_smooth",
+        "tile"
+      ]
+    },
+    {
+      "key": "pendant_or_chandelier",
+      "value_range": [
+        "ceiling_recessed",
+        "chandelier",
+        "none",
+        "pendant_lights"
+      ]
+    },
+    {
+      "key": "style_category",
+      "value_range": [
+        "generic_hotel",
+        "traditional_asian"
+      ]
+    },
+    {
+      "key": "waiting_seating",
+      "value_range": [
+        "chairs",
+        "none"
+      ]
+    },
+    {
+      "key": "key_cabinet",
+      "value_range": [
+        "present"
+      ]
+    },
+    {
+      "key": "natural_light",
+      "value_range": [
+        "high",
+        "low",
+        "moderate",
+        "none"
+      ]
+    },
+    {
+      "key": "scale",
+      "value_range": [
+        "compact",
+        "medium"
+      ]
+    },
+    {
+      "key": "reception_desk",
+      "value_range": [
+        "present_wood"
+      ]
+    },
+    {
+      "key": "plants",
+      "value_range": [
+        "none",
+        "present_multiple",
+        "present_single"
+      ]
+    }
+  ],
+  "allowed_imperfections": [
+    {
+      "value": "slight wear on reception desk surface acceptable",
+      "source": "curated"
+    },
+    {
+      "value": "minor asymmetry in decorative arrangement acceptable",
+      "source": "curated"
+    },
+    {
+      "value": "natural lighting variation across time of day acceptable",
+      "source": "curated"
+    },
+    {
+      "value": "small personal items on reception counter acceptable — authentic, not sterile",
+      "source": "curated"
+    }
+  ],
+  "forbidden": [
+    {
+      "rule": "no marble floor — actual flooring is tile or stone, not polished marble",
+      "source": "curated"
+    },
+    {
+      "rule": "no luxury hotel chandeliers — lighting is warm and functional, not grand",
+      "source": "curated"
+    },
+    {
+      "rule": "no resort-scale lobby — this is a compact boutique reception, not a 5-star atrium",
+      "source": "curated"
+    },
+    {
+      "rule": "no modern minimalist glass-and-steel design",
+      "source": "curated"
+    },
+    {
+      "rule": "no generic international hotel style",
+      "source": "curated"
+    },
+    {
+      "rule": "no over-staged decorative props — keep it authentic Vietnamese boutique",
+      "source": "curated"
+    },
+    {
+      "rule": "no marble floor",
+      "source": "observed"
+    },
+    {
+      "rule": "no luxury hotel chandeliers",
+      "source": "observed"
+    },
+    {
+      "rule": "no resort-scale lobby",
+      "source": "observed"
+    },
+    {
+      "rule": "no Dubai-style luxury interior",
+      "source": "observed"
+    },
+    {
+      "rule": "no marble grand staircase",
+      "source": "observed"
+    }
+  ],
+  "evidence": {
+    "total_images": 6,
+    "weak_features": []
+  },
+  "future_capture_notes": [],
+  "curator_notes": [
+    "Scale: boutique 12-room hotel — reception is compact and intimate",
+    "Character: warm, personal, traditional Vietnamese hospitality",
+    "Lighting: warm ambient — NOT cool corporate fluorescent",
+    "Palette reference: warm neutral tones matching room DNA",
+    "Authenticity principle: lived-in warmth over sterile hotel polish"
+  ]
+}
