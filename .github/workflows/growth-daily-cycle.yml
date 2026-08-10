@@ -83,10 +83,12 @@ jobs:
       # regenerating (and re-billing) the same week.
       - name: Commit generated content and registry state
         run: |
+          venho-growth slots --weeks-ahead 2 > data/projects/venho_hotel/growth/slots_snapshot.json
           git config user.name "venho-growth-bot"
           git config user.email "venho-growth-bot@users.noreply.github.com"
           git add -f data/projects/*/growth/rotation_state.json \
                      data/projects/*/growth/growth.db \
+                     data/projects/*/growth/slots_snapshot.json \
                      data/projects/*/growth/evergreen_pool.json \
                      data/projects/*/publishing/publication_registry.json \
                      data/projects/*/content/**/*.json \

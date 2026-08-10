@@ -18,6 +18,7 @@ def test_publish_scheduler_is_independent_from_weekly_approval() -> None:
 
     assert 'cron: "0 2 * * 1,3,5,6"' in workflow
     assert "venho-growth dispatch-due" in workflow
+    assert "slots_snapshot.json" in workflow
     assert "approve-week" not in workflow
     assert "MAKE_GROWTH_WEBHOOK_URL" in workflow
 
