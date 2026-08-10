@@ -691,10 +691,12 @@
       "seasonal_weather_nature"
     ],
     "relevance_score": 0.6,
-    "status": "needs_human_approval",
+    "status": "rejected",
     "rejection_reason": null,
     "verified_by_human": false,
-    "scanned_at": "2026-08-06T13:33:34.529267+00:00"
+    "scanned_at": "2026-08-06T13:33:34.529267+00:00",
+    "rejected_by": "hpham1504@gmail.com",
+    "rejected_at": "2026-08-10T04:03:36.118316+00:00"
   },
   {
     "id": "tavily-https://www.facebook.com/100064582395910/videos/thung-l%C5%A9ng-hoa-h%E1%BB%93-t%C3%A2y/719842358417301",
