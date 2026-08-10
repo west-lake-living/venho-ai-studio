@@ -3507,13 +3507,13 @@
       "content_package_id": "89dc1873-67a2-4801-b7d5-51d1df3955f6",
       "idempotency_key": "384041153decee18fb7a0db5e06633719bba6b24ea77566f038947c722446fa4",
       "platform": "facebook",
-      "status": "GATEWAY_ERROR",
-      "gateway_status": "GATEWAY_ERROR",
+      "status": "SHADOW_HELD",
+      "gateway_status": "SHADOW_HELD",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-04T12:32:14.721683+00:00",
-      "updated_at": "2026-08-06T13:35:47.361052+00:00",
+      "updated_at": "2026-08-10T08:23:07.625394+00:00",
       "content": {
         "title": "Một Hà Nội thật khẽ bên Hồ Tây",
         "text": "Hà Nội lặng hơn bên Hồ Tây.\n\nỞ Hồ Tây, thành phố dường như dịu lại. Mặt hồ mở rộng trước mắt, phẳng lặng trong sắc xanh ngọc trầm; tầm nhìn thoáng xa đến những đường nét thành phố phía bên kia bờ. Ánh sáng mềm rơi qua nền trời lưa thưa mây, gió nhẹ đi qua hàng cây vừa đủ xanh, để mọi thứ chậm hơn một nhịp.\n\nĐi dọc ven hồ, bạn có thể không cần một lịch trình dày đặc: chỉ là một buổi cà phê, một cuộc hẹn yên tĩnh, vài phút ngắm hoàng hôn hoặc trở về sau ngày làm việc tại Hà Nội. Nơi đây có sự bình yên rất đời thường — không tách khỏi phố thị, nhưng đủ rộng để tâm trí được nghỉ.\n\nVen Hồ Hotel là một điểm dừng chân vừa vặn cho những ai muốn ở gần nhịp sống ấy: thuận tiện để khám phá Hồ Tây, và đủ nhẹ nhàng để mỗi buổi sáng hay chiều muộn đều bắt đầu bằng cảm giác thư thái.\n\nNếu bạn đang lên kế hoạch cho một kỳ nghỉ Hà Nội thật yên, hãy nhắn tin cho Ven Hồ Hotel hoặc kiểm tra tình trạng phòng khi thuận tiện.\n\n#VenHoHotel #HoTay #KhamPhaHoTay #HaNoiThuThai #StayNearWestLake #QuietHanoiStay",
@@ -3561,7 +3561,9 @@
         "checksum": "df44549c1001cca25d40c439f273475946fbafad2949715a825c9587e929214a"
       },
       "gateway_error": "BundleValidationError at Make.com: missing required 'url' -- growth was pointed at the legacy VenHoSocialManager scenario and sent no image_url. Recorded GATEWAY_ACCEPTED in error; corrected 2026-08-06.",
-      "slot_id": "slot-2026-08-12-wednesday"
+      "slot_id": "slot-2026-08-12-wednesday",
+      "rollout_stage": "shadow",
+      "shadow_held_reason": "rollout stage is shadow; dispatch withheld"
     },
     {
       "publication_id": "pub-wednesday-instagram-0d823b0f",
