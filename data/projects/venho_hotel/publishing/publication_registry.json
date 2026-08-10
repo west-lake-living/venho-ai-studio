@@ -4050,13 +4050,13 @@
       "content_package_id": "082e81a7-5cb7-49e0-b375-1add50ea373f",
       "idempotency_key": "f8a06b15e8883dd0bb4001e26e3431f831b3e726fe0318c8dd91961cf6aed37f",
       "platform": "instagram",
-      "status": "GATEWAY_ERROR",
-      "gateway_status": "GATEWAY_ERROR",
+      "status": "SHADOW_HELD",
+      "gateway_status": "SHADOW_HELD",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-04T12:44:29.161302+00:00",
-      "updated_at": "2026-08-06T13:35:47.377913+00:00",
+      "updated_at": "2026-08-10T04:03:37.833308+00:00",
       "content": {
         "title": "Một sáng cuối tuần thật chậm bên Hồ Tây",
         "text": "Cuối tuần này, hãy đi chậm một chút bên Hồ Tây.\n\nKhông có sự kiện nào cần vội vã. Chỉ cần một buổi sáng trong trẻo, ánh nắng tự nhiên trải nhẹ trên mặt hồ và những hàng cây lâu năm đổ bóng xuống lối đi.\n\nMột vòng dạo bộ quanh Hồ Tây luôn có cách làm người ta dịu lại. Bạn có thể bắt đầu bằng vài bước chân ven hồ, nhìn mặt nước xanh xám lấp lánh dưới bầu trời trong, rồi dừng lại để ngắm nhịp sống Hà Nội đi qua: người chạy bộ, xe đạp chậm rãi, vài quán cà phê mở cửa sớm, và xa hơn là đường nét thành phố hiện lên vừa quen vừa mới.\n\nKhu vực quanh Ven Hồ Hotel giữ được cảm giác gọn gàng, thoáng đãng và dễ chịu. Từ không gian ngoài trời đơn giản, không bày biện cầu kỳ, bạn có thể cảm nhận rõ tinh thần Tây Hồ: đủ gần trung tâm để thuận tiện, đủ yên để nghỉ ngơi.\n\nSau một buổi đi bộ, hãy quay về tắm nắng nhẹ, đọc vài trang sách hoặc chuẩn bị cho một ngày khám phá Hà Nội theo nhịp riêng của bạn. Ven Hồ Hotel không phải nơi để phô trương, mà là một điểm dừng ấm áp, tinh tế, giúp bạn bắt đầu và kết thúc cuối tuần gần Hồ Tây thật nhẹ nhàng.\n\nNếu bạn đang lên kế hoạch nghỉ gần Hồ Tây, hãy nhắn Ven Hồ Hotel hoặc kiểm tra tình trạng phòng để chọn thời điểm phù hợp nhé.\n\n#VenHoHotel #HoTay #TayHoWeekend #CuoiTuanOHanoi #WestLakeHanoi #HanoiStay #DiChamOHanoi",
@@ -4105,7 +4105,9 @@
         "checksum": "338698f165e6c82b5a12c496ed6c7461614f5529e26b5e3cf0f55052e5868802"
       },
       "gateway_error": "BundleValidationError at Make.com: missing required 'url' -- growth was pointed at the legacy VenHoSocialManager scenario and sent no image_url. Recorded GATEWAY_ACCEPTED in error; corrected 2026-08-06.",
-      "slot_id": "slot-2026-08-08-saturday"
+      "slot_id": "slot-2026-08-08-saturday",
+      "rollout_stage": "shadow",
+      "shadow_held_reason": "rollout stage is shadow; dispatch withheld"
     },
     {
       "publication_id": "pub-saturday-threads-4d61ed7d",
