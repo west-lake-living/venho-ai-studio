@@ -709,10 +709,12 @@
       "hanoi_westlake_local"
     ],
     "relevance_score": 0.6,
-    "status": "needs_human_approval",
+    "status": "rejected",
     "rejection_reason": null,
     "verified_by_human": false,
-    "scanned_at": "2026-08-06T13:33:34.529267+00:00"
+    "scanned_at": "2026-08-06T13:33:34.529267+00:00",
+    "rejected_by": "hpham1504@gmail.com",
+    "rejected_at": "2026-08-10T03:59:54.972732+00:00"
   },
   {
     "id": "tavily-https://www.tiktok.com/@lumhaydi/video/7608923437242912007",
