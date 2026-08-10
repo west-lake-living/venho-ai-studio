@@ -86,9 +86,6 @@ jobs:
           venho-growth slots --weeks-ahead 2 > data/projects/venho_hotel/growth/slots_snapshot.json
           git config user.name "venho-growth-bot"
           git config user.email "venho-growth-bot@users.noreply.github.com"
-          # Rebase before staging: image generation leaves untracked artifacts
-          # in the runner, which make `git pull --rebase` refuse to start.
-          git pull --rebase origin main
           git add -f data/projects/*/growth/rotation_state.json \
                      data/projects/*/growth/growth.db \
                      data/projects/*/growth/slots_snapshot.json \
@@ -98,4 +95,8 @@ jobs:
                      data/projects/*/content/**/*.md \
                      data/projects/*/prompts/**/*.json 2>/dev/null || true
           git diff --cached --quiet || git commit -m "chore: growth agent weekly cycle $(date -u +%Y-%m-%d)"
+          # The weekly cycle modifies tracked registry/SQLite state as well as
+          # creating untracked artifacts. Commit first, then rebase that
+          # checkpoint onto any dashboard approval changes made while it ran.
+          git pull --rebase origin main
           git push
