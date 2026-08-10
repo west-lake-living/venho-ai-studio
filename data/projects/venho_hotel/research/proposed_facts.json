@@ -29,10 +29,11 @@
     "domain": "competitor",
     "question": "Giá phòng một đêm của các khách sạn quanh Hồ Tây hiện ở mức nào?",
     "synthesis_note": "research/synthesis/RS-2026-08-06-competitor-synthesis.md",
-    "status": "pending_approval",
+    "status": "rejected",
     "proposed_at": "2026-08-06T13:58:26.665514+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "hpham1504@gmail.com",
+    "decided_at": "2026-08-10T09:53:40.874432+00:00",
+    "reject_reason": null
   },
   {
     "fact_key": "westlake_hotel.avg_price_usd_tripcom",
