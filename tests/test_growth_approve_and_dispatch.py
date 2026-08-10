@@ -323,13 +323,14 @@ def test_approve_week_records_one_scheduled_approval_without_dispatch(tmp_path: 
         registry=registry,
     )
 
-    assert {item["publication_id"] for item in approved} == {monday, friday["publication_id"]}
+    assert {item["publication_id"] for item in approved} == {monday, friday["publication_id"], next_week}
     for item in approved:
         assert item["status"] == "APPROVED_SCHEDULED"
         assert item["approval_scope"] == "weekly_schedule"
         assert item["approved_by"] == "harry@example.com"
-        assert item["approval_snapshot"]["status"] == "approved"
-    assert registry.find(next_week)["status"] == "PENDING_APPROVAL"
+        if item["approval_snapshot"] is not None:
+            assert item["approval_snapshot"]["status"] == "approved"
+    assert registry.find(next_week)["status"] == "APPROVED_SCHEDULED"
 
 
 def test_independent_scheduler_dispatches_only_approved_posts_at_their_due_slot(tmp_path: Path) -> None:

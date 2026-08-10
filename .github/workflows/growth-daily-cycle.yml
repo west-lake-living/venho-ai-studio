@@ -1,11 +1,11 @@
 name: Growth Agent Weekly Cycle
 
-# Generates the whole week's cadence (Mon/Wed/Fri regular lane + Sat special
-# lane) in one run, once a week, so Harry reviews and approves the full
-# week's drafts together on VENHO OS Dashboard -- same "batch generate, one
+# Generates eight cadence slots across two weeks (Mon/Wed/Fri regular lane +
+# Sat special lane), so Harry reviews and approves the full two-week batch
+# together on VENHO OS Dashboard -- same "batch generate, one
 # approval session" pattern the old VenHoSocialManager topic_schedule.json
 # used, instead of one cadence day's draft trickling in per cron tick.
-# Attempts Monday 08:00, 10:00 and 12:00 Asia/Ho_Chi_Minh. GitHub Actions
+# Attempts Sunday 20:00 and 22:00 Asia/Ho_Chi_Minh. GitHub Actions
 # schedules are best-effort; retries recover a failed or delayed first attempt
 # without needing an operator to generate the approval queue manually.
 # This job only generates drafts and queues them PENDING_APPROVAL in
@@ -13,9 +13,8 @@ name: Growth Agent Weekly Cycle
 # dispatched later by the independent growth-publish-scheduler workflow.
 on:
   schedule:
-    - cron: "0 1 * * 1"
-    - cron: "0 3 * * 1"
-    - cron: "0 5 * * 1"
+    - cron: "0 13 * * 0"
+    - cron: "0 15 * * 0"
   workflow_dispatch:
 
 # Without this the default GITHUB_TOKEN is read-only and the "Commit

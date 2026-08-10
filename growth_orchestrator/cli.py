@@ -23,6 +23,7 @@ from growth_orchestrator.application.reconcile_publication import reconcile_publ
 from growth_orchestrator.application.run_blog_pipeline import run_blog_pipeline
 from growth_orchestrator.application.run_content_pipeline import run_content_pipeline
 from growth_orchestrator.application.weekly_cycle import run_weekly_cycle
+from growth_orchestrator.application.replace_rejected import replace_due_rejections, replace_rejected_publication
 from shared.jobs.slot_store import SlotStore
 
 app = typer.Typer(help="Ven Ho Growth Orchestrator")
@@ -79,8 +80,8 @@ def weekly_cycle(
     generate_image: bool = typer.Option(True, "--image/--no-image", help="Set --no-image to skip photo generation (e.g. OPENAI_API_KEY unavailable/invalid)."),
     platforms: list[str] = typer.Option(["facebook", "instagram"], "--platform", help="Required platform(s) for every cadence slot."),
 ) -> None:
-    """Generate a full week's cadence (Mon/Wed/Fri/Sat) in one run and queue
-    all of it PENDING_APPROVAL, so Harry can review/approve the whole week in
+    """Generate eight cadence slots across two weeks and queue
+    all of it PENDING_APPROVAL, so Harry can review/approve both weeks in
     one VENHO OS Dashboard session instead of one cadence day at a time.
 
     Meant to run on a single weekly cron tick (see
@@ -306,6 +307,24 @@ def reject_cmd(
         typer.echo(json.dumps({"ok": False, "error": str(exc)}), err=True)
         raise typer.Exit(code=1)
     typer.echo(json.dumps({"ok": True, "publication": result}, ensure_ascii=False, indent=2))
+
+
+@app.command("replace-rejected")
+def replace_rejected_cmd(
+    publication_id: Optional[str] = typer.Option(None, "--publication-id"),
+    project: str = typer.Option("venho_hotel"),
+) -> None:
+    """Regenerate rejected future-slot drafts; replacements require approval."""
+    try:
+        publications = (
+            [replace_rejected_publication(publication_id, project=project)]
+            if publication_id
+            else replace_due_rejections(project=project)
+        )
+    except (KeyError, ValueError, RuntimeError) as exc:
+        typer.echo(json.dumps({"ok": False, "error": str(exc)}), err=True)
+        raise typer.Exit(code=1)
+    typer.echo(json.dumps({"ok": True, "publications": publications}, ensure_ascii=False, indent=2))
 
 
 @app.command("retry-dispatch")

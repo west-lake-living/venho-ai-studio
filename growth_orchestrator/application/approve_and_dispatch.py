@@ -95,10 +95,12 @@ def approve_week(
     candidates = [
         item
         for item in registry.load()["publications"]
-        if item.get("status") == PENDING_STATUS and _scheduled_week_start(item) == week_start
+        if item.get("status") == PENDING_STATUS
+        and (scheduled_week := _scheduled_week_start(item)) is not None
+        and week_start <= scheduled_week < week_start + timedelta(days=14)
     ]
     if not candidates:
-        raise ValueError(f"no PENDING_APPROVAL publications scheduled for week starting {week_start.isoformat()}")
+        raise ValueError(f"no PENDING_APPROVAL publications scheduled for two-week cycle starting {week_start.isoformat()}")
 
     approved_at = datetime.now(timezone.utc).isoformat()
     updates: list[tuple[str, str, dict]] = []

@@ -50,7 +50,14 @@ WEEKLY_CADENCE_ORDER = ["monday", "wednesday", "friday", "saturday"]
 # Bump the idempotency namespace when the weekly completion contract changes.
 # The old v1 job for 2026-W33 was incorrectly marked SUCCEEDED after its Drive
 # authentication failure, leaving no safe way for the repaired workflow to run.
-WEEKLY_CYCLE_JOB_VERSION = "2"
+WEEKLY_CYCLE_JOB_VERSION = "3"
+FORTNIGHT_ANCHOR_MONDAY = date(2026, 8, 17)
+
+
+def _fortnight_period_start(first_monday: date) -> date:
+    """Stable two-week idempotency bucket for the Sunday generation cron."""
+    period_index = (first_monday - FORTNIGHT_ANCHOR_MONDAY).days // 14
+    return FORTNIGHT_ANCHOR_MONDAY + timedelta(days=period_index * 14)
 
 
 @dataclass
@@ -86,7 +93,7 @@ def run_weekly_cycle(
     job_store: Optional[JobStore] = None,
     start_date: Optional[date] = None,
 ) -> WeeklyCycleResult:
-    """Generate a full week's cadence (Mon/Wed/Fri/Sat) in one run.
+    """Generate eight cadence slots covering two weeks in one run.
 
     Same per-day pipeline as run_daily_cycle -- called once per cadence day
     so a whole week's drafts land PENDING_APPROVAL together, instead of one
@@ -104,7 +111,7 @@ def run_weekly_cycle(
       gets one PublishingSlot per cadence day of `start_date`'s week ensured
       up front, then each run_daily_cycle call fills/misses its own slot.
     - `job_store` (default: real JobStore, same growth.db) makes the whole
-      weekly run idempotent per ISO week: if this ISO week's job already
+    cycle idempotent per two-week period: if this period's job already
       SUCCEEDED (e.g. the workflow was manually re-triggered or GitHub
       retried it), this returns immediately with
       `skipped_already_run=True` and does not regenerate/re-spend budget on
@@ -124,8 +131,9 @@ def run_weekly_cycle(
     job_store = job_store or JobStore(db_path=growth_db)
 
     today = start_date or date.today()
-    iso_year, iso_week, _ = today.isocalendar()
-    week_key = f"{project}-weekly-v{WEEKLY_CYCLE_JOB_VERSION}-{iso_year}-W{iso_week:02d}"
+    first_monday = _next_occurrence("monday", on_or_after=today)
+    period_start = _fortnight_period_start(first_monday)
+    week_key = f"{project}-fortnight-v{WEEKLY_CYCLE_JOB_VERSION}-{period_start.isoformat()}"
     # Stale-job recovery (Phase 5, plan §14 "worker heartbeat / stale-job
     # recovery"): if a previous real run of this exact week's job crashed or
     # was cancelled mid-flight (GitHub Actions timeout/manual cancel) without
@@ -157,7 +165,11 @@ def run_weekly_cycle(
         # is not this call's job to run.
         return WeeklyCycleResult(days=[], skipped_already_run=True)
 
-    day_dates = {day: _next_occurrence(day, on_or_after=today) for day in WEEKLY_CADENCE_ORDER}
+    cadence_runs = [
+        (day, first_monday + timedelta(days=week_offset * 7 + _WEEKDAY_INDEX[day]))
+        for week_offset in range(2)
+        for day in WEEKLY_CADENCE_ORDER
+    ]
     try:
         # The full cadence horizon (14 days = 8 slots), not just the four
         # days this run is about to fill. Ensuring only the current week left
@@ -171,19 +183,19 @@ def run_weekly_cycle(
         # (a policy edit, or a Saturday run reaching next Saturday).
         slot_store.ensure_slots(
             PublishingSlot(
-                slot_id=f"slot-{day_dates[day].isoformat()}-{day}",
-                slot_date=day_dates[day].isoformat(),
+                slot_id=f"slot-{slot_date.isoformat()}-{day}",
+                slot_date=slot_date.isoformat(),
                 slot_type="special" if day == SPECIAL_CADENCE_DAY else "regular",
                 lane="special" if day == SPECIAL_CADENCE_DAY else "regular",
             )
-            for day in WEEKLY_CADENCE_ORDER
+            for day, slot_date in cadence_runs
         )
     except Exception:  # noqa: BLE001 - slot bookkeeping must never block the real content run
         pass
 
     results: list[DailyCycleResult] = []
     try:
-        for day in WEEKLY_CADENCE_ORDER:
+        for day, slot_date in cadence_runs:
             assert day in CADENCE_DAYS
             try:
                 results.append(
@@ -203,7 +215,7 @@ def run_weekly_cycle(
                         image_validation_provider=image_validation_provider,
                         drive_uploader=drive_uploader,
                         slot_store=slot_store,
-                        slot_date=day_dates[day].isoformat(),
+                        slot_date=slot_date.isoformat(),
                     )
                 )
             except Exception as exc:  # noqa: BLE001 - one day's uncaught failure (e.g. topic config error) must not drop the rest of the week's batch

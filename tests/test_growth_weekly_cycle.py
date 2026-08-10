@@ -25,6 +25,12 @@ def test_publish_scheduler_is_independent_from_weekly_approval() -> None:
     assert "MAKE_GROWTH_WEBHOOK_URL" in workflow
 
 
+def test_generation_runs_sunday_evening_for_a_two_week_batch() -> None:
+    workflow = Path(".github/workflows/growth-daily-cycle.yml").read_text(encoding="utf-8")
+    assert 'cron: "0 13 * * 0"' in workflow
+    assert 'cron: "0 15 * * 0"' in workflow
+
+
 def _tmp_data_root(tmp_path: Path) -> Path:
     root = tmp_path / "data" / "projects"
     knowledge_dir = root / "venho_hotel" / "knowledge"
@@ -53,7 +59,7 @@ def test_run_weekly_cycle_one_day_crash_does_not_drop_the_other_days(tmp_path: P
     # The remaining cadence days still run, but the job is retryable instead
     # of silently becoming SUCCEEDED with an incomplete approval queue.
     job_store = JobStore(db_path=data_root / "venho_hotel" / "growth" / "growth.db")
-    assert job_store.get("venho_hotel-weekly-v2-2026-W33")["status"] == "RETRYABLE_FAILED"
+    assert job_store.get("venho_hotel-fortnight-v3-2026-08-03")["status"] == "RETRYABLE_FAILED"
 
 
 def test_run_weekly_cycle_fails_when_a_required_platform_is_missing(tmp_path: Path, monkeypatch) -> None:
@@ -84,6 +90,8 @@ def test_run_weekly_cycle_ensures_slots_for_the_week_before_running(tmp_path: Pa
     assert slot_store.get("slot-2026-08-12-wednesday") is not None
     assert slot_store.get("slot-2026-08-14-friday") is not None
     assert slot_store.get("slot-2026-08-15-saturday") is not None
+    assert slot_store.get("slot-2026-08-17-monday") is not None
+    assert slot_store.get("slot-2026-08-22-saturday") is not None
 
 
 def test_run_weekly_cycle_is_idempotent_per_iso_week(tmp_path: Path, monkeypatch) -> None:
@@ -101,18 +109,18 @@ def test_run_weekly_cycle_is_idempotent_per_iso_week(tmp_path: Path, monkeypatch
     monday = date(2026, 8, 10)
     first = run_weekly_cycle(data_root=data_root, start_date=monday)
     assert first.skipped_already_run is False
-    assert call_count["n"] == len(WEEKLY_CADENCE_ORDER)
+    assert call_count["n"] == 2 * len(WEEKLY_CADENCE_ORDER)
 
     second = run_weekly_cycle(data_root=data_root, start_date=monday)
     assert second.skipped_already_run is True
     assert second.days == []
-    assert call_count["n"] == len(WEEKLY_CADENCE_ORDER)  # unchanged -- no re-run
+    assert call_count["n"] == 2 * len(WEEKLY_CADENCE_ORDER)  # unchanged -- no re-run
 
     # A different ISO week is a fresh, unclaimed job and must run normally.
     next_monday = date(2026, 8, 17)
     third = run_weekly_cycle(data_root=data_root, start_date=next_monday)
     assert third.skipped_already_run is False
-    assert call_count["n"] == 2 * len(WEEKLY_CADENCE_ORDER)
+    assert call_count["n"] == 4 * len(WEEKLY_CADENCE_ORDER)
 
 
 def test_run_weekly_cycle_recovers_a_week_stuck_running_from_a_crashed_prior_attempt(
@@ -132,14 +140,13 @@ def test_run_weekly_cycle_recovers_a_week_stuck_running_from_a_crashed_prior_att
 
     monday = date(2026, 8, 10)
     project = "venho_hotel"
-    iso_year, iso_week, _ = monday.isocalendar()
-    week_key = f"{project}-weekly-v2-{iso_year}-W{iso_week:02d}"
+    week_key = f"{project}-fortnight-v3-2026-08-03"
 
     growth_db = data_root / project / "growth" / "growth.db"
     job_store = JobStore(db_path=growth_db)
     job_store.enqueue(
         job_id=week_key, idempotency_key=week_key, job_type="weekly_cycle",
-        version="2", scheduled_at=datetime.now().isoformat(), trace_id=week_key, payload={"project": project},
+        version="3", scheduled_at=datetime.now().isoformat(), trace_id=week_key, payload={"project": project},
     )
     # Simulate a crashed prior attempt: claimed, never completed/failed, and
     # its lease is already in the past.
@@ -149,5 +156,5 @@ def test_run_weekly_cycle_recovers_a_week_stuck_running_from_a_crashed_prior_att
     result = run_weekly_cycle(data_root=data_root, start_date=monday)
 
     assert result.skipped_already_run is False
-    assert len(result.days) == len(WEEKLY_CADENCE_ORDER)
+    assert len(result.days) == 2 * len(WEEKLY_CADENCE_ORDER)
     assert job_store.get(week_key)["status"] == "SUCCEEDED"
