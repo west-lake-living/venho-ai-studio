@@ -340,10 +340,11 @@
     "domain": "local_events",
     "question": "Sự kiện hoặc lễ hội nào sắp diễn ra ở Hà Nội, vào ngày nào?",
     "synthesis_note": "research/synthesis/RS-2026-08-06-localevents-synthesis.md",
-    "status": "pending_approval",
+    "status": "approved",
     "proposed_at": "2026-08-06T14:29:59.127442+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "hpham1504@gmail.com",
+    "decided_at": "2026-08-10T04:01:22.662790+00:00",
+    "fact_path": "data/projects/venho_hotel/growth/facts/event__project_ten_hau_truong.json"
   },
   {
     "fact_key": "review.location_rating",
