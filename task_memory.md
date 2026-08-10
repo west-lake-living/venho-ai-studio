@@ -1283,3 +1283,9 @@ Khi người dùng nói **"kết thúc task"**, Codex phải tự động:
 - Workflow `Growth Agent Weekly Cycle` được lập lịch thử lại tự động vào 08:00, 10:00 và 12:00 thứ Hai (Asia/Ho_Chi_Minh). `JobStore` chỉ cho một run thành công mỗi ISO week; các lần còn lại tự bỏ qua, còn run lỗi sẽ được thử lại mà không cần thao tác Dashboard.
 - Nguyên nhân run 10/08 thất bại: GitHub chạy SHA `4287651` chứa lỗi Google Drive OAuth cũ. Bản sửa OAuth và lịch retry đang ở working tree local, chưa có trên nhánh GitHub để Action sử dụng.
 - Xác minh YAML schedule và `tests/test_growth_weekly_cycle.py`: 5/5 pass; `git diff --check` pass.
+
+## 14af. Khắc phục tuần 2026-08-10 — Bước 7e: phát hành Automation Cycle (2026-08-10)
+
+- Đã push Automation Cycle vào `west-lake-living/venho-ai-studio` commit `f3ae89f`; `venho-os` commit `db6db53`; đồng thời tắt cron legacy tại `venho-social-content-agent` commit `cda5641`.
+- AI Studio remote có phát sinh state commits đồng thời; Automation commit được rebase/cherry-pick an toàn trên remote HEAD để không ghi đè publication registry hoặc research state mới.
+- GitHub Actions từ nay dùng workflow Weekly Cycle có retry tự động; chỉ việc chờ lịch Monday tiếp theo hoặc kích hoạt workflow_dispatch để tạo batch tuần hiện tại.
