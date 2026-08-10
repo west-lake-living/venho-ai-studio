@@ -3810,13 +3810,13 @@
       "content_package_id": "7eec6bb0-e7fa-40cc-bc3e-c31e15db5ae8",
       "idempotency_key": "762a8f1a0a9c78d73c10c87eead9b0187a6aaea644079b4bba8b75d0cf539efa",
       "platform": "instagram",
-      "status": "GATEWAY_ERROR",
-      "gateway_status": "GATEWAY_ERROR",
+      "status": "SHADOW_HELD",
+      "gateway_status": "SHADOW_HELD",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-04T12:38:10.449389+00:00",
-      "updated_at": "2026-08-06T13:35:47.371010+00:00",
+      "updated_at": "2026-08-10T08:22:48.992303+00:00",
       "content": {
         "title": "Một buổi sáng gọn gàng bên Hồ Tây",
         "text": "Có những buổi sáng ở Hà Nội chỉ cần mở mắt, thấy ánh ngày tràn vào phòng và Hồ Tây ở ngay trong tầm nhìn.\n\nBuổi sáng bên Hồ Tây thường bắt đầu rất chậm: ánh sáng tự nhiên đi qua khung cửa nhôm đen mảnh, chia ô gọn gàng; rèm xám còn khép hờ; căn phòng chữ nhật đủ thoáng để bạn bắt đầu ngày mới không vội.\n\nTại Ven Hồ Hotel, trải nghiệm lưu trú được giữ ở mức vừa đủ và dễ chịu. Sàn gỗ, tường trắng, trần phẳng sáng màu, giường đôi với bộ chăn ga trắng và đầu giường gỗ tạo cảm giác sạch sẽ, ấm áp. Hai chiếc ghế gỗ trong phòng là nơi bạn có thể ngồi đọc vài dòng tin nhắn, uống một ngụm nước, hoặc đơn giản là nhìn ra nhịp sống ven hồ đang thức dậy.\n\nLà khách sạn boutique tầm trung mang tinh thần di sản Việt, Ven Hồ Hotel không cố tạo cảm giác xa cách. Nơi đây phù hợp cho những ai muốn có một điểm dừng gọn gàng, gần hồ, thuận tiện để tận hưởng Hà Nội theo cách nhẹ nhàng hơn.\n\nNếu bạn đang tìm một buổi sáng như vậy ở Hồ Tây, hãy nhắn Ven Hồ Hotel hoặc kiểm tra tình trạng phòng khi bạn sẵn sàng.\n\nNhắn Ven Hồ Hotel hoặc kiểm tra tình trạng phòng khi bạn sẵn sàng nhé.\n\n#VenHoHotel #HoTay #WestLakeHanoi #KhachSanHaNoi #StayNearWestLake #HaNoiTravel #PhongGanHo",
@@ -3865,7 +3865,9 @@
         "checksum": "bc670226fa360eaa9790227ee43e7353093cb8151d03028dbbe22442037521e3"
       },
       "gateway_error": "BundleValidationError at Make.com: missing required 'url' -- growth was pointed at the legacy VenHoSocialManager scenario and sent no image_url. Recorded GATEWAY_ACCEPTED in error; corrected 2026-08-06.",
-      "slot_id": "slot-2026-08-07-friday"
+      "slot_id": "slot-2026-08-07-friday",
+      "rollout_stage": "shadow",
+      "shadow_held_reason": "rollout stage is shadow; dispatch withheld"
     },
     {
       "publication_id": "pub-friday-threads-25db5190",
