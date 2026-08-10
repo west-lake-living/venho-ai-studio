@@ -1,0 +1,50 @@
+[
+  {
+    "slot_date": "2026-08-10",
+    "day": "monday",
+    "status": "NOT_CREATED",
+    "content_package_id": null
+  },
+  {
+    "slot_date": "2026-08-12",
+    "day": "wednesday",
+    "status": "NOT_CREATED",
+    "content_package_id": null
+  },
+  {
+    "slot_date": "2026-08-14",
+    "day": "friday",
+    "status": "NOT_CREATED",
+    "content_package_id": null
+  },
+  {
+    "slot_date": "2026-08-15",
+    "day": "saturday",
+    "status": "NOT_CREATED",
+    "content_package_id": null
+  },
+  {
+    "slot_date": "2026-08-17",
+    "day": "monday",
+    "status": "NOT_CREATED",
+    "content_package_id": null
+  },
+  {
+    "slot_date": "2026-08-19",
+    "day": "wednesday",
+    "status": "NOT_CREATED",
+    "content_package_id": null
+  },
+  {
+    "slot_date": "2026-08-21",
+    "day": "friday",
+    "status": "NOT_CREATED",
+    "content_package_id": null
+  },
+  {
+    "slot_date": "2026-08-22",
+    "day": "saturday",
+    "status": "NOT_CREATED",
+    "content_package_id": null
+  }
+]
