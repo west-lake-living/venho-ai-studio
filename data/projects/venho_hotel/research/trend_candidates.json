@@ -809,10 +809,12 @@
       "food_culinary"
     ],
     "relevance_score": 0.8,
-    "status": "needs_human_approval",
+    "status": "rejected",
     "rejection_reason": null,
     "verified_by_human": false,
-    "scanned_at": "2026-08-06T13:33:34.529267+00:00"
+    "scanned_at": "2026-08-06T13:33:34.529267+00:00",
+    "rejected_by": "hpham1504@gmail.com",
+    "rejected_at": "2026-08-10T09:56:51.991963+00:00"
   },
   {
     "id": "tavily-https://senvanggroup.com/5-quan-cafe-view-dep-ngat-ngay-ngam-tron-ho-tay-long-gio.html",
