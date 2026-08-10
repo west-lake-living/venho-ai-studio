@@ -3746,13 +3746,13 @@
       "content_package_id": "9090ef30-b08d-4230-9bd4-faea1d995068",
       "idempotency_key": "3058c07059dc510686e400a67698e989b20dcb9542ea4404700a62aec43e2ef9",
       "platform": "facebook",
-      "status": "GATEWAY_ERROR",
-      "gateway_status": "GATEWAY_ERROR",
+      "status": "SHADOW_HELD",
+      "gateway_status": "SHADOW_HELD",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-04T12:37:50.148893+00:00",
-      "updated_at": "2026-08-06T13:35:47.367499+00:00",
+      "updated_at": "2026-08-10T08:22:43.153081+00:00",
       "content": {
         "title": "Một buổi sáng nhẹ bên Hồ Tây",
         "text": "Có những buổi sáng ở Hà Nội, chỉ cần kéo rèm ra là nhịp ngày đã chậm lại một chút.\n\nÁnh sáng tự nhiên len qua khung cửa ô vuông viền đen, mở ra một thoáng Hồ Tây yên ả. Trong căn phòng gọn gàng của Ven Hồ Hotel, mọi thứ được giữ vừa đủ: sàn gỗ ấm, tường trắng, trần phẳng sáng, giường đôi với chăn ga trắng và đầu giường gỗ.\n\nKhông gian hình chữ nhật giúp căn phòng dễ sử dụng, thoáng mắt và không tạo cảm giác rối. Rèm xám đậm giúp bạn nghỉ thêm một chút nếu muốn một buổi sáng thật chậm. Hai chiếc ghế gỗ là nơi lý tưởng để ngồi uống nước, đọc vài trang sách, hoặc đơn giản là nhìn ánh ngày đổi màu bên hồ.\n\nVen Hồ Hotel mang tinh thần boutique Việt Nam gần gũi, chỉn chu và thực tế — một điểm dừng tầm trung cho những ai muốn ở gần Hồ Tây, thuận tiện kết nối với Hà Nội mà vẫn có khoảng lặng riêng. Dù bạn đến để nghỉ ngơi hay xen kẽ vài cuộc hẹn công việc, một căn phòng sáng, gọn và dễ chịu luôn là khởi đầu tốt cho ngày mới.\n\nNếu bạn đang tìm một kỳ lưu trú gần Hồ Tây, hãy nhắn Ven Hồ Hotel hoặc kiểm tra tình trạng phòng khi thuận tiện nhé.\n\n#VenHoHotel #HoTay #WestLakeHanoi #KhachSanGanHoTay #HanoiStay #BoutiqueHotelHanoi #DuLichHaNoi",
@@ -3801,7 +3801,9 @@
         "checksum": "bea00a2caad52644d2d4269dc59fcc4c236ac4cc970da515b77977dae3c1e9f4"
       },
       "gateway_error": "BundleValidationError at Make.com: missing required 'url' -- growth was pointed at the legacy VenHoSocialManager scenario and sent no image_url. Recorded GATEWAY_ACCEPTED in error; corrected 2026-08-06.",
-      "slot_id": "slot-2026-08-07-friday"
+      "slot_id": "slot-2026-08-07-friday",
+      "rollout_stage": "shadow",
+      "shadow_held_reason": "rollout stage is shadow; dispatch withheld"
     },
     {
       "publication_id": "pub-friday-instagram-bb9cde8b",
