@@ -90,14 +90,17 @@ jobs:
           # includes research/trend_candidates.json when a trend is consumed;
           # leaving it unstaged makes the later rebase refuse to start.
           git add -u data/projects
-          git add -f data/projects/*/growth/rotation_state.json \
-                     data/projects/*/growth/growth.db \
-                     data/projects/*/growth/slots_snapshot.json \
-                     data/projects/*/growth/evergreen_pool.json \
-                     data/projects/*/publishing/publication_registry.json \
-                     data/projects/*/content/**/*.json \
-                     data/projects/*/content/**/*.md \
-                     data/projects/*/prompts/**/*.json 2>/dev/null || true
+          # Keep optional path groups independent. A missing optional glob in
+          # one large `git add` aborts that entire command and silently drops
+          # growth.db/slots_snapshot along with it because of `|| true`.
+          git add -f data/projects/*/growth/rotation_state.json 2>/dev/null || true
+          git add -f data/projects/*/growth/growth.db 2>/dev/null || true
+          git add -f data/projects/*/growth/slots_snapshot.json 2>/dev/null || true
+          git add -f data/projects/*/growth/evergreen_pool.json 2>/dev/null || true
+          git add -f data/projects/*/publishing/publication_registry.json 2>/dev/null || true
+          git add -f data/projects/*/content/**/*.json 2>/dev/null || true
+          git add -f data/projects/*/content/**/*.md 2>/dev/null || true
+          git add -f data/projects/*/prompts/**/*.json 2>/dev/null || true
           git diff --cached --quiet || git commit -m "chore: growth agent weekly cycle $(date -u +%Y-%m-%d)"
           # The weekly cycle modifies tracked registry/SQLite state as well as
           # creating untracked artifacts. Commit first, then rebase that
