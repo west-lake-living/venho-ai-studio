@@ -270,10 +270,11 @@
     "domain": "brand_visual",
     "question": "Yếu tố hình ảnh nào khiến ảnh khách sạn boutique đạt tương tác cao?",
     "synthesis_note": "research/synthesis/RS-2026-08-06-brandvisual-synthesis.md",
-    "status": "pending_approval",
+    "status": "approved",
     "proposed_at": "2026-08-06T14:00:30.087797+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "hpham1504@gmail.com",
+    "decided_at": "2026-08-10T04:01:11.459876+00:00",
+    "fact_path": "data/projects/venho_hotel/growth/facts/social_media__visual_storytelling_engagement.json"
   },
   {
     "fact_key": "social_photography.focus_technique",
