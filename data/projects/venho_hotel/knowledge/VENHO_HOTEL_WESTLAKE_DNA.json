@@ -1,0 +1,295 @@
+{
+  "contract_version": "1.1",
+  "mode": "B",
+  "project": "venho_hotel",
+  "subject": "westlake",
+  "dna_version": "1.1",
+  "schema_id": "venho_hotel.westlake",
+  "schema_version": "1.0",
+  "prompt_version": "1.1",
+  "provider": "claude",
+  "model": "claude-sonnet-4-6",
+  "generated_at": "2026-07-07T16:32:29.342457",
+  "source_images": [
+    "62b02bc76855c12afdb209c48a23c9ac92cb5fbe9651eb9a551f6b0bb3e1d051",
+    "d49ac532a901816cf2811736566bf6391450d2466833ba9ada291ec4f439bd94",
+    "3d57ba881f6376a394ed5bd5934939fc16ffc2bb6a28ae9ccf98d845351112b7",
+    "04da2601a978571dec45e8d8ae8d9d069588f3479ea455bd5f1bf7e167e80717",
+    "e240462fa402420fb04f98d750d48e1e66d0590deda66b79257d8ccdd241c156",
+    "da40c0b6a73025c52571a395f286fb1bb31aeb9851459313bef6ff5c736c7aa4",
+    "5a7f2776338d38a7969aa7055ba69070acd43b92a480514d4555f48d3e608cb9",
+    "5685532fea1c96f5d2755f53e09e31f09e7506f56f1c235989ba3c0942fae3cd",
+    "82f30fbb7f42f2d24aa3a7760a4100ab63d5d68f41d7e5a54030bbe96231fb0f",
+    "5209bf5c6107ae1b49c6591a187b68c7a1f9ca72f7caffa936539e82aa3f92ef"
+  ],
+  "invariant": [
+    {
+      "key": "water_reflection_quality",
+      "value": "minimal",
+      "value_source": "machine",
+      "evidence_count": 10,
+      "coverage": 1.0,
+      "consistency": 0.7,
+      "confidence": 1.0
+    },
+    {
+      "key": "tree_density",
+      "value": "moderate",
+      "value_source": "machine",
+      "evidence_count": 6,
+      "coverage": 0.6,
+      "consistency": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "key": "water_color",
+      "value": "muted jade-teal #4E8FA0 — calm, reflective, not tropical blue",
+      "value_source": "curated",
+      "evidence_count": 10,
+      "coverage": 1.0,
+      "consistency": 0.8,
+      "confidence": 1.0
+    },
+    {
+      "key": "water_visibility_range",
+      "value": "far",
+      "value_source": "machine",
+      "evidence_count": 10,
+      "coverage": 1.0,
+      "consistency": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "key": "sky_condition",
+      "value": "partly_cloudy",
+      "value_source": "machine",
+      "evidence_count": 10,
+      "coverage": 1.0,
+      "consistency": 0.8,
+      "confidence": 1.0
+    },
+    {
+      "key": "distant_cityscape",
+      "value": "yes",
+      "value_source": "curated",
+      "evidence_count": 10,
+      "coverage": 1.0,
+      "consistency": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "key": "lamp_post_presence",
+      "value": "no",
+      "value_source": "curated",
+      "evidence_count": 9,
+      "coverage": 0.9,
+      "consistency": 0.7778,
+      "confidence": 1.0
+    },
+    {
+      "key": "water_surface_texture",
+      "value": "calm",
+      "value_source": "machine",
+      "evidence_count": 10,
+      "coverage": 1.0,
+      "consistency": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "key": "light_quality",
+      "value": "soft",
+      "value_source": "machine",
+      "evidence_count": 10,
+      "coverage": 1.0,
+      "consistency": 0.7,
+      "confidence": 1.0
+    },
+    {
+      "key": "haze_level",
+      "value": "none",
+      "value_source": "machine",
+      "evidence_count": 10,
+      "coverage": 1.0,
+      "consistency": 0.8,
+      "confidence": 1.0
+    }
+  ],
+  "variable": [
+    {
+      "key": "human_activity",
+      "value_range": [
+        "none",
+        "sparse"
+      ]
+    },
+    {
+      "key": "railing_presence",
+      "value_range": [
+        "false",
+        "partial",
+        "true"
+      ]
+    },
+    {
+      "key": "general_scene_character",
+      "value_range": [
+        "urban lakeside with buildings and trees",
+        "urban lakeside with city lights reflecting on calm water",
+        "urban lakeside with cyclist and trees",
+        "urban lakeside with distant buildings",
+        "urban lakeside with distant city skyline",
+        "urban lakeside with moderate vegetation and distant buildings",
+        "urban lakeside with moderate vegetation and distant cityscape",
+        "urban skyline with illuminated buildings reflecting on calm water"
+      ]
+    },
+    {
+      "key": "path_presence",
+      "value_range": [
+        "false",
+        "true"
+      ]
+    },
+    {
+      "key": "vegetation_presence",
+      "value_range": [
+        "false",
+        "true"
+      ]
+    },
+    {
+      "key": "time_of_day",
+      "value_range": [
+        "afternoon",
+        "midday",
+        "morning",
+        "night"
+      ]
+    }
+  ],
+  "allowed_imperfections": [
+    {
+      "value": "slight Hanoi haze or atmospheric softness acceptable — authentic weather",
+      "source": "curated"
+    },
+    {
+      "value": "natural water texture variation (ripples, reflections) acceptable",
+      "source": "curated"
+    },
+    {
+      "value": "modest street-level elements (motorbikes, vendors) acceptable — real life",
+      "source": "curated"
+    },
+    {
+      "value": "overcast or grey sky acceptable — not all shots need golden hour",
+      "source": "curated"
+    },
+    {
+      "value": "slight color variation in water between morning and afternoon acceptable",
+      "source": "curated"
+    },
+    {
+      "value": "slight cloud cover",
+      "source": "observed"
+    },
+    {
+      "value": "natural water color variation",
+      "source": "observed"
+    },
+    {
+      "value": "some leafless trees",
+      "source": "observed"
+    },
+    {
+      "value": "slight haze in the distance",
+      "source": "observed"
+    },
+    {
+      "value": "clouds partially obscure sky",
+      "source": "observed"
+    },
+    {
+      "value": "slightly uneven pavement",
+      "source": "observed"
+    },
+    {
+      "value": "slight haze over cityscape",
+      "source": "observed"
+    }
+  ],
+  "forbidden": [
+    {
+      "rule": "no tourist postcard aesthetic — must feel like daily local life, not staged",
+      "source": "curated"
+    },
+    {
+      "rule": "no generic Asian city lake — must be distinctly Ho Tay / Hanoi",
+      "source": "curated"
+    },
+    {
+      "rule": "no artificial or manicured park look — natural, unhurried",
+      "source": "curated"
+    },
+    {
+      "rule": "no resort waterfront design — this is public lakeside street, not hotel grounds",
+      "source": "curated"
+    },
+    {
+      "rule": "no dramatic staged lighting — soft Hanoi haze and natural glow only",
+      "source": "curated"
+    },
+    {
+      "rule": "no saturated or oversaturated water color — must be muted jade-teal, not tropical blue",
+      "source": "curated"
+    },
+    {
+      "rule": "no modern glass high-rise backdrop — low-rise cityscape across the water",
+      "source": "curated"
+    },
+    {
+      "rule": "no tourist postcard aesthetic",
+      "source": "observed"
+    },
+    {
+      "rule": "no generic Asian city lake",
+      "source": "observed"
+    },
+    {
+      "rule": "no artificial or manicured park look",
+      "source": "observed"
+    },
+    {
+      "rule": "no resort waterfront design",
+      "source": "observed"
+    },
+    {
+      "rule": "no dramatic/staged lighting",
+      "source": "observed"
+    },
+    {
+      "rule": "no manicured resort waterfront",
+      "source": "observed"
+    }
+  ],
+  "evidence": {
+    "total_images": 10,
+    "weak_features": []
+  },
+  "future_capture_notes": [],
+  "curator_notes": [
+    "Identity Block (MUST USE as prefix in all AI prompts):",
+    "  West Lake (Ho Tay), Hanoi, Vietnam. Nguyen Dinh Thi lakeside street.",
+    "  Muted blue-green calm lake water (jade-teal #4E8FA0), wide open lake view,",
+    "  low-rise cityscape across the water. Warm tropical atmosphere, soft Hanoi haze.",
+    "  Wide tree-lined boulevard, mature roadside trees growing close to the railing and road,",
+    "  natural leafy branches extending over the path, strong tree shadows on the pavement.",
+    "  Ivory-white metal lakeshore railing (street renovated 2026 — no longer green, no lamp posts).",
+    "  Authentic Vietnamese daily life. Real, unhurried, quietly beautiful.",
+    "Water color reference: #4E8FA0 (day) · #B8C4C8 (haze) · #C07840 (sunset)",
+    "2026-07-17 correction: previous curated notes said 'green lamp posts, green metal railing' —",
+    "  street was renovated; current railing is ivory-white and there are no lamp posts.",
+    "  Kept as historical note here since this file states notes must never be silently dropped.",
+    "Water color reference: #4E8FA0 (day) · #B8C4C8 (haze) · #C07840 (sunset)",
+    "Golden Rule: show what it is like to LIVE beside West Lake today — not visit"
+  ]
+}

@@ -1,0 +1,309 @@
+{
+  "contract_version": "1.1",
+  "mode": "B",
+  "project": "venho_hotel",
+  "subject": "outside",
+  "dna_version": "1.1",
+  "schema_id": "venho_hotel.outside",
+  "schema_version": "1.0",
+  "prompt_version": "1.1",
+  "provider": "claude",
+  "model": "claude-sonnet-4-6",
+  "generated_at": "2026-07-07T17:51:53.491623",
+  "source_images": [
+    "86ef06cf97eabb06c94fc5a5e8c947d93041bb150a8b7c8e7dd4fede630f5b9f",
+    "f28905092b5771836bb63d4f1f068cd4adc63f0511d2656a992d46d36159a223",
+    "a904a56c272c09c86cda133308443995b5eb80cd6b339a7af562753f0ead25af",
+    "d49ac532a901816cf2811736566bf6391450d2466833ba9ada291ec4f439bd94",
+    "3d57ba881f6376a394ed5bd5934939fc16ffc2bb6a28ae9ccf98d845351112b7",
+    "8ef77940aea597fa1338b12cab228c6799a35a92568acf2f6c9b87294a7ab880",
+    "e27c76d5663d04bbbd3ccf4ada8535d01639d58e2ebcf45ebbbc31320f128bd1",
+    "e240462fa402420fb04f98d750d48e1e66d0590deda66b79257d8ccdd241c156",
+    "da40c0b6a73025c52571a395f286fb1bb31aeb9851459313bef6ff5c736c7aa4",
+    "124bc3979d9130101ebc82fd4035cd7d371e3f4b3b95e252a84f82ab8543e8d2",
+    "387b7df131a96e7a14afbb88a4afe36652b7542920c89f36b979b53e370ecfb5",
+    "f370caa79d06d09d6df56a2e478e8d258c7401c4c4bb2f1bea32082422ad25f3",
+    "168d6fa3eb8e71bf8fe1ee9018980de0ff770c32ad83048b6d0ecdf22ec72151",
+    "3d72b36ffb00df1ec6a305d479f21a8161d99718bd5aea355b079da69ca8cdd1"
+  ],
+  "invariant": [
+    {
+      "key": "cityscape_visible",
+      "value": "mixed cityscape visible",
+      "value_source": "machine",
+      "evidence_count": 14,
+      "coverage": 1.0,
+      "consistency": 0.7857,
+      "confidence": 1.0
+    },
+    {
+      "key": "sky_condition",
+      "value": "clear blue sky",
+      "value_source": "machine",
+      "evidence_count": 14,
+      "coverage": 1.0,
+      "consistency": 0.7143,
+      "confidence": 1.0
+    },
+    {
+      "key": "street_trees_visible",
+      "value": "mature street trees visible",
+      "value_source": "machine",
+      "evidence_count": 14,
+      "coverage": 1.0,
+      "consistency": 0.9286,
+      "confidence": 1.0
+    },
+    {
+      "key": "lighting_condition",
+      "value": "natural daylight",
+      "value_source": "machine",
+      "evidence_count": 14,
+      "coverage": 1.0,
+      "consistency": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "key": "space_condition",
+      "value": "well maintained space",
+      "value_source": "machine",
+      "evidence_count": 13,
+      "coverage": 0.9286,
+      "consistency": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "key": "outdoor_furniture",
+      "value": "no outdoor furniture",
+      "value_source": "machine",
+      "evidence_count": 12,
+      "coverage": 0.8571,
+      "consistency": 1.0,
+      "confidence": 1.0
+    }
+  ],
+  "variable": [
+    {
+      "key": "lake_view_visible",
+      "value_range": [
+        "full_panoramic",
+        "none",
+        "partial"
+      ]
+    },
+    {
+      "key": "lake_water_color",
+      "value_range": [
+        "blue_gray",
+        "jade_teal"
+      ]
+    },
+    {
+      "key": "floor_level",
+      "value_range": [
+        "ground_floor",
+        "upper_floor"
+      ]
+    },
+    {
+      "key": "space_type",
+      "value_range": [
+        "balcony",
+        "entrance_area",
+        "rooftop_terrace",
+        "street_level_exterior"
+      ]
+    },
+    {
+      "key": "flooring_material",
+      "value_range": [
+        "concrete",
+        "tile"
+      ]
+    },
+    {
+      "key": "time_of_day",
+      "value_range": [
+        "afternoon",
+        "midday"
+      ]
+    },
+    {
+      "key": "plants_present",
+      "value_range": [
+        "none",
+        "yes_landscaped",
+        "yes_potted"
+      ]
+    },
+    {
+      "key": "railing_type",
+      "value_range": [
+        "black_iron_scroll",
+        "concrete_parapet",
+        "metal_bar",
+        "none"
+      ]
+    }
+  ],
+  "allowed_imperfections": [
+    {
+      "value": "Hanoi haze over lake view acceptable and authentic",
+      "source": "curated"
+    },
+    {
+      "value": "weathered tiles or concrete surface acceptable",
+      "source": "curated"
+    },
+    {
+      "value": "visible neighboring rooftops acceptable",
+      "source": "curated"
+    },
+    {
+      "value": "natural sky variation (clouds, smog) acceptable",
+      "source": "curated"
+    },
+    {
+      "value": "modest outdoor furniture showing wear acceptable",
+      "source": "curated"
+    },
+    {
+      "value": "Some dirt or wear on the building facade",
+      "source": "observed"
+    },
+    {
+      "value": "motorbikes parked on sidewalk",
+      "source": "observed"
+    },
+    {
+      "value": "none",
+      "source": "observed"
+    },
+    {
+      "value": "Some trees appear to have dry branches.",
+      "source": "observed"
+    },
+    {
+      "value": "slight cloud cover",
+      "source": "observed"
+    },
+    {
+      "value": "Some buildings show signs of wear.",
+      "source": "observed"
+    },
+    {
+      "value": "Some dirt on the street",
+      "source": "observed"
+    },
+    {
+      "value": "slightly uneven pavement",
+      "source": "observed"
+    },
+    {
+      "value": "slightly worn facade",
+      "source": "observed"
+    },
+    {
+      "value": "slight wear on pavement",
+      "source": "observed"
+    },
+    {
+      "value": "Some shadows on the pavement",
+      "source": "observed"
+    }
+  ],
+  "forbidden": [
+    {
+      "rule": "no infinity pool or resort-style pool deck — hotel has no pool",
+      "source": "curated"
+    },
+    {
+      "rule": "no rooftop bar with full commercial bar setup",
+      "source": "curated"
+    },
+    {
+      "rule": "no luxury resort terrace furniture (cabanas, daybeds)",
+      "source": "curated"
+    },
+    {
+      "rule": "no city high-rise skyline — West Lake area is low-rise",
+      "source": "curated"
+    },
+    {
+      "rule": "no generic rooftop lounge aesthetic — this is a simple urban terrace",
+      "source": "curated"
+    },
+    {
+      "rule": "no manicured hotel garden — space is compact and urban",
+      "source": "curated"
+    },
+    {
+      "rule": "no infinity pool or resort-style pool deck",
+      "source": "observed"
+    },
+    {
+      "rule": "no rooftop bar with full bar setup",
+      "source": "observed"
+    },
+    {
+      "rule": "no luxury resort terrace furniture",
+      "source": "observed"
+    },
+    {
+      "rule": "no city high-rise skyline in background",
+      "source": "observed"
+    },
+    {
+      "rule": "No visible outdoor furniture",
+      "source": "observed"
+    },
+    {
+      "rule": "No visible plants on the balcony",
+      "source": "observed"
+    },
+    {
+      "rule": "No visible flooring material",
+      "source": "observed"
+    },
+    {
+      "rule": "No specific outdoor furniture",
+      "source": "observed"
+    },
+    {
+      "rule": "No visible railing",
+      "source": "observed"
+    },
+    {
+      "rule": "No visible outdoor furniture or specific flooring material",
+      "source": "observed"
+    },
+    {
+      "rule": "No people visible",
+      "source": "observed"
+    },
+    {
+      "rule": "No vehicles other than motorbike",
+      "source": "observed"
+    },
+    {
+      "rule": "No visible lake or cityscape",
+      "source": "observed"
+    },
+    {
+      "rule": "No outdoor furniture",
+      "source": "observed"
+    }
+  ],
+  "evidence": {
+    "total_images": 14,
+    "weak_features": []
+  },
+  "future_capture_notes": [],
+  "curator_notes": [
+    "West Lake (Hồ Tây) should be visible or partially visible from upper floors",
+    "Street: Nguyễn Đình Thi — tree-lined, green lamp posts, low traffic",
+    "Outdoor spaces are modest — not resort, not bar venue, just genuine hotel terrace",
+    "Authenticity principle: real Hanoi sky + real lake color over staged perfection",
+    "Reference: ho-tay-image-dna.md for lake color standards"
+  ]
+}
