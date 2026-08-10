@@ -53,9 +53,9 @@ jobs:
           venho-growth slots --weeks-ahead 2 > data/projects/venho_hotel/growth/slots_snapshot.json
           git config user.name "venho-growth-bot"
           git config user.email "venho-growth-bot@users.noreply.github.com"
+          git pull --rebase origin main
           git add -f data/projects/*/publishing/publication_registry.json \
                      data/projects/*/growth/growth.db \
                      data/projects/*/growth/slots_snapshot.json 2>/dev/null || true
           git diff --cached --quiet || git commit -m "chore: growth scheduled dispatch $(date -u +%Y-%m-%dT%H%MZ)"
-          git pull --rebase origin main
           git push
