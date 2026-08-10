@@ -3387,13 +3387,13 @@
       "content_package_id": "4442fbac-a909-4adf-a947-aa4e27490c07",
       "idempotency_key": "dec583d39c7c82491f57cbf799f8b336951e3cef9a21f8edbf3e777e1706c67e",
       "platform": "threads",
-      "status": "GATEWAY_ERROR",
-      "gateway_status": "GATEWAY_ERROR",
+      "status": "SHADOW_HELD",
+      "gateway_status": "SHADOW_HELD",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-04T12:28:52.853292+00:00",
-      "updated_at": "2026-08-06T11:06:28.822734+00:00",
+      "updated_at": "2026-08-10T08:22:26.760887+00:00",
       "content": {
         "title": "Phòng hướng hồ: một cách chậm rãi để chạm vào Hồ Tây",
         "text": "Hồ Tây đẹp nhất khi ta nhìn thật chậm.\n\nTừ một căn phòng hướng hồ, Hồ Tây hiện ra không ồn ào mà rất gần gũi: mặt nước rộng, phẳng lặng, mang sắc xanh ngọc trầm và dịu mắt. Ánh sáng mềm trải qua những tầng mây mỏng, để tầm nhìn mở xa về phía những dãy nhà và đường nét thành phố phía bên kia hồ.\n\nBên dưới là nhịp sống ven hồ vừa đủ chậm: vài người đi dạo, những hàng cây rải bóng nhẹ, con đường ôm theo mặt nước và những khoảng lặng hiếm có giữa Hà Nội. Buổi chiều, gió thổi qua khung cửa, hoàng hôn xuống chậm, mọi thứ như được đặt về đúng nhịp của nghỉ ngơi.\n\nVới những ai đến Hà Nội để hẹn hò, làm việc, uống một ly cà phê hay đơn giản là đổi không khí, Ven Hồ Hotel có thể là điểm dừng chân vừa vặn — đủ gần Hồ Tây để bắt đầu một buổi đi dạo, đủ yên để trở về sau một ngày dài.\n\nNếu bạn đang tìm một kỳ nghỉ nhẹ nhàng bên Hồ Tây, hãy nhắn Ven Hồ Hotel hoặc kiểm tra tình trạng phòng khi thuận tiện.\n\n#VenHoHotel #HoTay #HanoiStay #PhongHuongHo #KhamPhaHoTay #WestLakeHanoi",
@@ -3440,7 +3440,9 @@
         "package_versions_checksum": "f60d8ee17a1e216ff07e863296e9abb1e7ab95f1553aa01de6bb857d749634e0",
         "checksum": "6277fb037d0729d9bf8818de6ef3f9aaff46c2182481dba7a367ac774e77d32c"
       },
-      "gateway_error": "BundleValidationError at Make.com: missing required 'url' -- growth was pointed at the legacy VenHoSocialManager scenario and sent no image_url. Recorded GATEWAY_ACCEPTED in error; corrected 2026-08-06."
+      "gateway_error": "BundleValidationError at Make.com: missing required 'url' -- growth was pointed at the legacy VenHoSocialManager scenario and sent no image_url. Recorded GATEWAY_ACCEPTED in error; corrected 2026-08-06.",
+      "rollout_stage": "shadow",
+      "shadow_held_reason": "rollout stage is shadow; dispatch withheld"
     },
     {
       "publication_id": "pub-monday-zalo-b7306b1c",
