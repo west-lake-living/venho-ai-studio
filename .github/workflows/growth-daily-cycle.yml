@@ -65,7 +65,7 @@ jobs:
           # that finds the queue empty currently tells nobody.
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: venho-growth weekly-cycle
+        run: venho-growth weekly-cycle --platform facebook --platform instagram
 
       # data/ is gitignored (generated content, per-project knowledge/DNA
       # output) so rotation_state.json and publication_registry.json would

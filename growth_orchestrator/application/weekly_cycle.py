@@ -47,6 +47,10 @@ def _next_occurrence(day_name: str, *, on_or_after: date) -> date:
 # instead of trickling in through the week, so Harry can review a whole
 # week's batch in a single VENHO OS Dashboard session.
 WEEKLY_CADENCE_ORDER = ["monday", "wednesday", "friday", "saturday"]
+# Bump the idempotency namespace when the weekly completion contract changes.
+# The old v1 job for 2026-W33 was incorrectly marked SUCCEEDED after its Drive
+# authentication failure, leaving no safe way for the repaired workflow to run.
+WEEKLY_CYCLE_JOB_VERSION = "2"
 
 
 @dataclass
@@ -121,7 +125,7 @@ def run_weekly_cycle(
 
     today = start_date or date.today()
     iso_year, iso_week, _ = today.isocalendar()
-    week_key = f"{project}-weekly-{iso_year}-W{iso_week:02d}"
+    week_key = f"{project}-weekly-v{WEEKLY_CYCLE_JOB_VERSION}-{iso_year}-W{iso_week:02d}"
     # Stale-job recovery (Phase 5, plan §14 "worker heartbeat / stale-job
     # recovery"): if a previous real run of this exact week's job crashed or
     # was cancelled mid-flight (GitHub Actions timeout/manual cancel) without
@@ -138,7 +142,7 @@ def run_weekly_cycle(
         # against real wall-clock time, and this job needs to be claimable
         # immediately, not on the simulated cadence date.
         job_id=week_key, idempotency_key=week_key, job_type="weekly_cycle",
-        version="1", scheduled_at=datetime.now().isoformat(), trace_id=week_key, payload={"project": project},
+        version=WEEKLY_CYCLE_JOB_VERSION, scheduled_at=datetime.now().isoformat(), trace_id=week_key, payload={"project": project},
     )
     # lease_seconds default (300s) assumes a fast worker poll loop -- a real
     # weekly run does up to 4 days x N platforms of real LLM/image/vision
@@ -222,6 +226,24 @@ def run_weekly_cycle(
     except Exception as exc:  # noqa: BLE001 - truly unexpected failure outside the per-day guard above -- mark the week retryable rather than leaving it stuck RUNNING forever
         job_store.fail(week_key, f"{type(exc).__name__}: {exc}")
         raise
+    # A caught per-day/platform error must still fail the workflow. v1
+    # completed the weekly job unconditionally here, turning an empty approval
+    # queue into a permanent "successful" no-op that suppressed every retry.
+    expected_platforms = set(platforms or [])
+    failures: list[str] = []
+    for result in results:
+        if result.errors:
+            failures.append(f"{result.day}: {result.errors}")
+        if expected_platforms:
+            actual_platforms = {str(publication.get("platform")) for publication in result.publications}
+            missing = sorted(expected_platforms - actual_platforms)
+            if missing:
+                failures.append(f"{result.day}: missing required platforms {', '.join(missing)}")
+    if failures:
+        error = "Weekly cycle incomplete; " + "; ".join(failures)
+        job_store.fail(week_key, error)
+        raise RuntimeError(error)
+
     job_store.complete(week_key)
 
     try:

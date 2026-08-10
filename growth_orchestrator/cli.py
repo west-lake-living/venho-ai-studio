@@ -77,6 +77,7 @@ def daily_cycle(
 def weekly_cycle(
     project: str = typer.Option("venho_hotel"),
     generate_image: bool = typer.Option(True, "--image/--no-image", help="Set --no-image to skip photo generation (e.g. OPENAI_API_KEY unavailable/invalid)."),
+    platforms: list[str] = typer.Option(["facebook", "instagram"], "--platform", help="Required platform(s) for every cadence slot."),
 ) -> None:
     """Generate a full week's cadence (Mon/Wed/Fri/Sat) in one run and queue
     all of it PENDING_APPROVAL, so Harry can review/approve the whole week in
@@ -89,7 +90,7 @@ def weekly_cycle(
     MAX_TEXT_ATTEMPTS/MAX_IMAGE_ATTEMPTS).
     """
     result = run_weekly_cycle(
-        project=project, generate_image=generate_image, image_validation_provider="openai"
+        project=project, platforms=platforms, generate_image=generate_image, image_validation_provider="openai"
     )
     typer.echo(
         json.dumps(

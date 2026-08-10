@@ -4,6 +4,8 @@ from datetime import date, datetime
 from pathlib import Path
 from shutil import copyfile
 
+import pytest
+
 import growth_orchestrator.application.weekly_cycle as weekly_cycle_module
 from growth_orchestrator.application.daily_cycle import DailyCycleResult
 from growth_orchestrator.application.weekly_cycle import WEEKLY_CADENCE_ORDER, run_weekly_cycle
@@ -42,14 +44,25 @@ def test_run_weekly_cycle_one_day_crash_does_not_drop_the_other_days(tmp_path: P
 
     monkeypatch.setattr(weekly_cycle_module, "run_daily_cycle", _fake_run_daily_cycle)
 
-    result = run_weekly_cycle(data_root=data_root)
+    with pytest.raises(RuntimeError, match="Weekly cycle incomplete"):
+        run_weekly_cycle(data_root=data_root, start_date=date(2026, 8, 10))
 
-    assert [day.day for day in result.days] == WEEKLY_CADENCE_ORDER
-    wednesday = next(day for day in result.days if day.day == "wednesday")
-    assert wednesday.publications == []
-    assert wednesday.errors == [{"platform": "*", "error": "ValueError: simulated topic config error"}]
-    other_days = [day for day in result.days if day.day != "wednesday"]
-    assert all(day.publications for day in other_days)
+    # The remaining cadence days still run, but the job is retryable instead
+    # of silently becoming SUCCEEDED with an incomplete approval queue.
+    job_store = JobStore(db_path=data_root / "venho_hotel" / "growth" / "growth.db")
+    assert job_store.get("venho_hotel-weekly-v2-2026-W33")["status"] == "RETRYABLE_FAILED"
+
+
+def test_run_weekly_cycle_fails_when_a_required_platform_is_missing(tmp_path: Path, monkeypatch) -> None:
+    data_root = _tmp_data_root(tmp_path)
+
+    def _fake_run_daily_cycle(day: str, **kwargs):
+        return DailyCycleResult(day=day, topic={"topic": "ok"}, publications=[{"platform": "facebook"}])
+
+    monkeypatch.setattr(weekly_cycle_module, "run_daily_cycle", _fake_run_daily_cycle)
+
+    with pytest.raises(RuntimeError, match="missing required platforms instagram"):
+        run_weekly_cycle(data_root=data_root, platforms=["facebook", "instagram"], start_date=date(2026, 8, 10))
 
 
 def test_run_weekly_cycle_ensures_slots_for_the_week_before_running(tmp_path: Path, monkeypatch) -> None:
@@ -117,13 +130,13 @@ def test_run_weekly_cycle_recovers_a_week_stuck_running_from_a_crashed_prior_att
     monday = date(2026, 8, 10)
     project = "venho_hotel"
     iso_year, iso_week, _ = monday.isocalendar()
-    week_key = f"{project}-weekly-{iso_year}-W{iso_week:02d}"
+    week_key = f"{project}-weekly-v2-{iso_year}-W{iso_week:02d}"
 
     growth_db = data_root / project / "growth" / "growth.db"
     job_store = JobStore(db_path=growth_db)
     job_store.enqueue(
         job_id=week_key, idempotency_key=week_key, job_type="weekly_cycle",
-        version="1", scheduled_at=datetime.now().isoformat(), trace_id=week_key, payload={"project": project},
+        version="2", scheduled_at=datetime.now().isoformat(), trace_id=week_key, payload={"project": project},
     )
     # Simulate a crashed prior attempt: claimed, never completed/failed, and
     # its lease is already in the past.
