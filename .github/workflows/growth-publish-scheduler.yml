@@ -1,11 +1,11 @@
 name: Growth Agent Publish Scheduler
 
-# GitHub Actions scheduling is best-effort and may start late.  The command is
-# idempotent: it sends only rows already APPROVED_SCHEDULED and due, so a late
-# run posts the next eligible item once and never bypasses weekly approval.
+# One deterministic invocation per published cadence slot. The dispatcher
+# rejects anything more than 30 minutes late, so a delayed Action cannot dump
+# old posts together on a later run.
 on:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "0 2 * * 1,3,5,6" # 09:00 Asia/Ho_Chi_Minh (UTC+7)
   workflow_dispatch:
 
 permissions:
@@ -41,7 +41,12 @@ jobs:
           ZALO_APP_ID: ${{ secrets.ZALO_APP_ID }}
           ZALO_APP_SECRET: ${{ secrets.ZALO_APP_SECRET }}
           ZALO_REFRESH_TOKEN: ${{ secrets.ZALO_REFRESH_TOKEN }}
-        run: venho-growth dispatch-due
+        run: |
+          if [ -z "$MAKE_GROWTH_WEBHOOK_URL" ]; then
+            echo "::error::MAKE_GROWTH_WEBHOOK_URL is not configured; refusing scheduled dispatch."
+            exit 1
+          fi
+          venho-growth dispatch-due
 
       - name: Commit publication state
         run: |

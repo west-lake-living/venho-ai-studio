@@ -8,7 +8,7 @@ cadence slot is due can reach the publishing gateway.
 """
 
 import os
-from datetime import date, datetime, time
+from datetime import date, datetime, time, timedelta
 from pathlib import Path
 import re
 from typing import Optional
@@ -26,6 +26,7 @@ from publishing_gateway.publication_registry import PublicationRegistry
 from shared.jobs.slot_store import SlotStore
 
 _SLOT_DATE_PATTERN = re.compile(r"^slot-(\d{4}-\d{2}-\d{2})-")
+MAX_DISPATCH_LATENESS = timedelta(minutes=30)
 
 
 def scheduled_at_for(publication: dict, *, cadence_policy: dict) -> datetime | None:
@@ -72,6 +73,19 @@ def dispatch_due(
             continue
         scheduled_at = scheduled_at_for(publication, cadence_policy=cadence_policy)
         if scheduled_at is None or scheduled_at > current:
+            continue
+        if current - scheduled_at > MAX_DISPATCH_LATENESS:
+            results.append(
+                registry.update(
+                    publication["publication_id"],
+                    status=GATEWAY_ERROR_STATUS,
+                    gateway_status="MISSED_DISPATCH_WINDOW",
+                    gateway_error=(
+                        f"Scheduled for {scheduled_at.isoformat()} but scheduler ran at "
+                        f"{current.isoformat()} (maximum lateness: {MAX_DISPATCH_LATENESS})."
+                    ),
+                )
+            )
             continue
         try:
             claimed = registry.claim(

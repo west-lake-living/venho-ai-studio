@@ -367,6 +367,30 @@ def test_independent_scheduler_uses_the_policy_timezone_and_publish_time() -> No
     assert scheduled == datetime(2026, 8, 10, 9, 0, tzinfo=ZoneInfo("Asia/Ho_Chi_Minh"))
 
 
+def test_independent_scheduler_does_not_dispatch_an_expired_slot(tmp_path: Path) -> None:
+    _past_shadow(tmp_path)
+    registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
+    publication_id = _reserve_pending(registry, platform="facebook", slot_id="slot-2026-08-10-monday")
+    registry.update(publication_id, status="APPROVED_SCHEDULED", approved_by="harry")
+
+    calls = []
+    make_adapter = MakeGatewayAdapter(enabled=True)
+    make_adapter.send = lambda command: calls.append(command) or {"status": "GATEWAY_ACCEPTED", "published": False}
+    bridge = M07PublishingBridge(make_adapter=make_adapter, zalo_adapter=ZaloOAAdapter(enabled=True))
+
+    results = dispatch_due(
+        project="venho_hotel",
+        data_root=tmp_path,
+        registry=registry,
+        bridge=bridge,
+        now=datetime(2026, 8, 10, 9, 31, tzinfo=ZoneInfo("Asia/Ho_Chi_Minh")),
+    )
+
+    assert results[0]["gateway_status"] == "MISSED_DISPATCH_WINDOW"
+    assert registry.find(publication_id)["status"] == "GATEWAY_ERROR"
+    assert calls == []
+
+
 def test_approve_week_is_atomic_when_a_row_changes_during_review(tmp_path: Path) -> None:
     registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
     first = _reserve_pending(registry, platform="facebook", slot_id="slot-2026-08-10-monday")
