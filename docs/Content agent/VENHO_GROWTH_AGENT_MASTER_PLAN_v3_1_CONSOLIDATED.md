@@ -1081,10 +1081,10 @@ Nhịp 4 bài/tuần cho phép timeline thoải mái hơn v3.0 (bắt đầu T3 
 
 | Thành phần | Chạy ở đâu | Vì sao |
 |---|---|---|
-| `venho-growth weekly-cycle` (sinh brief/copy/ảnh cho cả tuần) | **GitHub Actions**, cron `growth-daily-cycle.yml` (T2 08:00 ICT) | Ephemeral, không cần máy bật, chi phí runner miễn phí trong hạn mức |
+| `venho-growth weekly-cycle` (sinh brief/copy/ảnh cho cả tuần) | **GitHub Actions**, `growth-daily-cycle.yml` T2 08:00/10:00/12:00 ICT + chạy tay | Tạo đủ 4 slot Facebook/Instagram `PENDING_APPROVAL`; thiếu một slot/platform thì job fail/retry, không được đánh dấu thành công |
 | `venho-growth trend-scan` (Tavily + Gemini Flash) | **GitHub Actions**, cron `growth-trend-scan.yml` (T6 08:00 ICT) | Chạy trước Chủ nhật để Harry có cả cuối tuần duyệt trước khi chọn topic T7 |
-| `publication_registry.json`, `trend_candidates.json`, `rotation_state.json` | **File JSON trong repo**, đồng bộ 2 chiều qua GitHub Contents API | Không có DB server; CI chỉ *append* record mới, local là nơi duy nhất mutate — xem §10.2 |
-| Duyệt/từ chối/sửa + **dispatch thật lên Facebook/Zalo qua Make.com** | **`venho-os` chạy local trên máy Harry** (`localhost:3000/os`, Next.js) | Owner approval + publish luôn xảy ra đồng bộ trong cùng một request khi Harry bấm nút — không có cửa sổ 09:00 cố định cần dispatch tự động |
+| `publication_registry.json`, `trend_candidates.json`, `rotation_state.json`, `growth.db` | **Git-backed state**, Dashboard đọc registry qua GitHub Contents API | CI và Dashboard đều mutate registry; xung đột chọn record có `updated_at` mới nhất — xem §10.2 |
+| Duyệt/từ chối/sửa tại **`venho-os` local**, dispatch Facebook/Instagram qua Make.com | Approval tạo `APPROVED_SCHEDULED`; GitHub Actions `growth-publish-scheduler.yml` chạy 09:00 ICT T2/T4/T6/T7 | Scheduler chỉ dispatch slot đúng giờ, cửa sổ trễ tối đa 30 phút; rollout `shadow` vẫn chặn webhook |
 | Obsidian vault (Research OS) | **Local trên máy Harry**, git-tracked | File thật, không cần lúc nào cũng online |
 | M07 Publishing Gateway, M03 Validator | **In-process trong `venho-os` API route** khi duyệt | Không phải service độc lập chạy nền |
 
@@ -1095,14 +1095,14 @@ Nhịp 4 bài/tuần cho phép timeline thoải mái hơn v3.0 (bắt đầu T3 
 Vì CI (GitHub Actions) và local (`venho-os`) không chia sẻ filesystem hay DB, hai bên đồng bộ qua chính git repo, dùng GitHub Contents API (không phải `git pull`/`git push` thô để tránh xung đột merge giữa checkout ephemeral của CI và checkout lâu dài trên máy Harry):
 
 ```text
-CI (cron)  → chỉ APPEND record mới (candidate mới, publication RESERVED mới)
+CI (cron)  → tạo draft hoặc cập nhật trạng thái dispatch
                 → commit trực tiếp vào repo, message có "[skip ci]"
 
 venho-os   → trước mỗi thao tác đọc: PULL bằng `gh api .../contents/{path}` (base64 + sha)
            → trước mỗi thao tác ghi (approve/reject/edit/retry-dispatch): PUSH bằng
              `gh api --method PUT ... -f sha=<sha cũ>` (optimistic concurrency)
-           → merge rule: union theo id, LOCAL LUÔN THẮNG khi trùng id
-             (đúng vì CI chỉ append, chỉ local mutate record đã tồn tại)
+           → merge rule: union theo id, record có `updated_at` mới nhất thắng
+             (CI scheduler và Dashboard đều có thể mutate cùng publication)
 ```
 
 Áp dụng cho hai file: `trend_candidates.json` (`TrendCandidateStore.approve()` — idempotent, retry an toàn bằng cách gọi lại approve) và `publication_registry.json` (`PublicationRegistry.claim()` — **không** idempotent, nên có route `resync` riêng chỉ đẩy lại git, không replay hành động CLI). Cờ tắt khẩn cấp: `TREND_CANDIDATES_GIT_SYNC=0` / `PUBLICATION_REGISTRY_GIT_SYNC=0`.
@@ -1111,12 +1111,12 @@ venho-os   → trước mỗi thao tác đọc: PULL bằng `gh api .../contents
 
 | Rủi ro | Giảm thiểu hiện tại | Còn thiếu |
 |---|---|---|
-| GitHub Actions cron không chạy (outage, quota) | `workflow_dispatch` cho phép chạy tay | Chưa có alert nào báo "cron tuần này không chạy" |
+| GitHub Actions cron không chạy (outage, quota) | Weekly Cycle retry T2 08:00/10:00/12:00 + `workflow_dispatch`; job fail khi thiếu FB/IG | Telegram alert vẫn cần cấu hình secrets |
 | Sync push thất bại (sha conflict, mạng) | Response trả `synced:false` + `sync_error`, banner đỏ trên `venho-os` + nút "Đồng bộ lại" cho registry | Chưa có alert chủ động (Telegram/email) — Harry phải tự thấy banner khi mở dashboard |
-| Harry không mở `venho-os` đúng lúc | Không có — dispatch chỉ xảy ra khi Harry chủ động duyệt | Đây là đánh đổi có chủ đích: không có "tự đăng lúc 09:00 dù không ai duyệt" — đúng invariant "không publish bài chưa duyệt", nhưng nghĩa là **không có gì tự chạy nếu Harry không mở máy** |
+| Scheduler chạy trễ | Job chỉ chạy 09:00 ICT T2/T4/T6/T7; slot trễ quá 30 phút thành `MISSED_DISPATCH_WINDOW` | Cần vận hành retry/review hàng ngày cho slot bị trễ |
 | Máy Harry tắt/offline | Không cần — `venho-os` chỉ cần chạy lúc duyệt, không cần 24/7 | — |
 
-**Đánh đổi cốt lõi:** kiến trúc cũ (Mac Mini + deadman switch) đổi lấy đảm bảo "bài luôn đăng đúng giờ kể cả khi không ai theo dõi". Kiến trúc thật đổi lấy sự đơn giản và chi phí gần bằng 0, nhưng bỏ đảm bảo đó — hệ thống publish **on-demand khi Harry duyệt**, không phải theo lịch cố định 09:00. Đây là quyết định đã chấp nhận, không phải gap cần vá bằng deadman switch giả.
+**Invariant vận hành:** không bài nào đến Make trước human approval; sau approval, scheduler chỉ đăng tại slot 09:00 đã định và rollout gate vẫn fail-closed ở `shadow`.
 
 ## 10.4. Backup
 

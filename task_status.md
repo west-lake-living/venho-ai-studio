@@ -2,6 +2,16 @@
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
 **Cập nhật:** 2026-08-10 (Linh An official-asset readiness Steps 1–3 closeout) · **Tests:** 841/841 pass · 0 API call trong test
 
+### Growth Agent — automation recovery (2026-08-10)
+
+**Status: DEPLOYED; batch approval queue is being regenerated**
+
+- [x] Weekly Cycle fail-closed: thiếu ngày/platform FB/IG không thể được ghi `SUCCEEDED`; retry dùng idempotency v2 (`e5a5e30`).
+- [x] DNA cần thiết cho Growth CI đã được track trong repo (`f63d11e`).
+- [x] VENHO OS registry sync chọn `updated_at` mới nhất, không còn local ghi đè CI scheduler (`venho-os@0d06281`).
+- [x] Publish Scheduler chạy 09:00 ICT T2/T4/T6/T7, có Make preflight và chặn slot trễ quá 30 phút (`355a25f`).
+- [!] Rollout giữ `shadow`; không dùng `--allow-shadow`, không có publish thật trong đợt recovery.
+
 ### Google Gemini Image Provider option (2026-08-10)
 
 **Status: READY FOR IMPLEMENTATION — documentation only; no Gemini API call, no official asset approval**
