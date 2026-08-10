@@ -1,0 +1,53 @@
+name: Growth Agent Publish Scheduler
+
+# GitHub Actions scheduling is best-effort and may start late.  The command is
+# idempotent: it sends only rows already APPROVED_SCHEDULED and due, so a late
+# run posts the next eligible item once and never bypasses weekly approval.
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# Shares state with weekly generation; serialize commits to the Git-backed
+# PublicationRegistry and growth.db.
+concurrency:
+  group: growth-publication-state
+  cancel-in-progress: false
+
+jobs:
+  dispatch-due:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install scheduler
+        run: pip install -e .
+
+      - name: Dispatch approved publications now due
+        env:
+          MAKE_GROWTH_WEBHOOK_URL: ${{ secrets.MAKE_GROWTH_WEBHOOK_URL }}
+          MAKE_GROWTH_WEBHOOK_SECRET: ${{ secrets.MAKE_GROWTH_WEBHOOK_SECRET }}
+          MAKE_ZALO_WEBHOOK_URL: ${{ secrets.MAKE_ZALO_WEBHOOK_URL }}
+          MAKE_ZALO_WEBHOOK_SECRET: ${{ secrets.MAKE_ZALO_WEBHOOK_SECRET }}
+          ZALO_APP_ID: ${{ secrets.ZALO_APP_ID }}
+          ZALO_APP_SECRET: ${{ secrets.ZALO_APP_SECRET }}
+          ZALO_REFRESH_TOKEN: ${{ secrets.ZALO_REFRESH_TOKEN }}
+        run: venho-growth dispatch-due
+
+      - name: Commit publication state
+        run: |
+          git config user.name "venho-growth-bot"
+          git config user.email "venho-growth-bot@users.noreply.github.com"
+          git add -f data/projects/*/publishing/publication_registry.json \
+                     data/projects/*/growth/growth.db 2>/dev/null || true
+          git diff --cached --quiet || git commit -m "chore: growth scheduled dispatch $(date -u +%Y-%m-%dT%H%MZ)"
+          git push

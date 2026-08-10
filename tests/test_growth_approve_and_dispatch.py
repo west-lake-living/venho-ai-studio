@@ -1,16 +1,20 @@
 from __future__ import annotations
 
+from datetime import date, datetime
+from zoneinfo import ZoneInfo
 from pathlib import Path
 
 import pytest
 
 from growth_orchestrator.application.approve_and_dispatch import (
     approve_and_dispatch,
+    approve_week,
     edit_publication,
     list_pending,
     reject_publication,
     retry_dispatch,
 )
+from growth_orchestrator.application.scheduled_dispatch import dispatch_due, scheduled_at_for
 from growth_orchestrator.bridges.m07_publishing_bridge import M07PublishingBridge
 from growth_orchestrator.domain.publishing_slot import PublishingSlot
 from publishing_gateway.adapters.make_gateway import MakeGatewayAdapter
@@ -297,6 +301,89 @@ def test_approve_and_dispatch_without_snapshot_still_works(tmp_path: Path) -> No
     assert "approval_snapshot" not in result
 
 
+def test_approve_week_records_one_scheduled_approval_without_dispatch(tmp_path: Path) -> None:
+    registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
+    monday = _reserve_pending_with_snapshot(registry, platform="facebook")
+    friday = registry.reserve(
+        {"publication_id": "pub-instagram-snap-1", "content_package_id": "pkg-snap-2", "idempotency_key": "idem-instagram-snap-1", "platform": "instagram"}
+    )
+    registry.update(
+        friday["publication_id"],
+        status="PENDING_APPROVAL",
+        slot_id="slot-2026-08-14-friday",
+        package_snapshot={"id": "pkg-snap-2", "copy_version_ids": ["copy-v2"], "asset_version_ids": [], "validation_snapshot_id": "val-def", "fact_version_ids": [], "brief_version_id": "brief-2@1"},
+    )
+    registry.update(monday, slot_id="slot-2026-08-10-monday")
+    next_week = _reserve_pending(registry, platform="threads", slot_id="slot-2026-08-17-monday")
+
+    approved = approve_week(
+        approved_by="harry@example.com",
+        week_start=date(2026, 8, 10),
+        data_root=tmp_path,
+        registry=registry,
+    )
+
+    assert {item["publication_id"] for item in approved} == {monday, friday["publication_id"]}
+    for item in approved:
+        assert item["status"] == "APPROVED_SCHEDULED"
+        assert item["approval_scope"] == "weekly_schedule"
+        assert item["approved_by"] == "harry@example.com"
+        assert item["approval_snapshot"]["status"] == "approved"
+    assert registry.find(next_week)["status"] == "PENDING_APPROVAL"
+
+
+def test_independent_scheduler_dispatches_only_approved_posts_at_their_due_slot(tmp_path: Path) -> None:
+    _past_shadow(tmp_path)
+    registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
+    due = _reserve_pending(registry, platform="facebook", slot_id="slot-2026-08-10-monday")
+    future = _reserve_pending(registry, platform="instagram", slot_id="slot-2026-08-12-wednesday")
+    registry.update(due, status="APPROVED_SCHEDULED", approved_by="harry")
+    registry.update(future, status="APPROVED_SCHEDULED", approved_by="harry")
+
+    calls = []
+    make_adapter = MakeGatewayAdapter(enabled=True)
+    make_adapter.send = lambda command: calls.append(command) or {"status": "GATEWAY_ACCEPTED", "published": False}
+    bridge = M07PublishingBridge(make_adapter=make_adapter, zalo_adapter=ZaloOAAdapter(enabled=True))
+
+    results = dispatch_due(
+        project="venho_hotel",
+        data_root=tmp_path,
+        registry=registry,
+        bridge=bridge,
+        now=datetime(2026, 8, 10, 9, 0, tzinfo=ZoneInfo("Asia/Ho_Chi_Minh")),
+    )
+
+    assert [result["publication_id"] for result in results] == [due]
+    assert registry.find(due)["status"] == "GATEWAY_ACCEPTED"
+    assert registry.find(future)["status"] == "APPROVED_SCHEDULED"
+    assert [call["publication_id"] for call in calls] == [due]
+
+
+def test_independent_scheduler_uses_the_policy_timezone_and_publish_time() -> None:
+    scheduled = scheduled_at_for(
+        {"slot_id": "slot-2026-08-10-monday"},
+        cadence_policy={"timezone": "Asia/Ho_Chi_Minh", "publish_time": "09:00"},
+    )
+    assert scheduled == datetime(2026, 8, 10, 9, 0, tzinfo=ZoneInfo("Asia/Ho_Chi_Minh"))
+
+
+def test_approve_week_is_atomic_when_a_row_changes_during_review(tmp_path: Path) -> None:
+    registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
+    first = _reserve_pending(registry, platform="facebook", slot_id="slot-2026-08-10-monday")
+    second = _reserve_pending(registry, platform="instagram", slot_id="slot-2026-08-12-wednesday")
+    original_update_many = registry.update_many_if_status
+
+    def changed_after_read(updates):
+        registry.update(second, status="REJECTED")
+        return original_update_many(updates)
+
+    registry.update_many_if_status = changed_after_read  # type: ignore[method-assign]
+
+    with pytest.raises(ValueError, match="not PENDING_APPROVAL"):
+        approve_week(approved_by="harry", week_start=date(2026, 8, 10), data_root=tmp_path, registry=registry)
+    assert registry.find(first)["status"] == "PENDING_APPROVAL"
+
+
 def test_approve_and_dispatch_second_concurrent_call_cannot_double_dispatch(tmp_path: Path) -> None:
     """Regression test for the check-then-act race: once the first caller's
     registry.claim() flips status off PENDING_APPROVAL, a second caller racing
@@ -579,7 +666,7 @@ def test_shadow_stage_withholds_the_webhook_entirely(tmp_path: Path) -> None:
     assert result["approved_by"] == "harry"
 
 
-def test_shadow_held_row_stays_visible_to_the_operator(tmp_path: Path) -> None:
+def test_shadow_held_row_is_not_returned_to_the_approval_queue(tmp_path: Path) -> None:
     registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
     publication_id = _reserve_pending(registry)
     approve_and_dispatch(
@@ -588,7 +675,7 @@ def test_shadow_held_row_stays_visible_to_the_operator(tmp_path: Path) -> None:
 
     pending = list_pending(project="venho_hotel", data_root=tmp_path, registry=registry)
 
-    assert [item["publication_id"] for item in pending] == [publication_id]
+    assert pending == []
 
 
 def test_allow_shadow_publishes_and_records_who_overrode(tmp_path: Path) -> None:

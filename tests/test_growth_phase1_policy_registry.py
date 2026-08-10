@@ -71,3 +71,4 @@ def test_feature_flags_default_real_providers_off() -> None:
     assert flags["real_image_provider_enabled"] is False
     assert flags["real_meta_insights_enabled"] is False
     assert flags["trend_lane_enabled"] is False
+    assert flags["legacy_agent_active"] is False

@@ -59,14 +59,18 @@ class GoogleDriveUploader:
         from googleapiclient.discovery import build
 
         info = json.loads(token_json)
-        scopes = info.get("scopes") or ["https://www.googleapis.com/auth/drive.file"]
-        creds = Credentials.from_authorized_user_info(info, scopes)
+        # Credentials exposes client_id/client_secret as read-only properties.
+        # Put the GitHub secret values in the authorized-user payload before
+        # constructing credentials, so an expired token can be refreshed.
+        credential_info = dict(info)
+        if client_id:
+            credential_info["client_id"] = client_id
+        if client_secret:
+            credential_info["client_secret"] = client_secret
+        scopes = credential_info.get("scopes") or ["https://www.googleapis.com/auth/drive.file"]
+        creds = Credentials.from_authorized_user_info(credential_info, scopes)
         if not creds.valid:
             if creds.expired and creds.refresh_token:
-                if client_id:
-                    creds.client_id = client_id
-                if client_secret:
-                    creds.client_secret = client_secret
                 creds.refresh(Request())
             else:
                 raise RuntimeError(

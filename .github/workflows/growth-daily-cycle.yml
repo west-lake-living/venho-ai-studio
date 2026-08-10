@@ -5,16 +5,17 @@ name: Growth Agent Weekly Cycle
 # week's drafts together on VENHO OS Dashboard -- same "batch generate, one
 # approval session" pattern the old VenHoSocialManager topic_schedule.json
 # used, instead of one cadence day's draft trickling in per cron tick.
-# Runs Monday 08:00 Asia/Ho_Chi_Minh (UTC+7) == 01:00 UTC Monday.
+# Attempts Monday 08:00, 10:00 and 12:00 Asia/Ho_Chi_Minh. GitHub Actions
+# schedules are best-effort; retries recover a failed or delayed first attempt
+# without needing an operator to generate the approval queue manually.
 # This job only generates drafts and queues them PENDING_APPROVAL in
 # PublicationRegistry -- it does NOT publish anything. Actual posting is
-# triggered later by approving on VENHO OS Dashboard (see
-# growth_orchestrator/application/approve_and_dispatch.py), which calls
-# Make.com webhooks directly from wherever the dashboard backend runs, not
-# from this workflow.
+# dispatched later by the independent growth-publish-scheduler workflow.
 on:
   schedule:
     - cron: "0 1 * * 1"
+    - cron: "0 3 * * 1"
+    - cron: "0 5 * * 1"
   workflow_dispatch:
 
 # Without this the default GITHUB_TOKEN is read-only and the "Commit
@@ -25,6 +26,12 @@ on:
 # results were discarded when the runner was torn down.
 permissions:
   contents: write
+
+# The scheduler persists publication state in the same files as this workflow.
+# Never let the two workflows commit that state concurrently.
+concurrency:
+  group: growth-publication-state
+  cancel-in-progress: false
 
 jobs:
   weekly-cycle:
@@ -85,5 +92,5 @@ jobs:
                      data/projects/*/content/**/*.json \
                      data/projects/*/content/**/*.md \
                      data/projects/*/prompts/**/*.json 2>/dev/null || true
-          git diff --cached --quiet || git commit -m "chore: growth agent daily cycle $(date -u +%Y-%m-%d)"
+          git diff --cached --quiet || git commit -m "chore: growth agent weekly cycle $(date -u +%Y-%m-%d)"
           git push

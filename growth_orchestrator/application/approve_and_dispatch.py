@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import os
+import re
 import tempfile
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Optional
 
@@ -31,6 +33,19 @@ EDITABLE_STATUSES = {PENDING_STATUS, GATEWAY_ERROR_STATUS, SHADOW_HELD_STATUS}
 REDISPATCHABLE_STATUSES = {GATEWAY_ERROR_STATUS, SHADOW_HELD_STATUS}
 
 SHADOW_STAGE = "shadow"
+APPROVED_SCHEDULED_STATUS = "APPROVED_SCHEDULED"
+
+_SLOT_DATE_PATTERN = re.compile(r"^slot-(\d{4}-\d{2}-\d{2})-")
+
+
+def _scheduled_week_start(publication: dict) -> date | None:
+    """Return the Monday for a publication's immutable cadence slot."""
+    slot_id = publication.get("slot_id") or ""
+    match = _SLOT_DATE_PATTERN.match(slot_id)
+    if match is None:
+        return None
+    slot_date = date.fromisoformat(match.group(1))
+    return slot_date - timedelta(days=slot_date.weekday())
 
 
 def _rollout_stage(*, project: str, data_root: Path) -> str:
@@ -52,13 +67,62 @@ def list_pending(
     """Rows the operator has an action to take on right now.
 
     Includes both PENDING_APPROVAL (needs Duyệt/Từ chối/Sửa) and GATEWAY_ERROR
-    (approved already, dispatch failed -- needs Thử lại gửi/Sửa) so a stranded
-    row is never invisible on the dashboard. The `status` field on each item
-    tells the caller which state it's in.
+    (approved already, dispatch failed -- needs Thử lại gửi/Sửa). A
+    SHADOW_HELD row was already approved, so it is not a draft to review and
+    belongs in rollout/history monitoring rather than this action queue.
     """
     registry = registry or PublicationRegistry(project, data_root=data_root)
-    actionable = {PENDING_STATUS, GATEWAY_ERROR_STATUS, SHADOW_HELD_STATUS}
+    actionable = {PENDING_STATUS, GATEWAY_ERROR_STATUS}
     return [item for item in registry.load()["publications"] if item.get("status") in actionable]
+
+
+def approve_week(
+    *,
+    approved_by: str,
+    week_start: date,
+    project: str = "venho_hotel",
+    data_root: Path = Path("data/projects"),
+    registry: Optional[PublicationRegistry] = None,
+) -> list[dict]:
+    """Approve every pending platform post scheduled for one ISO week.
+
+    This is deliberately a state-only operation: it records an exact content
+    snapshot and the weekly approval, but does not instantiate a publishing
+    bridge or make a network call.  The scheduler is responsible for the
+    later, per-slot dispatch.
+    """
+    registry = registry or PublicationRegistry(project, data_root=data_root)
+    candidates = [
+        item
+        for item in registry.load()["publications"]
+        if item.get("status") == PENDING_STATUS and _scheduled_week_start(item) == week_start
+    ]
+    if not candidates:
+        raise ValueError(f"no PENDING_APPROVAL publications scheduled for week starting {week_start.isoformat()}")
+
+    approved_at = datetime.now(timezone.utc).isoformat()
+    updates: list[tuple[str, str, dict]] = []
+    for publication in candidates:
+        package_snapshot = publication.get("package_snapshot")
+        approval_snapshot = (
+            create_approval_snapshot(package_snapshot, approved_by=approved_by)
+            if package_snapshot is not None
+            else None
+        )
+        updates.append(
+            (
+                publication["publication_id"],
+                PENDING_STATUS,
+                {
+                    "status": APPROVED_SCHEDULED_STATUS,
+                    "approved_by": approved_by,
+                    "approved_at": approved_at,
+                    "approval_scope": "weekly_schedule",
+                    "approval_snapshot": approval_snapshot,
+                },
+            )
+        )
+    return registry.update_many_if_status(updates)
 
 
 def _advance_slot_on_dispatch_success(

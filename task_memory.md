@@ -1189,6 +1189,21 @@ Cả arc từ commit `8b36845` → `f6599a0`. Điểm chung của mọi lỗi tr
   dựng lại danh sách từ overlay hiện tại + observed, nên overlay thiếu `forbidden:` sẽ làm rơi sạch
   rule curated (đo được: forbidden 100 → 0 trên một ảnh rooftop tốt).
 
+## 14s. Linh An official-asset readiness — Steps 1–3 (2026-08-10)
+
+- **Hai generation lane là contract chung UI/prompt/API.** `identity` dùng standing face reference cho portrait, standing, leaning và pose tĩnh. `action` áp dụng cho running, cycling, sitting, jumping, dancing, swimming, climbing và dynamic pose khác; bắt buộc text-to-image để standing reference không khóa sai body geometry. Manifest phải ghi `generationLane`, `requestedUseRef`, `effectiveUseRef`, và `references.mode`.
+- **Prompt người dùng vẫn được giữ, nhưng policy không thể bị xoá bằng textarea.** `linh_an_generation_protocol_v1` được append ở server-side spend boundary, sau prompt đã submit. Protocol mang scenario lock, exact effective outfit, pose/action, reference policy và yêu cầu Linh An là physical actor. Manifest ghi cả `userPrompt`, `serverPrompt`, `generationProtocol`, prompt effective và hash.
+- **CLI/test QC phải tách khỏi audit live.** `venho validate image|prompt|face|content --output-root <dir>` ghi report/manifest vào root chỉ định. Test CLI bắt buộc truyền temporary output root; không được sinh report mock vào `data/projects/venho_hotel/validation/`.
+- **Chưa có approval mới.** Không chạy generation trả phí trong Steps 1–3. Asset official vẫn yêu cầu image-DNA pass + face-QC ≥90 + không kill-switch + human review; artifact `revise` không được xem là approved.
+- **Verify closeout:** AI Studio `841/841` pytest pass; Venho OS `191/191` vitest pass, TypeScript/build pass. Lint OS vẫn có 2 lỗi sẵn có trong `design_handoff_venho_os_cockpit/support.js`.
+
+## 14t. Google Gemini Image Provider option — handoff to implementation (2026-08-10)
+
+- Chi tiết triển khai nằm tại `venho-os/docs/GOOGLE_GEMINI_IMAGE_PROVIDER_IMPLEMENTATION.md`. Gemini phải đi qua API/provider adapter của Venho OS, không qua Google Flow UI, để tất cả artifact tiếp tục có immutable run/variant + manifest + QC report.
+- Preserve Validator Studio as independent judge. Không sửa DNA/prompt/threshold để làm provider mới pass; official vẫn Face `>=90`, image/intent approve (nơi áp dụng), no kill-switch, rồi human review.
+- Provider candidates: Nano Banana 2 (`gemini-3.1-flash-image`) cho volume/lifestyle; Nano Banana Pro (`gemini-3-pro-image`) cho reference/identity phức tạp. `gemini-2.5-flash-image` legacy, không dùng cho đường mới; Nano Banana 2 Lite không dùng làm official asset vì không tối ưu multi-reference.
+- Bước 5 đã tạo hero/café/business nhưng Face QC chỉ 84.03–88.8; West Lake bị provider safety block; không asset nào official. Benchmark Gemini phải diễn ra trước khi tạo tiếp library: 6 scenario static × Flash/Pro, same prompt/reference/QC, manifest riêng. Chỉ chạy paid benchmark khi user authorize.
+
 ## 14. Task Closing Protocol
 
 Khi người dùng nói **"kết thúc task"**, Codex phải tự động:
@@ -1197,3 +1212,74 @@ Khi người dùng nói **"kết thúc task"**, Codex phải tự động:
 2. Cập nhật `task_status.md` nếu module/stage/test count/commit/package mẫu thay đổi.
 3. Ghi rõ commit hash, test command/kết quả, output mẫu nếu có.
 4. Kiểm tra `git status --short` và báo working tree còn sạch hay còn thay đổi.
+
+## 14u. Một lần duyệt theo lịch — Bước 1: canonical pipeline (2026-08-10)
+
+- Growth Agent được chốt là pipeline production duy nhất cho nội dung Facebook/Instagram.
+- `legacy_agent_active: false` trong Growth feature flags.
+- GitHub Actions của `venho-social-content-agent` đã bỏ trigger cron; chỉ còn `workflow_dispatch` để khôi phục dữ liệu lịch sử có chủ đích. Nó không còn được phép tự tạo hoặc gửi bài theo lịch production.
+- Chưa bật dispatch/scheduler Growth ở bước này; các bước sau phải sửa OAuth, chuyển approval thành scheduled state và hoàn thiện dispatcher trước khi bật đăng tự động.
+
+## 14v. Một lần duyệt theo lịch — Bước 2: Google Drive OAuth (2026-08-10)
+
+- Đã sửa Growth `GoogleDriveUploader`: client ID/secret từ GitHub Secrets được đưa vào authorized-user payload trước khi tạo Google credentials; không còn gán vào thuộc tính chỉ đọc `Credentials.client_id`/`client_secret`.
+- Đây là nguyên nhân trực tiếp làm GitHub Actions `Growth Agent Weekly Cycle` thất bại trong 25 giây khi refresh token hết hạn.
+- Regression test tái hiện token hết hạn, xác nhận credentials nhận đúng client config và gọi refresh thành công mà không có network call.
+
+## 14w. Một lần duyệt theo lịch — Bước 3: Duyệt toàn bộ tuần (2026-08-10)
+
+- `venho-growth approve-week --approved-by <email> [--week-start YYYY-MM-DD]` là thao tác duy nhất duyệt tất cả bản ghi `PENDING_APPROVAL` có `slot_id` trong cùng tuần ISO. Default là tuần hiện tại theo giờ Việt Nam.
+- Mỗi bài được chuyển atomically sang `APPROVED_SCHEDULED`, có `approved_at`, `approved_by`, `approval_scope: weekly_schedule` và immutable `approval_snapshot`; tuyệt đối không khởi tạo Make bridge hay gọi webhook trong thao tác này.
+- `PublicationRegistry.update_many_if_status()` kiểm tra toàn bộ batch dưới một file lock trước khi ghi, nên nếu một bài đổi trạng thái trong lúc duyệt thì không bài nào của tuần bị duyệt nửa chừng.
+- VENHO OS có `POST /api/v1/studio/growth/approve-week` và nút **Duyệt toàn bộ tuần**; endpoint đồng bộ registry lên GitHub sau khi CLI thành công.
+
+## 14x. Một lần duyệt theo lịch — Bước 4: Scheduler xuất bản độc lập (2026-08-10)
+
+- Đường production bắt buộc là `PENDING_APPROVAL` → `APPROVED_SCHEDULED` (Duyệt toàn bộ tuần) → `DISPATCHING` → gateway. `approve-and-dispatch` đã bị retire ở CLI để tab cũ hoặc API cũ không thể đăng ngay sau duyệt.
+- `venho-growth dispatch-due` là entrypoint scheduler: chỉ claim bản ghi `APPROVED_SCHEDULED` có `slot_id` đến hạn theo `growth/cadence_policy.yaml` (09:00, Asia/Ho_Chi_Minh). Claim có điều kiện đảm bảo hai tick trùng nhau không thể cùng gọi Make cho một bài.
+- VENHO OS có hook `POST /api/v1/studio/growth/scheduler/dispatch`, chỉ nhận `Authorization: Bearer $GROWTH_SCHEDULER_TOKEN`; hook refresh/sync registry Git rồi gọi `dispatch-due`. Scheduler bên ngoài cần poll hook này mỗi 5 phút; approval không gọi hook.
+- Dashboard đã bỏ toàn bộ nút duyệt riêng và duyệt từng nhóm; chỉ còn **Duyệt toàn bộ tuần**. Giữ reject/edit trước khi duyệt và retry dispatch khi gateway lỗi.
+
+## 14y. Một lần duyệt theo lịch — Bước 5: Hợp đồng Scheduler rollout (2026-08-10)
+
+- Scheduler cloud chỉ được gọi `POST /api/v1/studio/growth/scheduler/dispatch` mỗi 5 phút, với `Authorization: Bearer $GROWTH_SCHEDULER_TOKEN`; tuyệt đối không gọi Make publishing webhook trực tiếp.
+- Đã thêm `venho-os/docs/GROWTH_SCHEDULER_ROLLOUT.md` và khai báo biến môi trường trong `.env.example`. Chưa kích hoạt scheduler: VENHO OS chưa có URL public và runtime secret chưa được cấu hình; cloud scheduler không gọi được `localhost`.
+- Không được thử gọi endpoint production cho tới khi có hai giá trị trên, vì mọi publication đã duyệt và quá giờ sẽ được dispatcher xử lý ngay theo contract.
+
+## 14z. Một lần duyệt theo lịch — Bước 5: GitHub Actions Scheduler (2026-08-10)
+
+- Quyết định vận hành Startup: dùng GitHub Actions, không phụ thuộc Mac Mini hay VENHO OS public endpoint. Workflow `.github/workflows/growth-publish-scheduler.yml` chạy best-effort mỗi 5 phút, gọi trực tiếp `venho-growth dispatch-due`, rồi commit `publication_registry.json` và `growth.db`.
+- Workflow scheduler và `growth-daily-cycle.yml` dùng cùng concurrency group `growth-publication-state`; không thể ghi đồng thời state Git-backed.
+- Secrets bắt buộc tại GitHub repository: `MAKE_GROWTH_WEBHOOK_URL` và (nếu Make xác thực) `MAKE_GROWTH_WEBHOOK_SECRET`. Các secrets Zalo chỉ cần khi có publication Zalo. Không dùng `GROWTH_SCHEDULER_TOKEN` trong phương án GitHub Actions.
+- Workflow không dùng `--allow-shadow`: rollout state `shadow` vẫn fail-closed và giữ bài, không tự đăng. Chỉ khi rollout được advance theo quy trình mới gửi Make.
+- GitHub Repository Secret `MAKE_GROWTH_WEBHOOK_URL` đã được cấu hình ngày 2026-08-10. Make không có webhook secret ở cấu hình hiện tại, nên không cần `MAKE_GROWTH_WEBHOOK_SECRET`.
+
+## 14aa. Một lần duyệt theo lịch — Bước 6: Migration, kiểm thử và rollout gate (2026-08-10)
+
+- Không có publication `APPROVED_SCHEDULED` trong registry hiện tại. Các bản ghi chưa kết thúc thuộc cơ chế cũ (`GATEWAY_*`/`SHADOW_HELD`), không được migrate về lịch mới vì có thể đăng lại bài đã quá hạn.
+- Scorecard thật `growth-scheduler-2026-08`: 2.22/10, sample `PUBLISHED=0`; thiếu telemetry post, brand/claim và Vision QC thật. Gate chặn `shadow → pilot_25` đúng thiết kế; không thay đổi rollout state và không chạy dispatch.
+- Runbook rollout hợp lệ. Test regression gồm scheduler, weekly approval, OAuth, policy và rollout: 69/69 pass. `git diff --check` pass.
+
+## 14ab. Khắc phục Dashboard approval queue — Bước 7a: trạng thái rỗng rõ ràng (2026-08-10)
+
+- VENHO OS luôn hiển thị một nút **Duyệt toàn bộ tuần** duy nhất; khi không có `PENDING_APPROVAL`, nút bị vô hiệu với lý do rõ ràng thay vì biến mất.
+- `POST /api/v1/studio/growth/approve-week` nhận diện structured error của CLI khi queue rỗng và trả HTTP 409 / `NO_PENDING_APPROVAL` với thông báo tiếng Việt; không còn báo sai là `Command failed`/lỗi hạ tầng.
+- ESLint hai file thay đổi và `git diff --check` đã pass.
+
+## 14ac. Khắc phục Dashboard approval queue — Bước 7b: chẩn đoán lệch Slot (2026-08-10)
+
+- Ảnh Dashboard được đối chiếu với state thật: tuần 2026-08-10 có Slot T2/T6/T7 là `OPEN`, Slot T4 là `PENDING_APPROVAL` nhưng không có `content_package_id`; không có publication nào ở `APPROVED_SCHEDULED`.
+- Các bài đang hiện ở bảng trên là publication cũ của tuần 2026-08-03, đều `SHADOW_HELD`; chúng không phải hàng chờ duyệt của tuần hiện tại. State `shadow` chủ động chặn webhook Make.
+- Kết luận: thao tác Duyệt không thành công, Slot không đổi là đúng với state hiện tại, và không bài nào sẽ được đăng.
+
+## 14ad. Khắc phục tuần 2026-08-10 — Bước 7c: đồng bộ Slot và lọc queue (2026-08-10)
+
+- Đã chạy `venho-growth ensure-slots --horizon-days 14`: thêm 2 Slot còn thiếu trong horizon, không ghi đè Slot tuần hiện tại.
+- `list-pending` chỉ trả `PENDING_APPROVAL` và `GATEWAY_ERROR`; các bài `SHADOW_HELD` cũ không còn xuất hiện trong bảng duyệt, vì đã được duyệt từ trước và không có thao tác Duyệt/Từ chối.
+- Kiểm thử: `tests/test_growth_approve_and_dispatch.py` 38/38 pass; `git diff --check` pass. Tuần hiện tại vẫn chưa có content package; T4 còn orphan `PENDING_APPROVAL`, sẽ được tuần-cycle xử lý ở bước tạo content.
+
+## 14ae. Khắc phục tuần 2026-08-10 — Bước 7d: Weekly Cycle tự phục hồi (2026-08-10)
+
+- Workflow `Growth Agent Weekly Cycle` được lập lịch thử lại tự động vào 08:00, 10:00 và 12:00 thứ Hai (Asia/Ho_Chi_Minh). `JobStore` chỉ cho một run thành công mỗi ISO week; các lần còn lại tự bỏ qua, còn run lỗi sẽ được thử lại mà không cần thao tác Dashboard.
+- Nguyên nhân run 10/08 thất bại: GitHub chạy SHA `4287651` chứa lỗi Google Drive OAuth cũ. Bản sửa OAuth và lịch retry đang ở working tree local, chưa có trên nhánh GitHub để Action sử dụng.
+- Xác minh YAML schedule và `tests/test_growth_weekly_cycle.py`: 5/5 pass; `git diff --check` pass.

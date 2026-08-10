@@ -11,6 +11,15 @@ from shared.jobs.job_store import JobStore
 from shared.jobs.slot_store import SlotStore
 
 
+def test_publish_scheduler_is_independent_from_weekly_approval() -> None:
+    workflow = Path(".github/workflows/growth-publish-scheduler.yml").read_text(encoding="utf-8")
+
+    assert 'cron: "*/5 * * * *"' in workflow
+    assert "venho-growth dispatch-due" in workflow
+    assert "approve-week" not in workflow
+    assert "MAKE_GROWTH_WEBHOOK_URL" in workflow
+
+
 def _tmp_data_root(tmp_path: Path) -> Path:
     root = tmp_path / "data" / "projects"
     knowledge_dir = root / "venho_hotel" / "knowledge"

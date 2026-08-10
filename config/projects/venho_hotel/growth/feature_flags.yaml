@@ -19,7 +19,11 @@ deadman_switch_enabled: false           # v3.1 Phase 4.5 (infra)
 cloud_fallback_enabled: false           # v3.1 Phase 4.5 (infra)
 zalo_enabled: false                     # v3.1 -- needs adapter + quota, after Phase 4.5
 blog_seo_enabled: false
-external_scheduler_enabled: false
+# Scheduler is invoked by the authenticated VENHO OS scheduler endpoint; it
+# polls every five minutes and is deliberately independent of approval.
+external_scheduler_enabled: true
 meta_insights_enabled: false
 growth_recommendations_enabled: false
-legacy_agent_active: true
+# Growth Agent is the canonical production pipeline. The legacy Social Content
+# Agent remains available only for explicit historical recovery, never cron.
+legacy_agent_active: false

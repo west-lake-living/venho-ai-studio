@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from datetime import datetime
+from datetime import date, datetime, timedelta
 from pathlib import Path
 from typing import Optional
 from zoneinfo import ZoneInfo
@@ -10,11 +10,13 @@ import typer
 
 from growth_orchestrator.application.approve_and_dispatch import (
     approve_and_dispatch,
+    approve_week,
     edit_publication,
     list_pending,
     reject_publication,
     retry_dispatch,
 )
+from growth_orchestrator.application.scheduled_dispatch import dispatch_due
 from growth_orchestrator.application.daily_cycle import CADENCE_DAYS, run_daily_cycle
 from growth_orchestrator.application.measure_publication import measure_publication
 from growth_orchestrator.application.reconcile_publication import reconcile_publication
@@ -230,23 +232,52 @@ def approve_and_dispatch_cmd(
         False, "--allow-shadow", help="Publish this row even though the rollout stage is still shadow. Recorded on the row as shadow_override_by."
     ),
 ) -> None:
-    """Approve a PENDING_APPROVAL publication and fire the real Make.com webhook dispatch.
+    """Retired unsafe command; publishing is now scheduler-only."""
+    typer.echo(json.dumps({"ok": False, "error": "approve-and-dispatch retired; use approve-week then dispatch-due"}), err=True)
+    raise typer.Exit(code=2)
 
-    This is what the "Approve" button on VENHO OS Dashboard's Publishing &
-    Schedule section calls (via a local `venho-growth` subprocess) right after
-    the click -- see growth_orchestrator/application/approve_and_dispatch.py.
 
-    While the rollout stage is `shadow` the dashboard's plain click approves
-    but withholds the webhook (row -> SHADOW_HELD). Publishing for real is
-    therefore a deliberate `--allow-shadow` from the terminal, or advancing
-    the stage with `venho-rollout rollout-advance`.
+@app.command("approve-week")
+def approve_week_cmd(
+    approved_by: str = typer.Option(..., "--approved-by"),
+    week_start: Optional[str] = typer.Option(None, "--week-start", help="Monday date, YYYY-MM-DD. Defaults to this week in Asia/Ho_Chi_Minh."),
+    project: str = typer.Option("venho_hotel"),
+) -> None:
+    """Record one approval for every pending post in a scheduled week.
+
+    It never dispatches to Make.com.  A later scheduler releases each
+    APPROVED_SCHEDULED post at its own publishing slot.
     """
+    today = datetime.now(ZoneInfo("Asia/Ho_Chi_Minh")).date()
     try:
-        result = approve_and_dispatch(publication_id, approved_by=approved_by, project=project, allow_shadow=allow_shadow)
+        resolved_week_start = date.fromisoformat(week_start) if week_start else (today - timedelta(days=today.weekday()))
+    except ValueError as exc:
+        typer.echo(json.dumps({"ok": False, "error": "week-start must be YYYY-MM-DD"}), err=True)
+        raise typer.Exit(code=1) from exc
+    if resolved_week_start.weekday() != 0:
+        typer.echo(json.dumps({"ok": False, "error": "week-start must be a Monday"}), err=True)
+        raise typer.Exit(code=1)
+    try:
+        publications = approve_week(approved_by=approved_by, week_start=resolved_week_start, project=project)
     except (KeyError, ValueError) as exc:
         typer.echo(json.dumps({"ok": False, "error": str(exc)}), err=True)
         raise typer.Exit(code=1)
-    typer.echo(json.dumps({"ok": True, "publication": result}, ensure_ascii=False, indent=2))
+    typer.echo(json.dumps({"ok": True, "week_start": resolved_week_start.isoformat(), "publications": publications}, ensure_ascii=False, indent=2))
+
+
+@app.command("dispatch-due")
+def dispatch_due_cmd(
+    project: str = typer.Option("venho_hotel"),
+    limit: int = typer.Option(50, min=1, max=200),
+    allow_shadow: bool = typer.Option(False, "--allow-shadow"),
+) -> None:
+    """Scheduler entrypoint: dispatch only APPROVED_SCHEDULED rows now due."""
+    try:
+        publications = dispatch_due(project=project, limit=limit, allow_shadow=allow_shadow)
+    except (KeyError, ValueError) as exc:
+        typer.echo(json.dumps({"ok": False, "error": str(exc)}), err=True)
+        raise typer.Exit(code=1)
+    typer.echo(json.dumps({"ok": True, "publications": publications}, ensure_ascii=False, indent=2))
 
 
 @app.command("reject")

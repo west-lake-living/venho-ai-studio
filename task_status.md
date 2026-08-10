@@ -1,6 +1,27 @@
 # VENHO AI STUDIO — Task Status
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-08-07 (FORBIDDEN policy hygiene + face gate hair/expression fix) · **Tests:** 841/841 pass · 0 API call trong test
+**Cập nhật:** 2026-08-10 (Linh An official-asset readiness Steps 1–3 closeout) · **Tests:** 841/841 pass · 0 API call trong test
+
+### Google Gemini Image Provider option (2026-08-10)
+
+**Status: READY FOR IMPLEMENTATION — documentation only; no Gemini API call, no official asset approval**
+
+- [x] Handoff document: `venho-os/docs/GOOGLE_GEMINI_IMAGE_PROVIDER_IMPLEMENTATION.md`.
+- [x] Direction: Gemini API provider adapter (not manual Google Flow), retain immutable artifacts/manifests and use existing Validator Studio unchanged.
+- [ ] Implement Gemini Flash/Pro generation selection in Venho OS with server-only credential, provider/model/cost trace in manifest and regression tests.
+- [ ] Run a paid 6-scenario benchmark only with explicit authorization. Bước 5 remains blocked: current live Face QC 84.03–88.8 < official `>=90`; no asset may be promoted.
+
+### Linh An official-asset readiness — Steps 1–3 (2026-08-10)
+
+**Status: DONE — code/configuration readiness only; no paid image generation or official asset approval**
+
+- [x] Identity/action lanes are now explicit at the Venho OS generation boundary. Static poses may use the approved standing face reference; dynamic poses (including running, cycling, sitting, jumping, dancing, swimming, and climbing) force text-to-image so the standing reference cannot corrupt body geometry.
+- [x] Generation manifests now preserve `generationLane`, effective reference mode, exact submitted prompt, server-added prompt, scenario/outfit/action protocol, DNA version, and validator result for reproducible review.
+- [x] `linh_an_generation_protocol_v1` is appended server-side after any editable user prompt. It keeps the scenario lock, selected wardrobe, actor requirement, and lane/reference policy at the spend boundary.
+- [x] Validator CLI supports `--output-root`; CLI tests now write reports into `tmp_path` instead of the live `data/projects/venho_hotel/validation/` store.
+- [x] Verify: AI Studio `/usr/bin/python3 -m pytest -q` → **841/841 pass**. Venho OS `npm test -- --run` → **191/191 pass**; `npx tsc --noEmit` and `npm run build` pass.
+- [ ] No current live Linh An generation has passed the ≥90 face-QC approval threshold. Steps 4–5 live generation/QC ran, but Face results remain 84.03–88.8; do not classify existing `revise`/`usable` artifacts as official assets.
+- [!] `npm run lint` remains blocked only by two pre-existing errors in `venho-os/design_handoff_venho_os_cockpit/support.js`; no changed Linh An file is implicated.
 
 ### FORBIDDEN hygiene + face gate (2026-08-07)
 
@@ -1085,3 +1106,98 @@ Cập nhật `task_status.md` mỗi khi:
 - Hoàn thành một module hoặc stage quan trọng
 - Test count thay đổi
 - Commit mới liên quan đến status module
+
+---
+
+## Growth Agent — One-approval scheduled publishing / Step 1 COMPLETE (2026-08-10)
+
+- Canonical production pipeline: `venho-ai-studio` Growth Agent.
+- Legacy Social Content Agent: cron removed; manual recovery only.
+- Growth `legacy_agent_active`: `false`.
+- Verification passed: feature-flag regression test and GitHub Actions YAML parse.
+
+---
+
+## Growth Agent — One-approval scheduled publishing / Step 2 COMPLETE (2026-08-10)
+
+- Fixed the Google Drive OAuth refresh crash in `GoogleDriveUploader`.
+- OAuth client ID/secret are now supplied before credential construction, not assigned to read-only Google credential properties.
+- Verification: `PYTHONPATH=. /usr/bin/python3 -m pytest -q tests/test_growth_google_drive_uploader.py tests/test_growth_phase1_policy_registry.py` → **7/7 passed** (no network call).
+
+---
+
+## Growth Agent — One-approval scheduled publishing / Step 3 COMPLETE (2026-08-10)
+
+- Added atomic weekly approval command: `venho-growth approve-week`.
+- Approved rows are now recorded as `APPROVED_SCHEDULED` with approver, timestamp and immutable approval snapshot; this action has no Make.com dispatch path.
+- Added the VENHO OS “Duyệt toàn bộ tuần” API and dashboard action.
+- Verification: Growth approval/OAuth/policy suite **43/43 passed**; VENHO OS suite **195/195 passed**; changed VENHO OS files pass ESLint. Full OS lint remains blocked by 2 pre-existing errors in `design_handoff_venho_os_cockpit/support.js`.
+
+---
+
+## Growth Agent — One-approval scheduled publishing / Step 4 COMPLETE (2026-08-10)
+
+- Added independent due-slot dispatcher: `venho-growth dispatch-due`. It processes only `APPROVED_SCHEDULED` rows due at 09:00 Asia/Ho_Chi_Minh, with an atomic status claim before Make can be called.
+- Retired the production CLI path `approve-and-dispatch`; weekly approval is now the only dashboard approval action and cannot trigger publishing.
+- Added authenticated VENHO OS scheduler hook: `POST /api/v1/studio/growth/scheduler/dispatch`, protected by `GROWTH_SCHEDULER_TOKEN`. It is ready for a persistent external scheduler to invoke every five minutes.
+- Verification: Growth approval/OAuth/policy/scheduler suite **45/45 passed**; Growth CLI help, VENHO OS TypeScript, changed-file ESLint, and diff checks passed.
+
+---
+
+## Growth Agent — One-approval scheduled publishing / Step 5 READY, AWAITING RUNTIME CONFIGURATION (2026-08-10)
+
+- Added the `GROWTH_SCHEDULER_TOKEN` environment contract and the deployment runbook at `venho-os/docs/GROWTH_SCHEDULER_ROLLOUT.md`.
+- The Make.com scheduler must POST only to the authenticated VENHO OS scheduler hook every five minutes; it must not publish to Facebook/Instagram itself.
+- Activation is intentionally pending: this workspace has neither a public VENHO OS URL nor a configured runtime scheduler token. Calling a local URL from Make.com is impossible, and activating before these values exist can release overdue approved publications.
+
+---
+
+## Growth Agent — One-approval scheduled publishing / Step 5 COMPLETE: GitHub Actions Scheduler (2026-08-10)
+
+- Replaced the cloud-callback rollout path with `.github/workflows/growth-publish-scheduler.yml`: GitHub Actions invokes `venho-growth dispatch-due` every five minutes and persists state in Git.
+- Serialized weekly generation and dispatch in `growth-publication-state`, preventing registry/database commit races.
+- Required GitHub Secrets before the first live dispatch: `MAKE_GROWTH_WEBHOOK_URL`; add `MAKE_GROWTH_WEBHOOK_SECRET` if the Make scenario validates it. No Mac Mini, public URL, or scheduler token is required.
+- Scheduler intentionally does not use `--allow-shadow`; current `shadow` rollout state prevents an unreviewed production release.
+- Verification: `pytest -q tests/test_growth_weekly_cycle.py tests/test_growth_approve_and_dispatch.py` → **43/43 passed**; `git diff --check` passed.
+- GitHub Repository Secret `MAKE_GROWTH_WEBHOOK_URL` configured and verified present on 2026-08-10. No manual dispatch was run.
+
+---
+
+## Growth Agent — One-approval scheduled publishing / Step 6 COMPLETE: Migration & rollout validation (2026-08-10)
+
+- Legacy nonterminal records were deliberately left unchanged: there are no `APPROVED_SCHEDULED` publications to migrate and replaying `GATEWAY_*`/`SHADOW_HELD` rows risks stale duplicate posts.
+- Real rollout scorecard `growth-scheduler-2026-08`: **2.22/10**, **0** published samples; gate correctly keeps rollout at `shadow` and no dispatch was run.
+- `venho-rollout runbook-validate` passed. Regression suite: **69/69 passed**; `git diff --check` passed.
+- All source changes remain local and uncommitted; GitHub Actions will not run the new Scheduler until a scoped commit is pushed.
+
+---
+
+## Growth Agent — Remediation Step 7a COMPLETE: Empty approval queue UX (2026-08-10)
+
+- Dashboard now keeps the sole **Duyệt toàn bộ tuần** control visible and disabled when its review queue is empty.
+- Empty-week approval returns the explicit `NO_PENDING_APPROVAL` business state (HTTP 409), not `Command failed`.
+- Verified: scoped ESLint and whitespace checks passed.
+
+---
+
+## Growth Agent — Remediation Step 7b COMPLETE: Slot/queue state diagnosis (2026-08-10)
+
+- Current-week Slot state and registry are inconsistent: only an orphan T4 `PENDING_APPROVAL` Slot exists; all displayed publications are old `SHADOW_HELD` records.
+- No `APPROVED_SCHEDULED` record exists and rollout remains `shadow`; therefore no Facebook/Instagram post can be dispatched.
+
+---
+
+## Growth Agent — Remediation Step 7c COMPLETE: Slot synchronization & approval-queue filter (2026-08-10)
+
+- Ran `venho-growth ensure-slots --horizon-days 14`: **2** missing horizon slots created; existing current-week slots were preserved.
+- `SHADOW_HELD` records are now excluded from `list-pending`; the Dashboard review table contains only records that can actually be acted on.
+- Verification: `pytest -q tests/test_growth_approve_and_dispatch.py` → **38/38 passed**; `git diff --check` passed.
+- Current-week content remains absent; the T4 orphan Slot will be reconciled by the weekly content-generation cycle in the next remediation step.
+
+---
+
+## Growth Agent — Remediation Step 7d COMPLETE: Automatic Weekly Cycle recovery (2026-08-10)
+
+- Weekly Cycle now schedules automatic retry attempts at **08:00, 10:00 and 12:00 Monday (Asia/Ho_Chi_Minh)**. The weekly JobStore is idempotent: only one successful run can generate the week; a failed run is retried automatically.
+- The 2026-08-10 scheduled GitHub run failed on remote SHA `4287651`, before the local OAuth fix existed. Local source must be committed and pushed before GitHub can run this recovered schedule.
+- Verification: YAML schedule assertion passed; `pytest -q tests/test_growth_weekly_cycle.py` → **5/5 passed**; `git diff --check` passed.

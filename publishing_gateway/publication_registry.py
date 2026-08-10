@@ -108,6 +108,42 @@ class PublicationRegistry:
                     return updated
             raise KeyError(f"Unknown publication_id: {publication_id}")
 
+    def update_many_if_status(
+        self,
+        updates: Iterable[tuple[str, str, dict[str, Any]]],
+    ) -> list[dict[str, Any]]:
+        """Atomically update a batch only while every row is in its expected state.
+
+        Weekly approval is one operator action.  A partial result would leave
+        half a week's posts approved, so validate every requested row under
+        the same file lock before writing any of them.
+        """
+        requested = list(updates)
+        with self._locked():
+            data = self.load()
+            by_id = {item.get("publication_id"): item for item in data["publications"]}
+            for publication_id, expected_status, _ in requested:
+                item = by_id.get(publication_id)
+                if item is None:
+                    raise KeyError(f"Unknown publication_id: {publication_id}")
+                if item.get("status") != expected_status:
+                    raise ValueError(
+                        f"publication_id {publication_id} is not {expected_status} "
+                        f"(status={item.get('status')})"
+                    )
+
+            now = datetime.now(timezone.utc).isoformat()
+            updated_by_id: dict[str, dict[str, Any]] = {}
+            changes_by_id = {publication_id: changes for publication_id, _, changes in requested}
+            for index, item in enumerate(data["publications"]):
+                publication_id = item.get("publication_id")
+                if publication_id in changes_by_id:
+                    updated = {**item, **changes_by_id[publication_id], "updated_at": now}
+                    data["publications"][index] = updated
+                    updated_by_id[publication_id] = updated
+            self._save(data)
+            return [updated_by_id[publication_id] for publication_id, _, _ in requested]
+
     def find(self, publication_id: str) -> dict[str, Any] | None:
         for item in self.load()["publications"]:
             if item.get("publication_id") == publication_id:
