@@ -4114,13 +4114,13 @@
       "content_package_id": "5e65b729-1dcb-4d2e-8ee1-c87545c49ad1",
       "idempotency_key": "e83501690e243fa32244c809c0bef7594a8f6bf144c728a07d467a7124f21caf",
       "platform": "threads",
-      "status": "GATEWAY_ERROR",
-      "gateway_status": "GATEWAY_ERROR",
+      "status": "SHADOW_HELD",
+      "gateway_status": "SHADOW_HELD",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-04T12:44:50.996586+00:00",
-      "updated_at": "2026-08-06T11:06:28.841500+00:00",
+      "updated_at": "2026-08-10T04:03:45.843388+00:00",
       "content": {
         "title": "Một sáng cuối tuần thật chậm bên Hồ Tây",
         "text": "Cuối tuần này, ra Hồ Tây thôi.\n\nKhông cần một kế hoạch dày đặc. Đôi khi, cuối tuần đẹp nhất bắt đầu bằng một buổi đi bộ thật chậm quanh Hồ Tây.\n\nBuổi sáng ở Tây Hồ có nhịp riêng: ánh sáng tự nhiên dịu mắt, bầu trời xanh trong, mặt hồ khi xanh ngọc, khi ánh xám nhẹ theo gió. Dọc đường, những hàng cây lâu năm phủ bóng xuống vỉa hè, xen giữa là nhịp sống rất Hà Nội: người chạy bộ, vài chiếc xe đạp lướt qua, tiếng quán nhỏ mở cửa, và phía xa là đường nét phố thị hiện đại pha cùng những mái nhà quen thuộc.\n\nKhông gian quanh hồ được chăm chút gọn gàng, đủ thoáng để bạn dừng lại vài phút, hít sâu và ngắm mặt nước. Không cần bàn ghế ngoài trời hay một lịch trình cầu kỳ; chỉ cần đôi giày thoải mái, một ly cà phê sau vòng dạo bộ, và chút thời gian không vội.\n\nTừ Ven Hồ Hotel, Hồ Tây không chỉ là điểm đến, mà là nhịp sống ngay bên cạnh. Một nơi lưu trú vừa đủ ấm cúng, thanh lịch, thuận tiện để bạn bắt đầu ngày mới, rồi trở về nghỉ ngơi sau khi đã chạm vào vẻ yên bình của Hà Nội.\n\nNếu bạn đang tìm một chỗ nghỉ gần Hồ Tây cho cuối tuần này, hãy nhắn Ven Hồ Hotel hoặc kiểm tra tình trạng phòng khi thuận tiện nhé.\n\n#VenHoHotel #HoTay #TayHo #CuoiTuanHaNoi #WestLakeHanoi #DiBoHoTay #HaNoiCham #StayNearWestLake",
@@ -4169,7 +4169,9 @@
         "package_versions_checksum": "b1b717129ed7a9dfe270e9142617e2631f1d74b375f4d51d734e67d136d7a270",
         "checksum": "d3232d2a7f2c48b3b5b3794793519cbe8a247f5b7695957328ed799c4ba3b931"
       },
-      "gateway_error": "BundleValidationError at Make.com: missing required 'url' -- growth was pointed at the legacy VenHoSocialManager scenario and sent no image_url. Recorded GATEWAY_ACCEPTED in error; corrected 2026-08-06."
+      "gateway_error": "BundleValidationError at Make.com: missing required 'url' -- growth was pointed at the legacy VenHoSocialManager scenario and sent no image_url. Recorded GATEWAY_ACCEPTED in error; corrected 2026-08-06.",
+      "rollout_stage": "shadow",
+      "shadow_held_reason": "rollout stage is shadow; dispatch withheld"
     },
     {
       "publication_id": "pub-saturday-zalo-0e884453",
