@@ -3570,13 +3570,13 @@
       "content_package_id": "8ced3f66-8b31-42bc-946c-262f5f64b3b5",
       "idempotency_key": "23b21655c5dbcd86c2353c143b8d43df56b94141d4ac654053145f5bc4c84169",
       "platform": "instagram",
-      "status": "GATEWAY_ERROR",
-      "gateway_status": "GATEWAY_ERROR",
+      "status": "SHADOW_HELD",
+      "gateway_status": "SHADOW_HELD",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-04T12:32:36.043666+00:00",
-      "updated_at": "2026-08-06T13:35:47.364448+00:00",
+      "updated_at": "2026-08-10T08:23:13.228001+00:00",
       "content": {
         "title": "Một Hà Nội thật khẽ bên Hồ Tây",
         "text": "Hồ Tây yên như một khoảng thở.\n\nỞ Hồ Tây, Hà Nội không vội. Mặt hồ rộng mở, màu nước xanh ngọc trầm lặng, phẳng và dịu, để tầm mắt có thể đi rất xa về phía những dãy nhà thấp thoáng nơi đường chân trời. Vào những buổi chiều trời có mây, ánh sáng mềm rơi xuống mặt nước, gió nhẹ lướt qua hàng cây vừa đủ xanh, khiến con đường ven hồ trở thành nơi người ta muốn đi chậm lại.\n\nKhông cần một lịch trình dày đặc, bạn có thể bắt đầu bằng một vòng dạo bộ, một buổi cà phê nhìn ra hồ, một cuộc hẹn giản dị, hay đơn giản là trở về nghỉ ngơi sau ngày làm việc tại Hà Nội. Nhịp sống quanh Hồ Tây thưa vừa đủ để cảm nhận sự riêng tư, nhưng vẫn đủ gần với hơi thở đô thị.\n\nGiữa không gian ấy, Ven Hồ Hotel là một điểm dừng chân tinh tế và vừa vặn — nơi bạn có thể bắt đầu hành trình khám phá Hồ Tây, rồi trở về với cảm giác nhẹ nhõm của một ngày trọn vẹn.\n\nNếu bạn đang tìm một kỳ lưu trú yên tĩnh gần Hồ Tây, hãy nhắn tin cho Ven Hồ Hotel hoặc kiểm tra tình trạng phòng khi thuận tiện.\n\n#VenHoHotel #HoTay #HaNoiCham #KhamPhaHoTay #NghiDuongHaNoi #HanoiStay",
@@ -3624,7 +3624,9 @@
         "checksum": "9ce708a1fc74fdb69348b4203c07610e47bf6d07525fef2c04db9b394647f023"
       },
       "gateway_error": "BundleValidationError at Make.com: missing required 'url' -- growth was pointed at the legacy VenHoSocialManager scenario and sent no image_url. Recorded GATEWAY_ACCEPTED in error; corrected 2026-08-06.",
-      "slot_id": "slot-2026-08-12-wednesday"
+      "slot_id": "slot-2026-08-12-wednesday",
+      "rollout_stage": "shadow",
+      "shadow_held_reason": "rollout stage is shadow; dispatch withheld"
     },
     {
       "publication_id": "pub-wednesday-threads-2add7ad4",
