@@ -482,10 +482,11 @@
     "domain": "competitor_rating",
     "question": "Các khách sạn cạnh tranh gần Ven Ho Hotel được khách chấm bao nhiêu điểm?",
     "synthesis_note": "research/synthesis/RS-2026-08-06-competitorrating-synthesis.md",
-    "status": "pending_approval",
+    "status": "approved",
     "proposed_at": "2026-08-06T14:57:51.943400+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "hpham1504@gmail.com",
+    "decided_at": "2026-08-10T04:02:02.861663+00:00",
+    "fact_path": "data/projects/venho_hotel/growth/facts/competitor__lake_view_hotel_agoda_rating.json"
   },
   {
     "fact_key": "competitor.lake_view_hotel_service_rating",
