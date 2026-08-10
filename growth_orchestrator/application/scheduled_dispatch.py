@@ -53,6 +53,7 @@ def dispatch_due(
     now: Optional[datetime] = None,
     limit: int = 50,
     allow_shadow: bool = False,
+    catch_up_today: bool = False,
 ) -> list[dict]:
     """Dispatch each due approved publication exactly once.
 
@@ -74,7 +75,11 @@ def dispatch_due(
         scheduled_at = scheduled_at_for(publication, cadence_policy=cadence_policy)
         if scheduled_at is None or scheduled_at > current:
             continue
-        if current - scheduled_at > MAX_DISPATCH_LATENESS:
+        # A manual recovery may release only today's missed slot.  It never
+        # drains older backlog, so one catch-up cannot accidentally publish
+        # several stale campaigns at once.
+        is_today_catch_up = catch_up_today and scheduled_at.date() == current.date()
+        if current - scheduled_at > MAX_DISPATCH_LATENESS and not is_today_catch_up:
             results.append(
                 registry.update(
                     publication["publication_id"],

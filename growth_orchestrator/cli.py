@@ -271,10 +271,16 @@ def dispatch_due_cmd(
     project: str = typer.Option("venho_hotel"),
     limit: int = typer.Option(50, min=1, max=200),
     allow_shadow: bool = typer.Option(False, "--allow-shadow"),
+    catch_up_today: bool = typer.Option(False, "--catch-up-today"),
 ) -> None:
     """Scheduler entrypoint: dispatch only APPROVED_SCHEDULED rows now due."""
     try:
-        publications = dispatch_due(project=project, limit=limit, allow_shadow=allow_shadow)
+        publications = dispatch_due(
+            project=project,
+            limit=limit,
+            allow_shadow=allow_shadow,
+            catch_up_today=catch_up_today,
+        )
     except (KeyError, ValueError) as exc:
         typer.echo(json.dumps({"ok": False, "error": str(exc)}), err=True)
         raise typer.Exit(code=1)
