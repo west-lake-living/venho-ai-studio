@@ -1209,3 +1209,11 @@ Cập nhật `task_status.md` mỗi khi:
 - Pushed AI Studio automation to `main`: **f3ae89f**. VENHO OS approval UI/API: **db6db53**. Legacy Social Content cron retirement: **cda5641**.
 - The AI Studio push was safely rebased onto concurrent Git-backed state commits; no remote registry/research state was overwritten.
 - GitHub Actions now has the automatic Weekly Cycle and independent publish scheduler definitions on `main`.
+
+---
+
+## Growth Agent — Handoff: next debugging target (2026-08-10)
+
+- Deployed state: AI Studio remote `main` **9792244** (automation workflow **f3ae89f**); VENHO OS **db6db53**; legacy scheduler retirement **cda5641**. GitHub reports both Growth workflows active.
+- Next action: run the new Weekly Cycle for 2026-08-10, verify all four current-week slots are tied to generated `PENDING_APPROVAL` publications, then verify Dashboard review controls.
+- No content was dispatched or published during this handoff; rollout stays `shadow`.

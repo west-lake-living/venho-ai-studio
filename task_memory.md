@@ -1289,3 +1289,9 @@ Khi người dùng nói **"kết thúc task"**, Codex phải tự động:
 - Đã push Automation Cycle vào `west-lake-living/venho-ai-studio` commit `f3ae89f`; `venho-os` commit `db6db53`; đồng thời tắt cron legacy tại `venho-social-content-agent` commit `cda5641`.
 - AI Studio remote có phát sinh state commits đồng thời; Automation commit được rebase/cherry-pick an toàn trên remote HEAD để không ghi đè publication registry hoặc research state mới.
 - GitHub Actions từ nay dùng workflow Weekly Cycle có retry tự động; chỉ việc chờ lịch Monday tiếp theo hoặc kích hoạt workflow_dispatch để tạo batch tuần hiện tại.
+
+## 14ag. Bàn giao debug tiếp theo (2026-08-10)
+
+- Remote `main` đã chứa Growth Automation ở HEAD `9792244` (workflow chính `f3ae89f`), VENHO OS `db6db53`, legacy manual-only `cda5641`. GitHub xác nhận `Growth Agent Weekly Cycle` và `Growth Agent Publish Scheduler` đang active.
+- Chưa tạo batch content tuần 2026-08-10 sau khi phát hành. Việc debug tiếp theo: trigger `Growth Agent Weekly Cycle` trên GitHub từ source mới, kiểm tra 4 Slot T2/T4/T6/T7 có `content_package_id` và publication `PENDING_APPROVAL`, rồi xác nhận Dashboard hiển thị các thao tác Duyệt/Từ chối.
+- Không dispatch/publish trong bước bàn giao này. Rollout vẫn `shadow`; không được dùng `--allow-shadow`.
