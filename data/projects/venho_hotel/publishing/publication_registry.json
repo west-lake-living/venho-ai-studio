@@ -3874,13 +3874,13 @@
       "content_package_id": "36d6034c-507d-4660-87ab-def7e5cc71f2",
       "idempotency_key": "8c4c3aa5e2c7ae5fb4acb5cac2bf84c580f7f9b622ecdccccb107066ba0eea51",
       "platform": "threads",
-      "status": "GATEWAY_ERROR",
-      "gateway_status": "GATEWAY_ERROR",
+      "status": "SHADOW_HELD",
+      "gateway_status": "SHADOW_HELD",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-04T12:38:39.164480+00:00",
-      "updated_at": "2026-08-06T11:06:28.835516+00:00",
+      "updated_at": "2026-08-10T08:22:55.201583+00:00",
       "content": {
         "title": "Một buổi sáng nhìn ra Hồ Tây",
         "text": "Có những buổi sáng ở Hồ Tây không cần vội: chỉ cần kéo nhẹ rèm, để ánh ngày chạm vào căn phòng gọn gàng.\n\nSáng bên Hồ Tây thường bắt đầu rất khẽ. Ánh sáng tự nhiên đi qua khung cửa nhôm đen mảnh, chia ô cân đối, làm nổi nền tường trắng, trần phẳng và sàn gỗ ấm màu.\n\nTrong căn phòng chữ nhật gọn gàng của Ven Hồ Hotel, mọi thứ được giữ vừa đủ: giường đôi với ga trắng và đầu giường gỗ, rèm xám đậm để bạn điều chỉnh sự riêng tư, hai ghế gỗ cho một tách cà phê chậm hoặc vài phút đọc tin trước khi ra phố.\n\nTừ góc nhìn ra hồ, Hồ Tây hiện lên như một khoảng thở trong ngày: mặt nước rộng, nhịp đường ven hồ, cảm giác Hà Nội đang tỉnh dậy nhưng chưa quá ồn. Với tinh thần khách sạn boutique mang hơi thở Việt, Ven Hồ Hotel không cố trở thành một khu nghỉ dưỡng xa cách. Nơi đây giống một điểm dừng chân chỉn chu, ấm áp và dễ kết nối — phù hợp cho chuyến đi thư thả, một kỳ nghỉ ngắn, hoặc vài ngày công tác cần sự cân bằng.\n\nỞ đây, buổi sáng không cần nhiều. Chỉ cần một căn phòng gọn, ánh sáng thật, và Hồ Tây ở gần.\n\nNếu bạn đang tìm một nơi lưu trú gần Hồ Tây, hãy nhắn Ven Hồ Hotel hoặc kiểm tra phòng còn trống cho ngày bạn muốn ghé.\n\n#VenHoHotel #HoTay #HaNoi #DuLichHaNoi #BoutiqueHotel",
@@ -3926,7 +3926,9 @@
         "package_versions_checksum": "14d267ea0e6b1b01a798162b7c23090fd980b875873a49732e0b1130d06686c5",
         "checksum": "3dea51b06db2c7a2caaa863527951ca2f7ef2d889f6f3b2156d8cf0132707b3b"
       },
-      "gateway_error": "BundleValidationError at Make.com: missing required 'url' -- growth was pointed at the legacy VenHoSocialManager scenario and sent no image_url. Recorded GATEWAY_ACCEPTED in error; corrected 2026-08-06."
+      "gateway_error": "BundleValidationError at Make.com: missing required 'url' -- growth was pointed at the legacy VenHoSocialManager scenario and sent no image_url. Recorded GATEWAY_ACCEPTED in error; corrected 2026-08-06.",
+      "rollout_stage": "shadow",
+      "shadow_held_reason": "rollout stage is shadow; dispatch withheld"
     },
     {
       "publication_id": "pub-friday-zalo-fca8a57a",
