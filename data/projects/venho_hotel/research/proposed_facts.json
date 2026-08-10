@@ -465,10 +465,11 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-08-06-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "approved",
     "proposed_at": "2026-08-06T14:51:51.690213+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "hpham1504@gmail.com",
+    "decided_at": "2026-08-10T04:02:11.016917+00:00",
+    "fact_path": "data/projects/venho_hotel/growth/facts/customer_review__overall_rating.json"
   },
   {
     "fact_key": "competitor.lake_view_hotel_agoda_rating",
