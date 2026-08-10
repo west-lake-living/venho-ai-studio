@@ -448,10 +448,12 @@
       "food_culinary"
     ],
     "relevance_score": 0.8,
-    "status": "needs_human_approval",
+    "status": "rejected",
     "rejection_reason": null,
     "verified_by_human": false,
-    "scanned_at": "2026-08-05T03:10:58.062341+00:00"
+    "scanned_at": "2026-08-05T03:10:58.062341+00:00",
+    "rejected_by": "hpham1504@gmail.com",
+    "rejected_at": "2026-08-10T08:18:29.850060+00:00"
   },
   {
     "id": "tavily-https://www.traveloka.com/vi-vn/explore/destination/quan-ca-phe-dep-o-ho-tay-acc/275851",
