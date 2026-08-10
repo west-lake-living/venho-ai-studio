@@ -57,4 +57,5 @@ jobs:
                      data/projects/*/growth/growth.db \
                      data/projects/*/growth/slots_snapshot.json 2>/dev/null || true
           git diff --cached --quiet || git commit -m "chore: growth scheduled dispatch $(date -u +%Y-%m-%dT%H%MZ)"
+          git pull --rebase origin main
           git push

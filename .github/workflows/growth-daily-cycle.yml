@@ -95,4 +95,8 @@ jobs:
                      data/projects/*/content/**/*.md \
                      data/projects/*/prompts/**/*.json 2>/dev/null || true
           git diff --cached --quiet || git commit -m "chore: growth agent weekly cycle $(date -u +%Y-%m-%d)"
+          # The generated files are disjoint from a concurrent code/docs push.
+          # Rebase before publishing so a long-running image batch does not
+          # lose all completed drafts on a non-fast-forward rejection.
+          git pull --rebase origin main
           git push
