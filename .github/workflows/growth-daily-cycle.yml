@@ -86,6 +86,10 @@ jobs:
           venho-growth slots --weeks-ahead 2 > data/projects/venho_hotel/growth/slots_snapshot.json
           git config user.name "venho-growth-bot"
           git config user.email "venho-growth-bot@users.noreply.github.com"
+          # Persist every tracked runtime store changed by the cycle. This
+          # includes research/trend_candidates.json when a trend is consumed;
+          # leaving it unstaged makes the later rebase refuse to start.
+          git add -u data/projects
           git add -f data/projects/*/growth/rotation_state.json \
                      data/projects/*/growth/growth.db \
                      data/projects/*/growth/slots_snapshot.json \
