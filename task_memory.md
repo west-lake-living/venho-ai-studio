@@ -1295,3 +1295,14 @@ Khi người dùng nói **"kết thúc task"**, Codex phải tự động:
 - Remote `main` đã chứa Growth Automation ở HEAD `9792244` (workflow chính `f3ae89f`), VENHO OS `db6db53`, legacy manual-only `cda5641`. GitHub xác nhận `Growth Agent Weekly Cycle` và `Growth Agent Publish Scheduler` đang active.
 - Chưa tạo batch content tuần 2026-08-10 sau khi phát hành. Việc debug tiếp theo: trigger `Growth Agent Weekly Cycle` trên GitHub từ source mới, kiểm tra 4 Slot T2/T4/T6/T7 có `content_package_id` và publication `PENDING_APPROVAL`, rồi xác nhận Dashboard hiển thị các thao tác Duyệt/Từ chối.
 - Không dispatch/publish trong bước bàn giao này. Rollout vẫn `shadow`; không được dùng `--allow-shadow`.
+
+## 14ah. Growth Agent — two-week cycle, rejected replacement và Monday recovery (2026-08-10)
+
+- Weekly Cycle production chạy Chủ nhật **20:00 Asia/Ho_Chi_Minh**, có fallback **22:00**. Chu kỳ được neo theo từng 2 tuần và idempotent: mỗi batch tạo **8 content slots/lần đăng** (T2/T4/T6/T7 × 2 tuần), mỗi slot có biến thể Facebook + Instagram, tổng **16 publication records**.
+- `venho-growth approve-week` duyệt atomically toàn bộ publication trong cửa sổ 14 ngày; một lần **Duyệt tất cả** đủ lịch đăng hai tuần.
+- Publication bị từ chối được thay bằng content mới cho đúng platform và đúng slot. VENHO OS gọi workflow `growth-replace-rejected.yml` ngay sau reject; cron 15 phút là fallback. Bản cũ và bản thay thế liên kết bằng `replacement_publication_id` / `replaces_publication_id` để giữ audit trail.
+- Scheduler dùng `--allow-shadow` trong production workflow sau approval gate; manual `catch_up_today` chỉ giải phóng slot bị lỡ trong ngày hiện tại theo giờ Việt Nam, không phát hành backlog cũ.
+- Khôi phục lịch T2 2026-08-10 qua GitHub run `31389624111`: Make trả `PUBLISHED` cho Facebook và Instagram; Instagram media ID `17929423083379767`. Facebook trả placeholder `3. Post ID` / `3.permalink_url`, nên trạng thái gateway đã thành công nhưng chưa có permalink thật để kiểm chứng trực quan.
+- Đã sửa thứ tự persistence của scheduler thành stage/commit trước, rồi pull-rebase/push; run kiểm chứng `31389945843` hoàn tất toàn bộ và không dispatch trùng.
+- AI Studio production commits: `fc6d291` và `a04f09b`. VENHO OS reject-trigger commit: `2632537`.
+- Verify: `pytest -q tests/test_growth_weekly_cycle.py tests/test_growth_approve_and_dispatch.py tests/test_growth_replace_rejected.py` → **48/48 passed**; VENHO OS `npx tsc --noEmit` pass và publication-registry sync tests **9/9 passed**.

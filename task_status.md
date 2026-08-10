@@ -1227,3 +1227,14 @@ Cập nhật `task_status.md` mỗi khi:
 - Deployed state: AI Studio remote `main` **9792244** (automation workflow **f3ae89f**); VENHO OS **db6db53**; legacy scheduler retirement **cda5641**. GitHub reports both Growth workflows active.
 - Next action: run the new Weekly Cycle for 2026-08-10, verify all four current-week slots are tied to generated `PENDING_APPROVAL` publications, then verify Dashboard review controls.
 - No content was dispatched or published during this handoff; rollout stays `shadow`.
+
+## Growth Agent — Two-week automation and missed-Monday recovery COMPLETE (2026-08-10)
+
+- Weekly generation now runs Sunday 20:00 ICT with a 22:00 fallback and creates 8 posting occasions across two weeks (16 Facebook/Instagram publication variants).
+- One approval action covers the complete 14-day batch.
+- Rejected publications automatically queue a same-slot replacement immediately from VENHO OS, with a 15-minute GitHub Actions fallback.
+- Monday catch-up dispatched the due Facebook/Instagram pair through Make; registry state is persisted as `PUBLISHED`. Instagram media ID: `17929423083379767`; Facebook permalink remains unverifiable because the Make response mapping returns placeholder fields.
+- Scheduler persistence-order bug is fixed. Validation run `31389945843` completed successfully without duplicate dispatch.
+- AI Studio commits deployed: `fc6d291`, `a04f09b`. VENHO OS commit deployed: `2632537`.
+- Verification: Growth tests **48/48 passed**; VENHO OS TypeScript pass; registry sync tests **9/9 passed**.
+- Task closed. Remaining external configuration defect is limited to Make.com's Facebook response-field mapping; it does not block the recorded gateway dispatch.
