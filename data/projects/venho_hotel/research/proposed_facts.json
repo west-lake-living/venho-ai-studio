@@ -188,10 +188,11 @@
     "domain": "market_pricing",
     "question": "Tháng nào trong năm là cao điểm và thấp điểm du lịch của Hà Nội?",
     "synthesis_note": "research/synthesis/RS-2026-08-06-marketpricing-synthesis.md",
-    "status": "pending_approval",
+    "status": "approved",
     "proposed_at": "2026-08-06T13:59:12.906902+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "hpham1504@gmail.com",
+    "decided_at": "2026-08-10T13:08:39.302753+00:00",
+    "fact_path": "data/projects/venho_hotel/growth/facts/hanoi_tourism__peak_season_months.json"
   },
   {
     "fact_key": "hanoi_tourism.off_season_months",
