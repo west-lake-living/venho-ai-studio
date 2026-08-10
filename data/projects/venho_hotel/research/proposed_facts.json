@@ -400,10 +400,11 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-08-06-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "rejected",
     "proposed_at": "2026-08-06T14:40:09.707569+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "hpham1504@gmail.com",
+    "decided_at": "2026-08-10T13:08:54.616906+00:00",
+    "reject_reason": null
   },
   {
     "fact_key": "review.comfort_rating",
