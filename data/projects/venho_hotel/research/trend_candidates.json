@@ -849,10 +849,12 @@
       "food_culinary"
     ],
     "relevance_score": 0.8,
-    "status": "needs_human_approval",
+    "status": "rejected",
     "rejection_reason": null,
     "verified_by_human": false,
-    "scanned_at": "2026-08-06T13:33:34.529267+00:00"
+    "scanned_at": "2026-08-06T13:33:34.529267+00:00",
+    "rejected_by": "hpham1504@gmail.com",
+    "rejected_at": "2026-08-10T08:48:38.129835+00:00"
   },
   {
     "id": "tavily-https://cafesongao.com/cap-nhat-10-quan-cafe-dep-o-ho-tay-view-song-ao-lung-linh",
