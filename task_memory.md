@@ -1306,3 +1306,10 @@ Khi người dùng nói **"kết thúc task"**, Codex phải tự động:
 - Đã sửa thứ tự persistence của scheduler thành stage/commit trước, rồi pull-rebase/push; run kiểm chứng `31389945843` hoàn tất toàn bộ và không dispatch trùng.
 - AI Studio production commits: `fc6d291` và `a04f09b`. VENHO OS reject-trigger commit: `2632537`.
 - Verify: `pytest -q tests/test_growth_weekly_cycle.py tests/test_growth_approve_and_dispatch.py tests/test_growth_replace_rejected.py` → **48/48 passed**; VENHO OS `npx tsc --noEmit` pass và publication-registry sync tests **9/9 passed**.
+
+## 14ai. Master System Prompt — Factual Safety Rules (2026-08-11)
+
+- Đã bổ sung vào `content_studio/generators/prompts/venho_content_generator_master_prompt.md` bộ quy tắc bắt buộc: không social proof gián tiếp khi thiếu bằng chứng; không giả định thời gian hiện tại; không negative positioning; kiểm tra negative interpretation; caption publishing phải là plain text với URL/hashtag thuần.
+- `social_prompts.MASTER_SYSTEM_PROMPT` đã nạp và kiểm tra đủ 5 nhóm rule.
+- Commit đã push lên `west-lake-living/venho-ai-studio`: `dc4b398` (`feat: add factual safety rules to master prompt`).
+- Kiểm tra targeted prompt: PASS. Bộ test legacy `tests/test_claude_social_generator.py` còn 3 lỗi baseline do tham chiếu hằng/chuỗi prompt cũ, không phát sinh từ thay đổi factual-safety.

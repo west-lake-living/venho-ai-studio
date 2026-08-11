@@ -1238,3 +1238,10 @@ Cập nhật `task_status.md` mỗi khi:
 - AI Studio commits deployed: `fc6d291`, `a04f09b`. VENHO OS commit deployed: `2632537`.
 - Verification: Growth tests **48/48 passed**; VENHO OS TypeScript pass; registry sync tests **9/9 passed**.
 - Task closed. Remaining external configuration defect is limited to Make.com's Facebook response-field mapping; it does not block the recorded gateway dispatch.
+
+## Growth Agent — Master Prompt Factual Safety Rules COMPLETE (2026-08-11)
+
+- Added five mandatory factual-safety groups to the Opus content generator master prompt: indirect social-proof prohibition, current-time grounding, no negative positioning, negative-interpretation review, and plain-text publishing output.
+- Prompt load check passed through `social_prompts.MASTER_SYSTEM_PROMPT`.
+- Deployed commit: `dc4b398` (`feat: add factual safety rules to master prompt`).
+- Legacy Claude generator test file still has 3 pre-existing expectation failures unrelated to this prompt-only change.
