@@ -41,7 +41,7 @@ Return ONLY one valid JSON object. No markdown fence and no text outside JSON:
   "title": "string — Vietnamese title",
   "title_options": ["string", "string", "string"],
   "hook": "string — Vietnamese opening hook",
-  "body": "string — complete Vietnamese caption",
+  "body": "string — Vietnamese body only; do not repeat hook or CTA",
   "cta": "string — Vietnamese call to action",
   "hashtags": ["#string"]
 }
