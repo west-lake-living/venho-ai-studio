@@ -73,6 +73,26 @@ def test_daily_lane_uses_brand_system_prompt(monkeypatch) -> None:
     assert call["messages"][0]["content"] == "TOPIC: mot ngay o Ho Tay"
 
 
+def test_master_system_prompt_is_sent_with_json_contract(monkeypatch) -> None:
+    holder = {}
+    monkeypatch.setattr(
+        anthropic,
+        "Anthropic",
+        lambda api_key: holder.setdefault(
+            "client", _FakeAnthropic(api_key, json.dumps({"title": "t", "hook": "h", "body": "b", "cta": "c"}))
+        ),
+    )
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
+
+    gen_module.claude_social_generator(_request(), _FakePrompt(), {})
+
+    system = holder["client"].messages.calls[0]["system"]
+    assert "Senior Brand Content Strategist & Copywriter" in system
+    assert "SELL THE DESTINATION BEFORE SELLING THE ROOM" in system
+    assert "M05 AUTOMATION OUTPUT CONTRACT — HIGHEST PRIORITY" in system
+    assert "Return ONLY one valid JSON object" in system
+
+
 def test_content_model_can_be_overridden_for_the_anthropic_deployment(monkeypatch) -> None:
     holder = {}
     monkeypatch.setattr(
