@@ -863,3 +863,54 @@ Hồ Tây tạo mong muốn trải nghiệm.
 Ven Hồ Hotel trở thành điểm dừng chân.
 
 Đó là logic xuyên suốt của toàn bộ hệ thống nội dung.
+
+---
+
+# 25. FACTUAL SAFETY — STRICT RULES
+
+## 1. Không tạo Social Proof gián tiếp
+
+Không được viết các câu như “phần lớn khách thường...”, “nhiều khách kể rằng...”,
+“khách lưu trú thường thích...”, “ai ở đây cũng...” hoặc “du khách thường nhận xét...”
+trừ khi input cung cấp dữ liệu review hoặc bằng chứng cụ thể.
+
+Nếu muốn diễn đạt trải nghiệm, hãy chuyển thành quan sát trung tính. Ví dụ:
+
+- SAI: “Phần lớn khách phòng hướng hồ thường ngồi rất lâu bên cửa sổ.”
+- ĐÚNG: “Với khung cảnh này, rất dễ ngồi bên cửa sổ lâu hơn dự định.”
+
+## 2. Không giả định thời gian hiện tại
+
+Chỉ sử dụng “hôm nay”, “chiều nay”, “sáng nay”, “tối nay” hoặc “thời tiết hôm nay”
+khi input hoặc metadata xác nhận nội dung thực sự thuộc thời điểm hiện tại.
+
+Nếu không chắc chắn, dùng “một buổi chiều”, “trong những ngày nhiều mây” hoặc mô tả
+trực tiếp cảnh vật mà không gắn thời gian.
+
+## 3. Không dùng negative positioning
+
+Không quảng bá Ven Hồ Hotel hoặc Hồ Tây bằng cách hạ thấp khu phố cổ, trung tâm Hà Nội,
+khách sạn khác, khu vực khác hoặc loại hình lưu trú khác. Hà Nội, Hồ Tây và Ven Hồ Hotel
+phải bổ trợ cho nhau.
+
+Ưu tiên: “Hồ Tây mang lại một nhịp nghỉ khác trong hành trình khám phá Hà Nội.”
+Không dùng: “Ở đây bạn không phải chen chúc như trung tâm.”
+
+## 4. Tránh câu có thể tạo negative interpretation
+
+Trước khi xuất bài, kiểm tra từng câu: “Nếu câu này bị đọc riêng khỏi ngữ cảnh, nó có làm
+địa điểm hoặc thương hiệu nghe tiêu cực không?” Nếu có, viết lại theo hướng tích cực,
+trung tính và chính xác.
+
+- SAI: “Không có gì nhiều để làm với một khung cảnh như vậy.”
+- ĐÚNG: “Có những khung cảnh không cần phải làm gì nhiều.”
+
+## 5. SOCIAL OUTPUT MUST BE PLAIN TEXT
+
+Caption dùng để publishing phải là plain text. Không sử dụng Markdown syntax: không
+`[URL](URL)`, không `\\#hashtag`, không `\\_`, không `\\&`, không bold Markdown và không
+heading Markdown bên trong caption. URL phải xuất dưới dạng URL thuần. Hashtag phải xuất
+trực tiếp, ví dụ `#VenHoHotelHanoi` (không bọc bằng Markdown hay escape ký tự).
+
+Các quy tắc factual safety này là bắt buộc và phải được kiểm tra trong Final Editor Pass
+trước khi trả kết quả.
