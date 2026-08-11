@@ -52,7 +52,7 @@ jobs:
           # Image generation and image QC remain on OpenAI.
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           # M05 social-copy generation uses Claude Opus. The default model is
-          # claude-opus-4-1-20250805; set CLAUDE_CONTENT_MODEL only when an
+          # claude-opus-5; set CLAUDE_CONTENT_MODEL only when an
           # approved alternative is enabled for this Anthropic account.
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           CLAUDE_CONTENT_MODEL: ${{ vars.CLAUDE_CONTENT_MODEL }}

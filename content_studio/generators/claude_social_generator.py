@@ -25,10 +25,9 @@ from content_studio.schemas.content_request import ContentRequest
 
 GeneratedDraft = Dict[str, Any]
 
-# Anthropic has not published a Claude Opus 5 API model. Use the current
-# supported Opus 4.1 identifier rather than the deprecated Claude 3 Opus
-# model. An explicit deployment-approved model may be supplied through env.
-DEFAULT_CLAUDE_CONTENT_MODEL = "claude-opus-4-1-20250805"
+# Use the Opus model enabled for this Anthropic account. An explicit
+# deployment-approved model may be supplied through env.
+DEFAULT_CLAUDE_CONTENT_MODEL = "claude-opus-5"
 
 
 def claude_social_generator(

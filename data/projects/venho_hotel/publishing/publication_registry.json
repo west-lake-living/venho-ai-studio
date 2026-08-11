@@ -5219,6 +5219,106 @@
         "package_versions_checksum": "4bb597644d5a730f42c4655e58a5e77a0de8bf361c2fd26cfcc8aa508a0bf661",
         "checksum": "715eb6949e440d018e8206bfc7402954fd6b208381f989eb54f023f85406b644"
       }
+    },
+    {
+      "publication_id": "pub-monday-facebook-403fbe09",
+      "content_package_id": "b0d0f27c-d8d7-4264-b8a9-23dab9857143",
+      "idempotency_key": "b9eeb8d4a6b6915859fbeaae6da6998d1c2229b86baf8ad2b4eed32ada7417a4",
+      "platform": "facebook",
+      "status": "PENDING_APPROVAL",
+      "gateway_status": null,
+      "platform_post_id": null,
+      "permalink": null,
+      "reconciliation_proof": null,
+      "created_at": "2026-08-11T13:44:54.921957+00:00",
+      "updated_at": "2026-08-11T13:44:54.926917+00:00",
+      "content": {
+        "title": "Hồ Tây buổi chiều — nơi Hà Nội thở chậm lại",
+        "text": "Có những buổi chiều Hà Nội chỉ cần một mặt hồ là đủ.\n\nHồ Tây chiều nay trải rộng đến tận đường chân trời, mặt nước phẳng và tĩnh, mang sắc xanh ngọc pha lam dịu — không rực rỡ, chỉ trầm và sâu như chính thành phố này. Trời hôm nay mây thưa, nắng nhẹ, không một chút mù, nên nhìn thật xa vẫn thấy những khối nhà cao tầng in lên nền trời phía bên kia hồ.\n\nHàng cây ven hồ vừa đủ để có bóng mát, vừa đủ để lọt nắng xuống lối đi. Gió từ mặt nước thổi lên đều đều, mát và nhẹ. Vài người đạp xe chậm qua, rồi lại chỉ còn tiếng gió. Đó là nhịp sống mà Hồ Tây giữ được giữa một Hà Nội luôn tất bật: một vòng đi dạo không cần đích đến, một ly cà phê ngồi lâu hơn dự định, một buổi hẹn không ai nhìn đồng hồ.\n\nVen Hồ Hotel nằm cạnh nhịp sống ấy — một điểm dừng chân nhỏ, ấm và vừa vặn để bạn bắt đầu ngày mới bằng gió hồ, và kết thúc bằng ánh đèn thành phố phản chiếu trên mặt nước lặng.\n\nNếu bạn đang tìm một chốn nghỉ yên tĩnh bên Hồ Tây, cứ nhắn cho Ven Hồ Hotel một lời nhé — chúng tôi sẽ xem lịch phòng cùng bạn.\n\n#VenHoHotel #HoTay #KhamPhaHoTay #HaNoiBinhYen #WestLakeHanoi #ChieuHoTay #LuuTruHaNoi #WhereWestLakeMeetsElegance\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-monday-facebook-403fbe09",
+        "hashtags": [
+          "#VenHoHotel",
+          "#HoTay",
+          "#KhamPhaHoTay",
+          "#HaNoiBinhYen",
+          "#WestLakeHanoi",
+          "#ChieuHoTay",
+          "#LuuTruHaNoi",
+          "#WhereWestLakeMeetsElegance"
+        ],
+        "source_prompt_file": "data/projects/venho_hotel/prompts/content/WESTLAKE__facebook-quiet-hanoi-stay__CONTENT_PROMPT_v1.0.json",
+        "image_run_path": null,
+        "image_public_url": "https://venhohotel.com/images/Social-fallback/lake-view-room.jpg",
+        "image_is_fallback": true,
+        "tracking_url": "https://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-monday-facebook-403fbe09"
+      },
+      "creative_brief_id": "brief-monday-facebook-1d40d78c",
+      "package_snapshot": {
+        "id": "b0d0f27c-d8d7-4264-b8a9-23dab9857143",
+        "copy_version_ids": [
+          "brief-monday-facebook-1d40d78c-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "f6cb778d9c236ecfff19c0a5a12708dd842ee0c56dd9d160b2d950c74731f5d2",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-monday-facebook-1d40d78c@1"
+      },
+      "day": "monday",
+      "pillar": "Kham pha Ho Tay",
+      "topic": "quiet Hanoi stay",
+      "dna_subject": "westlake",
+      "slot_id": "slot-2026-08-17-monday",
+      "creative_brief": {
+        "schema_version": "1.0",
+        "id": "brief-monday-facebook-1d40d78c",
+        "version": 1,
+        "brand_id": "venho-hotel",
+        "campaign_id": "daily-cycle-monday",
+        "objective": "qualified_inquiry",
+        "platforms": [
+          "facebook"
+        ],
+        "audience_segment": "Vietnamese leisure guests",
+        "funnel_stage": "consideration",
+        "single_minded_message": "quiet Hanoi stay",
+        "proof_points": [],
+        "content_angle": "Kham pha Ho Tay",
+        "cta": {
+          "type": "booking_link",
+          "destination_key": "hotel.website",
+          "strength": "soft"
+        },
+        "visual": {
+          "scenario_key": "venho_west_lake_landscape",
+          "required_entities": [
+            "west_lake"
+          ],
+          "forbidden_entities": [
+            "modern_highrise_backdrop",
+            "tourist_postcard_aesthetic"
+          ],
+          "target_formats": [
+            "feed_4_5"
+          ]
+        },
+        "lane": "daily",
+        "status": "LOCKED",
+        "checksum": "sha256:64c0aaf6a4ddc84565d68336e22ef8ed034b908158c614fd192125902873fb2e",
+        "project": "venho_hotel"
+      },
+      "claims": [],
+      "scene_summary": {
+        "location": "West Lake landscape",
+        "time_of_day": "morning",
+        "entities": [
+          "west_lake"
+        ],
+        "mood": "calm"
+      },
+      "scorecard_signals": {
+        "claim_kill_switch_triggered": false,
+        "content_brand_fit": 95.0,
+        "content_overall_score": 91.12
+      }
     }
   ]
 }
