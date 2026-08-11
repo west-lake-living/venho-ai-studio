@@ -67,8 +67,27 @@ def test_daily_lane_uses_brand_system_prompt(monkeypatch) -> None:
     gen_module.claude_social_generator(_request(lane="daily"), _FakePrompt(), {})
 
     call = holder["client"].messages.calls[0]
+    assert call["model"] == gen_module.DEFAULT_CLAUDE_CONTENT_MODEL
+    assert call["max_tokens"] == 4096
     assert call["system"] == social_prompts.SYSTEM_PROMPT
     assert call["messages"][0]["content"] == "TOPIC: mot ngay o Ho Tay"
+
+
+def test_content_model_can_be_overridden_for_the_anthropic_deployment(monkeypatch) -> None:
+    holder = {}
+    monkeypatch.setattr(
+        anthropic,
+        "Anthropic",
+        lambda api_key: holder.setdefault(
+            "client", _FakeAnthropic(api_key, json.dumps({"title": "t", "hook": "h", "body": "b", "cta": "c"}))
+        ),
+    )
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
+    monkeypatch.setenv("CLAUDE_CONTENT_MODEL", "claude-3-opus-20240229")
+
+    gen_module.claude_social_generator(_request(), _FakePrompt(), {})
+
+    assert holder["client"].messages.calls[0]["model"] == "claude-3-opus-20240229"
 
 
 def test_saturday_lane_uses_weekend_events_prompt_and_appends_events(monkeypatch) -> None:

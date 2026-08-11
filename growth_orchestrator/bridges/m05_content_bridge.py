@@ -8,7 +8,7 @@ from typing import Any, Callable
 from agent_studio.growth.scenario_registry import ScenarioRegistry
 from content_studio.content_context import DEFAULT_CONFIG_ROOT, DEFAULT_DATA_ROOT, load_content_config
 from content_studio.content_engine import generate_content
-from content_studio.generators.gpt_social_generator import gpt_social_generator
+from content_studio.generators.claude_social_generator import claude_social_generator
 from content_studio.schemas.content_request import ContentRequest, SourceKnowledgeRef
 from growth_orchestrator.weekend_events import load_verified_weekend_events
 
@@ -46,7 +46,7 @@ class M05ContentBridge:
         config_root: Path = DEFAULT_CONFIG_ROOT,
         data_root: Path = DEFAULT_DATA_ROOT,
         scenario_registry: ScenarioRegistry | None = None,
-        generator_fn: GeneratorFn = gpt_social_generator,
+        generator_fn: GeneratorFn = claude_social_generator,
     ) -> None:
         self.config_root = config_root
         self.data_root = data_root

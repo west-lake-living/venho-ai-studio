@@ -645,7 +645,7 @@ def _run_content_pipeline_budgeted(
     validator_bridge: Optional[M03ValidatorBridge],
 ) -> dict[str, Any]:
     """Meter one real text-generation call (Phase 5, 2026-08-06) -- each
-    call to this is 1 real gpt-5.5 call via M05ContentBridge's default
+    call to this is 1 real Claude Opus call via M05ContentBridge's default
     generator_fn. A blocked reservation raises RuntimeError, caught by the
     per-platform try/except in `run_daily_cycle`'s loop exactly like any
     other real generation failure (recorded in `errors`, other platforms
@@ -720,8 +720,8 @@ def run_daily_cycle(
     quota) still queues the text draft, just without a photo attached.
 
     `content_bridge` defaults to a real M05ContentBridge, whose default
-    `generator_fn` (gpt_social_generator) calls the OpenAI API (gpt-5.5) for
-    real -- pass a bridge built with a mock generator_fn (e.g. in tests) to
+    `generator_fn` (claude_social_generator) calls the Anthropic API (Claude
+    Opus) for real -- pass a bridge built with a mock generator_fn (e.g. in tests) to
     avoid billed calls. `validator_bridge` defaults to a real
     M03ValidatorBridge (real scored content rubric, also billed-free but CPU
     real) -- pass a bridge that always approves in tests that aren't

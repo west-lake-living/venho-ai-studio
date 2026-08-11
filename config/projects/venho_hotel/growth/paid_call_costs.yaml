@@ -2,7 +2,7 @@ version: 1
 currency: VND
 # Estimated cost per real paid call, used by growth_orchestrator.application
 # .budget_gate.BudgetGate to reserve against budget_policy.yaml's monthly
-# cap before daily_cycle.py makes each real OpenAI call. These are rough
+# cap before daily_cycle.py makes each real provider call. These are rough
 # public-pricing estimates as of 2026-08-06, NOT derived from real per-call
 # token/pixel accounting (neither the text/image/vision adapters in this
 # codebase surface real billed cost back to the caller) -- correct these
@@ -10,7 +10,7 @@ currency: VND
 # cap can be crossed by a couple of calls before it actually blocks; erring
 # high means it blocks a little early. Either way the ledger's real COMMIT
 # totals (shared.budget.BudgetLedger.totals) are what should eventually be
-# reconciled against the real OpenAI invoice, not this file.
-text_generation_minor: 300      # 1 gpt-5.5 social-post candidate call
+# reconciled against the real provider invoice, not this file.
+text_generation_minor: 5000     # 1 Claude Opus social-post candidate call (conservative estimate)
 image_generation_minor: 1200    # 1 gpt-image-2 image (medium quality, 1024x1280, with a reference image)
 vision_qc_minor: 400            # 1 GPT-4o vision QC call comparing a generated image against DNA

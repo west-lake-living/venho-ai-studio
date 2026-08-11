@@ -8,6 +8,7 @@ from shutil import copyfile
 
 from content_studio.builders.social_builder import build_social_draft
 from content_studio.generators.claude_generator import claude_longform_generator
+from content_studio.generators.claude_social_generator import DEFAULT_CLAUDE_CONTENT_MODEL
 from content_studio.prompt_bridge import build_content_prompt_for_request
 from content_studio.schemas.content_request import ContentRequest, SourceKnowledgeRef
 from prompt_studio.builders.video_prompt_builder import build_video_prompt
@@ -140,5 +141,6 @@ def test_claude_adapter_uses_fake_client_without_paid_api(monkeypatch) -> None:
     draft = claude_longform_generator(_content_request("mint_green"), bridge.contract, {})
 
     assert calls["temperature"] == 0
+    assert calls["model"] == DEFAULT_CLAUDE_CONTENT_MODEL
     assert calls["messages"] == [{"role": "user", "content": bridge.contract.final_prompt}]
     assert draft["title"] == "T"

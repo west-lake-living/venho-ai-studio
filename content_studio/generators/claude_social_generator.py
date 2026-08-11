@@ -2,11 +2,11 @@
 claude_social_generator.py — Claude-powered content generator for M05 social
 post types (facebook_post/instagram_post/threads_post/zalo_post).
 
-Not the default generator_fn as of 2026-08-04 -- Harry switched the real
-pipeline to content_studio.generators.gpt_social_generator (gpt-5.5) because
-Sonnet 5 output quality was inconsistent. Kept here in case Harry wants to
-A/B test or switch back; system prompts live in social_prompts.py shared by
-both generators so Harry's briefs never drift between them.
+Default generator for the Growth Agent's M05 content bridge. The active model
+is Claude Opus and can be changed without code through
+`CLAUDE_CONTENT_MODEL`. System prompts live in social_prompts.py and are
+shared with the retained OpenAI generator, so briefs do not drift during a
+provider change.
 
 IMPORTANT: Never call this in pytest. Always pass a mock generator_fn in
 tests (see content_studio.builders.social_builder.mock_social_generator).
@@ -24,6 +24,11 @@ from content_studio.generators.social_prompts import build_user_message, select_
 from content_studio.schemas.content_request import ContentRequest
 
 GeneratedDraft = Dict[str, Any]
+
+# Anthropic has not published a Claude Opus 5 API model. Use the current
+# supported Opus 4.1 identifier rather than the deprecated Claude 3 Opus
+# model. An explicit deployment-approved model may be supplied through env.
+DEFAULT_CLAUDE_CONTENT_MODEL = "claude-opus-4-1-20250805"
 
 
 def claude_social_generator(
@@ -51,11 +56,9 @@ def claude_social_generator(
 
     client = Anthropic(api_key=api_key)
     response = client.messages.create(
-        model="claude-sonnet-5",
-        # 4096, not 2048: claude-sonnet-5 spends part of the token budget on
-        # an internal ThinkingBlock before the JSON text block, so 2048 was
-        # sometimes truncating the JSON body mid-string (observed as
-        # JSONDecodeError: Unterminated string) on longer prompts/topics.
+        model=os.environ.get("CLAUDE_CONTENT_MODEL", DEFAULT_CLAUDE_CONTENT_MODEL),
+        # 4096 leaves room for a complete JSON social draft, including a
+        # possible Anthropic thinking block before the JSON text block.
         max_tokens=4096,
         system=system_prompt,
         messages=[{"role": "user", "content": user_message}],

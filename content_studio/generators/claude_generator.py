@@ -15,6 +15,7 @@ from typing import Any, Dict
 
 from prompt_studio.schemas.content_prompt import ContentPromptContract
 
+from content_studio.generators.claude_social_generator import DEFAULT_CLAUDE_CONTENT_MODEL
 from content_studio.schemas.content_request import ContentRequest
 
 GeneratedDraft = Dict[str, Any]
@@ -112,7 +113,7 @@ def claude_longform_generator(
 
     client = Anthropic(api_key=api_key)
     response = client.messages.create(
-        model="claude-sonnet-5",
+        model=os.environ.get("CLAUDE_CONTENT_MODEL", DEFAULT_CLAUDE_CONTENT_MODEL),
         max_tokens=2048,
         temperature=0,
         system=_system_prompt(request.content_type),

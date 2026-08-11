@@ -6,6 +6,7 @@ from shutil import copyfile
 
 from agent_studio.growth.reference_asset_resolver import ReferenceAssetResolver
 from content_studio.builders.social_builder import mock_social_generator
+from content_studio.generators.claude_social_generator import claude_social_generator
 from image_studio_runtime.adapters.mock_image_provider import MockImageProvider
 from publishing_gateway.publication_registry import PublicationRegistry
 
@@ -43,8 +44,12 @@ def _tmp_data_root(tmp_path: Path) -> Path:
 
 def _mock_content_bridge(data_root: Path) -> M05ContentBridge:
     """M05ContentBridge with a mock generator -- avoids billed Claude API
-    calls in tests (default generator_fn is the real gpt_social_generator)."""
+    calls in tests (default generator_fn is the real Claude social generator)."""
     return M05ContentBridge(data_root=data_root, generator_fn=mock_social_generator)
+
+
+def test_m05_default_generator_is_claude_opus() -> None:
+    assert M05ContentBridge().generator_fn is claude_social_generator
 
 
 def test_run_daily_cycle_rejects_non_cadence_day(tmp_path: Path) -> None:

@@ -28,6 +28,8 @@ jobs:
       - name: Generate grounded blog draft
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CLAUDE_CONTENT_MODEL: ${{ vars.CLAUDE_CONTENT_MODEL }}
         run: >-
           venho-growth blog
           --topic "Một ngày chậm rãi bên Hồ Tây"
