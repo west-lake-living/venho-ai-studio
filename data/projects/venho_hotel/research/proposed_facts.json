@@ -580,10 +580,11 @@
     "domain": "competitor_rating",
     "question": "Các khách sạn cạnh tranh gần Ven Ho Hotel được khách chấm bao nhiêu điểm?",
     "synthesis_note": "research/synthesis/RS-2026-08-06-competitorrating-synthesis.md",
-    "status": "pending_approval",
+    "status": "rejected",
     "proposed_at": "2026-08-06T14:57:51.943400+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "hpham1504@gmail.com",
+    "decided_at": "2026-08-11T04:04:50.927140+00:00",
+    "reject_reason": null
   },
   {
     "fact_key": "competitor.4u_homestay_rating",
