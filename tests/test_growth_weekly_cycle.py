@@ -17,9 +17,10 @@ def test_publish_scheduler_is_independent_from_weekly_approval() -> None:
     workflow = Path(".github/workflows/growth-publish-scheduler.yml").read_text(encoding="utf-8")
 
     assert 'cron: "0 2 * * 1,3,5,6"' in workflow
-    assert "args=(dispatch-due --allow-shadow)" in workflow
+    assert "args=(dispatch-due --allow-shadow --catch-up-today --require-dispatch)" in workflow
     assert "--allow-shadow" in workflow
     assert "--catch-up-today" in workflow
+    assert "--require-dispatch" in workflow
     assert "slots_snapshot.json" in workflow
     assert "approve-week" not in workflow
     assert "MAKE_GROWTH_WEBHOOK_URL" in workflow

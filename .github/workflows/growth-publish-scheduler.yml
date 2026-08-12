@@ -1,18 +1,12 @@
 name: Growth Agent Publish Scheduler
 
-# One deterministic invocation per published cadence slot. The dispatcher
-# rejects anything more than 30 minutes late, so a delayed Action cannot dump
-# old posts together on a later run.
+# One deterministic invocation per published cadence slot. GitHub scheduled
+# workflows may start well after their requested cron time, so this workflow
+# always allows recovery of today's slot while still refusing older backlog.
 on:
   schedule:
     - cron: "0 2 * * 1,3,5,6" # 09:00 Asia/Ho_Chi_Minh (UTC+7)
   workflow_dispatch:
-    inputs:
-      catch_up_today:
-        description: "Publish today's approved slot even when more than 30 minutes late"
-        required: false
-        type: boolean
-        default: false
 
 permissions:
   contents: write
@@ -39,6 +33,8 @@ jobs:
         run: pip install -e .
 
       - name: Dispatch approved publications now due
+        id: dispatch
+        continue-on-error: true
         env:
           MAKE_GROWTH_WEBHOOK_URL: ${{ secrets.MAKE_GROWTH_WEBHOOK_URL }}
           MAKE_GROWTH_WEBHOOK_SECRET: ${{ secrets.MAKE_GROWTH_WEBHOOK_SECRET }}
@@ -52,13 +48,11 @@ jobs:
             echo "::error::MAKE_GROWTH_WEBHOOK_URL is not configured; refusing scheduled dispatch."
             exit 1
           fi
-          args=(dispatch-due --allow-shadow)
-          if [ "${{ inputs.catch_up_today || false }}" = "true" ]; then
-            args+=(--catch-up-today)
-          fi
+          args=(dispatch-due --allow-shadow --catch-up-today --require-dispatch)
           venho-growth "${args[@]}"
 
       - name: Commit publication state
+        if: always()
         run: |
           venho-growth slots --weeks-ahead 2 > data/projects/venho_hotel/growth/slots_snapshot.json
           git config user.name "venho-growth-bot"
@@ -69,3 +63,7 @@ jobs:
           git diff --cached --quiet || git commit -m "chore: growth scheduled dispatch $(date -u +%Y-%m-%dT%H%MZ)"
           git pull --rebase origin main
           git push
+
+      - name: Fail when no due publication was dispatched
+        if: steps.dispatch.outcome == 'failure'
+        run: exit 1

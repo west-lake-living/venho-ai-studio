@@ -70,7 +70,15 @@ def dispatch_due(
 
     results: list[dict] = []
     for publication in registry.load()["publications"]:
-        if len(results) >= limit or publication.get("status") != APPROVED_SCHEDULED_STATUS:
+        status = publication.get("status")
+        is_missed_window_retry = (
+            catch_up_today
+            and status == GATEWAY_ERROR_STATUS
+            and publication.get("gateway_status") == "MISSED_DISPATCH_WINDOW"
+        )
+        if len(results) >= limit or (
+            status != APPROVED_SCHEDULED_STATUS and not is_missed_window_retry
+        ):
             continue
         scheduled_at = scheduled_at_for(publication, cadence_policy=cadence_policy)
         if scheduled_at is None or scheduled_at > current:
@@ -95,7 +103,7 @@ def dispatch_due(
         try:
             claimed = registry.claim(
                 publication["publication_id"],
-                expected_status=APPROVED_SCHEDULED_STATUS,
+                expected_status=(GATEWAY_ERROR_STATUS if is_missed_window_retry else APPROVED_SCHEDULED_STATUS),
                 claimed_status=DISPATCHING_STATUS,
             )
         except (KeyError, ValueError):

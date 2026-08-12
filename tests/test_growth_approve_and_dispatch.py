@@ -420,6 +420,44 @@ def test_manual_catch_up_dispatches_only_an_expired_slot_from_today(tmp_path: Pa
     assert {item["publication_id"] for item in results} == {today, old}
 
 
+def test_manual_catch_up_retries_today_after_scheduler_marked_missed_window(tmp_path: Path) -> None:
+    _past_shadow(tmp_path)
+    registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
+    publication_id = _reserve_pending(
+        registry, platform="facebook", slot_id="slot-2026-08-12-wednesday"
+    )
+    registry.update(
+        publication_id,
+        status="GATEWAY_ERROR",
+        gateway_status="MISSED_DISPATCH_WINDOW",
+        gateway_error="GitHub runner started late",
+        approved_by="harry",
+    )
+
+    calls = []
+    make_adapter = MakeGatewayAdapter(enabled=True)
+    make_adapter.send = lambda command: calls.append(command) or {
+        "status": "GATEWAY_ACCEPTED",
+        "published": False,
+    }
+    bridge = M07PublishingBridge(
+        make_adapter=make_adapter, zalo_adapter=ZaloOAAdapter(enabled=True)
+    )
+
+    results = dispatch_due(
+        project="venho_hotel",
+        data_root=tmp_path,
+        registry=registry,
+        bridge=bridge,
+        now=datetime(2026, 8, 12, 10, 52, tzinfo=ZoneInfo("Asia/Ho_Chi_Minh")),
+        catch_up_today=True,
+    )
+
+    assert [item["publication_id"] for item in results] == [publication_id]
+    assert registry.find(publication_id)["status"] == "GATEWAY_ACCEPTED"
+    assert [call["publication_id"] for call in calls] == [publication_id]
+
+
 def test_approve_week_is_atomic_when_a_row_changes_during_review(tmp_path: Path) -> None:
     registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
     first = _reserve_pending(registry, platform="facebook", slot_id="slot-2026-08-10-monday")

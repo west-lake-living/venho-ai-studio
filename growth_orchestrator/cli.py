@@ -273,6 +273,11 @@ def dispatch_due_cmd(
     limit: int = typer.Option(50, min=1, max=200),
     allow_shadow: bool = typer.Option(False, "--allow-shadow"),
     catch_up_today: bool = typer.Option(False, "--catch-up-today"),
+    require_dispatch: bool = typer.Option(
+        False,
+        "--require-dispatch",
+        help="Exit non-zero when no post is dispatched or any due post fails.",
+    ),
 ) -> None:
     """Scheduler entrypoint: dispatch only APPROVED_SCHEDULED rows now due."""
     try:
@@ -285,7 +290,15 @@ def dispatch_due_cmd(
     except (KeyError, ValueError) as exc:
         typer.echo(json.dumps({"ok": False, "error": str(exc)}), err=True)
         raise typer.Exit(code=1)
-    typer.echo(json.dumps({"ok": True, "publications": publications}, ensure_ascii=False, indent=2))
+    failed = [
+        publication
+        for publication in publications
+        if publication.get("status") not in {"GATEWAY_ACCEPTED", "PUBLISHED"}
+    ]
+    ok = bool(publications) and not failed if require_dispatch else not failed
+    typer.echo(json.dumps({"ok": ok, "publications": publications}, ensure_ascii=False, indent=2))
+    if not ok:
+        raise typer.Exit(code=1)
 
 
 @app.command("reject")
