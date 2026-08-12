@@ -1357,3 +1357,22 @@ Full detail in `task_status.md`. The parts worth remembering:
 
 Targeted suite 77/77. **Never run against a live ComfyUI** — model files and the 10-image A2
 benchmark are still open, and the first real run is the only meaningful test of the adapter.
+
+## Action Composite v2 — P8 first live run: RAM, not code (2026-08-12)
+
+Installed ComfyUI + PuLID node + SDXL base + AntelopeV2 locally, wrote
+`config/comfyui/face_restore_v1_api.json` (verified against the PuLID node's real `INPUT_TYPES`,
+not guessed), generated 2 real Linh An action test images (gpt-image-2, paid, `data/` gitignored,
+not brand wardrobe), ran the actual adapter against the actual server for the first time.
+
+**Both jobs timed out — but the cause is the Mac mini M4's 16GB RAM, not a pipeline bug.**
+`vm.swapusage` mid-run: 20.9/21.5GB swap used. SDXL base (6.5G) + PuLID + EVA-CLIP (2G) +
+InsightFace together don't fit in 16GB unified memory. `/upload/image`, `inject_inputs()`, and the
+queued graph were all confirmed correct via `/queue` inspection — ComfyUI accepted and started the
+job, it just never finished a single sampling step in 8.6 minutes. The P7 fail-fast path never
+fired because ComfyUI itself never reported an error status; the process was alive, just thrashing.
+
+Harry's call: stop here, don't retry with a longer timeout or a different model this session.
+Still open: a lighter stack (SD1.5 IPAdapter FaceID, untested) or more RAM/cloud GPU before the
+next live attempt; the 10-image benchmark is still blocked behind that; the workflow JSON has
+never actually completed end-to-end. Full detail: `task_status.md` P8 section.

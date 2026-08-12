@@ -1323,3 +1323,55 @@ in subject-resolver / validator / video-studio config, untouched here.
 **Still open (unchanged):** identity-conditioning workflow + model files, and the 10-image A2
 benchmark. The adapter is now complete enough to drive a real ComfyUI but **has never been run
 against a live server** — that first real run remains the meaningful test.
+
+## Action Composite v2 — P8 first live ComfyUI run: RAM-blocked, not code-blocked (2026-08-12)
+
+Installed ComfyUI locally (`~/ComfyUI`, already present from an earlier session) and ran the
+adapter against a real server for the first time — not the fake HTTP server the test suite uses.
+
+**What was built:**
+- `ComfyUI/custom_nodes/PuLID_ComfyUI` + deps (`facexlib`, `insightface`, `onnxruntime`, `ftfy`,
+  `timm`) installed into `~/ComfyUI/.venv` (Python 3.12, torch 2.13, MPS available).
+- Models downloaded: `ip-adapter_pulid_sdxl_fp16.safetensors` (755M), AntelopeV2 face-analysis
+  ONNX set (344M), `sd_xl_base_1.0.safetensors` (6.5G), `sdxl_lightning_4step_lora.safetensors`.
+- `config/comfyui/face_restore_v1_api.json` (committed) — API-format workflow: `base_image` +
+  `face_mask` → `VAEEncodeForInpaint`, `identity_reference` → `ApplyPulid` (method=fidelity,
+  weight=0.8), `KSampler` (4-step lightning, denoise=0.6) → `VAEDecode` → `SaveImage`. Node titles
+  match `providers.DEFAULT_NODE_BINDINGS` exactly (`base_image`/`face_mask`/`identity_reference`),
+  verified against the PuLID node's actual `INPUT_TYPES` before running, not guessed.
+- 2 real action test images of Linh An generated via `venho-social-content-agent/generate_image.py`
+  (gpt-image-2, `--ref A2_Front.png`, paid API call) — jogging + over-the-shoulder poses, chosen
+  to stress-test angle/motion deviation from the A2 identity authority. Face bbox for each detected
+  with InsightFace (antelopev2) rather than eyeballed. Not committed (`data/` is gitignored) and
+  not brand-approved wardrobe — technical test images only, never for publishing.
+
+**Result: both jobs timed out (240s) — root cause is the machine's RAM, not the pipeline code.**
+
+- Host: Mac mini M4, 16GB unified memory. `vm.swapusage` during the run: **20.9GB / 21.5GB swap
+  used**, 590MB free — the process was thrashing, not stuck on a bug. Job 1 ran 8.6 minutes and
+  never completed a single 4-step KSampler pass.
+- SDXL base checkpoint (6.5G) + PuLID + EVA-CLIP (~2G, downloaded on first use) + InsightFace
+  (CPU) loaded simultaneously exceed 16GB comfortably even though PuLID was the lightest of the
+  3 identity-model options evaluated (PuLID / IPAdapter FaceID SD1.5 / InstantID SDXL) — "lightest
+  of three" was a relative comparison, not a fit-in-16GB guarantee, and that gap wasn't checked
+  before downloading. Server killed to release memory once swap was confirmed near-exhausted.
+- **This is a genuine, reproducible finding, not a config bug**: `health_check()` returned `True`,
+  `/upload/image` succeeded for all 3 assets, `inject_inputs()` wired the nodes correctly (queue
+  inspection via `/queue` showed the exact expected graph), and the fail-fast error path from the
+  P7 hardening review never triggered because ComfyUI itself never reported `status_str == "error"`
+  — it was alive, just swapping.
+
+**Decision (Harry, 2026-08-12): stop here, do not retry with a longer timeout or switch model.**
+Recorded as a known issue rather than pursued further this session.
+
+**Still open:**
+- [ ] Identity-conditioning pipeline does not fit in 16GB unified memory as configured. Next
+      attempt needs either a lighter stack (SD1.5-based IPAdapter FaceID instead of SDXL PuLID —
+      untested, expected to need roughly ⅓ the checkpoint size) or more memory (cloud GPU / bigger
+      Mac) before another live run is worth attempting.
+- [ ] 10-image A2 benchmark — still blocked behind the above; only 2 test images exist so far
+      (`data/action_composite_test/`, gitignored, not real benchmark inputs since restoration
+      never completed).
+- [ ] `config/comfyui/face_restore_v1_api.json` has never actually executed to completion — its
+      node wiring was verified by inspection and by ComfyUI accepting the queued graph without
+      validation error, not by a finished image.

@@ -1,0 +1,228 @@
+{
+  "4": {
+    "class_type": "CheckpointLoaderSimple",
+    "inputs": {
+      "ckpt_name": "sd_xl_base_1.0.safetensors"
+    },
+    "_meta": {
+      "title": "checkpoint_loader"
+    }
+  },
+  "45": {
+    "class_type": "LoraLoaderModelOnly",
+    "inputs": {
+      "model": [
+        "4",
+        0
+      ],
+      "lora_name": "sdxl_lightning_4step_lora.safetensors",
+      "strength_model": 1.0
+    },
+    "_meta": {
+      "title": "lightning_lora"
+    }
+  },
+  "12": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "placeholder_base.png"
+    },
+    "_meta": {
+      "title": "base_image"
+    }
+  },
+  "13": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "placeholder_mask.png"
+    },
+    "_meta": {
+      "title": "face_mask"
+    }
+  },
+  "14": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "placeholder_reference.png"
+    },
+    "_meta": {
+      "title": "identity_reference"
+    }
+  },
+  "15": {
+    "class_type": "ImageToMask",
+    "inputs": {
+      "image": [
+        "13",
+        0
+      ],
+      "channel": "red"
+    },
+    "_meta": {
+      "title": "face_mask_channel"
+    }
+  },
+  "16": {
+    "class_type": "VAEEncodeForInpaint",
+    "inputs": {
+      "pixels": [
+        "12",
+        0
+      ],
+      "vae": [
+        "4",
+        2
+      ],
+      "mask": [
+        "15",
+        0
+      ],
+      "grow_mask_by": 6
+    },
+    "_meta": {
+      "title": "inpaint_encode"
+    }
+  },
+  "19": {
+    "class_type": "PulidEvaClipLoader",
+    "inputs": {},
+    "_meta": {
+      "title": "pulid_eva_clip"
+    }
+  },
+  "17": {
+    "class_type": "PulidInsightFaceLoader",
+    "inputs": {
+      "provider": "CPU"
+    },
+    "_meta": {
+      "title": "pulid_insightface"
+    }
+  },
+  "18": {
+    "class_type": "PulidModelLoader",
+    "inputs": {
+      "pulid_file": "ip-adapter_pulid_sdxl_fp16.safetensors"
+    },
+    "_meta": {
+      "title": "pulid_model_loader"
+    }
+  },
+  "33": {
+    "class_type": "ApplyPulid",
+    "inputs": {
+      "model": [
+        "45",
+        0
+      ],
+      "pulid": [
+        "18",
+        0
+      ],
+      "eva_clip": [
+        "19",
+        0
+      ],
+      "face_analysis": [
+        "17",
+        0
+      ],
+      "image": [
+        "14",
+        0
+      ],
+      "method": "fidelity",
+      "weight": 0.8,
+      "start_at": 0.0,
+      "end_at": 1.0
+    },
+    "_meta": {
+      "title": "apply_pulid"
+    }
+  },
+  "22": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "clip": [
+        "4",
+        1
+      ],
+      "text": "photorealistic face, natural skin texture, sharp focus, detailed eyes"
+    },
+    "_meta": {
+      "title": "positive_prompt"
+    }
+  },
+  "23": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "clip": [
+        "4",
+        1
+      ],
+      "text": "flaws in the eyes, flaws in the face, lowres, low quality, artifacts, deformed, mutated, disfigured, blurry, plastic skin, doll face"
+    },
+    "_meta": {
+      "title": "negative_prompt"
+    }
+  },
+  "3": {
+    "class_type": "KSampler",
+    "inputs": {
+      "model": [
+        "33",
+        0
+      ],
+      "positive": [
+        "22",
+        0
+      ],
+      "negative": [
+        "23",
+        0
+      ],
+      "latent_image": [
+        "16",
+        0
+      ],
+      "seed": 42,
+      "steps": 4,
+      "cfg": 1.2,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "sgm_uniform",
+      "denoise": 0.6
+    },
+    "_meta": {
+      "title": "ksampler"
+    }
+  },
+  "8": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": [
+        "3",
+        0
+      ],
+      "vae": [
+        "4",
+        2
+      ]
+    },
+    "_meta": {
+      "title": "vae_decode"
+    }
+  },
+  "9": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "images": [
+        "8",
+        0
+      ],
+      "filename_prefix": "venho_action_composite"
+    },
+    "_meta": {
+      "title": "save_image"
+    }
+  }
+}

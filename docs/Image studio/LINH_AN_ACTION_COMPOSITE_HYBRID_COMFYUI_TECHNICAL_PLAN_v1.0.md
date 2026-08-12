@@ -1840,3 +1840,35 @@ reproduced by running the code before being fixed.
 
 The adapter is now complete enough to drive a real ComfyUI, but it has **never been run against
 a live server** — the first real run is still the meaningful test.
+
+## P8 — First live ComfyUI run: blocked by RAM, not by the pipeline (2026-08-12)
+
+The "never been run against a live server" gap above was closed — with an honest negative
+result. ComfyUI + PuLID (SDXL-Lightning) + AntelopeV2 were installed locally, a real API-format
+workflow was written (`config/comfyui/face_restore_v1_api.json`, node titles matching
+`DEFAULT_NODE_BINDINGS`, verified against the PuLID node's actual `INPUT_TYPES` before running),
+and 2 real Linh An action images (gpt-image-2, paid, `--ref A2_Front.png`) were pushed through the
+actual `ComfyUIIdentityRestorer.restore()` — not the fake HTTP server the test suite uses.
+
+**Both jobs timed out at 240s.** Root cause, confirmed via `vm.swapusage` mid-run
+(20.9GB / 21.5GB swap used) and `/queue` inspection: the host (Mac mini M4, 16GB unified memory)
+cannot hold SDXL base (6.5G) + PuLID + EVA-CLIP (2G) + InsightFace simultaneously without severe
+swap thrashing. PuLID was chosen earlier in this plan as the *lightest of three* identity-model
+options (vs. IPAdapter FaceID SD1.5 and InstantID SDXL) — that was a relative comparison, not
+confirmation it fits in 16GB, and the gap wasn't checked before the ~8GB of downloads. The upload
++ inject wiring itself was confirmed correct (health check passed, all 3 assets uploaded, the
+queued graph matched the intended workflow exactly) — ComfyUI accepted and started the job, it
+simply never finished a single sampling step. Server was killed once swap was confirmed
+near-exhausted, to avoid crashing the host.
+
+Harry's decision: stop here rather than retry with a longer timeout or switch identity model this
+session. Recorded as a known issue.
+
+**Still open, revised:**
+- [ ] The identity-conditioning pipeline as configured does not fit in 16GB unified memory. Next
+      attempt needs either a lighter stack (SD1.5 IPAdapter FaceID — untested, expected roughly
+      ⅓ the checkpoint footprint of the SDXL path) or more memory (cloud GPU / larger machine).
+- [ ] The 10-image A2 benchmark is still blocked behind the above — only 2 test images exist so
+      far, and neither completed restoration.
+- [ ] `face_restore_v1_api.json`'s node wiring has been verified by inspection, not by a
+      finished image — that remains the actual open question about the graph itself.
