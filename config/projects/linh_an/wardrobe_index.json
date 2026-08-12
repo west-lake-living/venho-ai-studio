@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "project": "linh_an",
   "owner": "Linh An",
-  "updated_at": "2026-07-16",
+  "updated_at": "2026-08-12",
   "auto_selection": {
     "enabled": false,
     "policy": "User selection is authoritative. Automatic outfit selection is allowed only for explicit sport-action safety locks and must be recorded in generation manifest selectionReason."
@@ -13,35 +13,47 @@
       "family_label": "A — Cafe Girl",
       "default_outfit_id": "cafe_girl_classic",
       "status": "approved",
-      "outfit_ids": ["cafe_girl_classic"]
+      "outfit_ids": [
+        "cafe_girl_classic"
+      ]
     },
     {
       "family_key": "west_lake_sunset",
       "family_label": "B — West Lake Sunset",
       "default_outfit_id": "west_lake_sunset_classic",
       "status": "approved",
-      "outfit_ids": ["west_lake_sunset_classic"]
+      "outfit_ids": [
+        "west_lake_sunset_classic"
+      ]
     },
     {
       "family_key": "street_style",
       "family_label": "C — Street Style",
       "default_outfit_id": "street_style_classic",
       "status": "approved",
-      "outfit_ids": ["street_style_classic"]
+      "outfit_ids": [
+        "street_style_classic"
+      ]
     },
     {
       "family_key": "business_travel",
       "family_label": "D — Business Travel",
       "default_outfit_id": "business_travel_classic",
       "status": "approved",
-      "outfit_ids": ["business_travel_classic"]
+      "outfit_ids": [
+        "business_travel_classic"
+      ]
     },
     {
       "family_key": "sport_active",
       "family_label": "E — Sport & Active",
       "default_outfit_id": "mint_green",
       "status": "approved",
-      "outfit_ids": ["mint_green", "nike_pink_running"]
+      "outfit_ids": [
+        "mint_green",
+        "nike_pink_running",
+        "nike_white_running"
+      ]
     }
   ],
   "outfits": [
@@ -172,6 +184,23 @@
       ],
       "default": false,
       "notes": "Current approved outfit entry. Earlier universal-style artifact remains quarantined in wardrobe_manifest.json for audit."
+    },
+    {
+      "outfit_id": "nike_white_running",
+      "family_key": "sport_active",
+      "display_label": "Nike White Running",
+      "status": "approved",
+      "schema_subject": "outfit_e_sport",
+      "source_kind": "source_backed",
+      "source_images_dir": "data/projects/linh_an/wardrobe/nike_white_running",
+      "dna_artifacts": [
+        "data/projects/linh_an/knowledge/LINH_AN_NIKE_WHITE_RUNNING_DNA.md",
+        "data/projects/linh_an/knowledge/LINH_AN_NIKE_WHITE_RUNNING_DNA.json",
+        "data/projects/linh_an/knowledge/LINH_AN_NIKE_WHITE_RUNNING_DNA_COMPACT.md"
+      ],
+      "description": "",
+      "default": false,
+      "notes": "Auto-registered by Mode C — pending Harry's visual review before flipping to approved."
     }
   ]
 }

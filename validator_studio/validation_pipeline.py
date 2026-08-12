@@ -20,8 +20,8 @@ def _report_id(validation_type: str, subject: str, artifact_hash: Optional[str])
     return f"{validation_type}_{subject}_{suffix}_{stamp}"
 
 
-def _output_paths(project: str) -> tuple[Path, Path]:
-    root = BASE_DIR / "data" / "projects" / project / "validation"
+def _output_paths(project: str, output_root: Optional[Path] = None) -> tuple[Path, Path]:
+    root = output_root or (BASE_DIR / "data" / "projects" / project / "validation")
     return root / "reports", root / "validation_manifest.json"
 
 
@@ -33,17 +33,18 @@ def run_image_validation(
     provider: str = "mock",
     samples: Optional[int] = None,
     scenario_profile_id: Optional[str] = None,
+    output_root: Optional[Path] = None,
 ) -> dict[str, Path]:
     report = validate_image(project, subject, image_path, prompt_path, provider, samples, scenario_profile_id)
-    reports_dir, manifest_path = _output_paths(project)
+    reports_dir, manifest_path = _output_paths(project, output_root)
     paths = write_report(report, reports_dir, _report_id("image", subject, report.artifact_ref.hash))
     update_manifest(manifest_path, report, paths)
     return paths
 
 
-def run_prompt_validation(project: str, subject: str, prompt_path: Path) -> dict[str, Path]:
+def run_prompt_validation(project: str, subject: str, prompt_path: Path, output_root: Optional[Path] = None) -> dict[str, Path]:
     report = validate_prompt(project, subject, prompt_path)
-    reports_dir, manifest_path = _output_paths(project)
+    reports_dir, manifest_path = _output_paths(project, output_root)
     paths = write_report(report, reports_dir, _report_id("prompt", subject, report.artifact_ref.hash))
     update_manifest(manifest_path, report, paths)
     return paths
@@ -54,9 +55,10 @@ def run_latest_prompt_validation(
     subject: str,
     prompt_type: str,
     brief_slug: Optional[str] = None,
+    output_root: Optional[Path] = None,
 ) -> dict[str, Path]:
     prompt_path = resolve_latest_prompt_path(project, subject, prompt_type, brief_slug)
-    return run_prompt_validation(project, subject, prompt_path)
+    return run_prompt_validation(project, subject, prompt_path, output_root)
 
 
 def run_face_validation(
@@ -66,9 +68,10 @@ def run_face_validation(
     provider: str = "mock",
     reference_image_paths: Optional[list[Path]] = None,
     samples: int = 1,
+    output_root: Optional[Path] = None,
 ) -> dict[str, Path]:
     report = validate_face(project, subject, image_path, provider, reference_image_paths, samples)
-    reports_dir, manifest_path = _output_paths(project)
+    reports_dir, manifest_path = _output_paths(project, output_root)
     paths = write_report(report, reports_dir, _report_id("face", subject, report.artifact_ref.hash))
     update_manifest(manifest_path, report, paths)
     return paths
@@ -81,9 +84,10 @@ def run_content_validation(
     platform: str = "facebook",
     target_language: Optional[str] = None,
     prompt_path: Optional[Path] = None,
+    output_root: Optional[Path] = None,
 ) -> dict[str, Path]:
     report = validate_content(project, subject, draft_path, platform, target_language, prompt_path)
-    reports_dir, manifest_path = _output_paths(project)
+    reports_dir, manifest_path = _output_paths(project, output_root)
     paths = write_report(report, reports_dir, _report_id("content", subject, report.artifact_ref.hash))
     update_manifest(manifest_path, report, paths)
     return paths

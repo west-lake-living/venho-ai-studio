@@ -168,6 +168,7 @@ def run_mode_c(
     provider: str | None = None,
     schema_subject: str | None = None,
     display_label: str | None = None,
+    family_key: str | None = None,
 ) -> dict[str, Path]:
     """Mode C: Linh An wardrobe variant → DNA, using a canonical schema subject.
 
@@ -176,32 +177,52 @@ def run_mode_c(
       - schema_subject: canonical schema used for observation/consolidation;
       - display_label: friendly label shown in logs/UI.
 
+    outfit_id is not limited to MODE_C_WARDROBE_VARIANTS — that dict only holds
+    defaults for the two originally-seeded outfits so old callers keep working
+    without passing schema_subject/display_label/family_key explicitly. A brand
+    new outfit_id must supply all three since there is no default to fall back to.
+
     Universal schema fallback is never allowed here.
     """
     if project != "linh_an":
         raise ValueError("Mode C currently supports project='linh_an' only.")
 
     variant = MODE_C_WARDROBE_VARIANTS.get(outfit_id)
-    if variant is None:
-        allowed = ", ".join(sorted(MODE_C_WARDROBE_VARIANTS))
-        raise ValueError(f"Unknown Mode C outfit_id '{outfit_id}'. Allowed: {allowed}")
-
-    effective_schema_subject = schema_subject or variant["schema_subject"]
-    if effective_schema_subject != variant["schema_subject"]:
-        raise ValueError(
-            f"Mode C outfit_id '{outfit_id}' must use schema_subject "
-            f"'{variant['schema_subject']}', got '{effective_schema_subject}'."
-        )
+    if variant is not None:
+        effective_schema_subject = schema_subject or variant["schema_subject"]
+        if effective_schema_subject != variant["schema_subject"]:
+            raise ValueError(
+                f"Mode C outfit_id '{outfit_id}' must use schema_subject "
+                f"'{variant['schema_subject']}', got '{effective_schema_subject}'."
+            )
+        effective_display_label = display_label or variant["display_label"]
+        effective_family_key = family_key or variant["family"]
+    else:
+        missing = [
+            name for name, value in (
+                ("--schema-subject", schema_subject),
+                ("--display-label", display_label),
+                ("--family-key", family_key),
+            ) if not value
+        ]
+        if missing:
+            raise ValueError(
+                f"New Mode C outfit_id '{outfit_id}' has no known default — "
+                f"missing required: {', '.join(missing)}."
+            )
+        effective_schema_subject = schema_subject
+        effective_display_label = display_label
+        effective_family_key = family_key
 
     schema_def = resolve(project, effective_schema_subject, allow_universal_schema=False)
     subject_def = replace(
         schema_def,
         name=outfit_id,
-        display_name=display_label or variant["display_label"],
+        display_name=effective_display_label,
         dna_filename=f"{project.upper()}_{outfit_id.upper()}_DNA",
     )
 
-    return _run_mode_b_with_subject_def(
+    paths = _run_mode_b_with_subject_def(
         project=project,
         subject=outfit_id,
         input_dir=input_dir,
@@ -211,6 +232,84 @@ def run_mode_c(
         mode_label="Mode C: Linh An Wardrobe DNA",
         schema_subject=effective_schema_subject,
     )
+
+    _upsert_wardrobe_index_entry(
+        outfit_id=outfit_id,
+        family_key=effective_family_key,
+        display_label=effective_display_label,
+        schema_subject=effective_schema_subject,
+        source_images_dir=str(input_dir),
+        dna_paths=paths,
+    )
+
+    return paths
+
+
+def _upsert_wardrobe_index_entry(
+    outfit_id: str,
+    family_key: str,
+    display_label: str,
+    schema_subject: str,
+    source_images_dir: str,
+    dna_paths: dict[str, Path],
+) -> None:
+    """Register a Mode C outfit into wardrobe_index.json so it shows up as a
+    selectable variant across venho-os (Mode C dropdown, Creative Studio, etc.).
+
+    New outfits land with status="needs_review" — visible for testing but not
+    silently promoted to "approved"; Harry flips that by hand once he likes it.
+    Rebuilding DNA for an outfit already in the index only refreshes its
+    dna_artifacts/source_images_dir, it never downgrades an approved status.
+    """
+    import json
+    from datetime import datetime, timezone
+
+    index_path = BASE_DIR / "config" / "projects" / "linh_an" / "wardrobe_index.json"
+    if not index_path.exists():
+        log(f"  [wardrobe-index] {index_path} not found — skipping index registration.")
+        return
+
+    index = json.loads(index_path.read_text(encoding="utf-8"))
+    dna_artifacts = [str(p.relative_to(BASE_DIR)) if p.is_absolute() else str(p) for p in dna_paths.values()]
+
+    outfits = index.setdefault("outfits", [])
+    existing = next((o for o in outfits if o.get("outfit_id") == outfit_id), None)
+    if existing is not None:
+        existing["dna_artifacts"] = dna_artifacts
+        existing["source_images_dir"] = source_images_dir
+        existing["source_kind"] = existing.get("source_kind") or "source_backed"
+    else:
+        outfits.append({
+            "outfit_id": outfit_id,
+            "family_key": family_key,
+            "display_label": display_label,
+            "status": "needs_review",
+            "schema_subject": schema_subject,
+            "source_kind": "source_backed",
+            "source_images_dir": source_images_dir,
+            "dna_artifacts": dna_artifacts,
+            "description": "",
+            "default": False,
+            "notes": "Auto-registered by Mode C — pending Harry's visual review before flipping to approved.",
+        })
+        log(f"  [wardrobe-index] registered new outfit '{outfit_id}' (status=needs_review).")
+
+    families = index.setdefault("families", [])
+    family = next((f for f in families if f.get("family_key") == family_key), None)
+    if family is None:
+        families.append({
+            "family_key": family_key,
+            "family_label": family_key.replace("_", " ").title(),
+            "default_outfit_id": outfit_id,
+            "status": "needs_review",
+            "outfit_ids": [outfit_id],
+        })
+        log(f"  [wardrobe-index] registered new family '{family_key}'.")
+    elif outfit_id not in family.setdefault("outfit_ids", []):
+        family["outfit_ids"].append(outfit_id)
+
+    index["updated_at"] = datetime.now(timezone.utc).date().isoformat()
+    index_path.write_text(json.dumps(index, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
 def _run_mode_b_with_subject_def(

@@ -225,10 +225,11 @@ class TestModeBOutput:
 # ---------------------------------------------------------------------------
 
 class TestModeCContract:
-    def test_unknown_outfit_id_rejected_before_generation(self, tmp_path):
-        from knowledge_studio.vision.pipeline import run_mode_c
-        with pytest.raises(ValueError, match="Unknown Mode C outfit_id"):
-            run_mode_c(project="linh_an", outfit_id="unknown_variant", input_dir=tmp_path)
+    def test_new_outfit_id_without_schema_subject_rejected_before_generation(self, tmp_path, monkeypatch):
+        from knowledge_studio.vision import pipeline
+        monkeypatch.setattr(pipeline, "_upsert_wardrobe_index_entry", lambda **_: None)
+        with pytest.raises(ValueError, match="has no known default"):
+            pipeline.run_mode_c(project="linh_an", outfit_id="unknown_variant", input_dir=tmp_path)
 
     def test_schema_subject_must_match_locked_variant(self, tmp_path):
         from knowledge_studio.vision.pipeline import run_mode_c
@@ -250,6 +251,7 @@ class TestModeCContract:
             return {"md": tmp_path / "ok.md", "json": tmp_path / "ok.json"}
 
         monkeypatch.setattr(pipeline, "_run_mode_b_with_subject_def", fake_run)
+        monkeypatch.setattr(pipeline, "_upsert_wardrobe_index_entry", lambda **_: None)
 
         result = pipeline.run_mode_c(
             project="linh_an",
@@ -263,6 +265,41 @@ class TestModeCContract:
         assert captured["subject_def"].name == "nike_pink_running"
         assert captured["subject_def"].schema_source == "config/projects/linh_an/subjects/outfit_e_sport.yaml"
         assert captured["subject_def"].dna_filename == "LINH_AN_NIKE_PINK_RUNNING_DNA"
+
+    def test_new_outfit_id_with_full_metadata_is_accepted_and_registered(self, tmp_path, monkeypatch):
+        """A brand new outfit_id (e.g. from a fresh AVIF upload) must go through once
+        schema_subject/display_label/family_key are all supplied — this is the whole
+        point of the Mode C whitelist relaxation."""
+        from knowledge_studio.vision import pipeline
+
+        run_captured = {}
+        index_captured = {}
+
+        def fake_run(**kwargs):
+            run_captured.update(kwargs)
+            return {"md": tmp_path / "ok.md", "json": tmp_path / "ok.json"}
+
+        def fake_upsert(**kwargs):
+            index_captured.update(kwargs)
+
+        monkeypatch.setattr(pipeline, "_run_mode_b_with_subject_def", fake_run)
+        monkeypatch.setattr(pipeline, "_upsert_wardrobe_index_entry", fake_upsert)
+
+        result = pipeline.run_mode_c(
+            project="linh_an",
+            outfit_id="nike_white_running",
+            schema_subject="outfit_e_sport",
+            display_label="Nike White Running",
+            family_key="sport_active",
+            input_dir=tmp_path,
+        )
+
+        assert result["md"].name == "ok.md"
+        assert run_captured["subject"] == "nike_white_running"
+        assert run_captured["schema_subject"] == "outfit_e_sport"
+        assert index_captured["outfit_id"] == "nike_white_running"
+        assert index_captured["family_key"] == "sport_active"
+        assert index_captured["display_label"] == "Nike White Running"
 
     def test_compact_not_written_by_default(self, tmp_path):
         from knowledge_studio.vision.renderers.dna_md import write_dna_output

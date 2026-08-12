@@ -226,12 +226,13 @@ def test_cli_validate_prompt_command(tmp_path):
         "--project", "venho_hotel",
         "--subject", "lake_view_room",
         "--prompt-file", str(prompt_file),
+        "--output-root", str(tmp_path / "validation"),
     ])
     assert result.exit_code == 0
     assert "Validation complete." in result.output
 
 
-def test_cli_validate_prompt_latest_from_manifest():
+def test_cli_validate_prompt_latest_from_manifest(tmp_path):
     runner = CliRunner()
     result = runner.invoke(app, [
         "validate", "prompt",
@@ -240,6 +241,7 @@ def test_cli_validate_prompt_latest_from_manifest():
         "--latest",
         "--type", "image",
         "--brief-slug", "booking-style",
+        "--output-root", str(tmp_path / "validation"),
     ])
     assert result.exit_code == 0
     assert "Validation complete." in result.output
@@ -534,6 +536,7 @@ def test_cli_validate_face_command(tmp_path):
         "--project", "venho_hotel",
         "--subject", "linh_an",
         "--image", str(image),
+        "--output-root", str(tmp_path / "validation"),
     ])
     assert result.exit_code == 0
     assert "Validation complete." in result.output
@@ -581,6 +584,7 @@ def test_cli_validate_content_command(tmp_path):
         "--subject", "westlake",
         "--draft-file", str(draft),
         "--lang", "vi",
+        "--output-root", str(tmp_path / "validation"),
     ])
     assert result.exit_code == 0
     assert "Validation complete." in result.output

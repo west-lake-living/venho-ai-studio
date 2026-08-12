@@ -60,9 +60,10 @@ def image_cmd(
     provider: str = typer.Option("mock", "--provider"),
     samples: Optional[int] = typer.Option(None, "--samples"),
     scenario_profile_id: Optional[str] = typer.Option(None, "--scenario-profile-id"),
+    output_root: Optional[Path] = typer.Option(None, "--output-root", help="Validation artifact root; default is the live project validation store"),
 ) -> None:
     """Validate generated image artifact against DNA and optional prompt.json."""
-    _print_paths(run_image_validation(project, subject, image, prompt, provider, samples, scenario_profile_id))
+    _print_paths(run_image_validation(project, subject, image, prompt, provider, samples, scenario_profile_id, output_root))
 
 
 @app.command("prompt")
@@ -73,18 +74,19 @@ def prompt_cmd(
     latest: bool = typer.Option(False, "--latest", help="Resolve prompt JSON from Module 02 prompt_manifest.json"),
     type: Optional[str] = typer.Option(None, "--type", help="Required with --latest: image | video | content | seo"),
     brief_slug: Optional[str] = typer.Option(None, "--brief-slug", help="Optional manifest brief slug when more than one prompt exists"),
+    output_root: Optional[Path] = typer.Option(None, "--output-root", help="Validation artifact root; default is the live project validation store"),
 ) -> None:
     """Validate prompt.json quality advisories against DNA."""
     if latest:
         if not type:
             typer.secho("--type is required with --latest", fg=typer.colors.RED)
             raise typer.Exit(1)
-        _print_paths(run_latest_prompt_validation(project, subject, type, brief_slug))
+        _print_paths(run_latest_prompt_validation(project, subject, type, brief_slug, output_root))
         return
     if prompt_file is None:
         typer.secho("--prompt-file is required unless --latest is used", fg=typer.colors.RED)
         raise typer.Exit(1)
-    _print_paths(run_prompt_validation(project, subject, prompt_file))
+    _print_paths(run_prompt_validation(project, subject, prompt_file, output_root))
 
 
 @app.command("face")
@@ -95,9 +97,10 @@ def face_cmd(
     provider: str = typer.Option("mock", "--provider"),
     reference: Optional[list[Path]] = typer.Option(None, "--reference", help="Approved reference image(s) for direct comparison"),
     samples: int = typer.Option(1, "--samples", help="Vision-judge samples to average (majority-vote gates, mean scores)"),
+    output_root: Optional[Path] = typer.Option(None, "--output-root", help="Validation artifact root; default is the live project validation store"),
 ) -> None:
     """Validate fictional character image against Face DNA and rubric 07F."""
-    _print_paths(run_face_validation(project, subject, image, provider, reference, samples))
+    _print_paths(run_face_validation(project, subject, image, provider, reference, samples, output_root))
 
 
 @app.command("content")
@@ -108,9 +111,10 @@ def content_cmd(
     platform: str = typer.Option("facebook", "--platform"),
     lang: Optional[str] = typer.Option(None, "--lang"),
     prompt_file: Optional[Path] = typer.Option(None, "--prompt-file"),
+    output_root: Optional[Path] = typer.Option(None, "--output-root", help="Validation artifact root; default is the live project validation store"),
 ) -> None:
     """Validate draft content against DNA, prompt rules, target language, and CTA policy."""
-    _print_paths(run_content_validation(project, subject, draft_file, platform, lang, prompt_file))
+    _print_paths(run_content_validation(project, subject, draft_file, platform, lang, prompt_file, output_root))
 
 
 def _print_paths(paths: dict[str, Path]) -> None:
