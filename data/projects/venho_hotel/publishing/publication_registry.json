@@ -4497,13 +4497,13 @@
       "content_package_id": "a6d6233d-c09d-4305-872a-05aab99a9f0b",
       "idempotency_key": "246ab81185d760c910927bf39f46d37f4afcbe0cca9dba41e7975096bad27793",
       "platform": "facebook",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
+      "status": "GATEWAY_ERROR",
+      "gateway_status": "MISSED_DISPATCH_WINDOW",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-10T11:34:35.240838+00:00",
-      "updated_at": "2026-08-10T12:31:31.042250+00:00",
+      "updated_at": "2026-08-12T03:52:50.908890+00:00",
       "content": {
         "title": "Một căn phòng hướng hồ, một nhịp Hà Nội chậm hơn",
         "text": "Hồ Tây yên đến mức làm lòng mình dịu lại.\n\nCó những ngày ở Hà Nội, chỉ cần một khung nhìn hướng ra Hồ Tây là đủ để chuyến đi trở nên nhẹ nhàng hơn. Mặt hồ rộng mở, sắc nước xanh ngọc trầm lắng, phẳng và êm dưới ánh sáng mềm của một bầu trời lưng chừng mây. Từ xa, đường nét thành phố hiện lên vừa đủ: những tòa nhà, những hàng cây, một nhịp sống đô thị nhưng không vội.\n\nBên hồ, thời gian như chậm lại. Một buổi sáng đi dạo ven nước, một buổi chiều ngồi cà phê, hay khoảnh khắc hoàng hôn khi gió nhẹ lướt qua mặt hồ — tất cả đều mang đến cảm giác bình yên rất riêng của Hà Nội.\n\nVới những vị khách muốn khám phá Hồ Tây theo cách thư thả, Ven Hồ Hotel là một điểm dừng chân vừa gần gũi vừa tinh tế. Từ đây, hành trình nghỉ ngơi, hẹn hò, làm việc hay đơn giản là tận hưởng một căn phòng hướng hồ đều trở nên tự nhiên hơn.\n\nNếu bạn đang tìm một kỳ lưu trú gần Hồ Tây, hãy nhắn tin cho Ven Hồ Hotel hoặc kiểm tra tình trạng phòng khi thuận tiện nhé.\n\n#VenHoHotel #HoTay #KhamPhaHoTay #HanoiStay #LakeViewRoom #HaNoiThuThai\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-a4eec07d",
@@ -4608,20 +4608,21 @@
         "revoked_reason": null,
         "package_versions_checksum": "2c85523bf45a255a8ec46de7c6c0a7f92797672545751c3557a79dab28ca6312",
         "checksum": "39d5354251296a6420beea163cb6d9520265d56f836f6b31e3a0d035f2fbfdc2"
-      }
+      },
+      "gateway_error": "Scheduled for 2026-08-12T09:00:00+07:00 but scheduler ran at 2026-08-12T10:52:50.900783+07:00 (maximum lateness: 0:30:00)."
     },
     {
       "publication_id": "pub-wednesday-instagram-4e5e6193",
       "content_package_id": "dfe04cfc-e968-4c33-8579-82a1056563c9",
       "idempotency_key": "6bf233abe7f36eda14f3c1cfddf325b0746815f56468417bdb392427f3a88122",
       "platform": "instagram",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
+      "status": "GATEWAY_ERROR",
+      "gateway_status": "MISSED_DISPATCH_WINDOW",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-10T11:34:52.974837+00:00",
-      "updated_at": "2026-08-10T12:31:31.042250+00:00",
+      "updated_at": "2026-08-12T03:52:50.918112+00:00",
       "content": {
         "title": "Một căn phòng nhìn ra nhịp thở Hồ Tây",
         "text": "Hồ Tây ở ngay trước mắt.\n\nỞ một căn phòng hướng Hồ Tây, Hà Nội như chậm lại. Mặt hồ rộng và phẳng lặng, mang sắc xanh ngọc trầm, không rực rỡ mà dịu mắt; ánh sáng mềm đi qua những đám mây lửng, để mọi đường nét trở nên nhẹ hơn.\n\nTừ khoảng nhìn ấy, bạn có thể thấy mặt nước trải xa, hàng cây vừa đủ xanh bên đường ven hồ và dáng thành phố ở phía xa. Không cần quá nhiều chuyển động, Hồ Tây vẫn có cách kể chuyện riêng: một cơn gió nhẹ, một buổi chiều thong thả, vài bước đi dọc mép nước, rồi dừng lại cho một ly cà phê hay một cuộc hẹn không vội.\n\nVen Hồ Hotel là một điểm dừng chân phù hợp cho những ai muốn khám phá Hồ Tây theo cách tự nhiên hơn: gần nhịp sống ven hồ, đủ tinh tế để nghỉ ngơi, đủ gần gũi để cảm nhận một Hà Nội bình yên sau ngày dài.\n\nNếu bạn đang tìm một kỳ nghỉ gần Hồ Tây, hãy nhắn Ven Hồ Hotel hoặc kiểm tra phòng còn trống khi thuận tiện nhé.\n\n#VenHoHotel #HoTay #WestLakeHanoi #KhamPhaHoTay #HaNoiTravel #LakeViewRoom #NghiDuongHaNoi",
@@ -4727,7 +4728,8 @@
         "revoked_reason": null,
         "package_versions_checksum": "5552e841d9a74b26bfbd2f6555e590f61e995c7921dc37cfd9665da492eed866",
         "checksum": "d1c023f489e3a416ea579e03ac49c80828001bb770ac1ac1814087bb1d5d5e40"
-      }
+      },
+      "gateway_error": "Scheduled for 2026-08-12T09:00:00+07:00 but scheduler ran at 2026-08-12T10:52:50.900783+07:00 (maximum lateness: 0:30:00)."
     },
     {
       "publication_id": "pub-friday-facebook-3ac67833",
