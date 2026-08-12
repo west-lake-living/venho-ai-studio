@@ -1,0 +1,19 @@
+{
+  "subject": "deluxe_double",
+  "current_version": "1.4",
+  "source_hashes": [
+    "fa30e39a162c036f6992139b8086773f30f57f8a563996b74e1730f292a91e1e",
+    "7f3b9ad5e14a3b8136d1c4082df0d1ae81bafb4978ebde3fc72f81edffb87947",
+    "0d653e00dd6183695756190c86a318eb66ceaa7cf6942a9a5376bdc2f82de180",
+    "004e19dd245e4cda1641132e8df10d002a925880011f1e9f13070018bd130921",
+    "ec2720dab902b011ade93d500fb9ccd549ed32adeadbc4b67a549a27ac2c172c",
+    "997d0fdb9ee2fee79d928cbaeecf203814f31bb7fdc1ac6f3a473dcc35e0141a"
+  ],
+  "generated_at": "2026-08-12T15:52:47.788820",
+  "schema_id": "venho_hotel.deluxe_double",
+  "schema_version": "1.0",
+  "prompt_version": "1.1",
+  "provider": "claude",
+  "model": "claude-sonnet-4-6",
+  "overlay_applied": true
+}

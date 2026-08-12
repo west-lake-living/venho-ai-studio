@@ -1,5 +1,5 @@
 # VENHO DNA Export — ALL subjects (venho_hotel)
-# 10 DNA files | Paste this block into GPT as context.
+# 8 DNA files | Paste this block into GPT as context.
 # ─────────────────────────────────────────────────────────────
 
 ════════════════════════════════════════════════════════════
@@ -403,36 +403,6 @@ _project: venho_hotel · subject: lobby · v1.1_
 
 
 ════════════════════════════════════════════════════════════
-# VENHO_HOTEL_NIKE OUTFIT_DNA_COMPACT
-════════════════════════════════════════════════════════════
-# NIKE OUTFIT DNA — COMPACT
-
-_project: venho_hotel · subject: Nike outfit · v1.0_
-
-
-## INVARIANT
-
-*Always present. Never deviate.*
-
-- **lighting_condition**: natural_daylight
-
-
-## ALLOWED IMPERFECTIONS
-
-*Naturally occurring — acceptable and preferred for authenticity.*
-
-*(none)*
-
-
-## FORBIDDEN
-
-*Do not generate. Policy from brand DNA.*
-
-- no floor-to-ceiling glass wall
-- no marble interior
-
-
-════════════════════════════════════════════════════════════
 # VENHO_HOTEL_OUTSIDE_DNA_COMPACT
 ════════════════════════════════════════════════════════════
 # OUTSIDE DNA — COMPACT
@@ -498,58 +468,6 @@ _project: venho_hotel · subject: outside · v1.1_
 - No vehicles other than motorbike
 - No visible lake or cityscape
 - No outdoor furniture
-
-
-════════════════════════════════════════════════════════════
-# VENHO_HOTEL_ROOM_DNA_COMPACT
-════════════════════════════════════════════════════════════
-# ROOM DNA — COMPACT
-
-_project: venho_hotel · subject: room · v1.0_
-
-
-## INVARIANT
-
-*Always present. Never deviate.*
-
-- **lighting_condition**: natural_daylight
-- **ceiling**: flat_white
-- **style_category**: boutique Vietnamese heritage hotel `[curated]`
-- **hotel_tier**: mid_range
-- **bedding_color**: white
-- **room_shape**: rectangular
-- **window_frame**: matte black aluminum window frame, thin profile, grid pattern `[curated]`
-- **bed_headboard**: wooden
-- **window_layout**: grid_2x2
-- **chairs**: two_wooden
-- **curtain_color**: dark_gray
-
-
-## ALLOWED IMPERFECTIONS
-
-*Naturally occurring — acceptable and preferred for authenticity.*
-
-- minor scuff marks on skirting boards acceptable
-- slight curtain wrinkles acceptable
-- small wear marks on wooden furniture edges acceptable
-- natural aging of wooden headboard acceptable
-
-
-## FORBIDDEN
-
-*Do not generate. Policy from brand DNA.*
-
-- no floor-to-ceiling glass wall
-- no Dubai-style luxury interior
-- no generic resort look
-- no marble flooring
-- no cream and beige luxury palette
-- no Korean hotel style
-- no generic international hotel design
-- no luxury apartment style
-- no marble interior
-- no resort aesthetic
-- no generic international hotel
 
 
 ════════════════════════════════════════════════════════════

@@ -1,0 +1,336 @@
+{
+  "contract_version": "1.1",
+  "mode": "B",
+  "project": "venho_hotel",
+  "subject": "deluxe_double",
+  "dna_version": "1.4",
+  "schema_id": "venho_hotel.deluxe_double",
+  "schema_version": "1.0",
+  "prompt_version": "1.1",
+  "provider": "claude",
+  "model": "claude-sonnet-4-6",
+  "generated_at": "2026-08-12T15:52:47.788820",
+  "source_images": [
+    "fa30e39a162c036f6992139b8086773f30f57f8a563996b74e1730f292a91e1e",
+    "7f3b9ad5e14a3b8136d1c4082df0d1ae81bafb4978ebde3fc72f81edffb87947",
+    "0d653e00dd6183695756190c86a318eb66ceaa7cf6942a9a5376bdc2f82de180",
+    "004e19dd245e4cda1641132e8df10d002a925880011f1e9f13070018bd130921",
+    "ec2720dab902b011ade93d500fb9ccd549ed32adeadbc4b67a549a27ac2c172c",
+    "997d0fdb9ee2fee79d928cbaeecf203814f31bb7fdc1ac6f3a473dcc35e0141a"
+  ],
+  "invariant": [
+    {
+      "key": "bed_size",
+      "value": "double",
+      "value_source": "machine",
+      "evidence_count": 5,
+      "coverage": 0.8333,
+      "consistency": 0.8,
+      "confidence": 1.0
+    },
+    {
+      "key": "wall_artwork",
+      "value": "none",
+      "value_source": "machine",
+      "evidence_count": 6,
+      "coverage": 1.0,
+      "consistency": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "key": "wood_tone",
+      "value": "dark reddish-brown solid wood furniture",
+      "value_source": "curated",
+      "evidence_count": 6,
+      "coverage": 1.0,
+      "consistency": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "key": "room_shape",
+      "value": "rectangular",
+      "value_source": "machine",
+      "evidence_count": 6,
+      "coverage": 1.0,
+      "consistency": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "key": "ceiling",
+      "value": "decorative molding — white painted ceiling with trim detail",
+      "value_source": "curated",
+      "evidence_count": 6,
+      "coverage": 1.0,
+      "consistency": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "key": "lighting_condition",
+      "value": "artificial warm lighting",
+      "value_source": "machine",
+      "evidence_count": 6,
+      "coverage": 1.0,
+      "consistency": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "key": "desk",
+      "value": "desk with mirror",
+      "value_source": "machine",
+      "evidence_count": 5,
+      "coverage": 0.8333,
+      "consistency": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "key": "bed_headboard",
+      "value": "wooden headboard",
+      "value_source": "machine",
+      "evidence_count": 6,
+      "coverage": 1.0,
+      "consistency": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "key": "bedding_color",
+      "value": "white bedding",
+      "value_source": "machine",
+      "evidence_count": 5,
+      "coverage": 0.8333,
+      "consistency": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "key": "style_category",
+      "value": "boutique Vietnamese heritage hotel",
+      "value_source": "curated",
+      "evidence_count": 6,
+      "coverage": 1.0,
+      "consistency": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "key": "lake_view_visible",
+      "value": "false",
+      "value_source": "machine",
+      "evidence_count": 6,
+      "coverage": 1.0,
+      "consistency": 1.0,
+      "confidence": 1.0
+    }
+  ],
+  "variable": [
+    {
+      "key": "hotel_tier",
+      "value_range": [
+        "budget",
+        "mid_range"
+      ]
+    },
+    {
+      "key": "chairs",
+      "value_range": [
+        "none",
+        "two_wooden"
+      ]
+    },
+    {
+      "key": "window_layout",
+      "value_range": [
+        "grid_2x3"
+      ]
+    },
+    {
+      "key": "curtain_color",
+      "value_range": [
+        "dark_gray",
+        "gray"
+      ]
+    },
+    {
+      "key": "floor",
+      "value_range": [
+        "hardwood",
+        "laminate",
+        "tile"
+      ]
+    },
+    {
+      "key": "window_frame",
+      "value_range": [
+        "black_aluminum",
+        "metal_other"
+      ]
+    },
+    {
+      "key": "wall_color",
+      "value_range": [
+        "light beige",
+        "light_gray",
+        "white"
+      ]
+    }
+  ],
+  "allowed_imperfections": [
+    {
+      "value": "minor scuff marks on skirting boards acceptable",
+      "source": "curated"
+    },
+    {
+      "value": "slight curtain wrinkles acceptable",
+      "source": "curated"
+    },
+    {
+      "value": "small wear marks on wooden furniture edges acceptable",
+      "source": "curated"
+    },
+    {
+      "value": "natural aging of wooden headboard acceptable",
+      "source": "curated"
+    },
+    {
+      "value": "decorative molding ceiling may show slight paint texture variation",
+      "source": "curated"
+    },
+    {
+      "value": "stains on ceiling",
+      "source": "observed"
+    },
+    {
+      "value": "marks on wall",
+      "source": "observed"
+    },
+    {
+      "value": "visible air conditioning unit",
+      "source": "observed"
+    }
+  ],
+  "forbidden": [
+    {
+      "rule": "no floor-to-ceiling glass wall — actual window is grid-pane black aluminum",
+      "source": "curated"
+    },
+    {
+      "rule": "no Dubai-style luxury interior",
+      "source": "curated"
+    },
+    {
+      "rule": "no generic resort look",
+      "source": "curated"
+    },
+    {
+      "rule": "no marble flooring",
+      "source": "curated"
+    },
+    {
+      "rule": "no cream and beige luxury palette",
+      "source": "curated"
+    },
+    {
+      "rule": "no Korean hotel style",
+      "source": "curated"
+    },
+    {
+      "rule": "no generic international hotel design",
+      "source": "curated"
+    },
+    {
+      "rule": "no lake view — this room faces away from the lake",
+      "source": "curated"
+    },
+    {
+      "rule": "no real hardwood flooring — floor is wood-look imitation tile (gạch giả vân gỗ), not solid wood",
+      "source": "curated"
+    },
+    {
+      "rule": "no floor-to-ceiling glass wall",
+      "source": "observed"
+    },
+    {
+      "rule": "no luxury apartment style",
+      "source": "observed"
+    },
+    {
+      "rule": "no marble interior",
+      "source": "observed"
+    },
+    {
+      "rule": "no resort aesthetic",
+      "source": "observed"
+    },
+    {
+      "rule": "no generic international hotel",
+      "source": "observed"
+    },
+    {
+      "rule": "no infinity pool",
+      "source": "observed"
+    },
+    {
+      "rule": "no visible lake view",
+      "source": "observed"
+    },
+    {
+      "rule": "no lake view",
+      "source": "observed"
+    },
+    {
+      "rule": "no wardrobe visible",
+      "source": "observed"
+    },
+    {
+      "rule": "no wall artwork",
+      "source": "observed"
+    },
+    {
+      "rule": "no visible bed size",
+      "source": "observed"
+    },
+    {
+      "rule": "no window view",
+      "source": "observed"
+    },
+    {
+      "rule": "no visible wardrobe",
+      "source": "observed"
+    },
+    {
+      "rule": "no visible curtains",
+      "source": "observed"
+    },
+    {
+      "rule": "no chairs present",
+      "source": "observed"
+    },
+    {
+      "rule": "no visible chairs",
+      "source": "observed"
+    },
+    {
+      "rule": "no visible desk",
+      "source": "observed"
+    }
+  ],
+  "evidence": {
+    "total_images": 6,
+    "weak_features": [
+      {
+        "key": "wardrobe",
+        "evidence_count": 1
+      }
+    ]
+  },
+  "future_capture_notes": [
+    "Need more images showing 'wardrobe' to confirm invariant status"
+  ],
+  "curator_notes": [
+    "DEFINING FEATURE: Decorative molding ceiling (vs flat white in lake_view_room)",
+    "18m² floor plan — slightly larger than lake_view_room (16m²)",
+    "No direct lake view — interior-facing or side-facing windows",
+    "Palette reference: Visual DNA v2.7 §12 — warm neutral tones, dark wood accents",
+    "Hotel tier: boutique mid-range on West Lake — NOT luxury resort",
+    "Authenticity principle: trustworthy impression over polished perfection",
+    "Corresponds to room_1 from v2.3 DNA (ceiling: decorative_molding, no lake view)",
+    "Floor: wood-look imitation tile (gạch giả vân gỗ), confirmed by Harry 2026-08-12 — v1.4 DNA's 'hardwood/laminate/tile' VARIABLE spread was lighting-color variance across photos of the same tile floor, not different physical floors"
+  ]
+}

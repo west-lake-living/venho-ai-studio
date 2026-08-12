@@ -5260,7 +5260,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 91.12
       }
     },
@@ -5358,7 +5358,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 100.0,
+        "content_brand_fit": 100,
         "content_overall_score": 92.63
       }
     },
@@ -5456,7 +5456,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 100.0,
+        "content_brand_fit": 100,
         "content_overall_score": 91.81
       }
     },
@@ -5554,7 +5554,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 90.56
       }
     },
@@ -5652,7 +5652,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 90.46
       }
     },
@@ -5749,7 +5749,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 91.05
       },
       "gateway_error": "Make.com reported PUBLISHED without a valid platform_post_id; check Webhook response mapping.",
@@ -5869,7 +5869,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 91.81
       },
       "gateway_error": null,
@@ -5987,7 +5987,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 100.0,
+        "content_brand_fit": 100,
         "content_overall_score": 92.52
       },
       "gateway_error": "Make.com reported PUBLISHED without a valid platform_post_id; check Webhook response mapping.",
@@ -6107,7 +6107,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 100.0,
+        "content_brand_fit": 100,
         "content_overall_score": 94.28
       },
       "gateway_error": null,

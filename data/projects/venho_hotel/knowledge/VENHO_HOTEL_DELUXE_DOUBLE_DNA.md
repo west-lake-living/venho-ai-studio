@@ -1,0 +1,122 @@
+# PROJECT SUBJECT DNA
+
+## META
+
+- **project**: venho_hotel
+- **subject**: deluxe_double
+- **schema_id**: venho_hotel.deluxe_double
+- **schema_version**: 1.0
+- **dna_version**: 1.4
+- **generated_at**: 2026-08-12T15:52:47.788820
+- **provider**: claude
+- **model**: claude-sonnet-4-6
+- **contract_version**: 1.1
+- **total_source_images**: 6
+
+
+## INVARIANT
+
+*Features that are consistent and stable across all/most images.*
+
+- **wall_artwork**: none  _(evidence: 6, coverage: 100%, consistency: 100%)_
+- **wood_tone**: dark reddish-brown solid wood furniture `[curated]`  _(evidence: 6, coverage: 100%, consistency: 100%)_
+- **room_shape**: rectangular  _(evidence: 6, coverage: 100%, consistency: 100%)_
+- **ceiling**: decorative molding — white painted ceiling with trim detail `[curated]`  _(evidence: 6, coverage: 100%, consistency: 100%)_
+- **lighting_condition**: artificial warm lighting  _(evidence: 6, coverage: 100%, consistency: 100%)_
+- **bed_headboard**: wooden headboard  _(evidence: 6, coverage: 100%, consistency: 100%)_
+- **style_category**: boutique Vietnamese heritage hotel `[curated]`  _(evidence: 6, coverage: 100%, consistency: 100%)_
+- **lake_view_visible**: false  _(evidence: 6, coverage: 100%, consistency: 100%)_
+- **bed_size**: double  _(evidence: 5, coverage: 83%, consistency: 80%)_
+- **desk**: desk with mirror  _(evidence: 5, coverage: 83%, consistency: 100%)_
+- **bedding_color**: white bedding  _(evidence: 5, coverage: 83%, consistency: 100%)_
+
+
+## VARIABLE
+
+*Features that vary across images — all observed values listed.*
+
+- **hotel_tier**: `budget` · `mid_range`
+- **chairs**: `none` · `two_wooden`
+- **window_layout**: `grid_2x3`
+- **curtain_color**: `dark_gray` · `gray`
+- **floor**: `hardwood` · `laminate` · `tile`
+- **window_frame**: `black_aluminum` · `metal_other`
+- **wall_color**: `light beige` · `light_gray` · `white`
+
+
+## ALLOWED IMPERFECTIONS
+
+*Naturally occurring imperfections that are acceptable — and preferable for authenticity.*
+
+- minor scuff marks on skirting boards acceptable `[curated]`
+- slight curtain wrinkles acceptable `[curated]`
+- small wear marks on wooden furniture edges acceptable `[curated]`
+- natural aging of wooden headboard acceptable `[curated]`
+- decorative molding ceiling may show slight paint texture variation `[curated]`
+- stains on ceiling `[observed]`
+- marks on wall `[observed]`
+- visible air conditioning unit `[observed]`
+
+
+## FORBIDDEN
+
+*Things NOT present — prevents AI hallucination. Curated rules are policy; observed rules are hints.*
+
+- no floor-to-ceiling glass wall — actual window is grid-pane black aluminum `[curated]`
+- no Dubai-style luxury interior `[curated]`
+- no generic resort look `[curated]`
+- no marble flooring `[curated]`
+- no cream and beige luxury palette `[curated]`
+- no Korean hotel style `[curated]`
+- no generic international hotel design `[curated]`
+- no lake view — this room faces away from the lake `[curated]`
+- no real hardwood flooring — floor is wood-look imitation tile (gạch giả vân gỗ), not solid wood `[curated]`
+- no floor-to-ceiling glass wall `[observed]`
+- no luxury apartment style `[observed]`
+- no marble interior `[observed]`
+- no resort aesthetic `[observed]`
+- no generic international hotel `[observed]`
+- no infinity pool `[observed]`
+- no visible lake view `[observed]`
+- no lake view `[observed]`
+- no wardrobe visible `[observed]`
+- no wall artwork `[observed]`
+- no visible bed size `[observed]`
+- no window view `[observed]`
+- no visible wardrobe `[observed]`
+- no visible curtains `[observed]`
+- no chairs present `[observed]`
+- no visible chairs `[observed]`
+- no visible desk `[observed]`
+
+
+## EVIDENCE
+
+- **total_images**: 6
+- **invariant_count**: 11
+- **variable_count**: 7
+- **source_hashes**: fa30e39a, 7f3b9ad5, 0d653e00, 004e19dd, ec2720da… (+1 more)
+
+
+## WEAK FEATURES
+
+*Features seen in too few images to classify. Shoot more images.*
+
+- **wardrobe** (seen in 1 image(s))
+
+
+## FUTURE CAPTURE NOTES
+
+- Need more images showing 'wardrobe' to confirm invariant status
+
+
+## CURATOR NOTES
+
+- DEFINING FEATURE: Decorative molding ceiling (vs flat white in lake_view_room)
+- 18m² floor plan — slightly larger than lake_view_room (16m²)
+- No direct lake view — interior-facing or side-facing windows
+- Palette reference: Visual DNA v2.7 §12 — warm neutral tones, dark wood accents
+- Hotel tier: boutique mid-range on West Lake — NOT luxury resort
+- Authenticity principle: trustworthy impression over polished perfection
+- Corresponds to room_1 from v2.3 DNA (ceiling: decorative_molding, no lake view)
+- Floor: wood-look imitation tile (gạch giả vân gỗ), confirmed by Harry 2026-08-12 — v1.4 DNA's 'hardwood/laminate/tile' VARIABLE spread was lighting-color variance across photos of the same tile floor, not different physical floors
