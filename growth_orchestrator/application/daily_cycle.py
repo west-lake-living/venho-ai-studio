@@ -4,6 +4,7 @@ import hashlib
 import json
 import os
 import uuid
+import warnings
 from dataclasses import dataclass, field
 from datetime import date
 from pathlib import Path
@@ -28,7 +29,7 @@ from prompt_studio.builders.image_prompt_builder import build_image_prompt
 from prompt_studio.knowledge_reader import read_dna
 from growth_orchestrator.domain.publishing_slot import PublishingSlot
 from publishing_gateway.fallback_images import fallback_image_url
-from publishing_gateway.image_constraints import aspect_ratio_rejection
+from publishing_gateway.image_constraints import aspect_ratio_rejection, normalize_for_instagram
 from publishing_gateway.publication_registry import PublicationRegistry
 from shared.storage.evergreen_pool_store import EvergreenPoolStore
 from shared.storage.google_drive import google_drive_uploader_from_env
@@ -377,7 +378,9 @@ def _upload_image_to_drive(
         # here -- while there is still a good alternative. Declining to publish
         # falls through to the on-brand fallback photo, which beats a post that
         # dies on the platform's side.
-        rejection = aspect_ratio_rejection(run_folder / artifact_name)
+        artifact_path = run_folder / artifact_name
+        artifact_path = normalize_for_instagram(artifact_path)
+        rejection = aspect_ratio_rejection(artifact_path)
         if rejection:
             _send_alert_best_effort(
                 "image_rejected_by_constraint",
@@ -385,11 +388,12 @@ def _upload_image_to_drive(
             )
             return None
         return uploader.upload_and_publish(
-            run_folder / artifact_name,
+            artifact_path,
             folder_path=[day, content_package_id],
             mimetype="image/png",
         )
-    except Exception:  # noqa: BLE001 - any Drive failure (network, auth, quota) must not abort text queuing
+    except Exception as exc:  # noqa: BLE001 - any Drive failure (network, auth, quota) must not abort text queuing
+        warnings.warn(f"Growth image upload failed; using rotated hotel photo: {type(exc).__name__}: {exc}")
         return None
 
 
@@ -793,7 +797,9 @@ def run_daily_cycle(
     # publishing_gateway.fallback_images for the why and the image set.
     image_is_fallback = image_public_url is None
     if image_is_fallback:
-        image_public_url = fallback_image_url(topic.get("dna_subject"))
+        image_public_url = fallback_image_url(
+            topic.get("dna_subject"), rotation_key=slot_date or f"{day}:{topic.get('topic', '')}"
+        )
 
     publications: list[dict[str, Any]] = []
     packages: list[dict[str, Any]] = []

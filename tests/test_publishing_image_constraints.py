@@ -9,7 +9,7 @@ from pathlib import Path
 import pytest
 
 from growth_orchestrator.application.daily_cycle import _upload_image_to_drive
-from publishing_gateway.image_constraints import aspect_ratio_rejection, read_image_size
+from publishing_gateway.image_constraints import aspect_ratio_rejection, normalize_for_instagram, read_image_size
 
 
 def _png(path: Path, width: int, height: int) -> Path:
@@ -88,14 +88,25 @@ def _run_folder(tmp_path: Path, width: int, height: int) -> Path:
     return folder
 
 
-def test_out_of_window_photo_is_never_uploaded(tmp_path: Path) -> None:
+def test_out_of_window_photo_is_padded_then_uploaded(tmp_path: Path) -> None:
     uploader = _RecordingUploader()
     result = _upload_image_to_drive(
         _run_folder(tmp_path, 659, 1440), day="monday", content_package_id="pkg-1", uploader=uploader
     )
-    # None is what makes daily_cycle substitute the on-brand fallback photo.
-    assert result is None
-    assert uploader.calls == []
+    assert result == "https://drive.example/photo.png"
+    assert len(uploader.calls) == 1
+    assert uploader.calls[0].name == "image-publish-ready.jpg"
+    assert aspect_ratio_rejection(uploader.calls[0]) is None
+
+
+def test_gpt_image_portrait_is_padded_to_four_by_five(tmp_path: Path) -> None:
+    source = _png(tmp_path / "generated.png", 1024, 1536)
+
+    normalized = normalize_for_instagram(source)
+
+    assert normalized != source
+    assert read_image_size(normalized) == (1229, 1536)
+    assert aspect_ratio_rejection(normalized) is None
 
 
 def test_valid_photo_still_uploads(tmp_path: Path) -> None:

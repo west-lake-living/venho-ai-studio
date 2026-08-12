@@ -4738,7 +4738,7 @@
       "content_package_id": "7618dc3f-f287-475a-b90f-28275eb91192",
       "idempotency_key": "6682e29f322dc80342a7d71236a6295af5523205bccffda62deef317e2d8ec5a",
       "platform": "facebook",
-      "status": "APPROVED_SCHEDULED",
+      "status": "PENDING_APPROVAL",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
@@ -4758,7 +4758,7 @@
         ],
         "source_prompt_file": "data/projects/venho_hotel/prompts/content/WESTLAKE__facebook-quiet-hanoi-stay__CONTENT_PROMPT_v1.0.json",
         "image_run_path": null,
-        "image_public_url": "https://venhohotel.com/images/Social-fallback/lake-view-room.jpg",
+        "image_public_url": "https://venhohotel.com/images/Lake-view/lake-view-7.JPG",
         "image_is_fallback": true,
         "tracking_url": "https://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-friday-facebook-3ac67833"
       },
@@ -4830,33 +4830,18 @@
         "content_brand_fit": 95,
         "content_overall_score": 91.56
       },
-      "approved_by": "hpham1504@gmail.com",
-      "approved_at": "2026-08-10T12:31:31.040283+00:00",
-      "approval_scope": "weekly_schedule",
-      "approval_snapshot": {
-        "approval_request_id": "approval-7618dc3f-f287-475a-b90f-28275eb91192",
-        "content_package_id": "7618dc3f-f287-475a-b90f-28275eb91192",
-        "copy_version_ids": [
-          "brief-friday-facebook-6648bd3c-content_studio"
-        ],
-        "asset_version_ids": [],
-        "validation_snapshot_id": "79e8ca3d858a864e60d6e26882ee91d05fc01b5387711324ceae596d84e69355",
-        "fact_version_ids": [],
-        "brief_version_id": "brief-friday-facebook-6648bd3c@1",
-        "status": "approved",
-        "approved_by": "hpham1504@gmail.com",
-        "approved_at": "2026-08-10T12:31:31.040346+00:00",
-        "revoked_reason": null,
-        "package_versions_checksum": "4bbbf7e6517ce6cf3b0a47012d8004cb4a3009b0ecd5b2aa8209a631d3a178b5",
-        "checksum": "968e17478c90e69e9bef282972de924abaf8c7896bffed0fb911db5134516cab"
-      }
+      "approved_by": null,
+      "approved_at": null,
+      "approval_scope": null,
+      "approval_snapshot": null,
+      "approval_revoked_reason": "Fallback image replaced to prevent duplicate publication; human re-approval required."
     },
     {
       "publication_id": "pub-friday-instagram-793c9f27",
       "content_package_id": "7b8354d7-262a-4ebd-9bd7-3fe49997a2d9",
       "idempotency_key": "45b42c00c501e8297c8f043b5033e2ab2f19756f6896a15a743221b9c699bae5",
       "platform": "instagram",
-      "status": "APPROVED_SCHEDULED",
+      "status": "PENDING_APPROVAL",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
@@ -4877,7 +4862,7 @@
         ],
         "source_prompt_file": "data/projects/venho_hotel/prompts/content/WESTLAKE__instagram-quiet-hanoi-stay__CONTENT_PROMPT_v1.0.json",
         "image_run_path": null,
-        "image_public_url": "https://venhohotel.com/images/Social-fallback/lake-view-room.jpg",
+        "image_public_url": "https://venhohotel.com/images/Lake-view/lake-view-7.JPG",
         "image_is_fallback": true,
         "tracking_url": "https://venhohotel.com/lien-he?utm_source=instagram&utm_medium=social&utm_content=pub-friday-instagram-793c9f27"
       },
@@ -4949,33 +4934,18 @@
         "content_brand_fit": 95,
         "content_overall_score": 91.41
       },
-      "approved_by": "hpham1504@gmail.com",
-      "approved_at": "2026-08-10T12:31:31.040283+00:00",
-      "approval_scope": "weekly_schedule",
-      "approval_snapshot": {
-        "approval_request_id": "approval-7b8354d7-262a-4ebd-9bd7-3fe49997a2d9",
-        "content_package_id": "7b8354d7-262a-4ebd-9bd7-3fe49997a2d9",
-        "copy_version_ids": [
-          "brief-friday-instagram-a66370b7-content_studio"
-        ],
-        "asset_version_ids": [],
-        "validation_snapshot_id": "081a9d6967ed0fff7adec1b556e69280fb6139ecd278e065351e6db3828f63f1",
-        "fact_version_ids": [],
-        "brief_version_id": "brief-friday-instagram-a66370b7@1",
-        "status": "approved",
-        "approved_by": "hpham1504@gmail.com",
-        "approved_at": "2026-08-10T12:31:31.040355+00:00",
-        "revoked_reason": null,
-        "package_versions_checksum": "e646a4bd5cb354cf7c7a0aa74eacefe7f54ecb256f5720fece2a4fe67a382f8e",
-        "checksum": "964b11ad07d0eeb60adef400f8c7347650ab34a1e1fd632f439f3b5d217ee7d5"
-      }
+      "approved_by": null,
+      "approved_at": null,
+      "approval_scope": null,
+      "approval_snapshot": null,
+      "approval_revoked_reason": "Fallback image replaced to prevent duplicate publication; human re-approval required."
     },
     {
       "publication_id": "pub-saturday-facebook-ecb509da",
       "content_package_id": "3fe5f1ff-86d9-4a83-8947-48ef5ddaa022",
       "idempotency_key": "e686e9c0f9bf0a00e0d1e8948557c83ebec3202a52df4a68ac52540e860a3169",
       "platform": "facebook",
-      "status": "APPROVED_SCHEDULED",
+      "status": "PENDING_APPROVAL",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
@@ -4996,7 +4966,7 @@
         ],
         "source_prompt_file": "data/projects/venho_hotel/prompts/content/LOBBY__facebook-a-quiet-weekend-morning-walk-around-west-lake__CONTENT_PROMPT_v1.0.json",
         "image_run_path": null,
-        "image_public_url": "https://venhohotel.com/images/Social-fallback/hotel-front-view.jpg",
+        "image_public_url": "https://venhohotel.com/images/Social-fallback/lobby.jpg",
         "image_is_fallback": true,
         "tracking_url": "https://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-saturday-facebook-ecb509da"
       },
@@ -5076,33 +5046,18 @@
         "content_brand_fit": 95,
         "content_overall_score": 90.1
       },
-      "approved_by": "hpham1504@gmail.com",
-      "approved_at": "2026-08-10T12:31:31.040283+00:00",
-      "approval_scope": "weekly_schedule",
-      "approval_snapshot": {
-        "approval_request_id": "approval-3fe5f1ff-86d9-4a83-8947-48ef5ddaa022",
-        "content_package_id": "3fe5f1ff-86d9-4a83-8947-48ef5ddaa022",
-        "copy_version_ids": [
-          "brief-saturday-facebook-e62fe534-content_studio"
-        ],
-        "asset_version_ids": [],
-        "validation_snapshot_id": "e14fe8437d90255728762e715c53473ac83db6b9d512ebd9d1d04cbabc2e8c0a",
-        "fact_version_ids": [],
-        "brief_version_id": "brief-saturday-facebook-e62fe534@1",
-        "status": "approved",
-        "approved_by": "hpham1504@gmail.com",
-        "approved_at": "2026-08-10T12:31:31.040364+00:00",
-        "revoked_reason": null,
-        "package_versions_checksum": "aedef565b35e87db22cb61aa54e7e077dcc4465ec03e228060571a1d7f637f96",
-        "checksum": "86b59be09b275bccbb606b3878982b890cb9ae3a8cdea29b28ae3a6a75456a85"
-      }
+      "approved_by": null,
+      "approved_at": null,
+      "approval_scope": null,
+      "approval_snapshot": null,
+      "approval_revoked_reason": "Fallback image replaced to prevent duplicate publication; human re-approval required."
     },
     {
       "publication_id": "pub-saturday-instagram-1d45489d",
       "content_package_id": "12047279-5f60-44fe-9da8-e8b3b22dfcb4",
       "idempotency_key": "173e1cd138c8aebef44622120d0701de16ccad88b3b1a52ec1cb75f879e3c6e9",
       "platform": "instagram",
-      "status": "APPROVED_SCHEDULED",
+      "status": "PENDING_APPROVAL",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
@@ -5123,7 +5078,7 @@
         ],
         "source_prompt_file": "data/projects/venho_hotel/prompts/content/LOBBY__instagram-a-quiet-weekend-morning-walk-around-west-lake__CONTENT_PROMPT_v1.0.json",
         "image_run_path": null,
-        "image_public_url": "https://venhohotel.com/images/Social-fallback/hotel-front-view.jpg",
+        "image_public_url": "https://venhohotel.com/images/Social-fallback/lobby.jpg",
         "image_is_fallback": true,
         "tracking_url": "https://venhohotel.com/lien-he?utm_source=instagram&utm_medium=social&utm_content=pub-saturday-instagram-1d45489d"
       },
@@ -5203,26 +5158,11 @@
         "content_brand_fit": 95,
         "content_overall_score": 90.39
       },
-      "approved_by": "hpham1504@gmail.com",
-      "approved_at": "2026-08-10T12:31:31.040283+00:00",
-      "approval_scope": "weekly_schedule",
-      "approval_snapshot": {
-        "approval_request_id": "approval-12047279-5f60-44fe-9da8-e8b3b22dfcb4",
-        "content_package_id": "12047279-5f60-44fe-9da8-e8b3b22dfcb4",
-        "copy_version_ids": [
-          "brief-saturday-instagram-63b94919-content_studio"
-        ],
-        "asset_version_ids": [],
-        "validation_snapshot_id": "8f409fb62005a5867f689585db08ffe44ff3c8aeb1b4e789a22722646317895d",
-        "fact_version_ids": [],
-        "brief_version_id": "brief-saturday-instagram-63b94919@1",
-        "status": "approved",
-        "approved_by": "hpham1504@gmail.com",
-        "approved_at": "2026-08-10T12:31:31.040372+00:00",
-        "revoked_reason": null,
-        "package_versions_checksum": "4bb597644d5a730f42c4655e58a5e77a0de8bf361c2fd26cfcc8aa508a0bf661",
-        "checksum": "715eb6949e440d018e8206bfc7402954fd6b208381f989eb54f023f85406b644"
-      }
+      "approved_by": null,
+      "approved_at": null,
+      "approval_scope": null,
+      "approval_snapshot": null,
+      "approval_revoked_reason": "Fallback image replaced to prevent duplicate publication; human re-approval required."
     },
     {
       "publication_id": "pub-monday-facebook-403fbe09",
@@ -5251,7 +5191,7 @@
         ],
         "source_prompt_file": "data/projects/venho_hotel/prompts/content/WESTLAKE__facebook-quiet-hanoi-stay__CONTENT_PROMPT_v1.0.json",
         "image_run_path": null,
-        "image_public_url": "https://venhohotel.com/images/Social-fallback/lake-view-room.jpg",
+        "image_public_url": "https://venhohotel.com/images/Lake-sunset/lake-sunset-1.jpg",
         "image_is_fallback": true,
         "tracking_url": "https://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-monday-facebook-403fbe09"
       },
@@ -5348,7 +5288,7 @@
         ],
         "source_prompt_file": "data/projects/venho_hotel/prompts/content/LAKE_VIEW_ROOM__facebook-lake-view-morning__CONTENT_PROMPT_v1.0.json",
         "image_run_path": null,
-        "image_public_url": "https://venhohotel.com/images/Social-fallback/lake-view-room.jpg",
+        "image_public_url": "https://venhohotel.com/images/Hero-lake/hero-lake.jpg",
         "image_is_fallback": true,
         "tracking_url": "https://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-582e1b20"
       },
@@ -5446,7 +5386,7 @@
         ],
         "source_prompt_file": "data/projects/venho_hotel/prompts/content/LAKE_VIEW_ROOM__facebook-simple-hotel-comfort__CONTENT_PROMPT_v1.0.json",
         "image_run_path": null,
-        "image_public_url": "https://venhohotel.com/images/Social-fallback/lake-view-room.jpg",
+        "image_public_url": "https://venhohotel.com/images/Hero-lake/hero-lake.jpg",
         "image_is_fallback": true,
         "tracking_url": "https://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-25e2b050"
       },
@@ -5545,7 +5485,7 @@
         ],
         "source_prompt_file": "data/projects/venho_hotel/prompts/content/WESTLAKE__facebook-morning-at-west-lake__CONTENT_PROMPT_v1.0.json",
         "image_run_path": null,
-        "image_public_url": "https://venhohotel.com/images/Social-fallback/lake-view-room.jpg",
+        "image_public_url": "https://venhohotel.com/images/Lake-sunset/lake-sunset-1.jpg",
         "image_is_fallback": true,
         "tracking_url": "https://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-45aa268d"
       },
@@ -5643,7 +5583,7 @@
         ],
         "source_prompt_file": "data/projects/venho_hotel/prompts/content/WESTLAKE__facebook-lake-view-room__CONTENT_PROMPT_v1.0.json",
         "image_run_path": null,
-        "image_public_url": "https://venhohotel.com/images/Social-fallback/lake-view-room.jpg",
+        "image_public_url": "https://venhohotel.com/images/Lake-sunset/lake-sunset-1.jpg",
         "image_is_fallback": true,
         "tracking_url": "https://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-42f9e395"
       },

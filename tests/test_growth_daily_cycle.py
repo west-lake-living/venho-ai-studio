@@ -420,7 +420,9 @@ def test_run_daily_cycle_falls_back_to_hotel_photo_when_no_image_generated(tmp_p
     )
 
     content = result.publications[0]["content"]
-    assert content["image_public_url"] == fallback_image_url("lake_view_room")
+    assert content["image_public_url"] == fallback_image_url(
+        "lake_view_room", rotation_key="monday:Morning at West Lake"
+    )
     assert content["image_is_fallback"] is True
 
 

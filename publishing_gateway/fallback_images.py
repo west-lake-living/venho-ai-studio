@@ -31,30 +31,84 @@ gpt-image-2's portrait size is 1024x1536 (0.67) and would fail identically.
 
 from __future__ import annotations
 
-FALLBACK_IMAGE_BASE_URL = "https://venhohotel.com/images/Social-fallback"
+from datetime import date, timedelta
+import hashlib
+
+FALLBACK_IMAGE_BASE_URL = "https://venhohotel.com/images"
 
 # Brand/exterior shot: the safe default for any subject not mapped below.
-DEFAULT_FALLBACK_IMAGE = "hotel-front-view.jpg"
+DEFAULT_FALLBACK_IMAGES = (
+    "Exterior/exterior-2.jpg",
+    "Lake-view/lake-view-1.jpg",
+    "Lake-view/lake-view-6.JPG",
+    "Lake-view/lake-view-7.JPG",
+    "Hero-lake/hero-lake.jpg",
+)
 
 # Keyed by DNA subject (config/projects/venho_hotel/content/content_pillars.yaml
 # -> dna_subject), not by pillar id: the subject *is* what the photo shows, and
 # it survives pillars being renamed or added.
-FALLBACK_IMAGE_BY_DNA_SUBJECT = {
-    "westlake": "lake-view-room.jpg",
-    "lake_view_room": "lake-view-room.jpg",
-    "deluxe_double": "lake-view-room.jpg",
-    "lobby": "lobby.jpg",
-    "linh_an": "reception.jpg",
-    "facade": "hotel-front-view.jpg",
-    "outside": "hotel-front-view.jpg",
+FALLBACK_IMAGES_BY_DNA_SUBJECT = {
+    "westlake": (
+        "Lake-view/lake-view-1.jpg",
+        "Lake-view/lake-view-6.JPG",
+        "Lake-view/lake-view-7.JPG",
+        "Lake-sunset/lake-sunset-1.jpg",
+        "Hero-lake/hero-lake.jpg",
+    ),
+    "lake_view_room": (
+        "Lake-view/lake-view-1.jpg",
+        "Lake-view/lake-view-6.JPG",
+        "Lake-view/lake-view-7.JPG",
+        "Lake-sunset/lake-sunset-1.jpg",
+        "Hero-lake/hero-lake.jpg",
+    ),
+    "deluxe_double": (
+        "Lake-view/lake-view-6.JPG",
+        "Lake-view/lake-view-7.JPG",
+        "Lake-view/lake-view-1.jpg",
+        "Lake-sunset/lake-sunset-1.jpg",
+        "Hero-lake/hero-lake.jpg",
+    ),
+    "lobby": ("Social-fallback/lobby.jpg",),
+    "linh_an": ("Social-fallback/reception.jpg",),
+    "facade": (
+        "Exterior/exterior-2.jpg",
+        "Lake-sunset/lake-sunset-1.jpg",
+        "Lake-view/lake-view-1.jpg",
+        "Lake-view/lake-view-6.JPG",
+        "Hero-lake/hero-lake.jpg",
+    ),
+    "outside": (
+        "Exterior/exterior-2.jpg",
+        "Lake-sunset/lake-sunset-1.jpg",
+        "Lake-view/lake-view-1.jpg",
+        "Lake-view/lake-view-6.JPG",
+        "Hero-lake/hero-lake.jpg",
+    ),
 }
 
 
-def fallback_image_url(dna_subject: str | None = None) -> str:
+def _rotation_index(rotation_key: str | None, pool_size: int) -> int:
+    if pool_size <= 1 or not rotation_key:
+        return 0
+    try:
+        slot_date = date.fromisoformat(rotation_key)
+    except ValueError:
+        digest = hashlib.sha256(rotation_key.encode("utf-8")).digest()
+        return int.from_bytes(digest[:4], "big") % pool_size
+
+    monday = slot_date - timedelta(days=slot_date.weekday())
+    cadence_offset = {0: 0, 2: 1, 4: 2, 5: 3}.get(slot_date.weekday(), slot_date.weekday())
+    return ((monday.toordinal() // 7) * 4 + cadence_offset) % pool_size
+
+
+def fallback_image_url(dna_subject: str | None = None, *, rotation_key: str | None = None) -> str:
     """Public URL of the on-brand stand-in photo for `dna_subject`.
 
     Never returns None -- an unknown/missing subject falls back to the exterior
     shot, because the caller's whole purpose is to guarantee Make gets a `url`.
     """
-    filename = FALLBACK_IMAGE_BY_DNA_SUBJECT.get(dna_subject or "", DEFAULT_FALLBACK_IMAGE)
+    pool = FALLBACK_IMAGES_BY_DNA_SUBJECT.get(dna_subject or "", DEFAULT_FALLBACK_IMAGES)
+    filename = pool[_rotation_index(rotation_key, len(pool))]
     return f"{FALLBACK_IMAGE_BASE_URL}/{filename}"

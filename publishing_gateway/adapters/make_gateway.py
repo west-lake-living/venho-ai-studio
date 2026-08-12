@@ -153,7 +153,9 @@ class MakeGatewayAdapter:
             # (2026-08-06 incident). daily_cycle already substitutes an
             # on-brand hotel photo at queue time; this second layer covers rows
             # queued before that existed, and any other caller of this adapter.
-            "image_url": content.get("image_public_url") or fallback_image_url(),
+            "image_url": content.get("image_public_url") or fallback_image_url(
+                rotation_key=str(publication_id or command.get("idempotency_key") or "")
+            ),
         }
         headers = None
         if self.webhook_secret and payload.get("idempotency_key"):

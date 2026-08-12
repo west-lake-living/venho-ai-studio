@@ -20,6 +20,7 @@ read two integers out of a header is not worth the dependency.
 from __future__ import annotations
 
 import struct
+import math
 from pathlib import Path
 
 # Instagram's documented window for feed photos.
@@ -78,3 +79,34 @@ def aspect_ratio_rejection(path: Path) -> str | None:
             f"{MIN_ASPECT_RATIO:.2f}-{MAX_ASPECT_RATIO:.2f} window"
         )
     return None
+
+
+def normalize_for_instagram(path: Path, *, background: str = "#F7F4EF") -> Path:
+    """Pad an out-of-window image to Instagram's nearest accepted boundary.
+
+    Generated portrait images arrive from GPT Image as 1024x1536 (2:3), even
+    when the pipeline asks for 1024x1280. Padding preserves the approved image
+    pixels and composition; it does not crop or regenerate the asset.
+    """
+    size = read_image_size(path)
+    if size is None or aspect_ratio_rejection(path) is None:
+        return path
+
+    width, height = size
+    ratio = width / height
+    if ratio < MIN_ASPECT_RATIO:
+        target_width = math.ceil(height * MIN_ASPECT_RATIO)
+        target_height = height
+    else:
+        target_width = width
+        target_height = math.ceil(width / MAX_ASPECT_RATIO)
+
+    from PIL import Image
+
+    with Image.open(path) as source:
+        source = source.convert("RGB")
+        canvas = Image.new("RGB", (target_width, target_height), background)
+        canvas.paste(source, ((target_width - width) // 2, (target_height - height) // 2))
+        output = path.with_name(f"{path.stem}-publish-ready.jpg")
+        canvas.save(output, format="JPEG", quality=95, optimize=True)
+    return output

@@ -168,7 +168,7 @@ def test_make_adapter_forwards_to_make_webhook() -> None:
         "idempotency_key": "idem-1",
         "platform": "facebook",
         "content": {"text": "hello"},
-        "image_url": fallback_image_url(),
+        "image_url": fallback_image_url(rotation_key="pub-1"),
     }
 
 
@@ -188,8 +188,26 @@ def test_make_adapter_never_sends_null_image_url() -> None:
         }
     )
     image_url = fake.calls[0]["json"]["image_url"]
-    assert image_url == fallback_image_url()
-    assert image_url.startswith("https://venhohotel.com/images/Social-fallback/")
+    assert image_url == fallback_image_url(rotation_key="pub-1")
+    assert image_url.startswith("https://venhohotel.com/images/")
+
+
+def test_fallback_rotation_does_not_repeat_the_same_image_across_two_week_batch() -> None:
+    slot_dates = [
+        "2026-08-17",
+        "2026-08-19",
+        "2026-08-21",
+        "2026-08-22",
+        "2026-08-24",
+        "2026-08-26",
+        "2026-08-28",
+        "2026-08-29",
+    ]
+
+    urls = [fallback_image_url("westlake", rotation_key=slot_date) for slot_date in slot_dates]
+
+    assert all(left != right for left, right in zip(urls, urls[1:]))
+    assert urls[0] != urls[4]
 
 
 def test_make_adapter_surfaces_image_public_url_at_top_level(tmp_path) -> None:
