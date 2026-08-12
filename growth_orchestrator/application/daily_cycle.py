@@ -358,6 +358,27 @@ def _scorecard_signals(validation: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _room_dna_path(data_root: Path, project: str, *, rotation_key: str | None = None) -> Path:
+    """Resolve the current lake-view room DNA, including the new room split."""
+    root = data_root / project / "knowledge"
+    canonical = root / "VENHO_HOTEL_LAKE_VIEW_ROOM_DNA.json"
+    variants = [
+        root / "VENHO_HOTEL_LAKE_VIEW_ROOM_1_DNA.json",
+        root / "VENHO_HOTEL_LAKE_VIEW_ROOM_2_DNA.json",
+    ]
+    available = [path for path in variants if path.exists()]
+    if not available and canonical.exists():
+        return canonical
+    if not available:
+        return canonical
+    if not rotation_key:
+        return available[0]
+    try:
+        return available[__import__("datetime").date.fromisoformat(rotation_key).toordinal() % len(available)]
+    except ValueError:
+        return available[0]
+
+
 def _upload_image_to_drive(
     run_folder: Path, *, day: str, content_package_id: str, uploader: Any
 ) -> Optional[str]:
@@ -408,6 +429,7 @@ def _generate_topic_image(
     reference_resolver: ReferenceAssetResolver,
     image_validation_provider: str = "mock",
     budget_gate: Optional[BudgetGate] = None,
+    rotation_key: Optional[str] = None,
 ) -> Optional[Path]:
     """Generate one real image for the day's topic, shared across platforms.
 
@@ -442,7 +464,11 @@ def _generate_topic_image(
     try:
         scenario_key = SCENARIO_BY_DNA_SUBJECT[topic["dna_subject"]]
         scenario = scenario_registry.resolve(scenario_key)
-        dna_path = data_root / project / "knowledge" / f"VENHO_HOTEL_{topic['dna_subject'].upper()}_DNA.json"
+        dna_path = (
+            _room_dna_path(data_root, project, rotation_key=rotation_key)
+            if topic["dna_subject"] == "lake_view_room"
+            else data_root / project / "knowledge" / f"VENHO_HOTEL_{topic['dna_subject'].upper()}_DNA.json"
+        )
         dna = read_dna(dna_path)
         image_contract = build_image_prompt(dna, f"A real photo for: {topic['topic']}", brief_slug=slugify(topic["topic"]))
         reference_images = reference_resolver.resolve(list(scenario.reference_asset_ids)) if scenario.reference_asset_ids else None
@@ -777,6 +803,7 @@ def run_daily_cycle(
             image_provider=image_provider, reference_resolver=reference_resolver,
             image_validation_provider=image_validation_provider,
             budget_gate=budget_gate,
+            rotation_key=slot_date,
         )
         if run_folder:
             image_run_path = str(run_folder)

@@ -1,0 +1,19 @@
+{
+  "subject": "lake_view_room_2",
+  "current_version": "1.1",
+  "source_hashes": [
+    "bf0ea5b57e2f93a9ee94675131632b2c6ebedc5e73af1802ef2dbe4d56dda37a",
+    "a4c78c6bda64885864ec968052167851945db9aa20d84a30dc3e2afa98e5fc32",
+    "645ca64411bd368739e88471cf052fdeba5692805acfa23b20be0b5494346f66",
+    "9b30a3754d96891f4fe8c735338d38ab5298269d1b0463c6380c9448a3864440",
+    "0fd9333b575a2d2b68657da1be55770fbbc6e4bc19101c8f0915c6270df7fd0f",
+    "ac601f96979d1b58158d685982c374725a4ba5689369b36dba1b3bca71fc5325"
+  ],
+  "generated_at": "2026-08-12T14:59:50.201179",
+  "schema_id": "venho_hotel.lake_view_room_2",
+  "schema_version": "1.0",
+  "prompt_version": "1.1",
+  "provider": "claude",
+  "model": "claude-sonnet-4-6",
+  "overlay_applied": true
+}

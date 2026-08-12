@@ -54,7 +54,12 @@ class M05ContentBridge:
         self.generator_fn = generator_fn
 
     def _dna_source_ref(self, project: str, dna_subject: str) -> SourceKnowledgeRef:
-        dna_path = self.data_root / project / "knowledge" / f"VENHO_HOTEL_{dna_subject.upper()}_DNA.json"
+        root = self.data_root / project / "knowledge"
+        dna_path = root / f"VENHO_HOTEL_{dna_subject.upper()}_DNA.json"
+        if dna_subject == "lake_view_room":
+            variants = sorted(root.glob("VENHO_HOTEL_LAKE_VIEW_ROOM_[12]_DNA.json"))
+            if variants:
+                dna_path = variants[0]
         payload = json.loads(dna_path.read_text(encoding="utf-8"))
         digest = hashlib.sha256(dna_path.read_bytes()).hexdigest()
         return SourceKnowledgeRef(

@@ -1,0 +1,401 @@
+{
+  "contract_version": "1.1",
+  "mode": "B",
+  "project": "venho_hotel",
+  "subject": "lake_view_room_1",
+  "dna_version": "1.2",
+  "schema_id": "venho_hotel.lake_view_room_1",
+  "schema_version": "1.0",
+  "prompt_version": "1.1",
+  "provider": "claude",
+  "model": "claude-sonnet-4-6",
+  "generated_at": "2026-08-12T14:59:39.207850",
+  "source_images": [
+    "7aba2a140b5242cb2acddac7308694eea6788cc759ba9f73cacc8163171b136a",
+    "cc998d85882d585d376498c6b35ece23554ad37880403a6387e4d1ef7a78b45c",
+    "fd31ece4adca833b8ff74cd244f37d0bbeab61cae1e19249f5b96aad48d8ea34",
+    "0268d54b2c64a680c717841bc16ce5c6522e6cac99f2ac9440663c89c95cbb63",
+    "740445216eb5df9aa2947d73e463ce5a210d463bead714afb820117110c6fc40",
+    "a73eb6fb91a84cb6a9c98c516c1bbb560e396b2a0bec3d70d4a79913263461a0",
+    "d80633cedbd6e03cfa7dcb28ede36159d7602a0a3a0b2ab58e09030658c574ec",
+    "311e32ba494f991a5fd574c79e65f6cf14965b99019c8bd3bbafdf8da6c86496",
+    "7044283535994691412bf79260735006265df5af58264bae47438e721c162ad4",
+    "83b03721a24a9d7a1eaca0acb77e3df87894ef1bef474902d50b901d7ea0fd54"
+  ],
+  "invariant": [
+    {
+      "key": "room_shape",
+      "value": "rectangular",
+      "value_source": "machine",
+      "evidence_count": 6,
+      "coverage": 0.6,
+      "consistency": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "key": "window_layout",
+      "value": "2x2 grid window layout",
+      "value_source": "machine",
+      "evidence_count": 8,
+      "coverage": 0.8,
+      "consistency": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "key": "lighting_condition",
+      "value": "natural daylight",
+      "value_source": "machine",
+      "evidence_count": 10,
+      "coverage": 1.0,
+      "consistency": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "key": "style_category",
+      "value": "boutique Vietnamese heritage hotel",
+      "value_source": "curated",
+      "evidence_count": 9,
+      "coverage": 0.9,
+      "consistency": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "key": "bedding_color",
+      "value": "white",
+      "value_source": "machine",
+      "evidence_count": 8,
+      "coverage": 0.8,
+      "consistency": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "key": "wall_artwork",
+      "value": "none",
+      "value_source": "machine",
+      "evidence_count": 9,
+      "coverage": 0.9,
+      "consistency": 0.8889,
+      "confidence": 1.0
+    },
+    {
+      "key": "hotel_tier",
+      "value": "boutique mid-range",
+      "value_source": "curated",
+      "evidence_count": 9,
+      "coverage": 0.9,
+      "consistency": 0.7778,
+      "confidence": 1.0
+    },
+    {
+      "key": "window_frame",
+      "value": "matte black aluminum window frame, thin profile, grid pattern",
+      "value_source": "curated",
+      "evidence_count": 8,
+      "coverage": 0.8,
+      "consistency": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "key": "wall_color",
+      "value": "light gray",
+      "value_source": "machine",
+      "evidence_count": 7,
+      "coverage": 0.7,
+      "consistency": 1.0,
+      "confidence": 1.0
+    }
+  ],
+  "variable": [
+    {
+      "key": "bed_size",
+      "value_range": [
+        "double"
+      ]
+    },
+    {
+      "key": "wood_tone",
+      "value_range": [
+        "dark_reddish_brown",
+        "medium_brown"
+      ]
+    },
+    {
+      "key": "lake_view_visible",
+      "value_range": [
+        "false",
+        "partial",
+        "true"
+      ]
+    },
+    {
+      "key": "curtain_color",
+      "value_range": [
+        "dark",
+        "dark_blue",
+        "dark_gray",
+        "gray"
+      ]
+    },
+    {
+      "key": "ceiling",
+      "value_range": [
+        "decorative_molding",
+        "flat_white"
+      ]
+    },
+    {
+      "key": "floor",
+      "value_range": [
+        "hardwood",
+        "laminate",
+        "tile"
+      ]
+    },
+    {
+      "key": "chairs",
+      "value_range": [
+        "none",
+        "one_chair",
+        "two_wooden"
+      ]
+    },
+    {
+      "key": "desk",
+      "value_range": [
+        "present_with_mirror",
+        "present_without_mirror"
+      ]
+    },
+    {
+      "key": "bed_headboard",
+      "value_range": [
+        "wooden"
+      ]
+    }
+  ],
+  "allowed_imperfections": [
+    {
+      "value": "minor scuff marks on skirting boards acceptable",
+      "source": "curated"
+    },
+    {
+      "value": "slight curtain wrinkles acceptable",
+      "source": "curated"
+    },
+    {
+      "value": "small wear marks on wooden furniture edges acceptable",
+      "source": "curated"
+    },
+    {
+      "value": "natural aging of wooden headboard acceptable",
+      "source": "curated"
+    },
+    {
+      "value": "slight unevenness in curtain hang acceptable",
+      "source": "curated"
+    },
+    {
+      "value": "slightly uneven curtain",
+      "source": "observed"
+    },
+    {
+      "value": "slightly uneven floor",
+      "source": "observed"
+    },
+    {
+      "value": "slightly uneven bedding",
+      "source": "observed"
+    },
+    {
+      "value": "slightly wrinkled bedding",
+      "source": "observed"
+    },
+    {
+      "value": "slightly uneven paint on window frame",
+      "source": "observed"
+    },
+    {
+      "value": "slightly uneven wall paint",
+      "source": "observed"
+    }
+  ],
+  "forbidden": [
+    {
+      "rule": "no floor-to-ceiling glass wall — actual window is grid-pane black aluminum",
+      "source": "curated"
+    },
+    {
+      "rule": "no Dubai-style luxury interior",
+      "source": "curated"
+    },
+    {
+      "rule": "no generic resort look",
+      "source": "curated"
+    },
+    {
+      "rule": "no marble flooring",
+      "source": "curated"
+    },
+    {
+      "rule": "no cream and beige luxury palette",
+      "source": "curated"
+    },
+    {
+      "rule": "no Korean hotel style",
+      "source": "curated"
+    },
+    {
+      "rule": "no generic international hotel design",
+      "source": "curated"
+    },
+    {
+      "rule": "no rooftop or outdoor scene — this is an interior room",
+      "source": "curated"
+    },
+    {
+      "rule": "no floor-to-ceiling glass wall",
+      "source": "observed"
+    },
+    {
+      "rule": "no luxury apartment style",
+      "source": "observed"
+    },
+    {
+      "rule": "no marble interior",
+      "source": "observed"
+    },
+    {
+      "rule": "no resort aesthetic",
+      "source": "observed"
+    },
+    {
+      "rule": "no generic international hotel",
+      "source": "observed"
+    },
+    {
+      "rule": "no infinity pool",
+      "source": "observed"
+    },
+    {
+      "rule": "no visible wardrobe",
+      "source": "observed"
+    },
+    {
+      "rule": "no visible desk",
+      "source": "observed"
+    },
+    {
+      "rule": "no chairs present",
+      "source": "observed"
+    },
+    {
+      "rule": "no visible chairs",
+      "source": "observed"
+    },
+    {
+      "rule": "no visible ceiling details",
+      "source": "observed"
+    },
+    {
+      "rule": "no visible floor details",
+      "source": "observed"
+    },
+    {
+      "rule": "no wall artwork",
+      "source": "observed"
+    },
+    {
+      "rule": "no ceiling visible",
+      "source": "observed"
+    },
+    {
+      "rule": "no floor visible",
+      "source": "observed"
+    },
+    {
+      "rule": "no wall color visible",
+      "source": "observed"
+    },
+    {
+      "rule": "no room shape visible",
+      "source": "observed"
+    },
+    {
+      "rule": "no bed size visible",
+      "source": "observed"
+    },
+    {
+      "rule": "no bed headboard visible",
+      "source": "observed"
+    },
+    {
+      "rule": "no desk visible",
+      "source": "observed"
+    },
+    {
+      "rule": "no chairs visible",
+      "source": "observed"
+    },
+    {
+      "rule": "no wardrobe visible",
+      "source": "observed"
+    },
+    {
+      "rule": "no wood tone visible",
+      "source": "observed"
+    },
+    {
+      "rule": "no wall artwork visible",
+      "source": "observed"
+    },
+    {
+      "rule": "no window view",
+      "source": "observed"
+    },
+    {
+      "rule": "no visible bed",
+      "source": "observed"
+    },
+    {
+      "rule": "no visible curtains",
+      "source": "observed"
+    },
+    {
+      "rule": "no interior room features",
+      "source": "observed"
+    },
+    {
+      "rule": "no visible wood tone",
+      "source": "observed"
+    },
+    {
+      "rule": "no visible curtain",
+      "source": "observed"
+    },
+    {
+      "rule": "no visible style category",
+      "source": "observed"
+    },
+    {
+      "rule": "no visible hotel tier",
+      "source": "observed"
+    },
+    {
+      "rule": "no visible wall artwork",
+      "source": "observed"
+    }
+  ],
+  "evidence": {
+    "total_images": 10,
+    "weak_features": []
+  },
+  "future_capture_notes": [],
+  "curator_notes": [
+    "DEFINING FEATURE: Lake view through black aluminum grid window — must be present",
+    "16m² floor plan — compact, not spacious — rooms are narrow-long",
+    "Palette reference: Visual DNA v2.7 §12 — warm neutral tones, dark wood accents",
+    "Hotel tier: boutique mid-range on West Lake — NOT luxury resort",
+    "Authenticity principle: trustworthy impression over polished perfection",
+    "Corresponds to room_2 from v2.3 DNA (ceiling: flat_white, lake view)"
+  ]
+}

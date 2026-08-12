@@ -5655,6 +5655,481 @@
         "content_brand_fit": 95.0,
         "content_overall_score": 90.46
       }
+    },
+    {
+      "publication_id": "pub-wednesday-facebook-c0bbe4bd",
+      "content_package_id": "c0dea1ec-fa3b-4ad5-9a1b-b0b8ff28c1d6",
+      "idempotency_key": "07f2f947a9a14faea29257502d4d4489fbcbe3927ee1d733e3b28d34c3946260",
+      "platform": "facebook",
+      "status": "GATEWAY_ERROR",
+      "gateway_status": "GATEWAY_ERROR",
+      "platform_post_id": null,
+      "permalink": null,
+      "reconciliation_proof": null,
+      "created_at": "2026-08-12T08:14:04.234835+00:00",
+      "updated_at": "2026-08-12T08:14:30.654812+00:00",
+      "content": {
+        "title": "Buổi sáng ở Hồ Tây thường bắt đầu rất khẽ",
+        "text": "Buổi sáng, mặt Hồ Tây phẳng đến mức nhìn được rất xa. Bên kia hồ, những toà nhà cao tầng hiện lên mờ trong nắng nhạt.\n\nNước hồ sáng sớm không xanh rực như biển. Nó ngả sang màu ngọc pha xám, trầm và tĩnh, đúng kiểu màu nước của một cái hồ nằm giữa thành phố.\n\nTrời hôm ấy có mây, nắng lọt qua từng khoảng, nên ánh sáng rất dịu. Không gắt, không chói. Đi bộ giờ này rất dễ chịu.\n\nHàng cây ven hồ đủ dày để có bóng mát, nhưng vẫn đủ thưa để nhìn thấy mặt nước gần như suốt quãng đường. Vài người chạy bộ, một người đạp xe chậm qua, rồi lại vắng. Sáng sớm ở đây thường như vậy.\n\nĐiều thú vị là bạn có thể vừa nhìn thấy một mặt hồ rất yên, vừa thấy đường chân trời thành phố ở phía xa. Hà Nội hiện đại và Hà Nội chậm rãi nằm cạnh nhau trong cùng một khung nhìn.\n\nVen Hồ Hotel nằm trên đường Nguyễn Đình Thi, ngay khu vực này. Từ khách sạn bước ra là tới đường ven hồ, nên buổi sáng không cần đi đâu xa — chỉ cần dậy sớm hơn một chút.\n\nNếu bạn đang tính vài ngày ở Hà Nội và muốn ở gần Hồ Tây, nhắn tin cho Ven Hồ Hotel để xem lịch phòng nhé.\n\n#VenHoHotelHanoi #HoTay #KhamPhaHoTay #KhachSanHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-c0bbe4bd",
+        "hashtags": [
+          "#VenHoHotelHanoi",
+          "#HoTay",
+          "#KhamPhaHoTay",
+          "#KhachSanHoTay",
+          "#HaNoi"
+        ],
+        "source_prompt_file": "data/projects/venho_hotel/prompts/content/WESTLAKE__facebook-morning-at-west-lake__CONTENT_PROMPT_v1.0.json",
+        "image_run_path": null,
+        "image_public_url": "https://venhohotel.com/images/Lake-view/lake-view-1.jpg",
+        "image_is_fallback": true,
+        "tracking_url": "https://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-c0bbe4bd"
+      },
+      "creative_brief_id": "brief-wednesday-facebook-20491334",
+      "package_snapshot": {
+        "id": "c0dea1ec-fa3b-4ad5-9a1b-b0b8ff28c1d6",
+        "copy_version_ids": [
+          "brief-wednesday-facebook-20491334-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "543f447516a1bb8ed546826627f1582ba0a3f8ebbc60ea8a098a1cbc46616908",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-wednesday-facebook-20491334@1"
+      },
+      "day": "wednesday",
+      "pillar": "Kham pha Ho Tay",
+      "topic": "morning at West Lake",
+      "dna_subject": "westlake",
+      "slot_id": null,
+      "creative_brief": {
+        "schema_version": "1.0",
+        "id": "brief-wednesday-facebook-20491334",
+        "version": 1,
+        "brand_id": "venho-hotel",
+        "campaign_id": "daily-cycle-wednesday",
+        "objective": "qualified_inquiry",
+        "platforms": [
+          "facebook"
+        ],
+        "audience_segment": "Vietnamese leisure guests",
+        "funnel_stage": "consideration",
+        "single_minded_message": "morning at West Lake",
+        "proof_points": [],
+        "content_angle": "Kham pha Ho Tay",
+        "cta": {
+          "type": "booking_link",
+          "destination_key": "hotel.website",
+          "strength": "soft"
+        },
+        "visual": {
+          "scenario_key": "venho_west_lake_landscape",
+          "required_entities": [
+            "west_lake"
+          ],
+          "forbidden_entities": [
+            "modern_highrise_backdrop",
+            "tourist_postcard_aesthetic"
+          ],
+          "target_formats": [
+            "feed_4_5"
+          ]
+        },
+        "lane": "daily",
+        "status": "LOCKED",
+        "checksum": "sha256:f94e9a8ecf5e2671ff94f6f4472193748cc5aae61d0fd2ac9e67aa1614f5ca1a",
+        "project": "venho_hotel"
+      },
+      "claims": [],
+      "scene_summary": {
+        "location": "West Lake landscape",
+        "time_of_day": "morning",
+        "entities": [
+          "west_lake"
+        ],
+        "mood": "calm"
+      },
+      "scorecard_signals": {
+        "claim_kill_switch_triggered": false,
+        "content_brand_fit": 95.0,
+        "content_overall_score": 91.05
+      },
+      "gateway_error": "Make.com reported PUBLISHED without a valid platform_post_id; check Webhook response mapping.",
+      "approved_by": "hpham1504@gmail.com",
+      "approval_snapshot": {
+        "approval_request_id": "approval-c0dea1ec-fa3b-4ad5-9a1b-b0b8ff28c1d6",
+        "content_package_id": "c0dea1ec-fa3b-4ad5-9a1b-b0b8ff28c1d6",
+        "copy_version_ids": [
+          "brief-wednesday-facebook-20491334-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "543f447516a1bb8ed546826627f1582ba0a3f8ebbc60ea8a098a1cbc46616908",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-wednesday-facebook-20491334@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-08-12T08:14:25.122289+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "a414454c9138566be27881e89b12e446bc872149e706aeb7cf148828230a8bb0",
+        "checksum": "dbba4fa9bea1ce58b9d8811ce6c341264f35f83e5b56867e77d06bd80301ce5f"
+      },
+      "shadow_override_by": "hpham1504@gmail.com"
+    },
+    {
+      "publication_id": "pub-wednesday-instagram-9de22149",
+      "content_package_id": "68a9fd81-683c-4e19-9fea-5dd1033c3d38",
+      "idempotency_key": "6188f69f84ad58e57974dc414fdb4a91f025092155c24ede385d99372dec2546",
+      "platform": "instagram",
+      "status": "PUBLISHED",
+      "gateway_status": "PUBLISHED",
+      "platform_post_id": "17930837901363619",
+      "permalink": null,
+      "reconciliation_proof": null,
+      "created_at": "2026-08-12T08:14:25.100483+00:00",
+      "updated_at": "2026-08-12T08:14:43.217630+00:00",
+      "content": {
+        "title": "Một buổi sáng ở Hồ Tây",
+        "text": "Buổi sáng ở Hồ Tây thường bắt đầu bằng một mặt nước rất lặng.\n\nNước hôm ấy mang màu xanh ngả xám, trầm và dịu, không phải kiểu xanh biếc của biển. Mặt hồ phẳng nhưng không soi gương, nên phố bên kia vẫn là phố, đứng riêng ở đường chân trời.\n\nTrời nhiều mây, nắng lọt qua từng khoảng, thứ ánh sáng mềm khiến mọi thứ nhìn rõ mà không chói. Không có sương mù, nên nhìn được rất xa: những khối nhà cao phía bên kia hồ, hàng cây xanh rải rác dọc bờ, và một quãng đường đi bộ gần như vắng người.\n\nBuổi sáng Hồ Tây không có gì để vội. Đi bộ vài trăm mét, dừng lại nhìn nước, rồi đi tiếp. Với nhiều người ở Hà Nội, đó là cách quen thuộc nhất để bắt đầu một ngày.\n\nVen Hồ Hotel nằm trên phố Nguyễn Đình Thi, đủ gần để bạn ra hồ khi trời vừa sáng và quay về khi thành phố mới bắt đầu nhịp của nó.\n\nNếu bạn đang sắp xếp một chuyến Hà Nội, nhắn Ven Hồ Hotel để xem phòng trống cho những ngày bạn dự định ở lại.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhamPhaHoTay #KhachSanHoTay #HaNoi #HanoiTravel #TayHo",
+        "hashtags": [
+          "#VenHoHotelHanoi",
+          "#HoTay",
+          "#WestLakeHanoi",
+          "#KhamPhaHoTay",
+          "#KhachSanHoTay",
+          "#HaNoi",
+          "#HanoiTravel",
+          "#TayHo"
+        ],
+        "source_prompt_file": "data/projects/venho_hotel/prompts/content/WESTLAKE__instagram-morning-at-west-lake__CONTENT_PROMPT_v1.0.json",
+        "image_run_path": null,
+        "image_public_url": "https://venhohotel.com/images/Lake-view/lake-view-1.jpg",
+        "image_is_fallback": true,
+        "tracking_url": "https://venhohotel.com/lien-he?utm_source=instagram&utm_medium=social&utm_content=pub-wednesday-instagram-9de22149"
+      },
+      "creative_brief_id": "brief-wednesday-instagram-0eb0a809",
+      "package_snapshot": {
+        "id": "68a9fd81-683c-4e19-9fea-5dd1033c3d38",
+        "copy_version_ids": [
+          "brief-wednesday-instagram-0eb0a809-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "ffa36d41823f0c2bd300e63ba4c7e777eec57f71da3fc2b3cfb9e7c5f7d89e9a",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-wednesday-instagram-0eb0a809@1"
+      },
+      "day": "wednesday",
+      "pillar": "Kham pha Ho Tay",
+      "topic": "morning at West Lake",
+      "dna_subject": "westlake",
+      "slot_id": null,
+      "creative_brief": {
+        "schema_version": "1.0",
+        "id": "brief-wednesday-instagram-0eb0a809",
+        "version": 1,
+        "brand_id": "venho-hotel",
+        "campaign_id": "daily-cycle-wednesday",
+        "objective": "qualified_inquiry",
+        "platforms": [
+          "instagram"
+        ],
+        "audience_segment": "Vietnamese leisure guests",
+        "funnel_stage": "consideration",
+        "single_minded_message": "morning at West Lake",
+        "proof_points": [],
+        "content_angle": "Kham pha Ho Tay",
+        "cta": {
+          "type": "booking_link",
+          "destination_key": "hotel.website",
+          "strength": "soft"
+        },
+        "visual": {
+          "scenario_key": "venho_west_lake_landscape",
+          "required_entities": [
+            "west_lake"
+          ],
+          "forbidden_entities": [
+            "modern_highrise_backdrop",
+            "tourist_postcard_aesthetic"
+          ],
+          "target_formats": [
+            "feed_4_5"
+          ]
+        },
+        "lane": "daily",
+        "status": "LOCKED",
+        "checksum": "sha256:208f1fd2174dfadf773675343d450e18aad8f1544c2fd85a6a97fcf73730ce11",
+        "project": "venho_hotel"
+      },
+      "claims": [],
+      "scene_summary": {
+        "location": "West Lake landscape",
+        "time_of_day": "morning",
+        "entities": [
+          "west_lake"
+        ],
+        "mood": "calm"
+      },
+      "scorecard_signals": {
+        "claim_kill_switch_triggered": false,
+        "content_brand_fit": 95.0,
+        "content_overall_score": 91.81
+      },
+      "gateway_error": null,
+      "approved_by": "hpham1504@gmail.com",
+      "approval_snapshot": {
+        "approval_request_id": "approval-68a9fd81-683c-4e19-9fea-5dd1033c3d38",
+        "content_package_id": "68a9fd81-683c-4e19-9fea-5dd1033c3d38",
+        "copy_version_ids": [
+          "brief-wednesday-instagram-0eb0a809-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "ffa36d41823f0c2bd300e63ba4c7e777eec57f71da3fc2b3cfb9e7c5f7d89e9a",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-wednesday-instagram-0eb0a809@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-08-12T08:14:30.675527+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "142972c994bacdbb76c0737c915f0a4b296f682bcd99bf19f447b7678d6a7722",
+        "checksum": "029f5709d2a3c34688d36eb33635dc01393ca3af2cbed17299b78ed7ae2d2738"
+      },
+      "shadow_override_by": "hpham1504@gmail.com"
+    },
+    {
+      "publication_id": "pub-wednesday-facebook-b132faeb",
+      "content_package_id": "0492cd76-dc4f-48a9-9c20-29c8e867ce12",
+      "idempotency_key": "422fc60604248b2e2b5f11a1fae301dd57e09a97d3d40031259a6a78352dfc52",
+      "platform": "facebook",
+      "status": "GATEWAY_ERROR",
+      "gateway_status": "GATEWAY_ERROR",
+      "platform_post_id": null,
+      "permalink": null,
+      "reconciliation_proof": null,
+      "created_at": "2026-08-12T08:15:18.120622+00:00",
+      "updated_at": "2026-08-12T08:15:40.965977+00:00",
+      "content": {
+        "title": "Buổi sáng trong một căn phòng gần Hồ Tây",
+        "text": "Buổi sáng ở Tây Hồ thường bắt đầu bằng ánh sáng, chứ không phải tiếng chuông báo thức.\n\nÁnh sáng đi qua khung cửa sổ chia thành bốn ô vuông, viền nhôm đen mảnh, rồi rải xuống mặt sàn gỗ. Không cần bật đèn. Cả căn phòng cứ thế sáng dần lên theo buổi sáng bên ngoài.\n\nPhòng có hình chữ nhật, tường màu xám nhạt, không treo tranh. Chỉ có giường trải ga trắng, đầu giường gỗ, một chiếc bàn kê sát tường và bộ rèm tối màu vừa được kéo sang một bên. Ít đồ, nên mắt cũng nghỉ được một lúc.\n\nĐây là kiểu phòng gọn gàng dành cho những buổi sáng không có gì phải gấp. Pha một cốc nước, ngồi bên cửa sổ vài phút, nghe tiếng xe bắt đầu chạy trên đường Nguyễn Đình Thi, rồi mới nghĩ đến chuyện hôm nay đi đâu. Hồ Tây chỉ cách đó một đoạn đi bộ ngắn, và buổi sáng là lúc quanh hồ dễ chịu nhất — người đi bộ, người đạp xe, mấy quán cà phê vừa mở cửa.\n\nVen Hồ Hotel là một khách sạn boutique nhỏ, nằm ở khoảng giữa: đủ yên để ngủ ngon, đủ gần để bước ra là tới hồ.\n\nNếu bạn đang tính mấy ngày ở Hà Nội, nhắn Ven Hồ Hotel để xem còn phòng vào đúng dịp bạn muốn nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-b132faeb",
+        "hashtags": [
+          "#VenHoHotelHanoi",
+          "#HoTay",
+          "#WestLakeHanoi",
+          "#KhachSanHoTay",
+          "#HaNoi"
+        ],
+        "source_prompt_file": "data/projects/venho_hotel/prompts/content/LAKE_VIEW_ROOM_1__facebook-lake-view-morning__CONTENT_PROMPT_v1.0.json",
+        "image_run_path": null,
+        "image_public_url": "https://venhohotel.com/images/Lake-view/lake-view-1.jpg",
+        "image_is_fallback": true,
+        "tracking_url": "https://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-b132faeb"
+      },
+      "creative_brief_id": "brief-wednesday-facebook-80b0f971",
+      "package_snapshot": {
+        "id": "0492cd76-dc4f-48a9-9c20-29c8e867ce12",
+        "copy_version_ids": [
+          "brief-wednesday-facebook-80b0f971-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "9fee0525685dc364395bb5ddc1cb4c52aa5cd56cfd0b431eb28f1d295ae7f080",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-wednesday-facebook-80b0f971@1"
+      },
+      "day": "wednesday",
+      "pillar": "Phong gon gang gan ho",
+      "topic": "lake view morning",
+      "dna_subject": "lake_view_room",
+      "slot_id": null,
+      "creative_brief": {
+        "schema_version": "1.0",
+        "id": "brief-wednesday-facebook-80b0f971",
+        "version": 1,
+        "brand_id": "venho-hotel",
+        "campaign_id": "daily-cycle-wednesday",
+        "objective": "qualified_inquiry",
+        "platforms": [
+          "facebook"
+        ],
+        "audience_segment": "Vietnamese leisure guests",
+        "funnel_stage": "consideration",
+        "single_minded_message": "lake view morning",
+        "proof_points": [],
+        "content_angle": "Phong gon gang gan ho",
+        "cta": {
+          "type": "booking_link",
+          "destination_key": "hotel.website",
+          "strength": "soft"
+        },
+        "visual": {
+          "scenario_key": "venho_lake_view_room_sunrise",
+          "required_entities": [
+            "bed",
+            "west_lake_view"
+          ],
+          "forbidden_entities": [
+            "generic_city_hotel"
+          ],
+          "target_formats": [
+            "feed_4_5"
+          ]
+        },
+        "lane": "daily",
+        "status": "LOCKED",
+        "checksum": "sha256:e272b8bec520f5bff5115258f1b36b6b3fdfba26231f99ffb095d1306ea79b7e",
+        "project": "venho_hotel"
+      },
+      "claims": [],
+      "scene_summary": {
+        "location": "Hotel room lake view sunrise",
+        "time_of_day": "morning",
+        "entities": [
+          "bed",
+          "west_lake_view"
+        ],
+        "mood": "calm"
+      },
+      "scorecard_signals": {
+        "claim_kill_switch_triggered": false,
+        "content_brand_fit": 100.0,
+        "content_overall_score": 92.52
+      },
+      "gateway_error": "Make.com reported PUBLISHED without a valid platform_post_id; check Webhook response mapping.",
+      "approved_by": "hpham1504@gmail.com",
+      "approval_snapshot": {
+        "approval_request_id": "approval-0492cd76-dc4f-48a9-9c20-29c8e867ce12",
+        "content_package_id": "0492cd76-dc4f-48a9-9c20-29c8e867ce12",
+        "copy_version_ids": [
+          "brief-wednesday-facebook-80b0f971-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "9fee0525685dc364395bb5ddc1cb4c52aa5cd56cfd0b431eb28f1d295ae7f080",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-wednesday-facebook-80b0f971@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-08-12T08:15:34.337663+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "3a2c881e30b72d699407eb84e7b816a4783c8411129da8fe92e504c9a8015e76",
+        "checksum": "92319d0467faa8ccb3ed536b01c1ddad3c4af542c34be139fb1ad1ff2bc741e6"
+      },
+      "shadow_override_by": "hpham1504@gmail.com"
+    },
+    {
+      "publication_id": "pub-wednesday-instagram-bb26c872",
+      "content_package_id": "9f65cfc7-5aa7-4022-8f84-ad24a79bc59e",
+      "idempotency_key": "5a411e8b6409993b089d5bd612aec32191661db95582243ef7a79fc181fa7ded",
+      "platform": "instagram",
+      "status": "PUBLISHED",
+      "gateway_status": "PUBLISHED",
+      "platform_post_id": "17926512171404301",
+      "permalink": null,
+      "reconciliation_proof": null,
+      "created_at": "2026-08-12T08:15:34.317059+00:00",
+      "updated_at": "2026-08-12T08:15:50.603140+00:00",
+      "content": {
+        "title": "Buổi sáng bắt đầu từ ô cửa vuông",
+        "text": "Sáng ở Tây Hồ thường bắt đầu bằng ánh sáng, chưa cần đến tiếng báo thức.\n\nÁnh sáng đi qua ô cửa chia thành bốn khung vuông, viền nhôm đen mảnh, in xuống sàn gỗ những mảng sáng gọn gàng.\n\nPhòng vuông vắn, tường xám nhạt, ga giường trắng, không tranh treo, không chi tiết dư. Một chiếc bàn nhỏ, đầu giường gỗ, rèm tối màu vừa kéo sang một bên.\n\nĐây là kiểu phòng không cố gây ấn tượng. Nó chỉ làm tốt một việc: để buổi sáng của bạn diễn ra chậm hơn một chút.\n\nBên ngoài, con đường ven Hồ Tây đã có người đi bộ, có tiếng xe, có mùi cà phê từ đâu đó. Bạn có thể xuống đường ngay, hoặc ngồi thêm mười phút bên cửa sổ trước khi bắt đầu một ngày ở Hà Nội.\n\nNếu bạn đang tính vài ngày ở Hà Nội, nhắn Ven Hồ Hotel để xem phòng còn trống nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanHoTay #HaNoi #HanoiTravel #TheWestLakeLiving",
+        "hashtags": [
+          "#VenHoHotelHanoi",
+          "#HoTay",
+          "#WestLakeHanoi",
+          "#KhachSanHoTay",
+          "#HaNoi",
+          "#HanoiTravel",
+          "#TheWestLakeLiving"
+        ],
+        "source_prompt_file": "data/projects/venho_hotel/prompts/content/LAKE_VIEW_ROOM_1__instagram-lake-view-morning__CONTENT_PROMPT_v1.0.json",
+        "image_run_path": null,
+        "image_public_url": "https://venhohotel.com/images/Lake-view/lake-view-1.jpg",
+        "image_is_fallback": true,
+        "tracking_url": "https://venhohotel.com/lien-he?utm_source=instagram&utm_medium=social&utm_content=pub-wednesday-instagram-bb26c872"
+      },
+      "creative_brief_id": "brief-wednesday-instagram-eebee954",
+      "package_snapshot": {
+        "id": "9f65cfc7-5aa7-4022-8f84-ad24a79bc59e",
+        "copy_version_ids": [
+          "brief-wednesday-instagram-eebee954-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "e27feae666cb23ed69755d82915cc5f60151a9103c03d4e7cc5fff534ab0b101",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-wednesday-instagram-eebee954@1"
+      },
+      "day": "wednesday",
+      "pillar": "Phong gon gang gan ho",
+      "topic": "lake view morning",
+      "dna_subject": "lake_view_room",
+      "slot_id": null,
+      "creative_brief": {
+        "schema_version": "1.0",
+        "id": "brief-wednesday-instagram-eebee954",
+        "version": 1,
+        "brand_id": "venho-hotel",
+        "campaign_id": "daily-cycle-wednesday",
+        "objective": "qualified_inquiry",
+        "platforms": [
+          "instagram"
+        ],
+        "audience_segment": "Vietnamese leisure guests",
+        "funnel_stage": "consideration",
+        "single_minded_message": "lake view morning",
+        "proof_points": [],
+        "content_angle": "Phong gon gang gan ho",
+        "cta": {
+          "type": "booking_link",
+          "destination_key": "hotel.website",
+          "strength": "soft"
+        },
+        "visual": {
+          "scenario_key": "venho_lake_view_room_sunrise",
+          "required_entities": [
+            "bed",
+            "west_lake_view"
+          ],
+          "forbidden_entities": [
+            "generic_city_hotel"
+          ],
+          "target_formats": [
+            "feed_4_5"
+          ]
+        },
+        "lane": "daily",
+        "status": "LOCKED",
+        "checksum": "sha256:6aae85c1cc1b549a560b944c9baafe488df5ef8d0d99cedbcd01e4e7a847abca",
+        "project": "venho_hotel"
+      },
+      "claims": [],
+      "scene_summary": {
+        "location": "Hotel room lake view sunrise",
+        "time_of_day": "morning",
+        "entities": [
+          "bed",
+          "west_lake_view"
+        ],
+        "mood": "calm"
+      },
+      "scorecard_signals": {
+        "claim_kill_switch_triggered": false,
+        "content_brand_fit": 100.0,
+        "content_overall_score": 94.28
+      },
+      "gateway_error": null,
+      "approved_by": "hpham1504@gmail.com",
+      "approval_snapshot": {
+        "approval_request_id": "approval-9f65cfc7-5aa7-4022-8f84-ad24a79bc59e",
+        "content_package_id": "9f65cfc7-5aa7-4022-8f84-ad24a79bc59e",
+        "copy_version_ids": [
+          "brief-wednesday-instagram-eebee954-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "e27feae666cb23ed69755d82915cc5f60151a9103c03d4e7cc5fff534ab0b101",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-wednesday-instagram-eebee954@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-08-12T08:15:40.985427+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "d610016939c23ba9f207345fb0830350a5d7fda7d72b0ed3f6f5af852e27deda",
+        "checksum": "f5ad9e64daf90c5d78a296e76d1d2b14befb49b1d73c5af9dad0b92425d6d9b5"
+      },
+      "shadow_override_by": "hpham1504@gmail.com"
     }
   ]
 }
