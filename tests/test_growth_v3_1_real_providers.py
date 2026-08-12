@@ -339,6 +339,42 @@ def test_make_adapter_reports_gateway_error_when_the_platform_rejected_the_post(
     assert "36003" in result["error"]
 
 
+def test_make_adapter_rejects_static_make_mapping_label_as_post_id() -> None:
+    fake = FakeHttpPost(
+        {
+            "status": "PUBLISHED",
+            "platform_post_id": "3. Post ID",
+            "permalink": "3.permalink_url",
+        }
+    )
+    adapter = MakeGatewayAdapter(
+        enabled=True, webhook_url="https://hook.example/fb", http_post=fake
+    )
+
+    result = adapter.send(
+        {"publication_id": "pub-1", "idempotency_key": "idem-1", "platform": "facebook"}
+    )
+
+    assert result["status"] == "GATEWAY_ERROR"
+    assert result["published"] is False
+    assert "valid platform_post_id" in result["error"]
+
+
+def test_make_adapter_rejects_published_without_post_id() -> None:
+    adapter = MakeGatewayAdapter(
+        enabled=True,
+        webhook_url="https://hook.example/fb",
+        http_post=FakeHttpPost({"status": "PUBLISHED"}),
+    )
+
+    result = adapter.send(
+        {"publication_id": "pub-1", "idempotency_key": "idem-1", "platform": "facebook"}
+    )
+
+    assert result["status"] == "GATEWAY_ERROR"
+    assert "valid platform_post_id" in result["error"]
+
+
 def test_make_adapter_keeps_accepting_a_scenario_without_response_modules() -> None:
     """Routes get built one platform at a time. A scenario replying with Make's
     plain-text "Accepted" must keep the old optimistic behaviour rather than

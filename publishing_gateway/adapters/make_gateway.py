@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import hmac
+import re
 from typing import Any, Callable
 
 from publishing_gateway.fallback_images import fallback_image_url
@@ -12,6 +13,21 @@ def build_make_webhook_signature(secret: str, publication_id: str, idempotency_k
     """Same HMAC-SHA256-over-canonical-string convention as `zalo_oa.build_zalo_webhook_signature`."""
     message = f"{publication_id}:{idempotency_key}".encode("utf-8")
     return hmac.new(secret.encode("utf-8"), message, hashlib.sha256).hexdigest()
+
+
+def _is_real_platform_post_id(value: Any) -> bool:
+    """Reject Make mapping labels/placeholders presented as a real post ID."""
+    if value is None:
+        return False
+    post_id = str(value).strip()
+    if not post_id:
+        return False
+    lowered = post_id.lower()
+    if "post id" in lowered or "permalink" in lowered:
+        return False
+    if "{{" in post_id or "}}" in post_id:
+        return False
+    return re.fullmatch(r"[A-Za-z0-9_-]+", post_id) is not None
 
 
 def interpret_make_response(body: Any, *, publication_id: str | None) -> dict[str, Any]:
@@ -54,6 +70,20 @@ def interpret_make_response(body: Any, *, publication_id: str | None) -> dict[st
         }
 
     post_id = body.get("platform_post_id") or body.get("post_id") or body.get("id")
+    if status == "PUBLISHED" and not _is_real_platform_post_id(post_id):
+        return {
+            "status": "GATEWAY_ERROR",
+            "command_id": publication_id,
+            "published": False,
+            "error": "Make.com reported PUBLISHED without a valid platform_post_id; check Webhook response mapping.",
+        }
+    if post_id and not _is_real_platform_post_id(post_id):
+        return {
+            "status": "GATEWAY_ERROR",
+            "command_id": publication_id,
+            "published": False,
+            "error": "Make.com returned an invalid platform_post_id placeholder; check Webhook response mapping.",
+        }
     if status == "PUBLISHED" or post_id:
         return {
             "status": "PUBLISHED",

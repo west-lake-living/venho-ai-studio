@@ -290,11 +290,8 @@ def dispatch_due_cmd(
     except (KeyError, ValueError) as exc:
         typer.echo(json.dumps({"ok": False, "error": str(exc)}), err=True)
         raise typer.Exit(code=1)
-    failed = [
-        publication
-        for publication in publications
-        if publication.get("status") not in {"GATEWAY_ACCEPTED", "PUBLISHED"}
-    ]
+    accepted_statuses = {"PUBLISHED"} if require_dispatch else {"GATEWAY_ACCEPTED", "PUBLISHED"}
+    failed = [publication for publication in publications if publication.get("status") not in accepted_statuses]
     ok = bool(publications) and not failed if require_dispatch else not failed
     typer.echo(json.dumps({"ok": ok, "publications": publications}, ensure_ascii=False, indent=2))
     if not ok:
