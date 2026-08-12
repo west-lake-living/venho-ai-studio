@@ -1266,3 +1266,60 @@ Cập nhật `task_status.md` mỗi khi:
 - Prompt load check passed through `social_prompts.MASTER_SYSTEM_PROMPT`.
 - Deployed commit: `dc4b398` (`feat: add factual safety rules to master prompt`).
 - Legacy Claude generator test file still has 3 pre-existing expectation failures unrelated to this prompt-only change.
+
+## Action Composite v2 (Linh An / ComfyUI) — P7 hardening review COMPLETE (2026-08-12)
+
+Senior QC review of the Codex-authored P1–P6 code in `image_studio_runtime/action_composite/`,
+plus the three files it touched outside that package. All 18 pre-existing tests were green; two
+serious defects were hiding behind them, both reproduced by running the code before fixing.
+
+**Defects fixed (all covered by new regression tests):**
+
+- [x] **Pixel Preservation Lock was inert** (`pipeline.py`) — the diff compared only the alpha
+      channel, and `load_image` always converts to RGBA, so alpha never varies. Every RGB change
+      outside the mask (body, wardrobe, hair, Hồ Tây, background) passed as clean. This is the
+      central promise of the whole plan (§8.3, §50.6).
+- [x] The locked region is `mask == 0`, not "outside the bbox" — a feathered mask blends over its
+      own edge, so the obvious strict fix would fail every legitimate run. New shared helper
+      `regression_guard.protected_region()`; the pipeline's divergent second copy is deleted.
+- [x] The gate now judges the restorer's **raw output**, not the composite — `Image.composite`
+      discards outside-mask pixels by construction, so validating it confirmed a tautology while
+      a restorer that regenerated the whole scene still reported clean (§18, §34.3).
+- [x] **QC status reported failures as `UNVALIDATED`** — `not identity_score` treated a real `0.0`
+      as "not measured"; a pixel-preservation failure with no identity score was reported unscored.
+- [x] **ComfyUI adapter never uploaded the images** — it POSTed workflow JSON alone, no base image,
+      no mask, no A2 reference, so the POC could not have run. Added `/upload/image` for all three
+      plus `inject_inputs()` binding them to loader nodes by `_meta.title` from config.
+- [x] Adapter: fail fast on `status_str == "error"` instead of spinning to timeout; deterministic
+      output selection; URL-encoded `/view` query; timeout from config.
+- [x] **Service idempotency store was written, never read**; `submit` silently overwrote a live
+      job on payload conflict; `RUNNING` jobs could be started twice; no lock on shared state.
+- [x] **Resume destroyed the audit trail** (§22, §32) — wrote a fresh 2-record trail over the
+      failed attempt; now continues the stored trail with monotonic iterations.
+- [x] `StopCondition` hard-coded a second copy of the thresholds it had just asked the validator
+      for, silently overruling a caller-supplied threshold.
+- [x] Retry caps without a `region` key raised `KeyError`; `crop_for_identity(scale<1)` inverted
+      the box; the A2 authority check matched folder names (`A2_benchmarks/candidate93.png` passed).
+- [x] `ComfyUIConfig`: relative workflow path resolved against cwd, not the repo; malformed env
+      values raised a bare `ValueError` without naming the variable.
+- [x] `action_composite/__init__.py` declared `__all__` twice, discarding `ActionCompositePipeline`.
+
+**Outside the package:**
+
+- [x] `shared/vision/image_loader.py` — AVIF intake wrote a `.jpg` **into the user's photo folder**
+      and reused a pre-existing same-stem `.jpg` that is a *different photo*; `sorted(set(...))`
+      silently dropped an image when an `.avif` and a `.jpg` shared a stem (Mode B validates image
+      counts); `.avif` bytes were labelled `image/jpeg` to the vision API. Now converts via Pillow
+      (`features.check('avif')` confirmed True) into content-hashed `data/.cache/avif/`, with `sips`
+      as fallback.
+- [x] `knowledge_studio/vision/pipeline.py` — manifest was synced *before* the index write, so a
+      failed index write left the manifest advertising an unregistered outfit; new families were
+      hard-coded to `outfit_e_sport`; a string `value_range` indexed to a single character.
+
+**Verification:** targeted suite **77/77 pass**. Full suite 812 pass / 99 fail — the 99 are
+pre-existing, confirmed by stashing this work and re-running (identical 99 at baseline); they sit
+in subject-resolver / validator / video-studio config, untouched here.
+
+**Still open (unchanged):** identity-conditioning workflow + model files, and the 10-image A2
+benchmark. The adapter is now complete enough to drive a real ComfyUI but **has never been run
+against a live server** — that first real run remains the meaningful test.

@@ -301,6 +301,55 @@ class TestModeCContract:
         assert index_captured["family_key"] == "sport_active"
         assert index_captured["display_label"] == "Nike White Running"
 
+    def test_mode_c_builds_prompt_capsule_from_wardrobe_dna(self, tmp_path):
+        from knowledge_studio.vision.pipeline import _wardrobe_description_from_dna
+
+        dna_path = tmp_path / "dna.json"
+        dna_path.write_text(json.dumps({
+            "invariant": [
+                {"key": "color_primary", "value": "white"},
+                {"key": "brand", "value": "Nike"},
+            ],
+            "variable": [
+                {"key": "top_description", "value_range": ["white short-sleeve athletic shirt"]},
+                {"key": "bottom_description", "value_range": ["black athletic shorts"]},
+            ],
+        }), encoding="utf-8")
+
+        description = _wardrobe_description_from_dna({"json": dna_path}, "Nike White Running")
+
+        assert "white short-sleeve athletic shirt" in description
+        assert "black athletic shorts" in description
+        assert "Nike" in description
+
+    def test_string_value_range_does_not_become_a_one_letter_outfit_lock(self, tmp_path):
+        from knowledge_studio.vision.pipeline import _wardrobe_description_from_dna
+
+        dna_path = tmp_path / "dna.json"
+        dna_path.write_text(json.dumps({
+            "invariant": [],
+            "variable": [{"key": "top_description", "value_range": "white shirt"}],
+        }), encoding="utf-8")
+
+        description = _wardrobe_description_from_dna({"json": dna_path}, "Nike White Running")
+
+        assert description == "Nike White Running"
+
+    def test_manifest_sync_uses_the_caller_schema_subject(self, tmp_path, monkeypatch):
+        from knowledge_studio.vision import pipeline
+
+        manifest_dir = tmp_path / "config" / "projects" / "linh_an"
+        manifest_dir.mkdir(parents=True)
+        manifest_path = manifest_dir / "wardrobe_manifest.json"
+        manifest_path.write_text(json.dumps({"families": {}}), encoding="utf-8")
+        monkeypatch.setattr(pipeline, "BASE_DIR", tmp_path)
+
+        pipeline._sync_wardrobe_manifest(family_key="ao_dai", outfit_id="ao_dai_cream",
+                                         schema_subject="outfit_f_traditional")
+
+        family = json.loads(manifest_path.read_text(encoding="utf-8"))["families"]["ao_dai"]
+        assert family["schema_subject"] == "outfit_f_traditional"
+
     def test_compact_not_written_by_default(self, tmp_path):
         from knowledge_studio.vision.renderers.dna_md import write_dna_output
         dna = _minimal_dna()

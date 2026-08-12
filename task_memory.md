@@ -1330,3 +1330,30 @@ Khi người dùng nói **"kết thúc task"**, Codex phải tự động:
 - `social_prompts.MASTER_SYSTEM_PROMPT` đã nạp và kiểm tra đủ 5 nhóm rule.
 - Commit đã push lên `west-lake-living/venho-ai-studio`: `dc4b398` (`feat: add factual safety rules to master prompt`).
 - Kiểm tra targeted prompt: PASS. Bộ test legacy `tests/test_claude_social_generator.py` còn 3 lỗi baseline do tham chiếu hằng/chuỗi prompt cũ, không phát sinh từ thay đổi factual-safety.
+
+## Action Composite v2 — P7 hardening (2026-08-12)
+
+Reviewed and optimized the Codex-authored `image_studio_runtime/action_composite/` (P1–P6).
+Plan: `docs/Image studio/LINH_AN_ACTION_COMPOSITE_HYBRID_COMFYUI_TECHNICAL_PLAN_v1.0.md`.
+Full detail in `task_status.md`. The parts worth remembering:
+
+- **18 green tests were hiding an inert Pixel Preservation Lock.** The check diffed only the
+  alpha channel of an image the loader always converts to RGBA — so alpha never varies and every
+  RGB mutation outside the mask passed. Reproduced by running the code, not by reading it.
+- **The composite step made the gate a tautology.** `Image.composite` discards outside-mask pixels
+  by construction, so checking its output proves nothing. The gate must judge the restorer's raw
+  output; that is what catches a ComfyUI workflow that regenerated the whole scene and left a face
+  pasted onto the original body.
+- **The locked region is `mask == 0`, not "outside the bbox"** — feathered masks blend over their
+  own edge, so the naive strict guard fails every valid run. `regression_guard.protected_region()`.
+- **The ComfyUI adapter never sent the images** (workflow JSON only, no base/mask/A2). A "complete"
+  P1–P6 with a checked box for a POC that could not physically have run.
+- Workflow node wiring is declared in config by `_meta.title` (`VENHO_COMFYUI_NODE_BINDINGS`), never
+  guessed from node ids.
+- AVIF intake was writing converted JPEGs into Harry's photo folders and reusing an unrelated
+  same-stem `.jpg`. Converted images now live in content-hashed `data/.cache/avif/`.
+- Baseline discipline: before blaming this work for the 99 full-suite failures, stashed everything
+  and re-ran — identical 99 at baseline, all in subject-resolver/validator/video-studio config.
+
+Targeted suite 77/77. **Never run against a live ComfyUI** — model files and the 10-image A2
+benchmark are still open, and the first real run is the only meaningful test of the adapter.

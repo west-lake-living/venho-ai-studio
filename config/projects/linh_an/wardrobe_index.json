@@ -52,7 +52,8 @@
       "outfit_ids": [
         "mint_green",
         "nike_pink_running",
-        "nike_white_running"
+        "nike_white_running",
+        "nike_lightblue_running"
       ]
     }
   ],
@@ -198,9 +199,27 @@
         "data/projects/linh_an/knowledge/LINH_AN_NIKE_WHITE_RUNNING_DNA.json",
         "data/projects/linh_an/knowledge/LINH_AN_NIKE_WHITE_RUNNING_DNA_COMPACT.md"
       ],
-      "description": "",
+      "description": "white short-sleeve athletic shirt, black shorts, black Nike sneakers, fitted sport active set with Nike branding",
+      "positive_lock": "Linh An must wear the white-and-black Nike athletic running outfit exactly for sport actions.",
       "default": false,
       "notes": "Auto-registered by Mode C — pending Harry's visual review before flipping to approved."
+    },
+    {
+      "outfit_id": "nike_lightblue_running",
+      "family_key": "sport_active",
+      "display_label": "Nike Light Blue Running",
+      "status": "approved",
+      "schema_subject": "outfit_e_sport",
+      "source_kind": "source_backed",
+      "source_images_dir": "data/projects/linh_an/wardrobe/nike_lightblue_running",
+      "dna_artifacts": [
+        "data/projects/linh_an/knowledge/LINH_AN_NIKE_LIGHTBLUE_RUNNING_DNA.md",
+        "data/projects/linh_an/knowledge/LINH_AN_NIKE_LIGHTBLUE_RUNNING_DNA.json",
+        "data/projects/linh_an/knowledge/LINH_AN_NIKE_LIGHTBLUE_RUNNING_DNA_COMPACT.md"
+      ],
+      "description": "light blue short-sleeve athletic shirt, black athletic shorts, Nike athletic wear, dark blue secondary accents, layered shorts design",
+      "default": false,
+      "notes": "Approved after visual review."
     }
   ]
 }

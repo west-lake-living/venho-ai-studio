@@ -240,6 +240,7 @@ def run_mode_c(
         schema_subject=effective_schema_subject,
         source_images_dir=str(input_dir),
         dna_paths=paths,
+        description=_wardrobe_description_from_dna(paths, effective_display_label),
     )
 
     return paths
@@ -252,6 +253,7 @@ def _upsert_wardrobe_index_entry(
     schema_subject: str,
     source_images_dir: str,
     dna_paths: dict[str, Path],
+    description: str = "",
 ) -> None:
     """Register a Mode C outfit into wardrobe_index.json so it shows up as a
     selectable variant across venho-os (Mode C dropdown, Creative Studio, etc.).
@@ -278,6 +280,11 @@ def _upsert_wardrobe_index_entry(
         existing["dna_artifacts"] = dna_artifacts
         existing["source_images_dir"] = source_images_dir
         existing["source_kind"] = existing.get("source_kind") or "source_backed"
+        # A Mode C rebuild must repair an entry created by the old implementation,
+        # which registered the outfit with an empty description. Never replace a
+        # curator-authored description with a generated one.
+        if not str(existing.get("description") or "").strip() and description.strip():
+            existing["description"] = description
     else:
         outfits.append({
             "outfit_id": outfit_id,
@@ -288,7 +295,7 @@ def _upsert_wardrobe_index_entry(
             "source_kind": "source_backed",
             "source_images_dir": source_images_dir,
             "dna_artifacts": dna_artifacts,
-            "description": "",
+            "description": description,
             "default": False,
             "notes": "Auto-registered by Mode C — pending Harry's visual review before flipping to approved.",
         })
@@ -310,6 +317,85 @@ def _upsert_wardrobe_index_entry(
 
     index["updated_at"] = datetime.now(timezone.utc).date().isoformat()
     index_path.write_text(json.dumps(index, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+    # After the canonical index is on disk: a failed index write must not leave
+    # the legacy manifest advertising an outfit the index never registered.
+    _sync_wardrobe_manifest(family_key=family_key, outfit_id=outfit_id, schema_subject=schema_subject)
+
+
+def _wardrobe_description_from_dna(dna_paths: dict[str, Path], display_label: str) -> str:
+    """Turn Mode C's structured DNA into the prompt capsule used by Creative Studio.
+
+    The old registration path wrote ``description: ""`` even though the DNA was
+    successfully built. That made the selector look healthy while sending an
+    empty outfit lock to image generation. Keep this deterministic and offline:
+    use stable invariant values first, then the first observed variable when an
+    invariant is unavailable.
+    """
+    import json
+
+    json_path = dna_paths.get("json")
+    if not json_path or not Path(json_path).exists():
+        return display_label.strip()
+    try:
+        payload = json.loads(Path(json_path).read_text(encoding="utf-8"))
+    except (OSError, ValueError, TypeError):
+        return display_label.strip()
+
+    values: dict[str, str] = {}
+    for item in payload.get("invariant", []):
+        if isinstance(item, dict) and item.get("key") and item.get("value"):
+            values[str(item["key"])] = str(item["value"])
+    for item in payload.get("variable", []):
+        if not isinstance(item, dict) or not item.get("key"):
+            continue
+        # A string value_range would index to a single character, silently
+        # producing a one-letter outfit lock.
+        value_range = item.get("value_range")
+        if isinstance(value_range, list) and value_range:
+            values.setdefault(str(item["key"]), str(value_range[0]))
+
+    parts: list[str] = []
+    top = values.get("top_description")
+    bottom = values.get("bottom_description")
+    footwear = values.get("footwear_description") or values.get("footwear_type")
+    brand = values.get("brand")
+    primary = values.get("color_primary")
+    secondary = values.get("color_secondary")
+    signature = values.get("signature_design_elements") or values.get("logo_branding")
+    if top:
+        parts.append(top)
+    if bottom:
+        parts.append(bottom)
+    if footwear:
+        parts.append(footwear)
+    if brand and not any(brand.lower() in part.lower() for part in parts):
+        parts.append(f"{brand} athletic wear")
+    if primary and not any(primary.lower() in part.lower() for part in parts):
+        parts.append(f"{primary} primary color")
+    if secondary and not any(secondary.lower() in part.lower() for part in parts):
+        parts.append(f"{secondary} secondary accents")
+    if signature and not any(signature.lower() in part.lower() for part in parts):
+        parts.append(signature)
+    return ", ".join(parts).strip() or display_label.strip()
+
+
+def _sync_wardrobe_manifest(family_key: str, outfit_id: str, schema_subject: str) -> None:
+    """Keep the legacy wardrobe manifest aligned with the canonical index."""
+    import json
+
+    path = BASE_DIR / "config" / "projects" / "linh_an" / "wardrobe_manifest.json"
+    if not path.exists():
+        return
+    manifest = json.loads(path.read_text(encoding="utf-8"))
+    family = manifest.setdefault("families", {}).setdefault(
+        family_key,
+        {"schema_subject": schema_subject, "default_outfit_id": outfit_id, "outfit_ids": []},
+    )
+    ids = family.setdefault("outfit_ids", [])
+    if outfit_id not in ids:
+        ids.append(outfit_id)
+    path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
 def _run_mode_b_with_subject_def(
