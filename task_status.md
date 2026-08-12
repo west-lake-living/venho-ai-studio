@@ -1,6 +1,17 @@
 # VENHO AI STUDIO — Task Status
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-08-10 (Linh An official-asset readiness Steps 1–3 closeout) · **Tests:** 841/841 pass · 0 API call trong test
+**Cập nhật:** 2026-08-12 (A2 diagnostic V4 và provider cost review closeout) · **Tests:** 854 pass · 0 API call trong test
+
+### Image Generation — A2 diagnostic V4 / cost review (2026-08-12)
+
+**Status: CLOSED — Face QC đạt ngưỡng; candidate đã lưu; chưa đổi authoritative reference**
+
+- [x] A2-front giữ làm reference chính thức. Diagnostic close-up 1K V4 đạt **93.15 / APPROVED** (shape 95, eyes/brows 90, nose 92, mouth/chin 93, technical 98).
+- [x] Artifact + manifest: `photos-ai/2026/12-08-linh-an-a2-diagnostic-v4-1k/run-202608121115/variant-001/`; estimated cost **$0.06832**, không retry.
+- [x] Lưu candidate: `venho-social-content-agent/assets/face-plates/candidates/A2_Diagnostic_V4_1K_candidate.png` (không promote, không publish).
+- [x] Ghi nhận lựa chọn rẻ hơn Nano Banana để benchmark: Imagen 4 Fast/Standard/Ultra khoảng **$0.02/$0.04/$0.06**; GPT Image 1 Mini High khoảng **$0.036 output 1K + input-image tokens nếu có**.
+- [ ] Chưa benchmark provider thay thế; cần ủy quyền paid test riêng. Nano Banana V4 vẫn là baseline identity đã chứng minh.
+- [x] Task đóng. Không có paid image call sau V4.
 
 ### Growth Agent — automation recovery (2026-08-10)
 

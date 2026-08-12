@@ -1,6 +1,15 @@
 # VENHO AI STUDIO — Task Memory
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-08-07 (Growth Agent Research OS/Trend Radar audit closeout, xem mục 14p) · **Đọc bởi:** AI Engine, Claude Code sessions
+**Cập nhật:** 2026-08-12 (A2 diagnostic V4 closeout và provider cost review) · **Đọc bởi:** AI Engine, Claude Code sessions
+
+## Image Generation — A2 diagnostic V4 và provider cost review COMPLETE (2026-08-12)
+
+- A2-front tiếp tục là face reference authoritative; không thay thế bằng candidate.
+- Diagnostic close-up 1K V4 đạt **Face QC 93.15 / APPROVED**: facial shape 95, eyes & brows 90, nose 92, mouth & chin 93, technical quality 98; không retry, ước tính **$0.06832**.
+- Artifact gốc: `photos-ai/2026/12-08-linh-an-a2-diagnostic-v4-1k/run-202608121115/variant-001/image.png` kèm `manifest.json`.
+- Candidate bổ sung: `venho-social-content-agent/assets/face-plates/candidates/A2_Diagnostic_V4_1K_candidate.png`; chưa promoted thành authoritative reference.
+- Provider cost review: Imagen 4 Fast/Standard/Ultra khoảng **$0.02/$0.04/$0.06 mỗi ảnh**; GPT Image 1 Mini High khoảng **$0.036 output 1K**, image-input token có thể tính thêm. Chưa benchmark identity fidelity với A2.
+- Kết luận: Nano Banana V4 là baseline duy nhất đã chứng minh Face QC >90; provider rẻ hơn chỉ thay thế sau benchmark A2 1K cùng prompt/reference/QC. Không phát sinh paid call sau V4.
 
 ---
 
