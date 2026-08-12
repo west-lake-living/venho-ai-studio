@@ -1,0 +1,107 @@
+# VENHO DNA Export — LOBBY (FULL)
+# Project: venho_hotel | File: VENHO_HOTEL_LOBBY_DNA.md
+# Paste this block into GPT as context before generating prompts.
+# ─────────────────────────────────────────────────────────────
+
+# PROJECT SUBJECT DNA
+
+## META
+
+- **project**: venho_hotel
+- **subject**: lobby
+- **schema_id**: venho_hotel.lobby
+- **schema_version**: 1.0
+- **dna_version**: 1.1
+- **generated_at**: 2026-07-07T16:31:18.690623
+- **provider**: claude
+- **model**: claude-sonnet-4-6
+- **contract_version**: 1.1
+- **total_source_images**: 6
+
+
+## INVARIANT
+
+*Features that are consistent and stable across all/most images.*
+
+- **ceiling_treatment**: flat_white  _(evidence: 6, coverage: 100%, consistency: 100%)_
+- **cleanliness**: clean  _(evidence: 6, coverage: 100%, consistency: 100%)_
+- **wall_artwork**: present  _(evidence: 6, coverage: 100%, consistency: 83%)_
+- **ambient_lighting**: neutral  _(evidence: 6, coverage: 100%, consistency: 83%)_
+- **floor_material**: tile  _(evidence: 6, coverage: 100%, consistency: 83%)_
+- **floor_color**: brown with circular patterns  _(evidence: 6, coverage: 100%, consistency: 83%)_
+- **hotel_tier_impression**: mid_range  _(evidence: 6, coverage: 100%, consistency: 100%)_
+- **staircase_visible**: False  _(evidence: 6, coverage: 100%, consistency: 83%)_
+- **hotel_signage**: logo_visible  _(evidence: 5, coverage: 83%, consistency: 100%)_
+- **entrance_door**: glass_door  _(evidence: 4, coverage: 67%, consistency: 100%)_
+- **furniture_wood_tone**: dark_reddish_brown  _(evidence: 4, coverage: 67%, consistency: 100%)_
+
+
+## VARIABLE
+
+*Features that vary across images — all observed values listed.*
+
+- **wall_treatment**: `painted_smooth` · `tile`
+- **pendant_or_chandelier**: `ceiling_recessed` · `chandelier` · `none` · `pendant_lights`
+- **style_category**: `generic_hotel` · `traditional_asian`
+- **waiting_seating**: `chairs` · `none`
+- **key_cabinet**: `present`
+- **natural_light**: `high` · `low` · `moderate` · `none`
+- **scale**: `compact` · `medium`
+- **reception_desk**: `present_wood`
+- **plants**: `none` · `present_multiple` · `present_single`
+
+
+## ALLOWED IMPERFECTIONS
+
+*Naturally occurring imperfections that are acceptable — and preferable for authenticity.*
+
+- slight wear on reception desk surface acceptable `[curated]`
+- minor asymmetry in decorative arrangement acceptable `[curated]`
+- natural lighting variation across time of day acceptable `[curated]`
+- small personal items on reception counter acceptable — authentic, not sterile `[curated]`
+
+
+## FORBIDDEN
+
+*Things NOT present — prevents AI hallucination. Curated rules are policy; observed rules are hints.*
+
+- no marble floor — actual flooring is tile or stone, not polished marble `[curated]`
+- no luxury hotel chandeliers — lighting is warm and functional, not grand `[curated]`
+- no resort-scale lobby — this is a compact boutique reception, not a 5-star atrium `[curated]`
+- no modern minimalist glass-and-steel design `[curated]`
+- no generic international hotel style `[curated]`
+- no over-staged decorative props — keep it authentic Vietnamese boutique `[curated]`
+- no marble floor `[observed]`
+- no luxury hotel chandeliers `[observed]`
+- no resort-scale lobby `[observed]`
+- no Dubai-style luxury interior `[observed]`
+- no marble grand staircase `[observed]`
+
+
+## EVIDENCE
+
+- **total_images**: 6
+- **invariant_count**: 11
+- **variable_count**: 9
+- **source_hashes**: 703d1ff7, 2156a325, 66ccee66, 9c456b51, db22898a… (+1 more)
+
+
+## WEAK FEATURES
+
+*Features seen in too few images to classify. Shoot more images.*
+
+*(none)*
+
+
+## FUTURE CAPTURE NOTES
+
+*(none)*
+
+
+## CURATOR NOTES
+
+- Scale: boutique 12-room hotel — reception is compact and intimate
+- Character: warm, personal, traditional Vietnamese hospitality
+- Lighting: warm ambient — NOT cool corporate fluorescent
+- Palette reference: warm neutral tones matching room DNA
+- Authenticity principle: lived-in warmth over sterile hotel polish

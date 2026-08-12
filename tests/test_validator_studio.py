@@ -289,9 +289,9 @@ def test_face_validator_provider_path_uses_rubric_and_schema_guard(tmp_path, mon
                 ],
                 "weighted_scores": {
                     "facial_shape": 90,
-                    "eyes": 88,
-                    "hair": 87,
-                    "expression": 86,
+                    "eyes_and_brows": 88,
+                    "nose": 87,
+                    "mouth_and_chin": 86,
                     "technical_quality": 85,
                 },
                 "notes": [],
@@ -320,9 +320,9 @@ def test_face_validator_provider_rejects_missing_required_gates(tmp_path, monkey
                 "gates": [{"gate": "identity_structure", "passed": True}],
                 "weighted_scores": {
                     "facial_shape": 90,
-                    "eyes": 88,
-                    "hair": 87,
-                    "expression": 86,
+                    "eyes_and_brows": 88,
+                    "nose": 87,
+                    "mouth_and_chin": 86,
                     "technical_quality": 85,
                 },
             }
@@ -349,9 +349,9 @@ def test_face_validator_provider_rejects_rubric_weight_scale_scores(tmp_path, mo
                 ],
                 "weighted_scores": {
                     "facial_shape": 0.30,
-                    "eyes": 0.25,
-                    "hair": 0.20,
-                    "expression": 0.15,
+                    "eyes_and_brows": 0.25,
+                    "nose": 0.20,
+                    "mouth_and_chin": 0.15,
                     "technical_quality": 0.10,
                 },
             }
@@ -391,7 +391,7 @@ def test_face_validator_samples_majority_vote_gates_and_average_scores(tmp_path,
                 {"gate": "eye_ratio", "passed": False, "reason": "off", "evidence": ""},
                 {"gate": "forbidden_traits", "passed": True, "reason": "ok", "evidence": ""},
             ],
-            "weighted_scores": {"facial_shape": 60, "eyes": 50, "hair": 70, "expression": 80, "technical_quality": 85},
+            "weighted_scores": {"facial_shape": 60, "eyes_and_brows": 50, "nose": 70, "mouth_and_chin": 80, "technical_quality": 85},
             "notes": [],
         },
         {  # sample 2: revise (majority for identity/eye_ratio flips to True with sample 3)
@@ -400,7 +400,7 @@ def test_face_validator_samples_majority_vote_gates_and_average_scores(tmp_path,
                 {"gate": "eye_ratio", "passed": True, "reason": "ok", "evidence": ""},
                 {"gate": "forbidden_traits", "passed": True, "reason": "ok", "evidence": ""},
             ],
-            "weighted_scores": {"facial_shape": 90, "eyes": 85, "hair": 80, "expression": 75, "technical_quality": 70},
+            "weighted_scores": {"facial_shape": 90, "eyes_and_brows": 85, "nose": 80, "mouth_and_chin": 75, "technical_quality": 70},
             "notes": [],
         },
         {  # sample 3: revise
@@ -409,7 +409,7 @@ def test_face_validator_samples_majority_vote_gates_and_average_scores(tmp_path,
                 {"gate": "eye_ratio", "passed": True, "reason": "ok", "evidence": ""},
                 {"gate": "forbidden_traits", "passed": True, "reason": "ok", "evidence": ""},
             ],
-            "weighted_scores": {"facial_shape": 90, "eyes": 85, "hair": 80, "expression": 75, "technical_quality": 70},
+            "weighted_scores": {"facial_shape": 90, "eyes_and_brows": 85, "nose": 80, "mouth_and_chin": 75, "technical_quality": 70},
             "notes": [],
         },
     ]
@@ -432,7 +432,7 @@ def test_face_validator_samples_majority_vote_gates_and_average_scores(tmp_path,
     assert raw_gates == {"identity_structure": True, "eye_ratio": True, "forbidden_traits": True}
     # average of [60,90,90]=80, [50,85,85]=73.33, etc.
     assert report.raw_observation["weighted_scores"]["facial_shape"] == 80.0
-    assert report.raw_observation["weighted_scores"]["eyes"] == round((50 + 85 + 85) / 3, 2)
+    assert report.raw_observation["weighted_scores"]["eyes_and_brows"] == round((50 + 85 + 85) / 3, 2)
     assert any("aggregated from 3 vision samples" in note for note in report.validation_notes)
 
 
@@ -459,7 +459,7 @@ def test_face_validator_uses_reference_images_when_provided(tmp_path, monkeypatc
                     {"gate": "forbidden_traits", "passed": True, "reason": "ok", "evidence": ""},
                 ],
                 "weighted_scores": {
-                    "facial_shape": 90, "eyes": 88, "hair": 87, "expression": 86, "technical_quality": 85,
+                    "facial_shape": 90, "eyes_and_brows": 88, "nose": 87, "mouth_and_chin": 86, "technical_quality": 85,
                 },
                 "notes": [],
             }
@@ -471,6 +471,10 @@ def test_face_validator_uses_reference_images_when_provided(tmp_path, monkeypatc
     )
     assert calls["image_paths"] == [image, ref1, ref2]
     assert "REFERENCE IMAGES" in calls["prompt"]
+    assert "image 2 = ref1" in calls["prompt"]
+    assert "image 3 = ref2" in calls["prompt"]
+    assert "B3 Hero" not in calls["prompt"]
+    assert "override conflicting prose Face DNA" in calls["prompt"]
     assert report.kill_switch.triggered is False
     assert any("2 approved reference image" in note for note in report.validation_notes)
 
@@ -513,7 +517,7 @@ def test_face_validator_no_reference_images_keeps_old_behavior(tmp_path, monkeyp
                     {"gate": "forbidden_traits", "passed": True, "reason": "ok", "evidence": ""},
                 ],
                 "weighted_scores": {
-                    "facial_shape": 90, "eyes": 88, "hair": 87, "expression": 86, "technical_quality": 85,
+                    "facial_shape": 90, "eyes_and_brows": 88, "nose": 87, "mouth_and_chin": 86, "technical_quality": 85,
                 },
                 "notes": [],
             }

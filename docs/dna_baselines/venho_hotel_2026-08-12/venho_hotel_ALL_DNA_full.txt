@@ -1,0 +1,1323 @@
+# VENHO DNA Export — ALL subjects (venho_hotel)
+# 12 DNA files | Paste this block into GPT as context.
+# ─────────────────────────────────────────────────────────────
+
+════════════════════════════════════════════════════════════
+# VENHO_HOTEL_DELUXE_DOUBLE_DNA
+════════════════════════════════════════════════════════════
+# PROJECT SUBJECT DNA
+
+## META
+
+- **project**: venho_hotel
+- **subject**: deluxe_double
+- **schema_id**: venho_hotel.deluxe_double
+- **schema_version**: 1.0
+- **dna_version**: 1.4
+- **generated_at**: 2026-08-12T15:52:47.788820
+- **provider**: claude
+- **model**: claude-sonnet-4-6
+- **contract_version**: 1.1
+- **total_source_images**: 6
+
+
+## INVARIANT
+
+*Features that are consistent and stable across all/most images.*
+
+- **wall_artwork**: none  _(evidence: 6, coverage: 100%, consistency: 100%)_
+- **wood_tone**: dark reddish-brown solid wood furniture `[curated]`  _(evidence: 6, coverage: 100%, consistency: 100%)_
+- **room_shape**: rectangular  _(evidence: 6, coverage: 100%, consistency: 100%)_
+- **ceiling**: decorative molding — white painted ceiling with trim detail `[curated]`  _(evidence: 6, coverage: 100%, consistency: 100%)_
+- **lighting_condition**: artificial warm lighting  _(evidence: 6, coverage: 100%, consistency: 100%)_
+- **bed_headboard**: wooden headboard  _(evidence: 6, coverage: 100%, consistency: 100%)_
+- **style_category**: boutique Vietnamese heritage hotel `[curated]`  _(evidence: 6, coverage: 100%, consistency: 100%)_
+- **lake_view_visible**: false  _(evidence: 6, coverage: 100%, consistency: 100%)_
+- **bed_size**: double  _(evidence: 5, coverage: 83%, consistency: 80%)_
+- **desk**: desk with mirror  _(evidence: 5, coverage: 83%, consistency: 100%)_
+- **bedding_color**: white bedding  _(evidence: 5, coverage: 83%, consistency: 100%)_
+
+
+## VARIABLE
+
+*Features that vary across images — all observed values listed.*
+
+- **hotel_tier**: `budget` · `mid_range`
+- **chairs**: `none` · `two_wooden`
+- **window_layout**: `grid_2x3`
+- **curtain_color**: `dark_gray` · `gray`
+- **floor**: `hardwood` · `laminate` · `tile`
+- **window_frame**: `black_aluminum` · `metal_other`
+- **wall_color**: `light beige` · `light_gray` · `white`
+
+
+## ALLOWED IMPERFECTIONS
+
+*Naturally occurring imperfections that are acceptable — and preferable for authenticity.*
+
+- minor scuff marks on skirting boards acceptable `[curated]`
+- slight curtain wrinkles acceptable `[curated]`
+- small wear marks on wooden furniture edges acceptable `[curated]`
+- natural aging of wooden headboard acceptable `[curated]`
+- decorative molding ceiling may show slight paint texture variation `[curated]`
+- stains on ceiling `[observed]`
+- marks on wall `[observed]`
+- visible air conditioning unit `[observed]`
+
+
+## FORBIDDEN
+
+*Things NOT present — prevents AI hallucination. Curated rules are policy; observed rules are hints.*
+
+- no floor-to-ceiling glass wall — actual window is grid-pane black aluminum `[curated]`
+- no Dubai-style luxury interior `[curated]`
+- no generic resort look `[curated]`
+- no marble flooring `[curated]`
+- no cream and beige luxury palette `[curated]`
+- no Korean hotel style `[curated]`
+- no generic international hotel design `[curated]`
+- no lake view — this room faces away from the lake `[curated]`
+- no real hardwood flooring — floor is wood-look imitation tile (gạch giả vân gỗ), not solid wood `[curated]`
+- no floor-to-ceiling glass wall `[observed]`
+- no luxury apartment style `[observed]`
+- no marble interior `[observed]`
+- no resort aesthetic `[observed]`
+- no generic international hotel `[observed]`
+- no infinity pool `[observed]`
+- no visible lake view `[observed]`
+- no lake view `[observed]`
+- no wardrobe visible `[observed]`
+- no wall artwork `[observed]`
+- no visible bed size `[observed]`
+- no window view `[observed]`
+- no visible wardrobe `[observed]`
+- no visible curtains `[observed]`
+- no chairs present `[observed]`
+- no visible chairs `[observed]`
+- no visible desk `[observed]`
+
+
+## EVIDENCE
+
+- **total_images**: 6
+- **invariant_count**: 11
+- **variable_count**: 7
+- **source_hashes**: fa30e39a, 7f3b9ad5, 0d653e00, 004e19dd, ec2720da… (+1 more)
+
+
+## WEAK FEATURES
+
+*Features seen in too few images to classify. Shoot more images.*
+
+- **wardrobe** (seen in 1 image(s))
+
+
+## FUTURE CAPTURE NOTES
+
+- Need more images showing 'wardrobe' to confirm invariant status
+
+
+## CURATOR NOTES
+
+- DEFINING FEATURE: Decorative molding ceiling (vs flat white in lake_view_room)
+- 18m² floor plan — slightly larger than lake_view_room (16m²)
+- No direct lake view — interior-facing or side-facing windows
+- Palette reference: Visual DNA v2.7 §12 — warm neutral tones, dark wood accents
+- Hotel tier: boutique mid-range on West Lake — NOT luxury resort
+- Authenticity principle: trustworthy impression over polished perfection
+- Corresponds to room_1 from v2.3 DNA (ceiling: decorative_molding, no lake view)
+- Floor: wood-look imitation tile (gạch giả vân gỗ), confirmed by Harry 2026-08-12 — v1.4 DNA's 'hardwood/laminate/tile' VARIABLE spread was lighting-color variance across photos of the same tile floor, not different physical floors
+
+
+════════════════════════════════════════════════════════════
+# VENHO_HOTEL_FACADE_DNA
+════════════════════════════════════════════════════════════
+# PROJECT SUBJECT DNA
+
+## META
+
+- **project**: venho_hotel
+- **subject**: facade
+- **schema_id**: venho_hotel.facade
+- **schema_version**: 1.0
+- **dna_version**: 1.1
+- **generated_at**: 2026-07-07T16:30:29.110098
+- **provider**: claude
+- **model**: claude-sonnet-4-6
+- **contract_version**: 1.1
+- **total_source_images**: 7
+
+
+## INVARIANT
+
+*Features that are consistent and stable across all/most images.*
+
+- **building_height**: 5_floors  _(evidence: 7, coverage: 100%, consistency: 71%)_
+- **hotel_signage**: horizontal_sign  _(evidence: 7, coverage: 100%, consistency: 100%)_
+- **sidewalk_type**: tiled_sidewalk  _(evidence: 7, coverage: 100%, consistency: 100%)_
+- **facade_condition**: well_maintained  _(evidence: 7, coverage: 100%, consistency: 100%)_
+- **facade_material**: painted_concrete  _(evidence: 7, coverage: 100%, consistency: 86%)_
+- **ground_floor_use**: hotel_reception  _(evidence: 7, coverage: 100%, consistency: 71%)_
+- **wall_paint_color**: white  _(evidence: 7, coverage: 100%, consistency: 86%)_
+- **parked_vehicles**: motorcycles  _(evidence: 7, coverage: 100%, consistency: 86%)_
+- **railing_style**: black_iron_scroll  _(evidence: 7, coverage: 100%, consistency: 100%)_
+- **window_frame_color**: black  _(evidence: 7, coverage: 100%, consistency: 100%)_
+- **balcony_present**: yes_every_floor  _(evidence: 7, coverage: 100%, consistency: 71%)_
+- **street_trees**: large_mature_trees  _(evidence: 7, coverage: 100%, consistency: 71%)_
+- **signage_text**: VEN HO HOTEL  _(evidence: 6, coverage: 86%, consistency: 83%)_
+- **entrance_door**: glass_door  _(evidence: 6, coverage: 86%, consistency: 100%)_
+
+
+## VARIABLE
+
+*Features that vary across images — all observed values listed.*
+
+- **architectural_style**: `modern_minimal` · `neoclassical` · `townhouse_vietnam`
+- **street_activity**: `moderate` · `quiet`
+- **daytime_lighting**: `bright_sunlight` · `overcast`
+- **neighboring_buildings**: `adjacent buildings with similar height` · `adjacent commercial buildings` · `adjacent similar buildings` · `commercial buildings on both sides`
+
+
+## ALLOWED IMPERFECTIONS
+
+*Naturally occurring imperfections that are acceptable — and preferable for authenticity.*
+
+- slight weathering on exterior paint acceptable — authentic urban patina `[curated]`
+- minor staining or discoloration from Hanoi climate acceptable `[curated]`
+- natural street-level clutter (motorbikes, trees) in foreground acceptable `[curated]`
+- uneven signage lighting acceptable `[curated]`
+
+
+## FORBIDDEN
+
+*Things NOT present — prevents AI hallucination. Curated rules are policy; observed rules are hints.*
+
+- no glass curtain wall facade — building uses traditional window openings `[curated]`
+- no luxury resort exterior — this is a compact urban boutique hotel `[curated]`
+- no colonial-era grand facade with pillars or ornate stonework `[curated]`
+- no modern high-rise design — building is low-rise, 4-6 floors `[curated]`
+- no generic commercial building look `[curated]`
+- no artificial night illumination scenes unless the hotel actually lights up that way `[curated]`
+- no glass curtain wall facade `[observed]`
+- no luxury resort exterior `[observed]`
+- no colonial-era grand facade `[observed]`
+- no modern high-rise design `[observed]`
+- no generic commercial building `[observed]`
+- no Dubai-style luxury entrance `[observed]`
+- no modern glass tower `[observed]`
+
+
+## EVIDENCE
+
+- **total_images**: 7
+- **invariant_count**: 14
+- **variable_count**: 4
+- **source_hashes**: 86ef06cf, f2890509, 124bc397, 387b7df1, f370caa7… (+2 more)
+
+
+## WEAK FEATURES
+
+*Features seen in too few images to classify. Shoot more images.*
+
+*(none)*
+
+
+## FUTURE CAPTURE NOTES
+
+*(none)*
+
+
+## CURATOR NOTES
+
+- Address: 181 Nguyễn Đình Thi, Tây Hồ — lakeside street, Hanoi
+- Building character: urban Vietnamese mini-hotel — NOT resort, NOT colonial villa
+- Signage: 'Ven Hồ Hotel' sign on facade — white or warm tone
+- Street context: Nguyễn Đình Thi is tree-lined, green lamp posts, light traffic
+- Authenticity principle: real Hanoi urban texture over glossy hotel render
+
+
+════════════════════════════════════════════════════════════
+# VENHO_HOTEL_LAKE_VIEW_ROOM_1_DNA
+════════════════════════════════════════════════════════════
+# PROJECT SUBJECT DNA
+
+## META
+
+- **project**: venho_hotel
+- **subject**: lake_view_room_1
+- **schema_id**: venho_hotel.lake_view_room_1
+- **schema_version**: 1.0
+- **dna_version**: 1.2
+- **generated_at**: 2026-08-12T14:59:39.207850
+- **provider**: claude
+- **model**: claude-sonnet-4-6
+- **contract_version**: 1.1
+- **total_source_images**: 10
+
+
+## INVARIANT
+
+*Features that are consistent and stable across all/most images.*
+
+- **lighting_condition**: natural daylight  _(evidence: 10, coverage: 100%, consistency: 100%)_
+- **style_category**: boutique Vietnamese heritage hotel `[curated]`  _(evidence: 9, coverage: 90%, consistency: 100%)_
+- **wall_artwork**: none  _(evidence: 9, coverage: 90%, consistency: 89%)_
+- **hotel_tier**: boutique mid-range `[curated]`  _(evidence: 9, coverage: 90%, consistency: 78%)_
+- **window_layout**: 2x2 grid window layout  _(evidence: 8, coverage: 80%, consistency: 100%)_
+- **bedding_color**: white  _(evidence: 8, coverage: 80%, consistency: 100%)_
+- **window_frame**: matte black aluminum window frame, thin profile, grid pattern `[curated]`  _(evidence: 8, coverage: 80%, consistency: 100%)_
+- **wall_color**: light gray  _(evidence: 7, coverage: 70%, consistency: 100%)_
+- **room_shape**: rectangular  _(evidence: 6, coverage: 60%, consistency: 100%)_
+
+
+## VARIABLE
+
+*Features that vary across images — all observed values listed.*
+
+- **bed_size**: `double`
+- **wood_tone**: `dark_reddish_brown` · `medium_brown`
+- **lake_view_visible**: `false` · `partial` · `true`
+- **curtain_color**: `dark` · `dark_blue` · `dark_gray` · `gray`
+- **ceiling**: `decorative_molding` · `flat_white`
+- **floor**: `hardwood` · `laminate` · `tile`
+- **chairs**: `none` · `one_chair` · `two_wooden`
+- **desk**: `present_with_mirror` · `present_without_mirror`
+- **bed_headboard**: `wooden`
+
+
+## ALLOWED IMPERFECTIONS
+
+*Naturally occurring imperfections that are acceptable — and preferable for authenticity.*
+
+- minor scuff marks on skirting boards acceptable `[curated]`
+- slight curtain wrinkles acceptable `[curated]`
+- small wear marks on wooden furniture edges acceptable `[curated]`
+- natural aging of wooden headboard acceptable `[curated]`
+- slight unevenness in curtain hang acceptable `[curated]`
+- slightly uneven curtain `[observed]`
+- slightly uneven floor `[observed]`
+- slightly uneven bedding `[observed]`
+- slightly wrinkled bedding `[observed]`
+- slightly uneven paint on window frame `[observed]`
+- slightly uneven wall paint `[observed]`
+
+
+## FORBIDDEN
+
+*Things NOT present — prevents AI hallucination. Curated rules are policy; observed rules are hints.*
+
+- no floor-to-ceiling glass wall — actual window is grid-pane black aluminum `[curated]`
+- no Dubai-style luxury interior `[curated]`
+- no generic resort look `[curated]`
+- no marble flooring `[curated]`
+- no cream and beige luxury palette `[curated]`
+- no Korean hotel style `[curated]`
+- no generic international hotel design `[curated]`
+- no rooftop or outdoor scene — this is an interior room `[curated]`
+- no floor-to-ceiling glass wall `[observed]`
+- no luxury apartment style `[observed]`
+- no marble interior `[observed]`
+- no resort aesthetic `[observed]`
+- no generic international hotel `[observed]`
+- no infinity pool `[observed]`
+- no visible wardrobe `[observed]`
+- no visible desk `[observed]`
+- no chairs present `[observed]`
+- no visible chairs `[observed]`
+- no visible ceiling details `[observed]`
+- no visible floor details `[observed]`
+- no wall artwork `[observed]`
+- no ceiling visible `[observed]`
+- no floor visible `[observed]`
+- no wall color visible `[observed]`
+- no room shape visible `[observed]`
+- no bed size visible `[observed]`
+- no bed headboard visible `[observed]`
+- no desk visible `[observed]`
+- no chairs visible `[observed]`
+- no wardrobe visible `[observed]`
+- no wood tone visible `[observed]`
+- no wall artwork visible `[observed]`
+- no window view `[observed]`
+- no visible bed `[observed]`
+- no visible curtains `[observed]`
+- no interior room features `[observed]`
+- no visible wood tone `[observed]`
+- no visible curtain `[observed]`
+- no visible style category `[observed]`
+- no visible hotel tier `[observed]`
+- no visible wall artwork `[observed]`
+
+
+## EVIDENCE
+
+- **total_images**: 10
+- **invariant_count**: 9
+- **variable_count**: 9
+- **source_hashes**: 7aba2a14, cc998d85, fd31ece4, 0268d54b, 74044521… (+5 more)
+
+
+## WEAK FEATURES
+
+*Features seen in too few images to classify. Shoot more images.*
+
+*(none)*
+
+
+## FUTURE CAPTURE NOTES
+
+*(none)*
+
+
+## CURATOR NOTES
+
+- DEFINING FEATURE: Lake view through black aluminum grid window — must be present
+- 16m² floor plan — compact, not spacious — rooms are narrow-long
+- Palette reference: Visual DNA v2.7 §12 — warm neutral tones, dark wood accents
+- Hotel tier: boutique mid-range on West Lake — NOT luxury resort
+- Authenticity principle: trustworthy impression over polished perfection
+- Corresponds to room_2 from v2.3 DNA (ceiling: flat_white, lake view)
+
+
+════════════════════════════════════════════════════════════
+# VENHO_HOTEL_LAKE_VIEW_ROOM_2_DNA
+════════════════════════════════════════════════════════════
+# PROJECT SUBJECT DNA
+
+## META
+
+- **project**: venho_hotel
+- **subject**: lake_view_room_2
+- **schema_id**: venho_hotel.lake_view_room_2
+- **schema_version**: 1.0
+- **dna_version**: 1.1
+- **generated_at**: 2026-08-12T14:59:50.201179
+- **provider**: claude
+- **model**: claude-sonnet-4-6
+- **contract_version**: 1.1
+- **total_source_images**: 6
+
+
+## INVARIANT
+
+*Features that are consistent and stable across all/most images.*
+
+- **lighting_condition**: natural daylight  _(evidence: 6, coverage: 100%, consistency: 100%)_
+- **style_category**: boutique Vietnamese heritage hotel `[curated]`  _(evidence: 5, coverage: 83%, consistency: 100%)_
+- **room_shape**: rectangular room  _(evidence: 5, coverage: 83%, consistency: 100%)_
+- **ceiling**: flat white ceiling  _(evidence: 5, coverage: 83%, consistency: 80%)_
+- **bedding_color**: white bedding  _(evidence: 5, coverage: 83%, consistency: 100%)_
+- **window_frame**: matte black aluminum window frame, thin profile, grid pattern `[curated]`  _(evidence: 5, coverage: 83%, consistency: 80%)_
+- **hotel_tier**: boutique mid-range `[curated]`  _(evidence: 5, coverage: 83%, consistency: 100%)_
+- **bed_headboard**: wooden bed headboard  _(evidence: 5, coverage: 83%, consistency: 100%)_
+- **chairs**: two wooden chairs  _(evidence: 4, coverage: 67%, consistency: 100%)_
+- **curtain_color**: dark gray curtains  _(evidence: 4, coverage: 67%, consistency: 75%)_
+- **window_layout**: 2x2 grid window layout  _(evidence: 4, coverage: 67%, consistency: 75%)_
+
+
+## VARIABLE
+
+*Features that vary across images — all observed values listed.*
+
+- **wall_artwork**: `none` · `single_artwork` · `three_floral_prints`
+- **floor**: `hardwood`
+- **bed_size**: `double` · `king` · `queen`
+- **lake_view_visible**: `false` · `partial` · `true`
+- **wall_color**: `light_gray` · `white`
+- **desk**: `present_with_mirror`
+- **wood_tone**: `dark_reddish_brown` · `medium_brown`
+
+
+## ALLOWED IMPERFECTIONS
+
+*Naturally occurring imperfections that are acceptable — and preferable for authenticity.*
+
+- minor scuff marks on skirting boards acceptable `[curated]`
+- slight curtain wrinkles acceptable `[curated]`
+- small wear marks on wooden furniture edges acceptable `[curated]`
+- natural aging of wooden headboard acceptable `[curated]`
+- slight unevenness in curtain hang acceptable `[curated]`
+- slightly uneven curtain `[observed]`
+- slightly wrinkled bedding `[observed]`
+
+
+## FORBIDDEN
+
+*Things NOT present — prevents AI hallucination. Curated rules are policy; observed rules are hints.*
+
+- no floor-to-ceiling glass wall — actual window is grid-pane black aluminum `[curated]`
+- no Dubai-style luxury interior `[curated]`
+- no generic resort look `[curated]`
+- no marble flooring `[curated]`
+- no cream and beige luxury palette `[curated]`
+- no Korean hotel style `[curated]`
+- no generic international hotel design `[curated]`
+- no rooftop or outdoor scene — this is an interior room `[curated]`
+- no floor-to-ceiling glass wall `[observed]`
+- no luxury apartment style `[observed]`
+- no marble interior `[observed]`
+- no resort aesthetic `[observed]`
+- no generic international hotel `[observed]`
+- no interior room details `[observed]`
+- no visible furniture `[observed]`
+- no visible bed `[observed]`
+- no visible desk `[observed]`
+- no visible chairs `[observed]`
+- no visible wardrobe `[observed]`
+- no visible curtains `[observed]`
+- no visible wall color `[observed]`
+- no visible ceiling `[observed]`
+- no visible floor `[observed]`
+- no infinity pool `[observed]`
+- no window view `[observed]`
+- no wall artwork `[observed]`
+
+
+## EVIDENCE
+
+- **total_images**: 6
+- **invariant_count**: 11
+- **variable_count**: 7
+- **source_hashes**: bf0ea5b5, a4c78c6b, 645ca644, 9b30a375, 0fd9333b… (+1 more)
+
+
+## WEAK FEATURES
+
+*Features seen in too few images to classify. Shoot more images.*
+
+- **wardrobe** (seen in 1 image(s))
+
+
+## FUTURE CAPTURE NOTES
+
+- Need more images showing 'wardrobe' to confirm invariant status
+
+
+## CURATOR NOTES
+
+- DEFINING FEATURE: Lake view through black aluminum grid window — must be present
+- 16m² floor plan — compact, not spacious — rooms are narrow-long
+- Palette reference: Visual DNA v2.7 §12 — warm neutral tones, dark wood accents
+- Hotel tier: boutique mid-range on West Lake — NOT luxury resort
+- Authenticity principle: trustworthy impression over polished perfection
+- Corresponds to room_2 from v2.3 DNA (ceiling: flat_white, lake view)
+
+
+════════════════════════════════════════════════════════════
+# VENHO_HOTEL_LINH_AN_DNA
+════════════════════════════════════════════════════════════
+# PROJECT SUBJECT DNA
+
+## META
+
+- **project**: venho_hotel
+- **subject**: linh_an
+- **schema_id**: venho_hotel.linh_an
+- **schema_version**: 1.0
+- **dna_version**: 1.1
+- **generated_at**: 2026-07-07T16:33:19.930886
+- **provider**: claude
+- **model**: claude-sonnet-4-6
+- **contract_version**: 1.1
+- **total_source_images**: 5
+
+
+## INVARIANT
+
+*Features that are consistent and stable across all/most images.*
+
+- **earring_type**: small_pearl_drop  _(evidence: 5, coverage: 100%, consistency: 100%)_
+- **hair_length**: long_past_shoulders  _(evidence: 5, coverage: 100%, consistency: 100%)_
+- **eyebrow_position**: standard  _(evidence: 5, coverage: 100%, consistency: 100%)_
+- **jaw_line**: soft_feminine  _(evidence: 5, coverage: 100%, consistency: 100%)_
+- **eye_shape**: long almond eyes, horizontal eye emphasis, slightly narrow eye opening, thin upper eyelid, warm brown irises `[curated]`  _(evidence: 5, coverage: 100%, consistency: 100%)_
+- **eyebrow_shape**: medium_arch  _(evidence: 5, coverage: 100%, consistency: 80%)_
+- **nose_bridge**: slim_natural  _(evidence: 5, coverage: 100%, consistency: 100%)_
+- **face_shape**: soft elongated oval face, balanced facial proportions, slightly fuller cheeks `[curated]`  _(evidence: 5, coverage: 100%, consistency: 100%)_
+- **skin_tone**: fair warm ivory skin, healthy natural glow, realistic skin texture `[curated]`  _(evidence: 5, coverage: 100%, consistency: 100%)_
+- **shot_distance**: portrait_head_shoulders  _(evidence: 5, coverage: 100%, consistency: 100%)_
+- **chin_shape**: delicate_pointed  _(evidence: 5, coverage: 100%, consistency: 100%)_
+- **hair_color**: dark_chocolate_brown  _(evidence: 5, coverage: 100%, consistency: 100%)_
+- **lip_corners**: very_subtle_upward  _(evidence: 5, coverage: 100%, consistency: 100%)_
+- **hairstyle**: elegant_low_bun  _(evidence: 5, coverage: 100%, consistency: 80%)_
+- **lip_shape**: natural full lips, slightly thinner upper lip, slightly fuller lower lip, very subtle upward lip corners `[curated]`  _(evidence: 5, coverage: 100%, consistency: 100%)_
+
+
+## VARIABLE
+
+*Features that vary across images — all observed values listed.*
+
+- **eye_color**: `dark_brown` · `warm_brown`
+- **camera_angle_horizontal**: `profile_left` · `profile_right` · `soft_hero_left_10_20deg` · `straight_on`
+- **expression_type**: `living_expression_subtle_smile` · `neutral`
+- **eye_opening**: `slightly_narrow` · `standard`
+
+
+## ALLOWED IMPERFECTIONS
+
+*Naturally occurring imperfections that are acceptable — and preferable for authenticity.*
+
+- very subtle natural eye asymmetry is correct and required `[curated]`
+- slightly uneven lip corners acceptable — natural upward tendency `[curated]`
+- natural skin texture with realistic pores acceptable — no airbrushing `[curated]`
+- slight hair strand variation acceptable — natural look `[curated]`
+
+
+## FORBIDDEN
+
+*Things NOT present — prevents AI hallucination. Curated rules are policy; observed rules are hints.*
+
+- no plastic skin texture or doll face `[curated]`
+- no exaggerated makeup or heavy contouring `[curated]`
+- no generic Asian face (pan-Asian ambiguity) `[curated]`
+- no Western facial structure `[curated]`
+- no symmetrical perfect face (lacks natural asymmetry) `[curated]`
+- no large round eyes (must be long almond, horizontal emphasis) `[curated]`
+- no high-arch eyebrows (must be low-position, minimal arch) `[curated]`
+- no thick upper eyelid `[curated]`
+- no generic influencer look — must be distinctly Vietnamese `[curated]`
+- no plastic or doll-like skin texture `[observed]`
+- no exaggerated Western features `[observed]`
+- no heavy theatrical makeup `[observed]`
+- no generic K-pop idol aesthetic `[observed]`
+- no overly symmetrical artificial face `[observed]`
+- no web search or identity recognition used `[observed]`
+- No visible heavy makeup `[observed]`
+- No visible tattoos `[observed]`
+- No visible glasses `[observed]`
+
+
+## EVIDENCE
+
+- **total_images**: 5
+- **invariant_count**: 15
+- **variable_count**: 4
+- **source_hashes**: 465c6f24, f8b0bdab, 4002ba5b, 9459b863, ef7c1904
+
+
+## WEAK FEATURES
+
+*Features seen in too few images to classify. Shoot more images.*
+
+*(none)*
+
+
+## FUTURE CAPTURE NOTES
+
+*(none)*
+
+
+## CURATOR NOTES
+
+- Primary reference: B3_Hero.png (9.4–9.5 score) — 3/4 left angle
+- Master Face #001: linh-an-master-face.png — highest authority for identity
+- QC gate 07F: minimum 9.0/10 for source DNA images, 8.0–8.9 conditional, <8.0 reject
+- Identity stack: Master Face #001 > 07C Face Lock > 07B Ref Pack > 07A Visual DNA > 07E Prompt
+- Signature: small pearl drop earrings present in EVERY image
+- Official angle: 10–20° Soft Hero Left
+
+
+════════════════════════════════════════════════════════════
+# VENHO_HOTEL_LOBBY_DNA
+════════════════════════════════════════════════════════════
+# PROJECT SUBJECT DNA
+
+## META
+
+- **project**: venho_hotel
+- **subject**: lobby
+- **schema_id**: venho_hotel.lobby
+- **schema_version**: 1.0
+- **dna_version**: 1.1
+- **generated_at**: 2026-07-07T16:31:18.690623
+- **provider**: claude
+- **model**: claude-sonnet-4-6
+- **contract_version**: 1.1
+- **total_source_images**: 6
+
+
+## INVARIANT
+
+*Features that are consistent and stable across all/most images.*
+
+- **ceiling_treatment**: flat_white  _(evidence: 6, coverage: 100%, consistency: 100%)_
+- **cleanliness**: clean  _(evidence: 6, coverage: 100%, consistency: 100%)_
+- **wall_artwork**: present  _(evidence: 6, coverage: 100%, consistency: 83%)_
+- **ambient_lighting**: neutral  _(evidence: 6, coverage: 100%, consistency: 83%)_
+- **floor_material**: tile  _(evidence: 6, coverage: 100%, consistency: 83%)_
+- **floor_color**: brown with circular patterns  _(evidence: 6, coverage: 100%, consistency: 83%)_
+- **hotel_tier_impression**: mid_range  _(evidence: 6, coverage: 100%, consistency: 100%)_
+- **staircase_visible**: False  _(evidence: 6, coverage: 100%, consistency: 83%)_
+- **hotel_signage**: logo_visible  _(evidence: 5, coverage: 83%, consistency: 100%)_
+- **entrance_door**: glass_door  _(evidence: 4, coverage: 67%, consistency: 100%)_
+- **furniture_wood_tone**: dark_reddish_brown  _(evidence: 4, coverage: 67%, consistency: 100%)_
+
+
+## VARIABLE
+
+*Features that vary across images — all observed values listed.*
+
+- **wall_treatment**: `painted_smooth` · `tile`
+- **pendant_or_chandelier**: `ceiling_recessed` · `chandelier` · `none` · `pendant_lights`
+- **style_category**: `generic_hotel` · `traditional_asian`
+- **waiting_seating**: `chairs` · `none`
+- **key_cabinet**: `present`
+- **natural_light**: `high` · `low` · `moderate` · `none`
+- **scale**: `compact` · `medium`
+- **reception_desk**: `present_wood`
+- **plants**: `none` · `present_multiple` · `present_single`
+
+
+## ALLOWED IMPERFECTIONS
+
+*Naturally occurring imperfections that are acceptable — and preferable for authenticity.*
+
+- slight wear on reception desk surface acceptable `[curated]`
+- minor asymmetry in decorative arrangement acceptable `[curated]`
+- natural lighting variation across time of day acceptable `[curated]`
+- small personal items on reception counter acceptable — authentic, not sterile `[curated]`
+
+
+## FORBIDDEN
+
+*Things NOT present — prevents AI hallucination. Curated rules are policy; observed rules are hints.*
+
+- no marble floor — actual flooring is tile or stone, not polished marble `[curated]`
+- no luxury hotel chandeliers — lighting is warm and functional, not grand `[curated]`
+- no resort-scale lobby — this is a compact boutique reception, not a 5-star atrium `[curated]`
+- no modern minimalist glass-and-steel design `[curated]`
+- no generic international hotel style `[curated]`
+- no over-staged decorative props — keep it authentic Vietnamese boutique `[curated]`
+- no marble floor `[observed]`
+- no luxury hotel chandeliers `[observed]`
+- no resort-scale lobby `[observed]`
+- no Dubai-style luxury interior `[observed]`
+- no marble grand staircase `[observed]`
+
+
+## EVIDENCE
+
+- **total_images**: 6
+- **invariant_count**: 11
+- **variable_count**: 9
+- **source_hashes**: 703d1ff7, 2156a325, 66ccee66, 9c456b51, db22898a… (+1 more)
+
+
+## WEAK FEATURES
+
+*Features seen in too few images to classify. Shoot more images.*
+
+*(none)*
+
+
+## FUTURE CAPTURE NOTES
+
+*(none)*
+
+
+## CURATOR NOTES
+
+- Scale: boutique 12-room hotel — reception is compact and intimate
+- Character: warm, personal, traditional Vietnamese hospitality
+- Lighting: warm ambient — NOT cool corporate fluorescent
+- Palette reference: warm neutral tones matching room DNA
+- Authenticity principle: lived-in warmth over sterile hotel polish
+
+
+════════════════════════════════════════════════════════════
+# VENHO_HOTEL_NIKE OUTFIT_DNA
+════════════════════════════════════════════════════════════
+# PROJECT SUBJECT DNA
+
+## META
+
+- **project**: venho_hotel
+- **subject**: Nike outfit
+- **schema_id**: universal
+- **schema_version**: 1.0
+- **dna_version**: 1.0
+- **generated_at**: 2026-07-10T11:24:29.908537
+- **provider**: mock
+- **model**: mock
+- **contract_version**: 1.1
+- **total_source_images**: 5
+
+
+## INVARIANT
+
+*Features that are consistent and stable across all/most images.*
+
+- **lighting_condition**: natural_daylight  _(evidence: 5, coverage: 100%, consistency: 100%)_
+
+
+## VARIABLE
+
+*Features that vary across images — all observed values listed.*
+
+*(none)*
+
+
+## ALLOWED IMPERFECTIONS
+
+*Naturally occurring imperfections that are acceptable — and preferable for authenticity.*
+
+*(none)*
+
+
+## FORBIDDEN
+
+*Things NOT present — prevents AI hallucination. Curated rules are policy; observed rules are hints.*
+
+- no floor-to-ceiling glass wall `[observed]`
+- no marble interior `[observed]`
+
+
+## EVIDENCE
+
+- **total_images**: 5
+- **invariant_count**: 1
+- **variable_count**: 0
+- **source_hashes**: 16e6130f, f54fbffa, 4c81cd17, 82358c26, 3e71a318
+
+
+## WEAK FEATURES
+
+*Features seen in too few images to classify. Shoot more images.*
+
+*(none)*
+
+
+## FUTURE CAPTURE NOTES
+
+*(none)*
+
+
+## CURATOR NOTES
+
+*(none)*
+
+
+════════════════════════════════════════════════════════════
+# VENHO_HOTEL_OUTSIDE_DNA
+════════════════════════════════════════════════════════════
+# PROJECT SUBJECT DNA
+
+## META
+
+- **project**: venho_hotel
+- **subject**: outside
+- **schema_id**: venho_hotel.outside
+- **schema_version**: 1.0
+- **dna_version**: 1.1
+- **generated_at**: 2026-07-07T17:51:53.491623
+- **provider**: claude
+- **model**: claude-sonnet-4-6
+- **contract_version**: 1.1
+- **total_source_images**: 14
+
+
+## INVARIANT
+
+*Features that are consistent and stable across all/most images.*
+
+- **cityscape_visible**: mixed cityscape visible  _(evidence: 14, coverage: 100%, consistency: 79%)_
+- **sky_condition**: clear blue sky  _(evidence: 14, coverage: 100%, consistency: 71%)_
+- **street_trees_visible**: mature street trees visible  _(evidence: 14, coverage: 100%, consistency: 93%)_
+- **lighting_condition**: natural daylight  _(evidence: 14, coverage: 100%, consistency: 100%)_
+- **space_condition**: well maintained space  _(evidence: 13, coverage: 93%, consistency: 100%)_
+- **outdoor_furniture**: no outdoor furniture  _(evidence: 12, coverage: 86%, consistency: 100%)_
+
+
+## VARIABLE
+
+*Features that vary across images — all observed values listed.*
+
+- **lake_view_visible**: `full_panoramic` · `none` · `partial`
+- **lake_water_color**: `blue_gray` · `jade_teal`
+- **floor_level**: `ground_floor` · `upper_floor`
+- **space_type**: `balcony` · `entrance_area` · `rooftop_terrace` · `street_level_exterior`
+- **flooring_material**: `concrete` · `tile`
+- **time_of_day**: `afternoon` · `midday`
+- **plants_present**: `none` · `yes_landscaped` · `yes_potted`
+- **railing_type**: `black_iron_scroll` · `concrete_parapet` · `metal_bar` · `none`
+
+
+## ALLOWED IMPERFECTIONS
+
+*Naturally occurring imperfections that are acceptable — and preferable for authenticity.*
+
+- Hanoi haze over lake view acceptable and authentic `[curated]`
+- weathered tiles or concrete surface acceptable `[curated]`
+- visible neighboring rooftops acceptable `[curated]`
+- natural sky variation (clouds, smog) acceptable `[curated]`
+- modest outdoor furniture showing wear acceptable `[curated]`
+- Some dirt or wear on the building facade `[observed]`
+- motorbikes parked on sidewalk `[observed]`
+- none `[observed]`
+- Some trees appear to have dry branches. `[observed]`
+- slight cloud cover `[observed]`
+- Some buildings show signs of wear. `[observed]`
+- Some dirt on the street `[observed]`
+- slightly uneven pavement `[observed]`
+- slightly worn facade `[observed]`
+- slight wear on pavement `[observed]`
+- Some shadows on the pavement `[observed]`
+
+
+## FORBIDDEN
+
+*Things NOT present — prevents AI hallucination. Curated rules are policy; observed rules are hints.*
+
+- no infinity pool or resort-style pool deck — hotel has no pool `[curated]`
+- no rooftop bar with full commercial bar setup `[curated]`
+- no luxury resort terrace furniture (cabanas, daybeds) `[curated]`
+- no city high-rise skyline — West Lake area is low-rise `[curated]`
+- no generic rooftop lounge aesthetic — this is a simple urban terrace `[curated]`
+- no manicured hotel garden — space is compact and urban `[curated]`
+- no infinity pool or resort-style pool deck `[observed]`
+- no rooftop bar with full bar setup `[observed]`
+- no luxury resort terrace furniture `[observed]`
+- no city high-rise skyline in background `[observed]`
+- No visible outdoor furniture `[observed]`
+- No visible plants on the balcony `[observed]`
+- No visible flooring material `[observed]`
+- No specific outdoor furniture `[observed]`
+- No visible railing `[observed]`
+- No visible outdoor furniture or specific flooring material `[observed]`
+- No people visible `[observed]`
+- No vehicles other than motorbike `[observed]`
+- No visible lake or cityscape `[observed]`
+- No outdoor furniture `[observed]`
+
+
+## EVIDENCE
+
+- **total_images**: 14
+- **invariant_count**: 6
+- **variable_count**: 8
+- **source_hashes**: 86ef06cf, f2890509, a904a56c, d49ac532, 3d57ba88… (+9 more)
+
+
+## WEAK FEATURES
+
+*Features seen in too few images to classify. Shoot more images.*
+
+*(none)*
+
+
+## FUTURE CAPTURE NOTES
+
+*(none)*
+
+
+## CURATOR NOTES
+
+- West Lake (Hồ Tây) should be visible or partially visible from upper floors
+- Street: Nguyễn Đình Thi — tree-lined, green lamp posts, low traffic
+- Outdoor spaces are modest — not resort, not bar venue, just genuine hotel terrace
+- Authenticity principle: real Hanoi sky + real lake color over staged perfection
+- Reference: ho-tay-image-dna.md for lake color standards
+
+
+════════════════════════════════════════════════════════════
+# VENHO_HOTEL_ROOM_1_DNA
+════════════════════════════════════════════════════════════
+# PROJECT SUBJECT DNA
+
+## META
+
+- **project**: venho_hotel
+- **subject**: room_1
+- **schema_id**: venho_hotel.room_1
+- **schema_version**: 1.0
+- **dna_version**: 1.0
+- **generated_at**: 2026-06-30T19:23:26.677729
+- **provider**: claude
+- **model**: claude-sonnet-4-6
+- **contract_version**: 1.0
+- **total_source_images**: 4
+
+
+## INVARIANT
+
+*Features that are consistent and stable across all/most images.*
+
+- **wood_tone**: medium brown wood tone  _(evidence: 4, coverage: 100%, consistency: 75%)_
+- **lighting_condition**: natural daylight  _(evidence: 4, coverage: 100%, consistency: 100%)_
+- **ceiling**: decorative molding ceiling  _(evidence: 4, coverage: 100%, consistency: 75%)_
+- **hotel_tier**: mid-range hotel  _(evidence: 4, coverage: 100%, consistency: 100%)_
+- **wall_color**: light gray walls  _(evidence: 4, coverage: 100%, consistency: 75%)_
+- **wall_artwork**: no wall artwork  _(evidence: 4, coverage: 100%, consistency: 75%)_
+- **style_category**: generic hotel style  _(evidence: 4, coverage: 100%, consistency: 100%)_
+- **desk**: desk with mirror  _(evidence: 4, coverage: 100%, consistency: 75%)_
+- **room_shape**: rectangular room shape  _(evidence: 4, coverage: 100%, consistency: 100%)_
+- **bedding_color**: white bedding  _(evidence: 3, coverage: 75%, consistency: 100%)_
+- **bed_headboard**: wooden bed headboard  _(evidence: 3, coverage: 75%, consistency: 100%)_
+
+
+## VARIABLE
+
+*Features that vary across images — all observed values listed.*
+
+- **window_layout**: `single_pane`
+- **curtain_color**: `dark_gray`
+- **window_frame**: `black_aluminum`
+- **bed_size**: `double`
+- **lake_view_visible**: `false` · `true`
+- **floor**: `hardwood` · `laminate` · `tile`
+- **chairs**: `none` · `two_wooden`
+
+
+## ALLOWED IMPERFECTIONS
+
+*Naturally occurring imperfections that are acceptable — and preferable for authenticity.*
+
+*(none)*
+
+
+## FORBIDDEN
+
+*Things NOT present — prevents AI hallucination. Curated rules are policy; observed rules are hints.*
+
+- no floor-to-ceiling glass wall `[observed]`
+- no luxury apartment style `[observed]`
+- no marble interior `[observed]`
+- no resort aesthetic `[observed]`
+- no Korean hotel style `[observed]`
+- no generic international hotel `[observed]`
+- no cream and beige luxury palette `[observed]`
+- No visible windows `[observed]`
+- No visible curtains `[observed]`
+
+
+## EVIDENCE
+
+- **total_images**: 4
+- **invariant_count**: 11
+- **variable_count**: 7
+- **source_hashes**: 8846bc8a, 70442835, aa3f66ae, 4f94bec6
+
+
+## WEAK FEATURES
+
+*Features seen in too few images to classify. Shoot more images.*
+
+- **wardrobe** (seen in 1 image(s))
+
+
+## FUTURE CAPTURE NOTES
+
+- Need more images showing 'wardrobe' to confirm invariant status
+
+
+## CURATOR NOTES
+
+*(none)*
+
+
+════════════════════════════════════════════════════════════
+# VENHO_HOTEL_ROOM_2_DNA
+════════════════════════════════════════════════════════════
+# PROJECT SUBJECT DNA
+
+## META
+
+- **project**: venho_hotel
+- **subject**: room_2
+- **schema_id**: venho_hotel.room_2
+- **schema_version**: 1.0
+- **dna_version**: 1.0
+- **generated_at**: 2026-06-30T19:23:38.430414
+- **provider**: claude
+- **model**: claude-sonnet-4-6
+- **contract_version**: 1.0
+- **total_source_images**: 8
+
+
+## INVARIANT
+
+*Features that are consistent and stable across all/most images.*
+
+- **lighting_condition**: natural daylight  _(evidence: 8, coverage: 100%, consistency: 88%)_
+- **room_shape**: rectangular room  _(evidence: 7, coverage: 88%, consistency: 100%)_
+- **ceiling**: flat white ceiling  _(evidence: 7, coverage: 88%, consistency: 86%)_
+- **bedding_color**: white bedding  _(evidence: 7, coverage: 88%, consistency: 100%)_
+- **hotel_tier**: mid-range hotel  _(evidence: 7, coverage: 88%, consistency: 100%)_
+- **style_category**: generic hotel style  _(evidence: 7, coverage: 88%, consistency: 86%)_
+- **window_frame**: black aluminum window frame  _(evidence: 6, coverage: 75%, consistency: 83%)_
+- **bed_headboard**: wooden bed headboard  _(evidence: 6, coverage: 75%, consistency: 100%)_
+- **window_layout**: 2x2 grid window layout  _(evidence: 5, coverage: 62%, consistency: 100%)_
+- **chairs**: two wooden chairs  _(evidence: 5, coverage: 62%, consistency: 100%)_
+- **curtain_color**: dark gray curtains  _(evidence: 5, coverage: 62%, consistency: 80%)_
+
+
+## VARIABLE
+
+*Features that vary across images — all observed values listed.*
+
+- **wall_artwork**: `none` · `other` · `single_artwork` · `three_floral_prints`
+- **floor**: `hardwood` · `laminate`
+- **wood_tone**: `dark_reddish_brown` · `medium_brown`
+- **lake_view_visible**: `false` · `partial` · `true`
+- **bed_size**: `double` · `king` · `queen`
+- **desk**: `present_with_mirror`
+- **wall_color**: `light_gray` · `white`
+
+
+## FORBIDDEN
+
+*Things clearly NOT present — use to prevent AI hallucination.*
+
+- no floor-to-ceiling glass wall
+- no luxury apartment style
+- no marble interior
+- no resort aesthetic
+- no Korean hotel style
+- no generic international hotel
+- no cream and beige luxury palette
+
+
+## EVIDENCE
+
+- **total_images**: 8
+- **invariant_count**: 11
+- **variable_count**: 7
+- **source_hashes**: 1a87c0ae, f40724a8, bf0ea5b5, a4c78c6b, 645ca644… (+3 more)
+
+
+## WEAK FEATURES
+
+*Features seen in too few images to classify. Shoot more images.*
+
+- **wardrobe** (seen in 1 image(s))
+
+
+## FUTURE CAPTURE NOTES
+
+- Need more images showing 'wardrobe' to confirm invariant status
+
+
+════════════════════════════════════════════════════════════
+# VENHO_HOTEL_ROOM_DNA
+════════════════════════════════════════════════════════════
+# PROJECT SUBJECT DNA
+
+## META
+
+- **project**: venho_hotel
+- **subject**: room
+- **schema_id**: venho_hotel.room
+- **schema_version**: 1.0
+- **dna_version**: 1.0
+- **generated_at**: 2026-06-30T18:40:10.867069
+- **provider**: claude
+- **model**: claude-sonnet-4-6
+- **contract_version**: 1.0
+- **total_source_images**: 8
+
+
+## INVARIANT
+
+*Features that are consistent and stable across all/most images.*
+
+- **lighting_condition**: natural_daylight  _(evidence: 8, coverage: 100%, consistency: 88%)_
+- **ceiling**: flat_white  _(evidence: 7, coverage: 88%, consistency: 86%)_
+- **style_category**: boutique Vietnamese heritage hotel `[curated]`  _(evidence: 7, coverage: 88%, consistency: 86%)_
+- **hotel_tier**: mid_range  _(evidence: 7, coverage: 88%, consistency: 100%)_
+- **bedding_color**: white  _(evidence: 7, coverage: 88%, consistency: 100%)_
+- **room_shape**: rectangular  _(evidence: 7, coverage: 88%, consistency: 100%)_
+- **window_frame**: matte black aluminum window frame, thin profile, grid pattern `[curated]`  _(evidence: 6, coverage: 75%, consistency: 83%)_
+- **bed_headboard**: wooden  _(evidence: 6, coverage: 75%, consistency: 100%)_
+- **window_layout**: grid_2x2  _(evidence: 5, coverage: 62%, consistency: 100%)_
+- **chairs**: two_wooden  _(evidence: 5, coverage: 62%, consistency: 100%)_
+- **curtain_color**: dark_gray  _(evidence: 5, coverage: 62%, consistency: 80%)_
+
+
+## VARIABLE
+
+*Features that vary across images — all observed values listed.*
+
+- **desk**: `present_with_mirror`
+- **lake_view_visible**: `false` · `partial` · `true`
+- **floor**: `hardwood` · `laminate`
+- **wood_tone**: `dark_reddish_brown` · `medium_brown`
+- **bed_size**: `double` · `king` · `queen`
+- **wall_color**: `light_gray` · `white`
+- **wall_artwork**: `none` · `other` · `single_artwork` · `three_floral_prints`
+
+
+## ALLOWED IMPERFECTIONS
+
+*Naturally occurring imperfections that are acceptable — and preferable for authenticity.*
+
+- minor scuff marks on skirting boards acceptable `[curated]`
+- slight curtain wrinkles acceptable `[curated]`
+- small wear marks on wooden furniture edges acceptable `[curated]`
+- natural aging of wooden headboard acceptable `[curated]`
+
+
+## FORBIDDEN
+
+*Things NOT present — prevents AI hallucination. Curated rules are policy; observed rules are hints.*
+
+- no floor-to-ceiling glass wall `[curated]`
+- no Dubai-style luxury interior `[curated]`
+- no generic resort look `[curated]`
+- no marble flooring `[curated]`
+- no cream and beige luxury palette `[curated]`
+- no Korean hotel style `[curated]`
+- no generic international hotel design `[curated]`
+- no luxury apartment style `[observed]`
+- no marble interior `[observed]`
+- no resort aesthetic `[observed]`
+- no generic international hotel `[observed]`
+
+
+## EVIDENCE
+
+- **total_images**: 8
+- **invariant_count**: 11
+- **variable_count**: 7
+- **source_hashes**: 1a87c0ae, f40724a8, bf0ea5b5, a4c78c6b, 645ca644… (+3 more)
+
+
+## WEAK FEATURES
+
+*Features seen in too few images to classify. Shoot more images.*
+
+- **wardrobe** (seen in 1 image(s))
+
+
+## FUTURE CAPTURE NOTES
+
+- Need more images showing 'wardrobe' to confirm invariant status
+
+
+## CURATOR NOTES
+
+- Palette reference: Visual DNA v2.7 §12 — warm neutral tones, dark wood accents
+- Hotel tier: boutique mid-range on West Lake — NOT luxury resort
+- Authenticity principle: trustworthy impression over polished perfection
+
+
+════════════════════════════════════════════════════════════
+# VENHO_HOTEL_WESTLAKE_DNA
+════════════════════════════════════════════════════════════
+# PROJECT SUBJECT DNA
+
+## META
+
+- **project**: venho_hotel
+- **subject**: westlake
+- **schema_id**: venho_hotel.westlake
+- **schema_version**: 1.0
+- **dna_version**: 1.1
+- **generated_at**: 2026-07-07T16:32:29.342457
+- **provider**: claude
+- **model**: claude-sonnet-4-6
+- **contract_version**: 1.1
+- **total_source_images**: 10
+
+
+## INVARIANT
+
+*Features that are consistent and stable across all/most images.*
+
+- **water_reflection_quality**: minimal  _(evidence: 10, coverage: 100%, consistency: 70%)_
+- **water_color**: muted jade-teal #4E8FA0 — calm, reflective, not tropical blue `[curated]`  _(evidence: 10, coverage: 100%, consistency: 80%)_
+- **water_visibility_range**: far  _(evidence: 10, coverage: 100%, consistency: 100%)_
+- **sky_condition**: partly_cloudy  _(evidence: 10, coverage: 100%, consistency: 80%)_
+- **distant_cityscape**: yes `[curated]`  _(evidence: 10, coverage: 100%, consistency: 100%)_
+- **water_surface_texture**: calm  _(evidence: 10, coverage: 100%, consistency: 100%)_
+- **light_quality**: soft  _(evidence: 10, coverage: 100%, consistency: 70%)_
+- **haze_level**: none  _(evidence: 10, coverage: 100%, consistency: 80%)_
+- **lamp_post_presence**: no `[curated]`  _(evidence: 9, coverage: 90%, consistency: 78%)_
+- **tree_density**: moderate  _(evidence: 6, coverage: 60%, consistency: 100%)_
+
+
+## VARIABLE
+
+*Features that vary across images — all observed values listed.*
+
+- **human_activity**: `none` · `sparse`
+- **railing_presence**: `false` · `partial` · `true`
+- **general_scene_character**: `urban lakeside with buildings and trees` · `urban lakeside with city lights reflecting on calm water` · `urban lakeside with cyclist and trees` · `urban lakeside with distant buildings` · `urban lakeside with distant city skyline` · `urban lakeside with moderate vegetation and distant buildings` · `urban lakeside with moderate vegetation and distant cityscape` · `urban skyline with illuminated buildings reflecting on calm water`
+- **path_presence**: `false` · `true`
+- **vegetation_presence**: `false` · `true`
+- **time_of_day**: `afternoon` · `midday` · `morning` · `night`
+
+
+## ALLOWED IMPERFECTIONS
+
+*Naturally occurring imperfections that are acceptable — and preferable for authenticity.*
+
+- slight Hanoi haze or atmospheric softness acceptable — authentic weather `[curated]`
+- natural water texture variation (ripples, reflections) acceptable `[curated]`
+- modest street-level elements (motorbikes, vendors) acceptable — real life `[curated]`
+- overcast or grey sky acceptable — not all shots need golden hour `[curated]`
+- slight color variation in water between morning and afternoon acceptable `[curated]`
+- slight cloud cover `[observed]`
+- natural water color variation `[observed]`
+- some leafless trees `[observed]`
+- slight haze in the distance `[observed]`
+- clouds partially obscure sky `[observed]`
+- slightly uneven pavement `[observed]`
+- slight haze over cityscape `[observed]`
+
+
+## FORBIDDEN
+
+*Things NOT present — prevents AI hallucination. Curated rules are policy; observed rules are hints.*
+
+- no tourist postcard aesthetic — must feel like daily local life, not staged `[curated]`
+- no generic Asian city lake — must be distinctly Ho Tay / Hanoi `[curated]`
+- no artificial or manicured park look — natural, unhurried `[curated]`
+- no resort waterfront design — this is public lakeside street, not hotel grounds `[curated]`
+- no dramatic staged lighting — soft Hanoi haze and natural glow only `[curated]`
+- no saturated or oversaturated water color — must be muted jade-teal, not tropical blue `[curated]`
+- no modern glass high-rise backdrop — low-rise cityscape across the water `[curated]`
+- no tourist postcard aesthetic `[observed]`
+- no generic Asian city lake `[observed]`
+- no artificial or manicured park look `[observed]`
+- no resort waterfront design `[observed]`
+- no dramatic/staged lighting `[observed]`
+- no manicured resort waterfront `[observed]`
+
+
+## EVIDENCE
+
+- **total_images**: 10
+- **invariant_count**: 10
+- **variable_count**: 6
+- **source_hashes**: 62b02bc7, d49ac532, 3d57ba88, 04da2601, e240462f… (+5 more)
+
+
+## WEAK FEATURES
+
+*Features seen in too few images to classify. Shoot more images.*
+
+*(none)*
+
+
+## FUTURE CAPTURE NOTES
+
+*(none)*
+
+
+## CURATOR NOTES
+
+- Identity Block (MUST USE as prefix in all AI prompts):
+-   West Lake (Ho Tay), Hanoi, Vietnam. Nguyen Dinh Thi lakeside street.
+-   Muted blue-green calm lake water (jade-teal #4E8FA0), wide open lake view,
+-   low-rise cityscape across the water. Warm tropical atmosphere, soft Hanoi haze.
+-   Wide tree-lined boulevard, mature roadside trees growing close to the railing and road,
+-   natural leafy branches extending over the path, strong tree shadows on the pavement.
+-   Ivory-white metal lakeshore railing (street renovated 2026 — no longer green, no lamp posts).
+-   Authentic Vietnamese daily life. Real, unhurried, quietly beautiful.
+- Water color reference: #4E8FA0 (day) · #B8C4C8 (haze) · #C07840 (sunset)
+- 2026-07-17 correction: previous curated notes said 'green lamp posts, green metal railing' —
+-   street was renovated; current railing is ivory-white and there are no lamp posts.
+-   Kept as historical note here since this file states notes must never be silently dropped.
+- Water color reference: #4E8FA0 (day) · #B8C4C8 (haze) · #C07840 (sunset)
+- Golden Rule: show what it is like to LIVE beside West Lake today — not visit
+

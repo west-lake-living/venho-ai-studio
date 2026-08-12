@@ -1,0 +1,107 @@
+# VENHO DNA Export — FACADE (FULL)
+# Project: venho_hotel | File: VENHO_HOTEL_FACADE_DNA.md
+# Paste this block into GPT as context before generating prompts.
+# ─────────────────────────────────────────────────────────────
+
+# PROJECT SUBJECT DNA
+
+## META
+
+- **project**: venho_hotel
+- **subject**: facade
+- **schema_id**: venho_hotel.facade
+- **schema_version**: 1.0
+- **dna_version**: 1.1
+- **generated_at**: 2026-07-07T16:30:29.110098
+- **provider**: claude
+- **model**: claude-sonnet-4-6
+- **contract_version**: 1.1
+- **total_source_images**: 7
+
+
+## INVARIANT
+
+*Features that are consistent and stable across all/most images.*
+
+- **building_height**: 5_floors  _(evidence: 7, coverage: 100%, consistency: 71%)_
+- **hotel_signage**: horizontal_sign  _(evidence: 7, coverage: 100%, consistency: 100%)_
+- **sidewalk_type**: tiled_sidewalk  _(evidence: 7, coverage: 100%, consistency: 100%)_
+- **facade_condition**: well_maintained  _(evidence: 7, coverage: 100%, consistency: 100%)_
+- **facade_material**: painted_concrete  _(evidence: 7, coverage: 100%, consistency: 86%)_
+- **ground_floor_use**: hotel_reception  _(evidence: 7, coverage: 100%, consistency: 71%)_
+- **wall_paint_color**: white  _(evidence: 7, coverage: 100%, consistency: 86%)_
+- **parked_vehicles**: motorcycles  _(evidence: 7, coverage: 100%, consistency: 86%)_
+- **railing_style**: black_iron_scroll  _(evidence: 7, coverage: 100%, consistency: 100%)_
+- **window_frame_color**: black  _(evidence: 7, coverage: 100%, consistency: 100%)_
+- **balcony_present**: yes_every_floor  _(evidence: 7, coverage: 100%, consistency: 71%)_
+- **street_trees**: large_mature_trees  _(evidence: 7, coverage: 100%, consistency: 71%)_
+- **signage_text**: VEN HO HOTEL  _(evidence: 6, coverage: 86%, consistency: 83%)_
+- **entrance_door**: glass_door  _(evidence: 6, coverage: 86%, consistency: 100%)_
+
+
+## VARIABLE
+
+*Features that vary across images — all observed values listed.*
+
+- **architectural_style**: `modern_minimal` · `neoclassical` · `townhouse_vietnam`
+- **street_activity**: `moderate` · `quiet`
+- **daytime_lighting**: `bright_sunlight` · `overcast`
+- **neighboring_buildings**: `adjacent buildings with similar height` · `adjacent commercial buildings` · `adjacent similar buildings` · `commercial buildings on both sides`
+
+
+## ALLOWED IMPERFECTIONS
+
+*Naturally occurring imperfections that are acceptable — and preferable for authenticity.*
+
+- slight weathering on exterior paint acceptable — authentic urban patina `[curated]`
+- minor staining or discoloration from Hanoi climate acceptable `[curated]`
+- natural street-level clutter (motorbikes, trees) in foreground acceptable `[curated]`
+- uneven signage lighting acceptable `[curated]`
+
+
+## FORBIDDEN
+
+*Things NOT present — prevents AI hallucination. Curated rules are policy; observed rules are hints.*
+
+- no glass curtain wall facade — building uses traditional window openings `[curated]`
+- no luxury resort exterior — this is a compact urban boutique hotel `[curated]`
+- no colonial-era grand facade with pillars or ornate stonework `[curated]`
+- no modern high-rise design — building is low-rise, 4-6 floors `[curated]`
+- no generic commercial building look `[curated]`
+- no artificial night illumination scenes unless the hotel actually lights up that way `[curated]`
+- no glass curtain wall facade `[observed]`
+- no luxury resort exterior `[observed]`
+- no colonial-era grand facade `[observed]`
+- no modern high-rise design `[observed]`
+- no generic commercial building `[observed]`
+- no Dubai-style luxury entrance `[observed]`
+- no modern glass tower `[observed]`
+
+
+## EVIDENCE
+
+- **total_images**: 7
+- **invariant_count**: 14
+- **variable_count**: 4
+- **source_hashes**: 86ef06cf, f2890509, 124bc397, 387b7df1, f370caa7… (+2 more)
+
+
+## WEAK FEATURES
+
+*Features seen in too few images to classify. Shoot more images.*
+
+*(none)*
+
+
+## FUTURE CAPTURE NOTES
+
+*(none)*
+
+
+## CURATOR NOTES
+
+- Address: 181 Nguyễn Đình Thi, Tây Hồ — lakeside street, Hanoi
+- Building character: urban Vietnamese mini-hotel — NOT resort, NOT colonial villa
+- Signage: 'Ven Hồ Hotel' sign on facade — white or warm tone
+- Street context: Nguyễn Đình Thi is tree-lined, green lamp posts, light traffic
+- Authenticity principle: real Hanoi urban texture over glossy hotel render

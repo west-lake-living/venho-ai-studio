@@ -1,0 +1,114 @@
+# VENHO DNA Export — LINH_AN (FULL)
+# Project: venho_hotel | File: VENHO_HOTEL_LINH_AN_DNA.md
+# Paste this block into GPT as context before generating prompts.
+# ─────────────────────────────────────────────────────────────
+
+# PROJECT SUBJECT DNA
+
+## META
+
+- **project**: venho_hotel
+- **subject**: linh_an
+- **schema_id**: venho_hotel.linh_an
+- **schema_version**: 1.0
+- **dna_version**: 1.1
+- **generated_at**: 2026-07-07T16:33:19.930886
+- **provider**: claude
+- **model**: claude-sonnet-4-6
+- **contract_version**: 1.1
+- **total_source_images**: 5
+
+
+## INVARIANT
+
+*Features that are consistent and stable across all/most images.*
+
+- **earring_type**: small_pearl_drop  _(evidence: 5, coverage: 100%, consistency: 100%)_
+- **hair_length**: long_past_shoulders  _(evidence: 5, coverage: 100%, consistency: 100%)_
+- **eyebrow_position**: standard  _(evidence: 5, coverage: 100%, consistency: 100%)_
+- **jaw_line**: soft_feminine  _(evidence: 5, coverage: 100%, consistency: 100%)_
+- **eye_shape**: long almond eyes, horizontal eye emphasis, slightly narrow eye opening, thin upper eyelid, warm brown irises `[curated]`  _(evidence: 5, coverage: 100%, consistency: 100%)_
+- **eyebrow_shape**: medium_arch  _(evidence: 5, coverage: 100%, consistency: 80%)_
+- **nose_bridge**: slim_natural  _(evidence: 5, coverage: 100%, consistency: 100%)_
+- **face_shape**: soft elongated oval face, balanced facial proportions, slightly fuller cheeks `[curated]`  _(evidence: 5, coverage: 100%, consistency: 100%)_
+- **skin_tone**: fair warm ivory skin, healthy natural glow, realistic skin texture `[curated]`  _(evidence: 5, coverage: 100%, consistency: 100%)_
+- **shot_distance**: portrait_head_shoulders  _(evidence: 5, coverage: 100%, consistency: 100%)_
+- **chin_shape**: delicate_pointed  _(evidence: 5, coverage: 100%, consistency: 100%)_
+- **hair_color**: dark_chocolate_brown  _(evidence: 5, coverage: 100%, consistency: 100%)_
+- **lip_corners**: very_subtle_upward  _(evidence: 5, coverage: 100%, consistency: 100%)_
+- **hairstyle**: elegant_low_bun  _(evidence: 5, coverage: 100%, consistency: 80%)_
+- **lip_shape**: natural full lips, slightly thinner upper lip, slightly fuller lower lip, very subtle upward lip corners `[curated]`  _(evidence: 5, coverage: 100%, consistency: 100%)_
+
+
+## VARIABLE
+
+*Features that vary across images — all observed values listed.*
+
+- **eye_color**: `dark_brown` · `warm_brown`
+- **camera_angle_horizontal**: `profile_left` · `profile_right` · `soft_hero_left_10_20deg` · `straight_on`
+- **expression_type**: `living_expression_subtle_smile` · `neutral`
+- **eye_opening**: `slightly_narrow` · `standard`
+
+
+## ALLOWED IMPERFECTIONS
+
+*Naturally occurring imperfections that are acceptable — and preferable for authenticity.*
+
+- very subtle natural eye asymmetry is correct and required `[curated]`
+- slightly uneven lip corners acceptable — natural upward tendency `[curated]`
+- natural skin texture with realistic pores acceptable — no airbrushing `[curated]`
+- slight hair strand variation acceptable — natural look `[curated]`
+
+
+## FORBIDDEN
+
+*Things NOT present — prevents AI hallucination. Curated rules are policy; observed rules are hints.*
+
+- no plastic skin texture or doll face `[curated]`
+- no exaggerated makeup or heavy contouring `[curated]`
+- no generic Asian face (pan-Asian ambiguity) `[curated]`
+- no Western facial structure `[curated]`
+- no symmetrical perfect face (lacks natural asymmetry) `[curated]`
+- no large round eyes (must be long almond, horizontal emphasis) `[curated]`
+- no high-arch eyebrows (must be low-position, minimal arch) `[curated]`
+- no thick upper eyelid `[curated]`
+- no generic influencer look — must be distinctly Vietnamese `[curated]`
+- no plastic or doll-like skin texture `[observed]`
+- no exaggerated Western features `[observed]`
+- no heavy theatrical makeup `[observed]`
+- no generic K-pop idol aesthetic `[observed]`
+- no overly symmetrical artificial face `[observed]`
+- no web search or identity recognition used `[observed]`
+- No visible heavy makeup `[observed]`
+- No visible tattoos `[observed]`
+- No visible glasses `[observed]`
+
+
+## EVIDENCE
+
+- **total_images**: 5
+- **invariant_count**: 15
+- **variable_count**: 4
+- **source_hashes**: 465c6f24, f8b0bdab, 4002ba5b, 9459b863, ef7c1904
+
+
+## WEAK FEATURES
+
+*Features seen in too few images to classify. Shoot more images.*
+
+*(none)*
+
+
+## FUTURE CAPTURE NOTES
+
+*(none)*
+
+
+## CURATOR NOTES
+
+- Primary reference: B3_Hero.png (9.4–9.5 score) — 3/4 left angle
+- Master Face #001: linh-an-master-face.png — highest authority for identity
+- QC gate 07F: minimum 9.0/10 for source DNA images, 8.0–8.9 conditional, <8.0 reject
+- Identity stack: Master Face #001 > 07C Face Lock > 07B Ref Pack > 07A Visual DNA > 07E Prompt
+- Signature: small pearl drop earrings present in EVERY image
+- Official angle: 10–20° Soft Hero Left

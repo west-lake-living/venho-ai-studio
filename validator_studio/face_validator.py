@@ -58,7 +58,9 @@ def _expected_face_gate_ids(rubric: dict) -> set[str]:
 
 def _expected_face_score_keys(rubric: dict) -> set[str]:
     weighted = rubric.get("weighted", {})
-    return set(weighted) if weighted else {"facial_shape", "eyes", "hair", "expression", "technical_quality"}
+    return set(weighted) if weighted else {
+        "facial_shape", "eyes_and_brows", "nose", "mouth_and_chin", "technical_quality",
+    }
 
 
 def _assert_face_observation_contract(payload: Any, rubric: dict) -> None:
@@ -102,10 +104,11 @@ def _assert_face_observation_contract(payload: Any, rubric: dict) -> None:
         raise ObservationSchemaError("Face weighted_scores must use 0-100 scale, not 0-1 rubric weights")
 
 
-REFERENCE_LABELS = ["B3 Hero (primary)", "A2 Front", "C Left Profile", "D Right Profile"]
-
-
-def _build_face_observe_prompt(dna: dict, rubric: dict, reference_count: int = 0) -> str:
+def _build_face_observe_prompt(
+    dna: dict,
+    rubric: dict,
+    reference_image_paths: Optional[list[Path]] = None,
+) -> str:
     prompt_path = BASE_DIR / "validator_studio" / "prompts" / "observe_face_against_dna.md"
     base_prompt = prompt_path.read_text(encoding="utf-8")
     payload = {
@@ -119,16 +122,16 @@ def _build_face_observe_prompt(dna: dict, rubric: dict, reference_count: int = 0
         "rubric_07f": rubric,
     }
     reference_block = ""
-    if reference_count:
-        labels = REFERENCE_LABELS[:reference_count]
+    reference_image_paths = reference_image_paths or []
+    if reference_image_paths:
+        labels = [path.stem.replace("_plate", "").replace("_", " ") for path in reference_image_paths]
         labelled = ", ".join(f"image {i + 2} = {label}" for i, label in enumerate(labels))
         reference_block = (
             "\nREFERENCE IMAGES: image 1 is the generated candidate to be judged. "
-            f"The remaining images are approved reference photos of the same fictional character "
-            f"at different angles ({labelled}). "
-            "Judge identity_structure and eye_ratio by directly comparing the candidate against these "
-            "reference images, not only against the text Face DNA below. "
-            "The text Face DNA and rubric still define what to look for and how forbidden_traits is judged.\n"
+            f"The remaining images are approved reference photos ({labelled}). "
+            "Judge every identity category by direct candidate-to-reference comparison. "
+            "The reference images are authoritative whenever their visible geometry conflicts with the text Face DNA. "
+            "Do not reward resemblance to prose traits that are visibly absent from the authoritative reference.\n"
         )
     return (
         f"{base_prompt}\n"
@@ -183,7 +186,7 @@ def _observe_face(
         if not reference_path.exists():
             raise FileNotFoundError(f"Face validator reference image not found: {reference_path}")
     client = VisionClient(image_provider=provider, temperature=0.0)
-    prompt = _build_face_observe_prompt(dna, rubric, reference_count=len(reference_image_paths))
+    prompt = _build_face_observe_prompt(dna, rubric, reference_image_paths=reference_image_paths)
 
     observed: list[FaceValidationObservation] = []
     for _ in range(max(samples, 1)):

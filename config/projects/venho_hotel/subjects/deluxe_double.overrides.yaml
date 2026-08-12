@@ -12,6 +12,7 @@ forbidden:
   - "no Korean hotel style"
   - "no generic international hotel design"
   - "no lake view — this room faces away from the lake"
+  - "no real hardwood flooring — floor is wood-look imitation tile (gạch giả vân gỗ), not solid wood"
 
 allowed_imperfections:
   - "minor scuff marks on skirting boards acceptable"
@@ -35,3 +36,4 @@ notes:
   - "Hotel tier: boutique mid-range on West Lake — NOT luxury resort"
   - "Authenticity principle: trustworthy impression over polished perfection"
   - "Corresponds to room_1 from v2.3 DNA (ceiling: decorative_molding, no lake view)"
+  - "Floor: wood-look imitation tile (gạch giả vân gỗ), confirmed by Harry 2026-08-12 — v1.4 DNA's 'hardwood/laminate/tile' VARIABLE spread was lighting-color variance across photos of the same tile floor, not different physical floors"

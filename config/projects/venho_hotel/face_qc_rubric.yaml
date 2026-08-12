@@ -10,8 +10,7 @@ face_qc_rubric:
       description: No forbidden character traits are present.
   weighted:
     facial_shape: 0.30
-    eyes: 0.25
-    hair: 0.20
-    expression: 0.15
+    eyes_and_brows: 0.25
+    nose: 0.20
+    mouth_and_chin: 0.15
     technical_quality: 0.10
-

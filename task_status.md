@@ -2,6 +2,16 @@
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
 **Cập nhật:** 2026-08-12 (A2 diagnostic V4 và provider cost review closeout) · **Tests:** 854 pass · 0 API call trong test
 
+### Growth Agent — republish Wednesday bằng DNA phòng mới (2026-08-12)
+
+**Status: PARTIAL — Instagram đã đăng; Facebook bị chặn an toàn do Make receipt sai**
+
+- [x] Tích hợp DNA mới cho Lake View Room 1/2 vào room rotation và content bridge.
+- [x] Tạo lại bài Wednesday theo room DNA; Instagram receipt hợp lệ: `17926512171404301`.
+- [x] Không ghi nhận Facebook giả thành công; M07 giữ `GATEWAY_ERROR` vì Make trả placeholder/thiếu post ID thật.
+- [x] Ghi lại baseline DNA và thay đổi validator trong task memory/status.
+- [!] Make cần trả Facebook post ID thật trong Webhook Response; nếu không, lịch publish tiếp theo tiếp tục fail-closed.
+
 ### Image Generation — A2 diagnostic V4 / cost review (2026-08-12)
 
 **Status: CLOSED — Face QC đạt ngưỡng; candidate đã lưu; chưa đổi authoritative reference**

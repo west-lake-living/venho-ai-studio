@@ -2,6 +2,14 @@
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
 **Cập nhật:** 2026-08-12 (A2 diagnostic V4 closeout và provider cost review) · **Đọc bởi:** AI Engine, Claude Code sessions
 
+## Growth Agent — Wednesday room-DNA republish (2026-08-12)
+
+- Đã nạp DNA riêng cho `lake_view_room_1` và `lake_view_room_2`; M04/M05 và daily cycle ưu tiên đúng room DNA theo rotation key, không còn dùng canonical room DNA cũ.
+- Đã tạo lại batch Wednesday theo room DNA. Instagram đã nhận receipt hợp lệ `17926512171404301`, dùng ảnh `lake-view-1.jpg`; bài cũ đã được người dùng xoá trước đó.
+- Facebook không được đánh dấu đã đăng: Make trả `PUBLISHED` nhưng chỉ trả placeholder/không có post ID hợp lệ, nên M07 fail-closed thành `GATEWAY_ERROR` để tránh ghi nhận sai.
+- Các thay đổi DNA/validator và baseline ngày 2026-08-12 đang được đưa vào commit/push hiện tại.
+- Cần sửa mapping Webhook Response của Make để Facebook trả post ID thật trước lần publish kế tiếp. Một số test cũ còn tham chiếu file canonical DNA đã xoá; đây là việc cần xử lý riêng, không coi là bằng chứng publish thành công.
+
 ## Image Generation — A2 diagnostic V4 và provider cost review COMPLETE (2026-08-12)
 
 - A2-front tiếp tục là face reference authoritative; không thay thế bằng candidate.

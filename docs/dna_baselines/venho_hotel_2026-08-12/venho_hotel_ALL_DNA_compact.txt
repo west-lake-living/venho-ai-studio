@@ -1,0 +1,614 @@
+# VENHO DNA Export — ALL subjects (venho_hotel)
+# 10 DNA files | Paste this block into GPT as context.
+# ─────────────────────────────────────────────────────────────
+
+════════════════════════════════════════════════════════════
+# VENHO_HOTEL_DELUXE_DOUBLE_DNA_COMPACT
+════════════════════════════════════════════════════════════
+# DELUXE DOUBLE DNA — COMPACT
+
+_project: venho_hotel · subject: deluxe_double · v1.4_
+
+
+## INVARIANT
+
+*Always present. Never deviate.*
+
+- **wall_artwork**: none
+- **wood_tone**: dark reddish-brown solid wood furniture `[curated]`
+- **room_shape**: rectangular
+- **ceiling**: decorative molding — white painted ceiling with trim detail `[curated]`
+- **lighting_condition**: artificial warm lighting
+- **bed_headboard**: wooden headboard
+- **style_category**: boutique Vietnamese heritage hotel `[curated]`
+- **lake_view_visible**: false
+- **bed_size**: double
+- **desk**: desk with mirror
+- **bedding_color**: white bedding
+
+
+## ALLOWED IMPERFECTIONS
+
+*Naturally occurring — acceptable and preferred for authenticity.*
+
+- minor scuff marks on skirting boards acceptable
+- slight curtain wrinkles acceptable
+- small wear marks on wooden furniture edges acceptable
+- natural aging of wooden headboard acceptable
+- decorative molding ceiling may show slight paint texture variation
+- stains on ceiling
+- marks on wall
+- visible air conditioning unit
+
+
+## FORBIDDEN
+
+*Do not generate. Policy from brand DNA.*
+
+- no floor-to-ceiling glass wall — actual window is grid-pane black aluminum
+- no Dubai-style luxury interior
+- no generic resort look
+- no marble flooring
+- no cream and beige luxury palette
+- no Korean hotel style
+- no generic international hotel design
+- no lake view — this room faces away from the lake
+- no real hardwood flooring — floor is wood-look imitation tile (gạch giả vân gỗ), not solid wood
+- no floor-to-ceiling glass wall
+- no luxury apartment style
+- no marble interior
+- no resort aesthetic
+- no generic international hotel
+- no infinity pool
+- no visible lake view
+- no lake view
+- no wardrobe visible
+- no wall artwork
+- no visible bed size
+- no window view
+- no visible wardrobe
+- no visible curtains
+- no chairs present
+- no visible chairs
+- no visible desk
+
+
+════════════════════════════════════════════════════════════
+# VENHO_HOTEL_FACADE_DNA_COMPACT
+════════════════════════════════════════════════════════════
+# FACADE DNA — COMPACT
+
+_project: venho_hotel · subject: facade · v1.1_
+
+
+## INVARIANT
+
+*Always present. Never deviate.*
+
+- **building_height**: 5_floors
+- **hotel_signage**: horizontal_sign
+- **sidewalk_type**: tiled_sidewalk
+- **facade_condition**: well_maintained
+- **facade_material**: painted_concrete
+- **ground_floor_use**: hotel_reception
+- **wall_paint_color**: white
+- **parked_vehicles**: motorcycles
+- **railing_style**: black_iron_scroll
+- **window_frame_color**: black
+- **balcony_present**: yes_every_floor
+- **street_trees**: large_mature_trees
+- **signage_text**: VEN HO HOTEL
+- **entrance_door**: glass_door
+
+
+## ALLOWED IMPERFECTIONS
+
+*Naturally occurring — acceptable and preferred for authenticity.*
+
+- slight weathering on exterior paint acceptable — authentic urban patina
+- minor staining or discoloration from Hanoi climate acceptable
+- natural street-level clutter (motorbikes, trees) in foreground acceptable
+- uneven signage lighting acceptable
+
+
+## FORBIDDEN
+
+*Do not generate. Policy from brand DNA.*
+
+- no glass curtain wall facade — building uses traditional window openings
+- no luxury resort exterior — this is a compact urban boutique hotel
+- no colonial-era grand facade with pillars or ornate stonework
+- no modern high-rise design — building is low-rise, 4-6 floors
+- no generic commercial building look
+- no artificial night illumination scenes unless the hotel actually lights up that way
+- no glass curtain wall facade
+- no luxury resort exterior
+- no colonial-era grand facade
+- no modern high-rise design
+- no generic commercial building
+- no Dubai-style luxury entrance
+- no modern glass tower
+
+
+════════════════════════════════════════════════════════════
+# VENHO_HOTEL_LAKE_VIEW_ROOM_1_DNA_COMPACT
+════════════════════════════════════════════════════════════
+# LAKE VIEW ROOM 1 DNA — COMPACT
+
+_project: venho_hotel · subject: lake_view_room_1 · v1.2_
+
+
+## INVARIANT
+
+*Always present. Never deviate.*
+
+- **lighting_condition**: natural daylight
+- **style_category**: boutique Vietnamese heritage hotel `[curated]`
+- **wall_artwork**: none
+- **hotel_tier**: boutique mid-range `[curated]`
+- **window_layout**: 2x2 grid window layout
+- **bedding_color**: white
+- **window_frame**: matte black aluminum window frame, thin profile, grid pattern `[curated]`
+- **wall_color**: light gray
+- **room_shape**: rectangular
+
+
+## ALLOWED IMPERFECTIONS
+
+*Naturally occurring — acceptable and preferred for authenticity.*
+
+- minor scuff marks on skirting boards acceptable
+- slight curtain wrinkles acceptable
+- small wear marks on wooden furniture edges acceptable
+- natural aging of wooden headboard acceptable
+- slight unevenness in curtain hang acceptable
+- slightly uneven curtain
+- slightly uneven floor
+- slightly uneven bedding
+- slightly wrinkled bedding
+- slightly uneven paint on window frame
+- slightly uneven wall paint
+
+
+## FORBIDDEN
+
+*Do not generate. Policy from brand DNA.*
+
+- no floor-to-ceiling glass wall — actual window is grid-pane black aluminum
+- no Dubai-style luxury interior
+- no generic resort look
+- no marble flooring
+- no cream and beige luxury palette
+- no Korean hotel style
+- no generic international hotel design
+- no rooftop or outdoor scene — this is an interior room
+- no floor-to-ceiling glass wall
+- no luxury apartment style
+- no marble interior
+- no resort aesthetic
+- no generic international hotel
+- no infinity pool
+- no visible wardrobe
+- no visible desk
+- no chairs present
+- no visible chairs
+- no visible ceiling details
+- no visible floor details
+- no wall artwork
+- no ceiling visible
+- no floor visible
+- no wall color visible
+- no room shape visible
+- no bed size visible
+- no bed headboard visible
+- no desk visible
+- no chairs visible
+- no wardrobe visible
+- no wood tone visible
+- no wall artwork visible
+- no window view
+- no visible bed
+- no visible curtains
+- no interior room features
+- no visible wood tone
+- no visible curtain
+- no visible style category
+- no visible hotel tier
+- no visible wall artwork
+
+
+════════════════════════════════════════════════════════════
+# VENHO_HOTEL_LAKE_VIEW_ROOM_2_DNA_COMPACT
+════════════════════════════════════════════════════════════
+# LAKE VIEW ROOM 2 DNA — COMPACT
+
+_project: venho_hotel · subject: lake_view_room_2 · v1.1_
+
+
+## INVARIANT
+
+*Always present. Never deviate.*
+
+- **lighting_condition**: natural daylight
+- **style_category**: boutique Vietnamese heritage hotel `[curated]`
+- **room_shape**: rectangular room
+- **ceiling**: flat white ceiling
+- **bedding_color**: white bedding
+- **window_frame**: matte black aluminum window frame, thin profile, grid pattern `[curated]`
+- **hotel_tier**: boutique mid-range `[curated]`
+- **bed_headboard**: wooden bed headboard
+- **chairs**: two wooden chairs
+- **curtain_color**: dark gray curtains
+- **window_layout**: 2x2 grid window layout
+
+
+## ALLOWED IMPERFECTIONS
+
+*Naturally occurring — acceptable and preferred for authenticity.*
+
+- minor scuff marks on skirting boards acceptable
+- slight curtain wrinkles acceptable
+- small wear marks on wooden furniture edges acceptable
+- natural aging of wooden headboard acceptable
+- slight unevenness in curtain hang acceptable
+- slightly uneven curtain
+- slightly wrinkled bedding
+
+
+## FORBIDDEN
+
+*Do not generate. Policy from brand DNA.*
+
+- no floor-to-ceiling glass wall — actual window is grid-pane black aluminum
+- no Dubai-style luxury interior
+- no generic resort look
+- no marble flooring
+- no cream and beige luxury palette
+- no Korean hotel style
+- no generic international hotel design
+- no rooftop or outdoor scene — this is an interior room
+- no floor-to-ceiling glass wall
+- no luxury apartment style
+- no marble interior
+- no resort aesthetic
+- no generic international hotel
+- no interior room details
+- no visible furniture
+- no visible bed
+- no visible desk
+- no visible chairs
+- no visible wardrobe
+- no visible curtains
+- no visible wall color
+- no visible ceiling
+- no visible floor
+- no infinity pool
+- no window view
+- no wall artwork
+
+
+════════════════════════════════════════════════════════════
+# VENHO_HOTEL_LINH_AN_DNA_COMPACT
+════════════════════════════════════════════════════════════
+# LINH AN DNA — COMPACT
+
+_project: venho_hotel · subject: linh_an · v1.1_
+
+
+## INVARIANT
+
+*Always present. Never deviate.*
+
+- **earring_type**: small_pearl_drop
+- **hair_length**: long_past_shoulders
+- **eyebrow_position**: standard
+- **jaw_line**: soft_feminine
+- **eye_shape**: long almond eyes, horizontal eye emphasis, slightly narrow eye opening, thin upper eyelid, warm brown irises `[curated]`
+- **eyebrow_shape**: medium_arch
+- **nose_bridge**: slim_natural
+- **face_shape**: soft elongated oval face, balanced facial proportions, slightly fuller cheeks `[curated]`
+- **skin_tone**: fair warm ivory skin, healthy natural glow, realistic skin texture `[curated]`
+- **shot_distance**: portrait_head_shoulders
+- **chin_shape**: delicate_pointed
+- **hair_color**: dark_chocolate_brown
+- **lip_corners**: very_subtle_upward
+- **hairstyle**: elegant_low_bun
+- **lip_shape**: natural full lips, slightly thinner upper lip, slightly fuller lower lip, very subtle upward lip corners `[curated]`
+
+
+## ALLOWED IMPERFECTIONS
+
+*Naturally occurring — acceptable and preferred for authenticity.*
+
+- very subtle natural eye asymmetry is correct and required
+- slightly uneven lip corners acceptable — natural upward tendency
+- natural skin texture with realistic pores acceptable — no airbrushing
+- slight hair strand variation acceptable — natural look
+
+
+## FORBIDDEN
+
+*Do not generate. Policy from brand DNA.*
+
+- no plastic skin texture or doll face
+- no exaggerated makeup or heavy contouring
+- no generic Asian face (pan-Asian ambiguity)
+- no Western facial structure
+- no symmetrical perfect face (lacks natural asymmetry)
+- no large round eyes (must be long almond, horizontal emphasis)
+- no high-arch eyebrows (must be low-position, minimal arch)
+- no thick upper eyelid
+- no generic influencer look — must be distinctly Vietnamese
+- no plastic or doll-like skin texture
+- no exaggerated Western features
+- no heavy theatrical makeup
+- no generic K-pop idol aesthetic
+- no overly symmetrical artificial face
+- no web search or identity recognition used
+- No visible heavy makeup
+- No visible tattoos
+- No visible glasses
+
+
+════════════════════════════════════════════════════════════
+# VENHO_HOTEL_LOBBY_DNA_COMPACT
+════════════════════════════════════════════════════════════
+# LOBBY DNA — COMPACT
+
+_project: venho_hotel · subject: lobby · v1.1_
+
+
+## INVARIANT
+
+*Always present. Never deviate.*
+
+- **ceiling_treatment**: flat_white
+- **cleanliness**: clean
+- **wall_artwork**: present
+- **ambient_lighting**: neutral
+- **floor_material**: tile
+- **floor_color**: brown with circular patterns
+- **hotel_tier_impression**: mid_range
+- **staircase_visible**: False
+- **hotel_signage**: logo_visible
+- **entrance_door**: glass_door
+- **furniture_wood_tone**: dark_reddish_brown
+
+
+## ALLOWED IMPERFECTIONS
+
+*Naturally occurring — acceptable and preferred for authenticity.*
+
+- slight wear on reception desk surface acceptable
+- minor asymmetry in decorative arrangement acceptable
+- natural lighting variation across time of day acceptable
+- small personal items on reception counter acceptable — authentic, not sterile
+
+
+## FORBIDDEN
+
+*Do not generate. Policy from brand DNA.*
+
+- no marble floor — actual flooring is tile or stone, not polished marble
+- no luxury hotel chandeliers — lighting is warm and functional, not grand
+- no resort-scale lobby — this is a compact boutique reception, not a 5-star atrium
+- no modern minimalist glass-and-steel design
+- no generic international hotel style
+- no over-staged decorative props — keep it authentic Vietnamese boutique
+- no marble floor
+- no luxury hotel chandeliers
+- no resort-scale lobby
+- no Dubai-style luxury interior
+- no marble grand staircase
+
+
+════════════════════════════════════════════════════════════
+# VENHO_HOTEL_NIKE OUTFIT_DNA_COMPACT
+════════════════════════════════════════════════════════════
+# NIKE OUTFIT DNA — COMPACT
+
+_project: venho_hotel · subject: Nike outfit · v1.0_
+
+
+## INVARIANT
+
+*Always present. Never deviate.*
+
+- **lighting_condition**: natural_daylight
+
+
+## ALLOWED IMPERFECTIONS
+
+*Naturally occurring — acceptable and preferred for authenticity.*
+
+*(none)*
+
+
+## FORBIDDEN
+
+*Do not generate. Policy from brand DNA.*
+
+- no floor-to-ceiling glass wall
+- no marble interior
+
+
+════════════════════════════════════════════════════════════
+# VENHO_HOTEL_OUTSIDE_DNA_COMPACT
+════════════════════════════════════════════════════════════
+# OUTSIDE DNA — COMPACT
+
+_project: venho_hotel · subject: outside · v1.1_
+
+
+## INVARIANT
+
+*Always present. Never deviate.*
+
+- **cityscape_visible**: mixed cityscape visible
+- **sky_condition**: clear blue sky
+- **street_trees_visible**: mature street trees visible
+- **lighting_condition**: natural daylight
+- **space_condition**: well maintained space
+- **outdoor_furniture**: no outdoor furniture
+
+
+## ALLOWED IMPERFECTIONS
+
+*Naturally occurring — acceptable and preferred for authenticity.*
+
+- Hanoi haze over lake view acceptable and authentic
+- weathered tiles or concrete surface acceptable
+- visible neighboring rooftops acceptable
+- natural sky variation (clouds, smog) acceptable
+- modest outdoor furniture showing wear acceptable
+- Some dirt or wear on the building facade
+- motorbikes parked on sidewalk
+- none
+- Some trees appear to have dry branches.
+- slight cloud cover
+- Some buildings show signs of wear.
+- Some dirt on the street
+- slightly uneven pavement
+- slightly worn facade
+- slight wear on pavement
+- Some shadows on the pavement
+
+
+## FORBIDDEN
+
+*Do not generate. Policy from brand DNA.*
+
+- no infinity pool or resort-style pool deck — hotel has no pool
+- no rooftop bar with full commercial bar setup
+- no luxury resort terrace furniture (cabanas, daybeds)
+- no city high-rise skyline — West Lake area is low-rise
+- no generic rooftop lounge aesthetic — this is a simple urban terrace
+- no manicured hotel garden — space is compact and urban
+- no infinity pool or resort-style pool deck
+- no rooftop bar with full bar setup
+- no luxury resort terrace furniture
+- no city high-rise skyline in background
+- No visible outdoor furniture
+- No visible plants on the balcony
+- No visible flooring material
+- No specific outdoor furniture
+- No visible railing
+- No visible outdoor furniture or specific flooring material
+- No people visible
+- No vehicles other than motorbike
+- No visible lake or cityscape
+- No outdoor furniture
+
+
+════════════════════════════════════════════════════════════
+# VENHO_HOTEL_ROOM_DNA_COMPACT
+════════════════════════════════════════════════════════════
+# ROOM DNA — COMPACT
+
+_project: venho_hotel · subject: room · v1.0_
+
+
+## INVARIANT
+
+*Always present. Never deviate.*
+
+- **lighting_condition**: natural_daylight
+- **ceiling**: flat_white
+- **style_category**: boutique Vietnamese heritage hotel `[curated]`
+- **hotel_tier**: mid_range
+- **bedding_color**: white
+- **room_shape**: rectangular
+- **window_frame**: matte black aluminum window frame, thin profile, grid pattern `[curated]`
+- **bed_headboard**: wooden
+- **window_layout**: grid_2x2
+- **chairs**: two_wooden
+- **curtain_color**: dark_gray
+
+
+## ALLOWED IMPERFECTIONS
+
+*Naturally occurring — acceptable and preferred for authenticity.*
+
+- minor scuff marks on skirting boards acceptable
+- slight curtain wrinkles acceptable
+- small wear marks on wooden furniture edges acceptable
+- natural aging of wooden headboard acceptable
+
+
+## FORBIDDEN
+
+*Do not generate. Policy from brand DNA.*
+
+- no floor-to-ceiling glass wall
+- no Dubai-style luxury interior
+- no generic resort look
+- no marble flooring
+- no cream and beige luxury palette
+- no Korean hotel style
+- no generic international hotel design
+- no luxury apartment style
+- no marble interior
+- no resort aesthetic
+- no generic international hotel
+
+
+════════════════════════════════════════════════════════════
+# VENHO_HOTEL_WESTLAKE_DNA_COMPACT
+════════════════════════════════════════════════════════════
+# WESTLAKE DNA — COMPACT
+
+_project: venho_hotel · subject: westlake · v1.1_
+
+
+## INVARIANT
+
+*Always present. Never deviate.*
+
+- **water_reflection_quality**: minimal
+- **water_color**: muted jade-teal #4E8FA0 — calm, reflective, not tropical blue `[curated]`
+- **water_visibility_range**: far
+- **sky_condition**: partly_cloudy
+- **distant_cityscape**: yes `[curated]`
+- **water_surface_texture**: calm
+- **light_quality**: soft
+- **haze_level**: none
+- **lamp_post_presence**: no `[curated]`
+- **tree_density**: moderate
+
+
+## ALLOWED IMPERFECTIONS
+
+*Naturally occurring — acceptable and preferred for authenticity.*
+
+- slight Hanoi haze or atmospheric softness acceptable — authentic weather
+- natural water texture variation (ripples, reflections) acceptable
+- modest street-level elements (motorbikes, vendors) acceptable — real life
+- overcast or grey sky acceptable — not all shots need golden hour
+- slight color variation in water between morning and afternoon acceptable
+- slight cloud cover
+- natural water color variation
+- some leafless trees
+- slight haze in the distance
+- clouds partially obscure sky
+- slightly uneven pavement
+- slight haze over cityscape
+
+
+## FORBIDDEN
+
+*Do not generate. Policy from brand DNA.*
+
+- no tourist postcard aesthetic — must feel like daily local life, not staged
+- no generic Asian city lake — must be distinctly Ho Tay / Hanoi
+- no artificial or manicured park look — natural, unhurried
+- no resort waterfront design — this is public lakeside street, not hotel grounds
+- no dramatic staged lighting — soft Hanoi haze and natural glow only
+- no saturated or oversaturated water color — must be muted jade-teal, not tropical blue
+- no modern glass high-rise backdrop — low-rise cityscape across the water
+- no tourist postcard aesthetic
+- no generic Asian city lake
+- no artificial or manicured park look
+- no resort waterfront design
+- no dramatic/staged lighting
+- no manicured resort waterfront
+

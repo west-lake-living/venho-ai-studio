@@ -1,0 +1,122 @@
+# VENHO DNA Export — OUTSIDE (FULL)
+# Project: venho_hotel | File: VENHO_HOTEL_OUTSIDE_DNA.md
+# Paste this block into GPT as context before generating prompts.
+# ─────────────────────────────────────────────────────────────
+
+# PROJECT SUBJECT DNA
+
+## META
+
+- **project**: venho_hotel
+- **subject**: outside
+- **schema_id**: venho_hotel.outside
+- **schema_version**: 1.0
+- **dna_version**: 1.1
+- **generated_at**: 2026-07-07T17:51:53.491623
+- **provider**: claude
+- **model**: claude-sonnet-4-6
+- **contract_version**: 1.1
+- **total_source_images**: 14
+
+
+## INVARIANT
+
+*Features that are consistent and stable across all/most images.*
+
+- **cityscape_visible**: mixed cityscape visible  _(evidence: 14, coverage: 100%, consistency: 79%)_
+- **sky_condition**: clear blue sky  _(evidence: 14, coverage: 100%, consistency: 71%)_
+- **street_trees_visible**: mature street trees visible  _(evidence: 14, coverage: 100%, consistency: 93%)_
+- **lighting_condition**: natural daylight  _(evidence: 14, coverage: 100%, consistency: 100%)_
+- **space_condition**: well maintained space  _(evidence: 13, coverage: 93%, consistency: 100%)_
+- **outdoor_furniture**: no outdoor furniture  _(evidence: 12, coverage: 86%, consistency: 100%)_
+
+
+## VARIABLE
+
+*Features that vary across images — all observed values listed.*
+
+- **lake_view_visible**: `full_panoramic` · `none` · `partial`
+- **lake_water_color**: `blue_gray` · `jade_teal`
+- **floor_level**: `ground_floor` · `upper_floor`
+- **space_type**: `balcony` · `entrance_area` · `rooftop_terrace` · `street_level_exterior`
+- **flooring_material**: `concrete` · `tile`
+- **time_of_day**: `afternoon` · `midday`
+- **plants_present**: `none` · `yes_landscaped` · `yes_potted`
+- **railing_type**: `black_iron_scroll` · `concrete_parapet` · `metal_bar` · `none`
+
+
+## ALLOWED IMPERFECTIONS
+
+*Naturally occurring imperfections that are acceptable — and preferable for authenticity.*
+
+- Hanoi haze over lake view acceptable and authentic `[curated]`
+- weathered tiles or concrete surface acceptable `[curated]`
+- visible neighboring rooftops acceptable `[curated]`
+- natural sky variation (clouds, smog) acceptable `[curated]`
+- modest outdoor furniture showing wear acceptable `[curated]`
+- Some dirt or wear on the building facade `[observed]`
+- motorbikes parked on sidewalk `[observed]`
+- none `[observed]`
+- Some trees appear to have dry branches. `[observed]`
+- slight cloud cover `[observed]`
+- Some buildings show signs of wear. `[observed]`
+- Some dirt on the street `[observed]`
+- slightly uneven pavement `[observed]`
+- slightly worn facade `[observed]`
+- slight wear on pavement `[observed]`
+- Some shadows on the pavement `[observed]`
+
+
+## FORBIDDEN
+
+*Things NOT present — prevents AI hallucination. Curated rules are policy; observed rules are hints.*
+
+- no infinity pool or resort-style pool deck — hotel has no pool `[curated]`
+- no rooftop bar with full commercial bar setup `[curated]`
+- no luxury resort terrace furniture (cabanas, daybeds) `[curated]`
+- no city high-rise skyline — West Lake area is low-rise `[curated]`
+- no generic rooftop lounge aesthetic — this is a simple urban terrace `[curated]`
+- no manicured hotel garden — space is compact and urban `[curated]`
+- no infinity pool or resort-style pool deck `[observed]`
+- no rooftop bar with full bar setup `[observed]`
+- no luxury resort terrace furniture `[observed]`
+- no city high-rise skyline in background `[observed]`
+- No visible outdoor furniture `[observed]`
+- No visible plants on the balcony `[observed]`
+- No visible flooring material `[observed]`
+- No specific outdoor furniture `[observed]`
+- No visible railing `[observed]`
+- No visible outdoor furniture or specific flooring material `[observed]`
+- No people visible `[observed]`
+- No vehicles other than motorbike `[observed]`
+- No visible lake or cityscape `[observed]`
+- No outdoor furniture `[observed]`
+
+
+## EVIDENCE
+
+- **total_images**: 14
+- **invariant_count**: 6
+- **variable_count**: 8
+- **source_hashes**: 86ef06cf, f2890509, a904a56c, d49ac532, 3d57ba88… (+9 more)
+
+
+## WEAK FEATURES
+
+*Features seen in too few images to classify. Shoot more images.*
+
+*(none)*
+
+
+## FUTURE CAPTURE NOTES
+
+*(none)*
+
+
+## CURATOR NOTES
+
+- West Lake (Hồ Tây) should be visible or partially visible from upper floors
+- Street: Nguyễn Đình Thi — tree-lined, green lamp posts, low traffic
+- Outdoor spaces are modest — not resort, not bar venue, just genuine hotel terrace
+- Authenticity principle: real Hanoi sky + real lake color over staged perfection
+- Reference: ho-tay-image-dna.md for lake color standards

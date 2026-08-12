@@ -1,0 +1,122 @@
+# VENHO DNA Export — WESTLAKE (FULL)
+# Project: venho_hotel | File: VENHO_HOTEL_WESTLAKE_DNA.md
+# Paste this block into GPT as context before generating prompts.
+# ─────────────────────────────────────────────────────────────
+
+# PROJECT SUBJECT DNA
+
+## META
+
+- **project**: venho_hotel
+- **subject**: westlake
+- **schema_id**: venho_hotel.westlake
+- **schema_version**: 1.0
+- **dna_version**: 1.1
+- **generated_at**: 2026-07-07T16:32:29.342457
+- **provider**: claude
+- **model**: claude-sonnet-4-6
+- **contract_version**: 1.1
+- **total_source_images**: 10
+
+
+## INVARIANT
+
+*Features that are consistent and stable across all/most images.*
+
+- **water_reflection_quality**: minimal  _(evidence: 10, coverage: 100%, consistency: 70%)_
+- **water_color**: muted jade-teal #4E8FA0 — calm, reflective, not tropical blue `[curated]`  _(evidence: 10, coverage: 100%, consistency: 80%)_
+- **water_visibility_range**: far  _(evidence: 10, coverage: 100%, consistency: 100%)_
+- **sky_condition**: partly_cloudy  _(evidence: 10, coverage: 100%, consistency: 80%)_
+- **distant_cityscape**: yes `[curated]`  _(evidence: 10, coverage: 100%, consistency: 100%)_
+- **water_surface_texture**: calm  _(evidence: 10, coverage: 100%, consistency: 100%)_
+- **light_quality**: soft  _(evidence: 10, coverage: 100%, consistency: 70%)_
+- **haze_level**: none  _(evidence: 10, coverage: 100%, consistency: 80%)_
+- **lamp_post_presence**: no `[curated]`  _(evidence: 9, coverage: 90%, consistency: 78%)_
+- **tree_density**: moderate  _(evidence: 6, coverage: 60%, consistency: 100%)_
+
+
+## VARIABLE
+
+*Features that vary across images — all observed values listed.*
+
+- **human_activity**: `none` · `sparse`
+- **railing_presence**: `false` · `partial` · `true`
+- **general_scene_character**: `urban lakeside with buildings and trees` · `urban lakeside with city lights reflecting on calm water` · `urban lakeside with cyclist and trees` · `urban lakeside with distant buildings` · `urban lakeside with distant city skyline` · `urban lakeside with moderate vegetation and distant buildings` · `urban lakeside with moderate vegetation and distant cityscape` · `urban skyline with illuminated buildings reflecting on calm water`
+- **path_presence**: `false` · `true`
+- **vegetation_presence**: `false` · `true`
+- **time_of_day**: `afternoon` · `midday` · `morning` · `night`
+
+
+## ALLOWED IMPERFECTIONS
+
+*Naturally occurring imperfections that are acceptable — and preferable for authenticity.*
+
+- slight Hanoi haze or atmospheric softness acceptable — authentic weather `[curated]`
+- natural water texture variation (ripples, reflections) acceptable `[curated]`
+- modest street-level elements (motorbikes, vendors) acceptable — real life `[curated]`
+- overcast or grey sky acceptable — not all shots need golden hour `[curated]`
+- slight color variation in water between morning and afternoon acceptable `[curated]`
+- slight cloud cover `[observed]`
+- natural water color variation `[observed]`
+- some leafless trees `[observed]`
+- slight haze in the distance `[observed]`
+- clouds partially obscure sky `[observed]`
+- slightly uneven pavement `[observed]`
+- slight haze over cityscape `[observed]`
+
+
+## FORBIDDEN
+
+*Things NOT present — prevents AI hallucination. Curated rules are policy; observed rules are hints.*
+
+- no tourist postcard aesthetic — must feel like daily local life, not staged `[curated]`
+- no generic Asian city lake — must be distinctly Ho Tay / Hanoi `[curated]`
+- no artificial or manicured park look — natural, unhurried `[curated]`
+- no resort waterfront design — this is public lakeside street, not hotel grounds `[curated]`
+- no dramatic staged lighting — soft Hanoi haze and natural glow only `[curated]`
+- no saturated or oversaturated water color — must be muted jade-teal, not tropical blue `[curated]`
+- no modern glass high-rise backdrop — low-rise cityscape across the water `[curated]`
+- no tourist postcard aesthetic `[observed]`
+- no generic Asian city lake `[observed]`
+- no artificial or manicured park look `[observed]`
+- no resort waterfront design `[observed]`
+- no dramatic/staged lighting `[observed]`
+- no manicured resort waterfront `[observed]`
+
+
+## EVIDENCE
+
+- **total_images**: 10
+- **invariant_count**: 10
+- **variable_count**: 6
+- **source_hashes**: 62b02bc7, d49ac532, 3d57ba88, 04da2601, e240462f… (+5 more)
+
+
+## WEAK FEATURES
+
+*Features seen in too few images to classify. Shoot more images.*
+
+*(none)*
+
+
+## FUTURE CAPTURE NOTES
+
+*(none)*
+
+
+## CURATOR NOTES
+
+- Identity Block (MUST USE as prefix in all AI prompts):
+-   West Lake (Ho Tay), Hanoi, Vietnam. Nguyen Dinh Thi lakeside street.
+-   Muted blue-green calm lake water (jade-teal #4E8FA0), wide open lake view,
+-   low-rise cityscape across the water. Warm tropical atmosphere, soft Hanoi haze.
+-   Wide tree-lined boulevard, mature roadside trees growing close to the railing and road,
+-   natural leafy branches extending over the path, strong tree shadows on the pavement.
+-   Ivory-white metal lakeshore railing (street renovated 2026 — no longer green, no lamp posts).
+-   Authentic Vietnamese daily life. Real, unhurried, quietly beautiful.
+- Water color reference: #4E8FA0 (day) · #B8C4C8 (haze) · #C07840 (sunset)
+- 2026-07-17 correction: previous curated notes said 'green lamp posts, green metal railing' —
+-   street was renovated; current railing is ivory-white and there are no lamp posts.
+-   Kept as historical note here since this file states notes must never be silently dropped.
+- Water color reference: #4E8FA0 (day) · #B8C4C8 (haze) · #C07840 (sunset)
+- Golden Rule: show what it is like to LIVE beside West Lake today — not visit

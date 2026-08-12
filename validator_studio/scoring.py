@@ -47,9 +47,9 @@ CONTENT_CATEGORIES = {
 
 FACE_DEFAULT_CATEGORIES = {
     "facial_shape",
-    "eyes",
-    "hair",
-    "expression",
+    "eyes_and_brows",
+    "nose",
+    "mouth_and_chin",
     "technical_quality",
 }
 
