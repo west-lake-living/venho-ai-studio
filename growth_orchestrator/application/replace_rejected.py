@@ -71,26 +71,45 @@ def replace_due_rejections(
     *, project: str = "venho_hotel", data_root: Path = Path("data/projects"), limit: int = 8
 ) -> list[dict]:
     registry = PublicationRegistry(project, data_root=data_root)
+    rows = registry.load()["publications"]
     candidates = [
-        row for row in registry.load()["publications"]
+        row for row in rows
         if row.get("status") == "REJECTED"
         and not row.get("replacement_publication_id")
         and _SLOT_PATTERN.match(row.get("slot_id") or "")
         and date.fromisoformat(_SLOT_PATTERN.match(row["slot_id"]).group(1)) >= date.today()
-    ][:limit]
+    ]
+    # A historical weekly-cycle bug could leave two rejected rows for the
+    # same platform in one cadence slot.  The slot needs one replacement, not
+    # one replacement per stale row (which creates duplicate posts and burns
+    # duplicate image/text API calls).  Preserve registry order while
+    # coalescing by the actual publishing identity.
+    groups: dict[tuple[str, str], list[dict]] = {}
+    for row in candidates:
+        groups.setdefault((row["slot_id"], row["platform"]), []).append(row)
+
     publications: list[dict] = []
     failures: list[dict[str, str]] = []
-    for row in candidates:
+    for group in list(groups.values())[:limit]:
+        row = group[0]
         try:
-            publications.append(
-                replace_rejected_publication(
-                    row["publication_id"], project=project, data_root=data_root, registry=registry
-                )
+            replacement = replace_rejected_publication(
+                row["publication_id"], project=project, data_root=data_root, registry=registry
             )
+            publications.append(replacement)
+            for duplicate in group[1:]:
+                registry.update(
+                    duplicate["publication_id"],
+                    replacement_publication_id=replacement["publication_id"],
+                )
         except (KeyError, ValueError, RuntimeError) as exc:
             # One permanently bad row must not starve every later rejected
             # slot.  Keep processing and report the complete batch afterward.
-            failures.append({"publication_id": row["publication_id"], "error": str(exc)})
+            failures.append({
+                "publication_id": row["publication_id"],
+                "group_publication_ids": [item["publication_id"] for item in group],
+                "error": str(exc),
+            })
     if failures:
         raise ReplacementBatchError(publications, failures)
     return publications

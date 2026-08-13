@@ -34,12 +34,12 @@ def test_rejected_publication_gets_fresh_pending_replacement(tmp_path, monkeypat
 
 def test_replace_due_rejections_continues_after_one_candidate_fails(tmp_path, monkeypatch) -> None:
     registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
-    for publication_id in ("bad", "good"):
+    for publication_id, platform in (("bad", "facebook"), ("good", "instagram")):
         row = registry.reserve({
             "publication_id": publication_id,
             "content_package_id": f"{publication_id}-pkg",
             "idempotency_key": f"{publication_id}-idem",
-            "platform": "facebook",
+            "platform": platform,
         })
         registry.update(
             row["publication_id"],
@@ -61,8 +61,42 @@ def test_replace_due_rejections_continues_after_one_candidate_fails(tmp_path, mo
         replace_due_rejections(data_root=tmp_path)
     except ReplacementBatchError as exc:
         assert [row["publication_id"] for row in exc.publications] == ["replacement-good"]
-        assert exc.failures == [{"publication_id": "bad", "error": "validator rejected"}]
+        assert exc.failures == [{
+            "publication_id": "bad",
+            "group_publication_ids": ["bad"],
+            "error": "validator rejected",
+        }]
     else:
         raise AssertionError("expected ReplacementBatchError")
 
     assert calls == ["bad", "good"]
+
+
+def test_replace_due_rejections_creates_one_replacement_per_slot_platform(tmp_path, monkeypatch) -> None:
+    registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
+    for publication_id in ("duplicate-a", "duplicate-b"):
+        row = registry.reserve({
+            "publication_id": publication_id,
+            "content_package_id": f"{publication_id}-pkg",
+            "idempotency_key": f"{publication_id}-idem",
+            "platform": "facebook",
+        })
+        registry.update(
+            row["publication_id"],
+            status="REJECTED",
+            slot_id=f"slot-{date.today().isoformat()}-monday",
+        )
+
+    calls = []
+
+    def fake_replace(publication_id, **kwargs):
+        calls.append(publication_id)
+        return {"publication_id": "one-replacement", "status": "PENDING_APPROVAL"}
+
+    monkeypatch.setattr(replacement_module, "replace_rejected_publication", fake_replace)
+
+    result = replace_due_rejections(data_root=tmp_path)
+
+    assert calls == ["duplicate-a"]
+    assert result == [{"publication_id": "one-replacement", "status": "PENDING_APPROVAL"}]
+    assert registry.find("duplicate-b")["replacement_publication_id"] == "one-replacement"
