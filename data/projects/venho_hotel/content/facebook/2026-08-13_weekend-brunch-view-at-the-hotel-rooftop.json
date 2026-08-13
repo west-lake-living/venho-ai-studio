@@ -1,0 +1,46 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "project": "venho_hotel",
+  "content_type": "facebook_post",
+  "target_language": "vi",
+  "generated_at": "2026-08-13T11:38:28.112051+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_LOBBY_DNA.json",
+      "dna_version": "1.1",
+      "hash": "sha256:e01fc1fa26c2318ce93d3a670067bac2ccbf9dc329a141ea906e80fb108c673f"
+    }
+  ],
+  "source_prompt": {
+    "file": "data/projects/venho_hotel/prompts/content/LOBBY__facebook-weekend-brunch-view-at-the-hotel-rooftop__CONTENT_PROMPT_v1.0.json",
+    "prompt_id": "lobby__content__facebook-weekend-brunch-view-at-the-hotel-rooftop",
+    "prompt_version": "1.0"
+  },
+  "generator": {
+    "provider": "mock",
+    "model": "deterministic-social-builder",
+    "temperature": 0.6
+  },
+  "title": "Cuối tuần ở Tây Hồ bắt đầu bằng một bữa ăn muộn",
+  "hook": "Cuối tuần ở Tây Hồ thường bắt đầu muộn hơn một chút. Khoảng mười giờ, khi nắng đã lên đủ cao và mặt hồ chỉ còn lại màu xanh phẳng.",
+  "body": "Giờ đó, đường Nguyễn Đình Thi có nhịp riêng. Người đạp xe không còn vội, vài nhóm bạn ngồi lại lâu hơn với ly cà phê, có người chỉ đi bộ dọc hàng cây rồi dừng ở một quán nào đó ven đường.\n\nBữa ăn của ngày cuối tuần cũng vì thế mà lệch đi. Không hẳn là bữa sáng, cũng chưa tới bữa trưa. Một đĩa ăn no, một ly cà phê hoặc nước ép, ngồi quay mặt ra phía hồ và không nhìn đồng hồ. Ở Tây Hồ, kiểu ăn muộn này không phải trào lưu, chỉ là cách nhiều người ở đây giữ lại một buổi sáng cho riêng mình.\n\nĂn xong thì đi bộ. Vòng hồ đủ dài để bạn không phải nghĩ gì nhiều, và đủ gần để quay về khi nắng bắt đầu gắt.\n\nCửa kính của Ven Hồ Hotel mở ra một khoảng mát. Sàn gạch nâu với hoa văn tròn, quầy lễ tân gỗ nâu sẫm, mấy bức tranh treo trên tường và ánh đèn dịu vừa đủ. Một chỗ nghỉ nhỏ, gọn gàng, để buổi chiều còn lại vẫn thuộc về bạn.",
+  "cta": "Nếu bạn đang tính một cuối tuần chậm ở Hà Nội, nhắn tin cho Ven Hồ Hotel để kiểm tra phòng trống cho những ngày bạn muốn ở lại Tây Hồ.",
+  "hashtags": [
+    "#VenHoHotelHanoi",
+    "#HoTay",
+    "#WestLakeHanoi",
+    "#KhamPhaHoTay",
+    "#HaNoi"
+  ],
+  "visual_note": null,
+  "contract_refs": null,
+  "payload": {},
+  "status": "draft",
+  "validation": {
+    "required": true,
+    "status": "pending",
+    "report_file": null,
+    "notes": []
+  }
+}

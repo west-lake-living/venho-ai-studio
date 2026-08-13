@@ -1,0 +1,49 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "project": "venho_hotel",
+  "content_type": "instagram_post",
+  "target_language": "vi",
+  "generated_at": "2026-08-13T11:42:52.148032+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_LOBBY_DNA.json",
+      "dna_version": "1.1",
+      "hash": "sha256:e01fc1fa26c2318ce93d3a670067bac2ccbf9dc329a141ea906e80fb108c673f"
+    }
+  ],
+  "source_prompt": {
+    "file": "data/projects/venho_hotel/prompts/content/LOBBY__instagram-ngu-n-3-gi-i-thi-u-ch-hoa-qu-ng-b-t-i-236-ng-u-c-l-ch-hoa-l-n-v-i-m-th__CONTENT_PROMPT_v1.0.json",
+    "prompt_id": "lobby__content__instagram-ngu-n-3-gi-i-thi-u-ch-hoa-qu-ng-b-t-i-236-ng-u-c-l-ch-hoa-l-n-v-i-m-th",
+    "prompt_version": "1.0"
+  },
+  "generator": {
+    "provider": "mock",
+    "model": "deterministic-social-builder",
+    "temperature": 0.6
+  },
+  "title": "Chợ Hoa Quảng Bá — nơi Tây Hồ được đếm bằng bó hoa",
+  "hook": "Ở Tây Hồ có một khu chợ mà người ta đo mọi thứ bằng bó, chứ không phải bằng cái.",
+  "body": "Chợ Hoa Quảng Bá, 236 Đường Âu Cơ.\n\nMột trong những chợ hoa lớn của khu Tây Hồ, và cũng là nơi nhiều người tìm đến chỉ để chụp vài tấm ảnh.\n\nHoa xếp theo lối. Người bán ngồi phía sau những bó cao ngang vai. Chỗ nào cũng có màu, nên gần như không cần chọn góc.\n\nNhưng nếu chỉ đứng chụp rồi đi, bạn sẽ bỏ qua phần hay nhất: cách một bó hoa được vén lại, buộc lại, chuyển từ tay người này sang tay người khác. Đó là nhịp buôn bán rất thật của Tây Hồ, không dàn dựng cho ai.\n\nVen Hồ Hotel nằm trên Nguyễn Đình Thi, cùng phía Tây Hồ. Sảnh nhỏ, sàn gạch nâu, quầy gỗ tối màu và vài bức tranh trên tường — vừa đủ để ngồi lại một lúc sau khi đi bộ về, trước khi tính xem chiều nay đi đâu tiếp.",
+  "cta": "Nếu Hà Nội đang nằm trong lịch trình của bạn, nhắn Ven Hồ Hotel để xem còn phòng những ngày đó nhé.",
+  "hashtags": [
+    "#VenHoHotelHanoi",
+    "#ChoHoaQuangBa",
+    "#HoTay",
+    "#WestLakeHanoi",
+    "#TayHoHaNoi",
+    "#KhamPhaHoTay",
+    "#HaNoi",
+    "#HanoiTravel"
+  ],
+  "visual_note": null,
+  "contract_refs": null,
+  "payload": {},
+  "status": "draft",
+  "validation": {
+    "required": true,
+    "status": "pending",
+    "report_file": null,
+    "notes": []
+  }
+}

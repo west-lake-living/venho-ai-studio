@@ -1,4 +1,9 @@
 {
-  "lane:wednesday": 4,
-  "scenario:wednesday": 4
+  "lane:wednesday": 6,
+  "scenario:wednesday": 6,
+  "lane:monday": 2,
+  "scenario:monday": 2,
+  "lane:friday": 2,
+  "special": 2,
+  "scenario:saturday": 2
 }
