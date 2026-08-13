@@ -1041,6 +1041,20 @@ def run_daily_cycle(
                 )
             packages.append(package)
             if package["state"] != "READY_FOR_REVIEW":
+                # Validator kept rejecting the draft for MAX_TEXT_ATTEMPTS
+                # rounds -- this is a real failure to produce a publishable
+                # draft, not a provider/network error, but it was previously
+                # swallowed here with a bare `continue`: `errors` stayed
+                # empty and callers (e.g. replace_rejected_publication) could
+                # only report "Replacement generation incomplete: []", with
+                # no clue which platform or why (2026-08-13, GitHub Actions
+                # "Growth Agent Replace Rejected Content" failing opaquely).
+                errors.append(
+                    {
+                        "platform": platform,
+                        "error": f"validator verdict {package['state']} after {MAX_TEXT_ATTEMPTS} attempts",
+                    }
+                )
                 continue
 
             selected = next(c for c in package["copy_candidates"] if c["id"] == package["selected_copy_candidate_id"])
