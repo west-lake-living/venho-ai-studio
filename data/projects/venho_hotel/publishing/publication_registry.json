@@ -5369,13 +5369,13 @@
       "content_package_id": "b0d0f27c-d8d7-4264-b8a9-23dab9857143",
       "idempotency_key": "b9eeb8d4a6b6915859fbeaae6da6998d1c2229b86baf8ad2b4eed32ada7417a4",
       "platform": "facebook",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-11T13:44:54.921957+00:00",
-      "updated_at": "2026-08-11T13:44:54.926917+00:00",
+      "updated_at": "2026-08-13T03:16:44.380065+00:00",
       "content": {
         "title": "Hồ Tây buổi chiều — nơi Hà Nội thở chậm lại",
         "text": "Có những buổi chiều Hà Nội chỉ cần một mặt hồ là đủ.\n\nHồ Tây chiều nay trải rộng đến tận đường chân trời, mặt nước phẳng và tĩnh, mang sắc xanh ngọc pha lam dịu — không rực rỡ, chỉ trầm và sâu như chính thành phố này. Trời hôm nay mây thưa, nắng nhẹ, không một chút mù, nên nhìn thật xa vẫn thấy những khối nhà cao tầng in lên nền trời phía bên kia hồ.\n\nHàng cây ven hồ vừa đủ để có bóng mát, vừa đủ để lọt nắng xuống lối đi. Gió từ mặt nước thổi lên đều đều, mát và nhẹ. Vài người đạp xe chậm qua, rồi lại chỉ còn tiếng gió. Đó là nhịp sống mà Hồ Tây giữ được giữa một Hà Nội luôn tất bật: một vòng đi dạo không cần đích đến, một ly cà phê ngồi lâu hơn dự định, một buổi hẹn không ai nhìn đồng hồ.\n\nVen Hồ Hotel nằm cạnh nhịp sống ấy — một điểm dừng chân nhỏ, ấm và vừa vặn để bạn bắt đầu ngày mới bằng gió hồ, và kết thúc bằng ánh đèn thành phố phản chiếu trên mặt nước lặng.\n\nNếu bạn đang tìm một chốn nghỉ yên tĩnh bên Hồ Tây, cứ nhắn cho Ven Hồ Hotel một lời nhé — chúng tôi sẽ xem lịch phòng cùng bạn.\n\n#VenHoHotel #HoTay #KhamPhaHoTay #HaNoiBinhYen #WestLakeHanoi #ChieuHoTay #LuuTruHaNoi #WhereWestLakeMeetsElegance\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-monday-facebook-403fbe09",
@@ -5462,6 +5462,26 @@
         "claim_kill_switch_triggered": false,
         "content_brand_fit": 95,
         "content_overall_score": 91.12
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-08-13T03:16:44.377061+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-b0d0f27c-d8d7-4264-b8a9-23dab9857143",
+        "content_package_id": "b0d0f27c-d8d7-4264-b8a9-23dab9857143",
+        "copy_version_ids": [
+          "brief-monday-facebook-1d40d78c-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "f6cb778d9c236ecfff19c0a5a12708dd842ee0c56dd9d160b2d950c74731f5d2",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-monday-facebook-1d40d78c@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-08-13T03:16:44.377271+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "2d7e7047544b4f0fa546207cac286a2fe1dcddfd4352b233e608e3255b6b1fd3",
+        "checksum": "2dd564b8b6185b7f4c5a1f4d49879ce36e984caae2b8fe3e3201c1a3ae242808"
       }
     },
     {
