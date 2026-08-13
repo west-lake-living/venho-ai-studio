@@ -5113,13 +5113,13 @@
       "content_package_id": "3fe5f1ff-86d9-4a83-8947-48ef5ddaa022",
       "idempotency_key": "e686e9c0f9bf0a00e0d1e8948557c83ebec3202a52df4a68ac52540e860a3169",
       "platform": "facebook",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-10T11:37:59.854172+00:00",
-      "updated_at": "2026-08-10T12:31:31.042250+00:00",
+      "updated_at": "2026-08-13T03:15:12.834925+00:00",
       "content": {
         "title": "Một sáng cuối tuần thật chậm bên Hồ Tây",
         "text": "Sáng cuối tuần, ra Hồ Tây thôi!\n\nKhông cần lịch trình dày đặc, một buổi sáng đi bộ quanh Hồ Tây cũng đủ làm cuối tuần trở nên đáng nhớ.\n\nHãy bắt đầu khi mặt hồ còn dịu, gió nhẹ lướt qua những hàng cây và phố xá Tây Hồ vừa tỉnh giấc. Đây là lúc lý tưởng để đi chậm, ngắm người dân chạy bộ, các cô chú đạp xe, vài nhóm bạn dừng lại bên quán cà phê nhỏ ven đường. Mọi thứ rất Hà Nội: đời thường, thư thái và có chút thơ.\n\nNếu bạn thích chụp ảnh, ánh sáng buổi sáng quanh hồ luôn mềm và trong. Nếu bạn đi cùng người thân, đây là khoảng thời gian dễ trò chuyện nhất. Còn nếu bạn đang công tác tại Hà Nội, một vòng dạo bộ trước giờ làm cũng là cách cân bằng lại nhịp ngày.\n\nTừ Ven Hồ Hotel, hành trình khám phá Tây Hồ có thể bắt đầu thật tự nhiên. Sau khi trở về, bạn có thể nghỉ lại trong không gian sạch sẽ, gọn gàng, với sảnh đón có cửa kính, biển hiệu dễ nhận ra, quầy gỗ nâu trầm, ánh sáng trung tính và những chi tiết trang trí tạo cảm giác ấm áp. Một điểm dừng vừa đủ gần hồ, vừa đủ yên để cuối tuần được thảnh thơi.\n\nNếu bạn đang lên kế hoạch cho một cuối tuần gần Hồ Tây, hãy nhắn Ven Hồ Hotel hoặc kiểm tra tình trạng phòng để chọn thời điểm phù hợp nhé.\n\n#VenHoHotel #CuoiTuanOTayHo #HoTayHaNoi #WestLakeHanoi #DiBoHoTay #HaNoiCuoiTuan #StayNearWestLake\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-saturday-facebook-ecb509da",
@@ -5214,10 +5214,26 @@
         "content_brand_fit": 95,
         "content_overall_score": 90.1
       },
-      "approved_by": null,
-      "approved_at": null,
-      "approval_scope": null,
-      "approval_snapshot": null,
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-08-13T03:15:12.833549+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-3fe5f1ff-86d9-4a83-8947-48ef5ddaa022",
+        "content_package_id": "3fe5f1ff-86d9-4a83-8947-48ef5ddaa022",
+        "copy_version_ids": [
+          "brief-saturday-facebook-e62fe534-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "e14fe8437d90255728762e715c53473ac83db6b9d512ebd9d1d04cbabc2e8c0a",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-saturday-facebook-e62fe534@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-08-13T03:15:12.833672+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "aedef565b35e87db22cb61aa54e7e077dcc4465ec03e228060571a1d7f637f96",
+        "checksum": "56cabccb4d36c1eb41872ca632928246895911a68d90f7e847d94a82c9cbd973"
+      },
       "approval_revoked_reason": "Fallback image replaced to prevent duplicate publication; human re-approval required."
     },
     {
@@ -5225,13 +5241,13 @@
       "content_package_id": "12047279-5f60-44fe-9da8-e8b3b22dfcb4",
       "idempotency_key": "173e1cd138c8aebef44622120d0701de16ccad88b3b1a52ec1cb75f879e3c6e9",
       "platform": "instagram",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-10T11:38:19.842297+00:00",
-      "updated_at": "2026-08-10T12:31:31.042250+00:00",
+      "updated_at": "2026-08-13T03:15:12.834925+00:00",
       "content": {
         "title": "Một sáng cuối tuần thật chậm bên Hồ Tây",
         "text": "Sáng cuối tuần này, đi chậm một vòng Hồ Tây thôi!\n\nKhi Hà Nội vừa tỉnh giấc, Hồ Tây có một vẻ đẹp rất riêng: mặt nước còn mềm, gió nhẹ, vài người chạy bộ, vài chiếc xe đạp lướt qua, và những quán cà phê bắt đầu mở cửa. Không cần lịch trình dày đặc, chỉ một buổi sáng đi bộ ven hồ cũng đủ để bạn cảm thấy cuối tuần thật đáng giá.\n\nHãy bắt đầu bằng một vòng dạo chậm, dừng lại chụp vài khung hình có nắng sớm, rồi ghé một quán nhỏ bên đường cho ly cà phê hoặc bữa sáng kiểu Hà Nội. Trải nghiệm này hợp với khách đi nghỉ muốn nạp lại năng lượng, người đi công tác cần một khoảng thở, hoặc bất kỳ ai muốn thấy nhịp sống Tây Hồ gần gũi hơn.\n\nSau buổi sáng ngoài trời, trở về Ven Hồ Hotel là cảm giác gọn gàng và dễ chịu: lối vào cửa kính sáng, logo hiện rõ, sảnh sạch sẽ với ánh sáng trung tính, trần trắng phẳng, tranh treo tường và quầy gỗ tông nâu trầm. Nền gạch nâu có họa tiết tròn tạo cảm giác quen thuộc, ấm áp. Một điểm dừng vừa đủ tinh tế để nghỉ ngơi trước khi tiếp tục khám phá Hà Nội.\n\nNếu bạn đang lên kế hoạch ở gần Hồ Tây, hãy nhắn Ven Hồ Hotel hoặc kiểm tra phòng trống để chọn một cuối tuần thật nhẹ nhàng.\n\n#VenHoHotel #CuoiTuanOTayHo #HoTay #WestLakeHanoi #DuLichHaNoi #HanoiWeekend #TayHoLiving",
@@ -5326,10 +5342,26 @@
         "content_brand_fit": 95,
         "content_overall_score": 90.39
       },
-      "approved_by": null,
-      "approved_at": null,
-      "approval_scope": null,
-      "approval_snapshot": null,
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-08-13T03:15:12.833549+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-12047279-5f60-44fe-9da8-e8b3b22dfcb4",
+        "content_package_id": "12047279-5f60-44fe-9da8-e8b3b22dfcb4",
+        "copy_version_ids": [
+          "brief-saturday-instagram-63b94919-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "8f409fb62005a5867f689585db08ffe44ff3c8aeb1b4e789a22722646317895d",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-saturday-instagram-63b94919@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-08-13T03:15:12.833709+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "4bb597644d5a730f42c4655e58a5e77a0de8bf361c2fd26cfcc8aa508a0bf661",
+        "checksum": "5f85d5e650b5110f0c37acc3d15c54f410ca4c1af1a8f26e57d4610898f3e8b1"
+      },
       "approval_revoked_reason": "Fallback image replaced to prevent duplicate publication; human re-approval required."
     },
     {
