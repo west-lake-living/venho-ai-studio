@@ -8593,7 +8593,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 91.99
       }
     },
@@ -8712,7 +8712,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.5
       }
     },
@@ -8837,7 +8837,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 92.76
       }
     },
@@ -8963,7 +8963,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.7
       }
     },
@@ -9077,7 +9077,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.57
       }
     },
@@ -9193,7 +9193,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.55
       }
     },
@@ -9202,13 +9202,13 @@
       "content_package_id": "52ef1491-ff4e-49e9-8bf0-3e910ee68d99",
       "idempotency_key": "e2bbfe2087bd6f0e2d4dd0f388ecc80bc2779531748d53b27298ae4f80cf126e",
       "platform": "facebook",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T11:38:28.123466+00:00",
-      "updated_at": "2026-08-13T11:38:28.136174+00:00",
+      "updated_at": "2026-08-13T12:15:31.134083+00:00",
       "content": {
         "title": "Cuối tuần ở Tây Hồ bắt đầu bằng một bữa ăn muộn",
         "text": "Cuối tuần ở Tây Hồ thường bắt đầu muộn hơn một chút. Khoảng mười giờ, khi nắng đã lên đủ cao và mặt hồ chỉ còn lại màu xanh phẳng.\n\nGiờ đó, đường Nguyễn Đình Thi có nhịp riêng. Người đạp xe không còn vội, vài nhóm bạn ngồi lại lâu hơn với ly cà phê, có người chỉ đi bộ dọc hàng cây rồi dừng ở một quán nào đó ven đường.\n\nBữa ăn của ngày cuối tuần cũng vì thế mà lệch đi. Không hẳn là bữa sáng, cũng chưa tới bữa trưa. Một đĩa ăn no, một ly cà phê hoặc nước ép, ngồi quay mặt ra phía hồ và không nhìn đồng hồ. Ở Tây Hồ, kiểu ăn muộn này không phải trào lưu, chỉ là cách nhiều người ở đây giữ lại một buổi sáng cho riêng mình.\n\nĂn xong thì đi bộ. Vòng hồ đủ dài để bạn không phải nghĩ gì nhiều, và đủ gần để quay về khi nắng bắt đầu gắt.\n\nCửa kính của Ven Hồ Hotel mở ra một khoảng mát. Sàn gạch nâu với hoa văn tròn, quầy lễ tân gỗ nâu sẫm, mấy bức tranh treo trên tường và ánh đèn dịu vừa đủ. Một chỗ nghỉ nhỏ, gọn gàng, để buổi chiều còn lại vẫn thuộc về bạn.\n\nNếu bạn đang tính một cuối tuần chậm ở Hà Nội, nhắn tin cho Ven Hồ Hotel để kiểm tra phòng trống cho những ngày bạn muốn ở lại Tây Hồ.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhamPhaHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-saturday-facebook-3f838f77",
@@ -9307,8 +9307,28 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 92.45
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-08-13T12:15:31.132230+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-52ef1491-ff4e-49e9-8bf0-3e910ee68d99",
+        "content_package_id": "52ef1491-ff4e-49e9-8bf0-3e910ee68d99",
+        "copy_version_ids": [
+          "brief-saturday-facebook-4f8173bc-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "70333040bf49a8edaf5c842f677efbd3fa9aa9ce39ad1310e5f529c6fa53fbd4",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-saturday-facebook-4f8173bc@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-08-13T12:15:31.132363+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "16a77f1bd7d5ff924d10134f8abd1e2089db840061a9acd025de752306040c64",
+        "checksum": "b8a9a2e766a707cec135297284b2aeb4ab7f334437369f1ab377ead7f2fb0b62"
       }
     },
     {
@@ -9316,13 +9336,13 @@
       "content_package_id": "f08852fb-e43f-42f5-b0e9-4ed2e2376171",
       "idempotency_key": "181d6a53dd0087bbabedc7e55d88fe1a495af9c9e91d1ae04104005ba568b9bc",
       "platform": "instagram",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T11:38:55.634902+00:00",
-      "updated_at": "2026-08-13T11:38:55.647642+00:00",
+      "updated_at": "2026-08-13T12:15:31.134083+00:00",
       "content": {
         "title": "Cuối tuần ở Tây Hồ bắt đầu muộn một chút",
         "text": "Cuối tuần ở Tây Hồ hiếm khi bắt đầu đúng giờ. Và hình như chẳng ai thấy phiền.\n\nGần trưa, sảnh Ven Hồ Hotel vẫn yên. Sàn gạch nâu với những vòng hoa văn tròn, quầy lễ tân gỗ nâu đỏ sẫm, tủ chìa khóa nhỏ phía sau, một bức tranh treo trên tường. Ánh sáng trung tính, đủ dịu để người ta không vội.\n\nCửa kính mở ra là Nguyễn Đình Thi. Bên kia đường, mặt hồ rộng dần theo mỗi bước chân. Cuối tuần quanh đây là nhịp của bữa sáng muộn: một phần bánh mì trứng, ly cà phê ngồi lâu, vài người đạp xe chậm ngang qua, mấy hàng quán ven hồ mở cửa thong thả hơn ngày thường.\n\nĂn xong thì đi bộ. Không cần lịch trình, không cần đến đâu cụ thể. Cứ đi hết một đoạn ven hồ, ngồi xuống một chỗ có gió, rồi để buổi chiều tự trôi tới lúc hoàng hôn Hồ Tây đổi màu mặt nước.\n\nMột cuối tuần ở Hà Nội đôi khi chỉ cần vậy.\n\nNếu bạn đang tính một cuối tuần chậm ở Hồ Tây, nhắn cho Ven Hồ Hotel để xem phòng trống những ngày bạn định ghé nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanViewHoTay #NguyenDinhThi #CuoiTuanOTayHo #HaNoi #HanoiTravel",
@@ -9424,8 +9444,28 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.65
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-08-13T12:15:31.132230+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-f08852fb-e43f-42f5-b0e9-4ed2e2376171",
+        "content_package_id": "f08852fb-e43f-42f5-b0e9-4ed2e2376171",
+        "copy_version_ids": [
+          "brief-saturday-instagram-a09fed3c-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "a629414a7c7f8ec87829494fa02436384696ee29fbb37c76929f88da10683d8d",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-saturday-instagram-a09fed3c@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-08-13T12:15:31.132398+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "b9e00301fb27f09fc73c146c897c9c5a6ce82ba5c32d7293367888c5b5813061",
+        "checksum": "8b7558daece0246705f8c01d1fc81fe68daf3d7b3c58419e77e99cb312b34177"
       }
     },
     {
@@ -9539,7 +9579,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 92.68
       }
     },
@@ -9655,7 +9695,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 92.86
       }
     },
@@ -9779,7 +9819,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 91.63
       }
     },
@@ -9906,7 +9946,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.7
       }
     },
@@ -10021,7 +10061,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 100.0,
+        "content_brand_fit": 100,
         "content_overall_score": 92.65
       }
     },
@@ -10138,7 +10178,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.7
       }
     },
@@ -10253,7 +10293,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 91.63
       }
     },
@@ -10369,7 +10409,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.7
       }
     }
