@@ -8336,13 +8336,13 @@
       "content_package_id": "cf34cd70-b45e-46bc-a25c-5f5a42c0b35e",
       "idempotency_key": "c33845b18ffcdae6bf13303b4c4e4a76dcbe7a48b6f2eae9f917aa42894f4dc0",
       "platform": "facebook",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T11:10:02.509908+00:00",
-      "updated_at": "2026-08-13T11:10:02.534637+00:00",
+      "updated_at": "2026-08-13T11:27:10.142322+00:00",
       "content": {
         "title": "Treebee Coffee ở 171 Vệ Hồ — một buổi chiều chậm bên Hồ Tây",
         "text": "Có những con đường ở Tây Hồ mà bạn chỉ tìm ra khi đi bộ, không phải khi mở bản đồ. Vệ Hồ là một trong số đó.\n\nĐường men theo mép nước, hẹp, nhiều đoạn có cây rủ xuống. Xe cộ ít hơn, tiếng phố cũng lùi lại phía sau. Đi một lúc thì tới số 171 — Treebee Coffee, một quán cà phê nhìn ra Hồ Tây với phần thiết kế được làm khá riêng, kiểu không gian mà người ta muốn ngồi lâu hơn là ghé rồi đi.\n\nHồ Tây có cái hay là cùng một mặt nước nhưng mỗi giờ lại khác. Buổi trưa nước sáng và phẳng. Về chiều, khi nắng hạ xuống thấp, cả mặt hồ đổi màu rất nhanh — chỉ mười lăm phút là khung cảnh trước mắt đã thành một bức khác. Ngồi trong một quán hướng ra hồ vào lúc đó, bạn gần như không cần làm gì thêm.\n\nĐây cũng là kiểu buổi chiều mà chúng tôi hay gợi ý cho khách: không lịch trình, không phải chạy đâu cả. Chỉ đi bộ men hồ, tìm một chỗ ngồi, rồi quay về.\n\nVen Hồ Hotel nằm trên Nguyễn Đình Thi, cùng khu Tây Hồ, nên những chỗ như vậy đều nằm trong tầm đi bộ hoặc một cuốc xe ngắn. Về đến sảnh, sàn gạch nâu, quầy lễ tân gỗ sẫm và mấy bức tranh trên tường — đủ yên để kết lại một ngày.\n\nNếu bạn đang tính vài ngày ở Hà Nội và muốn lấy Hồ Tây làm điểm xuất phát, nhắn tin cho Ven Hồ Hotel để xem còn phòng những ngày đó nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhamPhaHoTay #CafeHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-7dcf68c0",
@@ -8457,7 +8457,29 @@
         "content_brand_fit": 95,
         "content_overall_score": 91.81
       },
-      "replaces_publication_id": "pub-wednesday-facebook-42f9e395"
+      "replaces_publication_id": "pub-wednesday-facebook-42f9e395",
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-08-13T11:27:10.140673+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-cf34cd70-b45e-46bc-a25c-5f5a42c0b35e",
+        "content_package_id": "cf34cd70-b45e-46bc-a25c-5f5a42c0b35e",
+        "copy_version_ids": [
+          "brief-wednesday-facebook-27dea906-content_studio"
+        ],
+        "asset_version_ids": [
+          "980a7a22-b9bb-4bbb-b4ff-93b88acace75"
+        ],
+        "validation_snapshot_id": "18afd114a0546c1328495fa6cbe5fecbadaece43dcf2c8a26c343d9484a8b6d1",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-wednesday-facebook-27dea906@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-08-13T11:27:10.140811+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "cded63f006ef310c2583f0f97cb841d974f9fbb6c830aff4e238e9499e9d7517",
+        "checksum": "91d30203f4cbe9a8e2688153e38c7dd3b16ee81713ab14d6ffd1a844747f612f"
+      }
     }
   ]
 }
