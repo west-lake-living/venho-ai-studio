@@ -27,6 +27,8 @@ jobs:
           python-version: "3.11"
       - run: pip install -e ".[drive]"
       - name: Generate replacement draft
+        id: generate
+        continue-on-error: true
         env:
           # Image generation and image QC remain on OpenAI.
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -42,6 +44,7 @@ jobs:
           fi
           venho-growth "${args[@]}"
       - name: Persist replacement
+        if: always()
         run: |
           git config user.name "venho-growth-bot"
           git config user.email "venho-growth-bot@users.noreply.github.com"
@@ -55,3 +58,6 @@ jobs:
           git diff --cached --quiet || git commit -m "chore: replace rejected growth content"
           git pull --rebase origin main
           git push
+      - name: Report replacement generation failure
+        if: ${{ always() && steps.generate.outcome == 'failure' }}
+        run: exit 1

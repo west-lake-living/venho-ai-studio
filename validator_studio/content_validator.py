@@ -156,12 +156,20 @@ def validate_content(
     platform: str = "facebook",
     target_language: Optional[str] = None,
     prompt_path: Optional[Path] = None,
+    content_text: Optional[str] = None,
 ) -> ValidationReport:
     config = validation_config()
     dna_path = find_dna_path(project, subject)
     dna = load_json(dna_path)
     prompt_rules = _load_prompt_rules(project)
-    text = draft_path.read_text(encoding="utf-8").strip()
+    # Growth M03 validates a structured ContentOutput artifact.  Its Markdown
+    # file also contains META, SOURCE KNOWLEDGE, validation headings and other
+    # internal audit text which is never published.  Scoring that scaffold as
+    # part of the caption inflated the word count and repeatedly pushed valid
+    # Facebook copy below the 90-point approval threshold.  Callers that own
+    # the structured fields can pass the exact publishable projection here;
+    # standalone validator/CLI callers retain the original file-based path.
+    text = (content_text if content_text is not None else draft_path.read_text(encoding="utf-8")).strip()
     prompt_ref = None
     contract_refs = None
     if prompt_path:

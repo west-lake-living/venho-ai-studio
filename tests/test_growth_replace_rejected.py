@@ -3,6 +3,7 @@ from datetime import date
 import growth_orchestrator.application.replace_rejected as replacement_module
 from growth_orchestrator.application.daily_cycle import DailyCycleResult
 from growth_orchestrator.application.replace_rejected import replace_rejected_publication
+from growth_orchestrator.application.replace_rejected import ReplacementBatchError, replace_due_rejections
 from publishing_gateway.publication_registry import PublicationRegistry
 
 
@@ -29,3 +30,39 @@ def test_rejected_publication_gets_fresh_pending_replacement(tmp_path, monkeypat
     assert replacement["status"] == "PENDING_APPROVAL"
     assert replacement["replaces_publication_id"] == "old"
     assert registry.find("old")["replacement_publication_id"] == "new"
+
+
+def test_replace_due_rejections_continues_after_one_candidate_fails(tmp_path, monkeypatch) -> None:
+    registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
+    for publication_id in ("bad", "good"):
+        row = registry.reserve({
+            "publication_id": publication_id,
+            "content_package_id": f"{publication_id}-pkg",
+            "idempotency_key": f"{publication_id}-idem",
+            "platform": "facebook",
+        })
+        registry.update(
+            row["publication_id"],
+            status="REJECTED",
+            slot_id=f"slot-{date.today().isoformat()}-monday",
+        )
+
+    calls = []
+
+    def fake_replace(publication_id, **kwargs):
+        calls.append(publication_id)
+        if publication_id == "bad":
+            raise RuntimeError("validator rejected")
+        return {"publication_id": "replacement-good", "status": "PENDING_APPROVAL"}
+
+    monkeypatch.setattr(replacement_module, "replace_rejected_publication", fake_replace)
+
+    try:
+        replace_due_rejections(data_root=tmp_path)
+    except ReplacementBatchError as exc:
+        assert [row["publication_id"] for row in exc.publications] == ["replacement-good"]
+        assert exc.failures == [{"publication_id": "bad", "error": "validator rejected"}]
+    else:
+        raise AssertionError("expected ReplacementBatchError")
+
+    assert calls == ["bad", "good"]

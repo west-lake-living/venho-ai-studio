@@ -42,3 +42,28 @@ def test_validate_package_skips_content_report_when_markdown_path_missing() -> N
     result = M03ValidatorBridge().validate_package(_brief(), _candidate(content_package_paths={}))
 
     assert result["verdict"] == "READY_FOR_REVIEW"
+
+
+def test_validate_package_scores_publishable_caption_not_markdown_scaffold(tmp_path) -> None:
+    """Internal artifact metadata must not lower an otherwise valid caption."""
+    markdown = tmp_path / "draft.md"
+    markdown.write_text("internal metadata " * 600, encoding="utf-8")
+    candidate = _candidate(
+        content_package_paths={"markdown": str(markdown)},
+        title="Một buổi chiều bên Hồ Tây",
+        hook="Hồ Tây mang lại một nhịp nghỉ khác trong hành trình khám phá Hà Nội.",
+        body=(
+            "Từ phố Nguyễn Đình Thi, mặt hồ mở ra trong ánh sáng dịu. Ven Ho Hotel là "
+            "một điểm dừng chân boutique mid-range gần nhịp sống địa phương, gọn gàng và "
+            "ấm áp. Một khoảng nghỉ vừa đủ để bắt đầu hành trình Hà Nội nhẹ nhàng, rồi trở "
+            "về sau những giờ khám phá thành phố."
+        ),
+        cta="Nhắn Ven Ho Hotel để kiểm tra phòng còn trống cho lịch của bạn.",
+        hashtags=["#VenHoHotelHanoi", "#HoTay", "#HaNoi"],
+    )
+
+    result = M03ValidatorBridge().validate_package(_brief(), candidate)
+
+    assert result["verdict"] == "READY_FOR_REVIEW"
+    content_report = next(report for report in result["reports"] if report.get("validation_type") == "content")
+    assert content_report["overall_score"] >= 90

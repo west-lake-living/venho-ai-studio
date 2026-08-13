@@ -8,6 +8,18 @@ from validator_studio.content_validator import validate_content
 from validator_studio.schemas.validation_base import Recommendation
 
 
+def _publishable_text(copy_candidate: dict) -> str | None:
+    parts = [
+        str(copy_candidate.get("title") or "").strip(),
+        str(copy_candidate.get("hook") or "").strip(),
+        str(copy_candidate.get("body") or "").strip(),
+        str(copy_candidate.get("cta") or "").strip(),
+        " ".join(str(tag) for tag in copy_candidate.get("hashtags", [])),
+    ]
+    text = "\n\n".join(part for part in parts if part)
+    return text or None
+
+
 class M03ValidatorBridge:
     """Claim + alignment + scored content gate for a generated copy candidate.
 
@@ -38,6 +50,10 @@ class M03ValidatorBridge:
                     Path(markdown_path),
                     platform=copy_candidate.get("platform", "facebook"),
                     target_language=copy_candidate.get("language"),
+                    # Validate only what PublishingGateway will actually send.
+                    # The Markdown path is a complete internal audit artifact,
+                    # not the social caption itself.
+                    content_text=_publishable_text(copy_candidate),
                 )
             except Exception:  # noqa: BLE001 - Part 2.1 invariant #8: validator crash/malformed input must fail-closed to UNVALIDATED, never silently pass as APPROVED
                 content_report_failed = True

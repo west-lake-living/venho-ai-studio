@@ -12,6 +12,18 @@ from shared.jobs.slot_store import SlotStore
 _SLOT_PATTERN = re.compile(r"^slot-(\d{4}-\d{2}-\d{2})-([a-z]+)$")
 
 
+class ReplacementBatchError(RuntimeError):
+    """Some replacements failed after the remaining candidates were tried."""
+
+    def __init__(self, publications: list[dict], failures: list[dict[str, str]]) -> None:
+        self.publications = publications
+        self.failures = failures
+        super().__init__(
+            f"Replacement batch incomplete: {len(publications)} succeeded, "
+            f"{len(failures)} failed: {failures}"
+        )
+
+
 def replace_rejected_publication(
     publication_id: str,
     *,
@@ -66,4 +78,19 @@ def replace_due_rejections(
         and _SLOT_PATTERN.match(row.get("slot_id") or "")
         and date.fromisoformat(_SLOT_PATTERN.match(row["slot_id"]).group(1)) >= date.today()
     ][:limit]
-    return [replace_rejected_publication(row["publication_id"], project=project, data_root=data_root, registry=registry) for row in candidates]
+    publications: list[dict] = []
+    failures: list[dict[str, str]] = []
+    for row in candidates:
+        try:
+            publications.append(
+                replace_rejected_publication(
+                    row["publication_id"], project=project, data_root=data_root, registry=registry
+                )
+            )
+        except (KeyError, ValueError, RuntimeError) as exc:
+            # One permanently bad row must not starve every later rejected
+            # slot.  Keep processing and report the complete batch afterward.
+            failures.append({"publication_id": row["publication_id"], "error": str(exc)})
+    if failures:
+        raise ReplacementBatchError(publications, failures)
+    return publications
