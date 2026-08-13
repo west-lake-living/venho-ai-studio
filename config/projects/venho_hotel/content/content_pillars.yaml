@@ -1,3 +1,93 @@
+# v2 (2026-08-13, Harry's diversity request): topics are keyed by cadence
+# DAY, not by a flat pillar list. The old `pillars`/`special_topics` shape
+# collapsed all 4 weekly posts onto the same 5 near-synonymous topics
+# ("morning at West Lake" / "lake view morning" / ...) rotated through a
+# single modulo cursor -- every post read the same. This shape gives each
+# cadence day (config/projects/venho_hotel/growth/cadence_policy.yaml) its
+# own topic pool, its own scenario pool (see scenario_registry.yaml), and
+# its own prompt_rules key (content_studio/generators/social_prompts.py's
+# select_system_prompt branches on this). growth_orchestrator.application.
+# topic_selector.select_topic() reads `lanes.<day>` and adds cooldown +
+# least-recently-used selection on top -- this file only supplies candidates,
+# it never decides which one runs today.
+#
+# `pillars`/`special_topics` (the pre-2026-08-13 shape) are kept below as a
+# deprecated fallback so older tests/tools that still read them directly
+# keep working; daily_cycle._pick_topic() prefers `lanes` when present.
+version: 2
+
+lanes:
+  monday:
+    id: west_lake_life
+    name: Ho Tay & nhip song Ha Noi dau tuan
+    prompt_rules: west_lake_life
+    scenario_pool: [venho_west_lake_landscape, venho_nguyen_dinh_thi_street, venho_rooftop_sunrise]
+    research_domains: []
+    topics:
+      - suong som tren mat ho, truoc khi Ha Noi thuc giac
+      - nguoi Ha Noi tap the duc quanh Ho Tay luc 6 gio sang
+      - tieng chuong chua vong qua mat nuoc dau tuan
+      - xe dap cha rau cu di doc duong Nguyen Dinh Thi
+      - mau nuoc Ho Tay thay doi theo tung gio trong ngay
+      - goc pho quen thuoc ma nguoi Ha Noi di qua moi ngay khong chan
+      - nhung nguoi cau ca ven ho luc binh minh
+      - mot vong xe quanh ho de bat dau tuan moi
+      - Ha Noi thang nay: khong khi, anh sang, nhip song
+      - hang cay co thu tren duong Nguyen Dinh Thi doi mua
+
+  wednesday:
+    id: local_discovery
+    name: Diem den & su kien quanh Ho Tay
+    prompt_rules: local_discovery
+    scenario_pool: [venho_nguyen_dinh_thi_street, venho_west_lake_landscape, venho_rooftop_shade]
+    research_domains: [local_events, local_intel]
+    topics:
+      - quan ca phe view ho dang duoc nhac den nhieu
+      - cho hoa Quang Ba luc tinh mo
+      - mot ngoi chua co canh Ho Tay dang ghe tham
+      - trien lam / su kien nghe thuat dang dien ra o Ha Noi
+      - quan an gan Ho Tay ma khach o Ven Ho Hotel hay hoi
+      - mot buoi chieu la ca phe, sach, va Ho Tay
+      - dieu moi me quanh khu Tay Ho thang nay
+      - goc check-in dang duoc nhieu nguoi tim den gan day
+
+  friday:
+    id: hotel_experience
+    name: Khong gian boutique Ven Ho Hotel
+    prompt_rules: default
+    scenario_pool: [venho_lake_view_room_sunrise, venho_lobby_cozy, venho_rooftop_sunset, venho_rooftop_shade]
+    research_domains: []
+    topics:
+      - tam nhin tu cua so phong luc 6 gio sang
+      - goc doc sach o lobby vao ngay mua
+      - check-in 13h va viec dau tien nen lam
+      - hoang hon tren rooftop cuoi tuan
+      - mot dem yen tinh trong phong view ho
+      - chi tiet nho trong phong khien khach nho lau
+      - khong gian sanh don khach vao buoi chieu
+      - goc ngoi tren rooftop tranh nang gay gat
+      - dich vu nghi duong cuoi tuan tai Ven Ho Hotel
+      - phong don gian nhung du day
+
+  saturday:
+    id: local_guide_trend
+    name: Cam nang dia phuong & hot trend Ha Noi
+    prompt_rules: weekend_events
+    scenario_pool: [venho_rooftop_sunrise, venho_rooftop_sunset, venho_west_lake_landscape, venho_nguyen_dinh_thi_street]
+    research_domains: []
+    special_topics:
+      - id: weekend_feature
+        name: Cuoi tuan o Tay Ho
+        dna_subject: outside
+        topics:
+          - a quiet weekend morning walk around West Lake
+          - weekend brunch view at the hotel rooftop
+          - slow weekend at Ven Ho Hotel
+
+# --- Deprecated fallback shape (pre-2026-08-13) --------------------------
+# Kept only so any older direct reader of `pillars`/`special_topics` (not
+# `lanes`) does not break outright. Not maintained going forward -- edit
+# `lanes` above instead.
 pillars:
   - id: west_lake_discovery
     name: Kham pha Ho Tay
@@ -13,16 +103,6 @@ pillars:
       - lake view morning
       - simple hotel comfort
 
-# Saturday special lane (v3.1 cadence_policy.yaml "special" slot -- Harry's
-# T7 addition). daily_cycle._pick_topic() runs every group through
-# growth_orchestrator.application.special_lane.select_special_lane_candidate()
-# (real priority fallback: seasonal_nature > cultural_event > lifestyle_trend
-# > feature_story). No live trend/event feed exists yet, so every group below
-# defaults to type: feature_story (loai 4, the mandatory fallback) -- this is
-# the honest current state, not a shortcut: when a real seasonal_nature/
-# cultural_event/lifestyle_trend source is wired in, add `type: ...` (and
-# `verified_by_human: true` for cultural_event) to a group and the existing
-# priority logic will prefer it automatically.
 special_topics:
   - id: weekend_feature
     name: Cuoi tuan o Tay Ho
@@ -31,4 +111,3 @@ special_topics:
       - a quiet weekend morning walk around West Lake
       - weekend brunch view at the hotel rooftop
       - slow weekend at Ven Ho Hotel
-

@@ -37,7 +37,18 @@ def _tmp_data_root(tmp_path: Path) -> Path:
     root = tmp_path / "data" / "projects"
     knowledge_dir = root / "venho_hotel" / "knowledge"
     knowledge_dir.mkdir(parents=True)
-    for name in ["VENHO_HOTEL_WESTLAKE_DNA.json", "VENHO_HOTEL_LAKE_VIEW_ROOM_DNA.json", "VENHO_HOTEL_OUTSIDE_DNA.json"]:
+    # VENHO_HOTEL_LAKE_VIEW_ROOM_DNA.json (no suffix) no longer exists on disk
+    # -- it was split into _1/_2 variants; M05ContentBridge._dna_source_ref
+    # globs VENHO_HOTEL_LAKE_VIEW_ROOM_[12]_DNA.json for dna_subject
+    # "lake_view_room". LOBBY is needed too: the Friday hotel_experience lane
+    # (2026-08-13) can pick venho_lobby_cozy, whose dna_subject is "lobby".
+    for name in [
+        "VENHO_HOTEL_WESTLAKE_DNA.json",
+        "VENHO_HOTEL_LAKE_VIEW_ROOM_1_DNA.json",
+        "VENHO_HOTEL_LAKE_VIEW_ROOM_2_DNA.json",
+        "VENHO_HOTEL_OUTSIDE_DNA.json",
+        "VENHO_HOTEL_LOBBY_DNA.json",
+    ]:
         copyfile(Path("data/projects/venho_hotel/knowledge") / name, knowledge_dir / name)
     return root
 
@@ -421,7 +432,7 @@ def test_run_daily_cycle_falls_back_to_hotel_photo_when_no_image_generated(tmp_p
 
     content = result.publications[0]["content"]
     assert content["image_public_url"] == fallback_image_url(
-        "lake_view_room", rotation_key="monday:Morning at West Lake"
+        result.topic["dna_subject"], rotation_key=f"monday:{result.topic['topic']}"
     )
     assert content["image_is_fallback"] is True
 
@@ -526,3 +537,146 @@ def test_run_daily_cycle_monday_reaches_generator_with_daily_lane(tmp_path: Path
     assert seen_requests[0].lane == "daily"
     assert seen_requests[0].verified_events == []
     assert seen_requests[0].dna_subject == "westlake"
+
+
+# --- 2026-08-13 diversity fix -----------------------------------------------
+
+
+def test_run_daily_cycle_four_cadence_days_produce_four_different_pillars(tmp_path: Path) -> None:
+    """Regression for Harry's original complaint: content_pillars.yaml's old
+    single flat pool meant every one of the 4 weekly posts drew from
+    virtually the same 5 near-synonymous topics. Each cadence day now has
+    its own lane (content_pillars.yaml's `lanes.<day>`) -- confirm a single
+    week's 4 posts actually differ from each other."""
+    data_root = _tmp_data_root(tmp_path)
+    pillars = {}
+    for day in ("monday", "wednesday", "friday", "saturday"):
+        result = run_daily_cycle(
+            day, platforms=["facebook"], data_root=data_root, generate_image=False,
+            content_bridge=_mock_content_bridge(data_root), validator_bridge=_AlwaysApproveValidatorBridge(),
+        )
+        pillars[day] = result.topic["pillar"]
+
+    assert len(set(pillars.values())) == 4, pillars
+
+
+def test_wednesday_local_discovery_uses_approved_facts_when_available(tmp_path: Path) -> None:
+    data_root = _tmp_data_root(tmp_path)
+    facts_path = data_root / "venho_hotel" / "research" / "proposed_facts.json"
+    facts_path.parent.mkdir(parents=True, exist_ok=True)
+    facts_path.write_text(
+        json.dumps(
+            [
+                {
+                    "id": "fact-cafe-a",
+                    "fact_key": "cafe.santorini_vibes",
+                    "value": "Santorini Vibes",
+                    "domain": "local_intel",
+                    "status": "approved",
+                    "rationale": "Santorini Vibes, quán cà phê view hồ đẹp.",
+                }
+            ],
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+
+    result = run_daily_cycle(
+        "wednesday", platforms=["facebook"], data_root=data_root, generate_image=False,
+        content_bridge=_mock_content_bridge(data_root), validator_bridge=_AlwaysApproveValidatorBridge(),
+    )
+
+    assert result.topic["research_backed"] is True
+    assert "Santorini Vibes" in result.topic["topic"]
+
+
+def test_wednesday_falls_back_to_curated_topics_with_no_approved_facts(tmp_path: Path) -> None:
+    data_root = _tmp_data_root(tmp_path)  # fresh data_root -- no proposed_facts.json at all
+
+    result = run_daily_cycle(
+        "wednesday", platforms=["facebook"], data_root=data_root, generate_image=False,
+        content_bridge=_mock_content_bridge(data_root), validator_bridge=_AlwaysApproveValidatorBridge(),
+    )
+
+    assert result.topic["research_backed"] is False
+
+
+def test_creative_brief_carries_proof_points_from_approved_local_facts(tmp_path: Path) -> None:
+    """Before this, every brief's proof_points was hardcoded to []."""
+    data_root = _tmp_data_root(tmp_path)
+    facts_path = data_root / "venho_hotel" / "research" / "proposed_facts.json"
+    facts_path.parent.mkdir(parents=True, exist_ok=True)
+    facts_path.write_text(
+        json.dumps(
+            [
+                {
+                    "id": "fact-cafe-a",
+                    "fact_key": "cafe.santorini_vibes",
+                    "value": "Santorini Vibes",
+                    "domain": "local_intel",
+                    "status": "approved",
+                    "rationale": "Santorini Vibes, quán cà phê view hồ đẹp.",
+                }
+            ],
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+    seen_requests = []
+
+    def recording_generator(request, prompt, config):
+        seen_requests.append(request)
+        return mock_social_generator(request, prompt, config)
+
+    bridge = M05ContentBridge(data_root=data_root, generator_fn=recording_generator)
+    run_daily_cycle(
+        "wednesday", platforms=["facebook"], data_root=data_root, generate_image=False,
+        content_bridge=bridge, validator_bridge=_AlwaysApproveValidatorBridge(),
+    )
+
+    assert len(seen_requests) == 1
+    assert seen_requests[0].prompt_rules == "local_discovery"
+    assert seen_requests[0].research_facts == [
+        {"text": "Santorini Vibes, quán cà phê view hồ đẹp.", "fact_key": "cafe.santorini_vibes"}
+    ]
+
+
+def test_scenario_pool_gives_a_lane_more_than_one_visual_across_runs(tmp_path: Path) -> None:
+    """Before 2026-08-13, SCENARIO_BY_DNA_SUBJECT was a 1:1 map -- every
+    "outside" post always rendered the same rooftop-sunrise concept even
+    though the registry has three "outside" scenarios. Friday's
+    scenario_pool spans lake_view_room/lobby/outside; four runs must surface
+    more than one dna_subject."""
+    data_root = _tmp_data_root(tmp_path)
+    dna_subjects = []
+    for _ in range(4):
+        result = run_daily_cycle(
+            "friday", platforms=["facebook"], data_root=data_root, generate_image=False,
+            content_bridge=_mock_content_bridge(data_root), validator_bridge=_AlwaysApproveValidatorBridge(),
+        )
+        dna_subjects.append(result.topic["dna_subject"])
+
+    assert len(set(dna_subjects)) > 1, dna_subjects
+
+
+def test_recent_topics_reach_the_generator_as_an_anti_repeat_hint(tmp_path: Path) -> None:
+    data_root = _tmp_data_root(tmp_path)
+    seen_requests = []
+
+    def recording_generator(request, prompt, config):
+        seen_requests.append(request)
+        return mock_social_generator(request, prompt, config)
+
+    bridge = M05ContentBridge(data_root=data_root, generator_fn=recording_generator)
+
+    first = run_daily_cycle(
+        "monday", platforms=["facebook"], data_root=data_root, generate_image=False,
+        content_bridge=bridge, validator_bridge=_AlwaysApproveValidatorBridge(),
+    )
+    run_daily_cycle(
+        "monday", platforms=["facebook"], data_root=data_root, generate_image=False,
+        content_bridge=bridge, validator_bridge=_AlwaysApproveValidatorBridge(),
+    )
+
+    assert seen_requests[0].recent_topics == []  # nothing posted yet on the first call
+    assert first.topic["topic"] in seen_requests[1].recent_topics  # second call sees the first's topic

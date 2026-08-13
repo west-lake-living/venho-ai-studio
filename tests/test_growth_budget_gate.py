@@ -14,7 +14,15 @@ def _tmp_data_root(tmp_path: Path) -> Path:
     root = tmp_path / "data" / "projects"
     knowledge_dir = root / "venho_hotel" / "knowledge"
     knowledge_dir.mkdir(parents=True)
-    for name in ["VENHO_HOTEL_WESTLAKE_DNA.json", "VENHO_HOTEL_LAKE_VIEW_ROOM_DNA.json", "VENHO_HOTEL_OUTSIDE_DNA.json"]:
+    # VENHO_HOTEL_LAKE_VIEW_ROOM_DNA.json (no suffix) no longer exists on
+    # disk -- see the identical fix in tests/test_growth_daily_cycle.py.
+    for name in [
+        "VENHO_HOTEL_WESTLAKE_DNA.json",
+        "VENHO_HOTEL_LAKE_VIEW_ROOM_1_DNA.json",
+        "VENHO_HOTEL_LAKE_VIEW_ROOM_2_DNA.json",
+        "VENHO_HOTEL_OUTSIDE_DNA.json",
+        "VENHO_HOTEL_LOBBY_DNA.json",
+    ]:
         copyfile(Path("data/projects/venho_hotel/knowledge") / name, knowledge_dir / name)
     return root
 

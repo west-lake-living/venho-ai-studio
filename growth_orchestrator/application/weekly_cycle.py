@@ -50,7 +50,12 @@ WEEKLY_CADENCE_ORDER = ["monday", "wednesday", "friday", "saturday"]
 # Bump the idempotency namespace when the weekly completion contract changes.
 # The old v1 job for 2026-W33 was incorrectly marked SUCCEEDED after its Drive
 # authentication failure, leaving no safe way for the repaired workflow to run.
-WEEKLY_CYCLE_JOB_VERSION = "3"
+# v3->v4 (2026-08-13): topic selection changed from a bare modulo cursor to
+# per-lane pools with cooldown/LRU (see topic_selector.py) -- without the
+# bump, a fortnight already marked SUCCEEDED under v3 would be silently
+# skipped by the first run after this fix, exactly the failure mode the v1->v2
+# bump above was written to prevent.
+WEEKLY_CYCLE_JOB_VERSION = "4"
 FORTNIGHT_ANCHOR_MONDAY = date(2026, 8, 17)
 
 

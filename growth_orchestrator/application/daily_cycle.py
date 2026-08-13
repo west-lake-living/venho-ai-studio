@@ -6,7 +6,7 @@ import os
 import uuid
 import warnings
 from dataclasses import dataclass, field
-from datetime import date
+from datetime import date, timedelta
 from pathlib import Path
 from typing import Any, Optional
 
@@ -19,8 +19,10 @@ from content_studio.prompt_bridge import slugify
 from analytics_feedback.attribution import AttributionPolicy, build_tracking_url
 from growth_orchestrator.application.budget_gate import BudgetGate
 from growth_orchestrator.application.evergreen_pool import choose_evergreen
+from growth_orchestrator.application.local_intel import local_intel_topic_entries
 from growth_orchestrator.application.run_content_pipeline import run_content_pipeline
 from growth_orchestrator.application.special_lane import select_special_lane_candidate
+from growth_orchestrator.application.topic_selector import advance_rotation, select_from_candidates
 from growth_orchestrator.bridges.m03_validator_bridge import M03ValidatorBridge
 from growth_orchestrator.bridges.m05_content_bridge import M05ContentBridge
 from image_studio_runtime.adapters.gpt_image_provider import gpt_image_provider_from_env
@@ -78,25 +80,16 @@ class DailyCycleResult:
     errors: list[dict[str, str]] = field(default_factory=list)
 
 
-def _rotation_state_path(project: str, data_root: Path) -> Path:
-    return data_root / project / "growth" / "rotation_state.json"
+_WEEKDAY_INDEX = {"monday": 0, "tuesday": 1, "wednesday": 2, "thursday": 3, "friday": 4, "saturday": 5, "sunday": 6}
 
 
-def _next_rotation_index(project: str, data_root: Path, lane: str) -> int:
-    """Advance and persist a per-lane rotation cursor (regular vs special).
-
-    Two separate cursors (not one shared index) so the Saturday special-lane
-    topic list rotates independently of the Mon/Wed/Fri regular pillars.
-    """
-    path = _rotation_state_path(project, data_root)
-    state = {}
-    if path.exists():
-        state = json.loads(path.read_text(encoding="utf-8"))
-    index = state.get(lane, 0)
-    state[lane] = index + 1
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(state, ensure_ascii=False, indent=2), encoding="utf-8")
-    return index
+def _next_cadence_date(day: str, on_or_after: date) -> date:
+    """The next date `day` falls on, on or after `on_or_after` -- generalizes
+    weather_api.next_saturday to any weekday so Mon/Wed/Fri can also read a
+    still-valid forecast for the date their draft is actually about (2026-08-13:
+    previously only Saturday did this)."""
+    target = _WEEKDAY_INDEX[day]
+    return on_or_after + timedelta(days=(target - on_or_after.weekday()) % 7)
 
 
 def _trend_candidate_topic_entries(project: str, data_root: Path) -> list[dict[str, Any]]:
@@ -124,24 +117,26 @@ def _trend_candidate_topic_entries(project: str, data_root: Path) -> list[dict[s
         return []
 
 
-def _weather_context_for_saturday(project: str, data_root: Path) -> Optional[dict[str, Any]]:
-    """The still-valid forecast for the coming Saturday, if the research
-    cycle has produced one.
+def _weather_context_for_date(project: str, data_root: Path, target_date: date) -> Optional[dict[str, Any]]:
+    """The still-valid forecast for `target_date`, if the research cycle has
+    produced one.
 
-    This is what makes the Saturday post specific to the weekend it goes out
-    on -- "sương sớm trên mặt hồ" versus "hoàng hôn vàng" is the difference
-    between a post about this Saturday and a post about any Saturday. It is
-    R2-T: it picks the angle and the scenario, never a claim in the copy.
+    This is what makes a post specific to the day it goes out on -- "sương
+    sớm trên mặt hồ" versus "hoàng hôn vàng" is the difference between a post
+    about this Saturday and a post about any Saturday. It is R2-T: it picks
+    the angle and the scenario, never a claim in the copy.
 
-    Best-effort by design: no forecast means the special lane runs the way it
-    always did, on the curated topic alone.
+    Was Saturday-only until 2026-08-13 (`_weather_context_for_saturday`,
+    always calling `next_saturday`); now every cadence day passes its own
+    `_next_cadence_date` result. Best-effort by design: no forecast means the
+    lane runs the way it always did, on the curated topic alone.
     """
     try:
-        from research_engine.trend_radar.collectors.weather_api import next_saturday, signal_for_date
+        from research_engine.trend_radar.collectors.weather_api import signal_for_date
         from shared.storage.weather_signal_store import WeatherSignalStore
 
         signals = WeatherSignalStore(project=project, data_root=data_root).valid_signals()
-        signal = signal_for_date(signals, next_saturday(date.today()))
+        signal = signal_for_date(signals, target_date)
         if signal is None:
             return None
         return {
@@ -155,63 +150,161 @@ def _weather_context_for_saturday(project: str, data_root: Path) -> Optional[dic
         return None
 
 
-def _pick_topic(config: dict[str, Any], day: str, project: str, data_root: Path) -> dict[str, Any]:
+def _pick_regular_topic(lane_config: dict[str, Any], day: str, project: str, data_root: Path) -> dict[str, Any]:
+    """Monday/Wednesday/Friday: the lane's own curated topic pool, with
+    Wednesday's approved local facts (local_intel_topic_entries) taking
+    priority over the curated list whenever any are available -- Harry's
+    2026-08-13 call was that a real quán/sự kiện beats a generic curated
+    line whenever one exists. cooldown+LRU selection (see topic_selector)
+    happens either way.
+    """
+    pillar_name = lane_config.get("name", lane_config.get("id", day))
+    research_domains = lane_config.get("research_domains") or []
+    research_entries: list[dict[str, Any]] = []
+    if research_domains:
+        research_entries = local_intel_topic_entries(
+            project, data_root, domains=research_domains, pillar=pillar_name, slot_date=date.today()
+        )
+
+    curated_entries = [
+        {"pillar": pillar_name, "topic": topic_text, "research_backed": False}
+        for topic_text in lane_config.get("topics", [])
+    ]
+    candidates = research_entries or curated_entries
+    if not candidates:
+        raise ValueError(f"No topic candidates configured for lane '{day}' in content_pillars.yaml")
+
+    return select_from_candidates(candidates, project=project, data_root=data_root, rotation_key=f"lane:{day}")
+
+
+def _pick_special_topic(config: dict[str, Any], project: str, data_root: Path) -> dict[str, Any]:
+    """Saturday: hand-curated feature groups + approved Trend Radar
+    candidates, same pool shape as before 2026-08-13 -- only the bare
+    `flat[index % len(flat)]` pick was replaced with cooldown+LRU selection
+    (topic_selector.select_from_candidates). The type/eligibility fallback
+    (select_special_lane_candidate) and weather/trend bookkeeping below are
+    unchanged.
+    """
     pillars_config = config["content_pillars"]
-    if day == SPECIAL_CADENCE_DAY:
-        lane, groups = "special", pillars_config.get("special_topics", [])
-    else:
-        lane, groups = "regular", pillars_config.get("pillars", [])
+    lanes = pillars_config.get("lanes") or {}
+    saturday_lane = lanes.get(SPECIAL_CADENCE_DAY) or {}
+    groups = saturday_lane.get("special_topics") or pillars_config.get("special_topics", [])
     if not groups:
-        raise ValueError(f"No topic groups configured for lane '{lane}' in content_pillars.yaml")
+        raise ValueError("No topic groups configured for lane 'special' in content_pillars.yaml")
 
     flat: list[dict[str, Any]] = []
     for group in groups:
         for topic in group.get("topics", []):
-            entry: dict[str, Any] = {
-                "pillar": group.get("name", group.get("id", lane)),
-                "dna_subject": group["dna_subject"],
-                "topic": topic,
-            }
-            if lane == "special":
-                # v3.1 9.5 candidate typing (seasonal_nature/cultural_event/
-                # lifestyle_trend/feature_story). Hand-curated entries
-                # default to type 4 (feature_story) -- see content_pillars
-                # .yaml comment. Real Trend Radar candidates (see below) get
-                # their type from Claude's classification instead.
-                entry["special_lane_type"] = group.get("type", "feature_story")
-                entry["verified_by_human"] = group.get("verified_by_human", False)
-            flat.append(entry)
+            flat.append(
+                {
+                    "pillar": group.get("name", group.get("id", "special")),
+                    "dna_subject": group["dna_subject"],
+                    "topic": topic,
+                    # v3.1 9.5 candidate typing (seasonal_nature/cultural_event/
+                    # lifestyle_trend/feature_story). Hand-curated entries
+                    # default to type 4 (feature_story) -- see content_pillars
+                    # .yaml comment. Real Trend Radar candidates (below) get
+                    # their type from Claude's classification instead.
+                    "special_lane_type": group.get("type", "feature_story"),
+                    "verified_by_human": group.get("verified_by_human", False),
+                }
+            )
+    flat.extend(_trend_candidate_topic_entries(project, data_root))
 
-    if lane == "special":
-        flat.extend(_trend_candidate_topic_entries(project, data_root))
+    picked = select_from_candidates(flat, project=project, data_root=data_root, rotation_key="special")
 
-    index = _next_rotation_index(project, data_root, lane)
-    picked = flat[index % len(flat)]
+    # Real loại-4 fallback selection (special_lane.select_special_lane_candidate),
+    # not just unit-tested in isolation. TR-D3: this only decides WHICH
+    # candidate is proposed for approval -- it never approves anything.
+    selected = select_special_lane_candidate(
+        [{"type": picked["special_lane_type"], "verified_by_human": picked["verified_by_human"]}]
+    )
+    picked["special_lane_reason"] = selected["selected_reason"]
+    weather = _weather_context_for_date(project, data_root, _next_cadence_date(SPECIAL_CADENCE_DAY, date.today()))
+    if weather:
+        picked["weather_context"] = weather
+    if picked.get("trend_candidate_id"):
+        try:
+            from research_engine.trend_radar.trend_candidate_store import TrendCandidateStore
 
-    if lane == "special":
-        # Real loại-4 fallback selection (special_lane.select_special_lane_candidate),
-        # not just unit-tested in isolation. TR-D3: this only decides WHICH
-        # candidate is proposed for approval -- it never approves anything.
-        selected = select_special_lane_candidate(
-            [{"type": picked["special_lane_type"], "verified_by_human": picked["verified_by_human"]}]
-        )
-        picked["special_lane_reason"] = selected["selected_reason"]
-        weather = _weather_context_for_saturday(project, data_root)
-        if weather:
-            picked["weather_context"] = weather
-        if picked.get("trend_candidate_id"):
-            try:
-                from research_engine.trend_radar.trend_candidate_store import TrendCandidateStore
-
-                TrendCandidateStore(project, data_root=data_root).mark_used(picked["trend_candidate_id"])
-            except Exception:  # noqa: BLE001 - marking used is bookkeeping, never a gate on the real pick
-                pass
+            TrendCandidateStore(project, data_root=data_root).mark_used(picked["trend_candidate_id"])
+        except Exception:  # noqa: BLE001 - marking used is bookkeeping, never a gate on the real pick
+            pass
 
     return picked
 
 
-def _build_creative_brief(topic: dict[str, str], platform: str, day: str, project: str, scenario_registry: ScenarioRegistry) -> dict[str, Any]:
-    scenario_key = SCENARIO_BY_DNA_SUBJECT[topic["dna_subject"]]
+def _pick_topic(config: dict[str, Any], day: str, project: str, data_root: Path) -> dict[str, Any]:
+    """Dispatch to the regular (Mon/Wed/Fri) or special (Saturday) lane.
+
+    Prefers `content_pillars.yaml`'s `lanes.<day>` shape (2026-08-13); a
+    config built without a `lanes` key (the pre-2026-08-13 shape, still used
+    directly by a few unit tests) falls back to the flat `pillars` list for
+    every regular day, exactly as before.
+    """
+    if day == SPECIAL_CADENCE_DAY:
+        return _pick_special_topic(config, project, data_root)
+
+    pillars_config = config["content_pillars"]
+    lanes = pillars_config.get("lanes") or {}
+    lane_config = lanes.get(day)
+    if lane_config is not None:
+        return _pick_regular_topic(lane_config, day, project, data_root)
+
+    # Legacy fallback: no `lanes` key at all -- every regular day drew from
+    # the same flat `pillars` list.
+    groups = pillars_config.get("pillars", [])
+    if not groups:
+        raise ValueError(f"No topic groups configured for lane 'regular' in content_pillars.yaml")
+    candidates = [
+        {"pillar": group.get("name", group.get("id", "regular")), "dna_subject": group["dna_subject"], "topic": topic}
+        for group in groups
+        for topic in group.get("topics", [])
+    ]
+    return select_from_candidates(candidates, project=project, data_root=data_root, rotation_key="regular")
+
+
+def _recent_topics(project: str, data_root: Path, *, limit: int = 6) -> list[str]:
+    """The most recent distinct post topics (any lane), newest first --
+    handed to the copywriting prompt (social_prompts.format_recent_topics)
+    so the model actively avoids repeating an angle/opening line it already
+    used, on top of topic_selector's cooldown keeping the *exact* topic text
+    from repeating. Best-effort: an unreadable registry just yields no hint,
+    never a failed run."""
+    try:
+        publications = PublicationRegistry(project, data_root=data_root).load().get("publications", [])
+    except Exception:  # noqa: BLE001
+        return []
+    ordered = sorted(publications, key=lambda pub: pub.get("created_at") or "", reverse=True)
+    seen: list[str] = []
+    for pub in ordered:
+        topic_text = pub.get("topic")
+        if topic_text and topic_text not in seen:
+            seen.append(topic_text)
+        if len(seen) >= limit:
+            break
+    return seen
+
+
+def _build_creative_brief(
+    topic: dict[str, str],
+    platform: str,
+    day: str,
+    project: str,
+    scenario_registry: ScenarioRegistry,
+    *,
+    scenario_key: Optional[str] = None,
+    prompt_rules: Optional[str] = None,
+    recent_topics: Optional[list[str]] = None,
+) -> dict[str, Any]:
+    # `scenario_key` lets a caller (run_daily_cycle, via _pick_scenario) hand
+    # in a scenario picked from a lane's whole scenario_pool -- multiple
+    # scenarios can now share a dna_subject (2026-08-13: rooftop sunrise/
+    # sunset/shade are all "outside"), which SCENARIO_BY_DNA_SUBJECT's 1:1
+    # map alone could never select between. Omitting it (existing direct
+    # callers, e.g. the weather tests) keeps the old single-scenario-per-
+    # subject behaviour exactly as before.
+    scenario_key = scenario_key or SCENARIO_BY_DNA_SUBJECT[topic["dna_subject"]]
     scenario = scenario_registry.resolve(scenario_key)
     brief: dict[str, Any] = {
         "schema_version": "1.0",
@@ -238,13 +331,33 @@ def _build_creative_brief(topic: dict[str, str], platform: str, day: str, projec
         "checksum": "",
         "project": project,
     }
+    # Non-enum extensions (additionalProperties: true in the schema) --
+    # `lane` above stays a closed enum for backward compatibility (it feeds
+    # ContentRequest.lane, checked by test_run_daily_cycle_*_reaches_generator
+    # _with_*_lane), so which system-prompt rule block a lane gets and its
+    # recent-post anti-repeat hint travel separately.
+    if prompt_rules:
+        brief["prompt_rules"] = prompt_rules
+    if recent_topics:
+        brief["recent_topics"] = recent_topics
+
+    # Approved local facts (Wednesday's local_discovery lane, 2026-08-13):
+    # local_intel_topic_entries already shapes these as {"text", "fact_key"}
+    # -- exactly what creative_brief.schema.json's proof_points requires.
+    # Before this, every brief's proof_points was hardcoded to [].
+    proof_points = topic.get("proof_points")
+    if proof_points:
+        brief["proof_points"] = proof_points
+        brief["context_refs"] = brief.get("context_refs", []) + [
+            {"rs_id": point["fact_key"], "evidence_level": "R2", "role": "local_intel"} for point in proof_points
+        ]
 
     # Weather rides in as context, not as a proof point: `context_refs` is
     # the contract's slot for R2/R2-T material that shapes the angle, while
     # `proof_points` is for citable claims. A forecast is never a claim.
     weather = topic.get("weather_context")
     if weather:
-        brief["context_refs"] = [
+        brief["context_refs"] = brief.get("context_refs", []) + [
             {"rs_id": weather.get("rs_id", "weather"), "evidence_level": "R2-T", "role": "weather_angle"}
         ]
         if weather.get("visual_opportunity"):
@@ -269,6 +382,65 @@ def _build_creative_brief(topic: dict[str, str], platform: str, day: str, projec
     ).hexdigest()
     jsonschema.Draft202012Validator(_CREATIVE_BRIEF_SCHEMA).validate(brief)
     return brief
+
+
+def _pick_scenario(
+    day: str,
+    topic: dict[str, Any],
+    lane_config: Optional[dict[str, Any]],
+    weather: Optional[dict[str, Any]],
+    scenario_registry: ScenarioRegistry,
+    project: str,
+    data_root: Path,
+) -> str:
+    """Which scenario (and so which reference photo / image concept) this
+    cadence day's post gets.
+
+    Before 2026-08-13, SCENARIO_BY_DNA_SUBJECT was the only mapping: exactly
+    one scenario per dna_subject, so every "outside" post always rendered
+    the same rooftop-sunrise concept even though the registry has three
+    "outside" scenarios (sunrise/sunset/shade). Now each lane declares a
+    `scenario_pool` in content_pillars.yaml and this rotates through it
+    (cooldown-free -- images don't carry the same "already said this" risk
+    text does, a simple round robin is enough), with a forecast match still
+    winning outright when one exists (unchanged from the old Saturday-only
+    weather override, just no longer Saturday-only).
+
+    A topic that already names its own dna_subject (Saturday's curated
+    special_topics, Trend Radar candidates, and the legacy `pillars` shape)
+    keeps deciding the subject -- only *which* scenario within that subject
+    varies. A topic with no dna_subject of its own (the new Mon/Wed/Fri
+    lanes, see content_pillars.yaml) lets the scenario decide it instead,
+    and this function writes the result back onto `topic["dna_subject"]` so
+    every downstream reader (_generate_topic_image, _build_creative_brief,
+    the registry row) sees a normal, always-populated field.
+    """
+    pool = list((lane_config or {}).get("scenario_pool") or [])
+    if not pool:
+        pool = list(SCENARIO_BY_DNA_SUBJECT.values())
+
+    wanted_subject = topic.get("dna_subject")
+    if wanted_subject:
+        candidates = [key for key in pool if scenario_registry.resolve(key).dna_subject == wanted_subject]
+        if not candidates:
+            # The lane's pool has nothing for this subject (e.g. a Trend
+            # Radar candidate classified into a subject the lane's curated
+            # pool doesn't cover) -- fall back to the canonical single
+            # mapping so a valid scenario is always returned.
+            candidates = [SCENARIO_BY_DNA_SUBJECT.get(wanted_subject, pool[0])]
+    else:
+        candidates = pool
+
+    if weather and weather.get("matching_scenario_keys"):
+        override = next((key for key in weather["matching_scenario_keys"] if key in candidates), None)
+        if override:
+            topic.setdefault("dna_subject", scenario_registry.resolve(override).dna_subject)
+            return override
+
+    index = advance_rotation(project, data_root, f"scenario:{day}")
+    picked = candidates[index % len(candidates)]
+    topic.setdefault("dna_subject", scenario_registry.resolve(picked).dna_subject)
+    return picked
 
 
 def _content_payload(
@@ -430,6 +602,7 @@ def _generate_topic_image(
     image_validation_provider: str = "mock",
     budget_gate: Optional[BudgetGate] = None,
     rotation_key: Optional[str] = None,
+    scenario_key: Optional[str] = None,
 ) -> Optional[Path]:
     """Generate one real image for the day's topic, shared across platforms.
 
@@ -462,7 +635,7 @@ def _generate_topic_image(
     """
     budget_gate = budget_gate or BudgetGate(project=project, data_root=data_root)
     try:
-        scenario_key = SCENARIO_BY_DNA_SUBJECT[topic["dna_subject"]]
+        scenario_key = scenario_key or SCENARIO_BY_DNA_SUBJECT[topic["dna_subject"]]
         scenario = scenario_registry.resolve(scenario_key)
         dna_path = (
             _room_dna_path(data_root, project, rotation_key=rotation_key)
@@ -792,6 +965,20 @@ def run_daily_cycle(
         config_root=config_root, data_root=data_root, scenario_registry=scenario_registry
     )
 
+    # Saturday already attached its own weather_context inside _pick_topic
+    # (_pick_special_topic); every other cadence day gets the same
+    # still-valid-forecast lookup here (generalized 2026-08-13 from a
+    # Saturday-only path) so its scenario pick can also be weather-aware.
+    if "weather_context" not in topic:
+        weather = _weather_context_for_date(project, data_root, _next_cadence_date(day, date.today()))
+        if weather:
+            topic["weather_context"] = weather
+
+    lane_config = (config["content_pillars"].get("lanes") or {}).get(day)
+    scenario_key = _pick_scenario(
+        day, topic, lane_config, topic.get("weather_context"), scenario_registry, project, data_root
+    )
+
     image_run_path: Optional[str] = None
     image_public_url: Optional[str] = None
     asset_version_ids: list[str] = []
@@ -804,6 +991,7 @@ def run_daily_cycle(
             image_validation_provider=image_validation_provider,
             budget_gate=budget_gate,
             rotation_key=slot_date,
+            scenario_key=scenario_key,
         )
         if run_folder:
             image_run_path = str(run_folder)
@@ -828,12 +1016,18 @@ def run_daily_cycle(
             topic.get("dna_subject"), rotation_key=slot_date or f"{day}:{topic.get('topic', '')}"
         )
 
+    prompt_rules = lane_config.get("prompt_rules") if lane_config else None
+    recent_topics = _recent_topics(project, data_root)
+
     publications: list[dict[str, Any]] = []
     packages: list[dict[str, Any]] = []
     errors: list[dict[str, str]] = []
     for platform in platforms or DEFAULT_PLATFORMS:
         try:
-            brief = _build_creative_brief(topic, platform, day, project, scenario_registry)
+            brief = _build_creative_brief(
+                topic, platform, day, project, scenario_registry,
+                scenario_key=scenario_key, prompt_rules=prompt_rules, recent_topics=recent_topics,
+            )
             package = _run_content_pipeline_budgeted(
                 brief, budget_gate=budget_gate, day=day, platform=platform,
                 content_bridge=content_bridge, validator_bridge=validator_bridge,

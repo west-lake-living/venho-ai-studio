@@ -36,7 +36,15 @@ def _tmp_data_root(tmp_path: Path) -> Path:
     root = tmp_path / "data" / "projects"
     knowledge_dir = root / "venho_hotel" / "knowledge"
     knowledge_dir.mkdir(parents=True)
-    for name in ["VENHO_HOTEL_WESTLAKE_DNA.json", "VENHO_HOTEL_LAKE_VIEW_ROOM_DNA.json", "VENHO_HOTEL_OUTSIDE_DNA.json"]:
+    # VENHO_HOTEL_LAKE_VIEW_ROOM_DNA.json (no suffix) no longer exists on
+    # disk -- see the identical fix in tests/test_growth_daily_cycle.py.
+    for name in [
+        "VENHO_HOTEL_WESTLAKE_DNA.json",
+        "VENHO_HOTEL_LAKE_VIEW_ROOM_1_DNA.json",
+        "VENHO_HOTEL_LAKE_VIEW_ROOM_2_DNA.json",
+        "VENHO_HOTEL_OUTSIDE_DNA.json",
+        "VENHO_HOTEL_LOBBY_DNA.json",
+    ]:
         copyfile(Path("data/projects/venho_hotel/knowledge") / name, knowledge_dir / name)
     return root
 
@@ -60,7 +68,7 @@ def test_run_weekly_cycle_one_day_crash_does_not_drop_the_other_days(tmp_path: P
     # The remaining cadence days still run, but the job is retryable instead
     # of silently becoming SUCCEEDED with an incomplete approval queue.
     job_store = JobStore(db_path=data_root / "venho_hotel" / "growth" / "growth.db")
-    assert job_store.get("venho_hotel-fortnight-v3-2026-08-03")["status"] == "RETRYABLE_FAILED"
+    assert job_store.get("venho_hotel-fortnight-v4-2026-08-03")["status"] == "RETRYABLE_FAILED"
 
 
 def test_run_weekly_cycle_fails_when_a_required_platform_is_missing(tmp_path: Path, monkeypatch) -> None:
@@ -141,13 +149,13 @@ def test_run_weekly_cycle_recovers_a_week_stuck_running_from_a_crashed_prior_att
 
     monday = date(2026, 8, 10)
     project = "venho_hotel"
-    week_key = f"{project}-fortnight-v3-2026-08-03"
+    week_key = f"{project}-fortnight-v4-2026-08-03"
 
     growth_db = data_root / project / "growth" / "growth.db"
     job_store = JobStore(db_path=growth_db)
     job_store.enqueue(
         job_id=week_key, idempotency_key=week_key, job_type="weekly_cycle",
-        version="3", scheduled_at=datetime.now().isoformat(), trace_id=week_key, payload={"project": project},
+        version="4", scheduled_at=datetime.now().isoformat(), trace_id=week_key, payload={"project": project},
     )
     # Simulate a crashed prior attempt: claimed, never completed/failed, and
     # its lease is already in the past.

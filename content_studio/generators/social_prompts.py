@@ -66,9 +66,41 @@ Make Hồ Tây/Hà Nội the primary character. Integrate Ven Hồ Hotel natural
 a quiet place to begin or return to, never as a hard-sell advertisement.
 """.strip()
 
-SYSTEM_PROMPT = f"{MASTER_SYSTEM_PROMPT}\n\n{_AUTOMATION_OUTPUT_CONTRACT}"
-WEEKEND_EVENTS_SYSTEM_PROMPT = f"{MASTER_SYSTEM_PROMPT}\n\n{_WEEKEND_EVENTS_RULES}\n\n{_AUTOMATION_OUTPUT_CONTRACT}"
-WEST_LAKE_SYSTEM_PROMPT = f"{MASTER_SYSTEM_PROMPT}\n\n{_WEST_LAKE_PILLAR_RULES}\n\n{_AUTOMATION_OUTPUT_CONTRACT}"
+# 2026-08-13 diversity fix: Wednesday's local_discovery lane names a real
+# quán/địa điểm/sự kiện instead of writing another generic "Hồ Tây" post.
+# Mirrors _WEEKEND_EVENTS_RULES's "only what's supplied, never invented"
+# shape -- same discipline, different data source (approved research facts
+# instead of verified events).
+_LOCAL_DISCOVERY_RULES = """
+
+# LOCAL DISCOVERY RULES
+
+Name only the places/events listed in “Dữ liệu địa phương đã xác thực” in the
+user message -- do not invent a café, shop, pagoda, or event name, address,
+or date that isn't there. If that list is empty, write a general introduction
+to the Tây Hồ neighbourhood instead, with no invented proper nouns. Keep Ven
+Hồ Hotel a natural, nearby base for the reader to return to, never the
+headline.
+""".strip()
+
+# Chốt bộ từ khoá SEO cụ thể Harry yêu cầu (2026-08-13) -- §11 SEO STRATEGY
+# of the master prompt already states the "natural, no stuffing" philosophy;
+# this only names which keywords count so every generated post actually
+# carries at least one, instead of the master prompt's generic semantic
+# guidance alone.
+_SEO_KEYWORDS_BLOCK = """
+
+# SOCIAL SEO KEYWORDS (chèn tự nhiên, không nhồi nhét)
+
+Weave at least one of these naturally into the post wherever it fits the
+sentence (never force all of them into one post): "Ven Hồ Hotel", "khách sạn
+view Hồ Tây", "Nguyễn Đình Thi", "hoàng hôn Hồ Tây".
+""".strip()
+
+SYSTEM_PROMPT = f"{MASTER_SYSTEM_PROMPT}\n\n{_SEO_KEYWORDS_BLOCK}\n\n{_AUTOMATION_OUTPUT_CONTRACT}"
+WEEKEND_EVENTS_SYSTEM_PROMPT = f"{MASTER_SYSTEM_PROMPT}\n\n{_WEEKEND_EVENTS_RULES}\n\n{_SEO_KEYWORDS_BLOCK}\n\n{_AUTOMATION_OUTPUT_CONTRACT}"
+WEST_LAKE_SYSTEM_PROMPT = f"{MASTER_SYSTEM_PROMPT}\n\n{_WEST_LAKE_PILLAR_RULES}\n\n{_SEO_KEYWORDS_BLOCK}\n\n{_AUTOMATION_OUTPUT_CONTRACT}"
+LOCAL_DISCOVERY_SYSTEM_PROMPT = f"{MASTER_SYSTEM_PROMPT}\n\n{_LOCAL_DISCOVERY_RULES}\n\n{_SEO_KEYWORDS_BLOCK}\n\n{_AUTOMATION_OUTPUT_CONTRACT}"
 
 
 def format_verified_events(events: List[Dict[str, Any]]) -> str:
@@ -84,15 +116,48 @@ def format_verified_events(events: List[Dict[str, Any]]) -> str:
     return "\n".join(lines)
 
 
+def format_research_facts(facts: List[Dict[str, Any]]) -> str:
+    """Wednesday's approved-fact counterpart to format_verified_events --
+    same "state only what's supplied" contract, different source (approved
+    ProposedFactStore rows via growth_orchestrator.application.local_intel,
+    not the weekend_events.json list)."""
+    if not facts:
+        return "Dữ liệu địa phương đã xác thực: (chưa có dữ liệu nào được duyệt cho khu vực này)"
+    lines = ["Dữ liệu địa phương đã xác thực:"]
+    for fact in facts:
+        text = fact.get("text") or f"{fact.get('fact_key', '')}: {fact.get('value', '')}"
+        lines.append(f"- {text}")
+    return "\n".join(lines)
+
+
+def format_recent_topics(topics: List[str]) -> str:
+    """The cheapest diversity lever available: naming the last few posts so
+    the model actively avoids repeating their angle, opening line, or hook
+    -- costs nothing extra to call, unlike sourcing a new fact or event."""
+    if not topics:
+        return ""
+    lines = ["\n\nCác bài gần đây — tránh lặp lại góc nhìn, câu mở đầu, hoặc chi tiết đã dùng:"]
+    lines += [f"- {topic}" for topic in topics]
+    return "\n".join(lines)
+
+
 def select_system_prompt(request: ContentRequest) -> str:
-    if request.lane == SATURDAY_LANE:
+    if request.lane == SATURDAY_LANE or request.prompt_rules == "weekend_events":
         return WEEKEND_EVENTS_SYSTEM_PROMPT
-    if request.dna_subject == WEST_LAKE_DNA_SUBJECT:
+    if request.prompt_rules == "local_discovery":
+        return LOCAL_DISCOVERY_SYSTEM_PROMPT
+    if request.prompt_rules == "west_lake_life" or request.dna_subject == WEST_LAKE_DNA_SUBJECT:
         return WEST_LAKE_SYSTEM_PROMPT
     return SYSTEM_PROMPT
 
 
 def build_user_message(request: ContentRequest, final_prompt: str) -> str:
+    parts = [final_prompt]
     if request.lane == SATURDAY_LANE:
-        return f"{final_prompt}\n\n{format_verified_events(request.verified_events)}"
-    return final_prompt
+        parts.append(format_verified_events(request.verified_events))
+    if request.prompt_rules == "local_discovery":
+        parts.append(format_research_facts(request.research_facts))
+    recent = format_recent_topics(request.recent_topics)
+    if recent:
+        parts.append(recent)
+    return "\n\n".join(parts)

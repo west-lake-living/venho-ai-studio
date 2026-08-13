@@ -46,6 +46,19 @@ class ContentRequest(BaseModel):
     lane: str = "daily"
     verified_events: List[Dict[str, Any]] = Field(default_factory=list)
     dna_subject: Optional[str] = None
+    # 2026-08-13 diversity fix: approved local facts (Wednesday's
+    # local_discovery lane -- see growth_orchestrator.application.local_intel)
+    # and recent post topics/titles (any lane), both optional and both
+    # empty by default so every existing caller is unaffected.
+    research_facts: List[Dict[str, Any]] = Field(default_factory=list)
+    recent_topics: List[str] = Field(default_factory=list)
+    # Which system-prompt rule block a lane gets (see
+    # content_studio.generators.social_prompts.select_system_prompt):
+    # "default" | "west_lake_life" | "local_discovery" | "weekend_events".
+    # Defaults to "default" so any caller that never sets it keeps getting
+    # the base SYSTEM_PROMPT/WEST_LAKE_SYSTEM_PROMPT selection logic that
+    # existed before this field (dna_subject/lane based).
+    prompt_rules: str = "default"
 
     @property
     def platform(self) -> str:

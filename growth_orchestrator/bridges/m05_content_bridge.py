@@ -91,6 +91,12 @@ class M05ContentBridge:
             lane=lane,
             verified_events=verified_events,
             dna_subject=scenario.dna_subject,
+            # 2026-08-13 diversity fix: proof_points/recent_topics/prompt_rules
+            # are non-enum extensions on the brief (additionalProperties: true
+            # in creative_brief.schema.json) -- see daily_cycle._build_creative_brief.
+            research_facts=brief.get("proof_points", []),
+            recent_topics=brief.get("recent_topics", []),
+            prompt_rules=brief.get("prompt_rules", "default"),
         )
         result = generate_content(
             request,
