@@ -113,7 +113,9 @@ def claude_longform_generator(
 
     client = Anthropic(api_key=api_key)
     response = client.messages.create(
-        model=os.environ.get("CLAUDE_CONTENT_MODEL", DEFAULT_CLAUDE_CONTENT_MODEL),
+        # see claude_social_generator.py: `.get(key, default)` doesn't fall
+        # back when the key is present but empty (CI repo var was "").
+        model=os.environ.get("CLAUDE_CONTENT_MODEL") or DEFAULT_CLAUDE_CONTENT_MODEL,
         max_tokens=2048,
         temperature=0,
         system=_system_prompt(request.content_type),

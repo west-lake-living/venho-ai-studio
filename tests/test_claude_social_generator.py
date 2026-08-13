@@ -110,6 +110,28 @@ def test_content_model_can_be_overridden_for_the_anthropic_deployment(monkeypatc
     assert holder["client"].messages.calls[0]["model"] == "claude-3-opus-20240229"
 
 
+def test_content_model_falls_back_when_env_var_is_set_but_empty(monkeypatch) -> None:
+    """The growth-replace-rejected workflow always injects CLAUDE_CONTENT_MODEL
+    (from `vars.CLAUDE_CONTENT_MODEL`), which is "" for an unset repo var --
+    os.environ.get(key, default) does NOT fall back in that case, so a naive
+    lookup sent model="" straight to Anthropic and every run 400'd
+    (2026-08-13: "model: String should have at least 1 character")."""
+    holder = {}
+    monkeypatch.setattr(
+        anthropic,
+        "Anthropic",
+        lambda api_key: holder.setdefault(
+            "client", _FakeAnthropic(api_key, json.dumps({"title": "t", "hook": "h", "body": "b", "cta": "c"}))
+        ),
+    )
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
+    monkeypatch.setenv("CLAUDE_CONTENT_MODEL", "")
+
+    gen_module.claude_social_generator(_request(), _FakePrompt(), {})
+
+    assert holder["client"].messages.calls[0]["model"] == gen_module.DEFAULT_CLAUDE_CONTENT_MODEL
+
+
 def test_saturday_lane_uses_weekend_events_prompt_and_appends_events(monkeypatch) -> None:
     holder = {}
     monkeypatch.setattr(

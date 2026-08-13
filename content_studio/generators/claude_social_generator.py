@@ -55,7 +55,11 @@ def claude_social_generator(
 
     client = Anthropic(api_key=api_key)
     response = client.messages.create(
-        model=os.environ.get("CLAUDE_CONTENT_MODEL", DEFAULT_CLAUDE_CONTENT_MODEL),
+        # os.environ.get's default only fires when the key is absent -- a repo
+        # variable set to "" (as CLAUDE_CONTENT_MODEL was in CI) still passes
+        # an empty model string straight to Anthropic and 400s. `or` catches
+        # both "unset" and "set but empty".
+        model=os.environ.get("CLAUDE_CONTENT_MODEL") or DEFAULT_CLAUDE_CONTENT_MODEL,
         # 4096 leaves room for a complete JSON social draft, including a
         # possible Anthropic thinking block before the JSON text block.
         max_tokens=4096,
