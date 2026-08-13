@@ -1406,3 +1406,11 @@ Recorded as a known issue rather than pursued further this session.
 - [x] Targeted offline suite: 64 passed.
 - [ ] Two pre-existing subject-resolver/schema tests remain failing; unrelated to Gemini.
 - [ ] Changes are local only; not committed/pushed in this task.
+
+## Growth Agent — "Replace Rejected Content" all-jobs-failed fix (2026-08-13)
+
+- [x] Root-caused via `gh run view --log-failed`: `model: String should have at least 1 character` — CI's `CLAUDE_CONTENT_MODEL` repo var doesn't exist, so `vars.CLAUDE_CONTENT_MODEL` resolves to `""`, and `os.environ.get(key, default)` doesn't fall back for a present-but-empty key.
+- [x] Fixed both Claude call sites (`claude_social_generator.py`, `claude_generator.py`) to `os.environ.get(...) or DEFAULT` — falls back on both "absent" and "empty".
+- [x] Added regression test `test_content_model_falls_back_when_env_var_is_set_but_empty`; 9/9 pass in `test_claude_social_generator.py`.
+- [x] Affects all 3 workflows sharing this env var (`growth-replace-rejected.yml`, `growth-daily-cycle.yml`, `growth-blog-seo.yml`) — one fix covers all.
+- [x] Committed `b351b19`, pushed to `origin/main`.

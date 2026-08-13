@@ -1535,3 +1535,37 @@ the touched JSON regions didn't overlap. Committed `843a273`, pushed to `origin/
 - Offline targeted tests: **64 passed**. Two existing subject-resolver/schema tests remain unrelated failures.
 - No full Mode B/C live regeneration was run; this avoided unnecessary multi-image API spend.
 - Local implementation changes remain uncommitted and require review before release.
+
+## Growth Agent — "Replace Rejected Content" all-jobs-failed fix (2026-08-13)
+
+Github notified 2 consecutive failed runs of the `growth-replace-rejected.yml` workflow
+(06:06 and 04:31 UTC). Log showed: `{"ok": false, "error": "Replacement generation
+incomplete: [{'platform': 'facebook', 'error': \"BadRequestError: Error code: 400 -
+{'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'model: String
+should have at least 1 character'}...\"}]"}`.
+
+Root cause: `growth-replace-rejected.yml` (and `growth-daily-cycle.yml`,
+`growth-blog-seo.yml`) all set `env: CLAUDE_CONTENT_MODEL: ${{ vars.CLAUDE_CONTENT_MODEL }}`.
+No repo-level variable `CLAUDE_CONTENT_MODEL` exists (`gh variable list` confirmed empty), so
+GitHub Actions resolves the expression to `""` — but the `env:` key is still *set*, just to an
+empty string, not omitted. `content_studio/generators/claude_social_generator.py` and
+`claude_generator.py` both read it via `os.environ.get("CLAUDE_CONTENT_MODEL",
+DEFAULT_CLAUDE_CONTENT_MODEL)`. `dict.get(key, default)` only falls back when the key is
+**absent** — a key present with value `""` returns `""` unchanged. Every Claude call in CI was
+therefore sent `model=""`, which Anthropic rejects with the 400 above. This runs on every
+scheduled `daily-cycle`/`replace-rejected`/`blog-seo` invocation, so this was silently breaking
+content generation broadly, not just the one workflow Github happened to notify about first.
+
+Fix: both call sites changed from `.get("CLAUDE_CONTENT_MODEL", DEFAULT)` to
+`os.environ.get("CLAUDE_CONTENT_MODEL") or DEFAULT_CLAUDE_CONTENT_MODEL` — `or` treats
+both "key absent" and "key present but falsy" the same way. Added regression test
+`test_content_model_falls_back_when_env_var_is_set_but_empty` in
+`tests/test_claude_social_generator.py` (`monkeypatch.setenv("CLAUDE_CONTENT_MODEL", "")`,
+asserts the fake Anthropic client received `DEFAULT_CLAUDE_CONTENT_MODEL`). Targeted suite
+(`test_claude_social_generator.py`) 9/9 passed; the one unrelated failure seen in
+`test_phase5_contract_refs.py` during verification is the already-documented pre-existing
+stale-DNA-filename fixture bug, not caused by this change.
+
+Committed `b351b19`, pushed directly to `origin/main` (no unrelated files staged — an
+in-progress, uncommitted Gemini-vision WIP already sitting in the working tree at commit time
+was stashed before the push and popped back afterward, untouched).
