@@ -1,0 +1,47 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "project": "venho_hotel",
+  "content_type": "facebook_post",
+  "target_language": "vi",
+  "generated_at": "2026-08-13T11:06:45.490876+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_LOBBY_DNA.json",
+      "dna_version": "1.1",
+      "hash": "sha256:e01fc1fa26c2318ce93d3a670067bac2ccbf9dc329a141ea906e80fb108c673f"
+    }
+  ],
+  "source_prompt": {
+    "file": "data/projects/venho_hotel/prompts/content/LOBBY__facebook-ngu-n-0-xu-t-abc-coffee-roasters-l-qu-n-c-ph-ban-c-ng-view-tr-n-v-n-h-t__CONTENT_PROMPT_v1.0.json",
+    "prompt_id": "lobby__content__facebook-ngu-n-0-xu-t-abc-coffee-roasters-l-qu-n-c-ph-ban-c-ng-view-tr-n-v-n-h-t",
+    "prompt_version": "1.0"
+  },
+  "generator": {
+    "provider": "mock",
+    "model": "deterministic-social-builder",
+    "temperature": 0.6
+  },
+  "title": "Một buổi chiều trên ban công nhìn ra Hồ Tây",
+  "hook": "Ở Tây Hồ, chỗ ngồi đẹp nhất đôi khi không nằm sát mặt nước, mà ở trên cao một chút.",
+  "body": "Đi bộ quanh hồ, bạn nhìn mặt nước ngang tầm mắt. Nhưng khi ngồi trên một ban công, tầm nhìn mở ra rộng hơn: đường viền của hồ, những mái nhà thấp, xe cộ đi lại chậm dần khi trời ngả chiều.\n\nABC Coffee Roasters là một trong những quán cà phê ở khu vực này có ban công nhìn trọn Hồ Tây, phù hợp cho những ai muốn ngồi lâu một chút thay vì ghé qua rồi đi. Không cần lịch trình dày, chỉ cần một chỗ ngồi, một ly cà phê và đủ thời gian để nhìn ánh sáng đổi màu trên mặt hồ.\n\nSau đó, đường về cũng là một phần của buổi chiều. Từ phía Nguyễn Đình Thi, gió từ hồ theo bạn suốt quãng đi bộ. Ven Hồ Hotel nằm ngay khu vực này, một khách sạn nhỏ với sảnh lát gạch nâu hoa văn tròn, quầy lễ tân gỗ sẫm và cửa kính nhìn ra phố. Không cầu kỳ, chỉ đủ gọn gàng và yên tĩnh để bạn cất máy ảnh xuống, nghỉ một lát rồi tính tiếp bữa tối ở đâu.\n\nHồ Tây không cần được khám phá vội. Một ban công, một buổi chiều, thế là đủ cho ngày hôm đó.",
+  "cta": "Nếu bạn đang tìm một khách sạn view Hồ Tây để làm điểm dừng chân ở Hà Nội, nhắn tin cho Ven Hồ Hotel để kiểm tra phòng trống cho những ngày bạn dự định đến nhé.",
+  "hashtags": [
+    "#VenHoHotelHanoi",
+    "#HoTay",
+    "#WestLakeHanoi",
+    "#KhamPhaHoTay",
+    "#KhachSanHoTay",
+    "#HaNoi"
+  ],
+  "visual_note": null,
+  "contract_refs": null,
+  "payload": {},
+  "status": "draft",
+  "validation": {
+    "required": true,
+    "status": "pending",
+    "report_file": null,
+    "notes": []
+  }
+}

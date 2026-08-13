@@ -1,0 +1,46 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "project": "venho_hotel",
+  "content_type": "facebook_post",
+  "target_language": "vi",
+  "generated_at": "2026-08-13T11:07:22.595367+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_LOBBY_DNA.json",
+      "dna_version": "1.1",
+      "hash": "sha256:e01fc1fa26c2318ce93d3a670067bac2ccbf9dc329a141ea906e80fb108c673f"
+    }
+  ],
+  "source_prompt": {
+    "file": "data/projects/venho_hotel/prompts/content/LOBBY__facebook-s-ki-n-m-x-ng-i-send-you-my-love-c-a-ngh-s-l-u-tr-ph-m-minh-c-t-i-h-n-i__CONTENT_PROMPT_v1.0.json",
+    "prompt_id": "lobby__content__facebook-s-ki-n-m-x-ng-i-send-you-my-love-c-a-ngh-s-l-u-tr-ph-m-minh-c-t-i-h-n-i",
+    "prompt_version": "1.0"
+  },
+  "generator": {
+    "provider": "mock",
+    "model": "deterministic-social-builder",
+    "temperature": 0.6
+  },
+  "title": "Mở xưởng 'I Send You My Love' và một tháng thong thả ở Hà Nội",
+  "hook": "Một sự kiện kéo dài trọn một tháng nghĩa là bạn không cần phải vội.",
+  "body": "Từ 07/08/2026 đến 06/09/2026, nghệ sĩ lưu trú Phạm Minh Đức mở xưởng tại Hà Nội với dự án 'I Send You My Love'.\n\nMở xưởng là dịp không gian làm việc của nghệ sĩ được mở ra cho người xem. Khác với một triển lãm đã hoàn chỉnh, ở đây bạn thường được nhìn thấy quá trình nhiều hơn kết quả: bản phác, vật liệu, những thứ còn dang dở trên bàn. Với ai lần đầu tiếp cận nghệ thuật đương đại, đó lại là cách vào dễ chịu nhất, vì không có gì bắt bạn phải hiểu ngay.\n\nLịch cụ thể, khung giờ mở cửa và địa điểm, bạn nên xem trực tiếp từ thông báo của đơn vị tổ chức trước khi đi, vì các chương trình lưu trú thường có ngày tiếp khách riêng.\n\nMột buổi xem xong thường để lại cảm giác cần đi bộ thêm một đoạn trước khi về. Hồ Tây hợp với khoảng thời gian đó. Ven Hồ Hotel nằm trên đường Nguyễn Đình Thi, ngay đoạn ven nước, nên từ cửa kính bước ra là đã thấy mặt hồ. Sảnh khách sạn nhỏ, sàn gạch nâu với những vòng hoa văn tròn, quầy lễ tân gỗ nâu sẫm và vài bức tranh treo trên tường, ánh sáng vừa đủ dịu để ngồi lại một lát.\n\nNếu về kịp cuối chiều, hoàng hôn Hồ Tây là phần thưởng thêm cho một ngày đi xem tranh.",
+  "cta": "Bạn đang tính ghé Hà Nội trong khoảng tháng 8 – 9/2026? Nhắn tin cho Ven Hồ Hotel để kiểm tra phòng trống cho những ngày bạn dự định ở lại.",
+  "hashtags": [
+    "#VenHoHotelHanoi",
+    "#HoTay",
+    "#WestLakeHanoi",
+    "#NgheThuatHaNoi",
+    "#HanoiTravel"
+  ],
+  "visual_note": null,
+  "contract_refs": null,
+  "payload": {},
+  "status": "draft",
+  "validation": {
+    "required": true,
+    "status": "pending",
+    "report_file": null,
+    "notes": []
+  }
+}
