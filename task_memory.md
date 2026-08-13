@@ -1569,3 +1569,13 @@ stale-DNA-filename fixture bug, not caused by this change.
 Committed `b351b19`, pushed directly to `origin/main` (no unrelated files staged — an
 in-progress, uncommitted Gemini-vision WIP already sitting in the working tree at commit time
 was stashed before the push and popped back afterward, untouched).
+## Growth Agent — missing future slots after approval audit (2026-08-13)
+
+- [x] Confirmed the 2026-08-10 weekly run created only 4 slots (10/08, 12/08, 14/08,
+  15/08), so 21/08, 22/08 and 24/08 did not exist to approve.
+- [x] Manually dispatched corrected weekly cycle `31695771922`; GitHub Actions completed
+  successfully, including registry commit.
+- [x] Verified remote registry/snapshot contain Facebook + Instagram rows for 21/08 (Friday),
+  22/08 (Saturday) and 24/08 (Monday), all `PENDING_APPROVAL`.
+- [x] Root cause recorded: approval cannot create a slot that was never generated; the corrected
+  two-week horizon now creates the missing dates.

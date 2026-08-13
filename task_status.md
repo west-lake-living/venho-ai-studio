@@ -1414,3 +1414,11 @@ Recorded as a known issue rather than pursued further this session.
 - [x] Added regression test `test_content_model_falls_back_when_env_var_is_set_but_empty`; 9/9 pass in `test_claude_social_generator.py`.
 - [x] Affects all 3 workflows sharing this env var (`growth-replace-rejected.yml`, `growth-daily-cycle.yml`, `growth-blog-seo.yml`) — one fix covers all.
 - [x] Committed `b351b19`, pushed to `origin/main`.
+## Growth Agent — weekly slot horizon audit (2026-08-13)
+
+- [x] Audited missing 21/08, 22/08 and 24/08 against historical workflow logs and registry.
+- [x] Re-ran `Growth Agent Weekly Cycle`; run `31695771922` completed successfully.
+- [x] Confirmed the three dates now exist remotely for Facebook and Instagram with status
+  `PENDING_APPROVAL`.
+- [x] Documented root cause: the previous run generated only one cadence week; corrected
+  two-week cycle is active.
