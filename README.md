@@ -12,7 +12,7 @@ Upload ảnh thủ công vào ChatGPT → AI mô tả từng ảnh thay vì tổ
 **Knowledge Studio** tạo pipeline riêng:
 
 ```
-Folder ảnh → OpenAI (batch analysis) → Claude (synthesis) → Markdown DNA
+Folder ảnh → Gemini Flash (batch analysis) → Gemini Flash (synthesis) → Markdown DNA
 ```
 
 ---
@@ -29,7 +29,7 @@ bash setup.sh
 
 # 3. Tạo .env
 cp .env.example .env
-# Điền OPENAI_API_KEY và ANTHROPIC_API_KEY vào .env
+# Điền GEMINI_API_KEY vào .env (GOOGLE_API_KEY cũng được chấp nhận)
 ```
 
 ---
@@ -65,8 +65,8 @@ python3 app/main.py --folder assets/raw/room --category Room --dry-run
 ```
 Step 1 — User bỏ ảnh vào assets/raw/<category>/
 Step 2 — Chạy python3 app/main.py --folder ... --category ...
-Step 3 — OpenAI (gpt-4o) phân tích từng batch ảnh
-Step 4 — Claude (claude-sonnet-4-6) tổng hợp DNA từ tất cả batches
+Step 3 — Gemini Flash phân tích từng batch ảnh
+Step 4 — Gemini Flash tổng hợp DNA từ tất cả batches
 Step 5 — Tool xuất file .md + .json vào output/
 Step 6 — Review output, copy vào 02_KNOWLEDGE/DNA/ nếu đạt
 ```
@@ -122,8 +122,9 @@ venho-ai-studio/
 │   └── logger.py            # Logging
 ├── providers/
 │   ├── base_provider.py
-│   ├── openai_provider.py   # gpt-4o vision
-│   └── claude_provider.py   # claude-sonnet-4-6
+│   ├── openai_provider.py   # legacy OpenAI vision adapter
+│   ├── claude_provider.py   # legacy Claude synthesis adapter
+│   └── gemini_vision.py     # Gemini Flash vision + synthesis
 ├── prompts/
 │   ├── visual_dna_extraction_prompt.md
 │   └── knowledge_merge_prompt.md
@@ -141,8 +142,8 @@ venho-ai-studio/
 
 | Task | Engine | Model |
 |------|--------|-------|
-| Image analysis (per batch) | OpenAI | gpt-4o |
-| Knowledge synthesis | Anthropic Claude | claude-sonnet-4-6 |
+| Image analysis (per batch) | Google Gemini | gemini-flash-latest |
+| Knowledge synthesis | Google Gemini | gemini-flash-latest |
 
 ---
 

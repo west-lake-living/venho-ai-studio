@@ -16,6 +16,7 @@ dependencies = [
     "jsonschema>=4.0",
     "pillow>=10.0",
     "python-dotenv>=1.0",
+    "google-genai>=1.0",
 ]
 
 [project.optional-dependencies]
@@ -27,7 +28,7 @@ drive = ["google-api-python-client>=2.100", "google-auth-oauthlib>=1.0", "google
 # Only needed for the real GeminiClassifier (research_engine/trend_radar/classifiers/gemini_classifier.py)
 # -- import is deferred into the function so the 0-API-call test suite never
 # requires it installed (client_fn injection covers tests).
-gemini = ["google-genai>=0.3"]
+gemini = ["google-genai>=1.0"]
 
 [project.scripts]
 venho = "knowledge_studio.vision.cli:app"

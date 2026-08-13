@@ -39,9 +39,10 @@ def _make_client(cfg: dict, provider_override: str | None = None) -> VisionClien
         return MockVisionClient()
     return VisionClient(
         image_provider=image_provider,
-        synthesis_provider=cfg.get("ai", {}).get("consolidation_provider", "claude"),
+        synthesis_provider=cfg.get("ai", {}).get("consolidation_provider", "gemini"),
         image_model=cfg["models"]["openai"],
         synthesis_model=cfg["models"]["claude"],
+        gemini_model=cfg.get("models", {}).get("gemini", "gemini-flash-latest"),
         temperature=cfg.get("temperature", 0),
     )
 

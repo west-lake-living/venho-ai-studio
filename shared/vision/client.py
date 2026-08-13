@@ -5,6 +5,7 @@ from typing import Any, Sequence
 
 from shared.vision.providers.openai_vision import OpenAIVisionProvider
 from shared.vision.providers.claude_vision import ClaudeProvider
+from shared.vision.providers.gemini_vision import GeminiVisionProvider
 
 
 class VisionClient:
@@ -16,6 +17,7 @@ class VisionClient:
         synthesis_provider: str = "claude",
         image_model: str = "gpt-4o",
         synthesis_model: str = "claude-sonnet-4-6",
+        gemini_model: str = "gemini-3.5-flash",
         temperature: float = 0.0,
     ) -> None:
         self.image_provider_name = image_provider
@@ -23,10 +25,18 @@ class VisionClient:
         self.image_model = image_model
         self.synthesis_model = synthesis_model
 
-        self._image_provider = OpenAIVisionProvider(
-            model=image_model, temperature=temperature
-        )
-        self._synthesis_provider = ClaudeProvider(model=synthesis_model)
+        if image_provider == "openai":
+            self._image_provider = OpenAIVisionProvider(model=image_model, temperature=temperature)
+        elif image_provider == "gemini":
+            self._image_provider = GeminiVisionProvider(model=gemini_model, temperature=temperature)
+        else:
+            raise ValueError(f"Unsupported image provider: {image_provider}")
+        if synthesis_provider == "claude":
+            self._synthesis_provider = ClaudeProvider(model=synthesis_model)
+        elif synthesis_provider == "gemini":
+            self._synthesis_provider = GeminiVisionProvider(model=gemini_model, temperature=temperature)
+        else:
+            raise ValueError(f"Unsupported synthesis provider: {synthesis_provider}")
 
     def analyze_image(self, image_path: Path, system_prompt: str) -> dict[str, Any]:
         return self._image_provider.analyze(image_path, system_prompt)

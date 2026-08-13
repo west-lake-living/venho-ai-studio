@@ -115,7 +115,7 @@ def observe_cmd(
     display_label: Optional[str] = typer.Option(None, "--display-label", help="Friendly label for Mode C logs/UI"),
     family_key: Optional[str] = typer.Option(None, "--family-key", help="Wardrobe family key for Mode C (required for new outfit_id)"),
     dna_version: str = typer.Option("1.0", "--dna-version", help="DNA version label (Mode B / --all)"),
-    provider: Optional[str] = typer.Option(None, "--provider", help="Override AI provider (openai/claude/mock)"),
+    provider: Optional[str] = typer.Option(None, "--provider", help="Override image provider (openai/gemini/mock)"),
     classify: bool = typer.Option(False, "--classify", help="Pass 0: classify mixed folder into subject groups"),
     classify_review: Optional[Path] = typer.Option(None, "--classify-review", help="Review YAML path for --classify results"),
     all_subjects: bool = typer.Option(False, "--all", help="Run Mode B for ALL subject folders under data/projects/<project>/media/"),
@@ -246,7 +246,7 @@ def bootstrap_cmd(
     output: Optional[Path] = typer.Option(None, "--output", "-o", help="Output YAML path (default: config/projects/<project>/subjects/<subject>.yaml)"),
     display_name: str = typer.Option("", "--display-name", help="Human-readable name for the subject"),
     description: str = typer.Option("", "--description", help="Short description of the subject"),
-    provider: Optional[str] = typer.Option(None, "--provider", help="AI provider (openai/claude/mock)"),
+    provider: Optional[str] = typer.Option(None, "--provider", help="Image provider (openai/gemini/mock)"),
     max_sample: int = typer.Option(3, "--max-sample", help="Max images to sample (default: 3)"),
 ) -> None:
     """Schema Bootstrap: analyze sample images and generate a starter YAML schema.

@@ -1527,3 +1527,11 @@ Rebasing onto `origin/main` before push required no manual conflict resolution �
 commits landed while this session ran (`chore: research cycle 2026-08-13` + 2×
 `chore: publication registry update [skip ci]`), `git pull --rebase` merged them cleanly since
 the touched JSON regions didn't overlap. Committed `843a273`, pushed to `origin/main`.
+## Gemini Flash latest — DNA pipeline smoke test COMPLETE (2026-08-13)
+
+- `.env.local` contains `GEMINI_API_KEY`; key value was never printed or committed.
+- Mode A/B/C provider path now uses `gemini-flash-latest` for image observation and DNA synthesis.
+- Real API smoke test passed on a Ven Ho room image: valid JSON returned (`subject`, `confidence`).
+- Offline targeted tests: **64 passed**. Two existing subject-resolver/schema tests remain unrelated failures.
+- No full Mode B/C live regeneration was run; this avoided unnecessary multi-image API spend.
+- Local implementation changes remain uncommitted and require review before release.

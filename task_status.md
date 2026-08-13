@@ -1398,3 +1398,11 @@ Recorded as a known issue rather than pursued further this session.
 - [x] Live production run (Harry approved): rejected 4 stale near-duplicate pending posts, ran real `venho-growth daily-cycle` for all 4 cadence days. Queue now has 4 genuinely distinct topics — Monday (curated westlake), Wednesday (**research-backed**, Chợ Hoa Quảng Bá fact), Friday (curated, lobby — first-ever use of this dna_subject), Saturday (**Trend Radar**, Sen Tây Hồ festival).
 - [x] Committed `843a273`, pushed to `origin/main` (clean rebase onto 3 unrelated same-day CI commits, no conflicts).
 - Known pre-existing, unrelated behavior noted (not fixed, not in scope): content-validator retry-then-drop silently dropped Wednesday's Facebook draft and Saturday's Facebook+Zalo drafts this run — Instagram/Threads queued fine for both days.
+## Gemini Flash latest migration — COMPLETE WITH LOCAL CHANGES (2026-08-13)
+
+- [x] Gemini adapter/config wired for Mode A/B/C (`gemini-flash-latest`).
+- [x] `.env.local` key detected without exposing its value.
+- [x] Real one-image Gemini smoke test passed with structured JSON.
+- [x] Targeted offline suite: 64 passed.
+- [ ] Two pre-existing subject-resolver/schema tests remain failing; unrelated to Gemini.
+- [ ] Changes are local only; not committed/pushed in this task.
