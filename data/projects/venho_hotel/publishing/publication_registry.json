@@ -7594,13 +7594,13 @@
       "content_package_id": "8b1d5818-8919-4445-a24f-4b08557beb4e",
       "idempotency_key": "08173444952bb42ce213413b7a68334a09bf23afb60ff12fd09ef6a5a1262f24",
       "platform": "instagram",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T04:20:36.446357+00:00",
-      "updated_at": "2026-08-13T04:20:36.456982+00:00",
+      "updated_at": "2026-08-13T04:25:53.139550+00:00",
       "content": {
         "title": "Sen Tây Hồ: thứ hương người Hà Nội giữ lại trong ấm trà",
         "text": "Ở Hà Nội, sen không dừng lại ở một loài hoa. Sen Tây Hồ là một nếp văn hoá, được giữ lại bằng hương trong ấm trà.\n\nQuanh Hồ Tây có những đầm sen đã gắn với đời sống người Hà Nội qua nhiều thế hệ. Sen ở đây được chuộng để ướp trà, và nghề ướp trà sen là một trong những nghề đòi hỏi kiên nhẫn bậc nhất: tách từng bông lấy gạo sen, ướp, sấy, rồi lặp lại nhiều lần cho đến khi lá trà thấm hương.\n\nMột ấm trà sen vì thế không uống vội được. Người ta ngồi lâu, nói chuyện chậm, nhìn ra mặt nước. Đó cũng là cách nhiều người chọn để bắt đầu một ngày cuối tuần ở Tây Hồ: đi bộ một vòng ven hồ, ghé một quán trà, rồi để buổi sáng trôi theo nhịp của nó.\n\nVen Hồ Hotel nằm trên Nguyễn Đình Thi, ngay cạnh nhịp sống ấy. Sảnh nhỏ, cửa kính mở ra phố, quầy lễ tân gỗ nâu trầm, nền gạch hoa văn tròn, vài bức tranh treo tường và ánh sáng dịu. Một nơi vừa đủ ấm để trở về sau khi đi lang thang quanh hồ.\n\nNếu bạn đang tính một cuối tuần chậm ở Tây Hồ, nhắn tin cho Ven Hồ Hotel để kiểm tra phòng trống cho những ngày bạn dự định ở Hà Nội nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #SenTayHo #TraSen #KhamPhaHoTay #KhachSanHoTay #HaNoi",
@@ -7704,6 +7704,26 @@
         "claim_kill_switch_triggered": false,
         "content_brand_fit": 95,
         "content_overall_score": 90.23
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-08-13T04:25:53.137961+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-8b1d5818-8919-4445-a24f-4b08557beb4e",
+        "content_package_id": "8b1d5818-8919-4445-a24f-4b08557beb4e",
+        "copy_version_ids": [
+          "brief-saturday-instagram-4feef374-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "2e54ddecdbc4827ac0fbad7ea13224efe4e52f268666441db1d563394f16092e",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-saturday-instagram-4feef374@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-08-13T04:25:53.138118+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "9bac6521fad58136a00167591a582c268e3b604621469e0f89cfebb025dfe951",
+        "checksum": "02e09891259cbac0662209bf9087adbbbcec75d6e553a31a4fde74386c8b7d75"
       }
     },
     {
@@ -7711,13 +7731,13 @@
       "content_package_id": "b49d8795-3932-4774-ab47-3faad4d67a77",
       "idempotency_key": "15c068cd4fe3e715ffdb3395507fb646a9179400bcf77bbee7026e9b4d90eeb4",
       "platform": "threads",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T04:21:03.242183+00:00",
-      "updated_at": "2026-08-13T04:21:03.255059+00:00",
+      "updated_at": "2026-08-13T04:25:53.139550+00:00",
       "content": {
         "title": "Sen Tây Hồ — thứ Hà Nội phải chờ đúng mùa mới gặp",
         "text": "Ở Hà Nội có những thứ phải chờ đúng mùa mới gặp. Sen Tây Hồ là một trong số đó.\n\nSen ở vùng Tây Hồ từ lâu gắn với một nghề rất kiên nhẫn: ướp trà. Người làm phải tách từng bông, lấy phần gạo sen nhỏ li ti rồi ướp cùng trà, lặp lại nhiều lần cho hương ngấm vào từng cánh trà khô. Một mẻ trà sen vì thế không thể vội.\n\nCái hay là ngay cả khi không phải mùa sen, nhịp ấy vẫn còn quanh hồ. Trong những quán trà nhỏ, trong cách người ta ngồi lâu bên ấm nước, trong buổi chiều đi bộ dọc Nguyễn Đình Thi khi mặt hồ đổi màu.\n\nĐi Hồ Tây, đôi khi thứ đáng mang về không phải ảnh, mà là tốc độ sống chậm hơn một chút.\n\nNếu bạn đang tính một cuối tuần chậm ở Tây Hồ, nhắn cho Ven Hồ Hotel để xem phòng trống những ngày bạn định ở Hà Nội nhé.\n\n#VenHoHotelHanoi #HoTay #HanoiTravel\n\nhttps://venhohotel.com/lien-he?utm_source=threads&utm_medium=social&utm_content=pub-saturday-threads-085482e8",
@@ -7816,6 +7836,26 @@
         "claim_kill_switch_triggered": false,
         "content_brand_fit": 95,
         "content_overall_score": 92.07
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-08-13T04:25:53.137961+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-b49d8795-3932-4774-ab47-3faad4d67a77",
+        "content_package_id": "b49d8795-3932-4774-ab47-3faad4d67a77",
+        "copy_version_ids": [
+          "brief-saturday-threads-3da0e02c-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "adbf474a2e7260f26c125de41c6ef1c69561e30b84b540490ec0debb0cee9b03",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-saturday-threads-3da0e02c@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-08-13T04:25:53.138157+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "6de36a3cf934625b68d2e2fb2ec0bc681e1a529d3aac5b9e12a176a4fb5be76c",
+        "checksum": "2d32a2e3536d07ac5484669a96212f52f061b8f93238bfcf2e951d57ae31baae"
       }
     }
   ]
