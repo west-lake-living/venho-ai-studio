@@ -4744,7 +4744,7 @@
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-10T11:37:23.106268+00:00",
-      "updated_at": "2026-08-10T12:31:31.042250+00:00",
+      "updated_at": "2026-08-13T02:14:21.134939+00:00",
       "content": {
         "title": "Một kỳ nghỉ thật khẽ bên Hồ Tây",
         "text": "Hồ Tây có những ngày rất khẽ.\n\nỞ Hồ Tây, Hà Nội như hạ giọng. Mặt hồ rộng mở, phẳng lặng, mang sắc xanh ngọc trầm và trải tầm nhìn xa về phía những dáng nhà thấp thoáng nơi đường chân trời. Trên cao, mây đi chậm qua nền trời dịu sáng; dưới mặt nước, chỉ còn những phản chiếu mỏng manh, đủ để mọi thứ trở nên mềm hơn.\n\nMột buổi chiều ven hồ có thể bắt đầu bằng cơn gió nhẹ, vài hàng cây vừa đủ xanh, con đường thong thả cho một cuộc đi dạo không vội. Khi hoàng hôn xuống, nhịp sống quanh hồ thưa lại, để lại cảm giác bình yên hiếm có giữa Hà Nội — phù hợp cho một ly cà phê, một cuộc hẹn, hay đơn giản là khoảng nghỉ sau ngày dài di chuyển và làm việc.\n\nTrong hành trình ấy, Ven Hồ Hotel hiện diện như một điểm dừng chân tinh tế và vừa vặn: không ồn ào, không phô trương, chỉ mở ra một cách ở lại gần Hồ Tây để cảm nhận thành phố chậm rãi hơn.\n\nNếu bạn đang tìm một kỳ nghỉ yên tĩnh bên Hồ Tây, hãy nhắn Ven Hồ Hotel hoặc kiểm tra tình trạng phòng khi thuận tiện.\n\n#VenHoHotel #HoTay #HanoiStay #KhamPhaHoTay #QuietHanoi #DuLichHaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-friday-facebook-3ac67833",
@@ -4834,7 +4834,143 @@
       "approved_at": null,
       "approval_scope": null,
       "approval_snapshot": null,
-      "approval_revoked_reason": "Fallback image replaced to prevent duplicate publication; human re-approval required."
+      "approval_revoked_reason": "Fallback image replaced to prevent duplicate publication; human re-approval required.",
+      "edited_by": "hpham1504@gmail.com",
+      "edit_validation": {
+        "content_report": {
+          "contract_version": "1.0",
+          "module": "validator_studio",
+          "project": "venho_hotel",
+          "subject": "westlake",
+          "validation_type": "content",
+          "artifact_ref": {
+            "type": "content",
+            "file": "/var/folders/2l/g5v49t0113v5vfkqm8qkh8hh0000gn/T/tmpy0ky9qka.md",
+            "hash": "sha256:cefaf5d037816fe9a9efbe7f7821b6262ae305f8f5ec3168cb6bcf3597080e29"
+          },
+          "source_knowledge": [
+            {
+              "file": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/data/projects/venho_hotel/knowledge/VENHO_HOTEL_WESTLAKE_DNA.json",
+              "dna_version": "1.1",
+              "dna_contract_version": "1.1",
+              "hash": "sha256:8aa1a05710466520b35725a8610fca4b8dbb4c0315d44f274a60f4a1b1f358af"
+            }
+          ],
+          "prompt_ref": null,
+          "contract_refs": null,
+          "generated_at": "2026-08-13T09:14:21.133454",
+          "observer": {
+            "provider": "mock",
+            "model": "mock",
+            "samples": 1
+          },
+          "kill_switch": {
+            "triggered": false,
+            "reason": ""
+          },
+          "overall_score": 93.34,
+          "verdict": "approve",
+          "dna_match_score": 95,
+          "section_scores": [
+            {
+              "section": "content_quality",
+              "key": "brand_fit",
+              "match_state": null,
+              "score": 95,
+              "status": "ok",
+              "reason": "Overlap with DNA and project brand rules.",
+              "evidence": "",
+              "category": "brand_fit"
+            },
+            {
+              "section": "content_quality",
+              "key": "tone",
+              "match_state": null,
+              "score": 82,
+              "status": "warning",
+              "reason": "Tone follows warm, authentic, unhurried project rules.",
+              "evidence": "",
+              "category": "tone"
+            },
+            {
+              "section": "content_quality",
+              "key": "clarity",
+              "match_state": null,
+              "score": 92.9,
+              "status": "ok",
+              "reason": "Length and sentence shape are production-readable.",
+              "evidence": "",
+              "category": "clarity"
+            },
+            {
+              "section": "content_quality",
+              "key": "cta",
+              "match_state": null,
+              "score": 100,
+              "status": "ok",
+              "reason": "Soft CTA presence and hard-sell risk.",
+              "evidence": "",
+              "category": "cta"
+            },
+            {
+              "section": "content_quality",
+              "key": "language_fit",
+              "match_state": null,
+              "score": 100,
+              "status": "ok",
+              "reason": "Language fit for target_language=bilingual.",
+              "evidence": "",
+              "category": "language_fit"
+            },
+            {
+              "section": "content_quality",
+              "key": "production_readiness",
+              "match_state": null,
+              "score": 92.58,
+              "status": "ok",
+              "reason": "Platform readiness for facebook.",
+              "evidence": "",
+              "category": "production_readiness"
+            }
+          ],
+          "category_scores": {
+            "brand_fit": 95,
+            "tone": 82,
+            "clarity": 92.9,
+            "cta": 100,
+            "language_fit": 100,
+            "production_readiness": 92.58
+          },
+          "forbidden_violations": [],
+          "allowed_imperfections_check": [],
+          "issues": [],
+          "recommendation": "approve",
+          "validation_notes": [
+            "Content validation is advisory and does not rewrite the draft.",
+            "platform=facebook; target_language=bilingual",
+            "Contract refs are read from the M02 prompt contract when present; M03 does not infer outfit context from prose."
+          ],
+          "raw_observation": {}
+        },
+        "claim_report": {
+          "validator": "claim_validator",
+          "status": "completed",
+          "verdict": "READY_FOR_REVIEW",
+          "kill_switches": [],
+          "checks": []
+        },
+        "alignment_report": {
+          "validator": "alignment_validator",
+          "status": "completed",
+          "verdict": "READY_FOR_REVIEW",
+          "alignment_score": 1,
+          "alignment_min": 0.95,
+          "missing_required_entities": [],
+          "forbidden_entities_found": [],
+          "kill_switches": []
+        }
+      },
+      "gateway_error": null
     },
     {
       "publication_id": "pub-friday-instagram-793c9f27",
