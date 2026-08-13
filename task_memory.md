@@ -1376,3 +1376,40 @@ Harry's call: stop here, don't retry with a longer timeout or a different model 
 Still open: a lighter stack (SD1.5 IPAdapter FaceID, untested) or more RAM/cloud GPU before the
 next live attempt; the 10-image benchmark is still blocked behind that; the workflow JSON has
 never actually completed end-to-end. Full detail: `task_status.md` P8 section.
+
+## Growth Agent — per-topic Duyệt + real slot_date exposed (2026-08-13)
+
+Requested from the `venho-os` side of a dashboard debugging session (full context, screenshot,
+and Harry's clarifying answers live in `venho-os/task_memory.md` under the same date). Only the
+`venho-ai-studio` side is recorded here.
+
+- `growth_orchestrator/application/approve_and_dispatch.py`:
+  - Refactored `_scheduled_week_start()` to use a new `_slot_date(publication)` helper that
+    parses the real calendar date out of `slot_id` (`slot-2026-08-14-...`).
+  - `list_pending()` now includes `slot_date` (ISO string or `null`) on every row, so the
+    dashboard can tell two same-weekday topics from different weeks apart — previously it only
+    exposed `day` (the weekday name), and `approve_week` scans a **two-week** window, so this was
+    a real ambiguity, not just a display nit.
+  - New `approve_publications(publication_ids, approved_by, project, data_root, registry)`:
+    approves an exact, caller-given set of `PENDING_APPROVAL` publication_ids atomically (reuses
+    `PublicationRegistry.update_many_if_status`, so a status race on any one id fails the whole
+    batch, same guarantee `approve_week` already had). Sets `approval_scope: "topic_group"` to
+    distinguish it from `approve_week`'s `"weekly_schedule"` in the registry. `approve_week`
+    itself is untouched.
+- `growth_orchestrator/cli.py`: new `approve-group` command (`--publication-id` repeatable,
+  `--approved-by`), same error-handling pattern as `approve-week`/`reject`. Verified live:
+  `venho-growth --help` lists it (editable pip install picks up the change with no reinstall).
+- Tests added to `tests/test_growth_approve_and_dispatch.py`: `slot_date` exposure, approving
+  only the given topic (sibling topic in the same slot stays untouched), unknown id raises
+  `KeyError`, atomicity when one id in the batch changed status underneath the call. 45/45 pass
+  in that file.
+- Confirmed the 30 pre-existing failures in `test_growth_daily_cycle.py`/
+  `test_growth_weekly_cycle.py` are unrelated: `git stash`'d this change and reran — identical
+  failure list on the unmodified code.
+- `data/projects/venho_hotel/publishing/publication_registry.json` was dirty in the working tree
+  before this — Harry's own real "Sửa" edit from the dashboard earlier that day, not test
+  fallout. Stashed just that file around `git pull --rebase` (origin had an unrelated CI
+  `chore: publication registry update` commit), popped after — came back as "nothing to commit",
+  meaning the CI commit already carried the same edit forward. No data lost, no manual merge
+  needed.
+- Committed `58ad88d`, pushed to `origin/main`.

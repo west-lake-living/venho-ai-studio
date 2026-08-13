@@ -1375,3 +1375,12 @@ Recorded as a known issue rather than pursued further this session.
 - [ ] `config/comfyui/face_restore_v1_api.json` has never actually executed to completion — its
       node wiring was verified by inspection and by ComfyUI accepting the queued graph without
       validation error, not by a finished image.
+
+## Growth Agent — per-topic Duyệt + real slot_date exposed (2026-08-13)
+
+- [x] `list_pending()` exposes `slot_date` per row (parsed from `slot_id`).
+- [x] New `approve_publications()` + CLI `approve-group` — approves one topic's ids atomically, `approve_week` unchanged.
+- [x] 4 new tests, 45/45 pass in `test_growth_approve_and_dispatch.py`.
+- [x] Confirmed 30 pre-existing unrelated failures elsewhere (daily_cycle/weekly_cycle) via stash-and-rerun.
+- [x] Committed `58ad88d`, pushed to `origin/main`. Live immediately via editable pip install (`venho-growth --help` confirms `approve-group` registered).
+- Counterpart work in `venho-os` (new `approve-group` route, dashboard UI): see that repo's own `task_status.md`/`task_memory.md`/`CLAUDE.md`, same date.
