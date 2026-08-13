@@ -6126,13 +6126,13 @@
       "content_package_id": "0492cd76-dc4f-48a9-9c20-29c8e867ce12",
       "idempotency_key": "422fc60604248b2e2b5f11a1fae301dd57e09a97d3d40031259a6a78352dfc52",
       "platform": "facebook",
-      "status": "GATEWAY_ERROR",
-      "gateway_status": "GATEWAY_ERROR",
+      "status": "SHADOW_HELD",
+      "gateway_status": "SHADOW_HELD",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-12T08:15:18.120622+00:00",
-      "updated_at": "2026-08-12T08:15:40.965977+00:00",
+      "updated_at": "2026-08-13T07:17:50.028423+00:00",
       "content": {
         "title": "Buổi sáng trong một căn phòng gần Hồ Tây",
         "text": "Buổi sáng ở Tây Hồ thường bắt đầu bằng ánh sáng, chứ không phải tiếng chuông báo thức.\n\nÁnh sáng đi qua khung cửa sổ chia thành bốn ô vuông, viền nhôm đen mảnh, rồi rải xuống mặt sàn gỗ. Không cần bật đèn. Cả căn phòng cứ thế sáng dần lên theo buổi sáng bên ngoài.\n\nPhòng có hình chữ nhật, tường màu xám nhạt, không treo tranh. Chỉ có giường trải ga trắng, đầu giường gỗ, một chiếc bàn kê sát tường và bộ rèm tối màu vừa được kéo sang một bên. Ít đồ, nên mắt cũng nghỉ được một lúc.\n\nĐây là kiểu phòng gọn gàng dành cho những buổi sáng không có gì phải gấp. Pha một cốc nước, ngồi bên cửa sổ vài phút, nghe tiếng xe bắt đầu chạy trên đường Nguyễn Đình Thi, rồi mới nghĩ đến chuyện hôm nay đi đâu. Hồ Tây chỉ cách đó một đoạn đi bộ ngắn, và buổi sáng là lúc quanh hồ dễ chịu nhất — người đi bộ, người đạp xe, mấy quán cà phê vừa mở cửa.\n\nVen Hồ Hotel là một khách sạn boutique nhỏ, nằm ở khoảng giữa: đủ yên để ngủ ngon, đủ gần để bước ra là tới hồ.\n\nNếu bạn đang tính mấy ngày ở Hà Nội, nhắn Ven Hồ Hotel để xem còn phòng vào đúng dịp bạn muốn nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-b132faeb",
@@ -6237,7 +6237,9 @@
         "package_versions_checksum": "3a2c881e30b72d699407eb84e7b816a4783c8411129da8fe92e504c9a8015e76",
         "checksum": "92319d0467faa8ccb3ed536b01c1ddad3c4af542c34be139fb1ad1ff2bc741e6"
       },
-      "shadow_override_by": "hpham1504@gmail.com"
+      "shadow_override_by": "hpham1504@gmail.com",
+      "rollout_stage": "shadow",
+      "shadow_held_reason": "rollout stage is shadow; dispatch withheld"
     },
     {
       "publication_id": "pub-wednesday-instagram-bb26c872",
