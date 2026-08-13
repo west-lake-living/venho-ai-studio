@@ -1384,3 +1384,17 @@ Recorded as a known issue rather than pursued further this session.
 - [x] Confirmed 30 pre-existing unrelated failures elsewhere (daily_cycle/weekly_cycle) via stash-and-rerun.
 - [x] Committed `58ad88d`, pushed to `origin/main`. Live immediately via editable pip install (`venho-growth --help` confirms `approve-group` registered).
 - Counterpart work in `venho-os` (new `approve-group` route, dashboard UI): see that repo's own `task_status.md`/`task_memory.md`/`CLAUDE.md`, same date.
+
+## Growth Agent — diversify 4 weekly posts by cadence-day topic lanes (2026-08-13)
+
+- [x] `content_pillars.yaml` restructured to `lanes.<day>` — 4 distinct topic pools (west_lake_life/local_discovery/hotel_experience/local_guide_trend), 8-10 topics each, matching the master prompt's 5 pillars. Old `pillars`/`special_topics` kept as documented deprecated fallback.
+- [x] `topic_selector.py` (new) — cooldown (60d) + least-recently-used selection against real posting history, replaces the bare modulo cursor.
+- [x] `local_intel.py` (new) — approved-only (`status=approved`) research facts feed Wednesday's topic candidates + `creative_brief.proof_points` (previously always `[]`). Expired `local_events` filtered by end date.
+- [x] `daily_cycle._pick_scenario` — per-lane `scenario_pool` rotation replaces the 1:1 `SCENARIO_BY_DNA_SUBJECT` map; weather override generalized from Saturday-only to every cadence day.
+- [x] `social_prompts.py` — `prompt_rules`-based system prompt selection, local_discovery "only supplied facts" rule, SEO keyword block (Harry's 4 exact keywords), recent-topics anti-repeat hint.
+- [x] `weekly_cycle.WEEKLY_CYCLE_JOB_VERSION` 3 → 4 (required — topic-selection contract changed).
+- [x] Fixed pre-existing stale-DNA-filename fixture bug blocking `test_growth_daily_cycle.py`/`test_growth_weekly_cycle.py`/`test_growth_budget_gate.py` entirely (unrelated to this change, confirmed via git-stash baseline).
+- [x] 20 new tests + 3 corrected; full suite 863 pass (70 pre-existing unrelated failures elsewhere, confirmed unchanged vs baseline).
+- [x] Live production run (Harry approved): rejected 4 stale near-duplicate pending posts, ran real `venho-growth daily-cycle` for all 4 cadence days. Queue now has 4 genuinely distinct topics — Monday (curated westlake), Wednesday (**research-backed**, Chợ Hoa Quảng Bá fact), Friday (curated, lobby — first-ever use of this dna_subject), Saturday (**Trend Radar**, Sen Tây Hồ festival).
+- [x] Committed `843a273`, pushed to `origin/main` (clean rebase onto 3 unrelated same-day CI commits, no conflicts).
+- Known pre-existing, unrelated behavior noted (not fixed, not in scope): content-validator retry-then-drop silently dropped Wednesday's Facebook draft and Saturday's Facebook+Zalo drafts this run — Instagram/Threads queued fine for both days.

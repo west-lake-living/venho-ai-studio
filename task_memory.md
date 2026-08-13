@@ -1413,3 +1413,117 @@ and Harry's clarifying answers live in `venho-os/task_memory.md` under the same 
   meaning the CI commit already carried the same edit forward. No data lost, no manual merge
   needed.
 - Committed `58ad88d`, pushed to `origin/main`.
+
+## Growth Agent — diversify 4 weekly posts by cadence-day topic lanes (2026-08-13)
+
+Harry's complaint, verified in code: all 4 weekly posts read as the same post (Hồ Tây, mặt
+nước, buổi sáng). `content_pillars.yaml` held exactly 5 near-synonymous topics
+(`morning at West Lake` / `lake view room` / `quiet Hanoi stay` / `lake view morning` /
+`simple hotel comfort`) shared across Mon/Wed/Fri, picked by `_pick_topic`'s bare
+`flat[index % len(flat)]` off a `rotation_state.json["regular"]` cursor already at **41**
+(~8 repeats each). Meanwhile the research pipeline was already producing real material
+(21 approved facts, 8 verified Trend Radar candidates, a 7-day weather forecast) but
+`_pick_topic`/`_build_creative_brief` only ever wired it into the **Saturday** special lane —
+`proof_points` on every Mon/Wed/Fri brief was hardcoded `[]`. Image scenario was a 1:1
+`SCENARIO_BY_DNA_SUBJECT` map, so every "outside" post rendered the identical rooftop-sunrise
+concept even though the registry has 3 "outside" scenarios (sunrise/sunset/shade).
+
+Design chosen with Harry (AskUserQuestion): hybrid pool (curated + research) · only
+`status=approved` facts (never `pending_approval`) · a lane with no fresh fact/event falls back
+to its curated topics rather than leaving a slot empty · scenario pool now varies by lane +
+weather, not just dna_subject.
+
+**What changed:**
+- `content_pillars.yaml`: new `lanes.<day>` shape — `monday`→`west_lake_life` (10 topics),
+  `wednesday`→`local_discovery` (8 topics + `research_domains: [local_events, local_intel]`),
+  `friday`→`hotel_experience` (10 topics), `saturday`→`local_guide_trend` (special_topics moved
+  under `lanes.saturday`, same shape as before). Old top-level `pillars`/`special_topics` kept
+  as a documented deprecated fallback so anything still reading that shape doesn't break.
+- `growth_orchestrator/application/topic_selector.py` (new): `select_from_candidates()` —
+  cooldown (default 60d, reads `PublicationRegistry`'s `topic`+`created_at`) + rotation among
+  the fresh subset; if every candidate is still in cooldown, picks the least-recently-used one
+  instead of raising or leaving a slot empty. With an empty registry (fresh state, most tests)
+  this reduces to the exact old `flat[index % len(flat)]` — verified byte-for-byte against the
+  pre-existing special-lane unit tests, all passed unmodified. Also exports `advance_rotation()`
+  (renamed from a private `_advance_rotation`) for `daily_cycle._pick_scenario`'s own cursor.
+- `growth_orchestrator/application/local_intel.py` (new): `approved_local_facts()` reads
+  `ProposedFactStore.list_items(status="approved")` **only** (Harry's explicit call), filters
+  `local_events` facts whose `DD/MM/YYYY[-DD/MM/YYYY]` value has already ended.
+  `local_intel_topic_entries()` shapes them into topic candidates with
+  `proof_points: [{"text", "fact_key"}]` — exactly `contracts/creative_brief.schema.json`'s
+  required shape, which `_build_creative_brief` had never populated before.
+- `daily_cycle.py`:
+  - `_pick_topic` dispatches to `_pick_regular_topic` (Mon/Wed/Fri: research entries take
+    priority over curated when any exist and pass cooldown) or `_pick_special_topic`
+    (Saturday: unchanged mechanism, just cooldown-aware now).
+  - New `_pick_scenario`: rotates a lane's `scenario_pool` (declared per-lane in
+    content_pillars.yaml) instead of the old 1:1 `SCENARIO_BY_DNA_SUBJECT` map. A topic that
+    already names its own `dna_subject` (Saturday curated/trend entries, legacy shape) keeps
+    deciding the subject, only the scenario *within* it varies; a topic with none (new
+    Mon/Wed/Fri lanes) lets the scenario decide the subject and writes it back onto
+    `topic["dna_subject"]`. Weather override (previously Saturday-only) now applies to every
+    day via generalized `_weather_context_for_date` / `_next_cadence_date`.
+  - `_build_creative_brief` gained optional `scenario_key=`/`prompt_rules=`/`recent_topics=`
+    kwargs, all defaulting to the old behaviour when omitted — the 4 direct-call weather tests
+    in `test_research_weather_and_sources.py` needed zero changes.
+  - New `_recent_topics()` — last 6 distinct posted topics, fed into every brief as an
+    anti-repeat hint (0 extra API cost, the cheapest diversity lever available).
+- `content_studio/generators/social_prompts.py`: `select_system_prompt` now branches on a new
+  `ContentRequest.prompt_rules` field (`west_lake_life`/`local_discovery`/`weekend_events`/
+  `default`) rather than only `lane`/`dna_subject`; added `_LOCAL_DISCOVERY_RULES` ("only name
+  places/events actually supplied, never invent one" — mirrors `_WEEKEND_EVENTS_RULES`'s proven
+  shape) and a `_SEO_KEYWORDS_BLOCK` naming Harry's exact 4 keywords ("Ven Hồ Hotel", "khách sạn
+  view Hồ Tây", "Nguyễn Đình Thi", "hoàng hôn Hồ Tây"). `lane` itself stays the closed
+  `daily`/`saturday_trend` enum creative_brief.schema.json requires — `prompt_rules` is a
+  separate, schema-permitted (`additionalProperties: true`) extension.
+- `growth_orchestrator/bridges/m05_content_bridge.py`: passes `brief["proof_points"]` →
+  `ContentRequest.research_facts`, `brief["recent_topics"]` → `.recent_topics`,
+  `brief["prompt_rules"]` → `.prompt_rules`.
+- `growth_orchestrator/application/weekly_cycle.py`: `WEEKLY_CYCLE_JOB_VERSION` **"3" → "4"**
+  (topic-selection contract changed; skipping the bump would make the next fortnight run
+  silently no-op as already-`SUCCEEDED` under v3 — same reasoning as the v1→v2 bump's own
+  comment). Two hardcoded `fortnight-v3-...` test job keys updated to `v4` accordingly.
+- Fixed a **pre-existing, unrelated** bug blocking verification: `test_growth_daily_cycle.py`/
+  `test_growth_weekly_cycle.py`/`test_growth_budget_gate.py`'s `_tmp_data_root()` fixture copied
+  `VENHO_HOTEL_LAKE_VIEW_ROOM_DNA.json`, a filename that no longer exists on disk (split into
+  `_1_DNA.json`/`_2_DNA.json` at some earlier point) — every test in those 3 files failed at
+  fixture setup regardless of this change (confirmed via `git stash` baseline: same failures on
+  unmodified code). Fixed by copying the real `_1`/`_2` files plus `VENHO_HOTEL_LOBBY_DNA.json`
+  (newly needed since Friday's scenario_pool can pick `venho_lobby_cozy`).
+- 20 new tests (`tests/test_topic_selector.py` ×8, `tests/test_local_intel.py` ×7,
+  `tests/test_growth_daily_cycle.py` ×6: four different pillars across a week, Wednesday
+  fact-backed vs curated-fallback, proof_points reaching the generator, scenario variety across
+  4 Friday runs, recent_topics reaching the generator) + 3 stale tests corrected (fallback-image
+  test's hardcoded literal topic string, two job-version-3 test literals). Full suite: 863 pass
+  (up from 843 baseline-with-the-fixture-fix), the 70 remaining failures are pre-existing and
+  unrelated (Video Studio/Validator/subject_resolver — confirmed identical failure list via
+  `git stash` baseline diff, none touch anything this change modified).
+
+**Live production verification (Harry approved via AskUserQuestion, chose "reject old, run
+all 4"):** rejected the 4 stale near-duplicate `PENDING_APPROVAL` rows
+(`pub-wednesday-facebook-{582e1b20,25e2b050,45aa268d,42f9e395}`, all "lake view"/"morning at
+West Lake" topics), then ran real `venho-growth daily-cycle --day {monday,wednesday,friday,
+saturday} --no-image` against production data (`ANTHROPIC_API_KEY` had to be sourced from
+`.env.local` manually — not exported by default in this shell). Monday's first attempt hit the
+Bash tool's 2-minute default timeout mid-run (3/4 platforms had already queued before the kill);
+subsequent days ran with an explicit longer timeout. Result — 4 genuinely distinct topics now
+in the real queue: Monday "người Hà Nội tập thể dục quanh Hồ Tây lúc 6h sáng" (curated,
+westlake), Wednesday "Chợ Hoa Quảng Bá, 236 Âu Cơ" (**research-backed**, from an approved
+`local_intel` fact), Friday "góc đọc sách ở lobby ngày mưa" (curated, lobby — first time this
+dna_subject has ever been used, was unreachable before this fix), Saturday "Sen Tây Hồ: Tinh
+hoa văn hoá Việt" (**Trend Radar**, `special_lane_type: cultural_event`/`lifestyle_trend`).
+Facebook draft for Wednesday and Facebook+Zalo for Saturday were silently dropped by the
+existing content-validator retry-then-drop path (pre-existing behavior, unrelated to this
+change) — Instagram/Threads queued fine for both.
+
+Also answered a follow-up: Trend Radar cannot and does not search Facebook/TikTok directly —
+`research_engine/trend_radar/collectors/` has no FB/IG/TikTok collector at all, only Tavily
+search + a named-URL extractor. This is a deliberate policy line (§7.2 in the plan, quoted
+verbatim in `tavily_extract.py`'s docstring): "reverse-engineered wrappers driving a personal
+account's session cookie, and harvesting competitors' Facebook/Instagram/TikTok" is exactly what
+is forbidden — the risk being losing the account, not a technical limitation.
+
+Rebasing onto `origin/main` before push required no manual conflict resolution — 3 unrelated CI
+commits landed while this session ran (`chore: research cycle 2026-08-13` + 2×
+`chore: publication registry update [skip ci]`), `git pull --rebase` merged them cleanly since
+the touched JSON regions didn't overlap. Committed `843a273`, pushed to `origin/main`.
