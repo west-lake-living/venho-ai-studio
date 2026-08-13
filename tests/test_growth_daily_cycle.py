@@ -142,6 +142,39 @@ def test_run_daily_cycle_one_platform_failure_does_not_abort_the_others(tmp_path
     assert result.errors == [{"platform": "instagram", "error": "RuntimeError: simulated OpenAI rate limit"}]
 
 
+def test_run_daily_cycle_records_a_reason_when_validator_rejects_every_retry(tmp_path: Path) -> None:
+    """Regression test for the 2026-08-13 GitHub Actions failure ("Growth
+    Agent Replace Rejected Content: All jobs have failed" /
+    "Replacement generation incomplete: []") -- exhausting MAX_TEXT_ATTEMPTS
+    on a non-READY_FOR_REVIEW verdict used to `continue` silently, leaving
+    both `publications` and `errors` empty."""
+    data_root = _tmp_data_root(tmp_path)
+
+    class _AlwaysRejectValidatorBridge:
+        def validate_package(self, brief: dict, copy_candidate: dict) -> dict:
+            return {
+                "verdict": "NEEDS_REVISION",
+                "reports": [
+                    {"validator": "claim_validator", "verdict": "NEEDS_REVISION", "kill_switches": ["unsupported_critical_claim"]},
+                    {"validator": "alignment_validator", "verdict": "READY_FOR_REVIEW", "kill_switches": []},
+                ],
+            }
+
+    result = run_daily_cycle(
+        "monday",
+        data_root=data_root,
+        generate_image=False,
+        content_bridge=_mock_content_bridge(data_root),
+        validator_bridge=_AlwaysRejectValidatorBridge(),
+    )
+
+    assert result.publications == []
+    assert len(result.errors) == len(DEFAULT_PLATFORMS)
+    for error in result.errors:
+        assert "validator verdict NEEDS_REVISION after 3 attempts" in error["error"]
+        assert "claim_validator: kill_switches=['unsupported_critical_claim']" in error["error"]
+
+
 def test_run_daily_cycle_fills_slot_and_stores_slot_id_on_publications(tmp_path: Path) -> None:
     data_root = _tmp_data_root(tmp_path)
     slot_store = SlotStore(db_path=tmp_path / "growth.db")

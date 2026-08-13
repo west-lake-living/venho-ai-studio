@@ -83,6 +83,29 @@ class DailyCycleResult:
 _WEEKDAY_INDEX = {"monday": 0, "tuesday": 1, "wednesday": 2, "thursday": 3, "friday": 4, "saturday": 5, "sunday": 6}
 
 
+def _validation_failure_reason(validation: dict[str, Any]) -> str:
+    """Compact, human-readable reason a package["state"] came back non-
+    READY_FOR_REVIEW -- pulled from M03ValidatorBridge's three reports
+    (claim/alignment/content). Added 2026-08-13 alongside the errors.append
+    fix in run_daily_cycle's retry loop: knowing *that* the validator
+    rejected a draft 3 times is not actionable on its own -- this is what
+    tells us which gate (claim kill-switch vs alignment vs content rubric
+    score/issue) actually fired, without needing another paid regeneration
+    run just to see the reason."""
+    parts: list[str] = []
+    for report in validation.get("reports", []):
+        validator = report.get("validator", "unknown_validator")
+        kill_switches = report.get("kill_switches")
+        if kill_switches:
+            parts.append(f"{validator}: kill_switches={kill_switches}")
+        elif report.get("validation_type") == "content" and report.get("verdict") not in (None, "approve"):
+            issues = [issue.get("issue") for issue in report.get("issues", []) if issue.get("severity") in ("high", "medium", "HIGH", "MEDIUM")]
+            parts.append(
+                f"content_validator: verdict={report.get('verdict')} score={report.get('overall_score')} issues={issues[:3]}"
+            )
+    return "; ".join(parts) if parts else f"verdict={validation.get('verdict')} (no report detail)"
+
+
 def _next_cadence_date(day: str, on_or_after: date) -> date:
     """The next date `day` falls on, on or after `on_or_after` -- generalizes
     weather_api.next_saturday to any weekday so Mon/Wed/Fri can also read a
@@ -1052,7 +1075,10 @@ def run_daily_cycle(
                 errors.append(
                     {
                         "platform": platform,
-                        "error": f"validator verdict {package['state']} after {MAX_TEXT_ATTEMPTS} attempts",
+                        "error": (
+                            f"validator verdict {package['state']} after {MAX_TEXT_ATTEMPTS} attempts -- "
+                            f"{_validation_failure_reason(package['validation'])}"
+                        ),
                     }
                 )
                 continue
