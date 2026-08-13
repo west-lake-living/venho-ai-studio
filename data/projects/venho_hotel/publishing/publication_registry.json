@@ -9513,13 +9513,13 @@
       "content_package_id": "8e56c09f-280b-42bb-8aa2-c148914ba745",
       "idempotency_key": "dd850a85c41d4b2a267963c46f9ad0339fc1f497dec0849096e98de039ccb0e5",
       "platform": "facebook",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T11:41:16.162725+00:00",
-      "updated_at": "2026-08-13T11:41:16.175939+00:00",
+      "updated_at": "2026-08-13T12:16:00.675652+00:00",
       "content": {
         "title": "Chiếc xe đạp chở rau trên đường Nguyễn Đình Thi",
         "text": "Trên đường Nguyễn Đình Thi, thứ đi qua trước cả xe máy thường là một chiếc xe đạp chở rau.\n\nRau muống, mướp, mấy bó hành xếp chồng lên nhau, buộc lại bằng dây cao su. Người đạp xe đi chậm, sát mép đường, bên tay phải là mặt Hồ Tây còn phẳng.\n\nĐầu tuần ở khu này không ồn. Có người đi bộ vòng hồ, có người dừng lại mua nửa mớ rau ngay bên lề đường, nói vài câu rồi ai lại việc người ấy. Không ai vội, kể cả sáng thứ Hai.\n\nĐó là phần Hà Nội mà bạn khó gặp nếu chỉ di chuyển bằng xe hơi từ điểm này sang điểm khác. Nó nằm ở tốc độ đi bộ, ở khoảng thời gian mười lăm phút bạn chưa biết làm gì sau khi ăn sáng.\n\nVen Hồ Hotel nằm ngay trên tuyến đường ấy. Sảnh nhỏ, sàn gạch nâu, quầy lễ tân gỗ tối màu, vài bức tranh trên tường — vừa đủ để bước ra cửa kính là đã ở giữa nhịp sống Hồ Tây, và bước vào là được yên tĩnh trở lại. Chiều muộn, cũng con đường đó, ánh sáng đổi màu và hoàng hôn Hồ Tây trở thành thứ quen thuộc chứ không còn là điểm phải đi xem.\n\nNếu bạn đang tính vài ngày ở Hà Nội và muốn ở gần Hồ Tây, nhắn tin cho Ven Hồ Hotel để xem lịch phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #NguyenDinhThi #WestLakeHanoi #KhachSanViewHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-monday-facebook-133488ff",
@@ -9621,6 +9621,26 @@
         "claim_kill_switch_triggered": false,
         "content_brand_fit": 95,
         "content_overall_score": 92.68
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-08-13T12:16:00.673786+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-8e56c09f-280b-42bb-8aa2-c148914ba745",
+        "content_package_id": "8e56c09f-280b-42bb-8aa2-c148914ba745",
+        "copy_version_ids": [
+          "brief-monday-facebook-4e892972-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "7a395fbd8fb68b1e8048d36d35bfac21244f2f865c98427ea5cbe5f451365424",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-monday-facebook-4e892972@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-08-13T12:16:00.673916+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "c54a9336828b4e44116e3db3aa95b19a8ad93014e2e370ef54a2276d18f809f1",
+        "checksum": "dc81c758e3571bdcf9941dde4e8da293ed5198b49659d8e4a1b0f0ecfcf9a8d1"
       }
     },
     {
@@ -9628,13 +9648,13 @@
       "content_package_id": "6188c25f-8202-4ce8-bc7f-9b69ed603398",
       "idempotency_key": "e02187e46b25ab532b82b7a9ac98561b83709a6fa785eec80ee48d4743281214",
       "platform": "instagram",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T11:41:40.435765+00:00",
-      "updated_at": "2026-08-13T11:41:40.448924+00:00",
+      "updated_at": "2026-08-13T12:16:00.675652+00:00",
       "content": {
         "title": "Xe đạp rau củ trên đường Nguyễn Đình Thi",
         "text": "Đầu tuần ở Nguyễn Đình Thi thường bắt đầu bằng một tiếng rao rất nhỏ, đi qua trước khi kịp nhìn rõ.\n\nMột chiếc xe đạp chở đầy rau củ men theo lề đường, phía sau là mặt Hồ Tây còn chưa hết mờ. Cải xanh, cà chua, mấy bó rau thơm buộc gọn, xếp cao đến mức người đạp phải hơi nghiêng người để giữ thăng bằng.\n\nXe đi chậm. Chậm hơn cả người tập thể dục ven hồ.\n\nCó người gọi lại, mua vài thứ cho bữa trưa. Vài câu trao đổi ngắn, tiếng lạch cạch của chân chống, rồi chiếc xe lại tiếp tục đi về phía cuối đường.\n\nĐây là phần Hồ Tây mà bản đồ không đánh dấu: không phải một điểm đến, chỉ là nhịp sinh hoạt của một con phố ven hồ vào sáng thứ Hai.\n\nỞ Ven Hồ Hotel, đứng phía trong cánh cửa kính của sảnh, những buổi sáng như vậy trôi qua ngay trước mặt. Sảnh không rộng, sàn gạch nâu với những vòng tròn nhỏ, một bức tranh trên tường, quầy lễ tân bằng gỗ tông nâu đỏ sẫm. Đủ yên để nghe thấy tiếng xe đạp đi ngang.\n\nHồ Tây không cần phải xem. Chỉ cần ở gần đủ lâu.\n\nNếu bạn định dành vài ngày ở Hà Nội theo nhịp chậm như vậy, nhắn Ven Hồ Hotel để xem lịch phòng còn trống nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #NguyenDinhThi #KhachSanViewHoTay #HaNoi #HanoiTravel",
@@ -9737,6 +9757,26 @@
         "claim_kill_switch_triggered": false,
         "content_brand_fit": 95,
         "content_overall_score": 92.86
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-08-13T12:16:00.673786+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-6188c25f-8202-4ce8-bc7f-9b69ed603398",
+        "content_package_id": "6188c25f-8202-4ce8-bc7f-9b69ed603398",
+        "copy_version_ids": [
+          "brief-monday-instagram-9eb8ba70-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "24cf505ecbdf96a0738941b2081d4b0f4b8b2a72e124278753acaac140402aca",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-monday-instagram-9eb8ba70@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-08-13T12:16:00.673950+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "84931156c532fdd1af09eaeff6150b678775862ad05cbc1a4d4536591c6798e4",
+        "checksum": "97060bbd9dd3e20fca3546a8b57d5efd77676775adfde8b18e0e2a28126097e1"
       }
     },
     {
