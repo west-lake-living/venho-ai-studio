@@ -5489,13 +5489,13 @@
       "content_package_id": "dc3644fe-7950-464d-83bd-84e7bf47cce8",
       "idempotency_key": "a56768629f88dd8048f7ab5398c1b8d8cb346c227076a2dd238e863e3cb0023f",
       "platform": "facebook",
-      "status": "PENDING_APPROVAL",
+      "status": "REJECTED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-11T14:01:38.544375+00:00",
-      "updated_at": "2026-08-11T14:01:38.552284+00:00",
+      "updated_at": "2026-08-13T04:08:52.563790+00:00",
       "content": {
         "title": "Buổi sáng trong một căn phòng gọn gàng gần Hồ Tây",
         "text": "Bảy giờ sáng, ánh sáng đi qua khung cửa ô vuông rồi nằm lại trên sàn gỗ. Chưa cần làm gì cả.\n\nBảy giờ sáng, ánh sáng đi qua khung cửa ô vuông rồi nằm lại trên sàn gỗ. Chưa cần làm gì cả.\n\nPhòng ở Ven Hồ Hotel không rộng, hình chữ nhật, tường trắng, trần trắng phẳng. Khung cửa nhôm đen mảnh chia ô hai nhân hai, kéo rèm xám đậm sang một bên là đủ để cả buổi sáng tràn vào.\n\nMột chiếc giường đôi, đầu giường gỗ, ga trắng. Hai chiếc ghế gỗ đặt gần cửa sổ — thường thì chúng chỉ dùng để ngồi uống cà phê, xem đồng hồ, rồi quyết định hôm nay sẽ đi bộ hướng nào.\n\nVà buổi sáng ở khu Tây Hồ hầu như luôn có một hướng để đi. Người tập thể dục về sớm, quán ăn sáng mở cửa, mặt hồ lúc này yên nhất trong ngày. Bạn ra khỏi phòng, đi vài phút, rồi quay lại khi trời đã đủ nắng.\n\nChúng tôi làm khách sạn nhỏ, tầm trung, giữ mọi thứ gọn gàng và sáng sủa — vì phần đẹp nhất của chuyến đi thường nằm ngoài cánh cửa phòng, ở ven hồ.\n\nNếu bạn đang tính vài ngày ở Hà Nội, nhắn tin cho Ven Hồ Hotel để xem còn phòng những ngày đó nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-582e1b20",
@@ -5580,20 +5580,22 @@
         "claim_kill_switch_triggered": false,
         "content_brand_fit": 100,
         "content_overall_score": 92.63
-      }
+      },
+      "rejected_by": "harry",
+      "rejected_reason": "Thay bằng bộ chủ đề đa dạng hoá 2026-08-13 (Growth Agent per-lane topic pools)"
     },
     {
       "publication_id": "pub-wednesday-facebook-25e2b050",
       "content_package_id": "dfaf91a5-02ce-493d-92d9-6560e0eadb38",
       "idempotency_key": "e5624386acd1d8b4fb28eef051b0be13f7ab04db7f09d4eb84dabdd443d134f3",
       "platform": "facebook",
-      "status": "PENDING_APPROVAL",
+      "status": "REJECTED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-11T14:02:04.347195+00:00",
-      "updated_at": "2026-08-11T14:02:04.351976+00:00",
+      "updated_at": "2026-08-13T04:08:53.134126+00:00",
       "content": {
         "title": "Buổi sáng trong một căn phòng gỗ ở Tây Hồ",
         "text": "Sáng ở Tây Hồ thường bắt đầu bằng ánh sáng, không phải bằng tiếng còi xe.\n\nSáng ở Tây Hồ thường bắt đầu bằng ánh sáng, không phải bằng tiếng còi xe.\n\nÁnh sáng đi qua khung cửa nhôm đen mảnh, chia thành bốn ô vuông rồi rơi xuống sàn gỗ. Rèm xám vẫn còn hé một nửa. Tường trắng, trần trắng, bộ ga giường trắng — căn phòng gần như không có gì để làm bạn phân tâm.\n\nỞ Ven Hồ Hotel, phòng được giữ gọn theo đúng nghĩa đó. Một chiếc giường đôi với đầu giường gỗ. Hai chiếc ghế gỗ đặt cạnh cửa sổ, chỗ mà khách thường ngồi lâu hơn dự định: uống nốt cốc cà phê, xem lại lịch trình trong ngày, hoặc chỉ nhìn ra ngoài một lúc. Một chiếc bàn nhỏ có gương, đủ cho việc chuẩn bị trước khi ra phố.\n\nChúng tôi không cố biến phòng thành một resort. Đây là một khách sạn boutique nhỏ, tầm trung, giữ chất liệu gỗ và nhịp mộc mạc quen thuộc của những căn nhà quanh Tây Hồ.\n\nVà thật ra, phòng chỉ cần làm tốt một việc: là nơi bạn quay về sau khi đi bộ ven hồ, ăn sáng ở một quán trong ngõ, hay trở lại từ một buổi họp bên kia thành phố. Phần thú vị nhất của chuyến đi vẫn nằm ngoài kia — cách vài bước chân.\n\nNếu bạn đang tính vài ngày ở Hà Nội, nhắn tin cho Ven Hồ Hotel để xem phòng trống những ngày đó nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-25e2b050",
@@ -5678,20 +5680,22 @@
         "claim_kill_switch_triggered": false,
         "content_brand_fit": 100,
         "content_overall_score": 91.81
-      }
+      },
+      "rejected_by": "harry",
+      "rejected_reason": "Thay bằng bộ chủ đề đa dạng hoá 2026-08-13 (Growth Agent per-lane topic pools)"
     },
     {
       "publication_id": "pub-wednesday-facebook-45aa268d",
       "content_package_id": "465e118e-5fd4-4759-a0e1-2c42d4262d64",
       "idempotency_key": "ee13e11b06bece9f6620b3ea414a57b37de05d773fa6a49986bc98340ce5fe60",
       "platform": "facebook",
-      "status": "PENDING_APPROVAL",
+      "status": "REJECTED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-11T14:03:15.397594+00:00",
-      "updated_at": "2026-08-11T14:03:15.402713+00:00",
+      "updated_at": "2026-08-13T04:08:53.694180+00:00",
       "content": {
         "title": "Buổi sáng ở Hồ Tây, khi mặt nước còn chưa gợn",
         "text": "Sáng ở Hồ Tây, mặt nước lặng đến mức bạn nhìn được sang tận bờ bên kia.\n\nNước hồ hôm nay mang màu xanh ngọc pha xám, không rực rỡ như biển, mà trầm và dịu. Bầu trời có mây, nắng chưa lên hẳn nên ánh sáng rất mềm, không khí trong, không chút sương mù. Ở phía xa, những khối nhà cao tầng của Hà Nội hiện rõ đường viền trên đường chân trời.\n\nĐường ven hồ giờ này còn vắng. Vài người đi bộ, một người đạp xe chậm qua, rồi lại yên. Hàng cây dọc bờ đủ dày để có bóng mát nhưng vẫn để lộ khoảng hồ rộng phía trước, nên bạn vừa đi vừa thấy nước ở bên mình suốt chặng.\n\nĐây là khoảng thời gian dễ chịu nhất để làm quen với khu Tây Hồ. Chưa cần lịch trình. Chỉ cần đi hết một đoạn bờ hồ, dừng lại ở một quán cà phê mở sớm, rồi tính tiếp xem hôm nay đi đâu. Buổi sáng Hồ Tây không giục ai cả.\n\nVen Hồ Hotel nằm trên phố Nguyễn Đình Thi, ngay khu vực này. Với nhiều khách ở đây, việc đầu tiên trong ngày đơn giản là bước ra khỏi cửa và đi về phía hồ, trước khi Hà Nội thật sự thức giấc.\n\nNếu bạn đang lên kế hoạch cho vài ngày ở Hà Nội, nhắn tin cho Ven Hồ Hotel để hỏi phòng trống cho những ngày bạn dự định đến nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhamPhaHoTay #KhachSanHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-45aa268d",
@@ -5776,20 +5780,22 @@
         "claim_kill_switch_triggered": false,
         "content_brand_fit": 95,
         "content_overall_score": 90.56
-      }
+      },
+      "rejected_by": "harry",
+      "rejected_reason": "Thay bằng bộ chủ đề đa dạng hoá 2026-08-13 (Growth Agent per-lane topic pools)"
     },
     {
       "publication_id": "pub-wednesday-facebook-42f9e395",
       "content_package_id": "7935f7c4-c9a2-4ed3-a72c-bbf90c520f5d",
       "idempotency_key": "cce78e602069b6238cd465391fbdf4aaefa6a31f4df275f7026a4e886199902a",
       "platform": "facebook",
-      "status": "PENDING_APPROVAL",
+      "status": "REJECTED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-11T14:03:24.541895+00:00",
-      "updated_at": "2026-08-11T14:03:24.548344+00:00",
+      "updated_at": "2026-08-13T04:08:54.264576+00:00",
       "content": {
         "title": "Buổi chiều nhìn ra Hồ Tây từ cửa sổ phòng",
         "text": "Nước Hồ Tây không xanh như trên ảnh du lịch. Chiều nay, nhìn từ cửa sổ, mặt hồ là một màu ngọc pha xám rất dịu.\n\nTrời hôm nay có mây, nắng không gắt. Ánh sáng đổ xuống mặt hồ nhẹ đến mức gần như không thấy bóng gì phản chiếu — chỉ là một mặt nước lặng, trải dài ra tới rất xa.\n\nỞ phía đó, đường viền của thành phố hiện lên khá rõ. Những khối nhà cao xếp thành một đường ngang mờ, làm nền cho hồ. Gần hơn là mấy tán cây bên bờ, không rậm rạp, vừa đủ để chia bức nhìn thành từng lớp: cây, nước, rồi phố.\n\nKhông có gì nhiều để làm với một khung cảnh như vậy. Phần lớn khách ở phòng hướng hồ hay kể lại cùng một chuyện: mở cửa sổ, ngồi xuống, và quên mất là mình đã ngồi bao lâu. Chiều Hồ Tây có kiểu yên tĩnh không cần cố gắng, đặc biệt vào những ngày mây phủ nhẹ như hôm nay.\n\nBuổi sáng thì mặt hồ khác hẳn. Nhưng đó là chuyện của một bài khác.\n\nVen Hồ Hotel nằm trên đường Nguyễn Đình Thi, Tây Hồ — chỉ vài bước là ra tới bờ hồ. Với những ai muốn dành một hai ngày ở Hà Nội mà không phải chen trong trung tâm, đây là một chỗ dừng chân vừa vặn.\n\nNếu bạn đang tính ngày ra Hà Nội, nhắn cho Ven Hồ Hotel để hỏi phòng hướng hồ còn trống hôm nào nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhamPhaHoTay #KhachSanHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-42f9e395",
@@ -5874,7 +5880,9 @@
         "claim_kill_switch_triggered": false,
         "content_brand_fit": 95,
         "content_overall_score": 90.46
-      }
+      },
+      "rejected_by": "harry",
+      "rejected_reason": "Thay bằng bộ chủ đề đa dạng hoá 2026-08-13 (Growth Agent per-lane topic pools)"
     },
     {
       "publication_id": "pub-wednesday-facebook-c0bbe4bd",
@@ -6350,6 +6358,1465 @@
         "checksum": "f5ad9e64daf90c5d78a296e76d1d2b14befb49b1d73c5af9dad0b92425d6d9b5"
       },
       "shadow_override_by": "hpham1504@gmail.com"
+    },
+    {
+      "publication_id": "pub-monday-facebook-7a434f47",
+      "content_package_id": "fd9c942a-b722-486c-b764-049bb915bf1c",
+      "idempotency_key": "09a88b7348e743e7009ca5d6873399d624a5c61da34231ab1a56991c768f9028",
+      "platform": "facebook",
+      "status": "APPROVED_SCHEDULED",
+      "gateway_status": null,
+      "platform_post_id": null,
+      "permalink": null,
+      "reconciliation_proof": null,
+      "created_at": "2026-08-13T04:10:31.232934+00:00",
+      "updated_at": "2026-08-13T04:25:28.100287+00:00",
+      "content": {
+        "title": "6 giờ sáng ở Hồ Tây: giờ tập của người Hà Nội",
+        "text": "6 giờ sáng, quanh Hồ Tây đông hơn nhiều người tưởng.\n\nKhông phải khách du lịch. Là người Hà Nội.\n\nTrên vỉa hè ven hồ, mấy đôi vợt cầu lông đã kịp qua vài lượt trước khi trời sáng hẳn. Một nhóm tập dưỡng sinh mở loa nhỏ, động tác chậm và đều. Người chạy bộ đi vòng ngoài, người đi bộ đi vòng trong, xe đạp len giữa hai làn đó mà chẳng ai vướng ai. Có người chỉ ra ngồi trên bậc đá, nhìn mặt nước, thế là xong buổi sáng.\n\nĐến khoảng 7 giờ, nhịp ấy tan dần. Vợt xếp vào túi, loa tắt, mọi người tản về nhà, đổi sang một ngày làm việc bình thường. Hồ Tây trả lại sự yên tĩnh cho những ai đến muộn hơn.\n\nĐầu tuần ở Hà Nội, nếu muốn bắt đầu nhẹ nhàng, đây là khung giờ đáng thử. Không cần lịch trình, không cần chuẩn bị gì, chỉ cần ra khỏi cửa sớm hơn thói quen một chút.\n\nVen Hồ Hotel nằm trên phố Nguyễn Đình Thi, nên khoảng cách từ phòng ra mặt hồ chỉ là một đoạn đi bộ ngắn. Lúc quay về, cửa kính mở ra một sảnh nhỏ gọn gàng: sàn gạch nâu với hoa văn tròn, quầy lễ tân gỗ nâu đỏ, vài bức tranh trên tường và ánh đèn dịu vừa đủ cho buổi sáng.\n\nNếu bạn đang xếp lịch cho những ngày ở Hà Nội, nhắn Ven Hồ Hotel để kiểm tra phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhamPhaHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-monday-facebook-7a434f47",
+        "hashtags": [
+          "#VenHoHotelHanoi",
+          "#HoTay",
+          "#WestLakeHanoi",
+          "#KhamPhaHoTay",
+          "#HaNoi"
+        ],
+        "source_prompt_file": "data/projects/venho_hotel/prompts/content/LOBBY__facebook-nguoi-ha-noi-tap-the-duc-quanh-ho-tay-luc-6-gio-sang__CONTENT_PROMPT_v1.0.json",
+        "image_run_path": null,
+        "image_public_url": "https://venhohotel.com/images/Lake-sunset/lake-sunset-1.jpg",
+        "image_is_fallback": true,
+        "tracking_url": "https://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-monday-facebook-7a434f47"
+      },
+      "creative_brief_id": "brief-monday-facebook-2f6fa748",
+      "package_snapshot": {
+        "id": "fd9c942a-b722-486c-b764-049bb915bf1c",
+        "copy_version_ids": [
+          "brief-monday-facebook-2f6fa748-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "32f06e4a1a21e9ebd7e6fe9a739f36e4e2ca71ac0d453edcf8cced9ce493fd6f",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-monday-facebook-2f6fa748@1"
+      },
+      "day": "monday",
+      "pillar": "Ho Tay & nhip song Ha Noi dau tuan",
+      "topic": "nguoi Ha Noi tap the duc quanh Ho Tay luc 6 gio sang",
+      "dna_subject": "westlake",
+      "slot_id": "slot-2026-08-17-monday",
+      "creative_brief": {
+        "schema_version": "1.0",
+        "id": "brief-monday-facebook-2f6fa748",
+        "version": 1,
+        "brand_id": "venho-hotel",
+        "campaign_id": "daily-cycle-monday",
+        "objective": "qualified_inquiry",
+        "platforms": [
+          "facebook"
+        ],
+        "audience_segment": "Vietnamese leisure guests",
+        "funnel_stage": "consideration",
+        "single_minded_message": "nguoi Ha Noi tap the duc quanh Ho Tay luc 6 gio sang",
+        "proof_points": [],
+        "content_angle": "Ho Tay & nhip song Ha Noi dau tuan",
+        "cta": {
+          "type": "booking_link",
+          "destination_key": "hotel.website",
+          "strength": "soft"
+        },
+        "visual": {
+          "scenario_key": "venho_lobby_cozy",
+          "required_entities": [
+            "lobby"
+          ],
+          "forbidden_entities": [
+            "generic_city_hotel",
+            "outdoor_scene"
+          ],
+          "target_formats": [
+            "feed_4_5"
+          ]
+        },
+        "lane": "daily",
+        "status": "LOCKED",
+        "checksum": "sha256:b3592f1db4cbaad0c1567ac38322b952e77aafac1090203c94fbf6cee7a4ad81",
+        "project": "venho_hotel",
+        "prompt_rules": "west_lake_life",
+        "recent_topics": [
+          "lake view morning",
+          "morning at West Lake",
+          "lake view room",
+          "simple hotel comfort",
+          "quiet Hanoi stay",
+          "a quiet weekend morning walk around West Lake"
+        ],
+        "context_refs": [
+          {
+            "rs_id": "RS-weather-2026-08-17",
+            "evidence_level": "R2-T",
+            "role": "weather_angle"
+          }
+        ],
+        "hook_hypothesis": "Mưa ngoài cửa kính — không gian ấm trong sảnh"
+      },
+      "claims": [],
+      "scene_summary": {
+        "location": "Lobby, warm interior (rain / cold)",
+        "time_of_day": "morning",
+        "entities": [
+          "lobby"
+        ],
+        "mood": "calm"
+      },
+      "scorecard_signals": {
+        "claim_kill_switch_triggered": false,
+        "content_brand_fit": 95,
+        "content_overall_score": 90.05
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-08-13T04:25:28.097857+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-fd9c942a-b722-486c-b764-049bb915bf1c",
+        "content_package_id": "fd9c942a-b722-486c-b764-049bb915bf1c",
+        "copy_version_ids": [
+          "brief-monday-facebook-2f6fa748-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "32f06e4a1a21e9ebd7e6fe9a739f36e4e2ca71ac0d453edcf8cced9ce493fd6f",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-monday-facebook-2f6fa748@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-08-13T04:25:28.098722+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "f94bcb3f07e43c884c5d4958e7eadd0e7bdb0a7dfd990ba3b8e2ba93a211449d",
+        "checksum": "34c739bd8da3a8aeb93d9f75217e37af0df241d8149fd561c33311b5c691f22c"
+      }
+    },
+    {
+      "publication_id": "pub-monday-instagram-1d1b5bab",
+      "content_package_id": "1499ef46-eca9-4693-809b-e0f1f67e0383",
+      "idempotency_key": "51fe5f2717efe3994bd544e98750d0ef65e7dc51d98b8d1b4b9afec3c4851f99",
+      "platform": "instagram",
+      "status": "APPROVED_SCHEDULED",
+      "gateway_status": null,
+      "platform_post_id": null,
+      "permalink": null,
+      "reconciliation_proof": null,
+      "created_at": "2026-08-13T04:10:57.315118+00:00",
+      "updated_at": "2026-08-13T04:25:28.100287+00:00",
+      "content": {
+        "title": "6 giờ sáng thứ Hai, Hồ Tây đã thức từ lâu",
+        "text": "6 giờ sáng thứ Hai, khi Hà Nội còn chưa vào giờ làm việc, đường ven Hồ Tây đã đông rồi.\n\nKhông phải đông theo kiểu xe cộ. Đông theo kiểu người.\n\nNgười chạy bộ đi thành từng nhóm nhỏ. Người đi bộ chậm hơn, vừa đi vừa nói chuyện. Vài nhóm tập dưỡng sinh dàn hàng dưới bóng cây, động tác chậm và đều. Ở một góc khác là tiếng vợt cầu lông đập vào không khí buổi sáng, nghe rất gọn.\n\nĐây là phần Hà Nội mà khách du lịch dễ ngủ qua nhất. Không có gì để chụp cho thật lung linh, nhưng lại là lúc thấy rõ nhất cách người ta sống ở đây: bắt đầu tuần mới bằng một vòng hồ, rồi mới về đi làm.\n\nChỗ Ven Hồ Hotel, chỉ cần bước ra khỏi cánh cửa kính là đã ở trên đoạn Nguyễn Đình Thi. Buổi sáng, sảnh còn yên, quầy lễ tân bằng gỗ nâu đỏ, sàn gạch sạch bóng. Bạn có thể lặng lẽ đi ra, hòa vào nhịp đó một lát, rồi quay về ăn sáng.\n\nKhông cần dậy sớm để làm gì cả. Chỉ để nhìn thấy Hồ Tây trước khi thành phố bắt đầu.\n\nNếu bạn muốn thử một buổi sáng như vậy, nhắn tin cho Ven Hồ Hotel để xem còn phòng những ngày bạn ở Hà Nội nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanViewHoTay #NguyenDinhThi #HanoiTravel #KhamPhaHoTay #HaNoiBuoiSang",
+        "hashtags": [
+          "#VenHoHotelHanoi",
+          "#HoTay",
+          "#WestLakeHanoi",
+          "#KhachSanViewHoTay",
+          "#NguyenDinhThi",
+          "#HanoiTravel",
+          "#KhamPhaHoTay",
+          "#HaNoiBuoiSang"
+        ],
+        "source_prompt_file": "data/projects/venho_hotel/prompts/content/LOBBY__instagram-nguoi-ha-noi-tap-the-duc-quanh-ho-tay-luc-6-gio-sang__CONTENT_PROMPT_v1.0.json",
+        "image_run_path": null,
+        "image_public_url": "https://venhohotel.com/images/Lake-sunset/lake-sunset-1.jpg",
+        "image_is_fallback": true,
+        "tracking_url": "https://venhohotel.com/lien-he?utm_source=instagram&utm_medium=social&utm_content=pub-monday-instagram-1d1b5bab"
+      },
+      "creative_brief_id": "brief-monday-instagram-ccfb3961",
+      "package_snapshot": {
+        "id": "1499ef46-eca9-4693-809b-e0f1f67e0383",
+        "copy_version_ids": [
+          "brief-monday-instagram-ccfb3961-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "dfcc8b4f0bb73820ce4ce4fdeefa3257d7b1a4d81dd9072c7b67b14d822e8357",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-monday-instagram-ccfb3961@1"
+      },
+      "day": "monday",
+      "pillar": "Ho Tay & nhip song Ha Noi dau tuan",
+      "topic": "nguoi Ha Noi tap the duc quanh Ho Tay luc 6 gio sang",
+      "dna_subject": "westlake",
+      "slot_id": "slot-2026-08-17-monday",
+      "creative_brief": {
+        "schema_version": "1.0",
+        "id": "brief-monday-instagram-ccfb3961",
+        "version": 1,
+        "brand_id": "venho-hotel",
+        "campaign_id": "daily-cycle-monday",
+        "objective": "qualified_inquiry",
+        "platforms": [
+          "instagram"
+        ],
+        "audience_segment": "Vietnamese leisure guests",
+        "funnel_stage": "consideration",
+        "single_minded_message": "nguoi Ha Noi tap the duc quanh Ho Tay luc 6 gio sang",
+        "proof_points": [],
+        "content_angle": "Ho Tay & nhip song Ha Noi dau tuan",
+        "cta": {
+          "type": "booking_link",
+          "destination_key": "hotel.website",
+          "strength": "soft"
+        },
+        "visual": {
+          "scenario_key": "venho_lobby_cozy",
+          "required_entities": [
+            "lobby"
+          ],
+          "forbidden_entities": [
+            "generic_city_hotel",
+            "outdoor_scene"
+          ],
+          "target_formats": [
+            "feed_4_5"
+          ]
+        },
+        "lane": "daily",
+        "status": "LOCKED",
+        "checksum": "sha256:676570c0a0f756be9e0eec25f05dcc87e3dd77b3733917df44a1123c1aea61fd",
+        "project": "venho_hotel",
+        "prompt_rules": "west_lake_life",
+        "recent_topics": [
+          "lake view morning",
+          "morning at West Lake",
+          "lake view room",
+          "simple hotel comfort",
+          "quiet Hanoi stay",
+          "a quiet weekend morning walk around West Lake"
+        ],
+        "context_refs": [
+          {
+            "rs_id": "RS-weather-2026-08-17",
+            "evidence_level": "R2-T",
+            "role": "weather_angle"
+          }
+        ],
+        "hook_hypothesis": "Mưa ngoài cửa kính — không gian ấm trong sảnh"
+      },
+      "claims": [],
+      "scene_summary": {
+        "location": "Lobby, warm interior (rain / cold)",
+        "time_of_day": "morning",
+        "entities": [
+          "lobby"
+        ],
+        "mood": "calm"
+      },
+      "scorecard_signals": {
+        "claim_kill_switch_triggered": false,
+        "content_brand_fit": 95,
+        "content_overall_score": 90.56
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-08-13T04:25:28.097857+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-1499ef46-eca9-4693-809b-e0f1f67e0383",
+        "content_package_id": "1499ef46-eca9-4693-809b-e0f1f67e0383",
+        "copy_version_ids": [
+          "brief-monday-instagram-ccfb3961-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "dfcc8b4f0bb73820ce4ce4fdeefa3257d7b1a4d81dd9072c7b67b14d822e8357",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-monday-instagram-ccfb3961@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-08-13T04:25:28.098764+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "1098436718cf3ad9321e81bec02d879905f76e72dac64c0483cba4b893f45c2b",
+        "checksum": "4ceea4cc7264b7b2b7d82fb268b48b547e82fb0a89df2d76f2c8eb1f02c96a06"
+      }
+    },
+    {
+      "publication_id": "pub-monday-threads-9f33fc24",
+      "content_package_id": "5c16972f-4221-450c-bcf5-3d30a15984e3",
+      "idempotency_key": "f8919105d48dcafb667688688f402adf66fe12de022d922a49910fac12f089f2",
+      "platform": "threads",
+      "status": "APPROVED_SCHEDULED",
+      "gateway_status": null,
+      "platform_post_id": null,
+      "permalink": null,
+      "reconciliation_proof": null,
+      "created_at": "2026-08-13T04:11:24.540115+00:00",
+      "updated_at": "2026-08-13T04:25:28.100287+00:00",
+      "content": {
+        "title": "6 giờ sáng thứ Hai ở Hồ Tây",
+        "text": "6 giờ sáng thứ Hai, Hồ Tây thức trước cả phố.\n\nNgoài đường ven hồ, tiếng vợt cầu lông vang lên đều đều. Một nhóm cô chú tập dưỡng sinh theo tiếng loa nhỏ đặt trên ghế đá. Người chạy bộ đi vòng ngoài, người đạp xe đi vòng trong, ai cũng có nhịp riêng và không ai vội.\n\nĐoạn Nguyễn Đình Thi giờ đó gió còn mát, mặt nước phẳng, thỉnh thoảng có người dừng lại nói với nhau vài câu rồi lại đi tiếp.\n\nĐây là kiểu buổi sáng khó gặp nếu chỉ ghé Hồ Tây vào buổi chiều. Ở Ven Hồ Hotel, bước qua cánh cửa kính ở sảnh là đã ra tới đường ven hồ, nên dậy sớm một hôm để đi cùng nhịp của người Hà Nội không phải chuyện khó.\n\nNếu bạn muốn thử một buổi sáng như vậy, nhắn cho Ven Hồ Hotel để xem phòng trống cho những ngày bạn ở Hà Nội nhé.\n\n#VenHoHotelHanoi #HoTay #HanoiTravel\n\nhttps://venhohotel.com/lien-he?utm_source=threads&utm_medium=social&utm_content=pub-monday-threads-9f33fc24",
+        "hashtags": [
+          "#VenHoHotelHanoi",
+          "#HoTay",
+          "#HanoiTravel"
+        ],
+        "source_prompt_file": "data/projects/venho_hotel/prompts/content/LOBBY__threads-nguoi-ha-noi-tap-the-duc-quanh-ho-tay-luc-6-gio-sang__CONTENT_PROMPT_v1.0.json",
+        "image_run_path": null,
+        "image_public_url": "https://venhohotel.com/images/Lake-sunset/lake-sunset-1.jpg",
+        "image_is_fallback": true,
+        "tracking_url": "https://venhohotel.com/lien-he?utm_source=threads&utm_medium=social&utm_content=pub-monday-threads-9f33fc24"
+      },
+      "creative_brief_id": "brief-monday-threads-62386648",
+      "package_snapshot": {
+        "id": "5c16972f-4221-450c-bcf5-3d30a15984e3",
+        "copy_version_ids": [
+          "brief-monday-threads-62386648-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "29ec3f8e0b0737640a7b581dfdc288232765de97230a13aa0eb6c22c5a3943e9",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-monday-threads-62386648@1"
+      },
+      "day": "monday",
+      "pillar": "Ho Tay & nhip song Ha Noi dau tuan",
+      "topic": "nguoi Ha Noi tap the duc quanh Ho Tay luc 6 gio sang",
+      "dna_subject": "westlake",
+      "slot_id": "slot-2026-08-17-monday",
+      "creative_brief": {
+        "schema_version": "1.0",
+        "id": "brief-monday-threads-62386648",
+        "version": 1,
+        "brand_id": "venho-hotel",
+        "campaign_id": "daily-cycle-monday",
+        "objective": "qualified_inquiry",
+        "platforms": [
+          "threads"
+        ],
+        "audience_segment": "Vietnamese leisure guests",
+        "funnel_stage": "consideration",
+        "single_minded_message": "nguoi Ha Noi tap the duc quanh Ho Tay luc 6 gio sang",
+        "proof_points": [],
+        "content_angle": "Ho Tay & nhip song Ha Noi dau tuan",
+        "cta": {
+          "type": "booking_link",
+          "destination_key": "hotel.website",
+          "strength": "soft"
+        },
+        "visual": {
+          "scenario_key": "venho_lobby_cozy",
+          "required_entities": [
+            "lobby"
+          ],
+          "forbidden_entities": [
+            "generic_city_hotel",
+            "outdoor_scene"
+          ],
+          "target_formats": [
+            "feed_4_5"
+          ]
+        },
+        "lane": "daily",
+        "status": "LOCKED",
+        "checksum": "sha256:3f9efab6f7f835284f79a5a2ff66877cc8c3d3ae2914fa3c66f0a0dc4e651fe3",
+        "project": "venho_hotel",
+        "prompt_rules": "west_lake_life",
+        "recent_topics": [
+          "lake view morning",
+          "morning at West Lake",
+          "lake view room",
+          "simple hotel comfort",
+          "quiet Hanoi stay",
+          "a quiet weekend morning walk around West Lake"
+        ],
+        "context_refs": [
+          {
+            "rs_id": "RS-weather-2026-08-17",
+            "evidence_level": "R2-T",
+            "role": "weather_angle"
+          }
+        ],
+        "hook_hypothesis": "Mưa ngoài cửa kính — không gian ấm trong sảnh"
+      },
+      "claims": [],
+      "scene_summary": {
+        "location": "Lobby, warm interior (rain / cold)",
+        "time_of_day": "morning",
+        "entities": [
+          "lobby"
+        ],
+        "mood": "calm"
+      },
+      "scorecard_signals": {
+        "claim_kill_switch_triggered": false,
+        "content_brand_fit": 95,
+        "content_overall_score": 92.45
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-08-13T04:25:28.097857+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-5c16972f-4221-450c-bcf5-3d30a15984e3",
+        "content_package_id": "5c16972f-4221-450c-bcf5-3d30a15984e3",
+        "copy_version_ids": [
+          "brief-monday-threads-62386648-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "29ec3f8e0b0737640a7b581dfdc288232765de97230a13aa0eb6c22c5a3943e9",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-monday-threads-62386648@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-08-13T04:25:28.098777+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "1151d3dd579b2ce3c0c689e4ca6edb7523ae6f471f656ee85bc7e853ca31b595",
+        "checksum": "934e1c8a4d33717c8a6ea3f5c0f21b9e0dfb65acb003d220861726f247e0a763"
+      }
+    },
+    {
+      "publication_id": "pub-wednesday-instagram-c6fcadf7",
+      "content_package_id": "b58ca723-001b-4483-a9b7-34918eb69107",
+      "idempotency_key": "a24252da5ae86257ec04375b5784080298b97c6ededa2b7769b66b4e176612f9",
+      "platform": "instagram",
+      "status": "PENDING_APPROVAL",
+      "gateway_status": null,
+      "platform_post_id": null,
+      "permalink": null,
+      "reconciliation_proof": null,
+      "created_at": "2026-08-13T04:14:20.484434+00:00",
+      "updated_at": "2026-08-13T04:14:20.493440+00:00",
+      "content": {
+        "title": "Chợ Hoa Quảng Bá — nơi Tây Hồ thức dậy bằng màu",
+        "text": "Có những nơi ở Tây Hồ không cần trang trí gì thêm. Hoa tự làm việc đó.\n\nChợ Hoa Quảng Bá nằm ở 236 đường Âu Cơ, một trong những khu chợ hoa lớn của Hà Nội và cũng là điểm nhiều người tìm đến để chụp ảnh.\n\nHoa ở đây được bó thành từng ôm lớn, xếp chồng lên nhau, chuyển từ xe này sang xe khác. Người bán gọi nhau qua các lối đi hẹp. Màu sắc thay đổi theo mùa, nên mỗi lần ghé lại là một khung hình khác.\n\nĐiều thú vị là chợ hoa không phải một điểm tham quan được dựng lên cho du khách. Nó là một phần công việc thật của khu Tây Hồ. Bạn đứng giữa đó, máy ảnh trong tay, và mọi thứ vẫn diễn ra như thường lệ.\n\nMột buổi đi chợ hoa hợp với lịch trình chậm: xem hoa, chụp vài tấm, rồi thong thả quay lại nghỉ.\n\nVen Hồ Hotel nằm trên đường Nguyễn Đình Thi, cùng khu Tây Hồ, nên rất tiện để bạn lấy đó làm điểm xuất phát rồi trở về sau chuyến đi.\n\nNếu bạn đang lên lịch cho vài ngày ở Hà Nội, nhắn cho Ven Hồ Hotel để xem phòng trống nhé.\n\n#VenHoHotelHanoi #ChoHoaQuangBa #HoTay #WestLakeHanoi #KhamPhaHoTay #HaNoi #KhachSanViewHoTay",
+        "hashtags": [
+          "#VenHoHotelHanoi",
+          "#ChoHoaQuangBa",
+          "#HoTay",
+          "#WestLakeHanoi",
+          "#KhamPhaHoTay",
+          "#HaNoi",
+          "#KhachSanViewHoTay"
+        ],
+        "source_prompt_file": "data/projects/venho_hotel/prompts/content/LOBBY__instagram-ngu-n-3-gi-i-thi-u-ch-hoa-qu-ng-b-t-i-236-ng-u-c-l-ch-hoa-l-n-v-i-m-th__CONTENT_PROMPT_v1.0.json",
+        "image_run_path": null,
+        "image_public_url": "https://venhohotel.com/images/Hero-lake/hero-lake.jpg",
+        "image_is_fallback": true,
+        "tracking_url": "https://venhohotel.com/lien-he?utm_source=instagram&utm_medium=social&utm_content=pub-wednesday-instagram-c6fcadf7"
+      },
+      "creative_brief_id": "brief-wednesday-instagram-bd9ac2bd",
+      "package_snapshot": {
+        "id": "b58ca723-001b-4483-a9b7-34918eb69107",
+        "copy_version_ids": [
+          "brief-wednesday-instagram-bd9ac2bd-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "0e3a6240fc38ee8caae958c3c7c99bbae02f74e1891c4781330b7a7eb3f6636c",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-wednesday-instagram-bd9ac2bd@1"
+      },
+      "day": "wednesday",
+      "pillar": "Diem den & su kien quanh Ho Tay",
+      "topic": "Nguồn 3 giới thiệu Chợ Hoa Quảng Bá tại 236 Đường Âu Cơ là chợ hoa lớn và điểm tham quan chụp ảnh tại Tây Hồ.",
+      "dna_subject": "westlake",
+      "slot_id": "slot-2026-08-19-wednesday",
+      "creative_brief": {
+        "schema_version": "1.0",
+        "id": "brief-wednesday-instagram-bd9ac2bd",
+        "version": 1,
+        "brand_id": "venho-hotel",
+        "campaign_id": "daily-cycle-wednesday",
+        "objective": "qualified_inquiry",
+        "platforms": [
+          "instagram"
+        ],
+        "audience_segment": "Vietnamese leisure guests",
+        "funnel_stage": "consideration",
+        "single_minded_message": "Nguồn 3 giới thiệu Chợ Hoa Quảng Bá tại 236 Đường Âu Cơ là chợ hoa lớn và điểm tham quan chụp ảnh tại Tây Hồ.",
+        "proof_points": [
+          {
+            "text": "Nguồn 3 giới thiệu Chợ Hoa Quảng Bá tại 236 Đường Âu Cơ là chợ hoa lớn và điểm tham quan chụp ảnh tại Tây Hồ.",
+            "fact_key": "attraction.cho_hoa_quang_ba"
+          }
+        ],
+        "content_angle": "Diem den & su kien quanh Ho Tay",
+        "cta": {
+          "type": "booking_link",
+          "destination_key": "hotel.website",
+          "strength": "soft"
+        },
+        "visual": {
+          "scenario_key": "venho_lobby_cozy",
+          "required_entities": [
+            "lobby"
+          ],
+          "forbidden_entities": [
+            "generic_city_hotel",
+            "outdoor_scene"
+          ],
+          "target_formats": [
+            "feed_4_5"
+          ]
+        },
+        "lane": "daily",
+        "status": "LOCKED",
+        "checksum": "sha256:dfbc847e99443ab737d54f6c537ed08e7298456917a8bc495b3334c1635cfd88",
+        "project": "venho_hotel",
+        "prompt_rules": "local_discovery",
+        "recent_topics": [
+          "nguoi Ha Noi tap the duc quanh Ho Tay luc 6 gio sang",
+          "lake view morning",
+          "morning at West Lake",
+          "lake view room",
+          "simple hotel comfort",
+          "quiet Hanoi stay"
+        ],
+        "context_refs": [
+          {
+            "rs_id": "attraction.cho_hoa_quang_ba",
+            "evidence_level": "R2",
+            "role": "local_intel"
+          },
+          {
+            "rs_id": "RS-weather-2026-08-19",
+            "evidence_level": "R2-T",
+            "role": "weather_angle"
+          }
+        ],
+        "hook_hypothesis": "Mưa ngoài cửa kính — không gian ấm trong sảnh"
+      },
+      "claims": [],
+      "scene_summary": {
+        "location": "Lobby, warm interior (rain / cold)",
+        "time_of_day": "morning",
+        "entities": [
+          "lobby"
+        ],
+        "mood": "calm"
+      },
+      "scorecard_signals": {
+        "claim_kill_switch_triggered": false,
+        "content_brand_fit": 95,
+        "content_overall_score": 90.39
+      }
+    },
+    {
+      "publication_id": "pub-wednesday-threads-cb7f312d",
+      "content_package_id": "be0ad0c6-de8e-4a18-a5d8-e724a77b77f2",
+      "idempotency_key": "3d4cf419e1b3e688209ec09736f99024f9498cea8321d898cf4e3144727d3479",
+      "platform": "threads",
+      "status": "PENDING_APPROVAL",
+      "gateway_status": null,
+      "platform_post_id": null,
+      "permalink": null,
+      "reconciliation_proof": null,
+      "created_at": "2026-08-13T04:14:37.657719+00:00",
+      "updated_at": "2026-08-13T04:14:37.668843+00:00",
+      "content": {
+        "title": "Chợ Hoa Quảng Bá — một góc Tây Hồ nhiều màu",
+        "text": "Ở Tây Hồ có một nơi mà hoa nhiều hơn người: Chợ Hoa Quảng Bá, 236 Âu Cơ.\n\nĐây là một trong những chợ hoa lớn của khu vực, cũng là chỗ nhiều người tìm đến chỉ để chụp ảnh. Hoa bó sẵn dựng thành từng dãy, người bán ngồi phía sau, xe máy chở hoa len giữa lối đi hẹp.\n\nKhông cần mua gì cũng đi được. Cứ đi chậm, nhìn màu sắc đổi liên tục sau mỗi sạp, rồi chụp vài tấm. Tây Hồ có nhiều thứ để xem, nhưng chợ hoa là nơi hiếm hoi bạn thấy được nhịp làm ăn thật của khu này.\n\nTừ Nguyễn Đình Thi sang Âu Cơ cũng nằm trong cùng vùng ven hồ, tiện gộp vào một buổi đi loanh quanh.\n\nNếu bạn đang tính vài ngày ở Hà Nội và muốn lấy Hồ Tây làm điểm xuất phát, nhắn Ven Hồ Hotel để xem lịch phòng nhé.\n\n#VenHoHotelHanoi #HoTay #ChoHoaQuangBa\n\nhttps://venhohotel.com/lien-he?utm_source=threads&utm_medium=social&utm_content=pub-wednesday-threads-cb7f312d",
+        "hashtags": [
+          "#VenHoHotelHanoi",
+          "#HoTay",
+          "#ChoHoaQuangBa"
+        ],
+        "source_prompt_file": "data/projects/venho_hotel/prompts/content/LOBBY__threads-ngu-n-3-gi-i-thi-u-ch-hoa-qu-ng-b-t-i-236-ng-u-c-l-ch-hoa-l-n-v-i-m-tham__CONTENT_PROMPT_v1.0.json",
+        "image_run_path": null,
+        "image_public_url": "https://venhohotel.com/images/Hero-lake/hero-lake.jpg",
+        "image_is_fallback": true,
+        "tracking_url": "https://venhohotel.com/lien-he?utm_source=threads&utm_medium=social&utm_content=pub-wednesday-threads-cb7f312d"
+      },
+      "creative_brief_id": "brief-wednesday-threads-5d08247c",
+      "package_snapshot": {
+        "id": "be0ad0c6-de8e-4a18-a5d8-e724a77b77f2",
+        "copy_version_ids": [
+          "brief-wednesday-threads-5d08247c-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "e1fd50bc93b31162157dd3e7e90b0bffda918c947fc95747f75aac9e06b50205",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-wednesday-threads-5d08247c@1"
+      },
+      "day": "wednesday",
+      "pillar": "Diem den & su kien quanh Ho Tay",
+      "topic": "Nguồn 3 giới thiệu Chợ Hoa Quảng Bá tại 236 Đường Âu Cơ là chợ hoa lớn và điểm tham quan chụp ảnh tại Tây Hồ.",
+      "dna_subject": "westlake",
+      "slot_id": "slot-2026-08-19-wednesday",
+      "creative_brief": {
+        "schema_version": "1.0",
+        "id": "brief-wednesday-threads-5d08247c",
+        "version": 1,
+        "brand_id": "venho-hotel",
+        "campaign_id": "daily-cycle-wednesday",
+        "objective": "qualified_inquiry",
+        "platforms": [
+          "threads"
+        ],
+        "audience_segment": "Vietnamese leisure guests",
+        "funnel_stage": "consideration",
+        "single_minded_message": "Nguồn 3 giới thiệu Chợ Hoa Quảng Bá tại 236 Đường Âu Cơ là chợ hoa lớn và điểm tham quan chụp ảnh tại Tây Hồ.",
+        "proof_points": [
+          {
+            "text": "Nguồn 3 giới thiệu Chợ Hoa Quảng Bá tại 236 Đường Âu Cơ là chợ hoa lớn và điểm tham quan chụp ảnh tại Tây Hồ.",
+            "fact_key": "attraction.cho_hoa_quang_ba"
+          }
+        ],
+        "content_angle": "Diem den & su kien quanh Ho Tay",
+        "cta": {
+          "type": "booking_link",
+          "destination_key": "hotel.website",
+          "strength": "soft"
+        },
+        "visual": {
+          "scenario_key": "venho_lobby_cozy",
+          "required_entities": [
+            "lobby"
+          ],
+          "forbidden_entities": [
+            "generic_city_hotel",
+            "outdoor_scene"
+          ],
+          "target_formats": [
+            "feed_4_5"
+          ]
+        },
+        "lane": "daily",
+        "status": "LOCKED",
+        "checksum": "sha256:8911ab91c4c2cadfe37f7149405811456ed6d0ba873e21c06465b6cd8f351b63",
+        "project": "venho_hotel",
+        "prompt_rules": "local_discovery",
+        "recent_topics": [
+          "nguoi Ha Noi tap the duc quanh Ho Tay luc 6 gio sang",
+          "lake view morning",
+          "morning at West Lake",
+          "lake view room",
+          "simple hotel comfort",
+          "quiet Hanoi stay"
+        ],
+        "context_refs": [
+          {
+            "rs_id": "attraction.cho_hoa_quang_ba",
+            "evidence_level": "R2",
+            "role": "local_intel"
+          },
+          {
+            "rs_id": "RS-weather-2026-08-19",
+            "evidence_level": "R2-T",
+            "role": "weather_angle"
+          }
+        ],
+        "hook_hypothesis": "Mưa ngoài cửa kính — không gian ấm trong sảnh"
+      },
+      "claims": [],
+      "scene_summary": {
+        "location": "Lobby, warm interior (rain / cold)",
+        "time_of_day": "morning",
+        "entities": [
+          "lobby"
+        ],
+        "mood": "calm"
+      },
+      "scorecard_signals": {
+        "claim_kill_switch_triggered": false,
+        "content_brand_fit": 95,
+        "content_overall_score": 91.86
+      }
+    },
+    {
+      "publication_id": "pub-wednesday-zalo-a580ac8f",
+      "content_package_id": "f07e2348-762e-453b-9509-8f932d960b50",
+      "idempotency_key": "99e13c89814b6ea66a4a9048836edf554ad8ba5b1df9d0b96fec5bf4467bc971",
+      "platform": "zalo",
+      "status": "PENDING_APPROVAL",
+      "gateway_status": null,
+      "platform_post_id": null,
+      "permalink": null,
+      "reconciliation_proof": null,
+      "created_at": "2026-08-13T04:14:59.081331+00:00",
+      "updated_at": "2026-08-13T04:14:59.092477+00:00",
+      "content": {
+        "title": "Chợ Hoa Quảng Bá — phiên chợ đêm không ngủ bên Hồ Tây",
+        "text": "Khi cả Hà Nội đã ngủ, có một khu chợ ở Tây Hồ mới bắt đầu sáng đèn.\n\nChợ Hoa Quảng Bá nằm ở 236 đường Âu Cơ, là chợ hoa lớn của khu vực Tây Hồ và cũng là điểm tham quan, chụp ảnh được nhiều người tìm đến.\n\nHoa được chở về từng xe, xếp thành từng bó dựng dọc lối đi. Người bán ngồi bên đèn, người mua chọn hoa nhanh tay để kịp mang về cửa hàng trước giờ mở cửa. Không khí ở đây không giống bất kỳ khu chợ nào khác trong ngày — đông, ồn, nhưng lại rất dễ chịu.\n\nNếu bạn muốn chụp ảnh, hãy đi sớm hơn giờ chợ tan một chút, khi hoa còn đầy và ánh đèn còn vàng. Mặc ấm, đi giày thấp, và nhớ hỏi giá trước khi chụp cận cảnh các sạp hoa.\n\nTừ Ven Hồ Hotel trên phố Nguyễn Đình Thi, bạn có thể đi dọc ven hồ để tới chợ. Sau khi về, phòng vẫn còn đó để ngủ bù một giấc, rồi thức dậy với khung cảnh Hồ Tây ngay ngoài cửa sổ.\n\nLiên hệ Hotline/Zalo 0936871234 để đặt phòng view Hồ Tây ngay hôm nay.\n\n#VenHoHotelHanoi #ChoHoaQuangBa #HoTay #KhachSanViewHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=zalo&utm_medium=social&utm_content=pub-wednesday-zalo-a580ac8f",
+        "hashtags": [
+          "#VenHoHotelHanoi",
+          "#ChoHoaQuangBa",
+          "#HoTay",
+          "#KhachSanViewHoTay",
+          "#HaNoi"
+        ],
+        "source_prompt_file": "data/projects/venho_hotel/prompts/content/LOBBY__zalo-ngu-n-3-gi-i-thi-u-ch-hoa-qu-ng-b-t-i-236-ng-u-c-l-ch-hoa-l-n-v-i-m-tham-qu__CONTENT_PROMPT_v1.0.json",
+        "image_run_path": null,
+        "image_public_url": "https://venhohotel.com/images/Hero-lake/hero-lake.jpg",
+        "image_is_fallback": true,
+        "tracking_url": "https://venhohotel.com/lien-he?utm_source=zalo&utm_medium=social&utm_content=pub-wednesday-zalo-a580ac8f"
+      },
+      "creative_brief_id": "brief-wednesday-zalo-05863ab1",
+      "package_snapshot": {
+        "id": "f07e2348-762e-453b-9509-8f932d960b50",
+        "copy_version_ids": [
+          "brief-wednesday-zalo-05863ab1-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "2c1d30d00fbd5ad4b8885a7d4d3025b5640986b3476acc9cb653dcfe82be7036",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-wednesday-zalo-05863ab1@1"
+      },
+      "day": "wednesday",
+      "pillar": "Diem den & su kien quanh Ho Tay",
+      "topic": "Nguồn 3 giới thiệu Chợ Hoa Quảng Bá tại 236 Đường Âu Cơ là chợ hoa lớn và điểm tham quan chụp ảnh tại Tây Hồ.",
+      "dna_subject": "westlake",
+      "slot_id": "slot-2026-08-19-wednesday",
+      "creative_brief": {
+        "schema_version": "1.0",
+        "id": "brief-wednesday-zalo-05863ab1",
+        "version": 1,
+        "brand_id": "venho-hotel",
+        "campaign_id": "daily-cycle-wednesday",
+        "objective": "qualified_inquiry",
+        "platforms": [
+          "zalo"
+        ],
+        "audience_segment": "Vietnamese leisure guests",
+        "funnel_stage": "consideration",
+        "single_minded_message": "Nguồn 3 giới thiệu Chợ Hoa Quảng Bá tại 236 Đường Âu Cơ là chợ hoa lớn và điểm tham quan chụp ảnh tại Tây Hồ.",
+        "proof_points": [
+          {
+            "text": "Nguồn 3 giới thiệu Chợ Hoa Quảng Bá tại 236 Đường Âu Cơ là chợ hoa lớn và điểm tham quan chụp ảnh tại Tây Hồ.",
+            "fact_key": "attraction.cho_hoa_quang_ba"
+          }
+        ],
+        "content_angle": "Diem den & su kien quanh Ho Tay",
+        "cta": {
+          "type": "booking_link",
+          "destination_key": "hotel.website",
+          "strength": "soft"
+        },
+        "visual": {
+          "scenario_key": "venho_lobby_cozy",
+          "required_entities": [
+            "lobby"
+          ],
+          "forbidden_entities": [
+            "generic_city_hotel",
+            "outdoor_scene"
+          ],
+          "target_formats": [
+            "feed_4_5"
+          ]
+        },
+        "lane": "daily",
+        "status": "LOCKED",
+        "checksum": "sha256:aaa3e13d8a87a8e807476045a14ce593c03488fc01e4624ee3a6fe3e04269401",
+        "project": "venho_hotel",
+        "prompt_rules": "local_discovery",
+        "recent_topics": [
+          "nguoi Ha Noi tap the duc quanh Ho Tay luc 6 gio sang",
+          "lake view morning",
+          "morning at West Lake",
+          "lake view room",
+          "simple hotel comfort",
+          "quiet Hanoi stay"
+        ],
+        "context_refs": [
+          {
+            "rs_id": "attraction.cho_hoa_quang_ba",
+            "evidence_level": "R2",
+            "role": "local_intel"
+          },
+          {
+            "rs_id": "RS-weather-2026-08-19",
+            "evidence_level": "R2-T",
+            "role": "weather_angle"
+          }
+        ],
+        "hook_hypothesis": "Mưa ngoài cửa kính — không gian ấm trong sảnh"
+      },
+      "claims": [],
+      "scene_summary": {
+        "location": "Lobby, warm interior (rain / cold)",
+        "time_of_day": "morning",
+        "entities": [
+          "lobby"
+        ],
+        "mood": "calm"
+      },
+      "scorecard_signals": {
+        "claim_kill_switch_triggered": false,
+        "content_brand_fit": 95,
+        "content_overall_score": 90.59
+      }
+    },
+    {
+      "publication_id": "pub-friday-facebook-b91a3968",
+      "content_package_id": "211a53ce-8e04-4271-973c-65fd12f35d4d",
+      "idempotency_key": "baf0ff8e27ef1974d9df2d90b5780d2b913b7525735f55f75aa4c0b1c651a1f6",
+      "platform": "facebook",
+      "status": "PENDING_APPROVAL",
+      "gateway_status": null,
+      "platform_post_id": null,
+      "permalink": null,
+      "reconciliation_proof": null,
+      "created_at": "2026-08-13T04:15:57.436966+00:00",
+      "updated_at": "2026-08-13T04:15:57.444169+00:00",
+      "content": {
+        "title": "Ngày Hà Nội mưa, sảnh nhỏ thành góc đọc sách",
+        "text": "Có những ngày Hà Nội mưa từ sáng, và mọi kế hoạch đi bộ quanh Hồ Tây đều được gác lại.\n\nNhững lúc như vậy, sảnh Ven Hồ Hotel thường là nơi khách xuống ngồi.\n\nCửa kính nhìn thẳng ra phố Nguyễn Đình Thi. Mưa rơi bên ngoài, bên trong yên và khô ráo. Sàn gạch nâu với những vòng hoa văn tròn, mấy chiếc ghế gỗ màu nâu đỏ sẫm, vài bức tranh treo trên tường. Ánh sáng dịu, không quá vàng cũng không quá trắng, đủ để đọc mà không mỏi mắt.\n\nKhông gian này không lớn. Nhưng đúng vào một buổi chiều mưa, sự vừa vặn ấy lại hợp lý: đủ gần quầy lễ tân để hỏi han một câu, đủ riêng để ngồi im với cuốn sách mang theo trong vali.\n\nMưa ở Tây Hồ thường không kéo dài cả ngày. Đọc hết vài chương, ngẩng lên đã thấy phố ngoài kia sáng dần, mặt đường bắt đầu khô, và bạn lại có thể ra hồ đi bộ như dự định ban đầu.\n\nĐôi khi một chuyến đi Hà Nội đáng nhớ không nằm ở lịch trình kín, mà ở khoảng thời gian trống mà bạn không phải vội lấp đầy.\n\nNếu bạn đang tìm một khách sạn view Hồ Tây cho những ngày sắp tới, nhắn tin cho Ven Hồ Hotel để kiểm tra phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #KhachSanHoTay #HaNoi #WestLakeHanoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-friday-facebook-b91a3968",
+        "hashtags": [
+          "#VenHoHotelHanoi",
+          "#HoTay",
+          "#KhachSanHoTay",
+          "#HaNoi",
+          "#WestLakeHanoi"
+        ],
+        "source_prompt_file": "data/projects/venho_hotel/prompts/content/LOBBY__facebook-goc-doc-sach-o-lobby-vao-ngay-mua__CONTENT_PROMPT_v1.0.json",
+        "image_run_path": null,
+        "image_public_url": "https://venhohotel.com/images/Social-fallback/lobby.jpg",
+        "image_is_fallback": true,
+        "tracking_url": "https://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-friday-facebook-b91a3968"
+      },
+      "creative_brief_id": "brief-friday-facebook-66d2e6dc",
+      "package_snapshot": {
+        "id": "211a53ce-8e04-4271-973c-65fd12f35d4d",
+        "copy_version_ids": [
+          "brief-friday-facebook-66d2e6dc-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "d86d6e38dc81b9acbd593f2b86e8dbf3d6c1267e67aafe66dca4945a9ad2a54c",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-friday-facebook-66d2e6dc@1"
+      },
+      "day": "friday",
+      "pillar": "Khong gian boutique Ven Ho Hotel",
+      "topic": "goc doc sach o lobby vao ngay mua",
+      "dna_subject": "lobby",
+      "slot_id": "slot-2026-08-14-friday",
+      "creative_brief": {
+        "schema_version": "1.0",
+        "id": "brief-friday-facebook-66d2e6dc",
+        "version": 1,
+        "brand_id": "venho-hotel",
+        "campaign_id": "daily-cycle-friday",
+        "objective": "qualified_inquiry",
+        "platforms": [
+          "facebook"
+        ],
+        "audience_segment": "Vietnamese leisure guests",
+        "funnel_stage": "consideration",
+        "single_minded_message": "goc doc sach o lobby vao ngay mua",
+        "proof_points": [],
+        "content_angle": "Khong gian boutique Ven Ho Hotel",
+        "cta": {
+          "type": "booking_link",
+          "destination_key": "hotel.website",
+          "strength": "soft"
+        },
+        "visual": {
+          "scenario_key": "venho_lobby_cozy",
+          "required_entities": [
+            "lobby"
+          ],
+          "forbidden_entities": [
+            "generic_city_hotel",
+            "outdoor_scene"
+          ],
+          "target_formats": [
+            "feed_4_5"
+          ]
+        },
+        "lane": "daily",
+        "status": "LOCKED",
+        "checksum": "sha256:d15e6d3f287be39afa417592ba7190a2ac224843c909082913f54149f4c95c28",
+        "project": "venho_hotel",
+        "prompt_rules": "default",
+        "recent_topics": [
+          "Nguồn 3 giới thiệu Chợ Hoa Quảng Bá tại 236 Đường Âu Cơ là chợ hoa lớn và điểm tham quan chụp ảnh tại Tây Hồ.",
+          "nguoi Ha Noi tap the duc quanh Ho Tay luc 6 gio sang",
+          "lake view morning",
+          "morning at West Lake",
+          "lake view room",
+          "simple hotel comfort"
+        ],
+        "context_refs": [
+          {
+            "rs_id": "RS-weather-2026-08-14",
+            "evidence_level": "R2-T",
+            "role": "weather_angle"
+          }
+        ],
+        "hook_hypothesis": "Mưa ngoài cửa kính — không gian ấm trong sảnh"
+      },
+      "claims": [],
+      "scene_summary": {
+        "location": "Lobby, warm interior (rain / cold)",
+        "time_of_day": "morning",
+        "entities": [
+          "lobby"
+        ],
+        "mood": "calm"
+      },
+      "scorecard_signals": {
+        "claim_kill_switch_triggered": false,
+        "content_brand_fit": 95,
+        "content_overall_score": 90.87
+      }
+    },
+    {
+      "publication_id": "pub-friday-instagram-8e75186d",
+      "content_package_id": "90912a12-a022-47a4-8be0-220d7949d9b3",
+      "idempotency_key": "004885a3886a7bb7d510b19f8f4fb5fbca470d38025748b03297ee7e54a14b0c",
+      "platform": "instagram",
+      "status": "PENDING_APPROVAL",
+      "gateway_status": null,
+      "platform_post_id": null,
+      "permalink": null,
+      "reconciliation_proof": null,
+      "created_at": "2026-08-13T04:16:31.541624+00:00",
+      "updated_at": "2026-08-13T04:16:31.550356+00:00",
+      "content": {
+        "title": "Ngày mưa, lobby thành chỗ ngồi lâu nhất",
+        "text": "Mưa Hà Nội hay đến ngang chừng buổi chiều. Và lobby là chỗ đầu tiên bạn dừng lại.\n\nCửa kính khép lại, tiếng mưa ngoài phố Nguyễn Đình Thi nhỏ dần đi một nửa.\n\nSàn gạch nâu với những vòng tròn xoay đều dưới chân. Quầy lễ tân gỗ nâu đỏ sẫm, một bức tranh treo trên tường, ánh đèn vừa đủ sáng để đọc mà không chói mắt.\n\nKhông gian ở đây nhỏ, gọn và sạch. Đủ để bạn kéo một chiếc ghế ra, lấy cuốn sách vẫn nằm trong balo từ hôm lên máy bay, rồi đọc hết chương dang dở mà không thấy sốt ruột.\n\nMưa ở Tây Hồ ít khi kéo dài cả ngày. Đọc xong vài trang, ngẩng lên là trời đã hửng, mặt hồ lại sáng ra, vừa kịp cho một vòng đi bộ trước khi hoàng hôn Hồ Tây xuống.\n\nNếu bạn đang lên lịch vài ngày ở Hà Nội, nhắn Ven Hồ Hotel để xem phòng trống cho ngày bạn định đến nhé.\n\n#VenHoHotelHanoi #KhachSanViewHoTay #HoTay #NguyenDinhThi #WestLakeHanoi #HaNoi #HanoiTravel",
+        "hashtags": [
+          "#VenHoHotelHanoi",
+          "#KhachSanViewHoTay",
+          "#HoTay",
+          "#NguyenDinhThi",
+          "#WestLakeHanoi",
+          "#HaNoi",
+          "#HanoiTravel"
+        ],
+        "source_prompt_file": "data/projects/venho_hotel/prompts/content/LOBBY__instagram-goc-doc-sach-o-lobby-vao-ngay-mua__CONTENT_PROMPT_v1.0.json",
+        "image_run_path": null,
+        "image_public_url": "https://venhohotel.com/images/Social-fallback/lobby.jpg",
+        "image_is_fallback": true,
+        "tracking_url": "https://venhohotel.com/lien-he?utm_source=instagram&utm_medium=social&utm_content=pub-friday-instagram-8e75186d"
+      },
+      "creative_brief_id": "brief-friday-instagram-46159cce",
+      "package_snapshot": {
+        "id": "90912a12-a022-47a4-8be0-220d7949d9b3",
+        "copy_version_ids": [
+          "brief-friday-instagram-46159cce-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "febe9289373d5b91cbfc5968b25a6ae560e0223cc11bdbbbdef98008964f514c",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-friday-instagram-46159cce@1"
+      },
+      "day": "friday",
+      "pillar": "Khong gian boutique Ven Ho Hotel",
+      "topic": "goc doc sach o lobby vao ngay mua",
+      "dna_subject": "lobby",
+      "slot_id": "slot-2026-08-14-friday",
+      "creative_brief": {
+        "schema_version": "1.0",
+        "id": "brief-friday-instagram-46159cce",
+        "version": 1,
+        "brand_id": "venho-hotel",
+        "campaign_id": "daily-cycle-friday",
+        "objective": "qualified_inquiry",
+        "platforms": [
+          "instagram"
+        ],
+        "audience_segment": "Vietnamese leisure guests",
+        "funnel_stage": "consideration",
+        "single_minded_message": "goc doc sach o lobby vao ngay mua",
+        "proof_points": [],
+        "content_angle": "Khong gian boutique Ven Ho Hotel",
+        "cta": {
+          "type": "booking_link",
+          "destination_key": "hotel.website",
+          "strength": "soft"
+        },
+        "visual": {
+          "scenario_key": "venho_lobby_cozy",
+          "required_entities": [
+            "lobby"
+          ],
+          "forbidden_entities": [
+            "generic_city_hotel",
+            "outdoor_scene"
+          ],
+          "target_formats": [
+            "feed_4_5"
+          ]
+        },
+        "lane": "daily",
+        "status": "LOCKED",
+        "checksum": "sha256:7bc2613fe224f3a060e1ab5c8cfb630d52c4f45692abd88ce1439a5fc2df363a",
+        "project": "venho_hotel",
+        "prompt_rules": "default",
+        "recent_topics": [
+          "Nguồn 3 giới thiệu Chợ Hoa Quảng Bá tại 236 Đường Âu Cơ là chợ hoa lớn và điểm tham quan chụp ảnh tại Tây Hồ.",
+          "nguoi Ha Noi tap the duc quanh Ho Tay luc 6 gio sang",
+          "lake view morning",
+          "morning at West Lake",
+          "lake view room",
+          "simple hotel comfort"
+        ],
+        "context_refs": [
+          {
+            "rs_id": "RS-weather-2026-08-14",
+            "evidence_level": "R2-T",
+            "role": "weather_angle"
+          }
+        ],
+        "hook_hypothesis": "Mưa ngoài cửa kính — không gian ấm trong sảnh"
+      },
+      "claims": [],
+      "scene_summary": {
+        "location": "Lobby, warm interior (rain / cold)",
+        "time_of_day": "morning",
+        "entities": [
+          "lobby"
+        ],
+        "mood": "calm"
+      },
+      "scorecard_signals": {
+        "claim_kill_switch_triggered": false,
+        "content_brand_fit": 95,
+        "content_overall_score": 92.37
+      }
+    },
+    {
+      "publication_id": "pub-friday-threads-a4c20648",
+      "content_package_id": "b002127b-9d14-48d0-add4-fee5d4ae1fcb",
+      "idempotency_key": "81df187dce3c061e963deb6c556ffd1f2496cf581824780827547122eb4d88d6",
+      "platform": "threads",
+      "status": "PENDING_APPROVAL",
+      "gateway_status": null,
+      "platform_post_id": null,
+      "permalink": null,
+      "reconciliation_proof": null,
+      "created_at": "2026-08-13T04:16:53.236348+00:00",
+      "updated_at": "2026-08-13T04:16:53.246434+00:00",
+      "content": {
+        "title": "Ngày mưa thì ngồi lại lobby đọc nốt vài trang",
+        "text": "Mưa Hà Nội có cái hay riêng: chẳng ai vội đi đâu nữa.\n\nCửa kính lối vào đọng nước, nhìn ra ngoài mọi thứ mờ đi một chút. Bên trong sảnh vẫn khô ráo, đèn để ở mức vừa đủ, không chói. Sàn gạch nâu có hoa văn tròn, mấy bộ ghế gỗ màu nâu đỏ sẫm, một bức tranh treo tường và quầy lễ tân ngay đó nếu cần hỏi gì. Không gian nhỏ thôi, đủ để ngồi đọc nốt chương sách đang dở mà không thấy trống trải. Ở Ven Hồ Hotel trên Nguyễn Đình Thi, ngày mưa thường trôi kiểu như vậy: chậm hơn dự định, và cũng không ai phàn nàn.\n\nNếu bạn tính ra Hà Nội vào mùa mưa, nhắn cho Ven Hồ Hotel để hỏi phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=threads&utm_medium=social&utm_content=pub-friday-threads-a4c20648",
+        "hashtags": [
+          "#VenHoHotelHanoi",
+          "#HoTay",
+          "#HaNoi"
+        ],
+        "source_prompt_file": "data/projects/venho_hotel/prompts/content/LOBBY__threads-goc-doc-sach-o-lobby-vao-ngay-mua__CONTENT_PROMPT_v1.0.json",
+        "image_run_path": null,
+        "image_public_url": "https://venhohotel.com/images/Social-fallback/lobby.jpg",
+        "image_is_fallback": true,
+        "tracking_url": "https://venhohotel.com/lien-he?utm_source=threads&utm_medium=social&utm_content=pub-friday-threads-a4c20648"
+      },
+      "creative_brief_id": "brief-friday-threads-a0f27bd5",
+      "package_snapshot": {
+        "id": "b002127b-9d14-48d0-add4-fee5d4ae1fcb",
+        "copy_version_ids": [
+          "brief-friday-threads-a0f27bd5-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "1609cfc3732d3dfc6879d1231cef6168d97dea18605bfa147db141fcd9c5d833",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-friday-threads-a0f27bd5@1"
+      },
+      "day": "friday",
+      "pillar": "Khong gian boutique Ven Ho Hotel",
+      "topic": "goc doc sach o lobby vao ngay mua",
+      "dna_subject": "lobby",
+      "slot_id": "slot-2026-08-14-friday",
+      "creative_brief": {
+        "schema_version": "1.0",
+        "id": "brief-friday-threads-a0f27bd5",
+        "version": 1,
+        "brand_id": "venho-hotel",
+        "campaign_id": "daily-cycle-friday",
+        "objective": "qualified_inquiry",
+        "platforms": [
+          "threads"
+        ],
+        "audience_segment": "Vietnamese leisure guests",
+        "funnel_stage": "consideration",
+        "single_minded_message": "goc doc sach o lobby vao ngay mua",
+        "proof_points": [],
+        "content_angle": "Khong gian boutique Ven Ho Hotel",
+        "cta": {
+          "type": "booking_link",
+          "destination_key": "hotel.website",
+          "strength": "soft"
+        },
+        "visual": {
+          "scenario_key": "venho_lobby_cozy",
+          "required_entities": [
+            "lobby"
+          ],
+          "forbidden_entities": [
+            "generic_city_hotel",
+            "outdoor_scene"
+          ],
+          "target_formats": [
+            "feed_4_5"
+          ]
+        },
+        "lane": "daily",
+        "status": "LOCKED",
+        "checksum": "sha256:6b03f1d1c9d9409c4e8b6501412e024be2ef834054f460109f6d487f714d233b",
+        "project": "venho_hotel",
+        "prompt_rules": "default",
+        "recent_topics": [
+          "Nguồn 3 giới thiệu Chợ Hoa Quảng Bá tại 236 Đường Âu Cơ là chợ hoa lớn và điểm tham quan chụp ảnh tại Tây Hồ.",
+          "nguoi Ha Noi tap the duc quanh Ho Tay luc 6 gio sang",
+          "lake view morning",
+          "morning at West Lake",
+          "lake view room",
+          "simple hotel comfort"
+        ],
+        "context_refs": [
+          {
+            "rs_id": "RS-weather-2026-08-14",
+            "evidence_level": "R2-T",
+            "role": "weather_angle"
+          }
+        ],
+        "hook_hypothesis": "Mưa ngoài cửa kính — không gian ấm trong sảnh"
+      },
+      "claims": [],
+      "scene_summary": {
+        "location": "Lobby, warm interior (rain / cold)",
+        "time_of_day": "morning",
+        "entities": [
+          "lobby"
+        ],
+        "mood": "calm"
+      },
+      "scorecard_signals": {
+        "claim_kill_switch_triggered": false,
+        "content_brand_fit": 95,
+        "content_overall_score": 93.42
+      }
+    },
+    {
+      "publication_id": "pub-friday-zalo-4dd82a70",
+      "content_package_id": "ea3f09af-4c26-44c0-9be2-45511cd3b5ec",
+      "idempotency_key": "0d08214cbb046a9aa76e388cd29dae4cec196f31751e2895816ff4d1f36185a5",
+      "platform": "zalo",
+      "status": "PENDING_APPROVAL",
+      "gateway_status": null,
+      "platform_post_id": null,
+      "permalink": null,
+      "reconciliation_proof": null,
+      "created_at": "2026-08-13T04:17:26.326414+00:00",
+      "updated_at": "2026-08-13T04:17:26.338559+00:00",
+      "content": {
+        "title": "Ngày mưa, sảnh Ven Hồ là một chỗ ngồi vừa đủ",
+        "text": "Có những ngày Hà Nội mưa từ sáng, kế hoạch đi vòng quanh Hồ Tây phải hoãn lại. Và hóa ra đó không phải là ngày bỏ đi.\n\nSảnh Ven Hồ Hotel không rộng, nhưng đủ để có một góc ngồi yên.\n\nCửa kính nhìn thẳng ra phố Nguyễn Đình Thi, mưa chạy thành vệt dài trên mặt kính. Bên trong, sàn gạch nâu với những vòng hoa văn tròn, quầy lễ tân gỗ nâu đỏ sẫm, vài bức tranh treo tường và ánh đèn dịu, không gắt. Trần trắng phẳng, mọi thứ gọn gàng và sạch sẽ.\n\nMột chiếc ghế cạnh cửa kính, cuốn sách mang theo từ nhà đang đọc dở, thêm chút ánh sáng ngày mưa hắt vào là đủ cho một buổi sáng chậm. Nhân viên lễ tân vẫn ở đó nếu bạn cần hỏi đường hay gọi xe.\n\nRồi mưa ngớt. Hồ Tây chỉ cách vài phút đi bộ, mặt nước sau mưa thường trong và mát hơn hẳn. Chuyến đi không mất gì, chỉ đổi thứ tự lại một chút.\n\nĐó là kiểu tiện lợi mà một khách sạn view Hồ Tây quy mô nhỏ có thể mang lại: bạn không cần đi xa để chờ trời tạnh.\n\nLiên hệ Hotline/Zalo 0936871234 để đặt phòng view Hồ Tây ngay hôm nay.\n\n#VenHoHotelHanoi #HoTay #KhachSanHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=zalo&utm_medium=social&utm_content=pub-friday-zalo-4dd82a70",
+        "hashtags": [
+          "#VenHoHotelHanoi",
+          "#HoTay",
+          "#KhachSanHoTay",
+          "#HaNoi"
+        ],
+        "source_prompt_file": "data/projects/venho_hotel/prompts/content/LOBBY__zalo-goc-doc-sach-o-lobby-vao-ngay-mua__CONTENT_PROMPT_v1.0.json",
+        "image_run_path": null,
+        "image_public_url": "https://venhohotel.com/images/Social-fallback/lobby.jpg",
+        "image_is_fallback": true,
+        "tracking_url": "https://venhohotel.com/lien-he?utm_source=zalo&utm_medium=social&utm_content=pub-friday-zalo-4dd82a70"
+      },
+      "creative_brief_id": "brief-friday-zalo-afd18633",
+      "package_snapshot": {
+        "id": "ea3f09af-4c26-44c0-9be2-45511cd3b5ec",
+        "copy_version_ids": [
+          "brief-friday-zalo-afd18633-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "a6dafa8789626464406705e3dba006417106017685e0e1d7aaafc8fa69f0a45b",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-friday-zalo-afd18633@1"
+      },
+      "day": "friday",
+      "pillar": "Khong gian boutique Ven Ho Hotel",
+      "topic": "goc doc sach o lobby vao ngay mua",
+      "dna_subject": "lobby",
+      "slot_id": "slot-2026-08-14-friday",
+      "creative_brief": {
+        "schema_version": "1.0",
+        "id": "brief-friday-zalo-afd18633",
+        "version": 1,
+        "brand_id": "venho-hotel",
+        "campaign_id": "daily-cycle-friday",
+        "objective": "qualified_inquiry",
+        "platforms": [
+          "zalo"
+        ],
+        "audience_segment": "Vietnamese leisure guests",
+        "funnel_stage": "consideration",
+        "single_minded_message": "goc doc sach o lobby vao ngay mua",
+        "proof_points": [],
+        "content_angle": "Khong gian boutique Ven Ho Hotel",
+        "cta": {
+          "type": "booking_link",
+          "destination_key": "hotel.website",
+          "strength": "soft"
+        },
+        "visual": {
+          "scenario_key": "venho_lobby_cozy",
+          "required_entities": [
+            "lobby"
+          ],
+          "forbidden_entities": [
+            "generic_city_hotel",
+            "outdoor_scene"
+          ],
+          "target_formats": [
+            "feed_4_5"
+          ]
+        },
+        "lane": "daily",
+        "status": "LOCKED",
+        "checksum": "sha256:3abe6f1c845aede98cddf1ccb5da2272476d84980f66e53667048f3b250fd7be",
+        "project": "venho_hotel",
+        "prompt_rules": "default",
+        "recent_topics": [
+          "Nguồn 3 giới thiệu Chợ Hoa Quảng Bá tại 236 Đường Âu Cơ là chợ hoa lớn và điểm tham quan chụp ảnh tại Tây Hồ.",
+          "nguoi Ha Noi tap the duc quanh Ho Tay luc 6 gio sang",
+          "lake view morning",
+          "morning at West Lake",
+          "lake view room",
+          "simple hotel comfort"
+        ],
+        "context_refs": [
+          {
+            "rs_id": "RS-weather-2026-08-14",
+            "evidence_level": "R2-T",
+            "role": "weather_angle"
+          }
+        ],
+        "hook_hypothesis": "Mưa ngoài cửa kính — không gian ấm trong sảnh"
+      },
+      "claims": [],
+      "scene_summary": {
+        "location": "Lobby, warm interior (rain / cold)",
+        "time_of_day": "morning",
+        "entities": [
+          "lobby"
+        ],
+        "mood": "calm"
+      },
+      "scorecard_signals": {
+        "claim_kill_switch_triggered": false,
+        "content_brand_fit": 95,
+        "content_overall_score": 91.25
+      }
+    },
+    {
+      "publication_id": "pub-saturday-instagram-979e8f22",
+      "content_package_id": "8b1d5818-8919-4445-a24f-4b08557beb4e",
+      "idempotency_key": "08173444952bb42ce213413b7a68334a09bf23afb60ff12fd09ef6a5a1262f24",
+      "platform": "instagram",
+      "status": "PENDING_APPROVAL",
+      "gateway_status": null,
+      "platform_post_id": null,
+      "permalink": null,
+      "reconciliation_proof": null,
+      "created_at": "2026-08-13T04:20:36.446357+00:00",
+      "updated_at": "2026-08-13T04:20:36.456982+00:00",
+      "content": {
+        "title": "Sen Tây Hồ: thứ hương người Hà Nội giữ lại trong ấm trà",
+        "text": "Ở Hà Nội, sen không dừng lại ở một loài hoa. Sen Tây Hồ là một nếp văn hoá, được giữ lại bằng hương trong ấm trà.\n\nQuanh Hồ Tây có những đầm sen đã gắn với đời sống người Hà Nội qua nhiều thế hệ. Sen ở đây được chuộng để ướp trà, và nghề ướp trà sen là một trong những nghề đòi hỏi kiên nhẫn bậc nhất: tách từng bông lấy gạo sen, ướp, sấy, rồi lặp lại nhiều lần cho đến khi lá trà thấm hương.\n\nMột ấm trà sen vì thế không uống vội được. Người ta ngồi lâu, nói chuyện chậm, nhìn ra mặt nước. Đó cũng là cách nhiều người chọn để bắt đầu một ngày cuối tuần ở Tây Hồ: đi bộ một vòng ven hồ, ghé một quán trà, rồi để buổi sáng trôi theo nhịp của nó.\n\nVen Hồ Hotel nằm trên Nguyễn Đình Thi, ngay cạnh nhịp sống ấy. Sảnh nhỏ, cửa kính mở ra phố, quầy lễ tân gỗ nâu trầm, nền gạch hoa văn tròn, vài bức tranh treo tường và ánh sáng dịu. Một nơi vừa đủ ấm để trở về sau khi đi lang thang quanh hồ.\n\nNếu bạn đang tính một cuối tuần chậm ở Tây Hồ, nhắn tin cho Ven Hồ Hotel để kiểm tra phòng trống cho những ngày bạn dự định ở Hà Nội nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #SenTayHo #TraSen #KhamPhaHoTay #KhachSanHoTay #HaNoi",
+        "hashtags": [
+          "#VenHoHotelHanoi",
+          "#HoTay",
+          "#WestLakeHanoi",
+          "#SenTayHo",
+          "#TraSen",
+          "#KhamPhaHoTay",
+          "#KhachSanHoTay",
+          "#HaNoi"
+        ],
+        "source_prompt_file": "data/projects/venho_hotel/prompts/content/LOBBY__instagram-sen-t-y-h-tinh-hoa-v-n-ho-vi-t-v-n-ho-v-s-ki-n__CONTENT_PROMPT_v1.0.json",
+        "image_run_path": null,
+        "image_public_url": "https://venhohotel.com/images/Lake-view/lake-view-7.JPG",
+        "image_is_fallback": true,
+        "tracking_url": "https://venhohotel.com/lien-he?utm_source=instagram&utm_medium=social&utm_content=pub-saturday-instagram-979e8f22"
+      },
+      "creative_brief_id": "brief-saturday-instagram-4feef374",
+      "package_snapshot": {
+        "id": "8b1d5818-8919-4445-a24f-4b08557beb4e",
+        "copy_version_ids": [
+          "brief-saturday-instagram-4feef374-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "2e54ddecdbc4827ac0fbad7ea13224efe4e52f268666441db1d563394f16092e",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-saturday-instagram-4feef374@1"
+      },
+      "day": "saturday",
+      "pillar": "Trend Radar",
+      "topic": "Sen Tây Hồ: Tinh hoa văn hoá Việt | Văn hoá và sự kiện",
+      "dna_subject": "westlake",
+      "slot_id": "slot-2026-08-15-saturday",
+      "creative_brief": {
+        "schema_version": "1.0",
+        "id": "brief-saturday-instagram-4feef374",
+        "version": 1,
+        "brand_id": "venho-hotel",
+        "campaign_id": "daily-cycle-saturday",
+        "objective": "qualified_inquiry",
+        "platforms": [
+          "instagram"
+        ],
+        "audience_segment": "Vietnamese leisure guests",
+        "funnel_stage": "consideration",
+        "single_minded_message": "Sen Tây Hồ: Tinh hoa văn hoá Việt | Văn hoá và sự kiện",
+        "proof_points": [],
+        "content_angle": "Trend Radar",
+        "cta": {
+          "type": "booking_link",
+          "destination_key": "hotel.website",
+          "strength": "soft"
+        },
+        "visual": {
+          "scenario_key": "venho_lobby_cozy",
+          "required_entities": [
+            "lobby"
+          ],
+          "forbidden_entities": [
+            "generic_city_hotel",
+            "outdoor_scene"
+          ],
+          "target_formats": [
+            "feed_4_5"
+          ]
+        },
+        "lane": "saturday_trend",
+        "status": "LOCKED",
+        "checksum": "sha256:c644d5a7fef68affdad94c08f9fe92bd112a87a98d47042f090aa4ec30f61007",
+        "project": "venho_hotel",
+        "prompt_rules": "weekend_events",
+        "recent_topics": [
+          "goc doc sach o lobby vao ngay mua",
+          "Nguồn 3 giới thiệu Chợ Hoa Quảng Bá tại 236 Đường Âu Cơ là chợ hoa lớn và điểm tham quan chụp ảnh tại Tây Hồ.",
+          "nguoi Ha Noi tap the duc quanh Ho Tay luc 6 gio sang",
+          "lake view morning",
+          "morning at West Lake",
+          "lake view room"
+        ],
+        "context_refs": [
+          {
+            "rs_id": "RS-weather-2026-08-15",
+            "evidence_level": "R2-T",
+            "role": "weather_angle"
+          }
+        ],
+        "hook_hypothesis": "Mưa ngoài cửa kính — không gian ấm trong sảnh"
+      },
+      "claims": [],
+      "scene_summary": {
+        "location": "Lobby, warm interior (rain / cold)",
+        "time_of_day": "morning",
+        "entities": [
+          "lobby"
+        ],
+        "mood": "calm"
+      },
+      "scorecard_signals": {
+        "claim_kill_switch_triggered": false,
+        "content_brand_fit": 95,
+        "content_overall_score": 90.23
+      }
+    },
+    {
+      "publication_id": "pub-saturday-threads-085482e8",
+      "content_package_id": "b49d8795-3932-4774-ab47-3faad4d67a77",
+      "idempotency_key": "15c068cd4fe3e715ffdb3395507fb646a9179400bcf77bbee7026e9b4d90eeb4",
+      "platform": "threads",
+      "status": "PENDING_APPROVAL",
+      "gateway_status": null,
+      "platform_post_id": null,
+      "permalink": null,
+      "reconciliation_proof": null,
+      "created_at": "2026-08-13T04:21:03.242183+00:00",
+      "updated_at": "2026-08-13T04:21:03.255059+00:00",
+      "content": {
+        "title": "Sen Tây Hồ — thứ Hà Nội phải chờ đúng mùa mới gặp",
+        "text": "Ở Hà Nội có những thứ phải chờ đúng mùa mới gặp. Sen Tây Hồ là một trong số đó.\n\nSen ở vùng Tây Hồ từ lâu gắn với một nghề rất kiên nhẫn: ướp trà. Người làm phải tách từng bông, lấy phần gạo sen nhỏ li ti rồi ướp cùng trà, lặp lại nhiều lần cho hương ngấm vào từng cánh trà khô. Một mẻ trà sen vì thế không thể vội.\n\nCái hay là ngay cả khi không phải mùa sen, nhịp ấy vẫn còn quanh hồ. Trong những quán trà nhỏ, trong cách người ta ngồi lâu bên ấm nước, trong buổi chiều đi bộ dọc Nguyễn Đình Thi khi mặt hồ đổi màu.\n\nĐi Hồ Tây, đôi khi thứ đáng mang về không phải ảnh, mà là tốc độ sống chậm hơn một chút.\n\nNếu bạn đang tính một cuối tuần chậm ở Tây Hồ, nhắn cho Ven Hồ Hotel để xem phòng trống những ngày bạn định ở Hà Nội nhé.\n\n#VenHoHotelHanoi #HoTay #HanoiTravel\n\nhttps://venhohotel.com/lien-he?utm_source=threads&utm_medium=social&utm_content=pub-saturday-threads-085482e8",
+        "hashtags": [
+          "#VenHoHotelHanoi",
+          "#HoTay",
+          "#HanoiTravel"
+        ],
+        "source_prompt_file": "data/projects/venho_hotel/prompts/content/LOBBY__threads-sen-t-y-h-tinh-hoa-v-n-ho-vi-t-v-n-ho-v-s-ki-n__CONTENT_PROMPT_v1.0.json",
+        "image_run_path": null,
+        "image_public_url": "https://venhohotel.com/images/Lake-view/lake-view-7.JPG",
+        "image_is_fallback": true,
+        "tracking_url": "https://venhohotel.com/lien-he?utm_source=threads&utm_medium=social&utm_content=pub-saturday-threads-085482e8"
+      },
+      "creative_brief_id": "brief-saturday-threads-3da0e02c",
+      "package_snapshot": {
+        "id": "b49d8795-3932-4774-ab47-3faad4d67a77",
+        "copy_version_ids": [
+          "brief-saturday-threads-3da0e02c-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "adbf474a2e7260f26c125de41c6ef1c69561e30b84b540490ec0debb0cee9b03",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-saturday-threads-3da0e02c@1"
+      },
+      "day": "saturday",
+      "pillar": "Trend Radar",
+      "topic": "Sen Tây Hồ: Tinh hoa văn hoá Việt | Văn hoá và sự kiện",
+      "dna_subject": "westlake",
+      "slot_id": "slot-2026-08-15-saturday",
+      "creative_brief": {
+        "schema_version": "1.0",
+        "id": "brief-saturday-threads-3da0e02c",
+        "version": 1,
+        "brand_id": "venho-hotel",
+        "campaign_id": "daily-cycle-saturday",
+        "objective": "qualified_inquiry",
+        "platforms": [
+          "threads"
+        ],
+        "audience_segment": "Vietnamese leisure guests",
+        "funnel_stage": "consideration",
+        "single_minded_message": "Sen Tây Hồ: Tinh hoa văn hoá Việt | Văn hoá và sự kiện",
+        "proof_points": [],
+        "content_angle": "Trend Radar",
+        "cta": {
+          "type": "booking_link",
+          "destination_key": "hotel.website",
+          "strength": "soft"
+        },
+        "visual": {
+          "scenario_key": "venho_lobby_cozy",
+          "required_entities": [
+            "lobby"
+          ],
+          "forbidden_entities": [
+            "generic_city_hotel",
+            "outdoor_scene"
+          ],
+          "target_formats": [
+            "feed_4_5"
+          ]
+        },
+        "lane": "saturday_trend",
+        "status": "LOCKED",
+        "checksum": "sha256:f1c412ef500ac3ea19818d2d994dce96df2e00d255044497217a4ec6f13b2f87",
+        "project": "venho_hotel",
+        "prompt_rules": "weekend_events",
+        "recent_topics": [
+          "goc doc sach o lobby vao ngay mua",
+          "Nguồn 3 giới thiệu Chợ Hoa Quảng Bá tại 236 Đường Âu Cơ là chợ hoa lớn và điểm tham quan chụp ảnh tại Tây Hồ.",
+          "nguoi Ha Noi tap the duc quanh Ho Tay luc 6 gio sang",
+          "lake view morning",
+          "morning at West Lake",
+          "lake view room"
+        ],
+        "context_refs": [
+          {
+            "rs_id": "RS-weather-2026-08-15",
+            "evidence_level": "R2-T",
+            "role": "weather_angle"
+          }
+        ],
+        "hook_hypothesis": "Mưa ngoài cửa kính — không gian ấm trong sảnh"
+      },
+      "claims": [],
+      "scene_summary": {
+        "location": "Lobby, warm interior (rain / cold)",
+        "time_of_day": "morning",
+        "entities": [
+          "lobby"
+        ],
+        "mood": "calm"
+      },
+      "scorecard_signals": {
+        "claim_kill_switch_triggered": false,
+        "content_brand_fit": 95,
+        "content_overall_score": 92.07
+      }
     }
   ]
 }
