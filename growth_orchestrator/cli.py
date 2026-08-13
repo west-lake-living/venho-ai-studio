@@ -10,6 +10,7 @@ import typer
 
 from growth_orchestrator.application.approve_and_dispatch import (
     approve_and_dispatch,
+    approve_publications,
     approve_week,
     edit_publication,
     list_pending,
@@ -265,6 +266,26 @@ def approve_week_cmd(
         typer.echo(json.dumps({"ok": False, "error": str(exc)}), err=True)
         raise typer.Exit(code=1)
     typer.echo(json.dumps({"ok": True, "week_start": resolved_week_start.isoformat(), "publications": publications}, ensure_ascii=False, indent=2))
+
+
+@app.command("approve-group")
+def approve_group_cmd(
+    publication_id: list[str] = typer.Option(..., "--publication-id", help="Repeat once per platform row in the topic (e.g. --publication-id x --publication-id y)."),
+    approved_by: str = typer.Option(..., "--approved-by"),
+    project: str = typer.Option("venho_hotel"),
+) -> None:
+    """Approve one topic's platform posts (its row in list-pending), not the whole week.
+
+    What the per-topic "Duyệt" button on VENHO OS Dashboard's Publishing &
+    Schedule section calls. Still state-only like approve-week: no dispatch,
+    no webhook call.
+    """
+    try:
+        publications = approve_publications(publication_ids=publication_id, approved_by=approved_by, project=project)
+    except (KeyError, ValueError) as exc:
+        typer.echo(json.dumps({"ok": False, "error": str(exc)}), err=True)
+        raise typer.Exit(code=1)
+    typer.echo(json.dumps({"ok": True, "publications": publications}, ensure_ascii=False, indent=2))
 
 
 @app.command("dispatch-due")

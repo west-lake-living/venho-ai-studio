@@ -8,6 +8,7 @@ import pytest
 
 from growth_orchestrator.application.approve_and_dispatch import (
     approve_and_dispatch,
+    approve_publications,
     approve_week,
     edit_publication,
     list_pending,
@@ -331,6 +332,46 @@ def test_approve_week_records_one_scheduled_approval_without_dispatch(tmp_path: 
         if item["approval_snapshot"] is not None:
             assert item["approval_snapshot"]["status"] == "approved"
     assert registry.find(next_week)["status"] == "APPROVED_SCHEDULED"
+
+
+def test_list_pending_exposes_the_real_calendar_date_not_just_the_weekday(tmp_path: Path) -> None:
+    registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
+    _reserve_pending(registry, platform="facebook", slot_id="slot-2026-08-12-wednesday")
+    _reserve_pending(registry, platform="instagram", slot_id="slot-2026-08-19-wednesday")
+
+    rows = {row["publication_id"]: row["slot_date"] for row in list_pending(project="venho_hotel", data_root=tmp_path, registry=registry)}
+
+    assert rows == {"pub-facebook-1": "2026-08-12", "pub-instagram-1": "2026-08-19"}
+
+
+def test_approve_publications_approves_only_the_given_topic_group(tmp_path: Path) -> None:
+    registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
+    fb = _reserve_pending(registry, platform="facebook", slot_id="slot-2026-08-12-wednesday")
+    other_topic = _reserve_pending(registry, platform="instagram", slot_id="slot-2026-08-12-wednesday")
+
+    approved = approve_publications(publication_ids=[fb], approved_by="harry@example.com", data_root=tmp_path, registry=registry)
+
+    assert {item["publication_id"] for item in approved} == {fb}
+    assert approved[0]["status"] == "APPROVED_SCHEDULED"
+    assert approved[0]["approval_scope"] == "topic_group"
+    assert registry.find(other_topic)["status"] == "PENDING_APPROVAL"
+
+
+def test_approve_publications_rejects_unknown_publication_id(tmp_path: Path) -> None:
+    registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
+    with pytest.raises(KeyError):
+        approve_publications(publication_ids=["does-not-exist"], approved_by="harry", data_root=tmp_path, registry=registry)
+
+
+def test_approve_publications_is_atomic_across_the_group(tmp_path: Path) -> None:
+    registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
+    fb = _reserve_pending(registry, platform="facebook", slot_id="slot-2026-08-12-wednesday")
+    ig = _reserve_pending(registry, platform="instagram", slot_id="slot-2026-08-12-wednesday")
+    registry.update(ig, status="REJECTED")
+
+    with pytest.raises(ValueError, match="not PENDING_APPROVAL"):
+        approve_publications(publication_ids=[fb, ig], approved_by="harry", data_root=tmp_path, registry=registry)
+    assert registry.find(fb)["status"] == "PENDING_APPROVAL"
 
 
 def test_independent_scheduler_dispatches_only_approved_posts_at_their_due_slot(tmp_path: Path) -> None:

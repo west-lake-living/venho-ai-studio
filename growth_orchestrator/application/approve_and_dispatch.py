@@ -38,13 +38,24 @@ APPROVED_SCHEDULED_STATUS = "APPROVED_SCHEDULED"
 _SLOT_DATE_PATTERN = re.compile(r"^slot-(\d{4}-\d{2}-\d{2})-")
 
 
-def _scheduled_week_start(publication: dict) -> date | None:
-    """Return the Monday for a publication's immutable cadence slot."""
+def _slot_date(publication: dict) -> date | None:
+    """Return the real calendar date for a publication's immutable cadence
+    slot (`slot_id` looks like `slot-2026-08-14-...`). `day` on the
+    publication is only the weekday name (`"wednesday"`), which collides
+    across weeks -- this is the field the dashboard needs to tell two
+    same-weekday topics apart."""
     slot_id = publication.get("slot_id") or ""
     match = _SLOT_DATE_PATTERN.match(slot_id)
     if match is None:
         return None
-    slot_date = date.fromisoformat(match.group(1))
+    return date.fromisoformat(match.group(1))
+
+
+def _scheduled_week_start(publication: dict) -> date | None:
+    """Return the Monday for a publication's immutable cadence slot."""
+    slot_date = _slot_date(publication)
+    if slot_date is None:
+        return None
     return slot_date - timedelta(days=slot_date.weekday())
 
 
@@ -73,7 +84,60 @@ def list_pending(
     """
     registry = registry or PublicationRegistry(project, data_root=data_root)
     actionable = {PENDING_STATUS, GATEWAY_ERROR_STATUS}
-    return [item for item in registry.load()["publications"] if item.get("status") in actionable]
+    rows = []
+    for item in registry.load()["publications"]:
+        if item.get("status") not in actionable:
+            continue
+        slot_date = _slot_date(item)
+        rows.append({**item, "slot_date": slot_date.isoformat() if slot_date else None})
+    return rows
+
+
+def approve_publications(
+    *,
+    publication_ids: list[str],
+    approved_by: str,
+    project: str = "venho_hotel",
+    data_root: Path = Path("data/projects"),
+    registry: Optional[PublicationRegistry] = None,
+) -> list[dict]:
+    """Approve one topic's specific platform posts -- the dashboard's
+    per-topic Duyệt button. Unlike `approve_week`, this does not scan by
+    date; it takes the exact publication_ids the topic's row grouped
+    together (one per platform) and approves only those, atomically.
+    """
+    if not publication_ids:
+        raise ValueError("no publication_ids given")
+    registry = registry or PublicationRegistry(project, data_root=data_root)
+    by_id = {item["publication_id"]: item for item in registry.load()["publications"]}
+    missing = [pid for pid in publication_ids if pid not in by_id]
+    if missing:
+        raise KeyError(f"unknown publication_id(s): {', '.join(missing)}")
+
+    approved_at = datetime.now(timezone.utc).isoformat()
+    updates: list[tuple[str, str, dict]] = []
+    for publication_id in publication_ids:
+        publication = by_id[publication_id]
+        package_snapshot = publication.get("package_snapshot")
+        approval_snapshot = (
+            create_approval_snapshot(package_snapshot, approved_by=approved_by)
+            if package_snapshot is not None
+            else None
+        )
+        updates.append(
+            (
+                publication_id,
+                PENDING_STATUS,
+                {
+                    "status": APPROVED_SCHEDULED_STATUS,
+                    "approved_by": approved_by,
+                    "approved_at": approved_at,
+                    "approval_scope": "topic_group",
+                    "approval_snapshot": approval_snapshot,
+                },
+            )
+        )
+    return registry.update_many_if_status(updates)
 
 
 def approve_week(
