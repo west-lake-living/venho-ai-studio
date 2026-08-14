@@ -344,6 +344,44 @@ def test_make_adapter_reports_published_when_scenario_returns_a_post_id() -> Non
     assert result["permalink"] == "https://fb.com/p/1122"
 
 
+def test_make_adapter_accepts_nested_camel_case_make_response() -> None:
+    fake = FakeHttpPost(
+        {
+            "status": "PUBLISHED",
+            "result": {
+                "postId": "615700_122900",
+                "permalinkUrl": "https://www.facebook.com/615700/posts/122900",
+            },
+        }
+    )
+    adapter = MakeGatewayAdapter(enabled=True, webhook_url="https://hook.example/fb", http_post=fake)
+
+    result = adapter.send(
+        {"publication_id": "pub-1", "idempotency_key": "idem-1", "platform": "facebook"}
+    )
+
+    assert result["status"] == "PUBLISHED"
+    assert result["platform_post_id"] == "615700_122900"
+    assert result["permalink"] == "https://www.facebook.com/615700/posts/122900"
+
+
+def test_make_adapter_recovers_facebook_post_id_from_permalink() -> None:
+    fake = FakeHttpPost(
+        {
+            "status": "PUBLISHED",
+            "data": {"permalink_url": "https://www.facebook.com/615700/posts/122900"},
+        }
+    )
+    adapter = MakeGatewayAdapter(enabled=True, webhook_url="https://hook.example/fb", http_post=fake)
+
+    result = adapter.send(
+        {"publication_id": "pub-1", "idempotency_key": "idem-1", "platform": "facebook"}
+    )
+
+    assert result["status"] == "PUBLISHED"
+    assert result["platform_post_id"] == "122900"
+
+
 def test_make_adapter_reports_gateway_error_when_the_platform_rejected_the_post() -> None:
     """The failure this was built for: Make accepts the bundle (HTTP 200), then
     Instagram rejects the photo with (36003) aspect ratio not supported. Without

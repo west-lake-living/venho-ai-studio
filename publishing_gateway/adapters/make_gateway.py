@@ -4,6 +4,7 @@ import hashlib
 import hmac
 import re
 from typing import Any, Callable
+from urllib.parse import urlparse
 
 from publishing_gateway.fallback_images import fallback_image_url
 from shared.http import HttpError, urllib_post
@@ -30,7 +31,47 @@ def _is_real_platform_post_id(value: Any) -> bool:
     return re.fullmatch(r"[A-Za-z0-9_-]+", post_id) is not None
 
 
-def interpret_make_response(body: Any, *, publication_id: str | None) -> dict[str, Any]:
+def _response_value(body: dict[str, Any], *keys: str) -> Any:
+    """Read Make response fields from top-level or common wrapper objects.
+
+    Make blueprints do not expose module output consistently: depending on the
+    Webhook response mapping, the same Facebook result can arrive at the top
+    level or below ``data``, ``result``, ``response`` or ``output``.  Accepting
+    those wrappers keeps the gateway contract strict without requiring one
+    exact Make blueprint shape.
+    """
+    candidates = [body]
+    for wrapper in ("data", "result", "response", "output"):
+        nested = body.get(wrapper)
+        if isinstance(nested, dict):
+            candidates.append(nested)
+    for candidate in candidates:
+        for key in keys:
+            value = candidate.get(key)
+            if value not in (None, ""):
+                return value
+    return None
+
+
+def _facebook_post_id_from_permalink(permalink: Any) -> str | None:
+    """Recover a Facebook post ID when Make returns only its permalink."""
+    if not isinstance(permalink, str) or not permalink.strip():
+        return None
+    try:
+        parts = [part for part in urlparse(permalink).path.split("/") if part]
+    except ValueError:
+        return None
+    for marker in ("posts", "permalink"):
+        if marker in parts:
+            index = parts.index(marker) + 1
+            if index < len(parts) and _is_real_platform_post_id(parts[index]):
+                return parts[index]
+    return None
+
+
+def interpret_make_response(
+    body: Any, *, publication_id: str | None, platform: str | None = None
+) -> dict[str, Any]:
     """Turn Make.com's webhook reply into a dispatch outcome.
 
     Why (2026-08-06): a 200 from the webhook only means Make *accepted* the
@@ -59,8 +100,8 @@ def interpret_make_response(body: Any, *, publication_id: str | None) -> dict[st
     if not isinstance(body, dict) or "raw" in body:
         return accepted
 
-    error = body.get("error")
-    status = str(body.get("status") or "").upper()
+    error = _response_value(body, "error", "error_message", "errorMessage")
+    status = str(_response_value(body, "status") or "").upper()
     if error or status in ("GATEWAY_ERROR", "ERROR", "FAILED"):
         return {
             "status": "GATEWAY_ERROR",
@@ -69,7 +110,20 @@ def interpret_make_response(body: Any, *, publication_id: str | None) -> dict[st
             "error": str(error or f"Make.com reported {status or 'failure'}"),
         }
 
-    post_id = body.get("platform_post_id") or body.get("post_id") or body.get("id")
+    post_id = _response_value(
+        body,
+        "platform_post_id",
+        "platformPostId",
+        "post_id",
+        "postId",
+        "postID",
+        "media_id",
+        "mediaId",
+        "id",
+    )
+    permalink = _response_value(body, "permalink", "permalink_url", "permalinkUrl", "url")
+    if not post_id and str(platform or "").lower() == "facebook":
+        post_id = _facebook_post_id_from_permalink(permalink)
     if status == "PUBLISHED" and not _is_real_platform_post_id(post_id):
         return {
             "status": "GATEWAY_ERROR",
@@ -90,7 +144,7 @@ def interpret_make_response(body: Any, *, publication_id: str | None) -> dict[st
             "command_id": publication_id,
             "published": True,
             "platform_post_id": str(post_id) if post_id else None,
-            "permalink": body.get("permalink"),
+            "permalink": permalink,
         }
     return accepted
 
@@ -175,4 +229,8 @@ class MakeGatewayAdapter:
                 "published": False,
                 "error": str(exc),
             }
-        return interpret_make_response(body, publication_id=publication_id)
+        return interpret_make_response(
+            body,
+            publication_id=publication_id,
+            platform=command.get("platform"),
+        )
