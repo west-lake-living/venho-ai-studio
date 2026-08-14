@@ -58,8 +58,11 @@ def reconcile_publication(
     return registry.update(
         publication_id,
         status="PUBLISHED",
+        gateway_status="PUBLISHED",
+        gateway_error=None,
         platform_post_id=platform_post_id,
         permalink=permalink,
         published_at=published_at,
         reconciled_by=reconciled_by,
+        reconciliation_proof=f"operator-confirmed:{publication.get('platform')}:{platform_post_id}",
     )

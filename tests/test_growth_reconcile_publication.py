@@ -54,9 +54,12 @@ def test_reconcile_records_post_id_and_moves_to_published(tmp_path: Path) -> Non
     )
 
     assert result["status"] == "PUBLISHED"
+    assert result["gateway_status"] == "PUBLISHED"
+    assert result["gateway_error"] is None
     assert result["platform_post_id"] == "fb-post-999"
     assert result["permalink"] == "https://facebook.com/venhohotel/posts/999"
     assert result["reconciled_by"] == "harry"
+    assert result["reconciliation_proof"] == "operator-confirmed:facebook:fb-post-999"
 
 
 def test_reconcile_verified_gateway_error_without_retrying_webhook(tmp_path: Path) -> None:

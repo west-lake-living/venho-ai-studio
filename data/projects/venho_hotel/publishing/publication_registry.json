@@ -4738,13 +4738,13 @@
       "content_package_id": "7618dc3f-f287-475a-b90f-28275eb91192",
       "idempotency_key": "6682e29f322dc80342a7d71236a6295af5523205bccffda62deef317e2d8ec5a",
       "platform": "facebook",
-      "status": "GATEWAY_ERROR",
-      "gateway_status": "GATEWAY_ERROR",
-      "platform_post_id": null,
-      "permalink": null,
-      "reconciliation_proof": null,
+      "status": "PUBLISHED",
+      "gateway_status": "PUBLISHED",
+      "platform_post_id": "pfbid02YHaaFCe2e2fM5t4N9RFs5LSrZgHE1qc7Dm5Li9HSf3r4Xgt7RK5sR3fiHUc8zSP8l",
+      "permalink": "https://www.facebook.com/venhohotelhanoi/posts/pfbid02YHaaFCe2e2fM5t4N9RFs5LSrZgHE1qc7Dm5Li9HSf3r4Xgt7RK5sR3fiHUc8zSP8l",
+      "reconciliation_proof": "operator-confirmed:facebook:pfbid02YHaaFCe2e2fM5t4N9RFs5LSrZgHE1qc7Dm5Li9HSf3r4Xgt7RK5sR3fiHUc8zSP8l",
       "created_at": "2026-08-10T11:37:23.106268+00:00",
-      "updated_at": "2026-08-14T03:53:28.048861+00:00",
+      "updated_at": "2026-08-14T04:25:13.887719+00:00",
       "content": {
         "title": "Một kỳ nghỉ thật khẽ bên Hồ Tây",
         "text": "Hồ Tây có những ngày rất khẽ.\n\nỞ Hồ Tây, Hà Nội như hạ giọng. Mặt hồ rộng mở, phẳng lặng, mang sắc xanh ngọc trầm và trải tầm nhìn xa về phía những dáng nhà thấp thoáng nơi đường chân trời. Trên cao, mây đi chậm qua nền trời dịu sáng; dưới mặt nước, chỉ còn những phản chiếu mỏng manh, đủ để mọi thứ trở nên mềm hơn.\n\nMột buổi chiều ven hồ có thể bắt đầu bằng cơn gió nhẹ, vài hàng cây vừa đủ xanh, con đường thong thả cho một cuộc đi dạo không vội. Khi hoàng hôn xuống, nhịp sống quanh hồ thưa lại, để lại cảm giác bình yên hiếm có giữa Hà Nội — phù hợp cho một ly cà phê, một cuộc hẹn, hay đơn giản là khoảng nghỉ sau ngày dài di chuyển và làm việc.\n\nTrong hành trình ấy, Ven Hồ Hotel hiện diện như một điểm dừng chân tinh tế và vừa vặn: không ồn ào, không phô trương, chỉ mở ra một cách ở lại gần Hồ Tây để cảm nhận thành phố chậm rãi hơn.\n\nNếu bạn đang tìm một kỳ nghỉ yên tĩnh bên Hồ Tây, hãy nhắn Ven Hồ Hotel hoặc kiểm tra tình trạng phòng khi thuận tiện.\n\n#VenHoHotel #HoTay #HanoiStay #KhamPhaHoTay #QuietHanoi #DuLichHaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-friday-facebook-3ac67833",
@@ -4986,8 +4986,10 @@
           "kill_switches": []
         }
       },
-      "gateway_error": "Make.com reported PUBLISHED without a valid platform_post_id; check Webhook response mapping.",
-      "shadow_override_by": "hpham1504@gmail.com"
+      "gateway_error": null,
+      "shadow_override_by": "hpham1504@gmail.com",
+      "published_at": null,
+      "reconciled_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-friday-instagram-793c9f27",
