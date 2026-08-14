@@ -4738,13 +4738,13 @@
       "content_package_id": "7618dc3f-f287-475a-b90f-28275eb91192",
       "idempotency_key": "6682e29f322dc80342a7d71236a6295af5523205bccffda62deef317e2d8ec5a",
       "platform": "facebook",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
+      "status": "GATEWAY_ERROR",
+      "gateway_status": "GATEWAY_ERROR",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-10T11:37:23.106268+00:00",
-      "updated_at": "2026-08-13T03:14:27.120188+00:00",
+      "updated_at": "2026-08-14T03:53:28.048861+00:00",
       "content": {
         "title": "Một kỳ nghỉ thật khẽ bên Hồ Tây",
         "text": "Hồ Tây có những ngày rất khẽ.\n\nỞ Hồ Tây, Hà Nội như hạ giọng. Mặt hồ rộng mở, phẳng lặng, mang sắc xanh ngọc trầm và trải tầm nhìn xa về phía những dáng nhà thấp thoáng nơi đường chân trời. Trên cao, mây đi chậm qua nền trời dịu sáng; dưới mặt nước, chỉ còn những phản chiếu mỏng manh, đủ để mọi thứ trở nên mềm hơn.\n\nMột buổi chiều ven hồ có thể bắt đầu bằng cơn gió nhẹ, vài hàng cây vừa đủ xanh, con đường thong thả cho một cuộc đi dạo không vội. Khi hoàng hôn xuống, nhịp sống quanh hồ thưa lại, để lại cảm giác bình yên hiếm có giữa Hà Nội — phù hợp cho một ly cà phê, một cuộc hẹn, hay đơn giản là khoảng nghỉ sau ngày dài di chuyển và làm việc.\n\nTrong hành trình ấy, Ven Hồ Hotel hiện diện như một điểm dừng chân tinh tế và vừa vặn: không ồn ào, không phô trương, chỉ mở ra một cách ở lại gần Hồ Tây để cảm nhận thành phố chậm rãi hơn.\n\nNếu bạn đang tìm một kỳ nghỉ yên tĩnh bên Hồ Tây, hãy nhắn Ven Hồ Hotel hoặc kiểm tra tình trạng phòng khi thuận tiện.\n\n#VenHoHotel #HoTay #HanoiStay #KhamPhaHoTay #QuietHanoi #DuLichHaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-friday-facebook-3ac67833",
@@ -4986,20 +4986,21 @@
           "kill_switches": []
         }
       },
-      "gateway_error": null
+      "gateway_error": "Make.com reported PUBLISHED without a valid platform_post_id; check Webhook response mapping.",
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-friday-instagram-793c9f27",
       "content_package_id": "7b8354d7-262a-4ebd-9bd7-3fe49997a2d9",
       "idempotency_key": "45b42c00c501e8297c8f043b5033e2ab2f19756f6896a15a743221b9c699bae5",
       "platform": "instagram",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
-      "platform_post_id": null,
+      "status": "PUBLISHED",
+      "gateway_status": "PUBLISHED",
+      "platform_post_id": "18120204004855132",
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-10T11:37:42.708464+00:00",
-      "updated_at": "2026-08-13T03:14:27.120188+00:00",
+      "updated_at": "2026-08-14T03:53:41.800443+00:00",
       "content": {
         "title": "Một Hà Nội thật khẽ bên Hồ Tây",
         "text": "Hồ Tây buổi chiều luôn biết cách làm lòng người chậm lại.\n\nMặt hồ rộng mở, phẳng lặng trong sắc xanh ngọc trầm, không rực rỡ mà đủ dịu để mắt được nghỉ ngơi. Dưới vòm trời có mây nhẹ, ánh sáng mềm rơi xuống mặt nước, xa xa là đường nét thành phố hiện lên rõ ràng, bình yên và gần gũi. Ven hồ, những hàng cây vừa đủ xanh, con đường đủ rộng cho một cuộc dạo bộ, một vòng xe chậm, hay vài phút đứng yên để nghe gió lướt qua.\n\nHồ Tây không ồn ào để gây ấn tượng. Nơi này giữ người ta bằng nhịp sống chậm: một buổi cà phê không vội, một cuộc hẹn giản dị, một chiều hoàng hôn nhìn mặt nước đổi màu, hay một ngày Hà Nội cần nhiều khoảng thở hơn lịch trình.\n\nTrong hành trình ấy, Ven Hồ Hotel là một điểm dừng chân vừa vặn cho những ai muốn ở gần Hồ Tây, thuận tiện khám phá và vẫn giữ được cảm giác thư thái, tinh tế sau mỗi lần trở về.\n\nNếu bạn đang tìm một kỳ nghỉ Hà Nội nhẹ nhàng hơn, hãy nhắn tin cho Ven Hồ Hotel hoặc kiểm tra tình trạng phòng để lên lịch cho những ngày bên Hồ Tây.\n\n#VenHoHotel #HoTay #HanoiStay #KhamPhaHoTay #QuietHanoi #WestLakeHanoi #DuLichHaNoi",
@@ -5106,7 +5107,9 @@
         "package_versions_checksum": "e646a4bd5cb354cf7c7a0aa74eacefe7f54ecb256f5720fece2a4fe67a382f8e",
         "checksum": "99c983476fc81ce350f757c99fbacd8fb1f72a1ab59cae90cd404cdc662e4c72"
       },
-      "approval_revoked_reason": "Fallback image replaced to prevent duplicate publication; human re-approval required."
+      "approval_revoked_reason": "Fallback image replaced to prevent duplicate publication; human re-approval required.",
+      "gateway_error": null,
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-saturday-facebook-ecb509da",
