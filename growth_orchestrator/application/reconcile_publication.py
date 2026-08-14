@@ -9,7 +9,11 @@ from publishing_gateway.publication_registry import PublicationRegistry
 # returns -- for MakeGatewayAdapter that's GATEWAY_ACCEPTED (fire-and-forget;
 # see its docstring), never PUBLISHED. Reconciliation is the only thing that
 # can move a row past GATEWAY_ACCEPTED until a real callback receiver exists.
-DISPATCHED_STATUSES = {"GATEWAY_ACCEPTED"}
+# A synchronous Make response can truthfully say PUBLISHED but omit the
+# platform ID.  The adapter records that as GATEWAY_ERROR (fail-closed); an
+# operator who verifies the live post must still be able to reconcile it
+# without firing the webhook again.
+DISPATCHED_STATUSES = {"GATEWAY_ACCEPTED", "GATEWAY_ERROR"}
 
 
 def reconcile_publication(

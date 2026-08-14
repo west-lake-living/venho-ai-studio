@@ -59,6 +59,26 @@ def test_reconcile_records_post_id_and_moves_to_published(tmp_path: Path) -> Non
     assert result["reconciled_by"] == "harry"
 
 
+def test_reconcile_verified_gateway_error_without_retrying_webhook(tmp_path: Path) -> None:
+    registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
+    publication_id = _reserve_dispatched(registry, status="GATEWAY_ERROR")
+    registry.update(
+        publication_id,
+        gateway_error="Make.com reported PUBLISHED without a valid platform_post_id",
+    )
+
+    result = reconcile_publication(
+        publication_id,
+        platform_post_id="fb-post-verified",
+        permalink="https://facebook.com/venhohotelhanoi/posts/verified",
+        reconciled_by="harry",
+        registry=registry,
+    )
+
+    assert result["status"] == "PUBLISHED"
+    assert result["platform_post_id"] == "fb-post-verified"
+
+
 def test_reconcile_then_measure_unblocks_analytics(tmp_path: Path) -> None:
     """End-to-end proof this closes the real dead-end: before reconciliation
     M08 can't observe anything; after, it can."""
