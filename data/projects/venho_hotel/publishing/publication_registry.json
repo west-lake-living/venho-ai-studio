@@ -5118,13 +5118,13 @@
       "content_package_id": "3fe5f1ff-86d9-4a83-8947-48ef5ddaa022",
       "idempotency_key": "e686e9c0f9bf0a00e0d1e8948557c83ebec3202a52df4a68ac52540e860a3169",
       "platform": "facebook",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
+      "status": "GATEWAY_ERROR",
+      "gateway_status": "GATEWAY_ERROR",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-10T11:37:59.854172+00:00",
-      "updated_at": "2026-08-13T03:15:12.834925+00:00",
+      "updated_at": "2026-08-15T02:46:24.891173+00:00",
       "content": {
         "title": "Một sáng cuối tuần thật chậm bên Hồ Tây",
         "text": "Sáng cuối tuần, ra Hồ Tây thôi!\n\nKhông cần lịch trình dày đặc, một buổi sáng đi bộ quanh Hồ Tây cũng đủ làm cuối tuần trở nên đáng nhớ.\n\nHãy bắt đầu khi mặt hồ còn dịu, gió nhẹ lướt qua những hàng cây và phố xá Tây Hồ vừa tỉnh giấc. Đây là lúc lý tưởng để đi chậm, ngắm người dân chạy bộ, các cô chú đạp xe, vài nhóm bạn dừng lại bên quán cà phê nhỏ ven đường. Mọi thứ rất Hà Nội: đời thường, thư thái và có chút thơ.\n\nNếu bạn thích chụp ảnh, ánh sáng buổi sáng quanh hồ luôn mềm và trong. Nếu bạn đi cùng người thân, đây là khoảng thời gian dễ trò chuyện nhất. Còn nếu bạn đang công tác tại Hà Nội, một vòng dạo bộ trước giờ làm cũng là cách cân bằng lại nhịp ngày.\n\nTừ Ven Hồ Hotel, hành trình khám phá Tây Hồ có thể bắt đầu thật tự nhiên. Sau khi trở về, bạn có thể nghỉ lại trong không gian sạch sẽ, gọn gàng, với sảnh đón có cửa kính, biển hiệu dễ nhận ra, quầy gỗ nâu trầm, ánh sáng trung tính và những chi tiết trang trí tạo cảm giác ấm áp. Một điểm dừng vừa đủ gần hồ, vừa đủ yên để cuối tuần được thảnh thơi.\n\nNếu bạn đang lên kế hoạch cho một cuối tuần gần Hồ Tây, hãy nhắn Ven Hồ Hotel hoặc kiểm tra tình trạng phòng để chọn thời điểm phù hợp nhé.\n\n#VenHoHotel #CuoiTuanOTayHo #HoTayHaNoi #WestLakeHanoi #DiBoHoTay #HaNoiCuoiTuan #StayNearWestLake\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-saturday-facebook-ecb509da",
@@ -5239,20 +5239,22 @@
         "package_versions_checksum": "aedef565b35e87db22cb61aa54e7e077dcc4465ec03e228060571a1d7f637f96",
         "checksum": "56cabccb4d36c1eb41872ca632928246895911a68d90f7e847d94a82c9cbd973"
       },
-      "approval_revoked_reason": "Fallback image replaced to prevent duplicate publication; human re-approval required."
+      "approval_revoked_reason": "Fallback image replaced to prevent duplicate publication; human re-approval required.",
+      "gateway_error": "Make.com reported PUBLISHED without a valid platform_post_id; check Webhook response mapping.",
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-saturday-instagram-1d45489d",
       "content_package_id": "12047279-5f60-44fe-9da8-e8b3b22dfcb4",
       "idempotency_key": "173e1cd138c8aebef44622120d0701de16ccad88b3b1a52ec1cb75f879e3c6e9",
       "platform": "instagram",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
-      "platform_post_id": null,
+      "status": "PUBLISHED",
+      "gateway_status": "PUBLISHED",
+      "platform_post_id": "17931857766127446",
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-10T11:38:19.842297+00:00",
-      "updated_at": "2026-08-13T03:15:12.834925+00:00",
+      "updated_at": "2026-08-15T02:46:34.684530+00:00",
       "content": {
         "title": "Một sáng cuối tuần thật chậm bên Hồ Tây",
         "text": "Sáng cuối tuần này, đi chậm một vòng Hồ Tây thôi!\n\nKhi Hà Nội vừa tỉnh giấc, Hồ Tây có một vẻ đẹp rất riêng: mặt nước còn mềm, gió nhẹ, vài người chạy bộ, vài chiếc xe đạp lướt qua, và những quán cà phê bắt đầu mở cửa. Không cần lịch trình dày đặc, chỉ một buổi sáng đi bộ ven hồ cũng đủ để bạn cảm thấy cuối tuần thật đáng giá.\n\nHãy bắt đầu bằng một vòng dạo chậm, dừng lại chụp vài khung hình có nắng sớm, rồi ghé một quán nhỏ bên đường cho ly cà phê hoặc bữa sáng kiểu Hà Nội. Trải nghiệm này hợp với khách đi nghỉ muốn nạp lại năng lượng, người đi công tác cần một khoảng thở, hoặc bất kỳ ai muốn thấy nhịp sống Tây Hồ gần gũi hơn.\n\nSau buổi sáng ngoài trời, trở về Ven Hồ Hotel là cảm giác gọn gàng và dễ chịu: lối vào cửa kính sáng, logo hiện rõ, sảnh sạch sẽ với ánh sáng trung tính, trần trắng phẳng, tranh treo tường và quầy gỗ tông nâu trầm. Nền gạch nâu có họa tiết tròn tạo cảm giác quen thuộc, ấm áp. Một điểm dừng vừa đủ tinh tế để nghỉ ngơi trước khi tiếp tục khám phá Hà Nội.\n\nNếu bạn đang lên kế hoạch ở gần Hồ Tây, hãy nhắn Ven Hồ Hotel hoặc kiểm tra phòng trống để chọn một cuối tuần thật nhẹ nhàng.\n\n#VenHoHotel #CuoiTuanOTayHo #HoTay #WestLakeHanoi #DuLichHaNoi #HanoiWeekend #TayHoLiving",
@@ -5367,7 +5369,9 @@
         "package_versions_checksum": "4bb597644d5a730f42c4655e58a5e77a0de8bf361c2fd26cfcc8aa508a0bf661",
         "checksum": "5f85d5e650b5110f0c37acc3d15c54f410ca4c1af1a8f26e57d4610898f3e8b1"
       },
-      "approval_revoked_reason": "Fallback image replaced to prevent duplicate publication; human re-approval required."
+      "approval_revoked_reason": "Fallback image replaced to prevent duplicate publication; human re-approval required.",
+      "gateway_error": null,
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-monday-facebook-403fbe09",
@@ -7667,13 +7671,13 @@
       "content_package_id": "8b1d5818-8919-4445-a24f-4b08557beb4e",
       "idempotency_key": "08173444952bb42ce213413b7a68334a09bf23afb60ff12fd09ef6a5a1262f24",
       "platform": "instagram",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
-      "platform_post_id": null,
+      "status": "PUBLISHED",
+      "gateway_status": "PUBLISHED",
+      "platform_post_id": "18106052033519193",
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T04:20:36.446357+00:00",
-      "updated_at": "2026-08-13T04:25:53.139550+00:00",
+      "updated_at": "2026-08-15T02:46:46.589223+00:00",
       "content": {
         "title": "Sen Tây Hồ: thứ hương người Hà Nội giữ lại trong ấm trà",
         "text": "Ở Hà Nội, sen không dừng lại ở một loài hoa. Sen Tây Hồ là một nếp văn hoá, được giữ lại bằng hương trong ấm trà.\n\nQuanh Hồ Tây có những đầm sen đã gắn với đời sống người Hà Nội qua nhiều thế hệ. Sen ở đây được chuộng để ướp trà, và nghề ướp trà sen là một trong những nghề đòi hỏi kiên nhẫn bậc nhất: tách từng bông lấy gạo sen, ướp, sấy, rồi lặp lại nhiều lần cho đến khi lá trà thấm hương.\n\nMột ấm trà sen vì thế không uống vội được. Người ta ngồi lâu, nói chuyện chậm, nhìn ra mặt nước. Đó cũng là cách nhiều người chọn để bắt đầu một ngày cuối tuần ở Tây Hồ: đi bộ một vòng ven hồ, ghé một quán trà, rồi để buổi sáng trôi theo nhịp của nó.\n\nVen Hồ Hotel nằm trên Nguyễn Đình Thi, ngay cạnh nhịp sống ấy. Sảnh nhỏ, cửa kính mở ra phố, quầy lễ tân gỗ nâu trầm, nền gạch hoa văn tròn, vài bức tranh treo tường và ánh sáng dịu. Một nơi vừa đủ ấm để trở về sau khi đi lang thang quanh hồ.\n\nNếu bạn đang tính một cuối tuần chậm ở Tây Hồ, nhắn tin cho Ven Hồ Hotel để kiểm tra phòng trống cho những ngày bạn dự định ở Hà Nội nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #SenTayHo #TraSen #KhamPhaHoTay #KhachSanHoTay #HaNoi",
@@ -7797,20 +7801,22 @@
         "revoked_reason": null,
         "package_versions_checksum": "9bac6521fad58136a00167591a582c268e3b604621469e0f89cfebb025dfe951",
         "checksum": "02e09891259cbac0662209bf9087adbbbcec75d6e553a31a4fde74386c8b7d75"
-      }
+      },
+      "gateway_error": null,
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-saturday-threads-085482e8",
       "content_package_id": "b49d8795-3932-4774-ab47-3faad4d67a77",
       "idempotency_key": "15c068cd4fe3e715ffdb3395507fb646a9179400bcf77bbee7026e9b4d90eeb4",
       "platform": "threads",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
+      "status": "GATEWAY_ACCEPTED",
+      "gateway_status": "GATEWAY_ACCEPTED",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T04:21:03.242183+00:00",
-      "updated_at": "2026-08-13T04:25:53.139550+00:00",
+      "updated_at": "2026-08-15T02:46:47.043467+00:00",
       "content": {
         "title": "Sen Tây Hồ — thứ Hà Nội phải chờ đúng mùa mới gặp",
         "text": "Ở Hà Nội có những thứ phải chờ đúng mùa mới gặp. Sen Tây Hồ là một trong số đó.\n\nSen ở vùng Tây Hồ từ lâu gắn với một nghề rất kiên nhẫn: ướp trà. Người làm phải tách từng bông, lấy phần gạo sen nhỏ li ti rồi ướp cùng trà, lặp lại nhiều lần cho hương ngấm vào từng cánh trà khô. Một mẻ trà sen vì thế không thể vội.\n\nCái hay là ngay cả khi không phải mùa sen, nhịp ấy vẫn còn quanh hồ. Trong những quán trà nhỏ, trong cách người ta ngồi lâu bên ấm nước, trong buổi chiều đi bộ dọc Nguyễn Đình Thi khi mặt hồ đổi màu.\n\nĐi Hồ Tây, đôi khi thứ đáng mang về không phải ảnh, mà là tốc độ sống chậm hơn một chút.\n\nNếu bạn đang tính một cuối tuần chậm ở Tây Hồ, nhắn cho Ven Hồ Hotel để xem phòng trống những ngày bạn định ở Hà Nội nhé.\n\n#VenHoHotelHanoi #HoTay #HanoiTravel\n\nhttps://venhohotel.com/lien-he?utm_source=threads&utm_medium=social&utm_content=pub-saturday-threads-085482e8",
@@ -7929,7 +7935,9 @@
         "revoked_reason": null,
         "package_versions_checksum": "6de36a3cf934625b68d2e2fb2ec0bc681e1a529d3aac5b9e12a176a4fb5be76c",
         "checksum": "2d32a2e3536d07ac5484669a96212f52f061b8f93238bfcf2e951d57ae31baae"
-      }
+      },
+      "gateway_error": null,
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-wednesday-facebook-5f4f13fa",
