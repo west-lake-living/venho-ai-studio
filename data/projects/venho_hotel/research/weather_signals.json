@@ -1,24 +1,6 @@
 {
-  "generated_at": "2026-08-15T23:23:03.616032",
+  "generated_at": "2026-08-16T23:23:13.470542",
   "signals": [
-    {
-      "rs_id": "RS-weather-2026-08-16",
-      "type": "weather",
-      "domain": "weather_signal",
-      "evidence_level": "R2-T",
-      "forecast_date": "2026-08-16",
-      "condition": "rain",
-      "temperature_range": [
-        27.2,
-        34.5
-      ],
-      "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
-      "matching_scenario_keys": [
-        "venho_lobby_cozy"
-      ],
-      "expires_at": "2026-08-17T23:23:03.610689",
-      "fact_key": null
-    },
     {
       "rs_id": "RS-weather-2026-08-17",
       "type": "weather",
@@ -27,14 +9,14 @@
       "forecast_date": "2026-08-17",
       "condition": "rain",
       "temperature_range": [
-        26.9,
-        34.9
+        26.7,
+        36.2
       ],
       "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
       "matching_scenario_keys": [
         "venho_lobby_cozy"
       ],
-      "expires_at": "2026-08-17T23:23:03.610689",
+      "expires_at": "2026-08-18T23:23:13.465340",
       "fact_key": null
     },
     {
@@ -45,14 +27,14 @@
       "forecast_date": "2026-08-18",
       "condition": "rain",
       "temperature_range": [
-        25.7,
+        25.9,
         33.0
       ],
       "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
       "matching_scenario_keys": [
         "venho_lobby_cozy"
       ],
-      "expires_at": "2026-08-17T23:23:03.610689",
+      "expires_at": "2026-08-18T23:23:13.465340",
       "fact_key": null
     },
     {
@@ -63,14 +45,14 @@
       "forecast_date": "2026-08-19",
       "condition": "rain",
       "temperature_range": [
-        25.3,
-        29.3
+        25.1,
+        30.3
       ],
       "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
       "matching_scenario_keys": [
         "venho_lobby_cozy"
       ],
-      "expires_at": "2026-08-17T23:23:03.610689",
+      "expires_at": "2026-08-18T23:23:13.465340",
       "fact_key": null
     },
     {
@@ -81,14 +63,14 @@
       "forecast_date": "2026-08-20",
       "condition": "rain",
       "temperature_range": [
-        25.0,
-        30.7
+        24.8,
+        31.4
       ],
       "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
       "matching_scenario_keys": [
         "venho_lobby_cozy"
       ],
-      "expires_at": "2026-08-17T23:23:03.610689",
+      "expires_at": "2026-08-18T23:23:13.465340",
       "fact_key": null
     },
     {
@@ -99,14 +81,14 @@
       "forecast_date": "2026-08-21",
       "condition": "rain",
       "temperature_range": [
-        24.4,
-        31.5
+        24.8,
+        32.4
       ],
       "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
       "matching_scenario_keys": [
         "venho_lobby_cozy"
       ],
-      "expires_at": "2026-08-17T23:23:03.610689",
+      "expires_at": "2026-08-18T23:23:13.465340",
       "fact_key": null
     },
     {
@@ -117,14 +99,32 @@
       "forecast_date": "2026-08-22",
       "condition": "rain",
       "temperature_range": [
-        26.1,
-        32.4
+        27.1,
+        32.2
       ],
       "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
       "matching_scenario_keys": [
         "venho_lobby_cozy"
       ],
-      "expires_at": "2026-08-17T23:23:03.610689",
+      "expires_at": "2026-08-18T23:23:13.465340",
+      "fact_key": null
+    },
+    {
+      "rs_id": "RS-weather-2026-08-23",
+      "type": "weather",
+      "domain": "weather_signal",
+      "evidence_level": "R2-T",
+      "forecast_date": "2026-08-23",
+      "condition": "rain",
+      "temperature_range": [
+        27.4,
+        30.4
+      ],
+      "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
+      "matching_scenario_keys": [
+        "venho_lobby_cozy"
+      ],
+      "expires_at": "2026-08-18T23:23:13.465340",
       "fact_key": null
     }
   ]
