@@ -5378,13 +5378,13 @@
       "content_package_id": "b0d0f27c-d8d7-4264-b8a9-23dab9857143",
       "idempotency_key": "b9eeb8d4a6b6915859fbeaae6da6998d1c2229b86baf8ad2b4eed32ada7417a4",
       "platform": "facebook",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
+      "status": "GATEWAY_ERROR",
+      "gateway_status": "GATEWAY_ERROR",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-11T13:44:54.921957+00:00",
-      "updated_at": "2026-08-13T03:16:44.380065+00:00",
+      "updated_at": "2026-08-17T02:50:42.879687+00:00",
       "content": {
         "title": "Hồ Tây buổi chiều — nơi Hà Nội thở chậm lại",
         "text": "Có những buổi chiều Hà Nội chỉ cần một mặt hồ là đủ.\n\nHồ Tây chiều nay trải rộng đến tận đường chân trời, mặt nước phẳng và tĩnh, mang sắc xanh ngọc pha lam dịu — không rực rỡ, chỉ trầm và sâu như chính thành phố này. Trời hôm nay mây thưa, nắng nhẹ, không một chút mù, nên nhìn thật xa vẫn thấy những khối nhà cao tầng in lên nền trời phía bên kia hồ.\n\nHàng cây ven hồ vừa đủ để có bóng mát, vừa đủ để lọt nắng xuống lối đi. Gió từ mặt nước thổi lên đều đều, mát và nhẹ. Vài người đạp xe chậm qua, rồi lại chỉ còn tiếng gió. Đó là nhịp sống mà Hồ Tây giữ được giữa một Hà Nội luôn tất bật: một vòng đi dạo không cần đích đến, một ly cà phê ngồi lâu hơn dự định, một buổi hẹn không ai nhìn đồng hồ.\n\nVen Hồ Hotel nằm cạnh nhịp sống ấy — một điểm dừng chân nhỏ, ấm và vừa vặn để bạn bắt đầu ngày mới bằng gió hồ, và kết thúc bằng ánh đèn thành phố phản chiếu trên mặt nước lặng.\n\nNếu bạn đang tìm một chốn nghỉ yên tĩnh bên Hồ Tây, cứ nhắn cho Ven Hồ Hotel một lời nhé — chúng tôi sẽ xem lịch phòng cùng bạn.\n\n#VenHoHotel #HoTay #KhamPhaHoTay #HaNoiBinhYen #WestLakeHanoi #ChieuHoTay #LuuTruHaNoi #WhereWestLakeMeetsElegance\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-monday-facebook-403fbe09",
@@ -5491,7 +5491,9 @@
         "revoked_reason": null,
         "package_versions_checksum": "2d7e7047544b4f0fa546207cac286a2fe1dcddfd4352b233e608e3255b6b1fd3",
         "checksum": "2dd564b8b6185b7f4c5a1f4d49879ce36e984caae2b8fe3e3201c1a3ae242808"
-      }
+      },
+      "gateway_error": "Make.com reported PUBLISHED without a valid platform_post_id; check Webhook response mapping.",
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-wednesday-facebook-582e1b20",
@@ -6381,13 +6383,13 @@
       "content_package_id": "fd9c942a-b722-486c-b764-049bb915bf1c",
       "idempotency_key": "09a88b7348e743e7009ca5d6873399d624a5c61da34231ab1a56991c768f9028",
       "platform": "facebook",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
+      "status": "GATEWAY_ERROR",
+      "gateway_status": "GATEWAY_ERROR",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T04:10:31.232934+00:00",
-      "updated_at": "2026-08-13T04:25:28.100287+00:00",
+      "updated_at": "2026-08-17T02:50:46.714613+00:00",
       "content": {
         "title": "6 giờ sáng ở Hồ Tây: giờ tập của người Hà Nội",
         "text": "6 giờ sáng, quanh Hồ Tây đông hơn nhiều người tưởng.\n\nKhông phải khách du lịch. Là người Hà Nội.\n\nTrên vỉa hè ven hồ, mấy đôi vợt cầu lông đã kịp qua vài lượt trước khi trời sáng hẳn. Một nhóm tập dưỡng sinh mở loa nhỏ, động tác chậm và đều. Người chạy bộ đi vòng ngoài, người đi bộ đi vòng trong, xe đạp len giữa hai làn đó mà chẳng ai vướng ai. Có người chỉ ra ngồi trên bậc đá, nhìn mặt nước, thế là xong buổi sáng.\n\nĐến khoảng 7 giờ, nhịp ấy tan dần. Vợt xếp vào túi, loa tắt, mọi người tản về nhà, đổi sang một ngày làm việc bình thường. Hồ Tây trả lại sự yên tĩnh cho những ai đến muộn hơn.\n\nĐầu tuần ở Hà Nội, nếu muốn bắt đầu nhẹ nhàng, đây là khung giờ đáng thử. Không cần lịch trình, không cần chuẩn bị gì, chỉ cần ra khỏi cửa sớm hơn thói quen một chút.\n\nVen Hồ Hotel nằm trên phố Nguyễn Đình Thi, nên khoảng cách từ phòng ra mặt hồ chỉ là một đoạn đi bộ ngắn. Lúc quay về, cửa kính mở ra một sảnh nhỏ gọn gàng: sàn gạch nâu với hoa văn tròn, quầy lễ tân gỗ nâu đỏ, vài bức tranh trên tường và ánh đèn dịu vừa đủ cho buổi sáng.\n\nNếu bạn đang xếp lịch cho những ngày ở Hà Nội, nhắn Ven Hồ Hotel để kiểm tra phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhamPhaHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-monday-facebook-7a434f47",
@@ -6508,20 +6510,22 @@
         "revoked_reason": null,
         "package_versions_checksum": "f94bcb3f07e43c884c5d4958e7eadd0e7bdb0a7dfd990ba3b8e2ba93a211449d",
         "checksum": "34c739bd8da3a8aeb93d9f75217e37af0df241d8149fd561c33311b5c691f22c"
-      }
+      },
+      "gateway_error": "Make.com reported PUBLISHED without a valid platform_post_id; check Webhook response mapping.",
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-monday-instagram-1d1b5bab",
       "content_package_id": "1499ef46-eca9-4693-809b-e0f1f67e0383",
       "idempotency_key": "51fe5f2717efe3994bd544e98750d0ef65e7dc51d98b8d1b4b9afec3c4851f99",
       "platform": "instagram",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
-      "platform_post_id": null,
+      "status": "PUBLISHED",
+      "gateway_status": "PUBLISHED",
+      "platform_post_id": "18036499286833107",
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T04:10:57.315118+00:00",
-      "updated_at": "2026-08-13T04:25:28.100287+00:00",
+      "updated_at": "2026-08-17T02:50:56.653499+00:00",
       "content": {
         "title": "6 giờ sáng thứ Hai, Hồ Tây đã thức từ lâu",
         "text": "6 giờ sáng thứ Hai, khi Hà Nội còn chưa vào giờ làm việc, đường ven Hồ Tây đã đông rồi.\n\nKhông phải đông theo kiểu xe cộ. Đông theo kiểu người.\n\nNgười chạy bộ đi thành từng nhóm nhỏ. Người đi bộ chậm hơn, vừa đi vừa nói chuyện. Vài nhóm tập dưỡng sinh dàn hàng dưới bóng cây, động tác chậm và đều. Ở một góc khác là tiếng vợt cầu lông đập vào không khí buổi sáng, nghe rất gọn.\n\nĐây là phần Hà Nội mà khách du lịch dễ ngủ qua nhất. Không có gì để chụp cho thật lung linh, nhưng lại là lúc thấy rõ nhất cách người ta sống ở đây: bắt đầu tuần mới bằng một vòng hồ, rồi mới về đi làm.\n\nChỗ Ven Hồ Hotel, chỉ cần bước ra khỏi cánh cửa kính là đã ở trên đoạn Nguyễn Đình Thi. Buổi sáng, sảnh còn yên, quầy lễ tân bằng gỗ nâu đỏ, sàn gạch sạch bóng. Bạn có thể lặng lẽ đi ra, hòa vào nhịp đó một lát, rồi quay về ăn sáng.\n\nKhông cần dậy sớm để làm gì cả. Chỉ để nhìn thấy Hồ Tây trước khi thành phố bắt đầu.\n\nNếu bạn muốn thử một buổi sáng như vậy, nhắn tin cho Ven Hồ Hotel để xem còn phòng những ngày bạn ở Hà Nội nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanViewHoTay #NguyenDinhThi #HanoiTravel #KhamPhaHoTay #HaNoiBuoiSang",
@@ -6645,20 +6649,22 @@
         "revoked_reason": null,
         "package_versions_checksum": "1098436718cf3ad9321e81bec02d879905f76e72dac64c0483cba4b893f45c2b",
         "checksum": "4ceea4cc7264b7b2b7d82fb268b48b547e82fb0a89df2d76f2c8eb1f02c96a06"
-      }
+      },
+      "gateway_error": null,
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-monday-threads-9f33fc24",
       "content_package_id": "5c16972f-4221-450c-bcf5-3d30a15984e3",
       "idempotency_key": "f8919105d48dcafb667688688f402adf66fe12de022d922a49910fac12f089f2",
       "platform": "threads",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
+      "status": "GATEWAY_ACCEPTED",
+      "gateway_status": "GATEWAY_ACCEPTED",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T04:11:24.540115+00:00",
-      "updated_at": "2026-08-13T04:25:28.100287+00:00",
+      "updated_at": "2026-08-17T02:50:57.158063+00:00",
       "content": {
         "title": "6 giờ sáng thứ Hai ở Hồ Tây",
         "text": "6 giờ sáng thứ Hai, Hồ Tây thức trước cả phố.\n\nNgoài đường ven hồ, tiếng vợt cầu lông vang lên đều đều. Một nhóm cô chú tập dưỡng sinh theo tiếng loa nhỏ đặt trên ghế đá. Người chạy bộ đi vòng ngoài, người đạp xe đi vòng trong, ai cũng có nhịp riêng và không ai vội.\n\nĐoạn Nguyễn Đình Thi giờ đó gió còn mát, mặt nước phẳng, thỉnh thoảng có người dừng lại nói với nhau vài câu rồi lại đi tiếp.\n\nĐây là kiểu buổi sáng khó gặp nếu chỉ ghé Hồ Tây vào buổi chiều. Ở Ven Hồ Hotel, bước qua cánh cửa kính ở sảnh là đã ra tới đường ven hồ, nên dậy sớm một hôm để đi cùng nhịp của người Hà Nội không phải chuyện khó.\n\nNếu bạn muốn thử một buổi sáng như vậy, nhắn cho Ven Hồ Hotel để xem phòng trống cho những ngày bạn ở Hà Nội nhé.\n\n#VenHoHotelHanoi #HoTay #HanoiTravel\n\nhttps://venhohotel.com/lien-he?utm_source=threads&utm_medium=social&utm_content=pub-monday-threads-9f33fc24",
@@ -6777,7 +6783,9 @@
         "revoked_reason": null,
         "package_versions_checksum": "1151d3dd579b2ce3c0c689e4ca6edb7523ae6f471f656ee85bc7e853ca31b595",
         "checksum": "934e1c8a4d33717c8a6ea3f5c0f21b9e0dfb65acb003d220861726f247e0a763"
-      }
+      },
+      "gateway_error": null,
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-wednesday-instagram-c6fcadf7",
