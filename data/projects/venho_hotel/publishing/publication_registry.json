@@ -9805,13 +9805,13 @@
       "content_package_id": "cceb942d-40c1-4f45-9d7b-2c22149ca718",
       "idempotency_key": "f8802fd815e74c94ce194cd528b2cf0b706ce516db2f492c8a58fa765ba767a4",
       "platform": "facebook",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T11:42:20.609556+00:00",
-      "updated_at": "2026-08-13T11:42:20.622562+00:00",
+      "updated_at": "2026-08-18T07:58:41.807555+00:00",
       "content": {
         "title": "Chợ Hoa Quảng Bá: một buổi sáng nhiều hoa ở Tây Hồ",
         "text": "Ở Tây Hồ có một chỗ mà bạn nhận ra mình đang đứng giữa rất nhiều hoa, trước khi kịp nghĩ đến việc chụp một tấm ảnh.\n\nĐó là Chợ Hoa Quảng Bá, 236 Đường Âu Cơ — một trong những chợ hoa lớn của khu Tây Hồ.\n\nHoa ở đây không bày lẻ từng cành. Chúng được bó lại, dựng trong thùng nước, xếp lên xe, chuyển tay từ người bán sang người mua rất nhanh. Nền chợ lúc nào cũng ẩm, không khí có mùi lá tươi và nước. Người ta gọi nhau, cân, đếm, buộc lại, rồi lại chở đi.\n\nNhiều người tìm đến Quảng Bá để chụp ảnh, và chợ đủ rộng, đủ nhiều màu để làm việc đó. Nhưng nếu được, hãy đi chậm một vòng trước khi giơ máy lên. Hỏi một câu trước khi chụp vào sạp của ai đó. Mua một bó nhỏ mang về, dù chỉ để cắm trong phòng vài ngày. Chợ hoa dễ chịu nhất khi bạn là một người khách, chứ không chỉ là một người đứng ngắm.\n\nTừ Nguyễn Đình Thi, đường ra Âu Cơ vẫn men theo mặt nước, nên chuyến đi buổi sớm thường kết thúc bằng một vòng ven hồ khi trời đã sáng hẳn.\n\nVen Hồ Hotel nằm ở đoạn đó. Khách về thường đẩy cửa kính vào sảnh, sàn gạch nâu với những vòng hoa văn tròn, quầy lễ tân gỗ nâu đỏ, tranh trên tường — chỗ để gửi tạm bó hoa và xin thêm chiếc bình trước khi lên phòng.\n\nNếu bạn đang tính vài ngày ở Hà Nội quanh Hồ Tây, nhắn tin cho Ven Hồ Hotel để xem lịch phòng những ngày đó nhé.\n\n#VenHoHotelHanoi #ChoHoaQuangBa #HoTay #KhachSanHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-33c453fb",
@@ -9922,6 +9922,26 @@
         "claim_kill_switch_triggered": false,
         "content_brand_fit": 95,
         "content_overall_score": 91.63
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-08-18T07:58:41.805494+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-cceb942d-40c1-4f45-9d7b-2c22149ca718",
+        "content_package_id": "cceb942d-40c1-4f45-9d7b-2c22149ca718",
+        "copy_version_ids": [
+          "brief-wednesday-facebook-92ba533d-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "decb7c46b26e5bd9e39c63e934a67d702dde9457e3ddb12a0fe714df89ca498a",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-wednesday-facebook-92ba533d@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-08-18T07:58:41.805624+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "2e914aa93f95cf2c0e0c5b4ff6d7e8171d4dfea3c515a0a78ad4a25a446fd936",
+        "checksum": "21f48422e8d23be418ac90e3b679a7a02fde43e12a3524289014578dd357db22"
       }
     },
     {
@@ -9929,13 +9949,13 @@
       "content_package_id": "92387115-1c14-4869-9980-f8e5800bb33c",
       "idempotency_key": "8208a0744295439b7c9b972f2a56f998e9a1f53e28ecfe224bf7badf85699e0c",
       "platform": "instagram",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T11:42:52.160367+00:00",
-      "updated_at": "2026-08-13T11:42:52.173465+00:00",
+      "updated_at": "2026-08-18T07:58:41.807555+00:00",
       "content": {
         "title": "Chợ Hoa Quảng Bá — nơi Tây Hồ được đếm bằng bó hoa",
         "text": "Ở Tây Hồ có một khu chợ mà người ta đo mọi thứ bằng bó, chứ không phải bằng cái.\n\nChợ Hoa Quảng Bá, 236 Đường Âu Cơ.\n\nMột trong những chợ hoa lớn của khu Tây Hồ, và cũng là nơi nhiều người tìm đến chỉ để chụp vài tấm ảnh.\n\nHoa xếp theo lối. Người bán ngồi phía sau những bó cao ngang vai. Chỗ nào cũng có màu, nên gần như không cần chọn góc.\n\nNhưng nếu chỉ đứng chụp rồi đi, bạn sẽ bỏ qua phần hay nhất: cách một bó hoa được vén lại, buộc lại, chuyển từ tay người này sang tay người khác. Đó là nhịp buôn bán rất thật của Tây Hồ, không dàn dựng cho ai.\n\nVen Hồ Hotel nằm trên Nguyễn Đình Thi, cùng phía Tây Hồ. Sảnh nhỏ, sàn gạch nâu, quầy gỗ tối màu và vài bức tranh trên tường — vừa đủ để ngồi lại một lúc sau khi đi bộ về, trước khi tính xem chiều nay đi đâu tiếp.\n\nNếu Hà Nội đang nằm trong lịch trình của bạn, nhắn Ven Hồ Hotel để xem còn phòng những ngày đó nhé.\n\n#VenHoHotelHanoi #ChoHoaQuangBa #HoTay #WestLakeHanoi #TayHoHaNoi #KhamPhaHoTay #HaNoi #HanoiTravel",
@@ -10049,6 +10069,26 @@
         "claim_kill_switch_triggered": false,
         "content_brand_fit": 95,
         "content_overall_score": 93.7
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-08-18T07:58:41.805494+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-92387115-1c14-4869-9980-f8e5800bb33c",
+        "content_package_id": "92387115-1c14-4869-9980-f8e5800bb33c",
+        "copy_version_ids": [
+          "brief-wednesday-instagram-1c31572c-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "4a6e68587a0c99117932a2d405cfc4a2f49ae532a24e895da6ec6dccfe358e8b",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-wednesday-instagram-1c31572c@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-08-18T07:58:41.805662+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "30a0b82ea89afe2c8ef680a8b9814146e9aa026f650d6329222124c53a1eb2d5",
+        "checksum": "1b93afaca02de2209eae58d0102f63477b21765bf54d7101bd499cee5d9b07c9"
       }
     },
     {
