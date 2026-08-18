@@ -10096,13 +10096,13 @@
       "content_package_id": "9e46dc0e-cdc0-43bb-9f03-5e937208cbdc",
       "idempotency_key": "66baed2d95ab119b7d61ba7d55aae423e544a0ac451d8b58bd23fbf9dd902542",
       "platform": "facebook",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T11:43:27.526924+00:00",
-      "updated_at": "2026-08-13T11:43:27.540278+00:00",
+      "updated_at": "2026-08-18T07:59:04.517193+00:00",
       "content": {
         "title": "Chiều cuối tuần ở phía Hồ Tây",
         "text": "Chiều thứ Bảy ở Hồ Tây thường bắt đầu đổi màu trước khi đèn đường kịp sáng.\n\nĐoạn Nguyễn Đình Thi giờ đó đi bộ rất dễ chịu. Người tan làm về muộn, người dắt con ra hồ, vài chiếc xe đạp thong thả bên lề. Ánh sáng hạ dần, mặt nước chuyển từ xám bạc sang cam nhạt, rồi tím.\n\nĐẩy cánh cửa kính bước vào Ven Hồ Hotel, cái ồn nhẹ của con đường ở lại phía sau. Sàn gạch nâu với những vòng tròn lặp lại dưới chân, quầy lễ tân gỗ nâu đỏ trầm, tủ chìa khóa gọn gàng phía sau, vài bức tranh trên tường và ánh đèn dịu vừa đủ. Không gian không lớn, sạch sẽ, đúng kiểu một khách sạn boutique tầm trung: mọi thứ ở đúng chỗ của nó, không cố gây ấn tượng.\n\nCuối tuần, phần đáng chờ nhất lại nằm ở tầng trên cùng. Lên đến đó, khoảng trời mở ra, và Hồ Tây trải rộng theo cách mà từ mặt đường bạn không nhìn thấy được. Hoàng hôn Hồ Tây không diễn ra nhanh. Nó kéo dài đủ lâu để bạn kịp gọi tên vài màu, kịp nhận ra gió tháng này mát hơn tuần trước, kịp thấy đèn của những mái nhà quanh hồ bật lên lần lượt.\n\nCó những khung cảnh không cần phải làm gì nhiều. Chỉ đứng yên, và để buổi chiều tự đi hết phần của nó.\n\nVới nhiều người, một chuyến đi Hà Nội đẹp nhất khi có cả hai nhịp: buổi sáng đi khám phá phố, và buổi chiều trở về phía Tây Hồ để mọi thứ chậm lại.\n\nNếu cuối tuần này bạn định ở lại phía Hồ Tây, nhắn cho Ven Hồ Hotel để xem còn phòng trống những ngày bạn cần nhé.\n\n#VenHoHotelHanoi #HoangHonHoTay #KhachSanViewHoTay #NguyenDinhThi #HoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-friday-facebook-21f4533d",
@@ -10204,6 +10204,26 @@
         "claim_kill_switch_triggered": false,
         "content_brand_fit": 100,
         "content_overall_score": 92.65
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-08-18T07:59:04.515092+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-9e46dc0e-cdc0-43bb-9f03-5e937208cbdc",
+        "content_package_id": "9e46dc0e-cdc0-43bb-9f03-5e937208cbdc",
+        "copy_version_ids": [
+          "brief-friday-facebook-27bf243f-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "4757bdf9acba4337968eeb69b4468b52fbb15678ed60ee47838b157f5df8b47f",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-friday-facebook-27bf243f@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-08-18T07:59:04.515248+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "f6197fb945bcb4573a332ce07d9db27ad04e98e8b5ffea87e4357dc69c256266",
+        "checksum": "24a58efc1524ca2e4b25be21d51890dcc89a16554653f0d00c405a8cec59d0a2"
       }
     },
     {
@@ -10211,13 +10231,13 @@
       "content_package_id": "ab26fdb2-a8f0-4517-9984-88ea0cc7f975",
       "idempotency_key": "4c6082b64abf9caa1fdd86d4f367b5fe9f97feff5805a31caa95995d4661efc6",
       "platform": "instagram",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T11:43:56.278967+00:00",
-      "updated_at": "2026-08-13T11:43:56.292014+00:00",
+      "updated_at": "2026-08-18T07:59:04.517193+00:00",
       "content": {
         "title": "Chiều cuối tuần, từ sảnh nhỏ lên rooftop",
         "text": "Cuối tuần, khoảng cách giữa cửa kính lối vào và một mặt hồ đang chuyển màu chỉ dài bằng một chuyến lên tầng trên cùng.\n\nBuổi chiều ở Ven Hồ Hotel thường bắt đầu bằng tiếng cửa kính khép lại sau lưng bạn. Sàn gạch nâu với những vòng hoa văn tròn, quầy lễ tân gỗ nâu đỏ, tủ chìa khóa gọn gàng phía sau, vài bức tranh trên tường và thứ ánh sáng vừa phải không làm ai phải nheo mắt.\n\nNhận chìa khóa, cất túi, rồi đi lên.\n\nRooftop là nơi Hồ Tây bắt đầu làm phần việc của nó. Mặt nước đổi màu chậm, gió từ phía hồ thổi ngược lại, và trong khoảng hai mươi phút, cả một góc Tây Hồ chuyển từ vàng sang hồng rồi sang tím nhạt. Không cần chụp nhiều. Chỉ cần đứng đủ lâu.\n\nBên dưới, đường Nguyễn Đình Thi vẫn giữ nhịp riêng: người đi bộ, người đạp xe, mấy hàng nước bắt đầu sáng đèn.\n\nCó những chiều cuối tuần chỉ cần như vậy là đủ.\n\nNếu bạn đang tính một cuối tuần chậm bên Hồ Tây, nhắn Ven Hồ Hotel để xem còn phòng những ngày bạn ở Hà Nội nhé.\n\n#VenHoHotelHanoi #HoangHonHoTay #KhachSanViewHoTay #HoTay #WestLakeHanoi #NguyenDinhThi #HaNoi #TayHo",
@@ -10321,6 +10341,26 @@
         "claim_kill_switch_triggered": false,
         "content_brand_fit": 95,
         "content_overall_score": 93.7
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-08-18T07:59:04.515092+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-ab26fdb2-a8f0-4517-9984-88ea0cc7f975",
+        "content_package_id": "ab26fdb2-a8f0-4517-9984-88ea0cc7f975",
+        "copy_version_ids": [
+          "brief-friday-instagram-4b1e5201-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "40e0ceab1739bafecda3e2cf928166952825dc198a59d5e9dd76a250757e4005",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-friday-instagram-4b1e5201@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-08-18T07:59:04.515290+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "99e4c4617439aea59838b1e68185e48e9f9102b13a88b9cc2feb91b67c15cb33",
+        "checksum": "6f10697ed00f1e2eacc8012fffc18177f4feaea559583352309b80dc7d410798"
       }
     },
     {
