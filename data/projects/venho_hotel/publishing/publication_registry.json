@@ -6792,13 +6792,13 @@
       "content_package_id": "b58ca723-001b-4483-a9b7-34918eb69107",
       "idempotency_key": "a24252da5ae86257ec04375b5784080298b97c6ededa2b7769b66b4e176612f9",
       "platform": "instagram",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
-      "platform_post_id": null,
+      "status": "PUBLISHED",
+      "gateway_status": "PUBLISHED",
+      "platform_post_id": "18097183733570291",
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T04:14:20.484434+00:00",
-      "updated_at": "2026-08-13T08:52:22.732524+00:00",
+      "updated_at": "2026-08-19T02:47:53.921281+00:00",
       "content": {
         "title": "Chợ Hoa Quảng Bá — nơi Tây Hồ thức dậy bằng màu",
         "text": "Có những nơi ở Tây Hồ không cần trang trí gì thêm. Hoa tự làm việc đó.\n\nChợ Hoa Quảng Bá nằm ở 236 đường Âu Cơ, một trong những khu chợ hoa lớn của Hà Nội và cũng là điểm nhiều người tìm đến để chụp ảnh.\n\nHoa ở đây được bó thành từng ôm lớn, xếp chồng lên nhau, chuyển từ xe này sang xe khác. Người bán gọi nhau qua các lối đi hẹp. Màu sắc thay đổi theo mùa, nên mỗi lần ghé lại là một khung hình khác.\n\nĐiều thú vị là chợ hoa không phải một điểm tham quan được dựng lên cho du khách. Nó là một phần công việc thật của khu Tây Hồ. Bạn đứng giữa đó, máy ảnh trong tay, và mọi thứ vẫn diễn ra như thường lệ.\n\nMột buổi đi chợ hoa hợp với lịch trình chậm: xem hoa, chụp vài tấm, rồi thong thả quay lại nghỉ.\n\nVen Hồ Hotel nằm trên đường Nguyễn Đình Thi, cùng khu Tây Hồ, nên rất tiện để bạn lấy đó làm điểm xuất phát rồi trở về sau chuyến đi.\n\nNếu bạn đang lên lịch cho vài ngày ở Hà Nội, nhắn cho Ven Hồ Hotel để xem phòng trống nhé.\n\n#VenHoHotelHanoi #ChoHoaQuangBa #HoTay #WestLakeHanoi #KhamPhaHoTay #HaNoi #KhachSanViewHoTay",
@@ -6931,20 +6931,22 @@
         "revoked_reason": null,
         "package_versions_checksum": "dbed03f8edb3c6b982293b087a1d33ad3cf6bdee792edab53909120d562c79ec",
         "checksum": "a450dab26edc73675420175c0fadf1c71475a4c275661c0ee531c12052ec3ae9"
-      }
+      },
+      "gateway_error": null,
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-wednesday-threads-cb7f312d",
       "content_package_id": "be0ad0c6-de8e-4a18-a5d8-e724a77b77f2",
       "idempotency_key": "3d4cf419e1b3e688209ec09736f99024f9498cea8321d898cf4e3144727d3479",
       "platform": "threads",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
+      "status": "GATEWAY_ACCEPTED",
+      "gateway_status": "GATEWAY_ACCEPTED",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T04:14:37.657719+00:00",
-      "updated_at": "2026-08-13T08:52:22.732524+00:00",
+      "updated_at": "2026-08-19T02:47:54.343255+00:00",
       "content": {
         "title": "Chợ Hoa Quảng Bá — một góc Tây Hồ nhiều màu",
         "text": "Ở Tây Hồ có một nơi mà hoa nhiều hơn người: Chợ Hoa Quảng Bá, 236 Âu Cơ.\n\nĐây là một trong những chợ hoa lớn của khu vực, cũng là chỗ nhiều người tìm đến chỉ để chụp ảnh. Hoa bó sẵn dựng thành từng dãy, người bán ngồi phía sau, xe máy chở hoa len giữa lối đi hẹp.\n\nKhông cần mua gì cũng đi được. Cứ đi chậm, nhìn màu sắc đổi liên tục sau mỗi sạp, rồi chụp vài tấm. Tây Hồ có nhiều thứ để xem, nhưng chợ hoa là nơi hiếm hoi bạn thấy được nhịp làm ăn thật của khu này.\n\nTừ Nguyễn Đình Thi sang Âu Cơ cũng nằm trong cùng vùng ven hồ, tiện gộp vào một buổi đi loanh quanh.\n\nNếu bạn đang tính vài ngày ở Hà Nội và muốn lấy Hồ Tây làm điểm xuất phát, nhắn Ven Hồ Hotel để xem lịch phòng nhé.\n\n#VenHoHotelHanoi #HoTay #ChoHoaQuangBa\n\nhttps://venhohotel.com/lien-he?utm_source=threads&utm_medium=social&utm_content=pub-wednesday-threads-cb7f312d",
@@ -7073,20 +7075,22 @@
         "revoked_reason": null,
         "package_versions_checksum": "fd9be930d9bf8aa3c8238ea5cd9e0f10c5d5874aeadaa0269edf085166359a03",
         "checksum": "e3a29fbd94f75250664e13e57c137b01cdd3970649bd7b4f3c4d71d5db126949"
-      }
+      },
+      "gateway_error": null,
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-wednesday-zalo-a580ac8f",
       "content_package_id": "f07e2348-762e-453b-9509-8f932d960b50",
       "idempotency_key": "99e13c89814b6ea66a4a9048836edf554ad8ba5b1df9d0b96fec5bf4467bc971",
       "platform": "zalo",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
+      "status": "DISABLED",
+      "gateway_status": "DISABLED",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T04:14:59.081331+00:00",
-      "updated_at": "2026-08-13T08:52:22.732524+00:00",
+      "updated_at": "2026-08-19T02:47:54.373602+00:00",
       "content": {
         "title": "Chợ Hoa Quảng Bá — phiên chợ đêm không ngủ bên Hồ Tây",
         "text": "Khi cả Hà Nội đã ngủ, có một khu chợ ở Tây Hồ mới bắt đầu sáng đèn.\n\nChợ Hoa Quảng Bá nằm ở 236 đường Âu Cơ, là chợ hoa lớn của khu vực Tây Hồ và cũng là điểm tham quan, chụp ảnh được nhiều người tìm đến.\n\nHoa được chở về từng xe, xếp thành từng bó dựng dọc lối đi. Người bán ngồi bên đèn, người mua chọn hoa nhanh tay để kịp mang về cửa hàng trước giờ mở cửa. Không khí ở đây không giống bất kỳ khu chợ nào khác trong ngày — đông, ồn, nhưng lại rất dễ chịu.\n\nNếu bạn muốn chụp ảnh, hãy đi sớm hơn giờ chợ tan một chút, khi hoa còn đầy và ánh đèn còn vàng. Mặc ấm, đi giày thấp, và nhớ hỏi giá trước khi chụp cận cảnh các sạp hoa.\n\nTừ Ven Hồ Hotel trên phố Nguyễn Đình Thi, bạn có thể đi dọc ven hồ để tới chợ. Sau khi về, phòng vẫn còn đó để ngủ bù một giấc, rồi thức dậy với khung cảnh Hồ Tây ngay ngoài cửa sổ.\n\nLiên hệ Hotline/Zalo 0936871234 để đặt phòng view Hồ Tây ngay hôm nay.\n\n#VenHoHotelHanoi #ChoHoaQuangBa #HoTay #KhachSanViewHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=zalo&utm_medium=social&utm_content=pub-wednesday-zalo-a580ac8f",
@@ -7217,7 +7221,9 @@
         "revoked_reason": null,
         "package_versions_checksum": "d4281c3cc1f9a02f7f6e5ed66af21b026532ab660d293c4d1638f220e17334e4",
         "checksum": "fe24cb135942f268b0f3d255c0c7078cda1668923cb0d76af1c10e4a5680ad9d"
-      }
+      },
+      "gateway_error": null,
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-friday-facebook-b91a3968",
@@ -8080,13 +8086,13 @@
       "content_package_id": "4663c293-0e07-4dde-b952-5bde737d14c8",
       "idempotency_key": "235e93d214aedb2b5162215f441b57618dfc9f9577991a732832181425a4bb91",
       "platform": "facebook",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
+      "status": "GATEWAY_ERROR",
+      "gateway_status": "GATEWAY_ERROR",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T11:06:45.501693+00:00",
-      "updated_at": "2026-08-13T11:26:58.851602+00:00",
+      "updated_at": "2026-08-19T02:48:00.145138+00:00",
       "content": {
         "title": "Một buổi chiều trên ban công nhìn ra Hồ Tây",
         "text": "Ở Tây Hồ, chỗ ngồi đẹp nhất đôi khi không nằm sát mặt nước, mà ở trên cao một chút.\n\nĐi bộ quanh hồ, bạn nhìn mặt nước ngang tầm mắt. Nhưng khi ngồi trên một ban công, tầm nhìn mở ra rộng hơn: đường viền của hồ, những mái nhà thấp, xe cộ đi lại chậm dần khi trời ngả chiều.\n\nABC Coffee Roasters là một trong những quán cà phê ở khu vực này có ban công nhìn trọn Hồ Tây, phù hợp cho những ai muốn ngồi lâu một chút thay vì ghé qua rồi đi. Không cần lịch trình dày, chỉ cần một chỗ ngồi, một ly cà phê và đủ thời gian để nhìn ánh sáng đổi màu trên mặt hồ.\n\nSau đó, đường về cũng là một phần của buổi chiều. Từ phía Nguyễn Đình Thi, gió từ hồ theo bạn suốt quãng đi bộ. Ven Hồ Hotel nằm ngay khu vực này, một khách sạn nhỏ với sảnh lát gạch nâu hoa văn tròn, quầy lễ tân gỗ sẫm và cửa kính nhìn ra phố. Không cầu kỳ, chỉ đủ gọn gàng và yên tĩnh để bạn cất máy ảnh xuống, nghỉ một lát rồi tính tiếp bữa tối ở đâu.\n\nHồ Tây không cần được khám phá vội. Một ban công, một buổi chiều, thế là đủ cho ngày hôm đó.\n\nNếu bạn đang tìm một khách sạn view Hồ Tây để làm điểm dừng chân ở Hà Nội, nhắn tin cho Ven Hồ Hotel để kiểm tra phòng trống cho những ngày bạn dự định đến nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhamPhaHoTay #KhachSanHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-dfbd408e",
@@ -8223,7 +8229,9 @@
         "revoked_reason": null,
         "package_versions_checksum": "650d43e00770dac69e04acb593155014eece95d9defa8e4646cbdd3b665d1705",
         "checksum": "341c71fa09d83ee8bb6e80a397bdf2b63e0090ac8d113092e2828091b26087bc"
-      }
+      },
+      "gateway_error": "Make.com reported PUBLISHED without a valid platform_post_id; check Webhook response mapping.",
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-wednesday-facebook-5fe8cd02",

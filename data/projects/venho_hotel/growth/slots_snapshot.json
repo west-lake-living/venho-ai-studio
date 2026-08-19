@@ -1,9 +1,9 @@
 [
   {
-    "slot_date": "2026-08-17",
+    "slot_date": "2026-08-24",
     "day": "monday",
-    "status": "MISSED",
-    "content_package_id": null
+    "status": "PENDING_APPROVAL",
+    "content_package_id": "8e56c09f-280b-42bb-8aa2-c148914ba745"
   },
   {
     "slot_date": "2026-08-19",
@@ -24,10 +24,10 @@
     "content_package_id": "52ef1491-ff4e-49e9-8bf0-3e910ee68d99"
   },
   {
-    "slot_date": "2026-08-24",
+    "slot_date": "2026-08-31",
     "day": "monday",
-    "status": "PENDING_APPROVAL",
-    "content_package_id": "8e56c09f-280b-42bb-8aa2-c148914ba745"
+    "status": "NOT_CREATED",
+    "content_package_id": null
   },
   {
     "slot_date": "2026-08-26",
