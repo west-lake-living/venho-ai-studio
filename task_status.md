@@ -1,6 +1,123 @@
 # VENHO AI STUDIO — Task Status
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-08-12 (A2 diagnostic V4 và provider cost review closeout) · **Tests:** 854 pass · 0 API call trong test
+**Cập nhật:** 2026-08-20 (GW-P2 CLOSED, GW-P3 phần mềm xong/hạ tầng vật lý chưa) · **Tests:** 1005 pass / 69 fail (baseline pre-existing, không đổi) · 0 API call trong test
+
+### GW Plan v2.1 — GW-P1 verifier aggregation repair (2026-08-20)
+
+**Status: PENDING FINAL WINDOWS RERUN — GW-P1 chưa đóng.**
+
+- [x] Xác định verifier source hiện tại: `scripts/windows-gpu-worker/gw_p1_verify.ps1`;
+  runbook hỗ trợ cả `C:\VenHoGPU\windows-gpu-worker\` và
+  `C:\VenHoGPU\scripts\windows-gpu-worker\` trên worker.
+- [x] Sửa qualification predicate để dùng đúng contract `sd15_json.output.path` +
+  filesystem existence; không còn yêu cầu field không tồn tại `output.exists`.
+- [x] Giữ các điều kiện evidence-backed: `http_error=null`,
+  `comfy_prompt_validation_error=false`, `cuda_runtime_exception=false`, 512×512,
+  non-black và `pixel_std > 5`.
+- [x] Cấu hình A vẫn là winner đầu tiên theo roadmap: `--lowvram --fp32-vae`.
+- [x] Khi A qualify, verifier ghi `C:\VenHoGPU\worker.env` với flags hiệu lực và
+  report `winning_config`/`selected_run`.
+- [ ] Chưa chạy được Windows verifier từ macOS; cần một lần rerun tạo evidence mới
+  trước khi ghi GW-P1 PASS. Không bắt đầu GW-P2.
+
+### GW Plan v2.1 — GW-P2 Extract Port + GW-P3 Remote Adapter code (2026-08-20)
+
+**Status: GW-P2 CLOSED/DONE · GW-P3 PARTIAL (phần mềm phía Mac xong, hạ tầng Windows chưa)**
+
+Giao bởi Harry: "Phase 1 sẽ giao cho Codex làm tiếp. Tôi muốn bạn bắt đầu làm từ roadmap
+phase 2 đến kết thúc." GW-P1 (Windows GPU Worker vật lý) không đụng tới, để Codex.
+
+**GW-P2 — Extract Port: CLOSED.**
+- `identity_restoration/` bounded context mới, đầy đủ domain/application/infrastructure/
+  interface theo v2.0 PHẦN 10.1: 9 Port thuần, 1 use case trung tâm
+  (`RestoreFaceCropUseCase`, thuật toán rút gọn từ PHẦN 7.3 cho crop-based contract),
+  registry, DTO, Composition Root (`identity_restoration_module.py`) + `env.py`
+  (nguồn duy nhất đọc `os.environ`), CLI `venho-restore run|health`
+  (entrypoint `pyproject.toml`).
+- 3 restorer: `mock` (deterministic, seed-keyed nudge, không network), `comfyui-local`
+  (bọc `ComfyUIIdentityRestorer` hiện có — **0 dòng trong `image_studio_runtime/
+  action_composite/` bị sửa**), `comfyui-remote` (GW-P3, xem dưới).
+- 5 JSON Schema + 4 fixture pass/fail tại `contracts/identity_restoration/` (chuyển khỏi
+  `contracts/` phẳng vì `test_growth_phase1_contracts.py` enumerate whitelist 17 schema
+  Growth Phase 1 — schema GW không thuộc nhóm đó).
+- **2 quyết định lệch có chủ đích khỏi patch v2.1 §GW-P2** (ưu tiên rủi ro=0 cho production
+  path hơn đúng chữ patch): KHÔNG sửa `ProductionRunner` gọi qua `RestorerRegistry` (T4) —
+  `identity_restoration/` hiện là con đường SONG SONG đã test đầy đủ nhưng CHƯA phải con
+  đường `ActionCompositePipeline` thật đang gọi; KHÔNG di chuyển vật lý domain logic ra
+  khỏi `action_composite/` (T6) — thay vào đó `domain/policies/pixel_preservation.py`
+  IMPORT trực tiếp hàm thuần `action_composite.regression_guard.protected_region`.
+  **Hợp nhất 2 con đường này là quyết định kiến trúc cần Harry chốt, chưa tự làm.**
+- 53 test mới trong `tests/identity_restoration/`, 100% pass, 0 network call (recorded
+  fixture / monkeypatch `urlopen`). Bao gồm đủ 9 test bắt buộc PHẦN 12.3 (single provider
+  call, lease released on exception, cancel before spend, pixel lock gate, upload
+  server-returned-name, graph binder survives renumbering, manifest additive, `is_official`
+  luôn raise).
+- 0 regression: suite cũ 951/70 (baseline GW-P0) → nay 1005 pass / 69 fail — **69 fail y
+  hệt danh sách lỗi baseline cũ** (missing DNA fixture, subject-resolver schema mismatch,
+  không liên quan `identity_restoration`); `test_action_composite*.py` +
+  `test_gw_p0_t2_golden.py` 50/50 pass nguyên trạng.
+- `venho-restore run --restorer mock` smoke-tested thủ công end-to-end (không phải trong
+  pytest) — output JSON đúng shape `restoration_result.schema.json`.
+
+**GW-P3 — Remote Adapter: PARTIAL, chưa CLOSED.**
+- Xong + test offline: `node_registry.py` (NODE_TITLES/WORKFLOWS, cưỡng chế bằng
+  `test_no_comfyui_string_leakage.py`), `http_client.py` (upload namespaced đọc `name` từ
+  response — GW-E9, poll backoff 2s×1.5 trần 10s, download, interrupt), `graph_binder.py`
+  (bind theo `_meta.title`, sống sót renumbering), `error_mapper.py` (phủ bảng §8.5),
+  `cached_worker_health.py` (tái dùng từ GW-P2, TTL + circuit breaker 3-lần→mở mạch 300s),
+  `ComfyUIRemoteRestorer` (implements cùng Port với `ComfyUILocalRestorer`),
+  `scripts/deploy_workflows_to_worker.py` (verify SHA-256 trước/sau copy),
+  `scripts/probe_gpu_worker.py` (health CLI một phát).
+- 7 fixture `contracts/identity_restoration/fixtures/comfyui/` — **soạn tay theo tài liệu
+  ComfyUI API, KHÔNG PHẢI ghi lại từ lần chạy thật.** Phải thay bằng bản ghi thật ở T9 khi
+  có worker.
+- **CHƯA làm được (cần máy Windows + Tailscale + ComfyUI thật, ngoài khả năng sandbox
+  này):** Tailscale probe từ Mac (T2), tác giả workflow SD1.5+IPAdapter FaceID + pin
+  SHA-256 (T10), một crop Linh An thật đi hết chuỗi (T12). Đây là bàn giao rõ ràng cho
+  GW-P1 (Codex/Harry), không phải việc bỏ sót.
+- Chi tiết đầy đủ từng task T1–T12: `docs/Image studio/VENHO_GW_PLAN_PATCH_v2_0_TO_v2_1.md`
+  PHẦN 4 "GW-P3 — Remote Adapter".
+
+### GW Plan v2.1 — GW-P0 Baseline Freeze (2026-08-19)
+
+**Status: CLOSED/PASS — GW-P0 Baseline Freeze complete**
+
+- [x] GW-P0-T0 baseline probe PASS/CLOSED, Python + OS test baseline ghi nhận (951 Python / 400 OS, chi tiết ở patch doc PHẦN 4).
+- [x] **A2-FRONT SHA-256 pinned:** `config/projects/venho_hotel/identity_restoration/workflow_pins.yaml` (mới) — `1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d` cho `venho-social-content-agent/assets/face-plates/A2_Front_plate.png`, verify bằng `shasum -a 256` khớp `identity_reference_sha256` cả 3 case trong `tests/identity_restoration/golden/index.json`. Kèm pin `face_restore_v1_api.json` (SUPERSEDED) và placeholder workflow SD1.5 cho GW-P3.
+- [x] GW-P0-T1 — Coupling Audit reconstructed/read-only tại
+  `docs/identity-restoration/COUPLING_AUDIT_2026-08-18.md`; không sửa production code.
+- [x] GW-P0-T2 — Golden-master test cho pipeline hiện tại: 3 case authoritative và offline regression đã PASS/CLOSED.
+- [x] GW-P0 — Current Python + OS test baseline đã ghi nhận trong patch doc.
+- [x] GW-P0 — Nano Banana masked-edit Face QC baseline `88.1 / revise` đã ghi nhận trong patch doc.
+- [x] v1.0 SUPERSEDED marking: `config/comfyui/face_restore_v1_api.json` đã có marker; nội dung lịch sử giữ nguyên.
+- [x] Di chuyển `face_restore_v1_api.json` → `workflows/_archive/` nguyên vẹn; giữ SHA-256 và lineage.
+- [x] Viết đúng 8 ADR: `docs/identity-restoration/ADR-GW-001.md` … `ADR-GW-008.md`.
+- [x] GW-P0 phase closure audit: all baseline artifacts traceable; Golden Master offline `2 passed`.
+
+Chi tiết đầy đủ + rationale: `docs/Image studio/VENHO_GW_PLAN_PATCH_v2_0_TO_v2_1.md` PHẦN 4/7.
+
+### Action Composite v2.1 — staged identity finishing (2026-08-13)
+
+**Status: v2.1.1 CROP PIPELINE COMPLETE OFFLINE — one controlled live face benchmark pending**
+
+- [x] Phase A: khóa A2-FRONT là identity authority duy nhất; ghi SHA-256 vào job/manifest và từ chối hash mismatch.
+- [x] Phase A: thêm hierarchical masks `core/shape/boundary`, crop context 2.5x và metadata mask version.
+- [x] Phase B: ComfyUI adapter nhận normalized face crop + crop mask, phục hồi local rồi composite ngược vào canvas gốc; pixel ngoài vùng sửa được regression-guard.
+- [x] Phase C: thêm `SceneCandidate`/`CandidateSelector` không dùng face score để chọn scene, `RegionalGate` fail-closed cho identity/eyes/geometry/anatomy/outfit/environment/global, và `WorkflowLedger`.
+- [x] Phase D: ProductionRunner truyền regional scores; manifest ghi contract `action_composite_v2.1`, identity authority, mask và regional gate.
+- [x] Phase E offline: action-composite tests mới **23/23 pass**; toàn nhóm action-composite **51/52 pass**, 1 failure là assertion cũ trong `test_action_composite_config.py` không còn phù hợp với workflow fixture hiện hữu.
+- [x] Không có paid image/API call; chưa promote asset hay thay đổi A2 authoritative reference.
+- [ ] Live POC ComfyUI/IPAdapter/InstantID và mini benchmark 3–10 ảnh chưa chạy vì cần worker GPU/provider thực tế; không đánh dấu Face QC >90 khi chưa có validator output.
+- [x] Nano Banana masked-edit provider contract đã được triển khai ở Venho OS: `base` + `mask` + A2-front, image-first mapper, fail-closed preflight; không tạo client Gemini song song trong AI Studio.
+- [x] Live masked-edit Nano Banana đã chạy và có artifact/validator output; kết quả chưa vượt 90.
+- [x] Live verification đã chạy 2 lần Nano Banana 1K (`masked-edit`), chi phí ước tính tổng **$0.14112**; Face 88.2 và 88.1, cả hai `NEEDS REVIEW`, chưa đạt >90.
+- [x] Live run phát hiện composite giữ sai kích thước provider output; đã sửa route dùng kích thước base canvas làm chuẩn. Cần test paid tiếp theo nếu muốn xác nhận pixel-lock sau bản sửa.
+- [x] Debug tiếp xác nhận face mask chỉ chiếm 3.99% full canvas; đây là nguyên nhân provider không có đủ effective pixels để vượt plateau 88.x.
+- [x] Venho OS v2.1.1 chuyển bước B thành mask-derived square crop: crop 454×454 hiện tại → upscale 1024×1024 → Nano Banana edit với duy nhất A2-FRONT → composite về đúng tọa độ trên base.
+- [x] Output composite dùng PNG; test khóa pixel ngoài mask. Manifest ghi crop transform/mask coverage. Prompt ưu tiên mắt/lông mày trước các vùng nhận dạng khác.
+- [x] QA offline: image-generation 140/140, full Venho OS 384/384, TypeScript/lint/build pass; không phát sinh paid call v2.1.1.
+- [x] Live verification v2.1.1: `run-202608132052`, Nano Banana 1K, estimated **$0.07056**, output 1024×1280, Face **88.1 / revise**; crop/composite contract hoạt động đúng, không retry.
+- [ ] Face QC >90 vẫn chưa đạt; blocker còn lại là identity/eye geometry synthesis của Nano Banana, không phải mất pixel ngoài mask.
 
 ### Growth Agent — republish Wednesday bằng DNA phòng mới (2026-08-12)
 
@@ -1422,3 +1539,75 @@ Recorded as a known issue rather than pursued further this session.
   `PENDING_APPROVAL`.
 - [x] Documented root cause: the previous run generated only one cadence week; corrected
   two-week cycle is active.
+
+## VENHO GPU Identity Restoration v2.1 — GW-P0 baseline (2026-08-19)
+
+- [x] **GW-P0-T2 Golden-Master Test — CLOSED/PASS.** Three authoritative fixed golden
+  cases are stored under `tests/identity_restoration/golden/`; exact restored/composite
+  hashes, pixelLock (`mutatedPixelCount=0`), cropTransform, seed `42`, and three frozen
+  Face QC values per case are covered by the offline regression test.
+- [x] Golden regression: `python3 -m pytest -q tests/test_gw_p0_t2_golden.py` — `2 passed`.
+- [x] Relevant identity-restoration tests — `20 passed`.
+- [x] **GW-P0 commit-hash item — PASS.**
+  - `venho-ai-studio`: `f3cf924920812e6591f9c11b5e009fd36b610416`
+  - `venho-os`: `329c8d2ce6cc24af137c9730a7bd8a804b47e9e3`
+  - Recorded in `docs/Image studio/VENHO_GW_PLAN_PATCH_v2_0_TO_v2_1.md`.
+- [x] Current Python + OS test baseline recorded; suites were executed as-is.
+- [x] A2 SHA-256 đã được pin trong `workflow_pins.yaml`.
+- [x] v1.0 SUPERSEDED marker đã được ghi vào workflow cũ.
+- [x] Legacy workflow archived at `workflows/_archive/face_restore_v1_api.json`.
+- [ ] **Next roadmap item:** ADR set.
+
+## VENHO GPU Identity Restoration v2.1 — GW-P0 phase closure (2026-08-19)
+
+- [x] ADR set complete: exactly 8 files, no ADR-GW-009.
+- [x] Golden Master offline: `python3 -m pytest -q tests/test_gw_p0_t2_golden.py` → `2 passed`.
+- [x] A2 authority, workflow archive, baseline docs, and Golden artifacts are present.
+- [x] T1 evidence artifact exists and records current call graph, coupling matrix, contracts,
+  boundaries, Phase-2 seams, invariants, risks, and provenance.
+- [x] No second ActionCompositePipeline definition; no direct ComfyUI references in `venho-os/src`.
+- [x] GW-P0 CLOSED/PASS; no blocker remains.
+- [ ] **Next roadmap phase:** GW-P1 — Windows GPU Worker.
+
+## VENHO GPU Identity Restoration v2.1 — GW-P0 legacy workflow archived (2026-08-19)
+
+- [x] Archived `config/comfyui/face_restore_v1_api.json` → `workflows/_archive/face_restore_v1_api.json`.
+- [x] SHA-256 preserved: `f7d04802135eb06db94e6b096b0dc269a644c3bebe90ec61f3855567dde32361`.
+- [x] Updated `workflow_pins.yaml`, example config, and Golden-Master lineage to the archive path.
+- [x] Reason recorded: superseded by current v2.x authority; historical workflow remains auditable.
+- [ ] **Next roadmap item:** ADR set.
+
+## VENHO GPU Identity Restoration v2.1 — GW-P0 v1.0 superseded (2026-08-19)
+
+- [x] Marked `config/comfyui/face_restore_v1_api.json` as `SUPERSEDED`.
+- [x] Authority chain recorded: current v2.x architecture + `VENHO_GW_PLAN_PATCH_v2_0_TO_v2_1.md`; v2.1 overrides v2.0 on conflict.
+- [x] Historical workflow content preserved at `workflows/_archive/face_restore_v1_api.json`.
+- [!] Referenced v1.0 worker-roadmap markdown is absent from the workspace; no replacement file was created.
+- [x] Archive completed; next roadmap item is ADR set.
+- Scope guard: no QC4I, no QC4 backlog work, no threshold/image-quality tuning, and no
+  production architecture changes in this closeout.
+
+## VENHO GPU Identity Restoration v2.1 — GW-P0 current test baseline (2026-08-19)
+
+- [x] `venho-ai-studio` at `f3cf924920812e6591f9c11b5e009fd36b610416`:
+  `PYTHONPATH=. /usr/bin/python3 -m pytest -q` → **951 passed, 70 failed, 0 skipped, 0 errors**.
+- [x] Python failure baseline only: missing Lake View Room DNA fixture; subject-resolver/schema/
+  overlay expectation mismatches; one Action Composite config expectation; missing raw asset fixture.
+  No failures repaired.
+- [x] `venho-os` at `329c8d2ce6cc24af137c9730a7bd8a804b47e9e3`:
+  `npm test -- --run` → **400 passed, 0 failed, 0 skipped, 0 errors** across 71 files.
+- [x] Results recorded in `docs/Image studio/VENHO_GW_PLAN_PATCH_v2_0_TO_v2_1.md`.
+- [x] A2 SHA-256 đã được pin trong `workflow_pins.yaml`.
+- [x] v1.0 SUPERSEDED marker đã được ghi vào workflow cũ.
+- [x] Legacy workflow archived at `workflows/_archive/face_restore_v1_api.json`.
+- [ ] **Next roadmap item:** ADR set.
+
+## VENHO GPU Identity Restoration v2.1 — GW-P0 Nano Banana baseline (2026-08-19)
+
+- [x] Existing authoritative Nano Banana masked-edit evidence recorded: `run-202608132052/variant-001`.
+- [x] Face QC: **88.1 / revise**; comparison baseline/fallback only, not a production winner or new threshold.
+- [x] A2 authority and SHA-256 match `workflow_pins.yaml`.
+- [x] No new generation, API cost, production-code change, or quality optimization.
+- [x] v1.0 SUPERSEDED marker đã được ghi vào workflow cũ.
+- [x] Legacy workflow archived at `workflows/_archive/face_restore_v1_api.json`.
+- [ ] **Next roadmap item:** ADR set.

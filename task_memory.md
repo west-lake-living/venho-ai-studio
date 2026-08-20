@@ -1,4 +1,154 @@
 # VENHO AI STUDIO — Task Memory
+
+## 2026-08-20 — GW-P1 aggregation-only verifier repair
+
+- GW-P1 runtime evidence tại `C:\VenHoGPU\evidence\gw-p1-20260820-173407` đã chứng minh
+  CUDA/Torch, GTX 1660 SUPER, ComfyUI localhost health, SD1.5 512×512 CUDA inference,
+  A/B/C sanity, non-black và `pixel_std ≈ 61.68`.
+- Root cause của `winning_config=null` là verifier yêu cầu
+  `$row.sd15_json.output.exists -eq $true`, trong khi `sd15_sanity_check.py` sở hữu
+  contract `sd15_json.output.path`; field `output.exists` không tồn tại.
+- Đã sửa duy nhất aggregation predicate trong
+  `scripts/windows-gpu-worker/gw_p1_verify.ps1`: kiểm tra `output.path` bằng
+  `Test-Path`, cùng `http_error=null`, `comfy_prompt_validation_error=false`,
+  `cuda_runtime_exception=false`, resolution 512×512, non-black và `pixel_std > 5`.
+- Winner vẫn phải được chọn theo thứ tự A→B→C; với evidence hiện tại A là
+  `--lowvram --fp32-vae`. Khi A qualify, verifier ghi `C:\VenHoGPU\worker.env` với
+  `COMFYUI_FLAGS=--lowvram --fp32-vae` và populate `winning_config`/`selected_run`.
+- Không rerun installer, không đổi runtime/model/socket verification/SD1.5 workflow,
+  không QC4/QC4I, không threshold/image tuning, không bắt đầu GW-P2.
+- Trạng thái: **GW-P1 vẫn PENDING** cho đến khi Human chạy verifier một lần trên Windows
+  và cung cấp report mới với `local_binding_verified=true` và overall PASS.
+
+## 2026-08-20 — GW-P2 Extract Port CLOSED + GW-P3 Remote Adapter code PARTIAL
+
+- Task giao (Harry): "Phase 1 sẽ giao cho Codex làm tiếp. Tôi muốn bạn bắt đầu làm từ
+  roadmap phase 2 đến kết thúc." → không đụng GW-P1 (Windows GPU worker vật lý), thực
+  thi GW-P2 (Extract Port) đầy đủ và bắt đầu GW-P3 (Remote Adapter) tới giới hạn không cần
+  máy Windows thật.
+
+**Kiến trúc mới `identity_restoration/`** (bounded context, `MODULE_ID = "IDR"`, KHÔNG phải
+M-module theo GW-D2): domain (entities/value_objects/errors/compositing + 3 policy thuần) →
+application (9 Port, DTO, registry, `RestoreFaceCropUseCase`) → infrastructure (3 restorer,
+persistence, health, comfyui client stack, composition root) → interface (`cli.py`,
+`json_bridge.py`). Chi tiết đầy đủ + rationale từng quyết định: patch doc PHẦN 4 "GW-P2"/
+"GW-P3", cũng đã cập nhật checklist trong cả patch doc lẫn v2.0 plan gốc.
+
+**2 quyết định lệch có chủ đích khỏi patch (ghi rõ để không bị coi là bỏ sót)**:
+1. KHÔNG sửa `ProductionRunner` để gọi qua `RestorerRegistry` (T4 của GW-P2) —
+   `image_studio_runtime/action_composite/production.py` không bị đụng. Lý do: đổi caller
+   thật của pipeline production là hành động không thể rollback rẻ nếu sai, trong khi patch
+   tự đặt tiêu chí "risk = 0" cho GW-P2. Hệ quả: `identity_restoration/` là con đường kiến
+   trúc sạch đã kiểm chứng đầy đủ nhưng SONG SONG, chưa phải con đường
+   `ActionCompositePipeline` thật đang chạy. Hợp nhất 2 đường — đổi `ProductionRunner` thật
+   — là quyết định cần Harry chốt trước, không tự quyết.
+2. KHÔNG di chuyển vật lý `CropTransform`/pixel preservation/compositing ra khỏi
+   `action_composite/` kèm import shim (T6 của GW-P2, đúng chữ patch là "◐ DI CHUYỂN").
+   Thay vào đó: `domain/policies/pixel_preservation.py` IMPORT trực tiếp hàm thuần
+   `action_composite.regression_guard.protected_region` (không I/O, an toàn để tái dùng
+   qua boundary); `domain/compositing.py` và `domain/entities.py` là code mới nhưng pixel
+   math giống hệt logic paste-qua-mask đã có trong `ComfyUIIdentityRestorer.restore()` khi
+   nhận `crop`/`crop_box` và trong `ActionCompositePipeline.run()`
+   (`Image.composite(restored, base, mask)`) — copy hành vi, không sáng tác logic mới.
+   Lý do không move+shim: `action_composite/` có 2537 dòng, di chuyển một phần và để lại
+   shim rủi ro cao hơn giá trị kiến trúc thu được trong một phiên làm việc, trong khi
+   `action_composite/` **0 dòng bị sửa** giữ nguyên vẹn con đường production đang chạy.
+
+**`ComfyUILocalRestorer`** (`infrastructure/restorers/comfyui_local_restorer.py`) bọc
+`ComfyUIIdentityRestorer` hiện có, gọi ở chế độ KHÔNG truyền `crop`/`crop_box` trong config
+(chỉ truyền `crop` đã cắt sẵn làm `base_image`) — khiến adapter cũ đi nhánh trả về ảnh
+restored thô đúng kích thước, không tự composite; composite chuyển hẳn sang domain layer
+mới (`compositing.py`). Verify bằng test monkeypatch (`test_comfyui_local_restorer.py`) —
+không gọi ComfyUI thật.
+
+**Con số**: 53 test mới trong `tests/identity_restoration/`, 100% pass, 0 network call
+(recorded fixture ở `contracts/identity_restoration/fixtures/comfyui/` hoặc monkeypatch
+`urlopen`). Suite cũ: baseline GW-P0 951 pass/70 fail → nay 1005 pass/69 fail — **69 lỗi
+còn lại y hệt baseline cũ** (đã đối chiếu từng dòng `FAILED`, tất cả thuộc nhóm missing DNA
+fixture / subject-resolver schema mismatch có sẵn từ trước, không liên quan
+`identity_restoration`); `tests/test_action_composite*.py` + `test_gw_p0_t2_golden.py`
+50/50 pass nguyên trạng — golden-master GW-P0-T2 KHÔNG bị ảnh hưởng vì `action_composite/`
+không đổi.
+
+**Contracts**: 5 schema mới đặt ở `contracts/identity_restoration/` (KHÔNG phải
+`contracts/` phẳng như patch viết) — lý do: `tests/test_growth_phase1_contracts.py`
+enumerate `contracts/*.schema.json` bằng whitelist đúng 17 schema Growth Phase 1; thêm
+schema GW vào đó làm 2 test của file này FAIL ngay (`22 == 17` và extra items) — phát
+hiện + sửa trong phiên này bằng cách tách thư mục, không sửa test cũ.
+
+**Smoke test thủ công (không phải pytest)**: `venho-restore run --restorer mock` và
+`venho-restore health` chạy end-to-end ngoài suite test, output JSON đúng shape
+`restoration_result.schema.json`/`worker_health.schema.json`. Lưu ý: composition root nạp
+A2 authority từ `IDR_A2_PATH` (env, cố định theo cấu hình), KHÔNG phải từ field `a2Path`
+trong từng request JSON — field đó trong request chỉ mang tính tài liệu/lineage, khớp đúng
+thiết kế use case ở PHẦN 7.3 (`a2 = self._a2_repo.load()`, không đọc theo `cmd.a2_path`).
+
+**GW-P3 (Remote Adapter) — chỉ phần không cần máy Windows**: `node_registry.py`,
+`http_client.py`, `graph_binder.py`, `error_mapper.py`, `ComfyUIRemoteRestorer`, 2 script
+(`deploy_workflows_to_worker.py`, `probe_gpu_worker.py`) — viết xong, test offline qua 7
+fixture soạn TAY dựa theo tài liệu ComfyUI API (KHÔNG PHẢI ghi lại từ lần chạy thật — patch
+muốn "ghi lại từ lần chạy thật đầu tiên", việc đó cần T2/T12 trước). **CHƯA làm và không
+làm được trong sandbox này**: Tailscale probe (T2), tác giả + pin workflow SD1.5+IPAdapter
+FaceID thật (T10), một crop Linh An thật đi hết chuỗi (T12) — cả 3 cần máy Windows thật.
+GW-P3 CHƯA CLOSED, EXIT GATE (một ảnh thật đi hết chuỗi) chưa đạt.
+
+**Việc còn lại theo roadmap, theo thứ tự ưu tiên**:
+1. Harry chốt có hợp nhất `ProductionRunner`/`ActionCompositePipeline` vào
+   `identity_restoration/` hay giữ 2 đường song song vĩnh viễn (ảnh hưởng GW-P6 dọn dẹp).
+2. GW-P1 (Codex) xong máy Windows → chạy `scripts/probe_gpu_worker.py`, tác giả workflow,
+   `venho-restore run --restorer comfyui-local` để verify TRÙNG golden-master byte-exact
+   (chưa verify được vì không có ComfyUI server local trong sandbox này).
+3. GW-P3 T2/T9(ghi lại thật)/T10/T12 sau khi có Windows worker.
+4. GW-P4 Controlled A2 Benchmark — chưa bắt đầu, phụ thuộc GW-P3 CLOSED.
+
+## 2026-08-19 — GW-P0 A2-FRONT SHA-256 pinned (VENHO_GW_PLAN_PATCH_v2_0_TO_v2_1.md)
+
+- Task giao: "Pin A2 SHA-256", tiếp theo sau GW-P0-T2 PASS/CLOSED trong roadmap GW plan v2.1.
+- File thật đang giữ vai trò A2 identity authority cho golden-master (GW-P0-T2) là
+  `venho-social-content-agent/assets/face-plates/A2_Front_plate.png`, **không phải**
+  `assets/linh_an/A2_Front.png` mà `IDR_A2_PATH` trong plan v2.0 nêu — xác nhận bằng cách đối
+  chiếu `shasum -a 256` với `identity_reference_sha256` ghi trong 3 case của
+  `tests/identity_restoration/golden/index.json`, khớp cả 3.
+  `sha256 = 1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d`.
+  `assets/raw/linh_an/A2_Front.png` (repo này) và `venho-social-content-agent/assets/A2_Front.png`
+  có cùng sha256 với nhau (cùng ảnh gốc chưa crop) nhưng khác sha256 với plate đã dùng đóng băng
+  golden-master — ghi rõ trong file pin để không nhầm 2 ảnh khi Phase GW-P2 rút Port ra.
+- Tạo mới `config/projects/venho_hotel/identity_restoration/workflow_pins.yaml` theo đúng template
+  ở v2.0 §"ENV vars"/PHẦN 10.1 — pin `a2_authority` (path/sha256/repo/verified_at/note), giữ
+  placeholder `face_restore_win_sd15_ipadapter_v1.sha256 = "<điền ở GW-P3"` (chưa có workflow),
+  và pin thêm `face_restore_v1_api.json` (sha256 `b232b18d498f9a0064707a83aeebb36306fda147ac50d757a27721267c9f3e25`,
+  đã có sẵn từ `tests/identity_restoration/golden/index.json::lineage.workflow_sha256`, status SUPERSEDED).
+- Chỉ tạo config + cập nhật doc/checklist (patch doc PHẦN 4 + v2.0 plan §Phase 0), **không đụng
+  production code**, đúng scope "chỉ đọc và ghi tài liệu" của GW-P0.
+- Còn lại của GW-P0: TASK 1 Coupling Audit (chưa làm, ưu tiên cao nhất theo patch), TASK 2
+  Golden-master test file thật để chạy lại 3 fixture đã đóng băng (fixtures đã có, test chưa viết),
+  đánh dấu v1.0 SUPERSEDED, move `face_restore_v1_api.json` → `workflows/_archive/`, viết 8 ADR.
+
+## 2026-08-13 — Action Composite v2.1.1 face-crop correction
+
+- Root cause of the 88.2/88.1 plateau was confirmed in the live route: the provider still received the full 1024×1280 action canvas, where the feathered face mask occupied only 3.99% of pixels. Resizing the provider's full-canvas response also introduced spatial distortion before compositing.
+- Venho OS now derives a square crop from the real mask bounds, adds 1.7× context, upscales the current 454×454 crop to 1024×1024, sends only crop + crop-mask + one A2-FRONT authority, then composites the result at the original coordinates.
+- The final composite is PNG and pixels outside the black mask are regression-locked. Manifest records crop bounds, provider size, mask bounds and coverage.
+- Prompt priority is explicitly eyes/eyebrows → nose → mouth, with identity averaging and beautification forbidden. Scene, body, outfit and background are not sent into the restoration canvas.
+- Offline verification: image-generation 140/140; full Venho OS 384/384; TypeScript, lint and production build pass. No paid call was made for v2.1.1; Face >90 remains unverified until one controlled live run.
+- Controlled live v2.1.1 run `run-202608132052` completed at estimated $0.07056. Face remained **88.1 / revise**, while the final artifact retained the locked 1024×1280 base and the manifest recorded the 454×454→1024 crop transform. This rules out full-canvas face resolution as the only blocker; the remaining gap is identity synthesis/eye geometry fidelity, not scene compositing. No retry was made.
+
+## 2026-08-13 — Nano Banana masked-edit provider contract
+
+- ComfyUI is intentionally STOPPED. The canonical Nano Banana provider lives in Venho OS, so v2.1 now uses a shared `operation: masked_edit` contract rather than a second Gemini client in AI Studio.
+- Trusted reference roles now include `base` and `mask`; server preflight requires exactly one base canvas, one repair mask, and one A2 face authority. Normal generation rejects these roles.
+- Gemini request mapping is image-first: locked base canvas, white-editable mask, then A2 authority, followed by a strict instruction to preserve all pixels outside the mask.
+- Verification: Venho OS image-generation tests 138/138 pass and TypeScript compile is clean. Live calls are recorded below; no Face QC >90 claim has been made.
+- Live masked-edit tests (2026-08-13): two Nano Banana 1K calls, estimated total $0.14112; Face 88.2 and 88.1, both needs_review. First run still returned a full regenerated canvas; second route version added server-side mask composite but exposed a dimension bug (provider 848x1264 replacing base 1024x1280). Fixed after the run: composite now takes base canvas dimensions as canonical. No >90 claim.
+
+## 2026-08-13 — Action Composite v2.1 offline implementation
+
+- Root cause confirmed as staged-pipeline gap: the old path constructed a face crop but still sent the full canvas to restoration, used one ellipse mask, and did not bind the A2 asset hash.
+- Implemented `hierarchical_face_masks()` with core/shape/boundary regions, normalized crop metadata, A2-FRONT SHA-256 lock, and v2.1 manifest lineage.
+- ComfyUI adapter now uploads the normalized crop/mask and composites the returned crop back into the locked base canvas. Existing legacy restorers remain compatible.
+- Added provider-neutral `SceneCandidate`, weighted candidate selection (pose/anatomy/outfit/environment first), fail-closed `RegionalGate`, and `WorkflowLedger`.
+- Verification: `tests/test_action_composite_v21.py` + existing targeted suites = 23/23 new/critical tests pass; full action-composite group = 51/52, with the single failure in an old config assertion that expects a missing workflow despite the fixture now existing. Full AI Studio suite = 875 pass / 70 unrelated pre-existing fixture/schema failures.
+- No official asset promotion and no A2 reference change. ComfyUI GPU/provider benchmark remains pending.
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
 **Cập nhật:** 2026-08-12 (A2 diagnostic V4 closeout và provider cost review) · **Đọc bởi:** AI Engine, Claude Code sessions
 
@@ -1579,3 +1729,106 @@ was stashed before the push and popped back afterward, untouched).
   22/08 (Saturday) and 24/08 (Monday), all `PENDING_APPROVAL`.
 - [x] Root cause recorded: approval cannot create a slot that was never generated; the corrected
   two-week horizon now creates the missing dates.
+
+## VENHO GPU Identity Restoration v2.1 — GW-P0 closeout (2026-08-19)
+
+GW-P0-T2 is closed PASS against the original v2.1 Golden-Master DoD. The authoritative
+golden set contains exactly three fixed crop cases under
+`tests/identity_restoration/golden/`. The regression harness compares restored-crop and
+composite SHA-256 values exactly, enforces the serialized cropTransform and seed `42`,
+requires `mutatedPixelCount=0`, verifies restored crop bytes differ from input, and checks
+three frozen Face QC values within ±2.0. Regression is offline with zero network calls and
+is reusable after the planned Phase 2 refactor steps.
+
+The remaining GW-P0 commit-hash item was completed and recorded in
+`docs/Image studio/VENHO_GW_PLAN_PATCH_v2_0_TO_v2_1.md`:
+
+- `venho-ai-studio` HEAD: `f3cf924920812e6591f9c11b5e009fd36b610416`
+- `venho-os` HEAD: `329c8d2ce6cc24af137c9730a7bd8a804b47e9e3`
+
+The next roadmap item was **Ghi kết quả test hiện tại (Python + OS)**; that baseline is now
+completed and recorded below. Do not start GW-P2-T1 or later. Full-suite failures outside the
+identity-restoration scope are not a GW-P0-T2 closure criterion.
+
+## VENHO GPU Identity Restoration v2.1 — GW-P0 test baseline (2026-08-19)
+
+Recorded the current test state exactly as executed, without remediation:
+
+- `venho-ai-studio` commit `f3cf924920812e6591f9c11b5e009fd36b610416` —
+  `PYTHONPATH=. /usr/bin/python3 -m pytest -q` — **951 passed, 70 failed, 0 skipped, 0 errors**.
+  Existing failures cluster around the missing Lake View Room DNA fixture, subject-resolver/
+  schema/overlay expectation mismatches, one Action Composite config expectation, and missing
+  raw asset fixture(s).
+- `venho-os` commit `329c8d2ce6cc24af137c9730a7bd8a804b47e9e3` —
+  `npm test -- --run` — **400 passed, 0 failed, 0 skipped, 0 errors** across 71 test files.
+
+Evidence is recorded in `docs/Image studio/VENHO_GW_PLAN_PATCH_v2_0_TO_v2_1.md`.
+No production code, dependency, or configuration was changed. A2 SHA-256 was subsequently
+pinned in `workflow_pins.yaml`; next roadmap task is **Đánh dấu v1.0 SUPERSEDED**.
+
+## VENHO GPU Identity Restoration v2.1 — GW-P0 Nano Banana baseline (2026-08-19)
+
+Recorded the strongest existing Nano Banana masked-edit baseline without rerunning generation:
+
+- Run/case: `run-202608132052/variant-001`
+- Provider/mode: Nano Banana 2 (`gemini-3.1-flash-image`) / `masked-edit`
+- Face QC: **88.1 / revise**
+- A2 authority: `/Users/hanhpham/Developer/Claude-Workspace/projects/venho-social-content-agent/assets/face-plates/A2_Front_plate.png`
+- A2 SHA-256: `1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d`
+- Manifest: `/Users/hanhpham/Developer/Claude-Workspace/projects/venho-social-content-agent/photos-ai/2026/13-08-action-composite-v21-nano-crop/run-202608132052/variant-001/manifest.json`
+- Output: `/Users/hanhpham/Developer/Claude-Workspace/projects/venho-social-content-agent/photos-ai/2026/13-08-action-composite-v21-nano-crop/run-202608132052/variant-001/image.png`
+- Face report: `/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/data/projects/venho_hotel/validation/reports/face_linh_an_1d64fd2b6281_20260813-204931.json`
+- Timestamp: `2026-08-13T13:47:18.610Z` → `2026-08-13T13:49:43.327Z`; prompt hash and protocol are preserved in the manifest; no seed was recorded.
+
+This is comparison/fallback evidence only, not the production winner and not a new acceptance threshold. No new image was generated, no API cost was incurred, and no production code changed. Evidence is also recorded in `docs/Image studio/VENHO_GW_PLAN_PATCH_v2_0_TO_v2_1.md`.
+
+Next roadmap task: **Đánh dấu v1.0 SUPERSEDED**.
+
+## VENHO GPU Identity Restoration v2.1 — GW-P0 v1.0 superseded (2026-08-19)
+
+Marked `config/comfyui/face_restore_v1_api.json` with a clear `SUPERSEDED` status. The marker
+names the current v2.x authority and states that the v2.1 patch overrides v2.0 wherever they
+conflict. The workflow remains in place with its historical content preserved; archive/move is
+deferred to the next roadmap task.
+
+The v2.0 plan references `VENHO_LINH_AN_WINDOWS_COMFYUI_GPU_WORKER_ROADMAP_v1_0.md`, but that
+markdown file is absent from the workspace. No historical content was fabricated, deleted, or
+rewritten. No production code changed.
+
+Next roadmap task: **Archive workflow cũ**.
+
+## VENHO GPU Identity Restoration v2.1 — GW-P0 legacy workflow archived (2026-08-19)
+
+Archived the superseded workflow non-destructively:
+
+- Original: `config/comfyui/face_restore_v1_api.json`
+- Archive: `workflows/_archive/face_restore_v1_api.json`
+- SHA-256: `f7d04802135eb06db94e6b096b0dc269a644c3bebe90ec61f3855567dde32361`
+
+Updated `workflow_pins.yaml`, the example config, and all Golden-Master lineage records to
+point to the archive path. The workflow content and v1.0 relation remain preserved for audit;
+it is not active/current authority. Reason: superseded by the current v2.x architecture and
+the v2.1 patch, which overrides v2.0 where conflicting. Production behavior was not changed.
+
+Next roadmap task: **ADR set**.
+
+## VENHO GPU Identity Restoration v2.1 — GW-P0 ADR set and phase audit (2026-08-19)
+
+Created exactly eight ADRs under `docs/identity-restoration/`, mapped to the locked v2.0
+decisions: ADR-001(D1,D11), ADR-002(D2,D12), ADR-003(D3,D4), ADR-004(D5), ADR-005(D6,D7),
+ADR-006(D8), ADR-007(D9), ADR-008(D10). No new architecture or ADR-GW-009 was created.
+
+Offline Golden Master remains green (`python3 -m pytest -q tests/test_gw_p0_t2_golden.py` →
+2 passed), with A2 authority, archive, baseline docs, and golden artifacts traceable.
+
+The missing T1 evidence gap was closed by a read-only reconstruction at
+`docs/identity-restoration/COUPLING_AUDIT_2026-08-18.md`, based on the current implementation,
+roadmap notes, tests, and existing baseline artifacts. No production code or architecture was
+changed.
+
+Re-audit passed: T0/T1/T2, commit/test baselines, A2 pin, Nano Banana baseline, v1 supersession,
+workflow archive, exactly eight ADRs, Golden Master offline regression (`2 passed`), one pipeline
+definition, and no direct ComfyUI references in `venho-os/src` TypeScript sources.
+
+GW-P0 is **CLOSED/PASS**. Next roadmap phase: **GW-P1 — Windows GPU Worker**. Do not start it
+without an explicit next-phase task instruction.
