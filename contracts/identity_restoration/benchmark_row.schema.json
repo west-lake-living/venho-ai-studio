@@ -1,0 +1,17 @@
+{
+  "$id": "https://venho.local/contracts/benchmark_row/1.0",
+  "$comment": "GW-P4 (PHẦN 14). One row = one restorer/case pair.",
+  "type": "object",
+  "required": ["caseId", "restorerId", "faceScore", "pixelLockPassed", "runtimeMs"],
+  "additionalProperties": false,
+  "properties": {
+    "caseId": { "type": "string" },
+    "restorerId": { "enum": ["comfyui-local", "comfyui-remote", "nano-banana-edit", "mock"] },
+    "faceScore": { "type": "number", "minimum": 0, "maximum": 100 },
+    "pixelLockPassed": { "type": "boolean" },
+    "runtimeMs": { "type": "integer", "minimum": 0 },
+    "vramPeakMb": { "type": ["integer", "null"] },
+    "samples": { "type": "integer", "minimum": 1 },
+    "notes": { "type": "string" }
+  }
+}

@@ -79,6 +79,10 @@ class ActionCompositeJob(BaseModel):
     face_bbox: Optional[BoundingBox] = None
     workflow_version: str = "face_restore_v1"
     provider: str = "comfyui"
+    scene_provider: str = "nano_banana"
+    candidate_id: Optional[str] = None
+    identity_reference_sha256: Optional[str] = Field(default=None, min_length=64, max_length=64)
+    mask_version: str = "hierarchical_face_v1"
     metadata: dict[str, Any] = Field(default_factory=dict)
 
     @field_validator("identity_reference")
@@ -86,14 +90,27 @@ class ActionCompositeJob(BaseModel):
     def require_a2_reference(cls, value: str) -> str:
         # Match the filename only: a candidate image parked in a folder named
         # "A2_benchmarks/" is still not the identity authority (plan §4.1).
-        if "A2" not in Path(value).name.upper():
+        stem = Path(value).stem.upper().replace("_", "-").replace(" ", "-")
+        if "A2-FRONT" not in stem:
             raise ValueError("Action Composite requires A2-FRONT as the sole identity authority")
         return value
+
+    @field_validator("identity_reference_sha256")
+    @classmethod
+    def valid_sha256(cls, value: Optional[str]) -> Optional[str]:
+        if value is not None and any(char not in "0123456789abcdefABCDEF" for char in value):
+            raise ValueError("identity_reference_sha256 must be a hexadecimal SHA-256")
+        return value.lower() if value else value
 
 
 class RegionalQC(BaseModel):
     identity_score: Optional[float] = Field(default=None, ge=0, le=100)
+    eyes_brows_score: Optional[float] = Field(default=None, ge=0, le=100)
     geometry_score: Optional[float] = Field(default=None, ge=0, le=100)
+    anatomy_score: Optional[float] = Field(default=None, ge=0, le=100)
+    outfit_score: Optional[float] = Field(default=None, ge=0, le=100)
+    environment_score: Optional[float] = Field(default=None, ge=0, le=100)
+    global_score: Optional[float] = Field(default=None, ge=0, le=100)
     pixel_preservation: bool
     status: Literal["PASS", "FAIL", "UNVALIDATED"]
     failures: list[str] = Field(default_factory=list)

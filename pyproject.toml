@@ -29,6 +29,9 @@ drive = ["google-api-python-client>=2.100", "google-auth-oauthlib>=1.0", "google
 # -- import is deferred into the function so the 0-API-call test suite never
 # requires it installed (client_fn injection covers tests).
 gemini = ["google-genai>=1.0"]
+# Required only by the post-restoration observed-geometry evidence producer.
+# The import is deferred so unit tests and non-Regional-QC restores remain offline.
+geometry = ["insightface>=0.7.3", "opencv-python-headless>=4.8", "onnxruntime>=1.16"]
 
 [project.scripts]
 venho = "knowledge_studio.vision.cli:app"
@@ -41,10 +44,11 @@ venho-trend = "research_engine.trend_radar.cli:app"
 venho-growth = "growth_orchestrator.cli:app"
 venho-strategy = "strategy_memory.cli:app"
 venho-rollout = "controlled_rollout.cli:app"
+venho-restore = "identity_restoration.interface.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["agent_studio*", "analytics_feedback*", "app*", "automation_studio*", "content_studio*", "controlled_rollout*", "core*", "dashboard*", "growth_orchestrator*", "image_studio_runtime*", "knowledge_studio*", "productize*", "prompt_studio*", "providers*", "publishing_gateway*", "research_engine*", "shared*", "strategy_memory*", "validator_studio*", "video_studio*"]
+include = ["agent_studio*", "analytics_feedback*", "app*", "automation_studio*", "content_studio*", "controlled_rollout*", "core*", "dashboard*", "growth_orchestrator*", "identity_restoration*", "image_studio_runtime*", "knowledge_studio*", "productize*", "prompt_studio*", "providers*", "publishing_gateway*", "research_engine*", "shared*", "strategy_memory*", "validator_studio*", "video_studio*"]
 
 [tool.setuptools.package-data]
 "knowledge_studio.vision.prompts" = ["*.md"]

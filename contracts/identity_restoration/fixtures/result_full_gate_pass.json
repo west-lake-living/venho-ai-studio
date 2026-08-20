@@ -1,0 +1,12 @@
+{
+  "contractVersion": "1.0",
+  "runId": "run-test-001",
+  "attemptId": "attempt-1",
+  "status": "FULL_GATE_PASS",
+  "restoredCropPath": "data/restored_crop.png",
+  "compositePath": "data/composite.png",
+  "pixelLock": { "passed": true, "mutatedPixelCount": 0 },
+  "qc": { "faceScore": 93.1, "allValidatorsApproved": true, "killSwitchTriggered": false },
+  "lineage": { "restorerId": "mock", "seed": 42 },
+  "error": null
+}

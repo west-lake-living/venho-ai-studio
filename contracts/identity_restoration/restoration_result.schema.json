@@ -1,0 +1,41 @@
+{
+  "$id": "https://venho.local/contracts/restoration_result/1.0",
+  "$comment": "GW plan v2.0 PHẦN 5.2. Matches identity_restoration/application/dto/restoration_result.py::to_json_dict().",
+  "type": "object",
+  "required": ["contractVersion", "runId", "attemptId", "status"],
+  "additionalProperties": false,
+  "properties": {
+    "contractVersion": { "const": "1.0" },
+    "runId": { "type": "string" },
+    "attemptId": { "type": "string" },
+    "status": { "enum": ["FULL_GATE_PASS", "NEEDS_REVIEW", "REJECTED", "FAILED", "CANCELLED"] },
+    "restoredCropPath": { "type": ["string", "null"] },
+    "compositePath": { "type": ["string", "null"] },
+    "pixelLock": {
+      "type": ["object", "null"],
+      "required": ["passed", "mutatedPixelCount"],
+      "additionalProperties": false,
+      "properties": {
+        "passed": { "type": "boolean" },
+        "mutatedPixelCount": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "qc": { "type": ["object", "null"] },
+    "lineage": { "type": "object" },
+    "error": {
+      "type": ["object", "null"],
+      "required": ["code", "message", "retryable"],
+      "additionalProperties": false,
+      "properties": {
+        "code": { "enum": [
+          "ERR_GW_A2_HASH_MISMATCH", "ERR_GW_WORKER_OFFLINE", "ERR_GW_WORKER_TIMEOUT",
+          "ERR_GW_VRAM_EXHAUSTED", "ERR_GW_WORKFLOW_INVALID", "ERR_GW_NODE_BINDING_FAILED",
+          "ERR_GW_UPLOAD_FAILED", "ERR_GW_EMPTY_OUTPUT", "ERR_GW_GEOMETRY_MISMATCH",
+          "ERR_GW_PIXEL_LOCK_VIOLATED", "ERR_GW_LEASE_UNAVAILABLE", "ERR_GW_CANCELLED"
+        ]},
+        "message": { "type": "string", "maxLength": 500 },
+        "retryable": { "type": "boolean" }
+      }
+    }
+  }
+}

@@ -1,0 +1,51 @@
+# config/projects/venho_hotel/identity_restoration/workflow_pins.yaml
+# GW-P0-T0 baseline pin. Contract: VENHO_GW_PLAN_PATCH_v2_0_TO_v2_1.md PHẦN 4 (GW-P0).
+#
+# A2 authority là identity reference DUY NHẤT dùng để phục hồi khuôn mặt.
+# Hash mismatch tại runtime PHẢI fail cứng, không âm thầm đổi sang candidate khác.
+version: 1
+
+a2_authority:
+  # File thật đang được dùng làm identity reference cho GW-P0-T2 golden-master
+  # (tests/identity_restoration/golden/index.json, mọi case identity_reference_sha256
+  # khớp giá trị dưới đây). Đây KHÔNG phải file ở đường dẫn IDR_A2_PATH nêu trong
+  # v2.0 §"ENV vars" (assets/linh_an/A2_Front.png) — đó là bản gốc chưa crop vuông,
+  # nội dung pixel giống hệt (cùng sha256 với assets/raw/linh_an/A2_Front.png của
+  # repo này và venho-social-content-agent/assets/A2_Front.png) nhưng KHÔNG phải
+  # cùng file với plate đã dùng để đóng băng golden-master.
+  path: "/Users/hanhpham/Developer/Claude-Workspace/projects/venho-social-content-agent/assets/face-plates/A2_Front_plate.png"
+  sha256: "1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d"
+  repo: "venho-social-content-agent"
+  verified_at: "2026-08-19"
+  verification_method: "shasum -a 256, đối chiếu với identity_reference_sha256 trong tests/identity_restoration/golden/index.json (3/3 case khớp)"
+  note: >
+    assets/raw/linh_an/A2_Front.png (repo này) có cùng sha256 với
+    venho-social-content-agent/assets/A2_Front.png — cùng một ảnh gốc, khác tên file
+    ở 2 repo. A2_Front_plate.png là bản crop vuông riêng, sha256 khác, và là bản
+    THẬT SỰ được dùng làm identity_reference trong golden-master. Ghi rõ để không
+    nhầm 2 file khi Phase 2 rút Port ra khỏi pipeline hiện có.
+
+workflows:
+  # SD1.5 + IPAdapter FaceID workflow cho Windows GPU worker — chưa tồn tại trong repo.
+  # Điền ở GW-P3 (PHẦN 4 patch, T10) sau khi tác giả workflow xong.
+  face_restore_win_sd15_ipadapter_v1:
+    sha256: "<điền ở GW-P3>"
+    models:
+      checkpoint: "v1-5-pruned-emaonly.safetensors"
+      ipadapter: "ip-adapter-faceid_sd15.bin"
+      clip_vision: "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors"
+      insightface: "buffalo_l"
+    min_vram_mb: 4200
+    defaults:
+      denoise: 0.45
+      steps: 28
+      cfg: 5.5
+      sampler: "dpmpp_2m"
+      scheduler: "karras"
+
+  # Workflow v1.0 (SDXL/PuLID) đã dùng để đóng băng golden-master GW-P0-T2.
+  # SUPERSEDED — giữ lại pin để golden-master vẫn kiểm chứng được, không xoá.
+  face_restore_v1_api:
+    sha256: "b232b18d498f9a0064707a83aeebb36306fda147ac50d757a27721267c9f3e25"
+    status: "SUPERSEDED — dùng cho golden-master GW-P0-T2, đã archive; giữ pin để golden-master kiểm chứng"
+    path: "workflows/_archive/face_restore_v1_api.json"

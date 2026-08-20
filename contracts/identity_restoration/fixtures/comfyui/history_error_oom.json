@@ -1,0 +1,10 @@
+{
+  "8f3a2b10-example-prompt-id": {
+    "status": {
+      "status_str": "error",
+      "completed": false,
+      "messages": [["execution_error", { "exception_message": "CUDA out of memory. Tried to allocate 512.00 MiB" }]]
+    },
+    "outputs": {}
+  }
+}

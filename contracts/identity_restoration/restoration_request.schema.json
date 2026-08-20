@@ -1,0 +1,51 @@
+{
+  "$id": "https://venho.local/contracts/restoration_request/1.0",
+  "$comment": "GW plan v2.0 PHẦN 5.1, extended beyond the abbreviated example with the fields identity_restoration/interface/json_bridge.py actually needs to composite a restored crop back into its canvas (basePath, cropBox, mask paths) — the plan's own §5.1 calls itself 'rút gọn' (abbreviated).",
+  "type": "object",
+  "required": [
+    "contractVersion", "runId", "attemptId", "restorerId",
+    "basePath", "cropPath", "maskEditablePath", "cropBox",
+    "a2Path", "a2Sha256", "workflowId", "seed", "params"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "contractVersion": { "const": "1.0" },
+    "runId": { "type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{2,63}$" },
+    "attemptId": { "type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{2,63}$" },
+    "restorerId": { "enum": ["comfyui-local", "comfyui-remote", "nano-banana-edit", "mock"] },
+    "basePath": { "type": "string" },
+    "cropPath": { "type": "string" },
+    "maskEditablePath": { "type": "string" },
+    "maskFeatherPath": { "type": "string" },
+    "maskVersion": { "type": "string" },
+    "cropBox": {
+      "type": "object",
+      "required": ["left", "top", "right", "bottom"],
+      "additionalProperties": false,
+      "properties": {
+        "left": { "type": "integer", "minimum": 0 },
+        "top": { "type": "integer", "minimum": 0 },
+        "right": { "type": "integer", "minimum": 0 },
+        "bottom": { "type": "integer", "minimum": 0 },
+        "targetSize": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "a2Path": { "type": "string" },
+    "a2Sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "workflowId": { "type": "string" },
+    "seed": { "type": "integer", "minimum": 0, "maximum": 4294967295 },
+    "params": {
+      "type": "object",
+      "required": ["denoise", "steps", "cfg", "sampler", "scheduler"],
+      "additionalProperties": false,
+      "properties": {
+        "denoise": { "type": "number", "minimum": 0.05, "maximum": 0.75 },
+        "steps": { "type": "integer", "minimum": 8, "maximum": 60 },
+        "cfg": { "type": "number", "minimum": 1.0, "maximum": 12.0 },
+        "sampler": { "type": "string" },
+        "scheduler": { "type": "string" }
+      }
+    },
+    "timeoutSeconds": { "type": "integer", "minimum": 30, "maximum": 1800 }
+  }
+}

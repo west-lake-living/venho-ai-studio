@@ -67,9 +67,17 @@ class ComfyUIIdentityRestorer:
         bindings = config.get("node_bindings") or DEFAULT_NODE_BINDINGS
         prefix = f"venho_{uuid.uuid4().hex[:12]}"
 
+        # v2.1 sends a normalized face-context crop to the identity workflow.
+        # The returned crop is composited into the original canvas below; this
+        # keeps scene/action pixels outside the repair region immutable.
+        crop = config.get("crop")
+        crop_mask = config.get("crop_mask")
+        crop_box = config.get("crop_box")
+        restoration_base = crop if isinstance(crop, Image.Image) else base_image
+        restoration_mask = crop_mask if isinstance(crop_mask, Image.Image) else face_mask
         uploads = {
-            "base": self._upload_image(self._to_png(base_image), f"{prefix}_base.png"),
-            "mask": self._upload_image(self._to_png(face_mask), f"{prefix}_mask.png"),
+            "base": self._upload_image(self._to_png(restoration_base), f"{prefix}_base.png"),
+            "mask": self._upload_image(self._to_png(restoration_mask), f"{prefix}_mask.png"),
             "reference": self._upload_image(identity_reference, f"{prefix}_a2.png"),
         }
         prepared = inject_inputs(workflow, uploads, bindings)
@@ -90,7 +98,16 @@ class ComfyUIIdentityRestorer:
                 raise RuntimeError(f"ComfyUI job {prompt_id} failed: {self._error_detail(status)}")
             image_info = self._first_output(item)
             if image_info is not None:
-                return self._download(image_info)
+                restored = self._download(image_info)
+                if isinstance(crop, Image.Image) and isinstance(crop_box, dict):
+                    expected = (int(crop_box["right"]) - int(crop_box["left"]),
+                                int(crop_box["bottom"]) - int(crop_box["top"]))
+                    if restored.size != expected:
+                        restored = restored.resize(expected, Image.Resampling.LANCZOS)
+                    output = base_image.copy()
+                    output.paste(restored, (int(crop_box["left"]), int(crop_box["top"])), restoration_mask)
+                    return output
+                return restored
             time.sleep(0.25)
         raise TimeoutError(f"ComfyUI job {prompt_id} timed out after {timeout_seconds}s")
 

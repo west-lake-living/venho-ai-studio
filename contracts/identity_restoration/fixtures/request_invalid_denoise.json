@@ -1,0 +1,15 @@
+{
+  "contractVersion": "1.0",
+  "runId": "run-test-002",
+  "attemptId": "attempt-1",
+  "restorerId": "mock",
+  "basePath": "data/base.png",
+  "cropPath": "data/crop.png",
+  "maskEditablePath": "data/mask.png",
+  "cropBox": { "left": 10, "top": 10, "right": 26, "bottom": 26 },
+  "a2Path": "assets/linh_an/A2_Front.png",
+  "a2Sha256": "1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d",
+  "workflowId": "face_restore_v1_api",
+  "seed": 42,
+  "params": { "denoise": 0.95, "steps": 28, "cfg": 5.5, "sampler": "dpmpp_2m", "scheduler": "karras" }
+}

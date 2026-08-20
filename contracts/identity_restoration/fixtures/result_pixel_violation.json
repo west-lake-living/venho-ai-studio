@@ -1,0 +1,12 @@
+{
+  "contractVersion": "1.0",
+  "runId": "run-test-003",
+  "attemptId": "attempt-1",
+  "status": "REJECTED",
+  "restoredCropPath": null,
+  "compositePath": null,
+  "pixelLock": { "passed": false, "mutatedPixelCount": 412 },
+  "qc": null,
+  "lineage": {},
+  "error": { "code": "ERR_GW_PIXEL_LOCK_VIOLATED", "message": "412 locked pixels changed", "retryable": false }
+}

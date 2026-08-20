@@ -1,0 +1,206 @@
+{
+  "contract": "GW-P0-T2 golden-master v2.1",
+  "golden_case_count": 3,
+  "case_ids": [
+    "gw-p0-t2-case-01",
+    "gw-p0-t2-case-02",
+    "gw-p0-t2-case-03"
+  ],
+  "cases": [
+    {
+      "contract": "GW-P0-T2 golden-master v2.1",
+      "case_id": "gw-p0-t2-case-01",
+      "provider": "comfyui-local",
+      "inputs": {
+        "base_image": "/Users/hanhpham/Developer/Claude-Workspace/projects/venho-social-content-agent/assets/action-composite-live/action_01_jogging.png",
+        "base_sha256": "bb031e7adfcc0c7d79544c3edb932eebafc1f797a59881415e57addc584d26a0",
+        "identity_reference": "/Users/hanhpham/Developer/Claude-Workspace/projects/venho-social-content-agent/assets/face-plates/A2_Front_plate.png",
+        "identity_reference_sha256": "1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d",
+        "input_crop": "input_crop.png",
+        "input_crop_sha256": "470e8aa2cd4055496186271a818e7aa31bf0fb5228242266a2c8c1cbc1cf4dcb"
+      },
+      "restored_crop": {
+        "path": "restored_crop.png",
+        "sha256": "ffc76268b8110970bbf5c93e34eeceb8b3a0e33c29d32b302c506758e0f92b8e",
+        "differs_from_input": true
+      },
+      "composite": {
+        "path": "composite.png",
+        "sha256": "448d9952965572c17ba355ac3a5fe5255025b470325287fa713510e2759bdab3"
+      },
+      "pixelLock": {
+        "validator": "unchanged_outside_mask",
+        "mutatedPixelCount": 0,
+        "editableChangedPixelCount": 83364,
+        "lockedPixelCount": 1215664,
+        "status": "PASS"
+      },
+      "cropTransform": {
+        "method": "crop_for_identity",
+        "scale": 2.5,
+        "source_size": {
+          "width": 1024,
+          "height": 1280
+        },
+        "box": {
+          "left": 201,
+          "top": 0,
+          "right": 888,
+          "bottom": 659
+        },
+        "forward": "crop = base.crop((left, top, right, bottom))",
+        "inverse": "base coordinates = crop coordinates + (left, top)"
+      },
+      "seed": 42,
+      "face_qc": {
+        "samples": 3,
+        "values": [
+          84.6,
+          84.4,
+          84.8
+        ],
+        "expected_baseline": 84.6,
+        "tolerance": 2.0,
+        "mode": "frozen-local-mock-vision",
+        "historical_live_evidence": "data/identity_restoration_runs/gw-p0-t2-qc4-local-candidate/gw-p0-t2-qc4-report.json"
+      },
+      "lineage": {
+        "workflow": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/workflows/_archive/face_restore_v1_api.json",
+        "workflow_sha256": "b232b18d498f9a0064707a83aeebb36306fda147ac50d757a27721267c9f3e25",
+        "workflow_version": "face_restore_v1",
+        "run_artifact": "transient local ComfyUI output removed after freeze",
+        "golden_directory": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/tests/identity_restoration/golden/gw-p0-t2-case-01"
+      }
+    },
+    {
+      "contract": "GW-P0-T2 golden-master v2.1",
+      "case_id": "gw-p0-t2-case-02",
+      "provider": "comfyui-local",
+      "inputs": {
+        "base_image": "/Users/hanhpham/Developer/Claude-Workspace/projects/venho-social-content-agent/assets/action-composite-live/action_01_jogging.png",
+        "base_sha256": "bb031e7adfcc0c7d79544c3edb932eebafc1f797a59881415e57addc584d26a0",
+        "identity_reference": "/Users/hanhpham/Developer/Claude-Workspace/projects/venho-social-content-agent/assets/face-plates/A2_Front_plate.png",
+        "identity_reference_sha256": "1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d",
+        "input_crop": "input_crop.png",
+        "input_crop_sha256": "8a8b41fdbf2a15272fd2c6a6a1d36615ea8297fc5d5e012d7177f9f378c14574"
+      },
+      "restored_crop": {
+        "path": "restored_crop.png",
+        "sha256": "2827727d3ba97cdf6a74e830751986d81ffa2813bce076c33105c9264680346f",
+        "differs_from_input": true
+      },
+      "composite": {
+        "path": "composite.png",
+        "sha256": "e3e82bfe2b86dd73127eefa6c4cad6b44770ee33eb206389f173b7683246878f"
+      },
+      "pixelLock": {
+        "validator": "unchanged_outside_mask",
+        "mutatedPixelCount": 0,
+        "editableChangedPixelCount": 68902,
+        "lockedPixelCount": 1231319,
+        "status": "PASS"
+      },
+      "cropTransform": {
+        "method": "crop_for_identity",
+        "scale": 2.5,
+        "source_size": {
+          "width": 1024,
+          "height": 1280
+        },
+        "box": {
+          "left": 232,
+          "top": 0,
+          "right": 858,
+          "bottom": 620
+        },
+        "forward": "crop = base.crop((left, top, right, bottom))",
+        "inverse": "base coordinates = crop coordinates + (left, top)"
+      },
+      "seed": 42,
+      "face_qc": {
+        "samples": 3,
+        "values": [
+          84.6,
+          84.4,
+          84.8
+        ],
+        "expected_baseline": 84.6,
+        "tolerance": 2.0,
+        "mode": "frozen-local-mock-vision",
+        "historical_live_evidence": "data/identity_restoration_runs/gw-p0-t2-qc4-local-candidate/gw-p0-t2-qc4-report.json"
+      },
+      "lineage": {
+        "workflow": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/workflows/_archive/face_restore_v1_api.json",
+        "workflow_sha256": "b232b18d498f9a0064707a83aeebb36306fda147ac50d757a27721267c9f3e25",
+        "workflow_version": "face_restore_v1",
+        "run_artifact": "transient local ComfyUI output removed after freeze",
+        "golden_directory": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/tests/identity_restoration/golden/gw-p0-t2-case-02"
+      }
+    },
+    {
+      "contract": "GW-P0-T2 golden-master v2.1",
+      "case_id": "gw-p0-t2-case-03",
+      "provider": "comfyui-local",
+      "inputs": {
+        "base_image": "/Users/hanhpham/Developer/Claude-Workspace/projects/venho-social-content-agent/assets/action-composite-live/action_01_jogging.png",
+        "base_sha256": "bb031e7adfcc0c7d79544c3edb932eebafc1f797a59881415e57addc584d26a0",
+        "identity_reference": "/Users/hanhpham/Developer/Claude-Workspace/projects/venho-social-content-agent/assets/face-plates/A2_Front_plate.png",
+        "identity_reference_sha256": "1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d",
+        "input_crop": "input_crop.png",
+        "input_crop_sha256": "bf0a8b6bf46b78de800fc83be6fd1b6280acb7323aece18897c53a8a4a3f83a6"
+      },
+      "restored_crop": {
+        "path": "restored_crop.png",
+        "sha256": "27fc01abb3f3975dd3370cfda2e94e9d4db04d53de6f24cc00529609efa6999c",
+        "differs_from_input": true
+      },
+      "composite": {
+        "path": "composite.png",
+        "sha256": "5bd7354d7bfb439e131e14cfe1740039eec61346dd94b2620a04988cbc22be01"
+      },
+      "pixelLock": {
+        "validator": "unchanged_outside_mask",
+        "mutatedPixelCount": 0,
+        "editableChangedPixelCount": 99883,
+        "lockedPixelCount": 1197977,
+        "status": "PASS"
+      },
+      "cropTransform": {
+        "method": "crop_for_identity",
+        "scale": 2.5,
+        "source_size": {
+          "width": 1024,
+          "height": 1280
+        },
+        "box": {
+          "left": 170,
+          "top": 0,
+          "right": 920,
+          "bottom": 695
+        },
+        "forward": "crop = base.crop((left, top, right, bottom))",
+        "inverse": "base coordinates = crop coordinates + (left, top)"
+      },
+      "seed": 42,
+      "face_qc": {
+        "samples": 3,
+        "values": [
+          84.6,
+          84.4,
+          84.8
+        ],
+        "expected_baseline": 84.6,
+        "tolerance": 2.0,
+        "mode": "frozen-local-mock-vision",
+        "historical_live_evidence": "data/identity_restoration_runs/gw-p0-t2-qc4-local-candidate/gw-p0-t2-qc4-report.json"
+      },
+      "lineage": {
+        "workflow": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/workflows/_archive/face_restore_v1_api.json",
+        "workflow_sha256": "b232b18d498f9a0064707a83aeebb36306fda147ac50d757a27721267c9f3e25",
+        "workflow_version": "face_restore_v1",
+        "run_artifact": "transient local ComfyUI output removed after freeze",
+        "golden_directory": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/tests/identity_restoration/golden/gw-p0-t2-case-03"
+      }
+    }
+  ]
+}

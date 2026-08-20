@@ -1,0 +1,12 @@
+{
+  "$id": "https://venho.local/contracts/worker_health/1.0",
+  "type": "object",
+  "required": ["status"],
+  "additionalProperties": false,
+  "properties": {
+    "status": { "enum": ["HEALTHY", "DEGRADED", "OFFLINE"] },
+    "gpuName": { "type": ["string", "null"] },
+    "vramFreeMb": { "type": ["integer", "null"] },
+    "latencyMs": { "type": ["number", "null"] }
+  }
+}

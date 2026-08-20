@@ -102,7 +102,10 @@ class ActionCompositeService:
             else:
                 envelope.status = JobStatus.COMPLETED
                 envelope.result = _as_result(result)
-                trail.append(self._record(trail, envelope, state="FINALIZE"))
+                result_parameters = {}
+                if isinstance(envelope.result, dict):
+                    result_parameters = dict(envelope.result.get("metadata") or {})
+                trail.append(self._record(trail, envelope, state="FINALIZE", parameters=result_parameters))
                 self.idempotency.put(envelope.idempotency_key, envelope.result)
             envelope.audit_path = str(self.audit_store.save(trail))
             return envelope

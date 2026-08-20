@@ -4,7 +4,16 @@
 
 ### GW Plan v2.1 — GW-P1 verifier aggregation repair (2026-08-20)
 
-**Status: PENDING FINAL WINDOWS RERUN — GW-P1 chưa đóng.**
+**Status: CLOSED / PASS (2026-08-20).**
+Evidence: `C:\VenHoGPU\evidence\gw-p1-20260820-210513` (Windows host, do Codex/Harry
+tạo và xác nhận trực tiếp trên máy `HARRY-ROG` — phiên Mac này không có quyền truy
+cập ổ đĩa Windows nên không tự verify được nội dung evidence, ghi nhận theo xác nhận
+của Harry ngày 2026-08-20).
+
+Runtime đã chốt (frozen):
+- Host: `HARRY-ROG` · Windows 11 · GPU: GTX 1660 SUPER 6GB
+- ComfyUI: `C:\VenHoGPU\comfyui` · Endpoint: `127.0.0.1:8188`
+- Checkpoint: `v1-5-pruned-emaonly.safetensors` · Flags: `--lowvram --fp32-vae`
 
 - [x] Xác định verifier source hiện tại: `scripts/windows-gpu-worker/gw_p1_verify.ps1`;
   runbook hỗ trợ cả `C:\VenHoGPU\windows-gpu-worker\` và
@@ -17,8 +26,8 @@
 - [x] Cấu hình A vẫn là winner đầu tiên theo roadmap: `--lowvram --fp32-vae`.
 - [x] Khi A qualify, verifier ghi `C:\VenHoGPU\worker.env` với flags hiệu lực và
   report `winning_config`/`selected_run`.
-- [ ] Chưa chạy được Windows verifier từ macOS; cần một lần rerun tạo evidence mới
-  trước khi ghi GW-P1 PASS. Không bắt đầu GW-P2.
+- [x] Windows verifier rerun hoàn tất trên `HARRY-ROG`; evidence tại
+  `C:\VenHoGPU\evidence\gw-p1-20260820-210513`. GW-P1 PASS. GW-P2 đã mở tiếp theo.
 
 ### GW Plan v2.1 — GW-P2 Extract Port + GW-P3 Remote Adapter code (2026-08-20)
 
@@ -1567,7 +1576,9 @@ Recorded as a known issue rather than pursued further this session.
   boundaries, Phase-2 seams, invariants, risks, and provenance.
 - [x] No second ActionCompositePipeline definition; no direct ComfyUI references in `venho-os/src`.
 - [x] GW-P0 CLOSED/PASS; no blocker remains.
-- [ ] **Next roadmap phase:** GW-P1 — Windows GPU Worker.
+- [x] **GW-P1 — Windows GPU Worker: CLOSED/PASS (2026-08-20).** Evidence:
+  `C:\VenHoGPU\evidence\gw-p1-20260820-210513` trên host `HARRY-ROG`. Chi tiết đầy đủ
+  ở mục "GW Plan v2.1 — GW-P1 verifier aggregation repair (2026-08-20)" phía trên.
 
 ## VENHO GPU Identity Restoration v2.1 — GW-P0 legacy workflow archived (2026-08-19)
 

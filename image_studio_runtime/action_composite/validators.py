@@ -31,6 +31,8 @@ class RegionalValidator:
         thresholds = {
             "identity": self.identity_threshold,
             "facial_geometry": self.geometry_threshold,
+            "eyes_brows": self.identity_threshold,
+            "global": self.identity_threshold,
         }
         result: Dict[str, RegionValidation] = {}
         for region, score in scores.items():

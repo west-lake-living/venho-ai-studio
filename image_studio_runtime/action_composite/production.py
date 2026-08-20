@@ -2,13 +2,17 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any, Callable, Optional
+from typing import Any, Callable, Iterable, Mapping, Optional
 
 from .config import ComfyUIConfig
+from .geometry import InsightFaceGeometryExtractor
 from .models import ActionCompositeJob, CompositeResult
 from .pipeline import ActionCompositePipeline
 from .providers import IdentityRestorer
 from .service import ActionCompositeService, JobEnvelope
+from .regional_score_gateway import RegionalScoreEvidence, RegionalScoreGateway, ValidatorExecutionContext
+from .models import FaceGeometry
+from .workflow_v2 import SceneCandidate
 
 
 class ProductionRunner:
@@ -28,6 +32,14 @@ class ProductionRunner:
 
     def submit_and_run(self, job: ActionCompositeJob, restorer: IdentityRestorer, *, output_dir: str | Path,
                        identity_score: Optional[float] = None, geometry_score: Optional[float] = None,
+                       regional_scores: Optional[Mapping[str, Optional[float]]] = None,
+                       regional_evidence: Optional[RegionalScoreEvidence] = None,
+                       regional_score_gateway: Optional[RegionalScoreGateway] = None,
+                       scene_candidates: Optional[Iterable[SceneCandidate]] = None,
+                       selected_candidate: Optional[SceneCandidate] = None,
+                       observed_geometry_extractor: Optional[Callable[[Path], FaceGeometry]] = None,
+                       observed_geometry_method: str = "face-geometry-extractor-v1",
+                       validator_context: Optional[ValidatorExecutionContext] = None,
                        request_payload: bytes = b"", health_gate: bool = True) -> JobEnvelope:
         if health_gate and not self.health_check(restorer):
             raise RuntimeError("ComfyUI identity restorer health check failed")
@@ -36,11 +48,25 @@ class ProductionRunner:
             return envelope
 
         restorer_config = self._restorer_config()
+        # A canonical RegionalScoreGateway execution needs observed geometry.
+        # The real extractor remains optional for legacy local restores that do
+        # not enter Regional QC.
+        if observed_geometry_extractor is None and regional_evidence is not None:
+            observed_geometry_extractor = InsightFaceGeometryExtractor()
+            observed_geometry_method = InsightFaceGeometryExtractor.method_version
 
         def execute(current: ActionCompositeJob) -> CompositeResult:
             result = self.pipeline.run(current, restorer, output_dir=output_dir,
                                        identity_score=identity_score, geometry_score=geometry_score,
-                                       restorer_config=restorer_config)
+                                       restorer_config=restorer_config, regional_scores=regional_scores,
+                                       regional_evidence=regional_evidence,
+                                       regional_score_gateway=regional_score_gateway,
+                                       scene_candidates=scene_candidates,
+                                       selected_candidate=selected_candidate,
+                                       observed_geometry_extractor=observed_geometry_extractor,
+                                       observed_geometry_method=observed_geometry_method,
+                                       validator_context=validator_context)
+
             self._verify_artifacts(result.output_path)
             return result
 

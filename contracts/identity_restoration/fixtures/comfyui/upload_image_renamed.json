@@ -1,0 +1,6 @@
+{
+  "_comment": "GW-E9: client requested 'crop.png' with overwrite=false; a same-named file already existed on the worker, so ComfyUI silently renamed it. The adapter must bind using this response's `name`, never the requested filename.",
+  "name": "crop (1).png",
+  "subfolder": "venho/run-example/attempt-1",
+  "type": "input"
+}

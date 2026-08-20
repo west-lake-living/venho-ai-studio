@@ -1,0 +1,8 @@
+{
+  "8f3a2b10-example-prompt-id": {
+    "status": { "status_str": "success", "completed": true, "messages": [] },
+    "outputs": {
+      "9": { "images": [ { "filename": "restored_00001_.png", "subfolder": "venho/run-example/attempt-1", "type": "output" } ] }
+    }
+  }
+}

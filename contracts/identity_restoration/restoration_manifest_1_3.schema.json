@@ -1,0 +1,36 @@
+{
+  "$id": "https://venho.local/contracts/restoration_manifest_1_3/1.0",
+  "$comment": "GW plan v2.0 PHẦN 3.4. Additive-only over manifest 1.2 — no field removed or renamed.",
+  "definitions": {
+    "restoration": {
+      "type": "object",
+      "required": ["restorerId", "workflowId", "workflowSha256", "a2AuthoritySha256", "pixelLock"],
+      "properties": {
+        "restorerId": { "enum": ["comfyui-local", "comfyui-remote", "nano-banana-edit", "mock"] },
+        "workflowId": { "type": ["string", "null"] },
+        "workflowSha256": { "type": ["string", "null"] },
+        "modelIdentifiers": { "type": "array", "items": { "type": "string" } },
+        "seed": { "type": "integer" },
+        "restorationParams": { "type": "object" },
+        "a2AuthoritySha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "cropTransform": { "type": "object" },
+        "maskVersion": { "type": "string" },
+        "workerHost": { "type": ["string", "null"] },
+        "gpuName": { "type": ["string", "null"] },
+        "vramTotalMb": { "type": ["integer", "null"] },
+        "vramPeakMb": { "type": ["integer", "null"] },
+        "runtimeMs": { "type": "integer", "minimum": 0 },
+        "retryCount": { "type": "integer", "minimum": 0 },
+        "pixelLock": {
+          "type": "object",
+          "required": ["passed", "mutatedPixelCount"],
+          "properties": {
+            "passed": { "type": "boolean" },
+            "mutatedPixelCount": { "type": "integer", "minimum": 0 },
+            "editableRegionHash": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}
