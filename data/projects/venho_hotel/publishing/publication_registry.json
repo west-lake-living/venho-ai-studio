@@ -9277,13 +9277,13 @@
       "content_package_id": "52ef1491-ff4e-49e9-8bf0-3e910ee68d99",
       "idempotency_key": "e2bbfe2087bd6f0e2d4dd0f388ecc80bc2779531748d53b27298ae4f80cf126e",
       "platform": "facebook",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
+      "status": "GATEWAY_ERROR",
+      "gateway_status": "GATEWAY_ERROR",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T11:38:28.123466+00:00",
-      "updated_at": "2026-08-13T12:15:31.134083+00:00",
+      "updated_at": "2026-08-22T02:44:11.491489+00:00",
       "content": {
         "title": "Cuối tuần ở Tây Hồ bắt đầu bằng một bữa ăn muộn",
         "text": "Cuối tuần ở Tây Hồ thường bắt đầu muộn hơn một chút. Khoảng mười giờ, khi nắng đã lên đủ cao và mặt hồ chỉ còn lại màu xanh phẳng.\n\nGiờ đó, đường Nguyễn Đình Thi có nhịp riêng. Người đạp xe không còn vội, vài nhóm bạn ngồi lại lâu hơn với ly cà phê, có người chỉ đi bộ dọc hàng cây rồi dừng ở một quán nào đó ven đường.\n\nBữa ăn của ngày cuối tuần cũng vì thế mà lệch đi. Không hẳn là bữa sáng, cũng chưa tới bữa trưa. Một đĩa ăn no, một ly cà phê hoặc nước ép, ngồi quay mặt ra phía hồ và không nhìn đồng hồ. Ở Tây Hồ, kiểu ăn muộn này không phải trào lưu, chỉ là cách nhiều người ở đây giữ lại một buổi sáng cho riêng mình.\n\nĂn xong thì đi bộ. Vòng hồ đủ dài để bạn không phải nghĩ gì nhiều, và đủ gần để quay về khi nắng bắt đầu gắt.\n\nCửa kính của Ven Hồ Hotel mở ra một khoảng mát. Sàn gạch nâu với hoa văn tròn, quầy lễ tân gỗ nâu sẫm, mấy bức tranh treo trên tường và ánh đèn dịu vừa đủ. Một chỗ nghỉ nhỏ, gọn gàng, để buổi chiều còn lại vẫn thuộc về bạn.\n\nNếu bạn đang tính một cuối tuần chậm ở Hà Nội, nhắn tin cho Ven Hồ Hotel để kiểm tra phòng trống cho những ngày bạn muốn ở lại Tây Hồ.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhamPhaHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-saturday-facebook-3f838f77",
@@ -9404,20 +9404,22 @@
         "revoked_reason": null,
         "package_versions_checksum": "16a77f1bd7d5ff924d10134f8abd1e2089db840061a9acd025de752306040c64",
         "checksum": "b8a9a2e766a707cec135297284b2aeb4ab7f334437369f1ab377ead7f2fb0b62"
-      }
+      },
+      "gateway_error": "Make.com reported PUBLISHED without a valid platform_post_id; check Webhook response mapping.",
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-saturday-instagram-23152520",
       "content_package_id": "f08852fb-e43f-42f5-b0e9-4ed2e2376171",
       "idempotency_key": "181d6a53dd0087bbabedc7e55d88fe1a495af9c9e91d1ae04104005ba568b9bc",
       "platform": "instagram",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
-      "platform_post_id": null,
+      "status": "PUBLISHED",
+      "gateway_status": "PUBLISHED",
+      "platform_post_id": "17899695060560870",
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T11:38:55.634902+00:00",
-      "updated_at": "2026-08-13T12:15:31.134083+00:00",
+      "updated_at": "2026-08-22T02:44:23.196370+00:00",
       "content": {
         "title": "Cuối tuần ở Tây Hồ bắt đầu muộn một chút",
         "text": "Cuối tuần ở Tây Hồ hiếm khi bắt đầu đúng giờ. Và hình như chẳng ai thấy phiền.\n\nGần trưa, sảnh Ven Hồ Hotel vẫn yên. Sàn gạch nâu với những vòng hoa văn tròn, quầy lễ tân gỗ nâu đỏ sẫm, tủ chìa khóa nhỏ phía sau, một bức tranh treo trên tường. Ánh sáng trung tính, đủ dịu để người ta không vội.\n\nCửa kính mở ra là Nguyễn Đình Thi. Bên kia đường, mặt hồ rộng dần theo mỗi bước chân. Cuối tuần quanh đây là nhịp của bữa sáng muộn: một phần bánh mì trứng, ly cà phê ngồi lâu, vài người đạp xe chậm ngang qua, mấy hàng quán ven hồ mở cửa thong thả hơn ngày thường.\n\nĂn xong thì đi bộ. Không cần lịch trình, không cần đến đâu cụ thể. Cứ đi hết một đoạn ven hồ, ngồi xuống một chỗ có gió, rồi để buổi chiều tự trôi tới lúc hoàng hôn Hồ Tây đổi màu mặt nước.\n\nMột cuối tuần ở Hà Nội đôi khi chỉ cần vậy.\n\nNếu bạn đang tính một cuối tuần chậm ở Hồ Tây, nhắn cho Ven Hồ Hotel để xem phòng trống những ngày bạn định ghé nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanViewHoTay #NguyenDinhThi #CuoiTuanOTayHo #HaNoi #HanoiTravel",
@@ -9541,20 +9543,22 @@
         "revoked_reason": null,
         "package_versions_checksum": "b9e00301fb27f09fc73c146c897c9c5a6ce82ba5c32d7293367888c5b5813061",
         "checksum": "8b7558daece0246705f8c01d1fc81fe68daf3d7b3c58419e77e99cb312b34177"
-      }
+      },
+      "gateway_error": null,
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-monday-facebook-133488ff",
       "content_package_id": "8e56c09f-280b-42bb-8aa2-c148914ba745",
       "idempotency_key": "dd850a85c41d4b2a267963c46f9ad0339fc1f497dec0849096e98de039ccb0e5",
       "platform": "facebook",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
+      "status": "GATEWAY_ERROR",
+      "gateway_status": "GATEWAY_ERROR",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T11:41:16.162725+00:00",
-      "updated_at": "2026-08-13T12:16:00.675652+00:00",
+      "updated_at": "2026-08-24T02:53:34.246224+00:00",
       "content": {
         "title": "Chiếc xe đạp chở rau trên đường Nguyễn Đình Thi",
         "text": "Trên đường Nguyễn Đình Thi, thứ đi qua trước cả xe máy thường là một chiếc xe đạp chở rau.\n\nRau muống, mướp, mấy bó hành xếp chồng lên nhau, buộc lại bằng dây cao su. Người đạp xe đi chậm, sát mép đường, bên tay phải là mặt Hồ Tây còn phẳng.\n\nĐầu tuần ở khu này không ồn. Có người đi bộ vòng hồ, có người dừng lại mua nửa mớ rau ngay bên lề đường, nói vài câu rồi ai lại việc người ấy. Không ai vội, kể cả sáng thứ Hai.\n\nĐó là phần Hà Nội mà bạn khó gặp nếu chỉ di chuyển bằng xe hơi từ điểm này sang điểm khác. Nó nằm ở tốc độ đi bộ, ở khoảng thời gian mười lăm phút bạn chưa biết làm gì sau khi ăn sáng.\n\nVen Hồ Hotel nằm ngay trên tuyến đường ấy. Sảnh nhỏ, sàn gạch nâu, quầy lễ tân gỗ tối màu, vài bức tranh trên tường — vừa đủ để bước ra cửa kính là đã ở giữa nhịp sống Hồ Tây, và bước vào là được yên tĩnh trở lại. Chiều muộn, cũng con đường đó, ánh sáng đổi màu và hoàng hôn Hồ Tây trở thành thứ quen thuộc chứ không còn là điểm phải đi xem.\n\nNếu bạn đang tính vài ngày ở Hà Nội và muốn ở gần Hồ Tây, nhắn tin cho Ven Hồ Hotel để xem lịch phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #NguyenDinhThi #WestLakeHanoi #KhachSanViewHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-monday-facebook-133488ff",
@@ -9676,20 +9680,22 @@
         "revoked_reason": null,
         "package_versions_checksum": "c54a9336828b4e44116e3db3aa95b19a8ad93014e2e370ef54a2276d18f809f1",
         "checksum": "dc81c758e3571bdcf9941dde4e8da293ed5198b49659d8e4a1b0f0ecfcf9a8d1"
-      }
+      },
+      "gateway_error": "Make.com reported PUBLISHED without a valid platform_post_id; check Webhook response mapping.",
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-monday-instagram-1617565e",
       "content_package_id": "6188c25f-8202-4ce8-bc7f-9b69ed603398",
       "idempotency_key": "e02187e46b25ab532b82b7a9ac98561b83709a6fa785eec80ee48d4743281214",
       "platform": "instagram",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
-      "platform_post_id": null,
+      "status": "PUBLISHED",
+      "gateway_status": "PUBLISHED",
+      "platform_post_id": "18150103126522097",
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T11:41:40.435765+00:00",
-      "updated_at": "2026-08-13T12:16:00.675652+00:00",
+      "updated_at": "2026-08-24T02:54:03.520900+00:00",
       "content": {
         "title": "Xe đạp rau củ trên đường Nguyễn Đình Thi",
         "text": "Đầu tuần ở Nguyễn Đình Thi thường bắt đầu bằng một tiếng rao rất nhỏ, đi qua trước khi kịp nhìn rõ.\n\nMột chiếc xe đạp chở đầy rau củ men theo lề đường, phía sau là mặt Hồ Tây còn chưa hết mờ. Cải xanh, cà chua, mấy bó rau thơm buộc gọn, xếp cao đến mức người đạp phải hơi nghiêng người để giữ thăng bằng.\n\nXe đi chậm. Chậm hơn cả người tập thể dục ven hồ.\n\nCó người gọi lại, mua vài thứ cho bữa trưa. Vài câu trao đổi ngắn, tiếng lạch cạch của chân chống, rồi chiếc xe lại tiếp tục đi về phía cuối đường.\n\nĐây là phần Hồ Tây mà bản đồ không đánh dấu: không phải một điểm đến, chỉ là nhịp sinh hoạt của một con phố ven hồ vào sáng thứ Hai.\n\nỞ Ven Hồ Hotel, đứng phía trong cánh cửa kính của sảnh, những buổi sáng như vậy trôi qua ngay trước mặt. Sảnh không rộng, sàn gạch nâu với những vòng tròn nhỏ, một bức tranh trên tường, quầy lễ tân bằng gỗ tông nâu đỏ sẫm. Đủ yên để nghe thấy tiếng xe đạp đi ngang.\n\nHồ Tây không cần phải xem. Chỉ cần ở gần đủ lâu.\n\nNếu bạn định dành vài ngày ở Hà Nội theo nhịp chậm như vậy, nhắn Ven Hồ Hotel để xem lịch phòng còn trống nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #NguyenDinhThi #KhachSanViewHoTay #HaNoi #HanoiTravel",
@@ -9812,7 +9818,9 @@
         "revoked_reason": null,
         "package_versions_checksum": "84931156c532fdd1af09eaeff6150b678775862ad05cbc1a4d4536591c6798e4",
         "checksum": "97060bbd9dd3e20fca3546a8b57d5efd77676775adfde8b18e0e2a28126097e1"
-      }
+      },
+      "gateway_error": null,
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-wednesday-facebook-33c453fb",
