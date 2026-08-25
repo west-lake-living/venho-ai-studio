@@ -1,0 +1,24 @@
+{
+  "a2Sha256": "1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d",
+  "benchmarkVersion": "2.1",
+  "branches": [
+    "control",
+    "nano-banana-edit",
+    "comfyui-remote"
+  ],
+  "completedCount": 0,
+  "createdAtUtc": "2026-08-24T15:00:15.434750+00:00",
+  "decision": "QUALITY_FAIL",
+  "faceQcSamples": 3,
+  "failedCount": 30,
+  "gitCommit": "81bd38ed539dea92b736369bcb0f9ebe03261d42",
+  "host": {
+    "platform": "macOS-26.4-arm64-arm-64bit",
+    "python": "3.9.6"
+  },
+  "runId": "benchmark-20260824T150014Z-94c8cb21",
+  "seed": 42,
+  "summaryPath": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/benchmarks/benchmark-20260824T150014Z-94c8cb21/summary.json",
+  "workflowId": "face_restore_win_sd15_ipadapter_v2",
+  "workflowSha256": "1a6421a04ce7bdedd716beea93d196551f5dbe77c3da11d1e8a6bc4f1f06ee58"
+}

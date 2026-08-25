@@ -49,3 +49,8 @@ class CachedWorkerHealth:
             self._consecutive_offline = 0
 
         return result
+
+    def invalidate(self) -> None:
+        """Force the next probe to observe post-maintenance worker state."""
+        self._cached = None
+        self._cached_at = float("-inf")

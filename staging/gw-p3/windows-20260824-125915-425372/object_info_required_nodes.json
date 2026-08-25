@@ -1,0 +1,1123 @@
+{
+  "CLIPTextEncode": {
+    "category": "model/conditioning",
+    "description": "Encodes a text prompt using a CLIP model into an embedding that can be used to guide the diffusion model towards generating specific images.",
+    "display_name": "CLIP Text Encode (Prompt)",
+    "has_intermediate_output": false,
+    "input": {
+      "required": {
+        "clip": [
+          "CLIP",
+          {
+            "tooltip": "The CLIP model used for encoding the text."
+          }
+        ],
+        "text": [
+          "STRING",
+          {
+            "dynamicPrompts": true,
+            "multiline": true,
+            "tooltip": "The text to be encoded."
+          }
+        ]
+      }
+    },
+    "input_order": {
+      "required": [
+        "text",
+        "clip"
+      ]
+    },
+    "is_input_list": false,
+    "name": "CLIPTextEncode",
+    "output": [
+      "CONDITIONING"
+    ],
+    "output_is_list": [
+      false
+    ],
+    "output_name": [
+      "CONDITIONING"
+    ],
+    "output_node": false,
+    "output_tooltips": [
+      "A conditioning containing the embedded text used to guide the diffusion model."
+    ],
+    "python_module": "nodes",
+    "search_aliases": [
+      "text",
+      "prompt",
+      "text prompt",
+      "positive prompt",
+      "negative prompt",
+      "encode text",
+      "text encoder",
+      "encode prompt"
+    ]
+  },
+  "CheckpointLoaderSimple": {
+    "category": "model/loaders",
+    "description": "Loads a diffusion model checkpoint, diffusion models are used to denoise latents.",
+    "display_name": "Load Checkpoint",
+    "has_intermediate_output": false,
+    "input": {
+      "required": {
+        "ckpt_name": [
+          [
+            "v1-5-pruned-emaonly.safetensors"
+          ],
+          {
+            "tooltip": "The name of the checkpoint (model) to load."
+          }
+        ]
+      }
+    },
+    "input_order": {
+      "required": [
+        "ckpt_name"
+      ]
+    },
+    "is_input_list": false,
+    "name": "CheckpointLoaderSimple",
+    "output": [
+      "MODEL",
+      "CLIP",
+      "VAE"
+    ],
+    "output_is_list": [
+      false,
+      false,
+      false
+    ],
+    "output_name": [
+      "MODEL",
+      "CLIP",
+      "VAE"
+    ],
+    "output_node": false,
+    "output_tooltips": [
+      "The model used for denoising latents.",
+      "The CLIP model used for encoding text prompts.",
+      "The VAE model used for encoding and decoding images to and from latent space."
+    ],
+    "python_module": "nodes",
+    "search_aliases": [
+      "load model",
+      "checkpoint",
+      "model loader",
+      "load checkpoint",
+      "ckpt",
+      "model"
+    ]
+  },
+  "IPAdapterFaceID": {
+    "category": "ipadapter/faceid",
+    "description": "",
+    "display_name": "IPAdapter FaceID",
+    "has_intermediate_output": false,
+    "input": {
+      "optional": {
+        "attn_mask": [
+          "MASK"
+        ],
+        "clip_vision": [
+          "CLIP_VISION"
+        ],
+        "image_negative": [
+          "IMAGE"
+        ],
+        "insightface": [
+          "INSIGHTFACE"
+        ]
+      },
+      "required": {
+        "combine_embeds": [
+          [
+            "concat",
+            "add",
+            "subtract",
+            "average",
+            "norm average"
+          ]
+        ],
+        "embeds_scaling": [
+          [
+            "V only",
+            "K+V",
+            "K+V w/ C penalty",
+            "K+mean(V) w/ C penalty"
+          ]
+        ],
+        "end_at": [
+          "FLOAT",
+          {
+            "default": 1.0,
+            "max": 1.0,
+            "min": 0.0,
+            "step": 0.001
+          }
+        ],
+        "image": [
+          "IMAGE"
+        ],
+        "ipadapter": [
+          "IPADAPTER"
+        ],
+        "model": [
+          "MODEL"
+        ],
+        "start_at": [
+          "FLOAT",
+          {
+            "default": 0.0,
+            "max": 1.0,
+            "min": 0.0,
+            "step": 0.001
+          }
+        ],
+        "weight": [
+          "FLOAT",
+          {
+            "default": 1.0,
+            "max": 3,
+            "min": -1,
+            "step": 0.05
+          }
+        ],
+        "weight_faceidv2": [
+          "FLOAT",
+          {
+            "default": 1.0,
+            "max": 5.0,
+            "min": -1,
+            "step": 0.05
+          }
+        ],
+        "weight_type": [
+          [
+            "linear",
+            "ease in",
+            "ease out",
+            "ease in-out",
+            "reverse in-out",
+            "weak input",
+            "weak output",
+            "weak middle",
+            "strong middle",
+            "style transfer",
+            "composition",
+            "strong style transfer",
+            "style and composition",
+            "style transfer precise",
+            "composition precise"
+          ]
+        ]
+      }
+    },
+    "input_order": {
+      "optional": [
+        "image_negative",
+        "attn_mask",
+        "clip_vision",
+        "insightface"
+      ],
+      "required": [
+        "model",
+        "ipadapter",
+        "image",
+        "weight",
+        "weight_faceidv2",
+        "weight_type",
+        "combine_embeds",
+        "start_at",
+        "end_at",
+        "embeds_scaling"
+      ]
+    },
+    "is_input_list": false,
+    "name": "IPAdapterFaceID",
+    "output": [
+      "MODEL",
+      "IMAGE"
+    ],
+    "output_is_list": [
+      false,
+      false
+    ],
+    "output_name": [
+      "MODEL",
+      "face_image"
+    ],
+    "output_node": false,
+    "python_module": "custom_nodes.ComfyUI_IPAdapter_plus",
+    "search_aliases": []
+  },
+  "IPAdapterInsightFaceLoader": {
+    "category": "ipadapter/loaders",
+    "description": "",
+    "display_name": "IPAdapter InsightFace Loader",
+    "has_intermediate_output": false,
+    "input": {
+      "required": {
+        "model_name": [
+          [
+            "buffalo_l",
+            "antelopev2"
+          ]
+        ],
+        "provider": [
+          [
+            "CPU",
+            "CUDA",
+            "ROCM"
+          ]
+        ]
+      }
+    },
+    "input_order": {
+      "required": [
+        "provider",
+        "model_name"
+      ]
+    },
+    "is_input_list": false,
+    "name": "IPAdapterInsightFaceLoader",
+    "output": [
+      "INSIGHTFACE"
+    ],
+    "output_is_list": [
+      false
+    ],
+    "output_name": [
+      "INSIGHTFACE"
+    ],
+    "output_node": false,
+    "python_module": "custom_nodes.ComfyUI_IPAdapter_plus",
+    "search_aliases": []
+  },
+  "IPAdapterUnifiedLoaderFaceID": {
+    "category": "ipadapter/faceid",
+    "description": "",
+    "display_name": "IPAdapter Unified Loader FaceID",
+    "has_intermediate_output": false,
+    "input": {
+      "optional": {
+        "ipadapter": [
+          "IPADAPTER"
+        ]
+      },
+      "required": {
+        "lora_strength": [
+          "FLOAT",
+          {
+            "default": 0.6,
+            "max": 1,
+            "min": 0,
+            "step": 0.01
+          }
+        ],
+        "model": [
+          "MODEL"
+        ],
+        "preset": [
+          [
+            "FACEID",
+            "FACEID PLUS - SD1.5 only",
+            "FACEID PLUS V2",
+            "FACEID PORTRAIT (style transfer)",
+            "FACEID PORTRAIT UNNORM - SDXL only (strong)"
+          ]
+        ],
+        "provider": [
+          [
+            "CPU",
+            "CUDA",
+            "ROCM",
+            "DirectML",
+            "OpenVINO",
+            "CoreML"
+          ]
+        ]
+      }
+    },
+    "input_order": {
+      "optional": [
+        "ipadapter"
+      ],
+      "required": [
+        "model",
+        "preset",
+        "lora_strength",
+        "provider"
+      ]
+    },
+    "is_input_list": false,
+    "name": "IPAdapterUnifiedLoaderFaceID",
+    "output": [
+      "MODEL",
+      "IPADAPTER"
+    ],
+    "output_is_list": [
+      false,
+      false
+    ],
+    "output_name": [
+      "MODEL",
+      "ipadapter"
+    ],
+    "output_node": false,
+    "python_module": "custom_nodes.ComfyUI_IPAdapter_plus",
+    "search_aliases": []
+  },
+  "ImageCrop": {
+    "api_node": false,
+    "category": "image/transform",
+    "deprecated": true,
+    "description": "",
+    "dev_only": false,
+    "display_name": "Crop Image (DEPRECATED)",
+    "essentials_category": "Image Tools",
+    "experimental": false,
+    "has_intermediate_output": false,
+    "input": {
+      "required": {
+        "height": [
+          "INT",
+          {
+            "default": 512,
+            "max": 16384,
+            "min": 1,
+            "step": 1
+          }
+        ],
+        "image": [
+          "IMAGE",
+          {}
+        ],
+        "width": [
+          "INT",
+          {
+            "default": 512,
+            "max": 16384,
+            "min": 1,
+            "step": 1
+          }
+        ],
+        "x": [
+          "INT",
+          {
+            "default": 0,
+            "max": 16384,
+            "min": 0,
+            "step": 1
+          }
+        ],
+        "y": [
+          "INT",
+          {
+            "default": 0,
+            "max": 16384,
+            "min": 0,
+            "step": 1
+          }
+        ]
+      }
+    },
+    "input_order": {
+      "required": [
+        "image",
+        "width",
+        "height",
+        "x",
+        "y"
+      ]
+    },
+    "is_input_list": false,
+    "name": "ImageCrop",
+    "output": [
+      "IMAGE"
+    ],
+    "output_is_list": [
+      false
+    ],
+    "output_matchtypes": null,
+    "output_name": [
+      "IMAGE"
+    ],
+    "output_node": false,
+    "output_tooltips": [
+      null
+    ],
+    "price_badge": null,
+    "python_module": "comfy_extras.nodes_images",
+    "search_aliases": [
+      "trim"
+    ]
+  },
+  "ImagePadForOutpaint": {
+    "category": "image/transform",
+    "description": "",
+    "display_name": "Pad Image for Outpainting",
+    "has_intermediate_output": false,
+    "input": {
+      "required": {
+        "bottom": [
+          "INT",
+          {
+            "default": 0,
+            "max": 16384,
+            "min": 0,
+            "step": 8
+          }
+        ],
+        "feathering": [
+          "INT",
+          {
+            "advanced": true,
+            "default": 40,
+            "max": 16384,
+            "min": 0,
+            "step": 1
+          }
+        ],
+        "image": [
+          "IMAGE"
+        ],
+        "left": [
+          "INT",
+          {
+            "default": 0,
+            "max": 16384,
+            "min": 0,
+            "step": 8
+          }
+        ],
+        "right": [
+          "INT",
+          {
+            "default": 0,
+            "max": 16384,
+            "min": 0,
+            "step": 8
+          }
+        ],
+        "top": [
+          "INT",
+          {
+            "default": 0,
+            "max": 16384,
+            "min": 0,
+            "step": 8
+          }
+        ]
+      }
+    },
+    "input_order": {
+      "required": [
+        "image",
+        "left",
+        "top",
+        "right",
+        "bottom",
+        "feathering"
+      ]
+    },
+    "is_input_list": false,
+    "name": "ImagePadForOutpaint",
+    "output": [
+      "IMAGE",
+      "MASK"
+    ],
+    "output_is_list": [
+      false,
+      false
+    ],
+    "output_name": [
+      "IMAGE",
+      "MASK"
+    ],
+    "output_node": false,
+    "python_module": "nodes",
+    "search_aliases": [
+      "extend canvas",
+      "expand image"
+    ]
+  },
+  "ImageToMask": {
+    "api_node": false,
+    "category": "image/mask",
+    "deprecated": false,
+    "description": "",
+    "dev_only": false,
+    "display_name": "Convert Image to Mask",
+    "essentials_category": null,
+    "experimental": false,
+    "has_intermediate_output": false,
+    "input": {
+      "required": {
+        "channel": [
+          "COMBO",
+          {
+            "multiselect": false,
+            "options": [
+              "red",
+              "green",
+              "blue",
+              "alpha"
+            ]
+          }
+        ],
+        "image": [
+          "IMAGE",
+          {}
+        ]
+      }
+    },
+    "input_order": {
+      "required": [
+        "image",
+        "channel"
+      ]
+    },
+    "is_input_list": false,
+    "name": "ImageToMask",
+    "output": [
+      "MASK"
+    ],
+    "output_is_list": [
+      false
+    ],
+    "output_matchtypes": null,
+    "output_name": [
+      "MASK"
+    ],
+    "output_node": false,
+    "output_tooltips": [
+      null
+    ],
+    "price_badge": null,
+    "python_module": "comfy_extras.nodes_mask",
+    "search_aliases": [
+      "extract channel",
+      "channel to mask"
+    ]
+  },
+  "KSampler": {
+    "category": "model/sampling",
+    "description": "Uses the provided model, positive and negative conditioning to denoise the latent image.",
+    "display_name": "KSampler",
+    "has_intermediate_output": false,
+    "input": {
+      "required": {
+        "cfg": [
+          "FLOAT",
+          {
+            "default": 8.0,
+            "max": 100.0,
+            "min": 0.0,
+            "round": 0.01,
+            "step": 0.1,
+            "tooltip": "The Classifier-Free Guidance scale balances creativity and adherence to the prompt. Higher values result in images more closely matching the prompt however too high values will negatively impact quality."
+          }
+        ],
+        "denoise": [
+          "FLOAT",
+          {
+            "default": 1.0,
+            "max": 1.0,
+            "min": 0.0,
+            "step": 0.01,
+            "tooltip": "The amount of denoising applied, lower values will maintain the structure of the initial image allowing for image to image sampling."
+          }
+        ],
+        "latent_image": [
+          "LATENT",
+          {
+            "tooltip": "The latent image to denoise."
+          }
+        ],
+        "model": [
+          "MODEL",
+          {
+            "tooltip": "The model used for denoising the input latent."
+          }
+        ],
+        "negative": [
+          "CONDITIONING",
+          {
+            "tooltip": "The conditioning describing the attributes you want to exclude from the image."
+          }
+        ],
+        "positive": [
+          "CONDITIONING",
+          {
+            "tooltip": "The conditioning describing the attributes you want to include in the image."
+          }
+        ],
+        "sampler_name": [
+          [
+            "euler",
+            "euler_cfg_pp",
+            "euler_ancestral",
+            "euler_ancestral_cfg_pp",
+            "heun",
+            "heunpp2",
+            "exp_heun_2_x0",
+            "exp_heun_2_x0_sde",
+            "dpm_2",
+            "dpm_2_ancestral",
+            "lms",
+            "dpm_fast",
+            "dpm_adaptive",
+            "dpmpp_2s_ancestral",
+            "dpmpp_2s_ancestral_cfg_pp",
+            "dpmpp_sde",
+            "dpmpp_sde_gpu",
+            "dpmpp_2m",
+            "dpmpp_2m_cfg_pp",
+            "dpmpp_2m_sde",
+            "dpmpp_2m_sde_gpu",
+            "dpmpp_2m_sde_heun",
+            "dpmpp_2m_sde_heun_gpu",
+            "dpmpp_3m_sde",
+            "dpmpp_3m_sde_gpu",
+            "ddpm",
+            "lcm",
+            "ipndm",
+            "ipndm_v",
+            "deis",
+            "res_multistep",
+            "res_multistep_cfg_pp",
+            "res_multistep_ancestral",
+            "res_multistep_ancestral_cfg_pp",
+            "gradient_estimation",
+            "gradient_estimation_cfg_pp",
+            "er_sde",
+            "seeds_2",
+            "seeds_3",
+            "sa_solver",
+            "sa_solver_pece",
+            "ddim",
+            "uni_pc",
+            "uni_pc_bh2"
+          ],
+          {
+            "tooltip": "The algorithm used when sampling, this can affect the quality, speed, and style of the generated output."
+          }
+        ],
+        "scheduler": [
+          [
+            "simple",
+            "sgm_uniform",
+            "karras",
+            "exponential",
+            "ddim_uniform",
+            "beta",
+            "normal",
+            "linear_quadratic",
+            "kl_optimal"
+          ],
+          {
+            "tooltip": "The scheduler controls how noise is gradually removed to form the image."
+          }
+        ],
+        "seed": [
+          "INT",
+          {
+            "control_after_generate": true,
+            "default": 0,
+            "max": 18446744073709551615,
+            "min": 0,
+            "tooltip": "The random seed used for creating the noise."
+          }
+        ],
+        "steps": [
+          "INT",
+          {
+            "default": 20,
+            "max": 10000,
+            "min": 1,
+            "tooltip": "The number of steps used in the denoising process."
+          }
+        ]
+      }
+    },
+    "input_order": {
+      "required": [
+        "model",
+        "seed",
+        "steps",
+        "cfg",
+        "sampler_name",
+        "scheduler",
+        "positive",
+        "negative",
+        "latent_image",
+        "denoise"
+      ]
+    },
+    "is_input_list": false,
+    "name": "KSampler",
+    "output": [
+      "LATENT"
+    ],
+    "output_is_list": [
+      false
+    ],
+    "output_name": [
+      "LATENT"
+    ],
+    "output_node": false,
+    "output_tooltips": [
+      "The denoised latent."
+    ],
+    "python_module": "nodes",
+    "search_aliases": [
+      "sampler",
+      "sample",
+      "generate",
+      "denoise",
+      "diffuse",
+      "txt2img",
+      "img2img"
+    ]
+  },
+  "LoadImage": {
+    "category": "image",
+    "description": "",
+    "display_name": "Load Image",
+    "essentials_category": "Basics",
+    "has_intermediate_output": false,
+    "input": {
+      "required": {
+        "image": [
+          [
+            "A2_Front.png",
+            "A2_Front_plate.png",
+            "current_restoration_mask.png",
+            "example.png",
+            "input_crop.png"
+          ],
+          {
+            "image_upload": true
+          }
+        ]
+      }
+    },
+    "input_order": {
+      "required": [
+        "image"
+      ]
+    },
+    "is_input_list": false,
+    "name": "LoadImage",
+    "output": [
+      "IMAGE",
+      "MASK"
+    ],
+    "output_is_list": [
+      false,
+      false
+    ],
+    "output_name": [
+      "IMAGE",
+      "MASK"
+    ],
+    "output_node": false,
+    "python_module": "nodes",
+    "search_aliases": [
+      "load image",
+      "open image",
+      "import image",
+      "image input",
+      "upload image",
+      "read image",
+      "image loader"
+    ]
+  },
+  "LoadImageMask": {
+    "category": "image",
+    "description": "",
+    "display_name": "Load Image (as Mask)",
+    "essentials_category": "Image Tools",
+    "has_intermediate_output": false,
+    "input": {
+      "required": {
+        "channel": [
+          [
+            "alpha",
+            "red",
+            "green",
+            "blue"
+          ]
+        ],
+        "image": [
+          [
+            "A2_Front.png",
+            "A2_Front_plate.png",
+            "current_restoration_mask.png",
+            "example.png",
+            "input_crop.png"
+          ],
+          {
+            "image_upload": true
+          }
+        ]
+      }
+    },
+    "input_order": {
+      "required": [
+        "image",
+        "channel"
+      ]
+    },
+    "is_input_list": false,
+    "name": "LoadImageMask",
+    "output": [
+      "MASK"
+    ],
+    "output_is_list": [
+      false
+    ],
+    "output_name": [
+      "MASK"
+    ],
+    "output_node": false,
+    "python_module": "nodes",
+    "search_aliases": [
+      "import mask",
+      "alpha mask",
+      "channel mask"
+    ]
+  },
+  "MaskToImage": {
+    "api_node": false,
+    "category": "image/mask",
+    "deprecated": false,
+    "description": "",
+    "dev_only": false,
+    "display_name": "Convert Mask to Image",
+    "essentials_category": null,
+    "experimental": false,
+    "has_intermediate_output": false,
+    "input": {
+      "required": {
+        "mask": [
+          "MASK",
+          {}
+        ]
+      }
+    },
+    "input_order": {
+      "required": [
+        "mask"
+      ]
+    },
+    "is_input_list": false,
+    "name": "MaskToImage",
+    "output": [
+      "IMAGE"
+    ],
+    "output_is_list": [
+      false
+    ],
+    "output_matchtypes": null,
+    "output_name": [
+      "IMAGE"
+    ],
+    "output_node": false,
+    "output_tooltips": [
+      null
+    ],
+    "price_badge": null,
+    "python_module": "comfy_extras.nodes_mask",
+    "search_aliases": [
+      "convert mask"
+    ]
+  },
+  "SaveImage": {
+    "category": "image",
+    "description": "Saves the input images to your ComfyUI output directory.",
+    "display_name": "Save Image",
+    "essentials_category": "Basics",
+    "has_intermediate_output": false,
+    "input": {
+      "hidden": {
+        "extra_pnginfo": "EXTRA_PNGINFO",
+        "prompt": "PROMPT"
+      },
+      "required": {
+        "filename_prefix": [
+          "STRING",
+          {
+            "default": "ComfyUI",
+            "tooltip": "The prefix for the file to save. This may include formatting information such as %date:yyyy-MM-dd% or %Empty Latent Image.width% to include values from nodes."
+          }
+        ],
+        "images": [
+          "IMAGE",
+          {
+            "tooltip": "The images to save."
+          }
+        ]
+      }
+    },
+    "input_order": {
+      "hidden": [
+        "prompt",
+        "extra_pnginfo"
+      ],
+      "required": [
+        "images",
+        "filename_prefix"
+      ]
+    },
+    "is_input_list": false,
+    "name": "SaveImage",
+    "output": [
+      "IMAGE"
+    ],
+    "output_is_list": [
+      false
+    ],
+    "output_name": [
+      "images"
+    ],
+    "output_node": true,
+    "python_module": "nodes",
+    "search_aliases": [
+      "save",
+      "save image",
+      "export image",
+      "output image",
+      "write image",
+      "download"
+    ]
+  },
+  "SetLatentNoiseMask": {
+    "category": "model/latent",
+    "description": "",
+    "display_name": "Set Latent Noise Mask",
+    "has_intermediate_output": false,
+    "input": {
+      "required": {
+        "mask": [
+          "MASK"
+        ],
+        "samples": [
+          "LATENT"
+        ]
+      }
+    },
+    "input_order": {
+      "required": [
+        "samples",
+        "mask"
+      ]
+    },
+    "is_input_list": false,
+    "name": "SetLatentNoiseMask",
+    "output": [
+      "LATENT"
+    ],
+    "output_is_list": [
+      false
+    ],
+    "output_name": [
+      "LATENT"
+    ],
+    "output_node": false,
+    "python_module": "nodes",
+    "search_aliases": []
+  },
+  "VAEDecode": {
+    "category": "model/latent",
+    "description": "Decodes latent images back into pixel space images.",
+    "display_name": "VAE Decode",
+    "has_intermediate_output": false,
+    "input": {
+      "required": {
+        "samples": [
+          "LATENT",
+          {
+            "tooltip": "The latent to be decoded."
+          }
+        ],
+        "vae": [
+          "VAE",
+          {
+            "tooltip": "The VAE model used for decoding the latent."
+          }
+        ]
+      }
+    },
+    "input_order": {
+      "required": [
+        "samples",
+        "vae"
+      ]
+    },
+    "is_input_list": false,
+    "name": "VAEDecode",
+    "output": [
+      "IMAGE"
+    ],
+    "output_is_list": [
+      false
+    ],
+    "output_name": [
+      "IMAGE"
+    ],
+    "output_node": false,
+    "output_tooltips": [
+      "The decoded image."
+    ],
+    "python_module": "nodes",
+    "search_aliases": [
+      "decode",
+      "decode latent",
+      "latent to image",
+      "render latent"
+    ]
+  },
+  "VAEEncode": {
+    "category": "model/latent",
+    "description": "",
+    "display_name": "VAE Encode",
+    "has_intermediate_output": false,
+    "input": {
+      "required": {
+        "pixels": [
+          "IMAGE"
+        ],
+        "vae": [
+          "VAE"
+        ]
+      }
+    },
+    "input_order": {
+      "required": [
+        "pixels",
+        "vae"
+      ]
+    },
+    "is_input_list": false,
+    "name": "VAEEncode",
+    "output": [
+      "LATENT"
+    ],
+    "output_is_list": [
+      false
+    ],
+    "output_name": [
+      "LATENT"
+    ],
+    "output_node": false,
+    "python_module": "nodes",
+    "search_aliases": [
+      "encode",
+      "encode image",
+      "image to latent"
+    ]
+  }
+}

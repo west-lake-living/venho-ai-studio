@@ -4,42 +4,67 @@ import json
 import re
 
 
+class StructuredResponseError(ValueError):
+    """A response could not be normalized into the expected JSON value.
+
+    The raw provider response is deliberately retained on the exception so a
+    caller can persist it before classifying the validator attempt as invalid.
+    """
+
+    def __init__(self, message: str, *, raw: str) -> None:
+        super().__init__(message)
+        self.raw = raw
+
+
+def _json_candidate(text: str) -> str:
+    """Return one balanced JSON object/array from harmless wrapper prose."""
+    fence_match = re.search(r"```(?:json)?\s*([\s\S]+?)\s*```", text, re.IGNORECASE)
+    if fence_match:
+        text = fence_match.group(1).strip()
+
+    starts = [(index, char, "}" if char == "{" else "]")
+              for index, char in enumerate(text) if char in "{["]
+    if not starts:
+        raise StructuredResponseError("No JSON found in response", raw=text)
+    start, opening, closing = min(starts, key=lambda item: item[0])
+    depth = 0
+    in_string = False
+    escaped = False
+    for index in range(start, len(text)):
+        char = text[index]
+        if in_string:
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == '"':
+                in_string = False
+            continue
+        if char == '"':
+            in_string = True
+        elif char == opening:
+            depth += 1
+        elif char == closing:
+            depth -= 1
+            if depth == 0:
+                return text[start:index + 1]
+    raise StructuredResponseError("Truncated JSON response", raw=text)
+
+
 def extract_json(text: str) -> dict | list:
     """Extract JSON (object or array) from a model response.
 
     Strips markdown code fences if present.
     """
-    text = text.strip()
-
-    # Strip ```json ... ``` or ``` ... ``` fences
-    fence_match = re.search(r"```(?:json)?\s*([\s\S]+?)\s*```", text)
-    if fence_match:
-        text = fence_match.group(1).strip()
-
-    # Find the outermost JSON structure (object or array)
-    obj_start = text.find("{")
-    arr_start = text.find("[")
-
-    if obj_start == -1 and arr_start == -1:
-        raise ValueError(f"No JSON found in response:\n{text[:300]}")
-
-    if arr_start != -1 and (obj_start == -1 or arr_start < obj_start):
-        # Array is first
-        start = arr_start
-        open_ch, close_ch = "[", "]"
-    else:
-        start = obj_start
-        open_ch, close_ch = "{", "}"
-
-    text = text[start:]
-    depth = 0
-    for i, ch in enumerate(text):
-        if ch == open_ch:
-            depth += 1
-        elif ch == close_ch:
-            depth -= 1
-            if depth == 0:
-                text = text[: i + 1]
-                break
-
-    return json.loads(text)
+    raw = str(text)
+    normalized = raw.strip()
+    try:
+        candidate = _json_candidate(normalized)
+        return json.loads(candidate)
+    except StructuredResponseError:
+        raise
+    except json.JSONDecodeError as exc:
+        raise StructuredResponseError(
+            f"Invalid JSON response: {exc.msg} at line {exc.lineno} column {exc.colno}",
+            raw=raw,
+        ) from exc

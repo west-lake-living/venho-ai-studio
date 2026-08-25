@@ -1,0 +1,6 @@
+Installed plugin examples searched:
+C:\VenHoGPU\comfyui\custom_nodes\ComfyUI_IPAdapter_plus\examples\ipadapter_faceid.json
+C:\VenHoGPU\comfyui\custom_nodes\ComfyUI_IPAdapter_plus\examples\ipadapter_faceid_batch.json
+C:\VenHoGPU\comfyui\custom_nodes\ComfyUI_IPAdapter_plus\examples\ipadapter_ideal_faceid_config.json
+Geometry lineage: runtime_schema_derived_sd15_faceid_v2_exact_geometry
+Selected lineage: runtime_schema_derived_sd15_faceid_v2_exact_geometry

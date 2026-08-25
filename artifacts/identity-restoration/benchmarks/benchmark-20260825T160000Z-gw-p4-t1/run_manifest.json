@@ -1,0 +1,24 @@
+{
+  "a2Sha256": "1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d",
+  "benchmarkVersion": "2.1",
+  "branches": [
+    "control",
+    "nano-banana-edit",
+    "comfyui-remote"
+  ],
+  "completedCount": 30,
+  "createdAtUtc": "2026-08-25T16:00:00+00:00",
+  "decision": "QUALITY_FAIL",
+  "faceQcSamples": 3,
+  "failedCount": 0,
+  "gitCommit": "reuse-only-consolidation",
+  "newNanoGenerationCalls": 0,
+  "newRemoteGpuJobs": 0,
+  "newValidatorCalls": 0,
+  "reuseOnly": true,
+  "runId": "benchmark-20260825T160000Z-gw-p4-t1",
+  "seed": 42,
+  "validatorEvidenceComplete": true,
+  "workflowId": "face_restore_win_sd15_ipadapter_v2",
+  "workflowSha256": "1a6421a04ce7bdedd716beea93d196551f5dbe77c3da11d1e8a6bc4f1f06ee58"
+}

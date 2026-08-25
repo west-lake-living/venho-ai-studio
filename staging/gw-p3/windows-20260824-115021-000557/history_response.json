@@ -1,0 +1,232 @@
+{
+  "c62d7c8a-54dd-4101-80d0-b1cde3bd1895": {
+    "meta": {
+      "14": {
+        "display_node": "14",
+        "node_id": "14",
+        "parent_node": null,
+        "real_node_id": "14"
+      }
+    },
+    "outputs": {
+      "14": {
+        "images": [
+          {
+            "filename": "gw-p3_00001_.png",
+            "subfolder": "",
+            "type": "output"
+          }
+        ]
+      }
+    },
+    "prompt": [
+      0,
+      "c62d7c8a-54dd-4101-80d0-b1cde3bd1895",
+      {
+        "1": {
+          "class_type": "CheckpointLoaderSimple",
+          "inputs": {
+            "ckpt_name": "v1-5-pruned-emaonly.safetensors"
+          }
+        },
+        "10": {
+          "class_type": "IPAdapterUnifiedLoaderFaceID",
+          "inputs": {
+            "lora_strength": 0.6,
+            "model": [
+              "1",
+              0
+            ],
+            "preset": "FACEID PLUS V2",
+            "provider": "CUDA"
+          }
+        },
+        "11": {
+          "class_type": "IPAdapterFaceID",
+          "inputs": {
+            "combine_embeds": "concat",
+            "embeds_scaling": "V only",
+            "end_at": 1.0,
+            "image": [
+              "3",
+              0
+            ],
+            "insightface": [
+              "9",
+              0
+            ],
+            "ipadapter": [
+              "10",
+              1
+            ],
+            "model": [
+              "10",
+              0
+            ],
+            "start_at": 0.0,
+            "weight": 1.0,
+            "weight_faceidv2": 1.0,
+            "weight_type": "linear"
+          }
+        },
+        "12": {
+          "class_type": "KSampler",
+          "inputs": {
+            "cfg": 6.0,
+            "denoise": 0.35,
+            "latent_image": [
+              "6",
+              0
+            ],
+            "model": [
+              "11",
+              0
+            ],
+            "negative": [
+              "8",
+              0
+            ],
+            "positive": [
+              "7",
+              0
+            ],
+            "sampler_name": "euler",
+            "scheduler": "normal",
+            "seed": 123456,
+            "steps": 20
+          }
+        },
+        "13": {
+          "class_type": "VAEDecode",
+          "inputs": {
+            "samples": [
+              "12",
+              0
+            ],
+            "vae": [
+              "1",
+              2
+            ]
+          }
+        },
+        "14": {
+          "class_type": "SaveImage",
+          "inputs": {
+            "filename_prefix": "gw-p3",
+            "images": [
+              "13",
+              0
+            ]
+          }
+        },
+        "2": {
+          "class_type": "LoadImage",
+          "inputs": {
+            "image": "input_crop.png"
+          }
+        },
+        "3": {
+          "class_type": "LoadImage",
+          "inputs": {
+            "image": "A2_Front.png"
+          }
+        },
+        "4": {
+          "class_type": "LoadImageMask",
+          "inputs": {
+            "channel": "red",
+            "image": "current_restoration_mask.png"
+          }
+        },
+        "5": {
+          "class_type": "VAEEncode",
+          "inputs": {
+            "pixels": [
+              "2",
+              0
+            ],
+            "vae": [
+              "1",
+              2
+            ]
+          }
+        },
+        "6": {
+          "class_type": "SetLatentNoiseMask",
+          "inputs": {
+            "mask": [
+              "4",
+              0
+            ],
+            "samples": [
+              "5",
+              0
+            ]
+          }
+        },
+        "7": {
+          "class_type": "CLIPTextEncode",
+          "inputs": {
+            "clip": [
+              "1",
+              1
+            ],
+            "text": "identity restoration"
+          }
+        },
+        "8": {
+          "class_type": "CLIPTextEncode",
+          "inputs": {
+            "clip": [
+              "1",
+              1
+            ],
+            "text": "low quality, deformed face"
+          }
+        },
+        "9": {
+          "class_type": "IPAdapterInsightFaceLoader",
+          "inputs": {
+            "model_name": "buffalo_l",
+            "provider": "CUDA"
+          }
+        }
+      },
+      {
+        "client_id": "gw-p3-341faa7bdaba47d093b1ee2016d45f20",
+        "create_time": 1787547026215
+      },
+      [
+        "14"
+      ]
+    ],
+    "status": {
+      "completed": true,
+      "messages": [
+        [
+          "execution_start",
+          {
+            "prompt_id": "c62d7c8a-54dd-4101-80d0-b1cde3bd1895",
+            "timestamp": 1787547026216
+          }
+        ],
+        [
+          "execution_cached",
+          {
+            "nodes": [],
+            "prompt_id": "c62d7c8a-54dd-4101-80d0-b1cde3bd1895",
+            "timestamp": 1787547026227
+          }
+        ],
+        [
+          "execution_success",
+          {
+            "prompt_id": "c62d7c8a-54dd-4101-80d0-b1cde3bd1895",
+            "timestamp": 1787547081863
+          }
+        ]
+      ],
+      "status_str": "success"
+    }
+  }
+}

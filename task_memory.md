@@ -1832,3 +1832,807 @@ definition, and no direct ComfyUI references in `venho-os/src` TypeScript source
 
 GW-P0 is **CLOSED/PASS**. Next roadmap phase: **GW-P1 — Windows GPU Worker**. Do not start it
 without an explicit next-phase task instruction.
+## 2026-08-24 — GW-P4-T0 Controlled A2 Benchmark Freeze & Preflight
+
+GW-P4 mở ở trạng thái **IN PROGRESS**; GW-P0..P3 giữ nguyên **CLOSED/PASS**.
+Đã kiểm tra hai plan authority v2.0/v2.1, A2 pin, workflow pin, validator,
+registration và crop/mask/pixel-lock contract. A2 authority là
+`venho-social-content-agent/assets/face-plates/A2_Front_plate.png`, SHA-256
+`1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d`.
+Remote workflow là `face_restore_win_sd15_ipadapter_v1`, SHA-256
+`7a320dd58c6e96b4d8c1c0e82c2ffe1d6ca6ace12a691f1aca5ebef8589f1ec8`; params
+đóng băng theo pin: denoise 0.35, steps 20, CFG 6, euler/normal; benchmark
+seed 42 kế thừa Golden Master.
+
+Tạo `docs/identity-restoration/BENCHMARK_PROTOCOL.md`. Kết quả fail-closed:
+chưa có `benchmark_set.yaml`, benchmark runner, hoặc binding authoritative cho
+B01–B10; chỉ thấy candidate lineage B04 là
+`assets/action-composite-live/action_01_jogging.png`. Schema benchmark hiện
+chỉ có contract rút gọn và thiếu các field v2.1 yêu cầu. Không generate ảnh,
+không gọi Nano Banana/Face QC trả phí, không chạy GPU benchmark, không tune.
+GW-P4-T0 = **FAIL/BLOCKED** cho tới khi bổ sung dataset authority và contract/
+harness phù hợp bằng task riêng.
+## 2026-08-24 — GW-P4-T0.1 Benchmark Contract + Manifest Closure
+
+GW-P4-T0.1 **PASS**. Tạo authoritative
+`contracts/identity_restoration/benchmark_set.yaml` với benchmarkVersion 2.1,
+seed 42, Face QC samples 3, A2/workflow authority, bốn branch và B01–B10.
+B01–B03/B05–B10 vẫn `MISSING`; B04 chỉ `CANDIDATE_NOT_FROZEN`, không promote.
+
+Nâng `benchmark_row.schema.json` lên v2.1, yêu cầu canonical benchmark fields,
+giữ `additionalProperties: false`, giữ legacy fields optional để đọc tương thích.
+Thêm fixtures bốn branch + missing-required + unknown-property và validator thuần
+`identity_restoration.application.benchmark_contract`; official readiness fail-closed
+khi chưa đủ case `FROZEN`. Tests offline, không runner/API/GPU/Face QC paid.
+GW-P4-T0 vẫn **FAIL/BLOCKED** vì chưa có runner/CLI và frozen source frames.
+
+## 2026-08-24 — GW-P4-T0.2 Benchmark Runner / CLI
+
+GW-P4-T0.2 **PASS**. Added the fail-closed
+`identity_restoration.application.benchmark_runner` and
+`venho-restore benchmark validate|plan|run` commands. `validate` distinguishes
+structural contract validity from official readiness; `plan` emits 40
+deterministic rows; `run` refuses before composition-root/executor creation
+unless every B01–B10 case is `FROZEN`, with no bypass flag. Future execution
+uses an injected branch executor and the existing restoration-port boundary;
+no direct ComfyUI calls or second pipeline were added. Result rows are
+schema-validated and failed attempts remain explicit in append-only run
+artifacts.
+
+Offline validation only: runner/CLI tests, identity-restoration tests,
+compileall, and `git diff --check` are required; no image generation, network,
+GPU, paid API, or live benchmark execution. GW-P4 remains IN PROGRESS and
+GW-P4-T0 remains FAIL/BLOCKED pending frozen B01–B10 source frames and real
+branch/evidence executors.
+
+## 2026-08-24 — GW-P4-T0.3 B01–B10 Authoritative Dataset Freeze
+
+GW-P4-T0.3 **FAIL/BLOCKED**. Repository and production-artifact lineage search
+verified six real source frames without using Face QC for selection: B01
+Close-up Front, B02 Half-body, B03 Full-body Standing, B04 Running Front 3/4,
+B09 West Lake, and B10 Ven Ho Hotel Interior. Their paths, SHA-256 values,
+dimensions, and source lineage are recorded in
+`contracts/identity_restoration/benchmark_set.yaml` and
+`docs/identity-restoration/BENCHMARK_DATASET_V2_1.md`.
+
+Added fail-closed physical dataset validation for existence, decode integrity,
+SHA-256, dimensions, exact B01–B10 IDs, and undocumented duplicate paths.
+B05 Running Side, B06 Walking, B07 Sitting, and B08 Hair Motion remain
+`MISSING`; no arbitrary or Face-QC-selected substitute was promoted.
+`officialBenchmarkReady=false`. No benchmark execution, paid API, live Face QC,
+generation, tuning, or architecture change occurred.
+
+## 2026-08-24 — GW-P4-T0.4 Generate & Freeze Missing B05–B08 Sources
+
+GW-P4-T0.4 **PASS**. Created exactly one accepted source frame for each missing
+taxonomy: B05 Running Side, B06 Walking, B07 Sitting, and B08 Hair Motion.
+Generation used the existing approved `venho-social-content-agent/generate_image.py`
+pipeline with `gpt-image-2`, quality `high`, portrait `1024x1280`, and the
+canonical A2 reference SHA-256
+`1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d`.
+
+The accepted output hashes are B05
+`06f4b6b0b6ea47dee71a240065411899cb3fa2b84633dacddba4d232afce5492`, B06
+`526190e3632d189d588dcdfda32f1d7930c449c8a6b2188961d7907ef7746d8e`, B07
+`6a39787e5edf0d061d246d9af806ac82d7499429a104fd3f910708dc5718754e`, and B08
+`e6303bb45121b6dd01f992d549d76668cf34b6b82828ffed87f3a65928c970c4`.
+All are `1024x1280`, one attempt each, with no replacement. Prompts and exact
+lineage are recorded in
+`docs/identity-restoration/BENCHMARK_GENERATION_LINEAGE_V2_1.md` and the
+authoritative YAML manifest.
+
+Acceptance used taxonomy and technical validity only; no IdentityRestorer,
+official benchmark, paid Face QC, or candidate ranking was run. The existing
+pipeline did not expose deterministic generation seeds or provider request IDs;
+both are explicitly unavailable rather than fabricated. Dataset readiness is
+now true for all B01–B10, but GW-P4-T0 remains **FAIL/BLOCKED** pending physical
+branch/evidence executors. GW-P4 remains **IN PROGRESS**.
+
+## 2026-08-24 — GW-P4-T0.5 Physical Branch & Evidence Executor Readiness
+
+GW-P4-T0.5 **FAIL/BLOCKED** and GW-P4-T0 remains **FAIL/BLOCKED**. Added the
+zero-cost `venho-restore benchmark preflight` command and a fail-closed
+`BenchmarkPreflight` capability boundary. The preflight checks all four branch
+IDs, frozen dataset readiness, benchmark-row evidence properties, and the
+remote workflow file/pin SHA (`7a320dd58c6e96b4d8c1c0e82c2ffe1d6ca6ace12a691f1aca5ebef8589f1ec8`).
+
+Control is implemented as a no-provider `ControlBenchmarkExecutor`: it reads
+the frozen base, verifies its SHA, references the same source as output, and
+emits explicit output/hash/status/provider/request/run/backend/host evidence.
+The existing comfyui-local and comfyui-remote classes remain only
+`IdentityRestorerPort` adapters; no benchmark executor/evidence writer is
+wired, and the current preflight environment has both ComfyUI flags disabled.
+Remote health/output was not probed because no benchmark executor is present.
+Nano Banana is not registered in this bounded context; the smallest required
+future change is one adapter around the existing action-composite/Nano Banana
+provider path, not a second pipeline.
+
+`benchmark run` now gates on both `officialBenchmarkReady` and
+`officialExecutionReady` before creating an official run directory. Schema
+support was added for explicit branch evidence fields while retaining
+`additionalProperties: false`. No full benchmark, Face QC sweep, paid call,
+GPU/ComfyUI smoke, tuning, or promotion was performed.
+
+## 2026-08-24 — GW-P4-T0.5.1 ComfyUI-Local Executor + Evidence Writer
+
+GW-P4-T0.5.1 **PASS**. Added
+`identity_restoration.application.benchmark_executor.ComfyUILocalBenchmarkExecutor`.
+It wraps the existing `RestoreFaceCropUseCase`, which owns the registered
+`IdentityRestorerPort` call, A2 verification, compositing, pixel preservation,
+artifact persistence, and restoration ledger. The benchmark executor only
+adapts one injected `RestoreCommand` factory and serializes evidence; it has no
+ComfyUI HTTP imports and no independent crop/mask implementation.
+
+The local executor validates the frozen base SHA, A2 SHA, seed 42, crop/mask
+dimensions, output decode, output hashes, workflow lineage, and pixel-lock
+evidence. It returns final composite and restored-crop paths/hashes, runtime,
+workflow, backend/host, provider/request/run identifiers, and explicit nulls
+where the local adapter does not expose GPU or provider request metadata.
+Failure is raised to the benchmark runner for retained failed-row evidence.
+
+Preflight now reports `control=READY`, `comfyui-local=READY`,
+`comfyui-remote=NOT_READY`, `nano-banana-edit=NOT_READY`; global
+`officialExecutionReady` remains false. No physical ComfyUI smoke, full
+benchmark, Face QC, paid call, tuning, or promotion was performed. Remaining
+blockers are exactly the remote executor and Nano Banana adapter.
+
+## 2026-08-24 — GW-P4-T0.5.2 ComfyUI-Remote Executor + Windows Evidence
+
+Implemented `ComfyUIRemoteBenchmarkExecutor` around the existing
+`RestoreFaceCropUseCase` and `ComfyUIRemoteRestorer` port adapter. It enforces
+the frozen remote workflow `face_restore_win_sd15_ipadapter_v1` SHA
+`7a320dd58c6e96b4d8c1c0e82c2ffe1d6ca6ace12a691f1aca5ebef8589f1ec8`, seed 42,
+remote params, A2 authority, identical crop/mask geometry, output hash,
+byte-difference, and pixel-lock evidence. The benchmark layer has no
+transport code. Remote adapter execution metadata and use-case worker-health
+metadata are persisted through lineage when available; unavailable GPU/VRAM/
+request fields remain null.
+
+## 2026-08-24 — GW-P4-T0.5.2a Windows Physical Remote Smoke
+
+T0.5.2a is **FAIL/BLOCKED**. The pre-smoke probe to
+`http://127.0.0.1:8188/system_stats` returned connection refused from the
+Mac/repository environment. No HARRY-ROG worker/tunnel was reachable; no
+ComfyUI prompt was submitted, no inference was run, and no evidence bundle was
+fabricated. The remaining prerequisite is one real NON_BENCHMARK B01 smoke
+through `ComfyUIRemoteBenchmarkExecutor` with the frozen authority.
+
+## 2026-08-24 — GW-P4-T0.5.2b HARRY-ROG ComfyUI Reachability
+
+T0.5.2b is **FAIL/BLOCKED** from the Mac environment. `tailscale ping
+harry-rog` succeeded, but Mac localhost `127.0.0.1:8188/system_stats` was
+connection-refused, direct Tailscale `100.71.167.98:8188/system_stats` timed
+out, and `tailscale serve status` reported no Serve config on Mac. No Windows
+process was started or modified, no `/prompt` was submitted, and no evidence
+was fabricated. This is insufficient to classify a GW-P1 runtime regression;
+Windows-local process/port/log evidence is still required.
+
+Remote readiness is smoke-gated. No physical HARRY-ROG run was possible from
+the Mac/repo environment, so T0.5.2 is **FAIL/BLOCKED** pending one real
+non-benchmark Windows smoke evidence bundle. `comfyui-remote` and
+`nano-banana-edit` remain NOT_READY; global official execution remains false.
+
+## 2026-08-24 — GW-P4-T0.5.2a-RERUN B01 Physical Remote Smoke
+
+Precheck reached HARRY-ROG: remote `/system_stats` HTTP 200, ComfyUI 0.33.0,
+frozen localhost argv, and GTX 1660 SUPER. B01 SHA
+`e7b00d4a65b2cc97e274e3c00f96e091bda0e614778df5a2d43f17cc3793faf9`, A2 SHA,
+and workflow SHA all matched authority. No prompt was submitted because the
+existing remote executor requires a prior PASS smoke evidence file before
+running the first smoke, and current free VRAM was about 1,988 MiB versus the
+frozen 4,200 MiB health threshold. This is **FAIL/BLOCKED**, with no fabricated
+evidence and no code/threshold/workflow changes.
+
+## 2026-08-24 — GW-P4-T0.5.2d First-Smoke Circular Readiness Gate
+
+T0.5.2d **PASS**. Added `benchmark smoke` as a dedicated
+`NON_BENCHMARK/PREFLIGHT` bootstrap path and
+`ComfyUIRemoteBenchmarkExecutor.execute_bootstrap_smoke()`. It permits the
+first B01 smoke without an existing smoke file, while retaining dataset,
+authority, workflow, remote registration, and live worker-health/VRAM gates.
+It writes a smoke manifest whose top-level authority/status fields can later be
+validated by the official executor.
+
+`benchmark run` and normal `execute()` remain fail-closed until the smoke
+manifest is PASS; no `--force`, direct HTTP path, benchmark, Face QC, or
+physical smoke was run. Remote is not marked READY from unit tests.
+
+## 2026-08-24 — GW-P4-T0.5.2f Canonical B01 Smoke Request Builder
+
+T0.5.2f **PASS**. Added `build_benchmark_restore_command()` and made
+`benchmark smoke --request` optional. Canonical B01 requests derive geometry
+and both mask spaces through the existing production
+`InsightFaceGeometryExtractor`, `crop_for_identity()`, and
+`hierarchical_face_masks()` implementations. Authority validation covers the
+frozen B01 source, A2 SHA, remote workflow ID/params, seed 42, crop/mask/base
+dimensions, and transform bounds. Optional request overrides must match the
+canonical production-derived transform. Offline identity-restoration tests:
+105 passed; focused builder/remote/contract tests: 27 passed; compileall and
+git diff --check passed. No network, ComfyUI, benchmark, Face QC, or physical
+smoke execution occurred. `comfyui-remote` remains NOT_READY.
+
+## 2026-08-24 — GW-P4-T0.5.2g Mac Geometry Runtime Dependency Closure
+
+T0.5.2g **FAIL/BLOCKED at model provenance gate**. The extractor is pinned to
+`buffalo_l` and CPU ONNX Runtime. Local files exist at
+`~/.insightface/models/buffalo_l`, but there is no `MODEL.LICENSE`, signed
+manifest, artifact provenance record, or approved commercial license in the
+workspace. No install, model initialization, download, ComfyUI call, or Face
+QC was performed. B01 SHA/dimensions and canonical A2 SHA were verified.
+Zero-cost checks: focused benchmark/remote/preflight/contract tests `33
+passed`; compileall and `git diff --check` passed. The smoke CLI help confirms
+`--request` is optional. InsightFace/onnxruntime remain unavailable in the
+Mac `.venv`; geometry and physical smoke remain blocked fail-closed.
+
+## 2026-08-24 — GW-P4-T0.5.2h YuNet Commercial Geometry Compatibility Gate
+
+T0.5.2h **PASS**. The existing contract consumes exactly one bbox and five
+ordered landmarks; existing PnP, crop, mask, and request schemas remain
+unchanged. Added explicit `YuNetGeometryExtractor` and backend selection via
+`IDR_GEOMETRY_BACKEND=yunet`; InsightFace remains available/default and there
+is no silent fallback. The official OpenCV Zoo `face_detection_yunet_2023mar`
+artifact is retained at `models/geometry/yunet/`, SHA-256
+`8f2383e4dd3cfbb4553ea8718107fc0423210dc964f9f4280604804ed2552fa4`, with
+MIT `LICENSE` and pinned `PROVENANCE.json`. Real B01 offline detection found
+one face at confidence `0.9136796594` with five landmarks; production crop and
+hierarchical masks produced a `830x1003` crop, matching crop-local mask, and
+`1024x1024` full-canvas mask. OpenCV headless was installed only in the
+project `.venv`; no InsightFace/buffalo_l package/model was installed.
+Focused tests: `37 passed`; full `tests/identity_restoration`: `106 passed`;
+compileall and `git diff --check` passed. No ComfyUI, restoration, Face QC, or
+official benchmark ran; physical B01 smoke remains the next gated action.
+
+## 2026-08-24 — GW-P4-T0.5.2i Remote Workflow Output Geometry Diagnosis
+
+T0.5.2i **PASS**. The frozen workflow hash
+`7a320dd58c6e96b4d8c1c0e82c2ffe1d6ca6ace12a691f1aca5ebef8589f1ec8` contains
+node `16 ImagePadForOutpaint` (`right=1`, `bottom=5`), then VAE encode/sample/
+decode, then node `19 ImageCrop` with literal `width=687`, `height=659`,
+`x=0`, `y=0`; node `14 SaveImage` writes node `19`. This is the exact
+dimension-changing point. The available persisted prompt/history is
+`0ce26c1e-b28c-4cda-8dd2-aa07ca8be37e` at
+`staging/gw-p3/mac-final-20260824/remote_history_response.json`; it records the
+same fixed crop/output and is not the newer `830x1003` attempt, whose physical
+prompt/history is not present in this repository. Remote input binding and
+output selection were verified; no adapter resize exists. Classification:
+`WORKFLOW_FIXED_SIZE_DESIGN_INCOMPATIBLE_WITH_PORT`. Added diagnosis tests
+(`13 passed`); no workflow, adapter, benchmark, Face QC, or ComfyUI changes.
+
+## 2026-08-24 — GW-P4-T0.5.2j Versioned Dimension-Preserving Workflow
+
+T0.5.2j **FAIL/BLOCKED pending Windows deployment SHA verification**. Created
+`identity_restoration/workflows/face_restore_win_sd15_ipadapter_v2.api.json`
+with local SHA-256
+`1a6421a04ce7bdedd716beea93d196551f5dbe77c3da11d1e8a6bc4f1f06ee58`.
+The active v1 file/SHA and benchmark authority were not changed. v2 keeps the
+same SD1.5/IPAdapter restoration graph, replaces fixed padding with runtime
+`padRight=(8-W%8)%8`, `padBottom=(8-H%8)%8`, and injects final crop W/H from
+the request as `finalCropWidth`/`finalCropHeight`. The same values are bound to image and mask padding nodes; the
+remote adapter has no resize path and validates returned dimensions fail-closed.
+Candidate pin and registry entry were added. Focused v2/binder/remote tests:
+`22 passed`; compileall and `git diff --check` passed. Physical HARRY-ROG copy
+and SHA equality cannot be verified here, so benchmark_set.yaml and active
+benchmark constants remain on v1; no ComfyUI, Face QC, or benchmark ran.
+
+## 2026-08-24 — GW-P4-T0.5.2k Remote Smoke Evidence Acceptance
+
+Accepted the persisted physical `NON_BENCHMARK/PREFLIGHT` smoke manifest:
+`evidence/gw-p4-t0-5-2d-20260824T134922Z-5325a724/smoke_manifest.json`.
+It records `status=PASS`, `executorStatus=COMPLETED`, prompt ID
+`c0710730-28d1-4af5-b642-dbc46d2b4a28`, host/GPU evidence for HARRY-ROG,
+`mock_used=false`, `local_fallback=false`, and `silent_fallback=false`.
+
+The active remote authority is `face_restore_win_sd15_ipadapter_v2`, SHA-256
+`1a6421a04ce7bdedd716beea93d196551f5dbe77c3da11d1e8a6bc4f1f06ee58`.
+B01 SHA, canonical A2 SHA
+`1e0c9720087d4bab4b1ab5d65d31827aba99ccf4c696c1a72570ed4114dca2c5d`, and
+workflow SHA match. The restored crop is `830x1003`; the production-derived
+input crop bytes differ from restored bytes, and pixel-lock is `PASS`.
+
+Status updates: `GW-P4-T0.5.2a=PASS`, `GW-P4-T0.5.2=PASS`,
+`comfyui-remote=READY`. Preflight with the persisted smoke evidence reports
+`control=READY`, `comfyui-local=READY`, `comfyui-remote=READY`,
+`nano-banana-edit=NOT_READY`, `officialBenchmarkReady=true`, and
+`officialExecutionReady=false`. Remaining blocker: no Nano Banana benchmark
+executor. No rerun, Face QC, benchmark, tuning, or architecture change.
+
+## 2026-08-24 — GW-P4-T0.5.3 Nano Banana-Edit Benchmark Executor
+
+T0.5.3 **FAIL/BLOCKED**. Added a fail-closed
+`NanoBananaEditBenchmarkExecutor` wrapper and explicit `NanoBananaEditPort`
+seam. It delegates generation to the existing production path, validates
+base/A2 authority and `masked_edit`, records provider/model/request/run IDs,
+truthful seed support, retry/runtime, lineage, and explicit
+`mock_used/local_fallback/silent_fallback` flags. It persists append-only
+success/failure evidence and never creates a second ActionCompositePipeline or
+vendor client.
+
+The existing Nano Banana path is in sibling Venho OS:
+`GenerateStudioImageUseCase` → `GeminiImageProvider`, using
+`prepareMaskedFaceEdit()` and `compositeMaskedFaceCrop()`. This Python repo has
+no registered callable adapter to that path, so preflight remains fail-closed:
+control/local/remote READY, nano-banana-edit NOT_READY,
+officialBenchmarkReady=true, officialExecutionReady=false. No paid provider
+call, Face QC, benchmark, or tuning was performed.
+
+## 2026-08-24 — GW-P4-T0.5.3b One Physical Nano Banana-Edit Smoke
+
+T0.5.3b **FAIL/BLOCKED before provider execution**. B01 authority matched
+`e7b00d4a65b2cc97e274e3c00f96e091bda0e614778df5a2d43f17cc3793faf9`; canonical
+A2 matched
+`1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d`.
+Provider configuration was present without exposing secrets
+(`IMAGE_GENERATION_GOOGLE_ENABLED=true`, Gemini credential resolvable from
+the existing social-agent dotenv path), with model
+`gemini-3.1-flash-image`.
+
+The frozen B01 artifact has no authoritative mask or edit-region/crop lineage.
+The existing production `masked_edit` path requires base + mask + A2, so the
+smoke could not be built without fabricating or substituting geometry. No
+provider call, output, or fake evidence was produced; paid call count: `0`.
+
+## 2026-08-24 — GW-P4-T0.5.3a Register Nano Banana Benchmark Adapter
+
+T0.5.3a **PASS**. Added
+`NanoBananaEditAdapter` and optional composition-root registration via
+`build_nano_banana_benchmark_executor()`. Registration is enabled only when
+the existing provider capability, `IDR_NANO_BANANA_ENABLED`, injected
+production path, canonical A2, request factory, and evidence root are all
+available. Missing configuration remains NOT_READY.
+
+The adapter delegates to the already-composed Venho OS path
+`GenerateStudioImageUseCase` → `GeminiImageProvider` and does not create a
+second client/pipeline, tune prompts, retry/select candidates, or fallback.
+Offline verification passed: `137 passed`, compileall, and `git diff --check`.
+T0.5.3 remains FAIL/BLOCKED pending exactly one allowed NON_BENCHMARK physical
+Nano Banana smoke. Paid calls: 0.
+
+## 2026-08-24 — GW-P4-T0.5.3c B01 Nano Banana Mask Lineage Freeze
+
+T0.5.3c **PASS for offline evidence/lineage preparation only**. Verified the
+locked B01 SHA and canonical A2 SHA, then ran the existing production YuNet
+geometry path to create the authorized B01 mask artifacts. The persisted
+authority records one face, crop transform `(119, 0, 949, 1003)`, crop-local
+mask `830x1003`, full-canvas mask `1024x1024`, and the full provenance chain:
+`YuNetGeometryExtractor -> crop_for_identity -> hierarchical_face_masks`.
+
+The real local YuNet model SHA is
+`8f2383e4dd3cfbb4553ea8718107fc0423210dc964f9f4280604804ed2552fa4`. The
+implementation lock was corrected to the supplied authoritative 64-character
+value; existing production code and the file itself agree on the same SHA. No
+model or image source bytes were changed.
+
+`build_frozen_b01_nano_request()` now binds the full-canvas mask as the Nano
+masked-edit input while retaining crop-local mask lineage. The Nano benchmark
+executor validates this authority and fails closed before provider execution
+when it is absent or inconsistent. Identity-restoration tests: `141 passed`.
+No Nano Banana call, Face QC, benchmark, or network call was made. The next
+required step remains exactly one physical NON_BENCHMARK/PREFLIGHT Nano Banana
+smoke; T0.5.3 remains blocked until that evidence exists.
+## 2026-08-24 — GW-P4-T0.5.3d Nano Banana Physical Smoke CLI
+
+T0.5.3d **PASS for offline CLI wiring only**. Extended `venho-restore
+benchmark smoke` to accept `--branch nano-banana-edit` for B01. The command
+loads the frozen B01 geometry authority, builds the request through
+`build_frozen_b01_nano_request()`, validates B01/A2/mask lineage before any
+provider call, then dispatches only through the existing
+`NanoBananaEditBenchmarkExecutor` -> `NanoBananaEditAdapter` composition seam.
+The result is explicitly `NON_BENCHMARK` / `PREFLIGHT`; the CLI does not
+create an official benchmark run, aggregate metrics, or invoke Face QC.
+
+Offline Nano CLI/executor/geometry/registration tests: `15 passed`; full
+identity-restoration suite: `134 passed`; compileall and `git diff --check`
+passed. No network, provider, paid call, benchmark, or Face QC was executed.
+The existing production Nano port remains required at the composition seam and
+continues to fail closed when not injected; `nano-banana-edit` is not READY,
+and T0.5.3 remains blocked pending one physical B01 smoke.
+
+## 2026-08-24 — GW-P4-T1 Official Branch Correction and Execution Blocker
+
+Corrected the official benchmark decision contract from the earlier four-branch
+model to the authoritative three branches: `control`, `nano-banana-edit`, and
+`comfyui-remote`. `comfyui-local` remains in the architecture, registry, and
+capability/preflight surface, but is excluded from official decision rows.
+`EXPECTED_BRANCHES`, `benchmark_set.yaml`, the CLI plan text, and the runner
+regression expectations now produce exactly 30 rows. The row schema continues
+to accept local adapter evidence for compatibility fixtures.
+
+Static validation and plan pass, but the official CLI run remains blocked
+before run-directory creation: `BenchmarkRunner` is instantiated without a
+composite executor, per-case geometry/request factories, and existing
+Validator Studio evidence wiring. No paid Nano calls, GPU jobs, validator
+calls, official outputs, or fabricated rows were made. GW-P4-T1 is BLOCKED;
+GW-P4 remains IN PROGRESS. Report:
+`docs/identity-restoration/GW_P4_CONTROLLED_A2_BENCHMARK_REPORT.md`.
+
+## 2026-08-24 — GW-P4-T0.5.3 Physical Nano Banana Readiness Closure
+
+Completed exactly one real NON_BENCHMARK/PREFLIGHT B01 provider smoke through
+the existing chain `NanoBananaEditBenchmarkExecutor -> NanoBananaEditAdapter ->
+VenHo OS GenerateStudioImageUseCase -> GeminiImageProvider`. The internal
+transport bridge only connects the existing use-case composition; it creates
+no Gemini client, provider, fallback, or second pipeline.
+
+Physical evidence is at
+`evidence/gw-p4-t0-5-3b-20260824T142500Z/preflight-b01-nano-smoke-20260824T142530242068Z/b01-nano-smoke-1/`:
+provider `nano-banana-2`, model `gemini-3.1-flash-image`, one paid call,
+retry `0`, seed metadata `42` with `seedSupported=false`, B01/A2/YuNet/mask
+authorities exact, output `1024x1024` PNG SHA
+`d5ed883ef12166bd9da313252854e832eb74016528d754bd5d1c37f6669af17c`,
+`executorStatus=COMPLETED`, and all mock/fallback flags false. Face QC and
+official benchmark execution were not run.
+
+Preflight now accepts only self-verifying persisted physical smoke evidence.
+Final matrix is control/local/remote/nano all READY;
+`officialBenchmarkReady=true`, `officialExecutionReady=true`. Regression suite:
+`150 passed`, TypeScript typecheck passed, compileall and `git diff --check`
+passed. GW-P4-T0.5.3, T0.5, and T0 are PASS/CLOSED; GW-P4-T1 is not started.
+
+## 2026-08-24 — GW-P4-T1 Orchestration Implementation
+
+Internal T1 wiring is implemented in `benchmark_orchestration.py` and the
+infrastructure composition root: `OfficialBenchmarkCompositeExecutor`
+dispatches exactly `control`, `nano-banana-edit`, and `comfyui-remote`; the
+case context derives/persists YuNet geometry and both mask spaces for B01–B10;
+the existing Validator Studio face/image entry points are wrapped with a
+SHA/configuration cache at `samples=3`; and the runner now creates official
+artifact directories, writes `summary.json`, and computes the Phase-4 quality
+decision.
+
+Focused orchestration tests pass. Identity-restoration plus relevant
+action-composite regression tests pass (`166 passed`); compileall and
+`git diff --check` pass. The official CLI command was attempted after wiring
+and fails before run creation because the existing VenHo OS Nano endpoint at
+`127.0.0.1:3000` is connection-refused. This is an external runtime blocker,
+not an internal executor/factory/validator implementation blocker. No
+official rows, validator sweep, GPU job, or additional paid call was created.
+
+## 2026-08-24 — GW-P4-T1 Nano Transport Recovery and Remote Gate
+
+Root cause proven: `127.0.0.1:3000` is the existing Venho OS Next.js local
+service (`npm run dev`), not a new provider proxy. Its existing route is
+`/api/v1/identity-restoration/nano-banana-smoke`, composing
+`GenerateStudioImageUseCase -> GeminiImageProvider`. The service was started
+using the canonical script; zero-cost GET returned ready/configured,
+provider `nano-banana-2`, model `gemini-3.1-flash-image`, no mock/fallback.
+
+The first official attempt (`benchmark-20260824T150014Z-94c8cb21`) created 30
+terminal failures before valid decision evidence: control lacked the existing
+production dotenv credential in the Python process, Nano received a relative
+A2 path rejected by the Venho OS trusted-root guard, and remote health was
+offline. Internal fixes: load credentials using the existing production dotenv
+search order; resolve canonical A2 to an absolute path; preserve Nano
+`providerConfigured`/fallback flags; and make composite remote capabilities
+probe WorkerHealth before official execution. No Nano provider call occurred
+in that invalid attempt.
+
+Corrected zero-cost composition reports Nano READY and remote `OFFLINE`.
+HARRY-ROG Tailscale HTTPS health access is currently unreachable. The runner
+therefore refuses a new official run before paid rows. T1 remains BLOCKED only
+by this external worker/runtime dependency; do not classify the retained first
+attempt as QUALITY FAIL.
+
+## 2026-08-25 — GW-P4-T1 corrected attempt and external health gate
+
+The recovered Venho OS Nano route was corrected to validate the source/mask/crop
+authority supplied by each B01–B10 case instead of hard-coded B01 hashes. The
+runner also flushes each JSONL row after writing. Python transport,
+orchestration, contract, and infrastructure regressions passed: 80 tests;
+compileall passed.
+
+Corrected run `benchmark-20260825T015837Z-7d0e4f0d` is retained as invalid
+infrastructure evidence: B01 Nano completed through the real provider with no
+fallback, B02–B10 failed on the old B01-only route guard, and persistence was
+incomplete before the flush fix. It is not a quality decision. A subsequent
+official invocation was correctly refused before run creation because
+HARRY-ROG health is `DEGRADED`: `/system_stats` is reachable, but free VRAM is
+approximately 2.69 GiB, below the existing 4200 MB healthy threshold. Do not
+lower the threshold or bypass the gate; resume the official 30-row run only
+when the worker is HEALTHY.
+
+## 2026-08-25 — GW-P4-T1 official run after HARRY-ROG VRAM recovery
+
+Implemented the smallest pre-case remote hygiene policy in the existing
+ComfyUI path: probe health; when DEGRADED only because free VRAM is below
+4200 MB, POST `/free` with `unload_models=true, free_memory=true`, invalidate
+the cached health result, re-probe, and execute only when HEALTHY. The
+threshold remains 4200 MB, concurrency remains 1, and no prompt is submitted
+when recovery fails. Focused tests including recovery policy: 48 passed;
+compileall and diff check passed.
+
+The approved `/free` call recovered HARRY-ROG from approximately 2.69 GiB to
+5067 MB free. New official run
+`benchmark-20260825T021915Z-157c9b14` completed all 30 terminal rows: 10
+completed and 20 failed. Branch completed-row stats: control 7 rows,
+median 93.85; Nano 0 rows; remote 3 rows, median 91.85. Treatment median
+clears 90, but hard gates fail due incomplete execution/validator evidence,
+regional/anatomy metrics, pixel preservation, and lineage. Decision:
+`QUALITY_FAIL`. Do not rerun or tune under this task; prior invalid run
+`benchmark-20260825T015837Z-7d0e4f0d` remains preserved and excluded.
+
+## 2026-08-25 — GW-P4-T1 validity audit and recovery run
+
+The recorded decision for `benchmark-20260825T021915Z-157c9b14` was audited
+row-by-row before acceptance. The immutable run proved Nano provider execution
+for B01–B10 with 10 output artifacts. Five Nano rows failed only because the
+local composite treated `pixelPreservationResult=UNKNOWN` as failure before
+offline mask comparison; five more had Validator Studio JSON failures. Remote
+produced physical outputs for B01/B03/B05/B07/B09; B02/B04/B06/B08/B10 were
+blocked by the frozen VRAM gate. The historical remote median 91.85 is exactly
+B05=88.00, B07=92.28, B09=91.85, N=3; it is a partial population and cannot
+support a final quality decision. The audited run was not modified.
+
+Internal fixes: Nano UNKNOWN pixel evidence is recomputed from frozen
+base/mask/output bytes; `BenchmarkRunner` records explicit classifications
+(`VALID_QUALITY_PASS`, `VALID_QUALITY_FAIL`, `INFRA_EXECUTION_FAIL`,
+`VALIDATOR_FAIL`, `EVIDENCE_PIPELINE_FAIL`, `AUTHORITY_FAIL`), reports valid
+QC N, and returns `INELIGIBLE` when any official branch lacks ten valid
+comparable rows. Explicit prior-run artifact reuse was added for Nano and
+remote evidence; verified output hashes skip provider recall.
+
+New run `benchmark-20260825T030340Z-df1d875a` used the frozen 30-row plan and
+completed all rows: 18 completed, 12 failed. Nano reused all ten prior
+provider artifacts with zero new Nano calls; three remote rows reused verified
+prior evidence. Final counts: `EVIDENCE_PIPELINE_FAIL=18`,
+`VALIDATOR_FAIL=8`, `INFRA_EXECUTION_FAIL=4`, valid quality rows 0/30,
+`decisionEligible=false`, `decision=INELIGIBLE`. Remaining external block:
+malformed Validator Studio responses and HARRY-ROG remaining DEGRADED below
+4200 MB after the frozen single `/free` recovery attempt. GW-P4-T1 is
+EXTERNAL BLOCKED / INELIGIBLE; GW-P4 remains IN PROGRESS. No quality tuning,
+retry, fallback, mock, or best-of-N.
+
+## 2026-08-25 — GW-P4-T1 Run 3 validity recovery execution
+
+Implemented and verified branch-specific evidence classification, SHA/config/
+samples-aware Validator cache migration, explicit Nano/Remote artifact reuse
+lineage, and restoration-ledger rehydration for outputs persisted before a
+Validator failure. Focused benchmark tests: 34 passed; compileall passed.
+
+Run `benchmark-20260825T033150Z-aea9d71a` is the new immutable 30-row recovery
+run: `21 completed / 9 failed`, classification counts
+`EVIDENCE_PIPELINE_FAIL=21`, `VALIDATOR_FAIL=5`, `INFRA_EXECUTION_FAIL=4`.
+Nano provider calls were 0. Six Remote outputs were reused; four missing
+Remote cases failed closed after HARRY-ROG returned OFFLINE. Five Validator
+responses remained malformed JSON.
+
+The 21 evidence failures are concrete missing regional evidence: current
+Validator Studio outputs expose Face QC/identity/eyes/global only, while the
+benchmark requires authoritative geometry/anatomy/outfit/environment evidence.
+The implementation keeps those values null and fail-closed; no quality score
+was fabricated. Run 3 has valid quality rows 0/30 and no decision median.
+Run 1 and Run 2 remain immutable. GW-P4-T1 remains EXTERNAL BLOCKED /
+DECISION INELIGIBLE; GW-P4 remains IN PROGRESS.
+
+## 2026-08-25 — GW-P4-T1 Run 4 and validity-recovery hardening
+
+Traced the single production Regional authority:
+`ActionCompositePipeline -> RegionalScoreGateway -> RegionalGate`. Added a
+benchmark adapter that rehydrates only a complete persisted `regional_scores`
+Gateway envelope. It does not infer anatomy/outfit/environment from
+face/image scores, intent metadata, or pixel preservation. No complete
+Regional envelope exists in Runs 1–3, so those rows remain fail-closed and no
+thresholds changed.
+
+Hardened Validator Studio response handling: the JSON normalizer now handles
+fenced/wrapped JSON with string-aware balancing and rejects empty, truncated,
+malformed, or schema-invalid content. Provider raw response text is exposed
+before parsing; face/image validators persist raw text, sample index, parse
+status, parsed evidence, and parse errors when the benchmark sink is
+configured. Historical Run 3 malformed responses have no raw payload and thus
+cannot be safely reparsed. Run 4's three Nano Validator calls failed with
+`429 RESOURCE_EXHAUSTED` before a raw response existed.
+
+Fixed reuse preparation so Nano scans immutable provider evidence even when a
+completed provider artifact was followed by a downstream Validator failure;
+Run 4 made zero new Nano calls and recovered the full 10/10 provider artifact
+inventory. Remote reuse now scans all immutable Run 1–3 ledger records rather
+than only the selected reuse run. Run 4 itself remains immutable.
+
+Tailscale ping to `harry-rog` succeeded at 1 ms, but the peer's ComfyUI
+`/system_stats` endpoint timed out over both hostname and IP. Classification:
+`COMFYUI_PROCESS_DOWN`; no startup, port exposure, or VRAM-threshold change
+was attempted.
+
+Run 4: `benchmark-20260825T041020Z-0c7002c0`, 30/30 terminal, 21 completed,
+9 failed, `EVIDENCE_PIPELINE_FAIL=21`, `VALIDATOR_FAIL=3`,
+`INFRA_EXECUTION_FAIL=6`, valid quality rows 0/30, decision INELIGIBLE. No
+treatment median or final quality decision was asserted. GW-P4-T1 remains
+EXTERNAL BLOCKED / DECISION INELIGIBLE; GW-P4 remains IN PROGRESS; GW-P5 was
+not started.
+
+Verification: identity-restoration 146 passed; Action Composite/regional 53
+passed; structured-response recovery tests passed; compileall and git
+diff-check passed.
+
+## 2026-08-25 — GW-P4-T1 Run 5 and validity-dimension correction
+
+Run `benchmark-20260825T042453Z-b86d8854` is immutable and contains 30/30
+terminal rows (`21 completed / 9 failed`). The runner now separates
+`decisionValidity` from `qualityGatePass`: complete evidence with low Face QC,
+Regional FAIL, or Pixel FAIL remains a valid observation; missing/corrupt
+output, QC, Regional authority, pixel evidence, or lineage is invalid.
+Control has no provider/workflow/GPU/restored-crop requirement; Nano has no
+ComfyUI/workflow/GPU requirement; Remote keeps its pinned workflow/crop/mask
+contract.
+
+Run 5 remains `INELIGIBLE`: Control `0/10` decision-valid despite 10/10
+completed; Nano `0/10` despite 7/10 completed and 10/10 reused output
+artifacts; Remote `0/10` with 4 completed rows, 4 Validator failures, and 2
+infra failures. The completed rows lack a complete authoritative
+`RegionalScoreGateway` envelope. Face/image QC and intent/pixel metadata are
+not converted into anatomy/outfit/environment scores. Nano made zero new
+provider calls; three Validator failures were `429 RESOURCE_EXHAUSTED`.
+
+HARRY-ROG is reachable through Tailscale and HTTPS `/system_stats` is healthy
+when free VRAM is about 5067 MiB, with the pinned GTX 1660 SUPER and unchanged
+4200 MiB threshold. Run 5 produced only two new Remote GPU outputs (B02/B08);
+B03/B06 were reused and B04/B10 were blocked by the normal VRAM gate. No
+fallback/mock/tuning/public exposure occurred. Since Control and Nano are not
+10/10 decision-valid, the task's condition for a genuine `EXTERNAL_BLOCKED`
+final status is not met; no quality decision or median is asserted. GW-P4 is
+still IN PROGRESS; GW-P5 was not started.
+
+## 2026-08-25 — GW-P4-T1 Regional authority resolution / R3 alignment
+
+The authoritative trace is `ActionCompositePipeline ->
+RegionalScoreGateway -> RegionalGate`. `RegionalScoreGateway.build()` accepts
+only explicit face/image, geometry, scene-candidate, and preservation evidence;
+`replay()` persists the resulting `scores/sources/provenance`. `RegionalGate`
+is the production PASS/FAIL evaluator. The roadmap's GW-P4 acceptance wording
+requires a healthy Regional/pixel gate, and the Action Composite plan defines
+anatomy/outfit/environment as PASS/FAIL checks. The benchmark's unconditional
+requirement for seven numeric Regional fields was therefore **R3 —
+CONTRACT_OVERREACH**.
+
+Implemented the minimum alignment: `regionalGateEvidence` is a schema-supported
+authority-bound envelope. A complete Regional gate PASS or FAIL is
+decision-valid; missing, malformed, or fake authority remains invalid. Numeric
+Gateway envelopes remain compatible. No second Regional implementation was
+created and no score was inferred from Face QC, geometry, pixel preservation,
+intent metadata, or averages.
+
+Offline scan of Runs 1–5 found zero benchmark gate envelopes and zero complete
+production Regional manifests attached to benchmark artifacts. Thus no
+Control/Nano/Remote decision-valid rows were recoverable and Run 6 was not
+created. Status remains GW-P4-T1 INELIGIBLE, GW-P4 IN PROGRESS, with no
+PASS/QUALITY_FAIL/genuine EXTERNAL_BLOCKED decision and no GW-P5.
+
+Verification: focused 48 passed; Action Composite/regional 63 passed;
+identity-restoration 152 passed; full suite 1116 passed and 76 unrelated
+environment/fixture failures; compileall and diff-check passed.
+
+## 2026-08-25 — GW-P4-T1 Regional evidence materialization and Remote completion
+
+Implemented `BenchmarkRegionalEvidenceAdapter` in
+`identity_restoration/application/benchmark_orchestration.py`. It is a thin
+benchmark boundary over the existing production chain
+`RegionalScoreGateway -> RegionalGate`; it does not implement a second scorer,
+fabricate numeric values, or mutate Runs 1–5. It combines persisted
+three-sample Validator Studio reports, frozen YuNet expected geometry, fresh
+production geometry observation, and the existing
+`StagePreservationEvidenceAdapter`, then persists immutable evidence under
+`artifacts/identity-restoration/benchmarks/regional-evidence/`.
+
+Materialization run: `materialized-20260825T054205Z`.
+
+- Control: 10/10 Regional evidence and 10/10 decision-valid; 2 Regional PASS, 8 valid Regional FAIL quality observations.
+- Nano: 7/10 evidence and decision-valid; B02/B04/B05 lack matching Validator cache by output SHA. Nano provider calls remain 0.
+- Remote: reusable output inventory now includes B01/B02/B03/B05/B06/B07/B08/B09. Only missing B04/B10 were executed through the existing remote executor, with workflow SHA pinned and VRAM about 5065 MiB. Validator-backed Regional evidence exists for B01/B05/B07/B09 only, so Remote is 4/10 decision-valid.
+
+Validator recovery probe for Nano B02 returned the external
+`429 RESOURCE_EXHAUSTED` / prepayment credits depleted error. No repeated paid
+call or fabricated evidence was used. Dry-run with the same runner validity
+logic is Control `10/10`, Nano `7/10`, Remote `4/10`; Run 6 was not created.
+The task's genuine EXTERNAL_BLOCKED rule is not satisfied because Control and
+Nano are not both 10/10. Status remains T1 **INELIGIBLE**, P4 **IN PROGRESS**,
+P5 not started.
+
+Verification: identity-restoration 153 passed; Action Composite/regional 77
+passed; full suite 1117 passed / 76 unrelated pre-existing failures;
+compileall and diff-check passed.
+
+## 2026-08-25 — GW-P4-T1 Validator credit-recovery resume preflight
+
+The smallest legitimate post-recovery readiness check ran through the existing
+`BenchmarkValidatorAdapter` against the frozen Nano B01 artifact using the
+unchanged Gemini Validator identity
+`validator-studio-face-image-v1:gemini:rubric=07F:samples=3`. The first live
+request still returned `429 RESOURCE_EXHAUSTED` with the provider message
+`Your prepayment credits are depleted.` No raw response or score existed to
+persist; no repeated paid call was issued. The immutable check record is
+`artifacts/identity-restoration/benchmarks/validator-preflight-20260825T055001Z/result.json`.
+
+No Nano generation, Remote GPU job, or Run 6 was created. Existing recovery
+truth remains Control `10/10`, Nano `7/10`, Remote `4/10` decision-valid.
+Status is `GW-P4-T1 = EXTERNAL_BLOCKED / INELIGIBLE`, `GW-P4 = IN PROGRESS`,
+and `GW-P5 = NOT STARTED`; provider credits/quota still require human recovery.
+
+## 2026-08-25 — GW-P4-T1 resume after Validator READY
+
+Validator readiness was confirmed with unchanged `gemini`,
+`gemini-3.5-flash`, `samples=3`, `mock=false`, and `fallback=false`. Runs 1–5
+remain immutable. The reuse index now includes all Remote B01–B10; B04/B10
+reuse the already-completed recovery artifacts under
+`recovery-remote-20260825TB04` and `recovery-remote-20260825TB10`. No Nano
+generation and no Remote GPU job occurred during this recovery.
+
+Production Regional materialization reached Control 10/10, Nano 8/10, and
+Remote 8/10 decision-valid. Historical Validator evidence covered 21 branch
+rows; five new complete three-sample evaluations were added (Nano B05 and
+Remote B02/B03/B04/B10). Nano B02/B04 and Remote B06/B08 remain unvalidated
+after controlled recovery attempts: Gemini returned truncated JSON. Raw
+responses were persisted before parse and rejected fail-closed.
+
+Pre-run-6 gate is false at 10/10, 8/10, 8/10. Run 6 was not created. Final
+state: GW-P4-T1 EXTERNAL_BLOCKED/INELIGIBLE, GW-P4 IN PROGRESS, GW-P5 NOT
+STARTED. Verification: focused identity-restoration/reuse 57 passed, Action
+Composite/regional 97 passed, identity-restoration 153 passed, full suite
+1117 passed / 76 pre-existing failures, compileall and diff check passed.
+## 2026-08-25 — GW-P4-T1 paid-call guardrails and missing Validator recovery
+
+Installed a single fail-closed `PaidCallGuard` at the existing Gemini vision
+transport. Pytest processes are blocked before SDK transport; production live
+calls require `VALIDATOR_LIVE_ENABLED=true`; the recovery ledger enforces a
+maximum of 12 new sample calls and records sanitized intent/result, model,
+sample, token, finish-reason, and error metadata. No provider/model/rubric,
+threshold, or thinking configuration changed.
+
+The four-target historical audit found complete face samples for Nano B02/B04
+and Remote B06/B08. Only image samples missing after raw/cache recovery were
+eligible for live calls: Nano B02 3, Nano B04 3, Remote B06 3, Remote B08 1.
+Eleven new transport attempts were recorded: ten parsed successes and one
+initial `MAX_TOKENS` malformed response, which was retried once under the
+invalid-schema rule. Raw responses were persisted before parse; no quality
+retry occurred. No Nano generation or Remote GPU job was run.
+
+The existing structured Validator DTO schemas are now passed as Gemini JSON
+response schemas; the output ceiling is 8192 to accommodate unchanged model
+thinking behavior without requesting narrative output. The four target caches
+now contain 3/3 face and 3/3 image samples. Regional evidence for all 30
+existing artifacts was materialized offline through the production
+`RegionalScoreGateway`, producing Control/Nano/Remote decision-valid counts of
+10/10/10. Run 6 was not created by this cost-guard task. Current Regional
+quality-gate pass counts are Control 2/10, Nano 0/10, Remote 2/10; this does
+not constitute an official Run 6 quality decision.
+
+Focused guard/structured/recovery tests passed; the identity-restoration and
+Action Composite/regional suites passed. The full suite still has the known
+environment/fixture failures (malformed Drive token, missing lake-view DNA
+fixtures, and pre-existing overlay/schema expectations). Compileall and diff
+check passed.
+
+## 2026-08-25 — GW-P4-T1 Run 6 offline Regional quality decision
+
+The existing `RegionalGate.evaluate()` policy was traced through
+`ActionCompositePipeline -> RegionalScoreGateway -> RegionalGate`. It is a
+fail-closed per-row gate with the frozen identity/eyes/geometry/anatomy/outfit/
+environment/global thresholds and pixel-preservation requirement. The official
+Treatment aggregate is `all(10 row gates passed)`; no pass-rate threshold or
+taxonomy exception exists. Root classification is **RG2** because the policy
+already existed but the summary's `anatomyRegionalHealthy` field incorrectly
+mirrored the full Regional gate. Only the mapping was corrected; thresholds and
+policy were not changed.
+
+Run 6 `benchmark-20260825T160000Z-gw-p4-t1` was created as a reuse-only
+immutable consolidation. It contains exactly 30 terminal and 30
+decision-valid rows: Control 10/10, Nano 10/10, Remote 10/10. Runs 1–5 were
+not mutated. New Nano generation calls, Remote GPU jobs, and Validator calls
+were all zero. `validatorEvidenceComplete=true`, `missingValidatorSamples=0`,
+and paid calls during tests remained zero.
+
+Treatment Face QC is `93.32, 94.55, 90.60, 90.82, 88.00, 85.30, 92.28,
+95.40, 91.85, 0.00`; median `91.335`, mean `82.212`, min `0.00`, max `95.40`.
+Face median, Anatomy (10/10), Pixel Preservation (10/10), and Lineage (10/10)
+pass. Regional passes only B01/B08; B02/B03/B04/B05/B06/B07/B09/B10 fail, so
+the official result is **QUALITY_FAIL**. GW-P4-T1 = FAIL, GW-P4 = IN PROGRESS /
+QUALITY GATE FAILED, GW-P5 remains NOT STARTED.
+
+Remote B10 `Face QC=0.00` is legitimate evidence from three valid samples,
+not a sentinel or stale cache: the face cache, raw/normalized history, output
+SHA, and Regional evidence agree, and the face binary gate recorded a real
+rendering glitch. It remains included in all statistics.
+
+Verification: focused benchmark/guard/orchestration tests 24 passed;
+identity-restoration suite 154 passed; Action Composite/regional selection 58
+passed; full suite 1121 passed / 76 pre-existing environment/fixture failures;
+compileall passed; `git diff --check` passed. No GW-P5 work or tuning was done.

@@ -1,0 +1,58 @@
+{
+  "branches": {
+    "comfyui-remote": {
+      "count": 0,
+      "max": null,
+      "mean": null,
+      "median": null,
+      "min": null,
+      "validQcN": 0
+    },
+    "control": {
+      "count": 0,
+      "max": null,
+      "mean": null,
+      "median": null,
+      "min": null,
+      "validQcN": 0
+    },
+    "nano-banana-edit": {
+      "count": 0,
+      "max": null,
+      "mean": null,
+      "median": null,
+      "min": null,
+      "validQcN": 0
+    }
+  },
+  "decision": "INELIGIBLE",
+  "decisionEligibilityReasons": [
+    "control: valid comparable rows 0/10",
+    "nano-banana-edit: valid comparable rows 0/10",
+    "comfyui-remote: valid comparable rows 0/10"
+  ],
+  "decisionEligible": false,
+  "expectedRowCount": 30,
+  "failureClassificationCounts": {
+    "AUTHORITY_FAIL": 0,
+    "EVIDENCE_PIPELINE_FAIL": 18,
+    "INFRA_EXECUTION_FAIL": 4,
+    "VALIDATOR_FAIL": 8,
+    "VALID_QUALITY_FAIL": 0,
+    "VALID_QUALITY_PASS": 0
+  },
+  "qualityGate": {
+    "anatomyRegionalHealthy": false,
+    "failures": [
+      "treatment_median_face_qc_below_90_or_unvalidated"
+    ],
+    "lineageComplete": false,
+    "noFallbackContamination": true,
+    "pixelPreservationPass": false,
+    "regionalHealthy": false,
+    "treatmentMedianFaceQc": null,
+    "treatmentMedianFaceQcMin": 90
+  },
+  "rowCount": 30,
+  "terminalRowCount": 30
+}

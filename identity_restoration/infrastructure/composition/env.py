@@ -15,6 +15,12 @@ class RestorationEnv:
     comfyui_enabled: bool = False
     comfyui_base_url: str = "http://127.0.0.1:8188"
     comfyui_timeout_seconds: float = 600.0
+    # GW-P3: comfyui-remote is a separate opt-in from comfyui-local/health so the
+    # composition root can attempt to register it without that attempt ever being
+    # able to break health probing (FACT 2) — see build_worker_health() below.
+    comfyui_remote_enabled: bool = False
+    comfyui_remote_base_url: str = "http://127.0.0.1:8188"
+    comfyui_remote_timeout_seconds: float = 600.0
     health_ttl_seconds: float = 30.0
     health_timeout_seconds: float = 5.0
     workflow_root: str = "identity_restoration/workflows"
@@ -23,7 +29,12 @@ class RestorationEnv:
     a2_path: str = "assets/linh_an/A2_Front.png"
     max_concurrent: int = 1
     nano_banana_enabled: bool = False
+    nano_banana_bridge_enabled: bool = False
+    nano_banana_bridge_url: str = "http://127.0.0.1:3000/api/v1/identity-restoration/nano-banana-smoke"
     face_qc_min: float = 90.0
+    # Explicit geometry backend selection.  The default preserves the existing
+    # InsightFace production behavior; YuNet is opt-in and never a fallback.
+    geometry_backend: str = "insightface"
 
 
 def read_restoration_env() -> RestorationEnv:
@@ -32,6 +43,9 @@ def read_restoration_env() -> RestorationEnv:
         comfyui_enabled=_as_bool(os.environ.get("IDR_COMFYUI_ENABLED", "false")),
         comfyui_base_url=os.environ.get("IDR_COMFYUI_BASE_URL", "http://127.0.0.1:8188"),
         comfyui_timeout_seconds=float(os.environ.get("IDR_COMFYUI_TIMEOUT_SECONDS", "600")),
+        comfyui_remote_enabled=_as_bool(os.environ.get("IDR_COMFYUI_REMOTE_ENABLED", "false")),
+        comfyui_remote_base_url=os.environ.get("IDR_COMFYUI_REMOTE_BASE_URL", "http://127.0.0.1:8188"),
+        comfyui_remote_timeout_seconds=float(os.environ.get("IDR_COMFYUI_REMOTE_TIMEOUT_SECONDS", "600")),
         health_ttl_seconds=float(os.environ.get("IDR_HEALTH_TTL_SECONDS", "30")),
         health_timeout_seconds=float(os.environ.get("IDR_HEALTH_TIMEOUT_SECONDS", "5")),
         workflow_root=os.environ.get("IDR_WORKFLOW_ROOT", "identity_restoration/workflows"),
@@ -41,7 +55,15 @@ def read_restoration_env() -> RestorationEnv:
         a2_path=os.environ.get("IDR_A2_PATH", "assets/linh_an/A2_Front.png"),
         max_concurrent=int(os.environ.get("IDR_MAX_CONCURRENT", "1")),
         nano_banana_enabled=_as_bool(os.environ.get("IDR_NANO_BANANA_ENABLED", "false")),
+        nano_banana_bridge_enabled=_as_bool(
+            os.environ.get("IDR_NANO_BANANA_BRIDGE_ENABLED", "false")
+        ),
+        nano_banana_bridge_url=os.environ.get(
+            "IDR_NANO_BANANA_BRIDGE_URL",
+            "http://127.0.0.1:3000/api/v1/identity-restoration/nano-banana-smoke",
+        ),
         face_qc_min=float(os.environ.get("IDR_FACE_QC_MIN", "90.0")),
+        geometry_backend=os.environ.get("IDR_GEOMETRY_BACKEND", "insightface"),
     )
 
 

@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from collections import Counter
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable, Optional
 
 from shared.vision.client import MockVisionClient, VisionClient
 from shared.vision.structured import extract_json
@@ -202,6 +202,7 @@ def observe_image_against_dna(
     dna: dict,
     provider: str = "mock",
     samples: int = 1,
+    raw_response_sink: Optional[Callable[[dict[str, Any]], None]] = None,
 ) -> ImageObservation:
     samples = max(samples, 1)
     if provider == "mock":
@@ -210,9 +211,41 @@ def observe_image_against_dna(
     system_prompt = _build_image_observe_prompt(dna)
     client = VisionClient(image_provider=provider, temperature=0.0)
     observed = []
-    for _ in range(samples):
-        response = client.analyze_image(image_path, system_prompt)
-        payload = response if isinstance(response, dict) and "dna_matches" in response else extract_json(str(response))
-        _assert_no_ai_scores(payload)
-        observed.append(ImageObservation.model_validate(payload))
+    for sample_index in range(samples):
+        try:
+            if raw_response_sink is not None:
+                client.raw_response_sink = lambda raw, index=sample_index + 1: raw_response_sink({
+                    "validator": "image", "sampleIndex": index, "rawResponse": raw,
+                    "parseStatus": "raw_captured",
+                })
+            try:
+                response = client.analyze_image(
+                    image_path, system_prompt,
+                    response_schema=ImageObservation.model_json_schema(),
+                    sample_index=sample_index + 1,
+                )
+            except TypeError as exc:
+                # Preserve compatibility with injected legacy test doubles;
+                # the production VisionClient supports the structured contract.
+                if "unexpected keyword" not in str(exc):
+                    raise
+                response = client.analyze_image(image_path, system_prompt)
+            raw = getattr(client, "last_raw_response", None)
+            if raw_response_sink is not None:
+                raw_response_sink({"validator": "image", "sampleIndex": sample_index + 1,
+                                   "rawResponse": raw, "parseStatus": "before_contract"})
+            payload = response if isinstance(response, dict) and "dna_matches" in response else extract_json(str(response))
+            _assert_no_ai_scores(payload)
+            observation = ImageObservation.model_validate(payload)
+            if raw_response_sink is not None:
+                raw_response_sink({"validator": "image", "sampleIndex": sample_index + 1,
+                                   "rawResponse": raw, "parseStatus": "parsed",
+                                   "parsedEvidence": observation.model_dump(mode="json")})
+            observed.append(observation)
+        except Exception as exc:
+            if raw_response_sink is not None:
+                raw_response_sink({"validator": "image", "sampleIndex": sample_index + 1,
+                                   "rawResponse": getattr(client, "last_raw_response", None),
+                                   "parseStatus": "failed", "parseError": str(exc)})
+            raise
     return _merge_samples(observed)

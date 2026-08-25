@@ -1,0 +1,16 @@
+{
+  "prompt_id": "be054dd8-da3e-4f54-acdc-4dadb5db99ca",
+  "status": "success",
+  "completed": true,
+  "output": {
+    "filename": "gw-p3_00005_.png",
+    "subfolder": "",
+    "type": "output",
+    "sha256": "517ed75962bbf8dea230863aaa8da6936fe0c576426b251d8f8ff73a4985fef0",
+    "dimensions": [687, 659],
+    "format": "PNG"
+  },
+  "workflow_id": "face_restore_win_sd15_ipadapter_v1",
+  "workflow_sha256": "7a320dd58c6e96b4d8c1c0e82c2ffe1d6ca6ace12a691f1aca5ebef8589f1ec8",
+  "worker": "comfyui-remote"
+}

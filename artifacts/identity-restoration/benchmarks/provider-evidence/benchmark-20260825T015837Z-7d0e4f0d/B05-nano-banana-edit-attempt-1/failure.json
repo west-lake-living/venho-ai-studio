@@ -1,0 +1,4 @@
+{
+  "error": "Nano bridge HTTP 409: {\"error\":\"frozen authority mismatch\",\"baseSha\":\"06f4b6b0b6ea47dee71a240065411899cb3fa2b84633dacddba4d232afce5492\",\"maskSha\":\"52bf1a3fad67d41422aca9e7e28f314c9f51d4253d621a11ca0f1b3eae40a1db\",\"a2Sha\":\"1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d\"}",
+  "status": "FAILED"
+}

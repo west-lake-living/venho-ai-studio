@@ -1,5 +1,4 @@
 {
-  "_roadmap_status": "SUPERSEDED — superseded by VENHO_GW_PLAN_PATCH_v2_0_TO_v2_1.md and the current v2.x authority; the v2.1 patch overrides v2.0 where conflicting. Retained unchanged in place for historical/audit purposes only.",
   "4": {
     "class_type": "CheckpointLoaderSimple",
     "inputs": {

@@ -1,0 +1,38 @@
+{
+  "python": "C:\\VenHoGPU\\venv\\Scripts\\python.exe",
+  "packages": {
+    "insightface": "0.7.3",
+    "onnxruntime": "1.26.0",
+    "providers": "TensorrtExecutionProvider,CUDAExecutionProvider,CPUExecutionProvider"
+  },
+  "files": {
+    "python": {
+      "path": "C:\\VenHoGPU\\venv\\Scripts\\python.exe",
+      "bytes": 274424
+    },
+    "comfyui_main": {
+      "path": "C:\\VenHoGPU\\comfyui\\main.py",
+      "bytes": 25537
+    },
+    "checkpoint": {
+      "path": "C:\\VenHoGPU\\comfyui\\models\\checkpoints\\v1-5-pruned-emaonly.safetensors",
+      "bytes": 4265146304
+    },
+    "clip_vision": {
+      "path": "C:\\VenHoGPU\\comfyui\\models\\clip_vision\\CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors",
+      "bytes": 2528373448
+    },
+    "ipadapter": {
+      "path": "C:\\VenHoGPU\\comfyui\\models\\ipadapter\\ip-adapter-faceid-plusv2_sd15.bin",
+      "bytes": 156558509
+    },
+    "lora": {
+      "path": "C:\\VenHoGPU\\comfyui\\models\\loras\\ip-adapter-faceid-plusv2_sd15_lora.safetensors",
+      "bytes": 51059544
+    },
+    "plugin": {
+      "path": "C:\\VenHoGPU\\comfyui\\custom_nodes\\ComfyUI_IPAdapter_plus",
+      "bytes": null
+    }
+  }
+}

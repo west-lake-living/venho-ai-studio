@@ -1,0 +1,4 @@
+{
+  "error": "Nano bridge HTTP 400: {\"error\":\"mask/geometry path is outside the trusted studio root\"}",
+  "status": "FAILED"
+}

@@ -17,6 +17,7 @@ dependencies = [
     "pillow>=10.0",
     "python-dotenv>=1.0",
     "google-genai>=1.0",
+    "numpy>=1.24",
 ]
 
 [project.optional-dependencies]
@@ -32,6 +33,10 @@ gemini = ["google-genai>=1.0"]
 # Required only by the post-restoration observed-geometry evidence producer.
 # The import is deferred so unit tests and non-Regional-QC restores remain offline.
 geometry = ["insightface>=0.7.3", "opencv-python-headless>=4.8", "onnxruntime>=1.16"]
+# Commercially permissible offline geometry alternative.  This does not install
+# InsightFace or download a detector model; the pinned YuNet artifact and MIT
+# license are retained under models/geometry/yunet/.
+geometry-yunet = ["opencv-python-headless>=4.10,<5.0"]
 
 [project.scripts]
 venho = "knowledge_studio.vision.cli:app"

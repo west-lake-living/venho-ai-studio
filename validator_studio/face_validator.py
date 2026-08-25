@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from collections import Counter
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Callable, Optional
 
 from shared.vision.client import VisionClient
 from shared.vision.structured import extract_json
@@ -178,6 +178,7 @@ def _observe_face(
     provider: str,
     reference_image_paths: Optional[list[Path]] = None,
     samples: int = 1,
+    raw_response_sink: Optional[Callable[[dict[str, Any]], None]] = None,
 ) -> FaceValidationObservation:
     if provider == "mock":
         return _mock_observe_face(image_path, rubric)
@@ -189,14 +190,44 @@ def _observe_face(
     prompt = _build_face_observe_prompt(dna, rubric, reference_image_paths=reference_image_paths)
 
     observed: list[FaceValidationObservation] = []
-    for _ in range(max(samples, 1)):
-        if reference_image_paths:
-            response = client.analyze_images([image_path, *reference_image_paths], prompt)
-        else:
-            response = client.analyze_image(image_path, prompt)
-        payload = response if isinstance(response, dict) and "gates" in response else extract_json(str(response))
-        _assert_face_observation_contract(payload, rubric)
-        observed.append(FaceValidationObservation.model_validate(payload))
+    for sample_index in range(max(samples, 1)):
+        try:
+            if raw_response_sink is not None:
+                client.raw_response_sink = lambda raw, index=sample_index + 1: raw_response_sink({
+                    "validator": "face", "sampleIndex": index, "rawResponse": raw,
+                    "parseStatus": "raw_captured",
+                })
+            schema = FaceValidationObservation.model_json_schema()
+            try:
+                if reference_image_paths:
+                    response = client.analyze_images([image_path, *reference_image_paths], prompt, response_schema=schema, sample_index=sample_index + 1)
+                else:
+                    response = client.analyze_image(image_path, prompt, response_schema=schema, sample_index=sample_index + 1)
+            except TypeError as exc:
+                if "unexpected keyword" not in str(exc):
+                    raise
+                if reference_image_paths:
+                    response = client.analyze_images([image_path, *reference_image_paths], prompt)
+                else:
+                    response = client.analyze_image(image_path, prompt)
+            raw = getattr(client, "last_raw_response", None)
+            if raw_response_sink is not None:
+                raw_response_sink({"validator": "face", "sampleIndex": sample_index + 1,
+                                   "rawResponse": raw, "parseStatus": "before_contract"})
+            payload = response if isinstance(response, dict) and "gates" in response else extract_json(str(response))
+            _assert_face_observation_contract(payload, rubric)
+            observation = FaceValidationObservation.model_validate(payload)
+            if raw_response_sink is not None:
+                raw_response_sink({"validator": "face", "sampleIndex": sample_index + 1,
+                                   "rawResponse": raw, "parseStatus": "parsed",
+                                   "parsedEvidence": observation.model_dump(mode="json")})
+            observed.append(observation)
+        except Exception as exc:
+            if raw_response_sink is not None:
+                raw_response_sink({"validator": "face", "sampleIndex": sample_index + 1,
+                                   "rawResponse": getattr(client, "last_raw_response", None),
+                                   "parseStatus": "failed", "parseError": str(exc)})
+            raise
 
     observation = _merge_face_samples(observed)
     return observation.model_copy(update={
@@ -217,11 +248,13 @@ def validate_face(
     provider: str = "mock",
     reference_image_paths: Optional[list[Path]] = None,
     samples: int = 1,
+    raw_response_sink: Optional[Callable[[dict[str, Any]], None]] = None,
 ) -> ValidationReport:
     dna_path = find_dna_path(project, subject)
     dna = load_json(dna_path)
     rubric = _load_face_rubric(project)
-    observation = _observe_face(image_path, dna, rubric, provider, reference_image_paths, samples)
+    observation = _observe_face(image_path, dna, rubric, provider, reference_image_paths, samples,
+                                raw_response_sink=raw_response_sink)
     score = score_face_observation(observation, rubric)
     return ValidationReport(
         project=project,
@@ -248,5 +281,35 @@ def validate_face(
         issues=score.issues,
         recommendation=score.recommendation,
         validation_notes=observation.notes,
+        raw_observation=observation.model_dump(mode="json"),
+    )
+
+
+def report_from_face_observations(
+    project: str,
+    subject: str,
+    image_path: Path,
+    observations: list[FaceValidationObservation],
+    provider: str,
+    reference_image_paths: Optional[list[Path]] = None,
+) -> ValidationReport:
+    """Build the normal Face ValidationReport from parsed samples offline."""
+    if not observations:
+        raise ValueError("at least one parsed face observation is required")
+    dna_path = find_dna_path(project, subject)
+    dna = load_json(dna_path)
+    rubric = _load_face_rubric(project)
+    observation = _merge_face_samples(observations)
+    score = score_face_observation(observation, rubric)
+    return ValidationReport(
+        project=project, subject=subject, validation_type="face",
+        artifact_ref=ArtifactRef(type="face", file=str(image_path), hash=sha256_file(image_path)),
+        source_knowledge=[SourceKnowledgeRef(file=str(dna_path), dna_version=dna.get("dna_version"), dna_contract_version=dna.get("contract_version"), hash=sha256_file(dna_path))],
+        observer=ObserverInfo(provider=provider, model="configured", samples=len(observations)),
+        kill_switch=score.kill_switch, overall_score=score.overall_score,
+        verdict=score.verdict, dna_match_score=score.dna_match_score,
+        section_scores=score.section_scores, category_scores=score.category_scores,
+        issues=score.issues, recommendation=score.recommendation,
+        validation_notes=[*observation.notes, f"recovered from {len(observations)} parsed Validator samples"],
         raw_observation=observation.model_dump(mode="json"),
     )

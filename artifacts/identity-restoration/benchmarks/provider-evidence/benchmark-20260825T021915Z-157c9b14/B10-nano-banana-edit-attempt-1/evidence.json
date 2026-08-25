@@ -1,0 +1,112 @@
+{
+  "anatomyScore": null,
+  "backend": "venho-os-gemini-interactions",
+  "environmentScore": null,
+  "error": null,
+  "evidencePath": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/benchmarks/provider-evidence/benchmark-20260825T021915Z-157c9b14/B10-nano-banana-edit-attempt-1/evidence.json",
+  "executorStatus": "COMPLETED",
+  "eyesBrowsScore": null,
+  "faceQcAfter": null,
+  "faceQcBefore": null,
+  "geometryScore": null,
+  "globalScore": null,
+  "gpuName": null,
+  "host": {
+    "hostname": "Harrys-Mac-mini.local",
+    "platform": "darwin"
+  },
+  "identityScore": null,
+  "lineage": {
+    "a2Path": "/Users/hanhpham/Developer/Claude-Workspace/projects/venho-social-content-agent/assets/face-plates/A2_Front_plate.png",
+    "a2Sha256": "1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d",
+    "baseFramePath": "/Users/hanhpham/Developer/Claude-Workspace/projects/venho-social-content-agent/photos-ai/2026/smoke-20260811-171445/case-5/variant-001/image.png",
+    "baseFrameSha256": "32c701012e40040772c69bff102719c5d48c9c046bad442f68f1bc520c5bc507",
+    "cropTransform": {
+      "bottom": 676,
+      "left": 478,
+      "right": 585,
+      "targetSize": 107,
+      "top": 486
+    },
+    "local_fallback": false,
+    "maskPath": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/benchmark-geometry/v2.1/B10/full_canvas_mask.png",
+    "maskVersion": "hierarchical_face_v1",
+    "mock_used": false,
+    "operation": "masked_edit",
+    "providerMetadata": {
+      "a2Path": "/Users/hanhpham/Developer/Claude-Workspace/projects/venho-social-content-agent/assets/face-plates/A2_Front_plate.png",
+      "a2Sha256": "1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d",
+      "basePath": "/Users/hanhpham/Developer/Claude-Workspace/projects/venho-social-content-agent/photos-ai/2026/smoke-20260811-171445/case-5/variant-001/image.png",
+      "baseSha256": "32c701012e40040772c69bff102719c5d48c9c046bad442f68f1bc520c5bc507",
+      "frozenCropTransform": {
+        "bottom": 676,
+        "left": 478,
+        "right": 585,
+        "targetSize": 107,
+        "top": 486
+      },
+      "geometryAuthorityPath": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/benchmark-geometry/v2.1/B10/geometry_manifest.json",
+      "internalProductionTransform": {
+        "left": 444,
+        "maskBounds": {
+          "height": 103,
+          "left": 498,
+          "top": 530,
+          "width": 68
+        },
+        "maskCoverageRatio": 0.005235699785048961,
+        "providerSize": 1024,
+        "size": 176,
+        "top": 494
+      },
+      "maskPath": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/benchmark-geometry/v2.1/B10/full_canvas_mask.png",
+      "maskSha256": "6cc71f8088d4bca0f9271255830ccb92f50aaeb77a7c469d635afb6136d4acda",
+      "providerReferenceHashes": [
+        {
+          "role": "base",
+          "sha256": "7ba4b3a526ba2f74d3a0e26a9c0975e719afa764fb7a3c0855ef7758843abf11"
+        },
+        {
+          "role": "mask",
+          "sha256": "ecbd5c3a3353ab3d7f9f4ef8a6efc4494cb96737274ca079cdf9f906b61eaeb2"
+        },
+        {
+          "role": "face",
+          "sha256": "1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d"
+        }
+      ],
+      "providerReferenceRoles": [
+        "base",
+        "mask",
+        "face"
+      ]
+    },
+    "requestLineage": {
+      "attemptId": "B10-nano-banana-edit-attempt-1",
+      "cropLocalMaskPath": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/benchmark-geometry/v2.1/B10/crop_local_mask.png",
+      "cropLocalMaskSha256": "da53472a48f40487700d36e986b301381a6ca5b48c1b53391cbfd2c27c0f1702",
+      "fullCanvasMaskPath": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/benchmark-geometry/v2.1/B10/full_canvas_mask.png",
+      "fullCanvasMaskSha256": "6cc71f8088d4bca0f9271255830ccb92f50aaeb77a7c469d635afb6136d4acda",
+      "geometryAuthorityPath": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/benchmark-geometry/v2.1/B10/geometry_manifest.json",
+      "geometryAuthoritySha256": "524e5110e535b384f0b652512af377b9b696145a8c1627a6c55e0efab6e2b757",
+      "runId": "benchmark-20260825T021915Z-157c9b14",
+      "seed": 42
+    },
+    "silent_fallback": false
+  },
+  "model": "gemini-3.1-flash-image",
+  "operation": "masked_edit",
+  "outfitScore": null,
+  "outputPath": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/benchmarks/provider-evidence/benchmark-20260825T021915Z-157c9b14/B10-nano-banana-edit-attempt-1/output.png",
+  "outputSha256": "5a25d37a16ceab038c02b9402cb8248a84aa4cb1247f14ed50284563cb365cd8",
+  "pixelPreservationResult": "UNKNOWN",
+  "provider": "nano-banana-2",
+  "providerRequestId": null,
+  "providerRunId": null,
+  "retryCount": 0,
+  "runtimeMs": 13132,
+  "seedSupported": false,
+  "vramPeakMb": null,
+  "workflowId": null,
+  "workflowSha256": null
+}

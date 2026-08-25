@@ -17,11 +17,13 @@ class OpenAIVisionProvider:
         self.client = OpenAI()
         self.model = model
         self.temperature = temperature
+        self.last_raw_response: str | None = None
+        self.raw_response_sink = None
 
-    def analyze(self, image_path: Path, system_prompt: str) -> dict[str, Any]:
+    def analyze(self, image_path: Path, system_prompt: str, **kwargs: Any) -> dict[str, Any]:
         """Analyze a single image and return structured dict."""
         return self.analyze_many(
-            [image_path], system_prompt, text_prompt="Analyze this image and return JSON only."
+            [image_path], system_prompt, text_prompt="Analyze this image and return JSON only.", **kwargs
         )
 
     def analyze_many(
@@ -29,6 +31,7 @@ class OpenAIVisionProvider:
         image_paths: Sequence[Path],
         system_prompt: str,
         text_prompt: str = "Analyze these images and return JSON only.",
+        **kwargs: Any,
     ) -> dict[str, Any]:
         """Analyze one or more images in a single call and return structured dict.
 
@@ -65,6 +68,9 @@ class OpenAIVisionProvider:
         )
 
         raw = response.choices[0].message.content or ""
+        self.last_raw_response = raw
+        if self.raw_response_sink is not None:
+            self.raw_response_sink(raw)
         tokens_in = response.usage.prompt_tokens if response.usage else 0
         tokens_out = response.usage.completion_tokens if response.usage else 0
         log(f"  OpenAI vision: {len(image_paths)} image(s), {tokens_in} in / {tokens_out} out tokens")

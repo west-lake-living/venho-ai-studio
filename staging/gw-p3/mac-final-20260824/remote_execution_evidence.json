@@ -1,0 +1,51 @@
+{
+  "a2_sha256": "1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d",
+  "application_result": "FAILED_AFTER_REMOTE_OUTPUT",
+  "byte_difference": true,
+  "failure": "ValueError: before, after and mask must have identical dimensions",
+  "history_status": {
+    "completed": true,
+    "messages": [
+      [
+        "execution_start",
+        {
+          "prompt_id": "0ce26c1e-b28c-4cda-8dd2-aa07ca8be37e",
+          "timestamp": 1787552168958
+        }
+      ],
+      [
+        "execution_cached",
+        {
+          "nodes": [],
+          "prompt_id": "0ce26c1e-b28c-4cda-8dd2-aa07ca8be37e",
+          "timestamp": 1787552168986
+        }
+      ],
+      [
+        "execution_success",
+        {
+          "prompt_id": "0ce26c1e-b28c-4cda-8dd2-aa07ca8be37e",
+          "timestamp": 1787552215068
+        }
+      ]
+    ],
+    "status_str": "success"
+  },
+  "input_crop_sha256": "470e8aa2cd4055496186271a818e7aa31bf0fb5228242266a2c8c1cbc1cf4dcb",
+  "output": {
+    "format": "PNG",
+    "height": 659,
+    "mode": "RGB",
+    "width": 687
+  },
+  "output_info": {
+    "filename": "gw-p3_00004_.png",
+    "subfolder": "",
+    "type": "output"
+  },
+  "output_sha256": "c1f41e249d8b815279e137948f0585cb7a6dcf2e681d781e49e43b9174923018",
+  "prompt_id": "0ce26c1e-b28c-4cda-8dd2-aa07ca8be37e",
+  "restorer_id": "comfyui-remote",
+  "workflow_id": "face_restore_win_sd15_ipadapter_v1",
+  "workflow_sha256": "7a320dd58c6e96b4d8c1c0e82c2ffe1d6ca6ace12a691f1aca5ebef8589f1ec8"
+}

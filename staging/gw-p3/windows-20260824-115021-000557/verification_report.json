@@ -1,0 +1,16 @@
+{
+  "byte_difference": true,
+  "evidence": "C:\\VenHoGPU\\evidence\\gw-p3-20260824-115021-000557",
+  "fallback_used": false,
+  "input_crop_sha256": "470e8aa2cd4055496186271a818e7aa31bf0fb5228242266a2c8c1cbc1cf4dcb",
+  "mock_used": false,
+  "output": {
+    "format": "PNG",
+    "height": 656,
+    "mode": "RGB",
+    "width": 680
+  },
+  "output_sha256": "69f432daabababc5b84febb798be3ba565683468180ff62eea044c78bf5b7ed3",
+  "prompt_id": "c62d7c8a-54dd-4101-80d0-b1cde3bd1895",
+  "status": "PASS"
+}

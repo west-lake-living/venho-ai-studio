@@ -1,0 +1,62 @@
+{
+  "devices": [
+    {
+      "index": 0,
+      "name": "cuda:0 NVIDIA GeForce GTX 1660 SUPER : cudaMallocAsync",
+      "torch_vram_free": 0,
+      "torch_vram_total": 0,
+      "type": "cuda",
+      "vram_free": 5381292032,
+      "vram_total": 6442123264
+    }
+  ],
+  "system": {
+    "argv": [
+      "C:\\VenHoGPU\\comfyui\\main.py",
+      "--listen",
+      "127.0.0.1",
+      "--port",
+      "8188",
+      "--lowvram",
+      "--fp32-vae"
+    ],
+    "comfy_package_versions": [
+      {
+        "installed": "1.49.6",
+        "name": "comfyui-frontend-package",
+        "required": "1.49.6"
+      },
+      {
+        "installed": "0.11.43",
+        "name": "comfyui-workflow-templates",
+        "required": "0.11.43"
+      },
+      {
+        "installed": "0.5.10",
+        "name": "comfyui-embedded-docs",
+        "required": "0.5.10"
+      },
+      {
+        "installed": "0.2.31",
+        "name": "comfy-kitchen",
+        "required": "0.2.31"
+      },
+      {
+        "installed": "0.4.13",
+        "name": "comfy-aimdo",
+        "required": "0.4.13"
+      }
+    ],
+    "comfyui_version": "0.33.0",
+    "deploy_environment": "local-git",
+    "embedded_python": false,
+    "installed_templates_version": "0.11.43",
+    "os": "win32",
+    "python_version": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]",
+    "pytorch_version": "2.13.0+cu126",
+    "ram_free": 8208175104,
+    "ram_total": 17092317184,
+    "required_frontend_version": "1.49.6",
+    "required_templates_version": "0.11.43"
+  }
+}

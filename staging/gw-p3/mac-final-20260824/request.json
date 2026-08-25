@@ -1,0 +1,34 @@
+{
+  "contractVersion": "1.0",
+  "runId": "gw-p3-final-20260824",
+  "attemptId": "attempt-01",
+  "restorerId": "comfyui-remote",
+  "basePath": "/Users/hanhpham/Developer/Claude-Workspace/projects/venho-social-content-agent/assets/action-composite-live/action_01_jogging.png",
+  "cropPath": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/tests/identity_restoration/golden/gw-p0-t2-case-01/input_crop.png",
+  "maskEditablePath": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/data/identity_restoration_runs/gw-p0-t2-qc4c2f-local-candidate/diagnostics/current_restoration_mask.png",
+  "maskFeatherPath": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/data/identity_restoration_runs/gw-p0-t2-qc4c2f-local-candidate/diagnostics/current_restoration_mask.png",
+  "maskVersion": "hierarchical_face_v1",
+  "fullCanvasMaskPath": "/Users/hanhpham/Developer/Claude-Workspace/projects/venho-social-content-agent/assets/action-composite-live/face-mask.png",
+  "fullCanvasMaskFeatherPath": "/Users/hanhpham/Developer/Claude-Workspace/projects/venho-social-content-agent/assets/action-composite-live/face-mask.png",
+  "fullCanvasMaskVersion": "hierarchical_face_v1_full_canvas",
+  "fullCanvasMaskSha256": "506fd5e52274b59af2881dcbaef3fe7904da7f30c75dc3bc23492dadf50ffb94",
+  "cropBox": {
+    "left": 201,
+    "top": 0,
+    "right": 888,
+    "bottom": 659,
+    "targetSize": 687
+  },
+  "a2Path": "/Users/hanhpham/Developer/Claude-Workspace/projects/venho-social-content-agent/assets/face-plates/A2_Front_plate.png",
+  "a2Sha256": "1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d",
+  "workflowId": "face_restore_win_sd15_ipadapter_v1",
+  "seed": 123456,
+  "params": {
+    "denoise": 0.35,
+    "steps": 20,
+    "cfg": 6.0,
+    "sampler": "euler",
+    "scheduler": "normal"
+  },
+  "timeoutSeconds": 1800
+}

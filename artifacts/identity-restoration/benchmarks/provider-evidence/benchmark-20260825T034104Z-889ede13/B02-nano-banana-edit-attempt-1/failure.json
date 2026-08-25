@@ -1,0 +1,4 @@
+{
+  "error": "Nano bridge HTTP 502: {\"error\":\"IMAGE_GENERATION_RATE_LIMITED\"}",
+  "status": "FAILED"
+}

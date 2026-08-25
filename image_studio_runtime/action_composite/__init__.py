@@ -6,7 +6,8 @@ from .orchestration import AuditTrail, CostLedger, IdempotencyStore, IterationRe
 from .pipeline import ActionCompositePipeline
 from .masks import HierarchicalFaceMasks, hierarchical_face_masks
 from .workflow_v2 import CandidateSelector, RegionalGate, SceneCandidate, WorkflowLedger
-from .geometry import FaceGeometryEvidenceBlocked, InsightFaceGeometryExtractor
+from .geometry import (FaceGeometryEvidenceBlocked, InsightFaceGeometryExtractor,
+                       YuNetGeometryExtractor, create_geometry_extractor)
 from .production import ProductionRunner
 from .regression_guard import assert_no_regression, protected_region, unchanged_outside_mask
 from .selective_repair import SelectiveRepairController
@@ -25,7 +26,8 @@ __all__ = [
     "ActionCompositePipeline", "ActionCompositeService", "AuditStore", "AuditTrail", "CostLedger",
     "HierarchicalFaceMasks", "hierarchical_face_masks",
     "CandidateSelector", "RegionalGate", "SceneCandidate", "WorkflowLedger",
-    "FaceGeometryEvidenceBlocked", "InsightFaceGeometryExtractor",
+    "FaceGeometryEvidenceBlocked", "InsightFaceGeometryExtractor", "YuNetGeometryExtractor",
+    "create_geometry_extractor",
     "IdempotencyStore", "IterationRecord", "JobEnvelope", "JobStatus", "ProductionRunner",
     "RegionValidation", "RegionalValidator", "RetryPolicy", "SelectiveRepairController",
     "StopCondition", "ValidationStatus", "WorkflowRegistry", "assert_no_regression",

@@ -239,6 +239,155 @@ class InsightFaceGeometryExtractor:
         )
 
 
+class YuNetGeometryExtractor:
+    """OpenCV Zoo YuNet adapter for the existing five-point geometry contract.
+
+    YuNet is deliberately an explicit alternative, not a fallback.  The model
+    file and its SHA-256 are checked before initialization, and exactly one
+    detected face is required just as it is for ``InsightFaceGeometryExtractor``.
+    The downstream crop/mask/PnP implementation is shared with the existing
+    extractor; this class only adapts YuNet's ``[x, y, w, h, 10 landmarks,
+    confidence]`` detector rows.
+    """
+
+    method_version = "opencv-zoo-yunet-2023mar-pnp-v1"
+    backend_id = "yunet"
+    model_name = "face_detection_yunet_2023mar.onnx"
+    model_sha256 = "8f2383e4dd3cfbb4553ea8718107fc0423210dc964f9f4280604804ed2552fa4"
+    landmark_order = InsightFaceGeometryExtractor.landmark_order
+    detector_input_size = (320, 320)
+    confidence_threshold = 0.6
+    nms_threshold = 0.3
+
+    def __init__(self, *, model_path: str | Path | None = None, detector: Any | None = None,
+                 cv2_module: Any | None = None, expected_model_sha256: str | None = None) -> None:
+        root = Path(__file__).resolve().parents[2]
+        self.model_path = Path(model_path) if model_path is not None else (
+            root / "models" / "geometry" / "yunet" / self.model_name
+        )
+        self.expected_model_sha256 = expected_model_sha256 or self.model_sha256
+        self._detector = detector
+        self._cv2 = cv2_module
+        self.last_provenance: dict[str, Any] | None = None
+
+    def __call__(self, artifact_path: Path) -> FaceGeometry:
+        return self.extract(artifact_path)
+
+    def extract(self, artifact_path: str | Path) -> FaceGeometry:
+        path = Path(artifact_path)
+        if not path.is_file():
+            raise FaceGeometryEvidenceBlocked(f"Observed geometry artifact is missing: {path}")
+        cv2 = self._runtime()
+        try:
+            import numpy as np
+            image = np.asarray(Image.open(path).convert("RGB"))
+            if image.ndim != 3 or image.shape[2] != 3:
+                raise ValueError("decoded artifact must be an RGB image")
+            # FaceDetectorYN follows OpenCV's BGR image convention.  The source
+            # artifact remains untouched and the conversion is recorded.
+            detector_input = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+            self._detector.setInputSize((int(image.shape[1]), int(image.shape[0])))
+            _, rows = self._detector.detect(detector_input)
+        except FaceGeometryEvidenceBlocked:
+            raise
+        except Exception as exc:  # pragma: no cover - provider-dependent details
+            raise FaceGeometryEvidenceBlocked(f"YuNet geometry extraction failed: {exc}") from exc
+
+        if rows is None:
+            rows = []
+        rows = list(rows) if not hasattr(rows, "shape") else rows
+        try:
+            count = int(len(rows))
+        except Exception as exc:
+            raise FaceGeometryEvidenceBlocked("YuNet returned malformed detections") from exc
+        if count != 1:
+            raise FaceGeometryEvidenceBlocked(
+                f"YuNet geometry extraction requires exactly one face; detected {count}"
+            )
+        try:
+            row = rows[0]
+            values = [float(value) for value in row]
+            if len(values) != 15:
+                raise ValueError("expected 15 YuNet values per detection")
+            x, y, width, height = values[:4]
+            right, bottom = x + width, y + height
+            image_width, image_height = int(image.shape[1]), int(image.shape[0])
+            if x < 0 or y < 0 or width <= 0 or height <= 0 or right > image_width or bottom > image_height:
+                raise ValueError("YuNet bbox is outside decoded image bounds")
+            landmarks = np.asarray(values[4:14], dtype="float64").reshape(5, 2)
+            if not np.isfinite(landmarks).all() or (landmarks[:, 0] < 0).any() or (landmarks[:, 1] < 0).any():
+                raise ValueError("YuNet landmarks are invalid or outside the image")
+            confidence = values[14]
+            if not 0.0 <= confidence <= 1.0:
+                raise ValueError("YuNet confidence is outside [0, 1]")
+            bbox = [x, y, right, bottom]
+        except FaceGeometryEvidenceBlocked:
+            raise
+        except Exception as exc:
+            raise FaceGeometryEvidenceBlocked(f"YuNet detection evidence is invalid: {exc}") from exc
+
+        self.last_provenance = {
+            "original_artifact": str(path),
+            "original_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+            "original_dimensions": {"width": image_width, "height": image_height},
+            "detector": "cv2.FaceDetectorYN",
+            "backend": self.backend_id,
+            "model": self.model_name,
+            "model_path": str(self.model_path),
+            "model_sha256": self.expected_model_sha256,
+            "confidence": confidence,
+            "detection_count": 1,
+            "face_selection_policy": "exactly_one_face_required",
+            "input_color_order": "BGR",
+            "source_decode_color_order": "RGB",
+            "landmark_count": 5,
+            "landmark_order": list(self.landmark_order),
+            "landmarks": landmarks.tolist(),
+            "bbox_xyxy": bbox,
+            "method_version": self.method_version,
+        }
+        return InsightFaceGeometryExtractor._to_geometry(
+            bbox, landmarks, image_width=image_width, image_height=image_height,
+            cv2=cv2, provenance=self.last_provenance,
+        )
+
+    def _runtime(self) -> Any:
+        if not self.model_path.is_file():
+            raise FaceGeometryEvidenceBlocked(f"YuNet model artifact is missing: {self.model_path}")
+        actual_sha256 = hashlib.sha256(self.model_path.read_bytes()).hexdigest()
+        if actual_sha256 != self.expected_model_sha256:
+            raise FaceGeometryEvidenceBlocked(
+                f"YuNet model SHA-256 mismatch: expected {self.expected_model_sha256}, got {actual_sha256}"
+            )
+        if self._detector is not None and self._cv2 is not None:
+            return self._cv2
+        try:
+            import cv2
+        except ImportError as exc:
+            raise FaceGeometryEvidenceBlocked(
+                "YuNet geometry runtime is unavailable; install venho-ai-studio[geometry-yunet]"
+            ) from exc
+        try:
+            self._detector = cv2.FaceDetectorYN.create(
+                str(self.model_path), "", self.detector_input_size,
+                self.confidence_threshold, self.nms_threshold,
+            )
+        except Exception as exc:  # pragma: no cover - provider-dependent details
+            raise FaceGeometryEvidenceBlocked(f"YuNet detector initialization failed: {exc}") from exc
+        self._cv2 = cv2
+        return cv2
+
+
+def create_geometry_extractor(backend: str, **kwargs: Any) -> Any:
+    """Resolve an explicitly selected geometry backend; never silently fall back."""
+    normalized = backend.strip().lower()
+    if normalized == "yunet":
+        return YuNetGeometryExtractor(**kwargs)
+    if normalized == "insightface":
+        return InsightFaceGeometryExtractor(**kwargs)
+    raise FaceGeometryEvidenceBlocked(f"Unsupported geometry backend: {backend!r}")
+
+
 @dataclass(frozen=True)
 class FullFrameReinsertionGeometryResult:
     """Observed geometry recovered from an analysis-only reinserted frame."""

@@ -62,10 +62,12 @@ def a2_png() -> bytes:
 def restore_command_factory(crop_png, mask_set, base_canvas_png, crop_transform, restoration_params):
     from identity_restoration.application.dto.restore_command import RestoreCommand
 
-    def _build(*, restorer_id: str = "mock", a2_sha256: str, seed: int = 42):
+    def _build(*, restorer_id: str = "mock", a2_sha256: str, seed: int = 42,
+               restoration_mask=mask_set, full_canvas_mask=mask_set):
         return RestoreCommand(
             run_id="run-test", attempt_id="attempt-1", restorer_id=restorer_id,
-            crop_png=crop_png, mask=mask_set, base_canvas_png=base_canvas_png,
+            crop_png=crop_png, mask=restoration_mask, full_canvas_mask=full_canvas_mask,
+            base_canvas_png=base_canvas_png,
             crop_transform=crop_transform, a2_path="fake/a2.png", a2_sha256=a2_sha256,
             workflow_id="mock-workflow", seed=seed, params=restoration_params,
         )

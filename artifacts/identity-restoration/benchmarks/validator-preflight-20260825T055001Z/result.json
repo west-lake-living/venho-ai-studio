@@ -1,0 +1,19 @@
+{
+  "preflight": "validator-credit-recovery",
+  "timestampUtc": "2026-08-25T05:50:01Z",
+  "provider": "gemini",
+  "model": "gemini-3.5-flash",
+  "validatorIdentity": "validator-studio-face-image-v1:gemini:rubric=07F:samples=3",
+  "project": "venho_hotel",
+  "subject": "linh_an",
+  "probeCase": "B01",
+  "probeImageSha256": "c9f7015d2ae990785cd867121b525df31f17f4d244d3f2c63bc4bb3f66ccaeef",
+  "generationCalls": 0,
+  "validatorCallsAttempted": 1,
+  "rawResponsePersisted": false,
+  "status": "EXTERNAL_BLOCKED",
+  "errorCode": 429,
+  "errorStatus": "RESOURCE_EXHAUSTED",
+  "errorMessage": "Your prepayment credits are depleted.",
+  "run6Created": false
+}

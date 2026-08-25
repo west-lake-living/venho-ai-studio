@@ -6,6 +6,8 @@
   "basePath": "data/base.png",
   "cropPath": "data/crop.png",
   "maskEditablePath": "data/mask.png",
+  "fullCanvasMaskPath": "data/full-mask.png",
+  "fullCanvasMaskSha256": "506fd5e52274b59af2881dcbaef3fe7904da7f30c75dc3bc23492dadf50ffb94",
   "cropBox": { "left": 10, "top": 10, "right": 26, "bottom": 26 },
   "a2Path": "assets/linh_an/A2_Front.png",
   "a2Sha256": "1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d",

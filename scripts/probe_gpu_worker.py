@@ -23,19 +23,21 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+from identity_restoration.application.use_cases.check_worker_health import CheckWorkerHealthUseCase
 from identity_restoration.infrastructure.composition.identity_restoration_module import (
-    build_identity_restoration_module,
+    build_worker_health,
 )
 
 
 def main() -> int:
-    module = build_identity_restoration_module()
-    check = module.check_health()
-    if check is None:
+    # FACT 2 fix: health must never depend on the inference workflow loading
+    # successfully — build_worker_health() reads env only, no workflow I/O.
+    worker_health = build_worker_health()
+    if worker_health is None:
         print(json.dumps({"status": "NOT_CONFIGURED",
                           "message": "IDR_COMFYUI_ENABLED is false — no worker to probe"}))
         return 1
-    health = check.execute()
+    health = CheckWorkerHealthUseCase(health=worker_health).execute()
     print(json.dumps({"status": health.status.value, "gpuName": health.gpu_name,
                       "vramFreeMb": health.vram_free_mb, "latencyMs": health.latency_ms}))
     return 0 if health.status.value in ("HEALTHY", "DEGRADED") else 1

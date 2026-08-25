@@ -4,7 +4,7 @@
   "type": "object",
   "required": [
     "contractVersion", "runId", "attemptId", "restorerId",
-    "basePath", "cropPath", "maskEditablePath", "cropBox",
+    "basePath", "cropPath", "maskEditablePath", "fullCanvasMaskPath", "fullCanvasMaskSha256", "cropBox",
     "a2Path", "a2Sha256", "workflowId", "seed", "params"
   ],
   "additionalProperties": false,
@@ -18,6 +18,10 @@
     "maskEditablePath": { "type": "string" },
     "maskFeatherPath": { "type": "string" },
     "maskVersion": { "type": "string" },
+    "fullCanvasMaskPath": { "type": "string" },
+    "fullCanvasMaskFeatherPath": { "type": "string" },
+    "fullCanvasMaskVersion": { "type": "string" },
+    "fullCanvasMaskSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
     "cropBox": {
       "type": "object",
       "required": ["left", "top", "right", "bottom"],

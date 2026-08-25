@@ -16,13 +16,9 @@ the worker itself** — pull the repo version down again instead.
   its pin in `workflow_pins.yaml` points there. `comfyui-local` reads it via
   `infrastructure/comfyui/workflow_repository.py::FileWorkflowRepository`,
   which resolves whatever `path`/`filename` the pin declares.
-- **`face_restore_win_sd15_ipadapter_v1`** — the new SD1.5 + IPAdapter
-  FaceID workflow for the Windows GPU worker, authored under this directory
-  as `face_restore_win_sd15_ipadapter_v1.api.json` (GW-P3-T10). It does not
-  exist yet; a `<pin after the workflow is authored...>` placeholder sits in
-  both `workflow_pins.yaml` and
-  `infrastructure/comfyui/node_registry.py::WORKFLOWS` until it is written on
-  the Windows worker, exported, and copied back into this directory.
+- **`face_restore_win_sd15_ipadapter_v1`** — the exact SD1.5 + IPAdapter
+  FaceID API workflow from the successful HARRY-ROG GW-P3 run. Its SHA-256 is
+  pinned in `workflow_pins.yaml` and must match byte-for-byte.
 
 ## Pinning a new or changed workflow
 

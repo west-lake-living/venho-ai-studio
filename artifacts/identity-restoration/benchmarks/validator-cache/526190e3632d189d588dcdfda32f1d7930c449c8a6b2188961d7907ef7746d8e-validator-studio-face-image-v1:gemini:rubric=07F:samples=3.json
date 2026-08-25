@@ -1,0 +1,1111 @@
+{
+  "cacheIdentity": "validator-studio-face-image-v1:gemini:rubric=07F:samples=3",
+  "faceQc": {
+    "allowed_imperfections_check": [],
+    "artifact_ref": {
+      "file": "/Users/hanhpham/Developer/Claude-Workspace/projects/venho-social-content-agent/photos-ai/2026/gw-p4-t0-4-b06-walking/run-001/image.png",
+      "hash": "sha256:526190e3632d189d588dcdfda32f1d7930c449c8a6b2188961d7907ef7746d8e",
+      "type": "face"
+    },
+    "category_scores": {
+      "eyes_and_brows": 85.0,
+      "facial_shape": 88.0,
+      "mouth_and_chin": 86.0,
+      "nose": 87.0,
+      "technical_quality": 78.33
+    },
+    "contract_refs": null,
+    "contract_version": "1.0",
+    "dna_match_score": 85.78,
+    "forbidden_violations": [],
+    "generated_at": "2026-08-25T09:07:32.548311",
+    "issues": [],
+    "kill_switch": {
+      "reason": "",
+      "triggered": false
+    },
+    "module": "validator_studio",
+    "observer": {
+      "model": "configured",
+      "provider": "gemini",
+      "samples": 3
+    },
+    "overall_score": 85.78,
+    "project": "venho_hotel",
+    "prompt_ref": null,
+    "raw_observation": {
+      "gates": [
+        {
+          "evidence": "The bone structure, cheek fullness, and overall facial proportions are highly consistent with the reference image (A2 Front).",
+          "gate": "identity_structure",
+          "passed": true,
+          "reason": "The facial structure of the candidate in the full-body shot matches the reference image, showing the same soft elongated oval face shape, soft jawline, and delicate chin."
+        },
+        {
+          "evidence": "The eye shape, spacing, and size relative to the face in the candidate image match the reference standard.",
+          "gate": "eye_ratio",
+          "passed": true,
+          "reason": "The eye proportions and shape remain consistent with the character design, featuring long almond eyes with horizontal emphasis."
+        },
+        {
+          "evidence": "The candidate displays a natural, realistic skin texture with minimal makeup, consistent with the character's natural Vietnamese aesthetic.",
+          "gate": "forbidden_traits",
+          "passed": true,
+          "reason": "No forbidden traits such as heavy makeup, plastic skin texture, tattoos, glasses, or generic K-pop aesthetics are present in the candidate image."
+        }
+      ],
+      "notes": [
+        "The candidate image is a full-body shot, which naturally reduces the pixel density on the face compared to the close-up reference, but the facial features remain clearly identifiable and highly consistent with the character's DNA.",
+        "gemini face observation; grounding/web search disabled by prompt contract",
+        "no real-person or celebrity matching requested",
+        "compared against 1 approved reference image(s)",
+        "aggregated from 3 vision samples (majority-vote gates, averaged scores)"
+      ],
+      "weighted_scores": {
+        "eyes_and_brows": 85.0,
+        "facial_shape": 88.0,
+        "mouth_and_chin": 86.0,
+        "nose": 87.0,
+        "technical_quality": 78.33
+      }
+    },
+    "recommendation": "revise",
+    "section_scores": [
+      {
+        "category": "face_gate",
+        "evidence": "The bone structure, cheek fullness, and overall facial proportions are highly consistent with the reference image (A2 Front).",
+        "key": "identity_structure",
+        "match_state": null,
+        "reason": "The facial structure of the candidate in the full-body shot matches the reference image, showing the same soft elongated oval face shape, soft jawline, and delicate chin.",
+        "score": 100.0,
+        "section": "face_gate",
+        "status": "ok"
+      },
+      {
+        "category": "face_gate",
+        "evidence": "The eye shape, spacing, and size relative to the face in the candidate image match the reference standard.",
+        "key": "eye_ratio",
+        "match_state": null,
+        "reason": "The eye proportions and shape remain consistent with the character design, featuring long almond eyes with horizontal emphasis.",
+        "score": 100.0,
+        "section": "face_gate",
+        "status": "ok"
+      },
+      {
+        "category": "face_gate",
+        "evidence": "The candidate displays a natural, realistic skin texture with minimal makeup, consistent with the character's natural Vietnamese aesthetic.",
+        "key": "forbidden_traits",
+        "match_state": null,
+        "reason": "No forbidden traits such as heavy makeup, plastic skin texture, tattoos, glasses, or generic K-pop aesthetics are present in the candidate image.",
+        "score": 100.0,
+        "section": "face_gate",
+        "status": "ok"
+      },
+      {
+        "category": "facial_shape",
+        "evidence": "",
+        "key": "facial_shape",
+        "match_state": null,
+        "reason": "Weighted face rubric score.",
+        "score": 88.0,
+        "section": "face_weighted",
+        "status": "warning"
+      },
+      {
+        "category": "eyes_and_brows",
+        "evidence": "",
+        "key": "eyes_and_brows",
+        "match_state": null,
+        "reason": "Weighted face rubric score.",
+        "score": 85.0,
+        "section": "face_weighted",
+        "status": "warning"
+      },
+      {
+        "category": "nose",
+        "evidence": "",
+        "key": "nose",
+        "match_state": null,
+        "reason": "Weighted face rubric score.",
+        "score": 87.0,
+        "section": "face_weighted",
+        "status": "warning"
+      },
+      {
+        "category": "mouth_and_chin",
+        "evidence": "",
+        "key": "mouth_and_chin",
+        "match_state": null,
+        "reason": "Weighted face rubric score.",
+        "score": 86.0,
+        "section": "face_weighted",
+        "status": "warning"
+      },
+      {
+        "category": "technical_quality",
+        "evidence": "",
+        "key": "technical_quality",
+        "match_state": null,
+        "reason": "Weighted face rubric score.",
+        "score": 78.33,
+        "section": "face_weighted",
+        "status": "warning"
+      }
+    ],
+    "source_knowledge": [
+      {
+        "dna_contract_version": "1.1",
+        "dna_version": "1.1",
+        "file": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/data/projects/venho_hotel/knowledge/VENHO_HOTEL_LINH_AN_DNA.json",
+        "hash": "sha256:71f839dff776ec6d6d085c5a1ab928295af8c32a9699f7929d78b04807ec0075"
+      }
+    ],
+    "subject": "linh_an",
+    "validation_notes": [
+      "The candidate image is a full-body shot, which naturally reduces the pixel density on the face compared to the close-up reference, but the facial features remain clearly identifiable and highly consistent with the character's DNA.",
+      "gemini face observation; grounding/web search disabled by prompt contract",
+      "no real-person or celebrity matching requested",
+      "compared against 1 approved reference image(s)",
+      "aggregated from 3 vision samples (majority-vote gates, averaged scores)"
+    ],
+    "validation_type": "face",
+    "verdict": "revise"
+  },
+  "faceQcScore": 85.78,
+  "imageQc": {
+    "allowed_imperfections_check": [
+      {
+        "item": "very subtle natural eye asymmetry is correct and required",
+        "penalized": false,
+        "present": true,
+        "reason": "Subtle, natural asymmetry is present in the eyes, enhancing realism."
+      },
+      {
+        "item": "slightly uneven lip corners acceptable — natural upward tendency",
+        "penalized": false,
+        "present": true,
+        "reason": "The lips have a natural, slightly uneven upward curve at the corners."
+      },
+      {
+        "item": "natural skin texture with realistic pores acceptable — no airbrushing",
+        "penalized": false,
+        "present": true,
+        "reason": "Realistic skin texture is visible on the face and body under natural daylight."
+      },
+      {
+        "item": "slight hair strand variation acceptable — natural look",
+        "penalized": false,
+        "present": true,
+        "reason": "Loose strands of hair frame the face naturally, avoiding an overly stiff or perfect look."
+      }
+    ],
+    "artifact_ref": {
+      "file": "/Users/hanhpham/Developer/Claude-Workspace/projects/venho-social-content-agent/photos-ai/2026/gw-p4-t0-4-b06-walking/run-001/image.png",
+      "hash": "sha256:526190e3632d189d588dcdfda32f1d7930c449c8a6b2188961d7907ef7746d8e",
+      "type": "image"
+    },
+    "category_scores": {
+      "authenticity": 81.52,
+      "composition": 81.52,
+      "dna_match": 81.52,
+      "forbidden": 100.0,
+      "lighting": 81.52,
+      "material": 81.52,
+      "technical_quality": 81.52
+    },
+    "contract_refs": null,
+    "contract_version": "1.0",
+    "dna_match_score": 81.52,
+    "forbidden_violations": [
+      {
+        "confidence": 0.95,
+        "reason": "The skin texture is realistic with natural lighting and shadows, avoiding a plastic or doll-like appearance.",
+        "rule": "no plastic skin texture or doll face",
+        "severity": "high",
+        "source": "curated",
+        "violated": false
+      },
+      {
+        "confidence": 0.95,
+        "reason": "The makeup is minimal and natural, with no heavy contouring or dramatic features.",
+        "rule": "no exaggerated makeup or heavy contouring",
+        "severity": "high",
+        "source": "curated",
+        "violated": false
+      },
+      {
+        "confidence": 0.9,
+        "reason": "The facial features are distinct and characteristic of a Vietnamese aesthetic.",
+        "rule": "no generic Asian face (pan-Asian ambiguity)",
+        "severity": "high",
+        "source": "curated",
+        "violated": false
+      },
+      {
+        "confidence": 0.95,
+        "reason": "The facial structure is entirely East Asian/Vietnamese, with no Western features.",
+        "rule": "no Western facial structure",
+        "severity": "high",
+        "source": "curated",
+        "violated": false
+      },
+      {
+        "confidence": 0.9,
+        "reason": "The face exhibits natural, subtle asymmetry that makes it look realistic.",
+        "rule": "no symmetrical perfect face (lacks natural asymmetry)",
+        "severity": "high",
+        "source": "curated",
+        "violated": false
+      },
+      {
+        "confidence": 0.95,
+        "reason": "The eyes are long and almond-shaped with horizontal emphasis, not large and round.",
+        "rule": "no large round eyes (must be long almond, horizontal emphasis)",
+        "severity": "high",
+        "source": "curated",
+        "violated": false
+      },
+      {
+        "confidence": 0.9,
+        "reason": "The eyebrows are in a standard/low position with a gentle, natural arch.",
+        "rule": "no high-arch eyebrows (must be low-position, minimal arch)",
+        "severity": "high",
+        "source": "curated",
+        "violated": false
+      },
+      {
+        "confidence": 0.9,
+        "reason": "The upper eyelids are thin and natural.",
+        "rule": "no thick upper eyelid",
+        "severity": "high",
+        "source": "curated",
+        "violated": false
+      },
+      {
+        "confidence": 0.9,
+        "reason": "The subject has a distinct, natural Vietnamese appearance rather than a generic, heavily filtered influencer look.",
+        "rule": "no generic influencer look — must be distinctly Vietnamese",
+        "severity": "high",
+        "source": "curated",
+        "violated": false
+      }
+    ],
+    "generated_at": "2026-08-25T09:08:14.263154",
+    "issues": [
+      {
+        "issue": "earring_type does not fully match DNA.",
+        "severity": "medium",
+        "suggestion": "Strengthen prompt/output direction for: small_pearl_drop"
+      },
+      {
+        "issue": "hair_length does not fully match DNA.",
+        "severity": "medium",
+        "suggestion": "Strengthen prompt/output direction for: long_past_shoulders"
+      },
+      {
+        "issue": "shot_distance does not fully match DNA.",
+        "severity": "high",
+        "suggestion": "Strengthen prompt/output direction for: portrait_head_shoulders"
+      },
+      {
+        "issue": "hairstyle does not fully match DNA.",
+        "severity": "high",
+        "suggestion": "Strengthen prompt/output direction for: elegant_low_bun"
+      }
+    ],
+    "kill_switch": {
+      "reason": "",
+      "triggered": false
+    },
+    "module": "validator_studio",
+    "observer": {
+      "model": "configured",
+      "provider": "gemini",
+      "samples": 3
+    },
+    "overall_score": 85.22,
+    "project": "venho_hotel",
+    "prompt_ref": null,
+    "raw_observation": {
+      "allowed_imperfections": [
+        {
+          "item": "very subtle natural eye asymmetry is correct and required",
+          "present": true,
+          "reason": "Subtle, natural asymmetry is present in the eyes, enhancing realism."
+        },
+        {
+          "item": "slightly uneven lip corners acceptable — natural upward tendency",
+          "present": true,
+          "reason": "The lips have a natural, slightly uneven upward curve at the corners."
+        },
+        {
+          "item": "natural skin texture with realistic pores acceptable — no airbrushing",
+          "present": true,
+          "reason": "Realistic skin texture is visible on the face and body under natural daylight."
+        },
+        {
+          "item": "slight hair strand variation acceptable — natural look",
+          "present": true,
+          "reason": "Loose strands of hair frame the face naturally, avoiding an overly stiff or perfect look."
+        }
+      ],
+      "dna_matches": [
+        {
+          "category": "dna_match",
+          "confidence": 0.7,
+          "evidence": "Small light-colored studs or drops are visible on the earlobes but lack detail.",
+          "expected": "small_pearl_drop",
+          "key": "earring_type",
+          "match_state": "partial",
+          "observed": "Tiny earrings are visible but too small to clearly identify as small pearl drops due to the full-body shot distance.",
+          "reason": "The earrings are extremely small and difficult to resolve clearly from this distance."
+        },
+        {
+          "category": "dna_match",
+          "confidence": 0.8,
+          "evidence": "The volume of the bun and loose framing strands indicate long hair styled up.",
+          "expected": "long_past_shoulders",
+          "key": "hair_length",
+          "match_state": "partial",
+          "observed": "Hair is tied up in a bun, but loose strands and volume suggest long hair.",
+          "reason": "The hair is styled in an updo, making it impossible to directly measure length past the shoulders, though it is clearly long hair."
+        },
+        {
+          "category": "dna_match",
+          "confidence": 0.95,
+          "evidence": "Natural spacing between the upper eyelid and the brow line.",
+          "expected": "standard",
+          "key": "eyebrow_position",
+          "match_state": "match",
+          "observed": "Standard eyebrow position.",
+          "reason": "The eyebrows sit naturally above the eyes in a standard position."
+        },
+        {
+          "category": "dna_match",
+          "confidence": 0.95,
+          "evidence": "Smooth transition from the ear to the chin.",
+          "expected": "soft_feminine",
+          "key": "jaw_line",
+          "match_state": "match",
+          "observed": "Soft, feminine jawline.",
+          "reason": "The jawline curves smoothly without harsh angles."
+        },
+        {
+          "category": "dna_match",
+          "confidence": 0.95,
+          "evidence": "Almond-shaped eyes with warm brown irises and thin upper eyelids.",
+          "expected": "long almond eyes, horizontal eye emphasis, slightly narrow eye opening, thin upper eyelid, warm brown irises",
+          "key": "eye_shape",
+          "match_state": "match",
+          "observed": "Long almond eyes with horizontal emphasis, thin upper eyelids, and warm brown irises.",
+          "reason": "The eyes perfectly match the description of long almond shape with horizontal emphasis."
+        },
+        {
+          "category": "dna_match",
+          "confidence": 0.9,
+          "evidence": "Softly curved eyebrows framing the upper face.",
+          "expected": "medium_arch",
+          "key": "eyebrow_shape",
+          "match_state": "match",
+          "observed": "Medium arch eyebrows.",
+          "reason": "The eyebrows have a gentle, natural medium arch."
+        },
+        {
+          "category": "dna_match",
+          "confidence": 0.95,
+          "evidence": "A well-proportioned, slim nasal bridge.",
+          "expected": "slim_natural",
+          "key": "nose_bridge",
+          "match_state": "match",
+          "observed": "Slim, natural nose bridge.",
+          "reason": "The nose bridge is straight, slim, and looks highly natural."
+        },
+        {
+          "category": "dna_match",
+          "confidence": 0.95,
+          "evidence": "Balanced facial structure with soft contours and slightly rounded cheeks.",
+          "expected": "soft elongated oval face, balanced facial proportions, slightly fuller cheeks",
+          "key": "face_shape",
+          "match_state": "match",
+          "observed": "Soft elongated oval face with balanced proportions and slightly fuller cheeks.",
+          "reason": "The face shape is a soft, elongated oval with gentle cheek fullness."
+        },
+        {
+          "category": "dna_match",
+          "confidence": 0.95,
+          "evidence": "Natural skin highlights and realistic texture visible on the face and body.",
+          "expected": "fair warm ivory skin, healthy natural glow, realistic skin texture",
+          "key": "skin_tone",
+          "match_state": "match",
+          "observed": "Fair warm ivory skin with a healthy natural glow and realistic texture.",
+          "reason": "The skin tone is warm ivory with realistic lighting and texture."
+        },
+        {
+          "category": "dna_match",
+          "confidence": 1.0,
+          "evidence": "The subject's entire body, including legs and sneakers, is visible.",
+          "expected": "portrait_head_shoulders",
+          "key": "shot_distance",
+          "match_state": "mismatch",
+          "observed": "Full-body shot.",
+          "reason": "The image is a full-body shot showing the subject from head to toe, not a head-and-shoulders portrait."
+        },
+        {
+          "category": "dna_match",
+          "confidence": 0.95,
+          "evidence": "A refined, gently pointed chin shape.",
+          "expected": "delicate_pointed",
+          "key": "chin_shape",
+          "match_state": "match",
+          "observed": "Delicate, pointed chin.",
+          "reason": "The chin tapers to a delicate, soft point."
+        },
+        {
+          "category": "dna_match",
+          "confidence": 0.95,
+          "evidence": "Dark brown hair with warm undertones visible under natural light.",
+          "expected": "dark_chocolate_brown",
+          "key": "hair_color",
+          "match_state": "match",
+          "observed": "Dark chocolate brown hair.",
+          "reason": "The hair color is a rich, dark chocolate brown."
+        },
+        {
+          "category": "dna_match",
+          "confidence": 0.9,
+          "evidence": "A soft, pleasant resting expression with slightly upturned corners.",
+          "expected": "very_subtle_upward",
+          "key": "lip_corners",
+          "match_state": "match",
+          "observed": "Very subtle upward lip corners.",
+          "reason": "The corners of the mouth turn slightly upward in a gentle expression."
+        },
+        {
+          "category": "dna_match",
+          "confidence": 0.95,
+          "evidence": "The bun is positioned high on the crown of the head.",
+          "expected": "elegant_low_bun",
+          "key": "hairstyle",
+          "match_state": "mismatch",
+          "observed": "High bun / updo.",
+          "reason": "The hair is styled in a high bun/updo on top of the head, not a low bun."
+        },
+        {
+          "category": "dna_match",
+          "confidence": 0.95,
+          "evidence": "Well-defined lips with a slightly fuller lower lip and subtle upward corners.",
+          "expected": "natural full lips, slightly thinner upper lip, slightly fuller lower lip, very subtle upward lip corners",
+          "key": "lip_shape",
+          "match_state": "match",
+          "observed": "Natural full lips with a slightly thinner upper lip and fuller lower lip.",
+          "reason": "The lip proportions match the expected description perfectly."
+        }
+      ],
+      "forbidden": [
+        {
+          "confidence": 0.95,
+          "reason": "The skin texture is realistic with natural lighting and shadows, avoiding a plastic or doll-like appearance.",
+          "rule": "no plastic skin texture or doll face",
+          "severity": "high",
+          "source": "curated",
+          "violated": false
+        },
+        {
+          "confidence": 0.95,
+          "reason": "The makeup is minimal and natural, with no heavy contouring or dramatic features.",
+          "rule": "no exaggerated makeup or heavy contouring",
+          "severity": "high",
+          "source": "curated",
+          "violated": false
+        },
+        {
+          "confidence": 0.9,
+          "reason": "The facial features are distinct and characteristic of a Vietnamese aesthetic.",
+          "rule": "no generic Asian face (pan-Asian ambiguity)",
+          "severity": "high",
+          "source": "curated",
+          "violated": false
+        },
+        {
+          "confidence": 0.95,
+          "reason": "The facial structure is entirely East Asian/Vietnamese, with no Western features.",
+          "rule": "no Western facial structure",
+          "severity": "high",
+          "source": "curated",
+          "violated": false
+        },
+        {
+          "confidence": 0.9,
+          "reason": "The face exhibits natural, subtle asymmetry that makes it look realistic.",
+          "rule": "no symmetrical perfect face (lacks natural asymmetry)",
+          "severity": "high",
+          "source": "curated",
+          "violated": false
+        },
+        {
+          "confidence": 0.95,
+          "reason": "The eyes are long and almond-shaped with horizontal emphasis, not large and round.",
+          "rule": "no large round eyes (must be long almond, horizontal emphasis)",
+          "severity": "high",
+          "source": "curated",
+          "violated": false
+        },
+        {
+          "confidence": 0.9,
+          "reason": "The eyebrows are in a standard/low position with a gentle, natural arch.",
+          "rule": "no high-arch eyebrows (must be low-position, minimal arch)",
+          "severity": "high",
+          "source": "curated",
+          "violated": false
+        },
+        {
+          "confidence": 0.9,
+          "reason": "The upper eyelids are thin and natural.",
+          "rule": "no thick upper eyelid",
+          "severity": "high",
+          "source": "curated",
+          "violated": false
+        },
+        {
+          "confidence": 0.9,
+          "reason": "The subject has a distinct, natural Vietnamese appearance rather than a generic, heavily filtered influencer look.",
+          "rule": "no generic influencer look — must be distinctly Vietnamese",
+          "severity": "high",
+          "source": "curated",
+          "violated": false
+        }
+      ],
+      "notes": [
+        "The image is a high-quality full-body shot rather than the expected head-and-shoulders portrait.",
+        "The hairstyle is a high bun/updo instead of the expected elegant low bun.",
+        "The subject's facial features, skin tone, and overall aesthetic align closely with the desired Vietnamese DNA profile."
+      ]
+    },
+    "recommendation": "revise",
+    "section_scores": [
+      {
+        "category": "dna_match",
+        "evidence": "Small light-colored studs or drops are visible on the earlobes but lack detail.",
+        "key": "earring_type",
+        "match_state": "partial",
+        "reason": "The earrings are extremely small and difficult to resolve clearly from this distance.",
+        "score": 60.0,
+        "section": "dna_match",
+        "status": "warning"
+      },
+      {
+        "category": "dna_match",
+        "evidence": "The volume of the bun and loose framing strands indicate long hair styled up.",
+        "key": "hair_length",
+        "match_state": "partial",
+        "reason": "The hair is styled in an updo, making it impossible to directly measure length past the shoulders, though it is clearly long hair.",
+        "score": 60.0,
+        "section": "dna_match",
+        "status": "warning"
+      },
+      {
+        "category": "dna_match",
+        "evidence": "Natural spacing between the upper eyelid and the brow line.",
+        "key": "eyebrow_position",
+        "match_state": "match",
+        "reason": "The eyebrows sit naturally above the eyes in a standard position.",
+        "score": 100.0,
+        "section": "dna_match",
+        "status": "ok"
+      },
+      {
+        "category": "dna_match",
+        "evidence": "Smooth transition from the ear to the chin.",
+        "key": "jaw_line",
+        "match_state": "match",
+        "reason": "The jawline curves smoothly without harsh angles.",
+        "score": 100.0,
+        "section": "dna_match",
+        "status": "ok"
+      },
+      {
+        "category": "dna_match",
+        "evidence": "Almond-shaped eyes with warm brown irises and thin upper eyelids.",
+        "key": "eye_shape",
+        "match_state": "match",
+        "reason": "The eyes perfectly match the description of long almond shape with horizontal emphasis.",
+        "score": 100.0,
+        "section": "dna_match",
+        "status": "ok"
+      },
+      {
+        "category": "dna_match",
+        "evidence": "Softly curved eyebrows framing the upper face.",
+        "key": "eyebrow_shape",
+        "match_state": "match",
+        "reason": "The eyebrows have a gentle, natural medium arch.",
+        "score": 100.0,
+        "section": "dna_match",
+        "status": "ok"
+      },
+      {
+        "category": "dna_match",
+        "evidence": "A well-proportioned, slim nasal bridge.",
+        "key": "nose_bridge",
+        "match_state": "match",
+        "reason": "The nose bridge is straight, slim, and looks highly natural.",
+        "score": 100.0,
+        "section": "dna_match",
+        "status": "ok"
+      },
+      {
+        "category": "dna_match",
+        "evidence": "Balanced facial structure with soft contours and slightly rounded cheeks.",
+        "key": "face_shape",
+        "match_state": "match",
+        "reason": "The face shape is a soft, elongated oval with gentle cheek fullness.",
+        "score": 100.0,
+        "section": "dna_match",
+        "status": "ok"
+      },
+      {
+        "category": "dna_match",
+        "evidence": "Natural skin highlights and realistic texture visible on the face and body.",
+        "key": "skin_tone",
+        "match_state": "match",
+        "reason": "The skin tone is warm ivory with realistic lighting and texture.",
+        "score": 100.0,
+        "section": "dna_match",
+        "status": "ok"
+      },
+      {
+        "category": "dna_match",
+        "evidence": "The subject's entire body, including legs and sneakers, is visible.",
+        "key": "shot_distance",
+        "match_state": "mismatch",
+        "reason": "The image is a full-body shot showing the subject from head to toe, not a head-and-shoulders portrait.",
+        "score": 0.0,
+        "section": "dna_match",
+        "status": "fail"
+      },
+      {
+        "category": "dna_match",
+        "evidence": "A refined, gently pointed chin shape.",
+        "key": "chin_shape",
+        "match_state": "match",
+        "reason": "The chin tapers to a delicate, soft point.",
+        "score": 100.0,
+        "section": "dna_match",
+        "status": "ok"
+      },
+      {
+        "category": "dna_match",
+        "evidence": "Dark brown hair with warm undertones visible under natural light.",
+        "key": "hair_color",
+        "match_state": "match",
+        "reason": "The hair color is a rich, dark chocolate brown.",
+        "score": 100.0,
+        "section": "dna_match",
+        "status": "ok"
+      },
+      {
+        "category": "dna_match",
+        "evidence": "A soft, pleasant resting expression with slightly upturned corners.",
+        "key": "lip_corners",
+        "match_state": "match",
+        "reason": "The corners of the mouth turn slightly upward in a gentle expression.",
+        "score": 100.0,
+        "section": "dna_match",
+        "status": "ok"
+      },
+      {
+        "category": "dna_match",
+        "evidence": "The bun is positioned high on the crown of the head.",
+        "key": "hairstyle",
+        "match_state": "mismatch",
+        "reason": "The hair is styled in a high bun/updo on top of the head, not a low bun.",
+        "score": 0.0,
+        "section": "dna_match",
+        "status": "fail"
+      },
+      {
+        "category": "dna_match",
+        "evidence": "Well-defined lips with a slightly fuller lower lip and subtle upward corners.",
+        "key": "lip_shape",
+        "match_state": "match",
+        "reason": "The lip proportions match the expected description perfectly.",
+        "score": 100.0,
+        "section": "dna_match",
+        "status": "ok"
+      }
+    ],
+    "source_knowledge": [
+      {
+        "dna_contract_version": "1.1",
+        "dna_version": "1.1",
+        "file": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/data/projects/venho_hotel/knowledge/VENHO_HOTEL_LINH_AN_DNA.json",
+        "hash": "sha256:71f839dff776ec6d6d085c5a1ab928295af8c32a9699f7929d78b04807ec0075"
+      }
+    ],
+    "subject": "linh_an",
+    "validation_notes": [
+      "The image is a high-quality full-body shot rather than the expected head-and-shoulders portrait.",
+      "The hairstyle is a high bun/updo instead of the expected elegant low bun.",
+      "The subject's facial features, skin tone, and overall aesthetic align closely with the desired Vietnamese DNA profile."
+    ],
+    "validation_type": "image",
+    "verdict": "revise"
+  },
+  "imageSha256": "526190e3632d189d588dcdfda32f1d7930c449c8a6b2188961d7907ef7746d8e",
+  "regional": {
+    "anatomy": 100.0,
+    "environment": 100.0,
+    "eyes_brows": 85.0,
+    "geometry": 100.0,
+    "global_composite": 85.22,
+    "identity": 85.78,
+    "outfit": 100.0
+  },
+  "regionalAuthority": "image_studio_runtime.action_composite.regional_score_gateway.RegionalScoreGateway",
+  "regionalEvidence": {
+    "adapterVersion": "benchmark-regional-materialization-v1",
+    "authority": "image_studio_runtime.action_composite.regional_score_gateway.RegionalScoreGateway",
+    "benchmarkId": "B06",
+    "branch": "control",
+    "evidenceId": "0d5af252a4c54681056da3433995199f5cf2d0adf92329cf7dc7bf8b8dcf2be9",
+    "evidencePath": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/benchmarks/regional-evidence/gw-p4-t1-regional-complete-20260825/B06-control-regional-materialization-1/evidence.json",
+    "gatewayImplementation": "image_studio_runtime.action_composite.regional_score_gateway.RegionalScoreGateway",
+    "geometryObservation": {
+      "backend": "yunet",
+      "bbox_xyxy": [
+        466.6748352050781,
+        260.7315368652344,
+        549.2660598754883,
+        371.9044494628906
+      ],
+      "confidence": 0.9353456497192383,
+      "detection_count": 1,
+      "detector": "cv2.FaceDetectorYN",
+      "face_selection_policy": "exactly_one_face_required",
+      "input_color_order": "BGR",
+      "landmark_count": 5,
+      "landmark_order": [
+        "left_eye",
+        "right_eye",
+        "nose",
+        "left_mouth_corner",
+        "right_mouth_corner"
+      ],
+      "landmarks": [
+        [
+          493.88104248046875,
+          302.8890686035156
+        ],
+        [
+          530.66796875,
+          302.2833557128906
+        ],
+        [
+          516.4766845703125,
+          324.5307922363281
+        ],
+        [
+          497.7973327636719,
+          341.8810119628906
+        ],
+        [
+          529.6376953125,
+          341.316650390625
+        ]
+      ],
+      "method_version": "opencv-zoo-yunet-2023mar-pnp-v1",
+      "model": "face_detection_yunet_2023mar.onnx",
+      "model_path": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/models/geometry/yunet/face_detection_yunet_2023mar.onnx",
+      "model_sha256": "8f2383e4dd3cfbb4553ea8718107fc0423210dc964f9f4280604804ed2552fa4",
+      "original_artifact": "/Users/hanhpham/Developer/Claude-Workspace/projects/venho-social-content-agent/photos-ai/2026/gw-p4-t0-4-b06-walking/run-001/image.png",
+      "original_dimensions": {
+        "height": 1280,
+        "width": 1024
+      },
+      "original_sha256": "526190e3632d189d588dcdfda32f1d7930c449c8a6b2188961d7907ef7746d8e",
+      "pnp": {
+        "angle_convention": "rotation matrix XYZ decomposition; output pitch,yaw,roll in degrees",
+        "angle_range": "atan2-derived approximately [-180,180] degrees",
+        "angle_sign_convention": "existing _rotation_to_euler convention preserved",
+        "camera_matrix": [
+          [
+            1280.0,
+            0.0,
+            512.0
+          ],
+          [
+            0.0,
+            1280.0,
+            640.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "distortion_coefficients": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "image_point_count": 5,
+        "initial_solver": "cv2.SOLVEPNP_SQPNP",
+        "object_point_count": 5,
+        "refinement_method": "cv2.SOLVEPNP_ITERATIVE(useExtrinsicGuess=True)",
+        "refinement_used": true,
+        "reprojection_error_px": 1.9474093191570208,
+        "rotation_order": "existing _rotation_to_euler order preserved",
+        "rvec": [
+          -2.7286202445108203,
+          0.05249061639226884,
+          -0.19961867152886922
+        ],
+        "synthetic_landmarks_added": 0,
+        "tvec": [
+          5.937975000894839,
+          -547.8724143826586,
+          2223.0914083984812
+        ]
+      },
+      "source_decode_color_order": "RGB"
+    },
+    "imagePath": "/Users/hanhpham/Developer/Claude-Workspace/projects/venho-social-content-agent/photos-ai/2026/gw-p4-t0-4-b06-walking/run-001/image.png",
+    "imageSha256": "526190e3632d189d588dcdfda32f1d7930c449c8a6b2188961d7907ef7746d8e",
+    "preservationEvidence": [
+      {
+        "adapter_version": "stage-preservation-evidence-v1",
+        "applicability": "VERIFY_BY_PIXEL_PRESERVATION",
+        "candidate_sha256": "526190e3632d189d588dcdfda32f1d7930c449c8a6b2188961d7907ef7746d8e",
+        "changed_percentage": 0.0,
+        "changed_protected_pixel_count": 0,
+        "formula": "100 * (1 - changed_protected_pixels / protected_pixel_count)",
+        "mask_sha256": "2a44996044ca31431a1edbc6dc4db0e4e24dd15d4eebca17bf340bf2431d25c6",
+        "max_rgb_delta": 0,
+        "mean_rgb_delta": 0.0,
+        "pixel_validator_version": "unchanged_outside_mask-v1",
+        "preservation_score": 100.0,
+        "protected_pixel_count": 1295428,
+        "region": "anatomy",
+        "source_sha256": "526190e3632d189d588dcdfda32f1d7930c449c8a6b2188961d7907ef7746d8e",
+        "stage": "post_identity_restoration",
+        "status": "PASS",
+        "threshold": 90.0
+      },
+      {
+        "adapter_version": "stage-preservation-evidence-v1",
+        "applicability": "VERIFY_BY_PIXEL_PRESERVATION",
+        "candidate_sha256": "526190e3632d189d588dcdfda32f1d7930c449c8a6b2188961d7907ef7746d8e",
+        "changed_percentage": 0.0,
+        "changed_protected_pixel_count": 0,
+        "formula": "100 * (1 - changed_protected_pixels / protected_pixel_count)",
+        "mask_sha256": "2a44996044ca31431a1edbc6dc4db0e4e24dd15d4eebca17bf340bf2431d25c6",
+        "max_rgb_delta": 0,
+        "mean_rgb_delta": 0.0,
+        "pixel_validator_version": "unchanged_outside_mask-v1",
+        "preservation_score": 100.0,
+        "protected_pixel_count": 1295428,
+        "region": "outfit",
+        "source_sha256": "526190e3632d189d588dcdfda32f1d7930c449c8a6b2188961d7907ef7746d8e",
+        "stage": "post_identity_restoration",
+        "status": "PASS",
+        "threshold": 90.0
+      },
+      {
+        "adapter_version": "stage-preservation-evidence-v1",
+        "applicability": "VERIFY_BY_PIXEL_PRESERVATION",
+        "candidate_sha256": "526190e3632d189d588dcdfda32f1d7930c449c8a6b2188961d7907ef7746d8e",
+        "changed_percentage": 0.0,
+        "changed_protected_pixel_count": 0,
+        "formula": "100 * (1 - changed_protected_pixels / protected_pixel_count)",
+        "mask_sha256": "2a44996044ca31431a1edbc6dc4db0e4e24dd15d4eebca17bf340bf2431d25c6",
+        "max_rgb_delta": 0,
+        "mean_rgb_delta": 0.0,
+        "pixel_validator_version": "unchanged_outside_mask-v1",
+        "preservation_score": 100.0,
+        "protected_pixel_count": 1295428,
+        "region": "environment",
+        "source_sha256": "526190e3632d189d588dcdfda32f1d7930c449c8a6b2188961d7907ef7746d8e",
+        "stage": "post_identity_restoration",
+        "status": "PASS",
+        "threshold": 90.0
+      }
+    ],
+    "regionalGate": {
+      "authority": "image_studio_runtime.action_composite.workflow_v2.RegionalGate",
+      "failures": [
+        "identity_below_threshold",
+        "eyes_brows_below_threshold",
+        "global_composite_below_threshold"
+      ],
+      "passed": false
+    },
+    "scores": {
+      "provenance": {
+        "anatomy": {
+          "adapter_version": "stage-preservation-evidence-v1",
+          "applicability": "VERIFY_BY_PIXEL_PRESERVATION",
+          "candidate_sha256": "526190e3632d189d588dcdfda32f1d7930c449c8a6b2188961d7907ef7746d8e",
+          "changed_percentage": 0.0,
+          "changed_protected_pixel_count": 0,
+          "formula": "100 * (1 - changed_protected_pixels / protected_pixel_count)",
+          "mask_sha256": "2a44996044ca31431a1edbc6dc4db0e4e24dd15d4eebca17bf340bf2431d25c6",
+          "max_rgb_delta": 0,
+          "mean_rgb_delta": 0.0,
+          "pixel_validator_version": "unchanged_outside_mask-v1",
+          "preservation_score": 100.0,
+          "protected_pixel_count": 1295428,
+          "region": "anatomy",
+          "source_sha256": "526190e3632d189d588dcdfda32f1d7930c449c8a6b2188961d7907ef7746d8e",
+          "stage": "post_identity_restoration",
+          "status": "PASS",
+          "threshold": 90.0
+        },
+        "environment": {
+          "adapter_version": "stage-preservation-evidence-v1",
+          "applicability": "VERIFY_BY_PIXEL_PRESERVATION",
+          "candidate_sha256": "526190e3632d189d588dcdfda32f1d7930c449c8a6b2188961d7907ef7746d8e",
+          "changed_percentage": 0.0,
+          "changed_protected_pixel_count": 0,
+          "formula": "100 * (1 - changed_protected_pixels / protected_pixel_count)",
+          "mask_sha256": "2a44996044ca31431a1edbc6dc4db0e4e24dd15d4eebca17bf340bf2431d25c6",
+          "max_rgb_delta": 0,
+          "mean_rgb_delta": 0.0,
+          "pixel_validator_version": "unchanged_outside_mask-v1",
+          "preservation_score": 100.0,
+          "protected_pixel_count": 1295428,
+          "region": "environment",
+          "source_sha256": "526190e3632d189d588dcdfda32f1d7930c449c8a6b2188961d7907ef7746d8e",
+          "stage": "post_identity_restoration",
+          "status": "PASS",
+          "threshold": 90.0
+        },
+        "eyes_brows": {
+          "method_version": "regional-evidence-v1",
+          "producer": "validator_studio.face_validator",
+          "raw_evidence": {
+            "source": "face_report.category_scores.eyes_and_brows",
+            "value": 85.0
+          },
+          "resulting_score": 85.0,
+          "source_artifacts": [
+            "/Users/hanhpham/Developer/Claude-Workspace/projects/venho-social-content-agent/photos-ai/2026/gw-p4-t0-4-b06-walking/run-001/image.png"
+          ]
+        },
+        "geometry": {
+          "method_version": "geometry-evidence-v1",
+          "producer": "GeometryEvidenceProducer",
+          "raw_evidence": {
+            "bbox_iou": 1.0,
+            "max_pose_delta_deg": 0.0,
+            "pose_agreement": 1.0,
+            "scale_agreement": 1.0,
+            "weights": {
+              "bbox_iou": 0.5,
+              "pose_agreement": 0.3,
+              "scale_agreement": 0.2
+            }
+          },
+          "resulting_score": 100.0,
+          "source_artifacts": [
+            "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/benchmark-geometry/v2.1/B06/geometry_manifest.json",
+            "/Users/hanhpham/Developer/Claude-Workspace/projects/venho-social-content-agent/photos-ai/2026/gw-p4-t0-4-b06-walking/run-001/image.png"
+          ]
+        },
+        "global_composite": {
+          "method_version": "regional-evidence-v1",
+          "producer": "validator_studio.image_validator",
+          "raw_evidence": {
+            "source": "image_report.overall_score",
+            "value": 85.22
+          },
+          "resulting_score": 85.22,
+          "source_artifacts": [
+            "/Users/hanhpham/Developer/Claude-Workspace/projects/venho-social-content-agent/photos-ai/2026/gw-p4-t0-4-b06-walking/run-001/image.png"
+          ]
+        },
+        "identity": {
+          "method_version": "regional-evidence-v1",
+          "producer": "validator_studio.face_validator",
+          "raw_evidence": {
+            "source": "face_report.dna_match_score",
+            "value": 85.78
+          },
+          "resulting_score": 85.78,
+          "source_artifacts": [
+            "/Users/hanhpham/Developer/Claude-Workspace/projects/venho-social-content-agent/photos-ai/2026/gw-p4-t0-4-b06-walking/run-001/image.png"
+          ]
+        },
+        "outfit": {
+          "adapter_version": "stage-preservation-evidence-v1",
+          "applicability": "VERIFY_BY_PIXEL_PRESERVATION",
+          "candidate_sha256": "526190e3632d189d588dcdfda32f1d7930c449c8a6b2188961d7907ef7746d8e",
+          "changed_percentage": 0.0,
+          "changed_protected_pixel_count": 0,
+          "formula": "100 * (1 - changed_protected_pixels / protected_pixel_count)",
+          "mask_sha256": "2a44996044ca31431a1edbc6dc4db0e4e24dd15d4eebca17bf340bf2431d25c6",
+          "max_rgb_delta": 0,
+          "mean_rgb_delta": 0.0,
+          "pixel_validator_version": "unchanged_outside_mask-v1",
+          "preservation_score": 100.0,
+          "protected_pixel_count": 1295428,
+          "region": "outfit",
+          "source_sha256": "526190e3632d189d588dcdfda32f1d7930c449c8a6b2188961d7907ef7746d8e",
+          "stage": "post_identity_restoration",
+          "status": "PASS",
+          "threshold": 90.0
+        }
+      },
+      "scores": {
+        "anatomy": 100.0,
+        "environment": 100.0,
+        "eyes_brows": 85.0,
+        "geometry": 100.0,
+        "global_composite": 85.22,
+        "identity": 85.78,
+        "outfit": 100.0
+      },
+      "sources": {
+        "anatomy": "StagePreservationEvidenceAdapter.pixel-preservation-v1",
+        "environment": "StagePreservationEvidenceAdapter.pixel-preservation-v1",
+        "eyes_brows": "validator_studio.face_validator.category_scores.eyes_and_brows",
+        "geometry": "GeometryEvidenceProducer.geometry-evidence-v1",
+        "global_composite": "validator_studio.image_report.overall_score",
+        "identity": "validator_studio.face_report.dna_match_score",
+        "outfit": "StagePreservationEvidenceAdapter.pixel-preservation-v1"
+      }
+    },
+    "sourceArtifact": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/benchmark-geometry/v2.1/B06/geometry_manifest.json",
+    "sourceAttemptId": null,
+    "sourceRunId": null
+  },
+  "regionalGate": {
+    "failures": [
+      "identity_below_threshold",
+      "eyes_brows_below_threshold",
+      "geometry_unvalidated",
+      "anatomy_unvalidated",
+      "outfit_unvalidated",
+      "environment_unvalidated",
+      "global_composite_below_threshold",
+      "pixel_preservation_failed"
+    ],
+    "passed": false
+  },
+  "regionalGateEvidence": {
+    "authority": "image_studio_runtime.action_composite.workflow_v2.RegionalGate",
+    "evidenceId": "0d5af252a4c54681056da3433995199f5cf2d0adf92329cf7dc7bf8b8dcf2be9",
+    "failures": [
+      "identity_below_threshold",
+      "eyes_brows_below_threshold",
+      "global_composite_below_threshold"
+    ],
+    "passed": false,
+    "producer": "image_studio_runtime.action_composite.regional_score_gateway.RegionalScoreGateway",
+    "sourceArtifact": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/benchmarks/regional-evidence/gw-p4-t1-regional-complete-20260825/B06-control-regional-materialization-1/evidence.json"
+  },
+  "role": "base",
+  "samples": 3,
+  "validator": "validator-studio-face-image-v1:gemini:rubric=07F:samples=3"
+}

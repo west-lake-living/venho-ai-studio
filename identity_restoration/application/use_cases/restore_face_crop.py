@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 from typing import Callable, Optional
 
 from ...domain.compositing import composite_crop_into_canvas
@@ -56,6 +57,7 @@ class RestoreFaceCropUseCase:
 
     def execute(self, cmd: RestoreCommand) -> RestorationResult:
         restorer = self._registry.resolve(cmd.restorer_id)
+        health_evidence = None
 
         # ---- free, fail fast -------------------------------------------------
         try:
@@ -67,6 +69,12 @@ class RestoreFaceCropUseCase:
 
         if self._health is not None:
             health = self._health.probe()
+            health_evidence = {
+                "status": health.status.value,
+                "gpuName": health.gpu_name,
+                "vramFreeMb": health.vram_free_mb,
+                "latencyMs": health.latency_ms,
+            }
             if health.status is WorkerStatus.OFFLINE:
                 return self._fail(cmd, RestorationError("ERR_GW_WORKER_OFFLINE", "worker health probe reported OFFLINE", retryable=True))
 
@@ -93,6 +101,13 @@ class RestoreFaceCropUseCase:
                 self._ledger.append(LedgerEntry(cmd.run_id, cmd.attempt_id, "FAILED", {"code": err.code}))
                 return self._fail(cmd, err)
 
+            provider_evidence = {}
+            evidence_reader = getattr(restorer, "execution_evidence", None)
+            if callable(evidence_reader):
+                evidence = evidence_reader()
+                if isinstance(evidence, dict):
+                    provider_evidence = dict(evidence)
+
             try:
                 restored.assert_geometry_matches(
                     RestorationRequest(cmd.run_id, cmd.attempt_id, cmd.crop_png, cmd.mask, a2,
@@ -111,11 +126,11 @@ class RestoreFaceCropUseCase:
 
             composite_bytes = composite_crop_into_canvas(
                 base_canvas_png=cmd.base_canvas_png, restored=restored,
-                transform=cmd.crop_transform, editable_mask_png=cmd.mask.editable,
+                transform=cmd.crop_transform, editable_mask_png=cmd.full_canvas_mask.editable,
             )
             pixel = assert_pixels_preserved(
                 before_canvas=cmd.base_canvas_png, after_canvas=composite_bytes,
-                editable_mask=cmd.mask.editable,
+                editable_mask=cmd.full_canvas_mask.editable,
             )
             if not pixel.passed:
                 err = RestorationError("ERR_GW_PIXEL_LOCK_VIOLATED",
@@ -149,10 +164,26 @@ class RestoreFaceCropUseCase:
             "a2AuthoritySha256": a2.sha256,
             "cropTransform": {"box": list(cmd.crop_transform.to_box()), "targetSize": cmd.crop_transform.target_size},
             "maskVersion": cmd.mask.version,
+            "maskSpaces": {
+                "restoration": {
+                    "coordinateSpace": "crop-local",
+                    "version": cmd.mask.version,
+                    "sha256": hashlib.sha256(cmd.mask.editable).hexdigest(),
+                },
+                "preservation": {
+                    "coordinateSpace": "full-canvas",
+                    "version": cmd.full_canvas_mask.version,
+                    "sha256": hashlib.sha256(cmd.full_canvas_mask.editable).hexdigest(),
+                },
+            },
             "runtimeMs": runtime_ms,
             "pixelLock": {"passed": pixel.passed, "mutatedPixelCount": pixel.mutated_pixel_count,
                           "editableRegionHash": pixel.editable_region_hash},
         }
+        if health_evidence is not None:
+            lineage["workerHealth"] = health_evidence
+        if provider_evidence:
+            lineage.update(provider_evidence)
         self._ledger.append(LedgerEntry(cmd.run_id, cmd.attempt_id, status, lineage))
         return RestorationResult(
             run_id=cmd.run_id, attempt_id=cmd.attempt_id, status=status,

@@ -1,0 +1,48 @@
+{
+  "result": "GW-P3 OPEN / BLOCKED",
+  "health": {
+    "status": "HEALTHY",
+    "gpuName": "cuda:0 NVIDIA GeForce GTX 1660 SUPER : cudaMallocAsync",
+    "vramFreeMb": 5132
+  },
+  "windowsAuthority": {
+    "path": "C:\\VenHoGPU\\evidence\\gw-p3-20260824-125915-425372",
+    "stagedPath": "staging/gw-p3/windows-20260824-125915-425372",
+    "promptId": "f9193e43-a874-40eb-bb9a-6c5980d25a41",
+    "inputSha256": "470e8aa2cd4055496186271a818e7aa31bf0fb5228242266a2c8c1cbc1cf4dcb",
+    "outputSha256": "433871be4e5f998e0f884700d40dff1212e98b20517d6d182a7b7c222f6734cc",
+    "a2Sha256": "1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d",
+    "geometry": {"input": [687, 659], "padded": [688, 664], "output": [687, 659]},
+    "byteDifference": true
+  },
+  "macExecution": {
+    "runId": "gw-p3-final-20260824",
+    "attemptId": "attempt-01",
+    "restorerId": "comfyui-remote",
+    "workflowId": "face_restore_win_sd15_ipadapter_v1",
+    "workflowSha256": "7a320dd58c6e96b4d8c1c0e82c2ffe1d6ca6ace12a691f1aca5ebef8589f1ec8",
+    "promptId": "0ce26c1e-b28c-4cda-8dd2-aa07ca8be37e",
+    "inputSha256": "470e8aa2cd4055496186271a818e7aa31bf0fb5228242266a2c8c1cbc1cf4dcb",
+    "outputSha256": "c1f41e249d8b815279e137948f0585cb7a6dcf2e681d781e49e43b9174923018",
+    "outputGeometry": [687, 659],
+    "byteDifference": true,
+    "mockUsed": false,
+    "localFallback": false,
+    "silentFallback": false,
+    "applicationStatus": "FAILED",
+    "failure": {
+      "stage": "RestoreFaceCropUseCase pixel-preservation validation",
+      "error": "ValueError: before, after and mask must have identical dimensions",
+      "baseGeometry": [1024, 1280],
+      "maskGeometry": [687, 659],
+      "requiredContract": "base, after, and mask must have identical dimensions"
+    }
+  },
+  "evidence": {
+    "request": "staging/gw-p3/mac-final-20260824/request.json",
+    "cliResult": "staging/gw-p3/mac-final-20260824/mac_cli_result.json",
+    "history": "staging/gw-p3/mac-final-20260824/remote_history_response.json",
+    "output": "staging/gw-p3/mac-final-20260824/remote_output.png",
+    "outputSha256": "staging/gw-p3/mac-final-20260824/remote_output.sha256"
+  }
+}

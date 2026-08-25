@@ -1,0 +1,9 @@
+command=IDR_COMFYUI_ENABLED=true IDR_COMFYUI_REMOTE_ENABLED=true IDR_COMFYUI_REMOTE_BASE_URL=https://harry-rog.taila40de0.ts.net IDR_DEFAULT_RESTORER=comfyui-remote venho-restore run --request staging/gw-p3/mac-final-20260824-dual-mask/request.json
+preflight_health=HEALTHY vramFreeMb=5132
+remote_prompt_id=be054dd8-da3e-4f54-acdc-4dadb5db99ca
+remote_history=success completed=true
+runtime_ms=46724
+exit_code=0
+application_status=NEEDS_REVIEW
+pixel_lock=passed mutatedPixelCount=0
+no_second_prompt_submitted=true

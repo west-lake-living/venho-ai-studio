@@ -26,22 +26,42 @@ a2_authority:
     nhầm 2 file khi Phase 2 rút Port ra khỏi pipeline hiện có.
 
 workflows:
-  # SD1.5 + IPAdapter FaceID workflow cho Windows GPU worker — chưa tồn tại trong repo.
-  # Điền ở GW-P3 (PHẦN 4 patch, T10) sau khi tác giả workflow xong.
+  # Exact API workflow exported from the successful HARRY-ROG GW-P3 run.
   face_restore_win_sd15_ipadapter_v1:
-    sha256: "<điền ở GW-P3>"
+    filename: "face_restore_win_sd15_ipadapter_v1.api.json"
+    sha256: "7a320dd58c6e96b4d8c1c0e82c2ffe1d6ca6ace12a691f1aca5ebef8589f1ec8"
     models:
       checkpoint: "v1-5-pruned-emaonly.safetensors"
-      ipadapter: "ip-adapter-faceid_sd15.bin"
+      ipadapter: "ip-adapter-faceid-plusv2_sd15.bin"
+      lora: "ip-adapter-faceid-plusv2_sd15_lora.safetensors"
       clip_vision: "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors"
       insightface: "buffalo_l"
     min_vram_mb: 4200
     defaults:
-      denoise: 0.45
-      steps: 28
-      cfg: 5.5
-      sampler: "dpmpp_2m"
-      scheduler: "karras"
+      denoise: 0.35
+      steps: 20
+      cfg: 6.0
+      sampler: "euler"
+      scheduler: "normal"
+
+  # GW-P4-T0.5.2j active authority. Windows deployment SHA verified.
+  face_restore_win_sd15_ipadapter_v2:
+    filename: "face_restore_win_sd15_ipadapter_v2.api.json"
+    sha256: "1a6421a04ce7bdedd716beea93d196551f5dbe77c3da11d1e8a6bc4f1f06ee58"
+    status: "ACTIVE — GW-P4 authority (Windows SHA verified 2026-08-24)"
+    models:
+      checkpoint: "v1-5-pruned-emaonly.safetensors"
+      ipadapter: "ip-adapter-faceid-plusv2_sd15.bin"
+      lora: "ip-adapter-faceid-plusv2_sd15_lora.safetensors"
+      clip_vision: "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors"
+      insightface: "buffalo_l"
+    min_vram_mb: 4200
+    defaults:
+      denoise: 0.35
+      steps: 20
+      cfg: 6.0
+      sampler: "euler"
+      scheduler: "normal"
 
   # Workflow v1.0 (SDXL/PuLID) đã dùng để đóng băng golden-master GW-P0-T2.
   # SUPERSEDED — giữ lại pin để golden-master vẫn kiểm chứng được, không xoá.

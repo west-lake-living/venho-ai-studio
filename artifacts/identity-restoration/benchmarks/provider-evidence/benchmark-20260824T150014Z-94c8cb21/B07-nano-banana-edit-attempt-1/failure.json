@@ -1,0 +1,4 @@
+{
+  "error": "Nano bridge HTTP 400: {\"error\":\"base/A2 path is outside the trusted social-agent root\"}",
+  "status": "FAILED"
+}

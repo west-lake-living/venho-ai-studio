@@ -1,0 +1,164 @@
+{
+  "a2AuthoritySha256": "1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d",
+  "caseId": "B10",
+  "cropLocalMask": {
+    "coordinateSpace": "crop-local",
+    "path": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/benchmark-geometry/v2.1/B10/crop_local_mask.png",
+    "sha256": "da53472a48f40487700d36e986b301381a6ca5b48c1b53391cbfd2c27c0f1702"
+  },
+  "cropPath": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/benchmark-geometry/v2.1/B10/crop.png",
+  "cropSha256": "19c2274a53c22e9c2a7bcf41a2d775238447eed89a487dcb03bc74db8f209d78",
+  "cropSize": {
+    "height": 190,
+    "width": 107
+  },
+  "cropTransform": {
+    "bottom": 676,
+    "left": 478,
+    "right": 585,
+    "targetSize": 107,
+    "top": 486
+  },
+  "fullCanvasMask": {
+    "coordinateSpace": "full-canvas",
+    "path": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/benchmark-geometry/v2.1/B10/full_canvas_mask.png",
+    "sha256": "6cc71f8088d4bca0f9271255830ccb92f50aaeb77a7c469d635afb6136d4acda"
+  },
+  "geometry": {
+    "eye_line": 572.0838623046875,
+    "face_bbox": {
+      "bottom": 619,
+      "left": 510,
+      "right": 553,
+      "top": 543
+    },
+    "face_scale": 0.05070754716981132,
+    "hairline_boundary": [],
+    "head_bbox": {
+      "bottom": 661,
+      "left": 486,
+      "right": 577,
+      "top": 501
+    },
+    "jaw_contour": [],
+    "mouth_line": 599.0923461914062,
+    "neck_boundary": [],
+    "nose_axis": 512.272705078125,
+    "pitch": -141.7041979219793,
+    "roll": 27.606772256570125,
+    "yaw": 79.361664677042
+  },
+  "geometryBackend": "yunet",
+  "geometryModel": "face_detection_yunet_2023mar.onnx",
+  "geometryModelSha256": "8f2383e4dd3cfbb4553ea8718107fc0423210dc964f9f4280604804ed2552fa4",
+  "geometryProvenance": {
+    "backend": "yunet",
+    "bbox_xyxy": [
+      510.1838684082031,
+      542.784912109375,
+      553.1896781921387,
+      618.5683441162109
+    ],
+    "confidence": 0.85426926612854,
+    "detection_count": 1,
+    "detector": "cv2.FaceDetectorYN",
+    "face_selection_policy": "exactly_one_face_required",
+    "input_color_order": "BGR",
+    "landmark_count": 5,
+    "landmark_order": [
+      "left_eye",
+      "right_eye",
+      "nose",
+      "left_mouth_corner",
+      "right_mouth_corner"
+    ],
+    "landmarks": [
+      [
+        517.3872680664062,
+        571.6520385742188
+      ],
+      [
+        523.2520141601562,
+        572.5156860351562
+      ],
+      [
+        512.272705078125,
+        585.1289672851562
+      ],
+      [
+        519.70458984375,
+        598.2861938476562
+      ],
+      [
+        523.7939453125,
+        599.8984985351562
+      ]
+    ],
+    "method_version": "opencv-zoo-yunet-2023mar-pnp-v1",
+    "model": "face_detection_yunet_2023mar.onnx",
+    "model_path": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/models/geometry/yunet/face_detection_yunet_2023mar.onnx",
+    "model_sha256": "8f2383e4dd3cfbb4553ea8718107fc0423210dc964f9f4280604804ed2552fa4",
+    "original_artifact": "/Users/hanhpham/Developer/Claude-Workspace/projects/venho-social-content-agent/photos-ai/2026/smoke-20260811-171445/case-5/variant-001/image.png",
+    "original_dimensions": {
+      "height": 1264,
+      "width": 848
+    },
+    "original_sha256": "32c701012e40040772c69bff102719c5d48c9c046bad442f68f1bc520c5bc507",
+    "pnp": {
+      "angle_convention": "rotation matrix XYZ decomposition; output pitch,yaw,roll in degrees",
+      "angle_range": "atan2-derived approximately [-180,180] degrees",
+      "angle_sign_convention": "existing _rotation_to_euler convention preserved",
+      "camera_matrix": [
+        [
+          1264.0,
+          0.0,
+          424.0
+        ],
+        [
+          0.0,
+          1264.0,
+          632.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "distortion_coefficients": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "image_point_count": 5,
+      "initial_solver": "cv2.SOLVEPNP_SQPNP",
+      "object_point_count": 5,
+      "refinement_method": "cv2.SOLVEPNP_ITERATIVE(useExtrinsicGuess=True)",
+      "refinement_used": true,
+      "reprojection_error_px": 0.9874602252237925,
+      "rotation_order": "existing _rotation_to_euler order preserved",
+      "rvec": [
+        -2.2332095227127997,
+        0.08839450367435786,
+        1.908237151037742
+      ],
+      "synthetic_landmarks_added": 0,
+      "tvec": [
+        231.32551235075593,
+        -118.54177152695796,
+        3323.887626584284
+      ]
+    },
+    "source_decode_color_order": "RGB"
+  },
+  "lineage": "YuNetGeometryExtractor -> crop_for_identity -> hierarchical_face_masks",
+  "maskVersion": "hierarchical_face_v1",
+  "sourceDimensions": {
+    "height": 1264,
+    "width": 848
+  },
+  "sourcePath": "/Users/hanhpham/Developer/Claude-Workspace/projects/venho-social-content-agent/photos-ai/2026/smoke-20260811-171445/case-5/variant-001/image.png",
+  "sourceSha256": "32c701012e40040772c69bff102719c5d48c9c046bad442f68f1bc520c5bc507",
+  "version": "benchmark-geometry-v2.1"
+}

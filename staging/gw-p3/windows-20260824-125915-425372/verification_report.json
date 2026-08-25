@@ -1,0 +1,38 @@
+{
+  "a2_authority": {
+    "expected_sha256": "1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d",
+    "sha256": "1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d",
+    "source": "venho-social-content-agent/assets/face-plates/A2_Front_plate.png"
+  },
+  "byte_difference": true,
+  "evidence": "C:\\VenHoGPU\\evidence\\gw-p3-20260824-125915-425372",
+  "fallback_used": false,
+  "geometry": {
+    "multiple": 8,
+    "original_height": 659,
+    "original_width": 687,
+    "pad_bottom": 5,
+    "pad_left": 0,
+    "pad_right": 1,
+    "pad_top": 0,
+    "padded_height": 664,
+    "padded_width": 688
+  },
+  "input": {
+    "format": "PNG",
+    "height": 659,
+    "mode": "RGBA",
+    "width": 687
+  },
+  "input_crop_sha256": "470e8aa2cd4055496186271a818e7aa31bf0fb5228242266a2c8c1cbc1cf4dcb",
+  "mock_used": false,
+  "output": {
+    "format": "PNG",
+    "height": 659,
+    "mode": "RGB",
+    "width": 687
+  },
+  "output_sha256": "433871be4e5f998e0f884700d40dff1212e98b20517d6d182a7b7c222f6734cc",
+  "prompt_id": "f9193e43-a874-40eb-bb9a-6c5980d25a41",
+  "status": "PASS"
+}

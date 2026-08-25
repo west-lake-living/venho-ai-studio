@@ -83,6 +83,22 @@ class ComfyUIHttpClient:
             raise map_prompt_submission_error(200, "response had no prompt_id")
         return prompt_id
 
+    def free_memory(self) -> Mapping[str, Any]:
+        """Release resident ComfyUI models using the worker's existing API."""
+        payload = json.dumps({"unload_models": True, "free_memory": True}).encode()
+        request = Request(
+            self._url("/free"), data=payload, method="POST",
+            headers={"Content-Type": "application/json"},
+        )
+        try:
+            with urlopen(request, timeout=self.timeout_s) as response:
+                body = response.read().decode("utf-8")
+                return json.loads(body) if body else {}
+        except HTTPError as exc:
+            raise map_prompt_submission_error(exc.code, exc.read().decode("utf-8", "replace")) from exc
+        except (URLError, OSError, ValueError) as exc:
+            raise map_connection_failure(f"POST /free failed: {exc}") from exc
+
     def poll_until_complete(self, prompt_id: str, *, timeout_seconds: float) -> Mapping[str, Any]:
         """GW-D8: polling, not WebSocket. Backoff: first poll after 2s, x1.5, cap 10s."""
         deadline = time.monotonic() + timeout_seconds

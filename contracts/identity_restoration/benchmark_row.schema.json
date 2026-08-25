@@ -1,17 +1,123 @@
 {
-  "$id": "https://venho.local/contracts/benchmark_row/1.0",
-  "$comment": "GW-P4 (PHẦN 14). One row = one restorer/case pair.",
+  "$id": "https://venho.local/contracts/benchmark_row/2.1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$comment": "GW-P4 v2.1. One row = one branch/case attempt. Required score fields may be null only when evidence is unavailable; gate code must remain fail-closed.",
   "type": "object",
-  "required": ["caseId", "restorerId", "faceScore", "pixelLockPassed", "runtimeMs"],
+  "required": [
+    "benchmarkVersion", "benchmarkId", "taxonomy", "branch", "baseFrameSha256", "a2Sha256",
+    "faceQcBefore", "faceQcAfter", "identityScore", "eyesBrowsScore", "geometryScore",
+    "anatomyScore", "outfitScore", "environmentScore", "globalScore", "pixelPreservationResult",
+    "runtimeMs", "retryCount", "workflowId", "workflowSha256", "seed", "gpuName", "vramPeakMb",
+    "restorerId"
+  ],
   "additionalProperties": false,
   "properties": {
-    "caseId": { "type": "string" },
-    "restorerId": { "enum": ["comfyui-local", "comfyui-remote", "nano-banana-edit", "mock"] },
-    "faceScore": { "type": "number", "minimum": 0, "maximum": 100 },
-    "pixelLockPassed": { "type": "boolean" },
+    "benchmarkVersion": { "const": "2.1" },
+    "benchmarkId": { "type": "string", "pattern": "^B(0[1-9]|10)$" },
+    "taxonomy": {
+      "enum": [
+        "Close-up Front", "Half-body", "Full-body Standing", "Running Front 3/4",
+        "Running Side", "Walking", "Sitting", "Hair Motion", "West Lake", "Ven Ho Hotel Interior"
+      ]
+    },
+    "branch": { "enum": ["control", "comfyui-local", "comfyui-remote", "nano-banana-edit"] },
+    "baseFrameSha256": { "$ref": "#/$defs/sha256" },
+    "a2Sha256": { "$ref": "#/$defs/sha256" },
+    "faceQcBefore": { "$ref": "#/$defs/scoreOrNull" },
+    "faceQcAfter": { "$ref": "#/$defs/scoreOrNull" },
+    "identityScore": { "$ref": "#/$defs/scoreOrNull" },
+    "eyesBrowsScore": { "$ref": "#/$defs/scoreOrNull" },
+    "geometryScore": { "$ref": "#/$defs/scoreOrNull" },
+    "anatomyScore": { "$ref": "#/$defs/scoreOrNull" },
+    "outfitScore": { "$ref": "#/$defs/scoreOrNull" },
+    "environmentScore": { "$ref": "#/$defs/scoreOrNull" },
+    "globalScore": { "$ref": "#/$defs/scoreOrNull" },
+    "pixelPreservationResult": { "enum": ["PASS", "FAIL", "BLOCKED", "UNKNOWN"] },
     "runtimeMs": { "type": "integer", "minimum": 0 },
-    "vramPeakMb": { "type": ["integer", "null"] },
+    "retryCount": { "type": "integer", "minimum": 0 },
+    "workflowId": { "type": ["string", "null"] },
+    "workflowSha256": { "anyOf": [{ "$ref": "#/$defs/sha256" }, { "type": "null" }] },
+    "seed": { "type": "integer", "minimum": 0, "maximum": 4294967295 },
+    "gpuName": { "type": ["string", "null"] },
+    "vramPeakMb": { "type": ["integer", "null"], "minimum": 0 },
+    "restorerId": {
+      "enum": ["control", "comfyui-local", "comfyui-remote", "nano-banana-edit", "mock"]
+    },
+    "outputPath": { "type": ["string", "null"] },
+    "outputSha256": { "anyOf": [{ "$ref": "#/$defs/sha256" }, { "type": "null" }] },
+    "executorStatus": { "enum": ["COMPLETED", "FAILED", "BLOCKED", "NOT_READY"] },
+    "error": { "type": ["string", "null"] },
+    "provider": { "type": ["string", "null"] },
+    "providerRequestId": { "type": ["string", "null"] },
+    "providerRunId": { "type": ["string", "null"] },
+    "backend": { "type": ["string", "null"] },
+    "operation": { "type": ["string", "null"] },
+    "model": { "type": ["string", "null"] },
+    "seedSupported": { "type": ["boolean", "null"] },
+    "evidencePath": { "type": ["string", "null"] },
+    "host": { "type": ["object", "null"], "additionalProperties": true },
+    "a2Path": { "type": ["string", "null"] },
+    "cropTransform": { "type": ["object", "null"], "additionalProperties": true },
+    "maskVersion": { "type": ["string", "null"] },
+    "maskSha256": { "anyOf": [{ "$ref": "#/$defs/sha256" }, { "type": "null" }] },
+    "lineage": { "type": ["object", "null"], "additionalProperties": true },
+    "restoredCropPath": { "type": ["string", "null"] },
+    "restoredCropSha256": { "anyOf": [{ "$ref": "#/$defs/sha256" }, { "type": "null" }] },
+
+    "caseId": {
+      "type": "string",
+      "$comment": "Legacy compatibility alias for benchmarkId; new rows use benchmarkId."
+    },
+    "executionValidity": { "type": "boolean" },
+    "evidenceValidity": { "type": "boolean" },
+    "validatorValidity": { "type": "boolean" },
+    "regionalValidity": { "type": "boolean" },
+    "pixelValidity": { "type": "boolean" },
+    "authorityValidity": { "type": "boolean" },
+    "qualityValidity": { "type": "boolean" },
+    "decisionValidity": { "type": "boolean" },
+    "qualityGatePass": { "type": "boolean" },
+    "regionalAuthority": { "type": ["string", "null"] },
+    "regionalGateEvidence": {
+      "type": ["object", "null"],
+      "required": ["authority", "passed", "failures", "evidenceId"],
+      "additionalProperties": true,
+      "properties": {
+        "authority": { "type": "string" },
+        "producer": { "type": "string" },
+        "passed": { "type": "boolean" },
+        "failures": { "type": "array", "items": { "type": "string" } },
+        "evidenceId": { "type": "string" },
+        "sourceArtifact": { "type": "string" }
+      },
+      "$comment": "Authoritative RegionalGate PASS/FAIL evidence. Numeric regional scores are optional when this production gate envelope is present."
+    },
+    "failureReason": { "type": ["string", "null"] },
+    "failureReasons": { "type": "array", "items": { "type": "string" } },
+    "faceScore": {
+      "type": "number", "minimum": 0, "maximum": 100,
+      "$comment": "Legacy aggregate alias; canonical v2.1 fields are faceQcBefore/faceQcAfter."
+    },
+    "pixelLockPassed": {
+      "type": "boolean",
+      "$comment": "Legacy boolean alias; canonical v2.1 field is pixelPreservationResult."
+    },
     "samples": { "type": "integer", "minimum": 1 },
-    "notes": { "type": "string" }
+    "notes": { "type": "string" },
+    "failureClassification": {
+      "enum": [
+        "VALID_QUALITY_PASS", "VALID_QUALITY_FAIL", "INFRA_EXECUTION_FAIL",
+        "VALIDATOR_FAIL", "EVIDENCE_PIPELINE_FAIL", "AUTHORITY_FAIL"
+      ]
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "scoreOrNull": {
+      "anyOf": [
+        { "type": "number", "minimum": 0, "maximum": 100 },
+        { "type": "null" }
+      ]
+    }
   }
 }

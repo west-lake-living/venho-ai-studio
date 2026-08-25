@@ -1,0 +1,14 @@
+workflow_id=face_restore_win_sd15_ipadapter_v1
+workflow_sha256=7a320dd58c6e96b4d8c1c0e82c2ffe1d6ca6ace12a691f1aca5ebef8589f1ec8
+provider=comfyui-remote
+remote_endpoint=https://harry-rog.taila40de0.ts.net
+seed=123456
+model_identifiers=v1-5-pruned-emaonly.safetensors,ip-adapter-faceid-plusv2_sd15.bin,ip-adapter-faceid-plusv2_sd15_lora.safetensors,CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors,buffalo_l
+restoration_mask_space=crop-local (687x659)
+preservation_mask_space=full-canvas (1024x1280)
+crop_box_full_frame=201,0,888,659
+worker_prompt_id=be054dd8-da3e-4f54-acdc-4dadb5db99ca
+history_status=success/completed
+mock_used=false
+local_fallback=false
+silent_fallback=false

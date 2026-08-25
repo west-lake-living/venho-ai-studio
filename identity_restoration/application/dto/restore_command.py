@@ -14,7 +14,8 @@ class RestoreCommand:
     attempt_id: str
     restorer_id: RestorerId
     crop_png: bytes
-    mask: MaskSet
+    mask: MaskSet  # crop-local restoration mask sent to the selected restorer
+    full_canvas_mask: MaskSet  # full-canvas preservation/compositing mask
     base_canvas_png: bytes
     crop_transform: CropTransform
     a2_path: str
@@ -23,3 +24,7 @@ class RestoreCommand:
     seed: int
     params: RestorationParams
     timeout_seconds: int = 600
+    # Benchmark lineage only; no restoration-port or wire-schema semantics.
+    geometry_backend: str | None = None
+    geometry_model: str | None = None
+    geometry_model_sha256: str | None = None

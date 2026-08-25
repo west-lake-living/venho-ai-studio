@@ -39,11 +39,11 @@ class MockVisionProvider:
         self.model = model
         self.temperature = temperature
 
-    def analyze(self, image_path: Path, system_prompt: str) -> dict[str, Any]:
+    def analyze(self, image_path: Path, system_prompt: str, **kwargs: Any) -> dict[str, Any]:
         return dict(MOCK_OBSERVATION)
 
     def analyze_many(
-        self, image_paths: Sequence[Path], system_prompt: str, text_prompt: str = ""
+        self, image_paths: Sequence[Path], system_prompt: str, text_prompt: str = "", **kwargs: Any
     ) -> dict[str, Any]:
         return dict(MOCK_OBSERVATION)
 

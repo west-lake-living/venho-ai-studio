@@ -1,0 +1,164 @@
+{
+  "a2AuthoritySha256": "1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d",
+  "caseId": "B04",
+  "cropLocalMask": {
+    "coordinateSpace": "crop-local",
+    "path": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/benchmark-geometry/v2.1/B04/crop_local_mask.png",
+    "sha256": "d570b2135db16889d0dd4f53e1098e9d5d1e26dd1f3a2ac1b72872b6337b3282"
+  },
+  "cropPath": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/benchmark-geometry/v2.1/B04/crop.png",
+  "cropSha256": "4d1031a7bb94ab9a73b01d255b176ac34ff35e9258cb0ce2b0ee1b06c7815da2",
+  "cropSize": {
+    "height": 327,
+    "width": 243
+  },
+  "cropTransform": {
+    "bottom": 465,
+    "left": 404,
+    "right": 647,
+    "targetSize": 243,
+    "top": 138
+  },
+  "fullCanvasMask": {
+    "coordinateSpace": "full-canvas",
+    "path": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/benchmark-geometry/v2.1/B04/full_canvas_mask.png",
+    "sha256": "c1516a52af41777ae8481054866bac27b065fe9272a44a289bca9cdb50d85909"
+  },
+  "geometry": {
+    "eye_line": 290.34564208984375,
+    "face_bbox": {
+      "bottom": 367,
+      "left": 477,
+      "right": 574,
+      "top": 236
+    },
+    "face_scale": 0.0947265625,
+    "hairline_boundary": [],
+    "head_bbox": {
+      "bottom": 439,
+      "left": 424,
+      "right": 627,
+      "top": 164
+    },
+    "jaw_contour": [],
+    "mouth_line": 336.6174621582031,
+    "neck_boundary": [],
+    "nose_axis": 521.7838134765625,
+    "pitch": -138.0607994492803,
+    "roll": 0.6646735123970008,
+    "yaw": 3.4456632747817935
+  },
+  "geometryBackend": "yunet",
+  "geometryModel": "face_detection_yunet_2023mar.onnx",
+  "geometryModelSha256": "8f2383e4dd3cfbb4553ea8718107fc0423210dc964f9f4280604804ed2552fa4",
+  "geometryProvenance": {
+    "backend": "yunet",
+    "bbox_xyxy": [
+      477.0445251464844,
+      236.25186157226562,
+      574.3783493041992,
+      366.6876525878906
+    ],
+    "confidence": 0.9433733224868774,
+    "detection_count": 1,
+    "detector": "cv2.FaceDetectorYN",
+    "face_selection_policy": "exactly_one_face_required",
+    "input_color_order": "BGR",
+    "landmark_count": 5,
+    "landmark_order": [
+      "left_eye",
+      "right_eye",
+      "nose",
+      "left_mouth_corner",
+      "right_mouth_corner"
+    ],
+    "landmarks": [
+      [
+        499.6333923339844,
+        290.7376708984375
+      ],
+      [
+        546.3517456054688,
+        289.95361328125
+      ],
+      [
+        521.7838134765625,
+        318.38031005859375
+      ],
+      [
+        502.7474060058594,
+        336.52984619140625
+      ],
+      [
+        545.02490234375,
+        336.705078125
+      ]
+    ],
+    "method_version": "opencv-zoo-yunet-2023mar-pnp-v1",
+    "model": "face_detection_yunet_2023mar.onnx",
+    "model_path": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/models/geometry/yunet/face_detection_yunet_2023mar.onnx",
+    "model_sha256": "8f2383e4dd3cfbb4553ea8718107fc0423210dc964f9f4280604804ed2552fa4",
+    "original_artifact": "/Users/hanhpham/Developer/Claude-Workspace/projects/venho-social-content-agent/assets/action-composite-live/action_01_jogging.png",
+    "original_dimensions": {
+      "height": 1280,
+      "width": 1024
+    },
+    "original_sha256": "bb031e7adfcc0c7d79544c3edb932eebafc1f797a59881415e57addc584d26a0",
+    "pnp": {
+      "angle_convention": "rotation matrix XYZ decomposition; output pitch,yaw,roll in degrees",
+      "angle_range": "atan2-derived approximately [-180,180] degrees",
+      "angle_sign_convention": "existing _rotation_to_euler convention preserved",
+      "camera_matrix": [
+        [
+          1280.0,
+          0.0,
+          512.0
+        ],
+        [
+          0.0,
+          1280.0,
+          640.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "distortion_coefficients": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "image_point_count": 5,
+      "initial_solver": "cv2.SOLVEPNP_SQPNP",
+      "object_point_count": 5,
+      "refinement_method": "cv2.SOLVEPNP_ITERATIVE(useExtrinsicGuess=True)",
+      "refinement_used": true,
+      "reprojection_error_px": 3.2273001221482995,
+      "rotation_order": "existing _rotation_to_euler order preserved",
+      "rvec": [
+        -2.4090278846032813,
+        0.01379600869965801,
+        0.07780928500722437
+      ],
+      "synthetic_landmarks_added": 0,
+      "tvec": [
+        14.357283171576528,
+        -438.19908331050044,
+        1761.789840336859
+      ]
+    },
+    "source_decode_color_order": "RGB"
+  },
+  "lineage": "YuNetGeometryExtractor -> crop_for_identity -> hierarchical_face_masks",
+  "maskVersion": "hierarchical_face_v1",
+  "sourceDimensions": {
+    "height": 1280,
+    "width": 1024
+  },
+  "sourcePath": "/Users/hanhpham/Developer/Claude-Workspace/projects/venho-social-content-agent/assets/action-composite-live/action_01_jogging.png",
+  "sourceSha256": "bb031e7adfcc0c7d79544c3edb932eebafc1f797a59881415e57addc584d26a0",
+  "version": "benchmark-geometry-v2.1"
+}
