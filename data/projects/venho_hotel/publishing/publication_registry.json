@@ -7346,13 +7346,13 @@
       "content_package_id": "90912a12-a022-47a4-8be0-220d7949d9b3",
       "idempotency_key": "004885a3886a7bb7d510b19f8f4fb5fbca470d38025748b03297ee7e54a14b0c",
       "platform": "instagram",
-      "status": "PENDING_APPROVAL",
+      "status": "REJECTED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T04:16:31.541624+00:00",
-      "updated_at": "2026-08-13T04:16:31.550356+00:00",
+      "updated_at": "2026-08-26T09:25:39.775598+00:00",
       "content": {
         "title": "Ngày mưa, lobby thành chỗ ngồi lâu nhất",
         "text": "Mưa Hà Nội hay đến ngang chừng buổi chiều. Và lobby là chỗ đầu tiên bạn dừng lại.\n\nCửa kính khép lại, tiếng mưa ngoài phố Nguyễn Đình Thi nhỏ dần đi một nửa.\n\nSàn gạch nâu với những vòng tròn xoay đều dưới chân. Quầy lễ tân gỗ nâu đỏ sẫm, một bức tranh treo trên tường, ánh đèn vừa đủ sáng để đọc mà không chói mắt.\n\nKhông gian ở đây nhỏ, gọn và sạch. Đủ để bạn kéo một chiếc ghế ra, lấy cuốn sách vẫn nằm trong balo từ hôm lên máy bay, rồi đọc hết chương dang dở mà không thấy sốt ruột.\n\nMưa ở Tây Hồ ít khi kéo dài cả ngày. Đọc xong vài trang, ngẩng lên là trời đã hửng, mặt hồ lại sáng ra, vừa kịp cho một vòng đi bộ trước khi hoàng hôn Hồ Tây xuống.\n\nNếu bạn đang lên lịch vài ngày ở Hà Nội, nhắn Ven Hồ Hotel để xem phòng trống cho ngày bạn định đến nhé.\n\n#VenHoHotelHanoi #KhachSanViewHoTay #HoTay #NguyenDinhThi #WestLakeHanoi #HaNoi #HanoiTravel",
@@ -7455,7 +7455,9 @@
         "claim_kill_switch_triggered": false,
         "content_brand_fit": 95,
         "content_overall_score": 92.37
-      }
+      },
+      "rejected_by": "hpham1504@gmail.com",
+      "rejected_reason": "Đã quá thời hạn"
     },
     {
       "publication_id": "pub-friday-threads-a4c20648",
