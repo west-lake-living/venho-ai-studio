@@ -1,8 +1,8 @@
-# GW-P5-T1 — ComfyUI worker launcher.
+# GW-P5-T1 - ComfyUI worker launcher.
 # Single source of truth for HOW ComfyUI starts: reads the config GW-P1 already
 # proved works (worker.env / gw_p1_winning_config.json), does not re-derive
 # flags. Invoked directly for manual start, or by the Task Scheduler action
-# registered in gw_p5_t1_register_autostart.ps1. Local-only by construction —
+# registered in gw_p5_t1_register_autostart.ps1. Local-only by construction -
 # refuses to start if the recorded bind address is not 127.0.0.1/::1.
 param(
     [string]$WorkerRoot = 'C:\VenHoGPU',
@@ -24,7 +24,7 @@ function Read-EnvFile([string]$path) {
 $envPath = Join-Path $WorkerRoot 'worker.env'
 $winningConfigPath = Join-Path $WorkerRoot 'gw_p1_winning_config.json'
 if (-not (Test-Path -LiteralPath $winningConfigPath)) {
-    throw "Missing $winningConfigPath — run gw_p1_verify.ps1 first. Refusing to guess launch flags."
+    throw "Missing $winningConfigPath - run gw_p1_verify.ps1 first. Refusing to guess launch flags."
 }
 $config = Get-Content -LiteralPath $winningConfigPath -Raw | ConvertFrom-Json
 $envMap = Read-EnvFile $envPath
