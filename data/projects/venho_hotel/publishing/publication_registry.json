@@ -7578,13 +7578,13 @@
       "content_package_id": "ea3f09af-4c26-44c0-9be2-45511cd3b5ec",
       "idempotency_key": "0d08214cbb046a9aa76e388cd29dae4cec196f31751e2895816ff4d1f36185a5",
       "platform": "zalo",
-      "status": "PENDING_APPROVAL",
+      "status": "REJECTED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T04:17:26.326414+00:00",
-      "updated_at": "2026-08-13T04:17:26.338559+00:00",
+      "updated_at": "2026-08-26T09:25:52.433644+00:00",
       "content": {
         "title": "Ngày mưa, sảnh Ven Hồ là một chỗ ngồi vừa đủ",
         "text": "Có những ngày Hà Nội mưa từ sáng, kế hoạch đi vòng quanh Hồ Tây phải hoãn lại. Và hóa ra đó không phải là ngày bỏ đi.\n\nSảnh Ven Hồ Hotel không rộng, nhưng đủ để có một góc ngồi yên.\n\nCửa kính nhìn thẳng ra phố Nguyễn Đình Thi, mưa chạy thành vệt dài trên mặt kính. Bên trong, sàn gạch nâu với những vòng hoa văn tròn, quầy lễ tân gỗ nâu đỏ sẫm, vài bức tranh treo tường và ánh đèn dịu, không gắt. Trần trắng phẳng, mọi thứ gọn gàng và sạch sẽ.\n\nMột chiếc ghế cạnh cửa kính, cuốn sách mang theo từ nhà đang đọc dở, thêm chút ánh sáng ngày mưa hắt vào là đủ cho một buổi sáng chậm. Nhân viên lễ tân vẫn ở đó nếu bạn cần hỏi đường hay gọi xe.\n\nRồi mưa ngớt. Hồ Tây chỉ cách vài phút đi bộ, mặt nước sau mưa thường trong và mát hơn hẳn. Chuyến đi không mất gì, chỉ đổi thứ tự lại một chút.\n\nĐó là kiểu tiện lợi mà một khách sạn view Hồ Tây quy mô nhỏ có thể mang lại: bạn không cần đi xa để chờ trời tạnh.\n\nLiên hệ Hotline/Zalo 0936871234 để đặt phòng view Hồ Tây ngay hôm nay.\n\n#VenHoHotelHanoi #HoTay #KhachSanHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=zalo&utm_medium=social&utm_content=pub-friday-zalo-4dd82a70",
@@ -7684,7 +7684,9 @@
         "claim_kill_switch_triggered": false,
         "content_brand_fit": 95,
         "content_overall_score": 91.25
-      }
+      },
+      "rejected_by": "hpham1504@gmail.com",
+      "rejected_reason": "Đã quá thời hạn"
     },
     {
       "publication_id": "pub-saturday-instagram-979e8f22",
