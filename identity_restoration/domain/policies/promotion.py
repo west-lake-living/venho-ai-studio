@@ -15,12 +15,14 @@ class QcResult:
     face_score: float
     all_validators_approved: bool
     kill_switch_triggered: bool
+    source_authority: dict[str, object] | None = None
 
 
 def is_full_gate_pass(qc: QcResult, pixel: PixelLockReport, *, face_qc_min: float) -> bool:
     """``face_qc_min`` is injected from Character Bible 07F, never hardcoded here (GW-D12)."""
     return (
-        qc.face_score >= face_qc_min
+        (qc.source_authority is None or qc.source_authority.get("qualityAcceptanceEligible") is not False)
+        and qc.face_score >= face_qc_min
         and qc.all_validators_approved
         and not qc.kill_switch_triggered
         and pixel.passed

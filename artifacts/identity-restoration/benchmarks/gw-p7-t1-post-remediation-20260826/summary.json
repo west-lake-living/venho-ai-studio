@@ -1,0 +1,88 @@
+{
+  "branches": {
+    "comfyui-remote": {
+      "authorityFailureRows": 0,
+      "count": 10,
+      "decisionValidRows": 10,
+      "evidenceFailureRows": 0,
+      "infrastructureFailureRows": 0,
+      "max": 95.4,
+      "mean": 82.212,
+      "median": 91.335,
+      "min": 0.0,
+      "plannedRows": 10,
+      "qualityFailRows": 7,
+      "qualityPassRows": 3,
+      "validQcN": 10,
+      "validQualityRows": 10,
+      "validatorFailureRows": 0
+    },
+    "control": {
+      "authorityFailureRows": 0,
+      "count": 10,
+      "decisionValidRows": 10,
+      "evidenceFailureRows": 0,
+      "infrastructureFailureRows": 0,
+      "max": 95.8,
+      "mean": 88.955,
+      "median": 90.835,
+      "min": 65.58,
+      "plannedRows": 10,
+      "qualityFailRows": 7,
+      "qualityPassRows": 3,
+      "validQcN": 10,
+      "validQualityRows": 10,
+      "validatorFailureRows": 0
+    },
+    "nano-banana-edit": {
+      "authorityFailureRows": 0,
+      "count": 10,
+      "decisionValidRows": 10,
+      "evidenceFailureRows": 0,
+      "infrastructureFailureRows": 0,
+      "max": 96.35,
+      "mean": 89.61,
+      "median": 90.6,
+      "min": 68.45,
+      "plannedRows": 10,
+      "qualityFailRows": 8,
+      "qualityPassRows": 2,
+      "validQcN": 10,
+      "validQualityRows": 10,
+      "validatorFailureRows": 0
+    }
+  },
+  "decision": "QUALITY_FAIL",
+  "decisionEligibilityReasons": [],
+  "decisionEligible": true,
+  "expectedRowCount": 30,
+  "failureClassificationCounts": {
+    "AUTHORITY_FAIL": 0,
+    "EVIDENCE_PIPELINE_FAIL": 0,
+    "INFRA_EXECUTION_FAIL": 0,
+    "VALIDATOR_FAIL": 0,
+    "VALID_QUALITY_FAIL": 22,
+    "VALID_QUALITY_PASS": 8
+  },
+  "qualityGate": {
+    "anatomyHealthy": true,
+    "anatomyRegionalHealthy": true,
+    "failures": [
+      "B02:quality_gate_failed",
+      "B03:quality_gate_failed",
+      "B05:quality_gate_failed",
+      "B06:quality_gate_failed",
+      "B07:quality_gate_failed",
+      "B09:quality_gate_failed",
+      "B10:quality_gate_failed"
+    ],
+    "lineageComplete": true,
+    "noFallbackContamination": true,
+    "pixelPreservationPass": true,
+    "regionalHealthy": false,
+    "treatmentMedianFaceQc": 91.335,
+    "treatmentMedianFaceQcMin": 90
+  },
+  "rowCount": 30,
+  "terminalRowCount": 30
+}

@@ -16,7 +16,11 @@ def init_log(log_path: Path) -> None:
 def log(message: str) -> None:
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     line = f"[{timestamp}] {message}"
-    print(line, flush=True)
+    # Machine-facing CLI commands reserve stdout for exactly one JSON
+    # document. Human/provider diagnostics belong on stderr (and the optional
+    # durable log file), otherwise a valid result is corrupted at the process
+    # boundary.
+    print(line, file=sys.stderr, flush=True)
     if _LOG_FILE:
         with _LOG_FILE.open("a", encoding="utf-8") as f:
             f.write(line + "\n")

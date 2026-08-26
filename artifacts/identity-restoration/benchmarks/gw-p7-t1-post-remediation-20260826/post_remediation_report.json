@@ -1,0 +1,187 @@
+{
+  "a2Sha256": "1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d",
+  "affectedRows": [
+    {
+      "authorityProfile": "action_full_body@1.0",
+      "benchmarkId": "B03",
+      "branch": "control",
+      "newGlobalScore": 40.0,
+      "oldGlobalScore": 40.0,
+      "outputSha256": "098e6816fc21631fe4cd3bbd34b718f04569f8684f5347ab78525faf7ce07d87",
+      "regionalGateFailures": [
+        "global_composite_below_threshold"
+      ],
+      "regionalGatePassed": false,
+      "sourceValidatorCache": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/benchmarks/validator-cache/098e6816fc21631fe4cd3bbd34b718f04569f8684f5347ab78525faf7ce07d87-validator-studio-face-image-v1:gemini:rubric=07F:samples=3.json"
+    },
+    {
+      "authorityProfile": "action_full_body@1.0",
+      "benchmarkId": "B03",
+      "branch": "nano-banana-edit",
+      "newGlobalScore": 97.96,
+      "oldGlobalScore": 87.24,
+      "outputSha256": "892c1934b95d72c4379b10b2f736b5d8a105731c77a53f2159b7785e515a74c1",
+      "regionalGateFailures": [],
+      "regionalGatePassed": true,
+      "sourceValidatorCache": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/benchmarks/validator-cache/892c1934b95d72c4379b10b2f736b5d8a105731c77a53f2159b7785e515a74c1-validator-studio-face-image-v1:gemini:rubric=07F:samples=3.json"
+    },
+    {
+      "authorityProfile": "action_full_body@1.0",
+      "benchmarkId": "B03",
+      "branch": "comfyui-remote",
+      "newGlobalScore": 40.0,
+      "oldGlobalScore": 40.0,
+      "outputSha256": "7934d4ad7d6675d7b430153fba89ad396696f401ffce3bfdf3cf7ed1a529ef17",
+      "regionalGateFailures": [
+        "global_composite_below_threshold"
+      ],
+      "regionalGatePassed": false,
+      "sourceValidatorCache": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/benchmarks/validator-cache/7934d4ad7d6675d7b430153fba89ad396696f401ffce3bfdf3cf7ed1a529ef17-validator-studio-face-image-v1:gemini:rubric=07F:samples=3.json"
+    },
+    {
+      "authorityProfile": "action_full_body@1.0",
+      "benchmarkId": "B04",
+      "branch": "control",
+      "newGlobalScore": 93.9,
+      "oldGlobalScore": 83.66,
+      "outputSha256": "bb031e7adfcc0c7d79544c3edb932eebafc1f797a59881415e57addc584d26a0",
+      "regionalGateFailures": [],
+      "regionalGatePassed": true,
+      "sourceValidatorCache": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/benchmarks/validator-cache/bb031e7adfcc0c7d79544c3edb932eebafc1f797a59881415e57addc584d26a0-validator-studio-face-image-v1:gemini:rubric=07F:samples=3.json"
+    },
+    {
+      "authorityProfile": "action_full_body@1.0",
+      "benchmarkId": "B04",
+      "branch": "nano-banana-edit",
+      "newGlobalScore": 94.1,
+      "oldGlobalScore": 83.68,
+      "outputSha256": "3b363ebd030b763b0d4ddd59a06fe18ed944741aa0bad015a75a8ab1db2f618f",
+      "regionalGateFailures": [],
+      "regionalGatePassed": true,
+      "sourceValidatorCache": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/benchmarks/validator-cache/3b363ebd030b763b0d4ddd59a06fe18ed944741aa0bad015a75a8ab1db2f618f-validator-studio-face-image-v1:gemini:rubric=07F:samples=3.json"
+    },
+    {
+      "authorityProfile": "action_full_body@1.0",
+      "benchmarkId": "B04",
+      "branch": "comfyui-remote",
+      "newGlobalScore": 93.91,
+      "oldGlobalScore": 83.86,
+      "outputSha256": "1d692726a644d74fe4652d83392f23bc2b022c41c172482b7be494e035d41bd5",
+      "regionalGateFailures": [],
+      "regionalGatePassed": true,
+      "sourceValidatorCache": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/benchmarks/validator-cache/1d692726a644d74fe4652d83392f23bc2b022c41c172482b7be494e035d41bd5-validator-studio-face-image-v1:gemini:rubric=07F:samples=3.json"
+    }
+  ],
+  "artifactId": "gw-p7-t1-post-remediation-20260826",
+  "artifactType": "GW-P7-T1_POST_REMEDIATION_BENCHMARK",
+  "remediation": {
+    "authorityProfile": "action_full_body@1.0",
+    "generationChanged": false,
+    "gpuJobs": 0,
+    "providerCalls": 0,
+    "qcAuthorityInterpretationChanged": true,
+    "task": "GW-P4-R1"
+  },
+  "sourceArtifactHashesPreserved": true,
+  "sourceRunId": "benchmark-20260825T160000Z-gw-p4-t1",
+  "sourceRunManifest": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/benchmarks/benchmark-20260825T160000Z-gw-p4-t1/run_manifest.json",
+  "summary": {
+    "branches": {
+      "comfyui-remote": {
+        "authorityFailureRows": 0,
+        "count": 10,
+        "decisionValidRows": 10,
+        "evidenceFailureRows": 0,
+        "infrastructureFailureRows": 0,
+        "max": 95.4,
+        "mean": 82.212,
+        "median": 91.335,
+        "min": 0.0,
+        "plannedRows": 10,
+        "qualityFailRows": 7,
+        "qualityPassRows": 3,
+        "validQcN": 10,
+        "validQualityRows": 10,
+        "validatorFailureRows": 0
+      },
+      "control": {
+        "authorityFailureRows": 0,
+        "count": 10,
+        "decisionValidRows": 10,
+        "evidenceFailureRows": 0,
+        "infrastructureFailureRows": 0,
+        "max": 95.8,
+        "mean": 88.955,
+        "median": 90.835,
+        "min": 65.58,
+        "plannedRows": 10,
+        "qualityFailRows": 7,
+        "qualityPassRows": 3,
+        "validQcN": 10,
+        "validQualityRows": 10,
+        "validatorFailureRows": 0
+      },
+      "nano-banana-edit": {
+        "authorityFailureRows": 0,
+        "count": 10,
+        "decisionValidRows": 10,
+        "evidenceFailureRows": 0,
+        "infrastructureFailureRows": 0,
+        "max": 96.35,
+        "mean": 89.61,
+        "median": 90.6,
+        "min": 68.45,
+        "plannedRows": 10,
+        "qualityFailRows": 8,
+        "qualityPassRows": 2,
+        "validQcN": 10,
+        "validQualityRows": 10,
+        "validatorFailureRows": 0
+      }
+    },
+    "decision": "QUALITY_FAIL",
+    "decisionEligibilityReasons": [],
+    "decisionEligible": true,
+    "expectedRowCount": 30,
+    "failureClassificationCounts": {
+      "AUTHORITY_FAIL": 0,
+      "EVIDENCE_PIPELINE_FAIL": 0,
+      "INFRA_EXECUTION_FAIL": 0,
+      "VALIDATOR_FAIL": 0,
+      "VALID_QUALITY_FAIL": 22,
+      "VALID_QUALITY_PASS": 8
+    },
+    "qualityGate": {
+      "anatomyHealthy": true,
+      "anatomyRegionalHealthy": true,
+      "failures": [
+        "B02:quality_gate_failed",
+        "B03:quality_gate_failed",
+        "B05:quality_gate_failed",
+        "B06:quality_gate_failed",
+        "B07:quality_gate_failed",
+        "B09:quality_gate_failed",
+        "B10:quality_gate_failed"
+      ],
+      "lineageComplete": true,
+      "noFallbackContamination": true,
+      "pixelPreservationPass": true,
+      "regionalHealthy": false,
+      "treatmentMedianFaceQc": 91.335,
+      "treatmentMedianFaceQcMin": 90
+    },
+    "rowCount": 30,
+    "terminalRowCount": 30
+  },
+  "unchangedCases": [
+    "B01",
+    "B02",
+    "B05",
+    "B06",
+    "B07",
+    "B08",
+    "B09",
+    "B10"
+  ],
+  "workflowSha256": "1a6421a04ce7bdedd716beea93d196551f5dbe77c3da11d1e8a6bc4f1f06ee58"
+}

@@ -1,0 +1,149 @@
+/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/.venv/lib/python3.14/site-packages/insightface/utils/face_align.py:23: FutureWarning: `estimate` is deprecated since version 0.26 and will be removed in version 2.2. Please use `SimilarityTransform.from_estimate` class constructor instead.
+  tform.estimate(lmk, dst)
+Applied providers: ['CPUExecutionProvider'], with options: {'CPUExecutionProvider': {}}
+find model: /Users/hanhpham/.insightface/models/buffalo_l/1k3d68.onnx landmark_3d_68 ['None', 3, 192, 192] 0.0 1.0
+Applied providers: ['CPUExecutionProvider'], with options: {'CPUExecutionProvider': {}}
+find model: /Users/hanhpham/.insightface/models/buffalo_l/2d106det.onnx landmark_2d_106 ['None', 3, 192, 192] 0.0 1.0
+Applied providers: ['CPUExecutionProvider'], with options: {'CPUExecutionProvider': {}}
+find model: /Users/hanhpham/.insightface/models/buffalo_l/det_10g.onnx detection [1, 3, '?', '?'] 127.5 128.0
+Applied providers: ['CPUExecutionProvider'], with options: {'CPUExecutionProvider': {}}
+find model: /Users/hanhpham/.insightface/models/buffalo_l/genderage.onnx genderage ['None', 3, 96, 96] 0.0 1.0
+Applied providers: ['CPUExecutionProvider'], with options: {'CPUExecutionProvider': {}}
+find model: /Users/hanhpham/.insightface/models/buffalo_l/w600k_r50.onnx recognition ['None', 3, 112, 112] 127.5 127.5
+set det-size: (1024, 1024)
+{
+  "branch": "comfyui-remote",
+  "case": "B01",
+  "evidence": {
+    "a2Path": "assets/linh_an/A2_Front.png",
+    "anatomyScore": null,
+    "backend": "comfyui-remote",
+    "cropTransform": {
+      "box": [
+        120,
+        0,
+        946,
+        970
+      ],
+      "targetSize": 826
+    },
+    "environmentScore": null,
+    "error": null,
+    "executorStatus": "COMPLETED",
+    "eyesBrowsScore": null,
+    "faceQcAfter": null,
+    "faceQcBefore": null,
+    "geometryScore": null,
+    "globalScore": null,
+    "gpuName": "cuda:0 NVIDIA GeForce GTX 1660 SUPER : cudaMallocAsync",
+    "host": {
+      "attemptId": "b01-remote-smoke-1",
+      "platform": "macOS-26.4-arm64-arm-64bit-Mach-O",
+      "python": "3.14.6",
+      "remoteHealth": {
+        "gpuName": "cuda:0 NVIDIA GeForce GTX 1660 SUPER : cudaMallocAsync",
+        "latencyMs": 21.69125000364147,
+        "status": "HEALTHY",
+        "vramFreeMb": 4471
+      },
+      "remoteHost": "https://harry-rog.taila40de0.ts.net",
+      "restorationStatus": "NEEDS_REVIEW"
+    },
+    "identityScore": null,
+    "lineage": {
+      "a2Sha256": "1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d",
+      "baseFramePath": "/Users/hanhpham/Developer/Claude-Workspace/projects/venho-social-content-agent/photos-ai/2026/12-08-linh-an-a2-front-closeup-1k/run-202608121022/variant-001/image.png",
+      "baseFrameSha256": "e7b00d4a65b2cc97e274e3c00f96e091bda0e614778df5a2d43f17cc3793faf9",
+      "fullCanvasMaskSha256": "0bde5b77719f9e357763e7860df9ddd664b6ae6cc470a8d44609142b578d042c",
+      "fullCanvasMaskVersion": "hierarchical_face_v1_full_canvas",
+      "geometryBackend": "insightface",
+      "geometryModel": "buffalo_l",
+      "geometryModelSha256": null,
+      "restoration": {
+        "a2AuthoritySha256": "1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d",
+        "cropTransform": {
+          "box": [
+            120,
+            0,
+            946,
+            970
+          ],
+          "targetSize": 826
+        },
+        "geometry": {
+          "finalCropHeight": 970,
+          "finalCropWidth": 826,
+          "inputHeight": 970,
+          "inputWidth": 826,
+          "padBottom": 6,
+          "padRight": 6,
+          "paddedHeight": 976,
+          "paddedWidth": 832
+        },
+        "maskSpaces": {
+          "preservation": {
+            "coordinateSpace": "full-canvas",
+            "sha256": "0bde5b77719f9e357763e7860df9ddd664b6ae6cc470a8d44609142b578d042c",
+            "version": "hierarchical_face_v1_full_canvas"
+          },
+          "restoration": {
+            "coordinateSpace": "crop-local",
+            "sha256": "d3bd5b3258c53253bb3eb4c91e2a91fac80629fd5e49ebb968ef60841f0ed6d3",
+            "version": "hierarchical_face_v1"
+          }
+        },
+        "maskVersion": "hierarchical_face_v1",
+        "modelIdentifiers": [
+          "v1-5-pruned-emaonly.safetensors",
+          "ip-adapter-faceid-plusv2_sd15.bin",
+          "ip-adapter-faceid-plusv2_sd15_lora.safetensors",
+          "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors",
+          "buffalo_l"
+        ],
+        "pixelLock": {
+          "editableRegionHash": "6146acb5c9a74fffbbc58964d090ab00a8f648321dc04e14e91f65c60a6d5c1f",
+          "mutatedPixelCount": 0,
+          "passed": true
+        },
+        "promptId": "e944c931-aaaa-4362-88f0-c1599960381a",
+        "remoteHost": "https://harry-rog.taila40de0.ts.net",
+        "remoteOutput": {
+          "filename": "gw-p3_00030_.png",
+          "subfolder": "",
+          "type": "output"
+        },
+        "restorerId": "comfyui-remote",
+        "runtimeMs": 2296,
+        "seed": 42,
+        "workerHealth": {
+          "gpuName": "cuda:0 NVIDIA GeForce GTX 1660 SUPER : cudaMallocAsync",
+          "latencyMs": 21.69125000364147,
+          "status": "HEALTHY",
+          "vramFreeMb": 4471
+        },
+        "workflowId": "face_restore_win_sd15_ipadapter_v2",
+        "workflowSha256": "1a6421a04ce7bdedd716beea93d196551f5dbe77c3da11d1e8a6bc4f1f06ee58"
+      }
+    },
+    "maskSha256": "d3bd5b3258c53253bb3eb4c91e2a91fac80629fd5e49ebb968ef60841f0ed6d3",
+    "maskVersion": "hierarchical_face_v1",
+    "outfitScore": null,
+    "outputPath": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/data/projects/venho_hotel/identity_restoration/preflight-b01-remote-smoke/b01-remote-smoke-1/composite.png",
+    "outputSha256": "919e20a83aedb246f1124e8d919eab2a4c10d7ef6a5faba00982119508fa7be9",
+    "pixelPreservationResult": "PASS",
+    "provider": "comfyui-remote",
+    "providerRequestId": "e944c931-aaaa-4362-88f0-c1599960381a",
+    "providerRunId": "preflight-b01-remote-smoke",
+    "restoredCropPath": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/data/projects/venho_hotel/identity_restoration/preflight-b01-remote-smoke/b01-remote-smoke-1/restored_crop.png",
+    "restoredCropSha256": "da78a3dfc4ee907df11ca54616253a4df97a7e40c856edfc90243db40991b228",
+    "retryCount": 0,
+    "runtimeMs": 2296,
+    "smokeEvidencePath": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/evidence/gw-p5-10job-soak-20260826-122827/job08/gw-p4-t0-5-2d-20260826T053016Z-df209ab0/smoke_manifest.json",
+    "vramPeakMb": null,
+    "workflowId": "face_restore_win_sd15_ipadapter_v2",
+    "workflowSha256": "1a6421a04ce7bdedd716beea93d196551f5dbe77c3da11d1e8a6bc4f1f06ee58"
+  },
+  "evidenceType": "NON_BENCHMARK",
+  "officialExecutionReady": false,
+  "phase": "PREFLIGHT"
+}

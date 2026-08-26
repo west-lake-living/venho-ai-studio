@@ -7,10 +7,12 @@ from dataclasses import replace
 from pathlib import Path
 
 from ..infrastructure.composition.identity_restoration_module import (
+    build_qc_gateway,
     build_identity_restoration_module,
     build_worker_health,
 )
 from ..application.use_cases.check_worker_health import CheckWorkerHealthUseCase
+from ..application.use_cases.validate_restoration_artifact import ValidateRestorationArtifactUseCase
 from ..application.benchmark_runner import (
     BenchmarkExecutionError,
     BenchmarkManifestError,
@@ -24,7 +26,7 @@ from ..application.benchmark_request_builder import (
     validate_benchmark_restore_command,
 )
 from ..infrastructure.composition.env import read_restoration_env
-from .json_bridge import dump_result, load_restore_command
+from .json_bridge import emit_json, load_restore_command, load_validate_restoration_artifact
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -35,6 +37,9 @@ def main(argv: list[str] | None = None) -> int:
     run_p.add_argument("--request", required=True, type=Path, help="Path to a restoration_request JSON")
     run_p.add_argument("--restorer", default=None,
                        help="Override restorerId (mock | comfyui-local | comfyui-remote)")
+
+    validate_p = sub.add_parser("validate", help="Validate an existing restoration composite without restoring")
+    validate_p.add_argument("--request", required=True, type=Path, help="Path to a validation request JSON")
 
     sub.add_parser("health", help="Probe worker health and print WorkerHealth as JSON")
 
@@ -77,11 +82,14 @@ def main(argv: list[str] | None = None) -> int:
         # loading successfully — build it straight from env, no workflow I/O.
         health = build_worker_health()
         if health is None:
-            print('{"status": "MOCK_ONLY", "message": "IDR_COMFYUI_ENABLED=false, no worker configured"}')
+            emit_json({"status": "MOCK_ONLY", "message": "IDR_COMFYUI_ENABLED=false, no worker configured"})
             return 0
         result = CheckWorkerHealthUseCase(health=health).execute()
-        print(f'{{"status": "{result.status.value}", "gpuName": {result.gpu_name!r}, '
-              f'"vramFreeMb": {result.vram_free_mb}}}')
+        emit_json({
+            "status": result.status.value,
+            "gpuName": result.gpu_name,
+            "vramFreeMb": result.vram_free_mb,
+        })
         return 0
 
     if args.command == "run":
@@ -90,8 +98,25 @@ def main(argv: list[str] | None = None) -> int:
         if args.restorer:
             cmd = _with_restorer(cmd, args.restorer)
         result = module.use_case.execute(cmd)
-        print(dump_result(result))
+        emit_json(result.to_json_dict())
         return 0 if result.status in ("FULL_GATE_PASS", "NEEDS_REVIEW") else 1
+
+    if args.command == "validate":
+        try:
+            env = read_restoration_env()
+            gateway = build_qc_gateway(env, required=True)
+            result = ValidateRestorationArtifactUseCase(qc=gateway).execute(
+                load_validate_restoration_artifact(args.request)
+            )
+            emit_json(result.to_json_dict())
+            return 0 if result.status == "QC_VALIDATED" else 1
+        except (OSError, ValueError, TypeError) as exc:
+            emit_json({
+                "contractVersion": "1.0",
+                "status": "QC_FAILED",
+                "error": {"code": "ERR_GW_QC_CONTRACT_INVALID", "message": str(exc), "retryable": False},
+            })
+            return 1
 
     if args.command == "benchmark":
         runner = BenchmarkRunner(
@@ -183,7 +208,7 @@ def _run_remote_bootstrap_smoke(args, runner: BenchmarkRunner) -> dict:
     )
     module = build_identity_restoration_module(smoke_env, repo_root=runner.repo_root)
     try:
-        module.registry.resolve("comfyui-remote")
+        remote_adapter = module.registry.resolve("comfyui-remote")
     except KeyError as exc:
         raise BenchmarkExecutionError("comfyui-remote is not registered in the composition root") from exc
     canonical_command = build_benchmark_restore_command(
@@ -221,6 +246,7 @@ def _run_remote_bootstrap_smoke(args, runner: BenchmarkRunner) -> dict:
         health=module.health,
         evidence_root=(args.evidence_root if args.evidence_root.is_absolute()
                        else runner.repo_root / args.evidence_root),
+        memory_release=getattr(remote_adapter, "free_memory", None),
     )
     run_id = "preflight-b01-remote-smoke"
     attempt_id = "b01-remote-smoke-1"

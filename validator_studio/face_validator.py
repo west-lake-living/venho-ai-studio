@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import uuid
 from collections import Counter
 from pathlib import Path
 from typing import Any, Callable, Optional
@@ -179,6 +180,8 @@ def _observe_face(
     reference_image_paths: Optional[list[Path]] = None,
     samples: int = 1,
     raw_response_sink: Optional[Callable[[dict[str, Any]], None]] = None,
+    validation_cycle_id: str | None = None,
+    attempt_id: str | None = None,
 ) -> FaceValidationObservation:
     if provider == "mock":
         return _mock_observe_face(image_path, rubric)
@@ -187,6 +190,18 @@ def _observe_face(
         if not reference_path.exists():
             raise FileNotFoundError(f"Face validator reference image not found: {reference_path}")
     client = VisionClient(image_provider=provider, temperature=0.0)
+    cycle_id = validation_cycle_id or uuid.uuid4().hex
+    # The existing raw evidence sink is the durable boundary.  Transport
+    # events share it so retries/checkpoints remain in the same sample record.
+    if raw_response_sink is not None:
+        def persist_transport(event: dict[str, Any]) -> None:
+            raw_response_sink({
+                "validator": "face", "cycleId": cycle_id,
+                "attemptId": attempt_id,
+                "sampleIndex": event.get("logicalSampleIndex"),
+                "logicalSampleIndex": event.get("logicalSampleIndex"), **event,
+            })
+        setattr(client, "transport_event_sink", persist_transport)
     prompt = _build_face_observe_prompt(dna, rubric, reference_image_paths=reference_image_paths)
 
     observed: list[FaceValidationObservation] = []
@@ -195,7 +210,8 @@ def _observe_face(
             if raw_response_sink is not None:
                 client.raw_response_sink = lambda raw, index=sample_index + 1: raw_response_sink({
                     "validator": "face", "sampleIndex": index, "rawResponse": raw,
-                    "parseStatus": "raw_captured",
+                    "parseStatus": "raw_captured", "cycleId": cycle_id, "attemptId": attempt_id,
+                    "logicalSampleIndex": index,
                 })
             schema = FaceValidationObservation.model_json_schema()
             try:
@@ -213,20 +229,33 @@ def _observe_face(
             raw = getattr(client, "last_raw_response", None)
             if raw_response_sink is not None:
                 raw_response_sink({"validator": "face", "sampleIndex": sample_index + 1,
-                                   "rawResponse": raw, "parseStatus": "before_contract"})
+                                   "rawResponse": raw, "parseStatus": "before_contract",
+                                   "cycleId": cycle_id, "attemptId": attempt_id,
+                                   "logicalSampleIndex": sample_index + 1,
+                                   "transportAttemptIndex": getattr(client, "last_transport_attempt_index", 1)})
             payload = response if isinstance(response, dict) and "gates" in response else extract_json(str(response))
             _assert_face_observation_contract(payload, rubric)
             observation = FaceValidationObservation.model_validate(payload)
             if raw_response_sink is not None:
                 raw_response_sink({"validator": "face", "sampleIndex": sample_index + 1,
                                    "rawResponse": raw, "parseStatus": "parsed",
-                                   "parsedEvidence": observation.model_dump(mode="json")})
+                                   "parsedEvidence": observation.model_dump(mode="json"),
+                                   "cycleId": cycle_id, "attemptId": attempt_id,
+                                   "logicalSampleIndex": sample_index + 1,
+                                   "transportAttemptIndex": getattr(client, "last_transport_attempt_index", 1),
+                                   "checkpointed": True})
             observed.append(observation)
         except Exception as exc:
             if raw_response_sink is not None:
+                provider_impl = getattr(client, "_image_provider", None)
                 raw_response_sink({"validator": "face", "sampleIndex": sample_index + 1,
                                    "rawResponse": getattr(client, "last_raw_response", None),
-                                   "parseStatus": "failed", "parseError": str(exc)})
+                                   "parseStatus": "failed", "parseError": str(exc),
+                                   "cycleId": cycle_id, "attemptId": attempt_id,
+                                   "logicalSampleIndex": sample_index + 1,
+                                   "transportAttemptIndex": getattr(client, "last_transport_attempt_index", 1),
+                                   "errorCode": getattr(provider_impl, "last_failure_class", None),
+                                   "checkpointed": False})
             raise
 
     observation = _merge_face_samples(observed)
@@ -249,12 +278,16 @@ def validate_face(
     reference_image_paths: Optional[list[Path]] = None,
     samples: int = 1,
     raw_response_sink: Optional[Callable[[dict[str, Any]], None]] = None,
+    validation_cycle_id: str | None = None,
+    attempt_id: str | None = None,
 ) -> ValidationReport:
     dna_path = find_dna_path(project, subject)
     dna = load_json(dna_path)
     rubric = _load_face_rubric(project)
     observation = _observe_face(image_path, dna, rubric, provider, reference_image_paths, samples,
-                                raw_response_sink=raw_response_sink)
+                                raw_response_sink=raw_response_sink,
+                                validation_cycle_id=validation_cycle_id,
+                                attempt_id=attempt_id)
     score = score_face_observation(observation, rubric)
     return ValidationReport(
         project=project,

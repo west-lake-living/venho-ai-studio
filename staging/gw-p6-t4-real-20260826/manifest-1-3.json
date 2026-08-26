@@ -1,0 +1,646 @@
+{
+  "generationId": "variant-001",
+  "status": "needs_review",
+  "identityUnverified": null,
+  "startedAt": "2026-08-13T13:29:49.102Z",
+  "completedAt": "2026-08-13T13:34:50.266Z",
+  "latencyMs": 301164,
+  "model": "gemini-3.1-flash-image",
+  "quality": "high",
+  "inputs": {
+    "topic": "Linh An chạy bộ buổi sáng bên Hồ Tây",
+    "action": "running",
+    "scenario": "Nguyễn Đình Thi (Street Level)",
+    "size": "portrait",
+    "hasLinhAn": true,
+    "operation": "masked_edit",
+    "outfitFamilyKey": "sport_active",
+    "outfitVariantKey": "mint_green",
+    "effectiveOutfitFamilyKey": "sport_active",
+    "effectiveOutfitVariantKey": "mint_green",
+    "requestedUseRef": true,
+    "effectiveUseRef": true,
+    "referenceConflictAction": false,
+    "generationLane": "action"
+  },
+  "promptHash": "5784be57444624e51e1a00e2b96376935e020ab5236542c83f9ca1efe3e74732",
+  "prompt": "MANDATORY OUTFIT LOCK: Linh An must wear exactly this athletic sport outfit for the action.\nSport outfit: mint-green Nike racerback loose crop tank top, dual Swoosh logos at collar, perforated ventilation panels on chest and back, mint-green Nike running shorts (3-inch inseam) with mesh waistband and small Swoosh logo on leg, white Nike running shoes, white ankle socks, sleek high ponytail.\nReject any conflicting wardrobe description. No skirt, no dress, no handbag, no knit cardigan, no blouse, no casual city-walk outfit.\n\nMASKED FACE RESTORATION. The supplied action image is the immutable base canvas. The supplied feathered white face mask is the only editable region. Use the single A2-front reference as the sole identity authority. Reconstruct only the face inside the mask with the same exact head position, eye spacing, almond eyes, brows, nose bridge, lips, cheek volume, jawline, chin and natural asymmetry as A2-front. Do not regenerate, reinterpret or change any body, running pose, hair outside the mask, Nike light-blue running outfit, hands, lake, white railing, trees, road, lighting, camera framing or background pixels. Output a photorealistic natural Vietnamese KOL face blended to the existing head and lighting.\nGENERATION PROTOCOL v1 — non-negotiable constraints:\nLane: action.\nScenario: Nguyễn Đình Thi (Street Level). Scenario lock: place Linh An on the Nguyễn Đình Thi lakeside sidewalk beside the ivory-white railing, at street level.\nOutfit: Linh An wears exactly mint-green Nike racerback loose crop tank top, dual Swoosh logos at collar, perforated ventilation panels on chest and back, mint-green Nike running shorts (3-inch inseam) with mesh waistband and small Swoosh logo on leg, white Nike running shoes, white ankle socks, sleek high ponytail.\nRequested action or pose: running.\nReference mode: masked-edit. Do not use a standing face image as an edit reference; solve the requested full-body pose from text and keep Linh An as the visible physical actor.\nDo not substitute another woman, omit Linh An, move the scene to a different location, or replace the specified outfit.",
+  "userPrompt": "MASKED FACE RESTORATION. The supplied action image is the immutable base canvas. The supplied feathered white face mask is the only editable region. Use the single A2-front reference as the sole identity authority. Reconstruct only the face inside the mask with the same exact head position, eye spacing, almond eyes, brows, nose bridge, lips, cheek volume, jawline, chin and natural asymmetry as A2-front. Do not regenerate, reinterpret or change any body, running pose, hair outside the mask, Nike light-blue running outfit, hands, lake, white railing, trees, road, lighting, camera framing or background pixels. Output a photorealistic natural Vietnamese KOL face blended to the existing head and lighting.",
+  "serverPrompt": "MANDATORY OUTFIT LOCK: Linh An must wear exactly this athletic sport outfit for the action.\nSport outfit: mint-green Nike racerback loose crop tank top, dual Swoosh logos at collar, perforated ventilation panels on chest and back, mint-green Nike running shorts (3-inch inseam) with mesh waistband and small Swoosh logo on leg, white Nike running shoes, white ankle socks, sleek high ponytail.\nReject any conflicting wardrobe description. No skirt, no dress, no handbag, no knit cardigan, no blouse, no casual city-walk outfit.\n\nMASKED FACE RESTORATION. The supplied action image is the immutable base canvas. The supplied feathered white face mask is the only editable region. Use the single A2-front reference as the sole identity authority. Reconstruct only the face inside the mask with the same exact head position, eye spacing, almond eyes, brows, nose bridge, lips, cheek volume, jawline, chin and natural asymmetry as A2-front. Do not regenerate, reinterpret or change any body, running pose, hair outside the mask, Nike light-blue running outfit, hands, lake, white railing, trees, road, lighting, camera framing or background pixels. Output a photorealistic natural Vietnamese KOL face blended to the existing head and lighting.",
+  "generationProtocol": {
+    "version": "linh_an_generation_protocol_v1",
+    "lane": "action",
+    "scenario": "Nguyễn Đình Thi (Street Level)",
+    "scenarioLock": "Scenario lock: place Linh An on the Nguyễn Đình Thi lakeside sidewalk beside the ivory-white railing, at street level.",
+    "action": "running",
+    "outfit": "mint-green Nike racerback loose crop tank top, dual Swoosh logos at collar, perforated ventilation panels on chest and back, mint-green Nike running shorts (3-inch inseam) with mesh waistband and small Swoosh logo on leg, white Nike running shoes, white ankle socks, sleek high ponytail",
+    "referenceMode": "masked-edit",
+    "diagnosticIdentity": false
+  },
+  "requestedExpression": "Living Expression — lip corners raised about 10-15%, lips together, eyes attentive and engaged, gentle and natural",
+  "outfit": {
+    "requestedOutfitId": "mint_green",
+    "requestedFamilyKey": "sport_active",
+    "requestedLabel": "Nike Mint Green Running",
+    "requestedStatus": "approved",
+    "requestedSourceKind": "manual_seed",
+    "effectiveOutfitId": "mint_green",
+    "effectiveFamilyKey": "sport_active",
+    "effectiveLabel": "Nike Mint Green Running",
+    "effectiveStatus": "approved",
+    "effectiveSourceKind": "manual_seed",
+    "effectiveSchemaSubject": "outfit_e_sport",
+    "selectionReason": "user_selection"
+  },
+  "scenarioProfile": {
+    "id": "nguyen_dinh_thi_street_2026",
+    "scenario": "Nguyễn Đình Thi (Street Level)",
+    "dnaSubject": "westlake",
+    "environmentReferenceHash": "bcb883fa5bb40aed7a9d820c09aeaba1c058db4780eb329e54b897892b462d47",
+    "locationQc": {
+      "required": [
+        "ivory-white painted steel railing with a thick rounded top handrail, leaning out over the water",
+        "about seven horizontal tube rails carried on flat S-curved steel blade posts splayed at the base",
+        "narrow uneven gray local sidewalk, not a wide promenade",
+        "West Lake immediately beside railing",
+        "two-lane Nguyễn Đình Thi road with light motorbike/bicycle traffic",
+        "local low-rise street frontage on land side",
+        "muted green-gray jade lake water",
+        "modest Hanoi skyline across the lake"
+      ],
+      "forbidden": [
+        "green railing",
+        "vertical picket railing",
+        "triangular truss support frames",
+        "pink stone pillars",
+        "old Hồ Tây railing style",
+        "lamp posts or street lights along the railing",
+        "wide polished promenade",
+        "manicured waterfront park",
+        "tourist postcard lake scene",
+        "tropical turquoise water",
+        "luxury glass tower wall"
+      ]
+    }
+  },
+  "dna": {
+    "subject": "westlake",
+    "version": null
+  },
+  "references": {
+    "face": "assets/face-plates/A2_Front_square_canvas.png",
+    "faceAll": [
+      "assets/face-plates/A2_Front_square_canvas.png"
+    ],
+    "environment": "assets/Westlake-railing-street.jpg",
+    "environmentAll": [
+      "assets/Westlake-railing-street.jpg",
+      "assets/Westlake-railing-closeup.jpg"
+    ],
+    "base": "assets/action-composite-live/action_01_jogging.png",
+    "mask": "assets/action-composite-live/face-mask.png",
+    "inputFidelity": "automatic-high",
+    "faceReferenceSetVersion": "a2_front_authoritative_v3",
+    "faceReferenceImages": [
+      "assets/face-plates/A2_Front_plate.png"
+    ],
+    "mode": "masked-edit",
+    "generationLane": "action"
+  },
+  "validationContract": {
+    "version": "1.1",
+    "provider": "openai",
+    "requiredFaceGates": [
+      "identity_structure",
+      "eye_ratio",
+      "forbidden_traits"
+    ],
+    "requiredFaceScoreKeys": [
+      "facial_shape",
+      "eyes_and_brows",
+      "nose",
+      "mouth_and_chin",
+      "technical_quality"
+    ],
+    "intentGate": {
+      "location": "Nguyễn Đình Thi (Street Level)",
+      "requires": "Linh An chạy bộ buổi sáng bên Hồ Tây running",
+      "expression": "Living Expression — lip corners raised about 10-15%, lips together, eyes attentive and engaged, gentle and natural"
+    }
+  },
+  "preflight": [],
+  "qualityRating": null,
+  "retry": {
+    "generationAttempts": 1,
+    "validationAttempts": 1,
+    "selectedAttempt": 1
+  },
+  "attempts": [
+    {
+      "attempt": 1,
+      "imagePath": "photos-ai/2026/13-08-action-composite-v21-nano-masked/run-202608132030/variant-001/attempt-1/image.png",
+      "promptHash": "5784be57444624e51e1a00e2b96376935e020ab5236542c83f9ca1efe3e74732",
+      "approved": false,
+      "score": 40,
+      "results": [
+        {
+          "type": "image",
+          "score": 40,
+          "verdict": "reject"
+        },
+        {
+          "type": "face",
+          "score": 88.1,
+          "verdict": "revise"
+        },
+        {
+          "type": "intent",
+          "score": 85,
+          "verdict": "approve"
+        }
+      ],
+      "validationError": null,
+      "generation": {
+        "provider": "nano-banana-2",
+        "model": "gemini-3.1-flash-image",
+        "requestId": null,
+        "usage": {
+          "total_tokens": 4357,
+          "total_input_tokens": 1400,
+          "total_cached_tokens": 0,
+          "total_output_tokens": 1823,
+          "total_tool_use_tokens": 0,
+          "total_thought_tokens": 1134,
+          "raw_prompt_token": 4543
+        },
+        "geometryMatched": true,
+        "sha256": "41ca13850bdc431ccc31bb53da07db11da9e65924f9465d7539ab08fd35da9fc"
+      }
+    }
+  ],
+  "artifact": {
+    "imagePath": "photos-ai/2026/13-08-action-composite-v21-nano-masked/run-202608132030/variant-001/image.png"
+  },
+  "validation": {
+    "approved": false,
+    "unvalidated": false,
+    "errors": [],
+    "results": [
+      {
+        "type": "image",
+        "subject": "westlake",
+        "score": 40,
+        "dnaMatchScore": 86,
+        "verdict": "reject",
+        "recommendation": "regenerate",
+        "killSwitch": {
+          "triggered": true,
+          "reason": "high-severity forbidden violated"
+        },
+        "issues": [
+          {
+            "issue": "Forbidden rule violated: no vertical picket railing — the rails are horizontal tubes on flat S-curved blade posts",
+            "severity": "high",
+            "suggestion": "Regenerate the artifact with the forbidden rule stated clearly in the negative constraints."
+          },
+          {
+            "issue": "lamp_post_presence does not fully match DNA.",
+            "severity": "high",
+            "suggestion": "Strengthen prompt/output direction for: no"
+          },
+          {
+            "issue": "haze_level does not fully match DNA.",
+            "severity": "medium",
+            "suggestion": "Strengthen prompt/output direction for: none"
+          }
+        ],
+        "reportPath": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/data/projects/venho_hotel/validation/reports/image_westlake_41ca13850bdc_20260813-203423.json"
+      },
+      {
+        "type": "face",
+        "subject": "linh_an",
+        "score": 88.1,
+        "dnaMatchScore": 88.1,
+        "verdict": "revise",
+        "recommendation": "revise",
+        "killSwitch": {
+          "triggered": false,
+          "reason": ""
+        },
+        "issues": [],
+        "reportPath": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/data/projects/venho_hotel/validation/reports/face_linh_an_41ca13850bdc_20260813-203446.json"
+      },
+      {
+        "type": "intent",
+        "subject": "user_request",
+        "score": 85,
+        "verdict": "approve",
+        "recommendation": "approve",
+        "locationMatch": true,
+        "locationSeen": "Nguyễn Đình Thi street by Hồ Tây",
+        "expressionMatch": false,
+        "expressionSeen": "Neutral expression with lips together",
+        "missingElements": [],
+        "issues": [
+          "Sai biểu cảm: yêu cầu 'Living Expression — lip corners raised about 10-15%, lips together, eyes attentive and engaged, gentle and natural', ảnh cho thấy 'Neutral expression with lips together'"
+        ],
+        "reason": "The location matches Nguyễn Đình Thi by Hồ Tây, but the expression is neutral rather than attentive and engaged."
+      }
+    ]
+  },
+  "validationError": null,
+  "partialValidationErrors": [],
+  "schemaVersion": "1.3",
+  "generation": {
+    "provider": "nano-banana-2",
+    "operation": "masked_edit",
+    "model": "gemini-3.1-flash-image",
+    "api": "gemini-interactions",
+    "storeProviderInteraction": false,
+    "aspectPreset": "portrait",
+    "aspectRatio": "2:3",
+    "imageSize": "1K",
+    "mimeType": "image/jpeg",
+    "geometry": {
+      "requestedAspectRatio": "2:3",
+      "requestedImageSize": "1K",
+      "actualWidth": 848,
+      "actualHeight": 1264,
+      "matches": true,
+      "toleranceProfile": "v1"
+    },
+    "referenceCount": 3,
+    "referencesByRole": {
+      "face": 1,
+      "environment": 0,
+      "base": 1,
+      "mask": 1
+    },
+    "referenceDelivery": [
+      {
+        "assetId": "action-base-canvas",
+        "role": "base",
+        "mimeType": "image/jpeg",
+        "byteLength": 140504,
+        "longEdge": 1024,
+        "downscaledFromBytes": 1944791
+      },
+      {
+        "assetId": "face-repair-mask",
+        "role": "mask",
+        "mimeType": "image/jpeg",
+        "byteLength": 7985,
+        "longEdge": 1024,
+        "downscaledFromBytes": 14313
+      },
+      {
+        "assetId": "A2_Front_square_canvas",
+        "role": "face",
+        "mimeType": "image/png",
+        "byteLength": 1087231,
+        "longEdge": 860,
+        "downscaledFromBytes": null
+      }
+    ],
+    "durationMs": 255216,
+    "usage": {
+      "total_tokens": 4357,
+      "total_input_tokens": 1400,
+      "total_cached_tokens": 0,
+      "total_output_tokens": 1823,
+      "total_tool_use_tokens": 0,
+      "total_thought_tokens": 1134,
+      "raw_prompt_token": 4543
+    },
+    "pricing": {
+      "snapshotDate": "2026-08-10",
+      "currency": "USD",
+      "estimatedOutputCostUsd": 0.0672,
+      "estimatedInputCostUsd": 0.00336,
+      "estimatedTotalCostUsd": 0.07056,
+      "estimateBasis": "vendor-token-table",
+      "actualCostUsd": null
+    },
+    "provenance": {
+      "providerSynthIdExpected": true
+    },
+    "budget": {
+      "dailySpentBeforeUsd": 0.07056,
+      "dailyCapUsd": 3
+    }
+  },
+  "restoration": {
+    "a2AuthoritySha256": "1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d",
+    "cropTransform": {
+      "box": [
+        201,
+        0,
+        888,
+        659
+      ],
+      "targetSize": 687
+    },
+    "effectiveConfigSha256": "45f4bbd50810e967f05c484166ca4bdb8e44cd57157fca6b1cd0af0bbbc4956f",
+    "geometry": {
+      "finalCropHeight": 659,
+      "finalCropWidth": 687,
+      "inputHeight": 659,
+      "inputWidth": 687,
+      "padBottom": 5,
+      "padRight": 1,
+      "paddedHeight": 664,
+      "paddedWidth": 688
+    },
+    "maskSpaces": {
+      "preservation": {
+        "coordinateSpace": "full-canvas",
+        "sha256": "506fd5e52274b59af2881dcbaef3fe7904da7f30c75dc3bc23492dadf50ffb94",
+        "version": "hierarchical_face_v1_full_canvas"
+      },
+      "restoration": {
+        "coordinateSpace": "crop-local",
+        "sha256": "39034f99da22dcb7f51808648393dd3a243fa64e1d54aca35238e836666965b4",
+        "version": "hierarchical_face_v1"
+      }
+    },
+    "maskVersion": "hierarchical_face_v1",
+    "modelIdentifiers": [
+      "v1-5-pruned-emaonly.safetensors",
+      "ip-adapter-faceid-plusv2_sd15.bin",
+      "ip-adapter-faceid-plusv2_sd15_lora.safetensors",
+      "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors",
+      "buffalo_l"
+    ],
+    "pixelLock": {
+      "mutatedPixelCount": 0,
+      "passed": true
+    },
+    "promptId": "db72c0cd-db0b-4d15-afff-a7f7df442737",
+    "remoteHost": "https://harry-rog.taila40de0.ts.net",
+    "remoteOutput": {
+      "filename": "gw-p3_00032_.png",
+      "subfolder": "",
+      "type": "output"
+    },
+    "restorationParams": {
+      "cfg": 6,
+      "denoise": 0.3,
+      "sampler": "euler",
+      "scheduler": "normal",
+      "steps": 20
+    },
+    "restorerId": "comfyui-remote",
+    "runtimeMs": 46780,
+    "seed": 123456,
+    "workerHealth": {
+      "gpuName": "cuda:0 NVIDIA GeForce GTX 1660 SUPER : cudaMallocAsync",
+      "latencyMs": 119.26604099971883,
+      "status": "DEGRADED",
+      "vramFreeMb": 2406
+    },
+    "workflowId": "face_restore_win_sd15_ipadapter_v2",
+    "workflowSha256": "1a6421a04ce7bdedd716beea93d196551f5dbe77c3da11d1e8a6bc4f1f06ee58",
+    "attemptId": "gw-p6-t4-case-01-20260826-attempt-2-mt9x4qnc",
+    "status": "NEEDS_REVIEW",
+    "qc": {
+      "allValidatorsApproved": true,
+      "faceScore": 91.05,
+      "killSwitchTriggered": false,
+      "qualityAcceptanceEligible": true,
+      "sourceAuthority": {
+        "aggregateIdentity": {
+          "artifactHash": "sha256:06d0e0517ab37194eaf266804dbf0d25eb4e888c6be81d9219864d022c52a486",
+          "contractVersion": "1.0",
+          "validationType": "face"
+        },
+        "authority": "authoritative",
+        "binaryGates": [
+          {
+            "evidence": "The bone structure, cheek fullness, and facial proportions in the running photo align perfectly with the close-up reference portrait.",
+            "gate": "identity_structure",
+            "passed": true,
+            "reason": "The candidate's facial structure matches the reference image (Linh An) with high fidelity. The soft elongated oval face shape, balanced proportions, delicate pointed chin, and soft feminine jawline are preserved. The nose bridge is slim and natural, and the lips maintain the correct shape with a slightly fuller lower lip."
+          },
+          {
+            "evidence": "The eye shape and spacing relative to the face match the reference standard.",
+            "gate": "eye_ratio",
+            "passed": true,
+            "reason": "The eye proportions stay within the approved character design, featuring long almond eyes with a horizontal emphasis and a slightly narrow eye opening."
+          },
+          {
+            "evidence": "The character is depicted in a realistic outdoor setting with natural athletic styling, free of any forbidden elements.",
+            "gate": "forbidden_traits",
+            "passed": true,
+            "reason": "No forbidden traits are present. The skin texture is realistic and natural (not plastic or doll-like), the makeup is light and natural, and there are no visible tattoos, glasses, or heavy contouring."
+          }
+        ],
+        "faceScore": 91.05,
+        "killSwitchTriggered": false,
+        "model": "configured",
+        "provider": "gemini",
+        "qualityAcceptanceEligible": true,
+        "samples": 3,
+        "verdict": "approve",
+        "weightedScores": {
+          "eyes_and_brows": 90,
+          "facial_shape": 92,
+          "mouth_and_chin": 91,
+          "nose": 94,
+          "technical_quality": 85
+        }
+      }
+    },
+    "error": null,
+    "evidence": {
+      "qc": {
+        "allValidatorsApproved": true,
+        "faceScore": 91.05,
+        "killSwitchTriggered": false,
+        "qualityAcceptanceEligible": true,
+        "sourceAuthority": {
+          "aggregateIdentity": {
+            "artifactHash": "sha256:06d0e0517ab37194eaf266804dbf0d25eb4e888c6be81d9219864d022c52a486",
+            "contractVersion": "1.0",
+            "validationType": "face"
+          },
+          "authority": "authoritative",
+          "binaryGates": [
+            {
+              "evidence": "The bone structure, cheek fullness, and facial proportions in the running photo align perfectly with the close-up reference portrait.",
+              "gate": "identity_structure",
+              "passed": true,
+              "reason": "The candidate's facial structure matches the reference image (Linh An) with high fidelity. The soft elongated oval face shape, balanced proportions, delicate pointed chin, and soft feminine jawline are preserved. The nose bridge is slim and natural, and the lips maintain the correct shape with a slightly fuller lower lip."
+            },
+            {
+              "evidence": "The eye shape and spacing relative to the face match the reference standard.",
+              "gate": "eye_ratio",
+              "passed": true,
+              "reason": "The eye proportions stay within the approved character design, featuring long almond eyes with a horizontal emphasis and a slightly narrow eye opening."
+            },
+            {
+              "evidence": "The character is depicted in a realistic outdoor setting with natural athletic styling, free of any forbidden elements.",
+              "gate": "forbidden_traits",
+              "passed": true,
+              "reason": "No forbidden traits are present. The skin texture is realistic and natural (not plastic or doll-like), the makeup is light and natural, and there are no visible tattoos, glasses, or heavy contouring."
+            }
+          ],
+          "faceScore": 91.05,
+          "killSwitchTriggered": false,
+          "model": "configured",
+          "provider": "gemini",
+          "qualityAcceptanceEligible": true,
+          "samples": 3,
+          "verdict": "approve",
+          "weightedScores": {
+            "eyes_and_brows": 90,
+            "facial_shape": 92,
+            "mouth_and_chin": 91,
+            "nose": 94,
+            "technical_quality": 85
+          }
+        }
+      },
+      "pixelLock": {
+        "mutatedPixelCount": 0,
+        "passed": true
+      },
+      "workflowId": "face_restore_win_sd15_ipadapter_v2",
+      "workflowSha256": "1a6421a04ce7bdedd716beea93d196551f5dbe77c3da11d1e8a6bc4f1f06ee58",
+      "runtimeMs": 46780,
+      "workerHealth": {
+        "gpuName": "cuda:0 NVIDIA GeForce GTX 1660 SUPER : cudaMallocAsync",
+        "latencyMs": 119.26604099971883,
+        "status": "DEGRADED",
+        "vramFreeMb": 2406
+      },
+      "lineage": {
+        "a2AuthoritySha256": "1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d",
+        "cropTransform": {
+          "box": [
+            201,
+            0,
+            888,
+            659
+          ],
+          "targetSize": 687
+        },
+        "effectiveConfigSha256": "45f4bbd50810e967f05c484166ca4bdb8e44cd57157fca6b1cd0af0bbbc4956f",
+        "geometry": {
+          "finalCropHeight": 659,
+          "finalCropWidth": 687,
+          "inputHeight": 659,
+          "inputWidth": 687,
+          "padBottom": 5,
+          "padRight": 1,
+          "paddedHeight": 664,
+          "paddedWidth": 688
+        },
+        "maskSpaces": {
+          "preservation": {
+            "coordinateSpace": "full-canvas",
+            "sha256": "506fd5e52274b59af2881dcbaef3fe7904da7f30c75dc3bc23492dadf50ffb94",
+            "version": "hierarchical_face_v1_full_canvas"
+          },
+          "restoration": {
+            "coordinateSpace": "crop-local",
+            "sha256": "39034f99da22dcb7f51808648393dd3a243fa64e1d54aca35238e836666965b4",
+            "version": "hierarchical_face_v1"
+          }
+        },
+        "maskVersion": "hierarchical_face_v1",
+        "modelIdentifiers": [
+          "v1-5-pruned-emaonly.safetensors",
+          "ip-adapter-faceid-plusv2_sd15.bin",
+          "ip-adapter-faceid-plusv2_sd15_lora.safetensors",
+          "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors",
+          "buffalo_l"
+        ],
+        "pixelLock": {
+          "editableRegionHash": "b9141f7e04f5ce852d6f500c9f63ad3efb832100434af1de90ec53fbd3c2c6d2",
+          "mutatedPixelCount": 0,
+          "passed": true
+        },
+        "promptId": "db72c0cd-db0b-4d15-afff-a7f7df442737",
+        "remoteHost": "https://harry-rog.taila40de0.ts.net",
+        "remoteOutput": {
+          "filename": "gw-p3_00032_.png",
+          "subfolder": "",
+          "type": "output"
+        },
+        "restorationParams": {
+          "cfg": 6,
+          "denoise": 0.3,
+          "sampler": "euler",
+          "scheduler": "normal",
+          "steps": 20
+        },
+        "restorerId": "comfyui-remote",
+        "runtimeMs": 46780,
+        "seed": 123456,
+        "workerHealth": {
+          "gpuName": "cuda:0 NVIDIA GeForce GTX 1660 SUPER : cudaMallocAsync",
+          "latencyMs": 119.26604099971883,
+          "status": "DEGRADED",
+          "vramFreeMb": 2406
+        },
+        "workflowId": "face_restore_win_sd15_ipadapter_v2",
+        "workflowSha256": "1a6421a04ce7bdedd716beea93d196551f5dbe77c3da11d1e8a6bc4f1f06ee58"
+      },
+      "currentAuthoritativeQc": {
+        "allValidatorsApproved": true,
+        "faceScore": 91.05,
+        "killSwitchTriggered": false,
+        "qualityAcceptanceEligible": true,
+        "sourceAuthority": {
+          "aggregateIdentity": {
+            "artifactHash": "sha256:06d0e0517ab37194eaf266804dbf0d25eb4e888c6be81d9219864d022c52a486",
+            "contractVersion": "1.0",
+            "validationType": "face"
+          },
+          "authority": "authoritative",
+          "binaryGates": [
+            {
+              "evidence": "The bone structure, cheek fullness, and facial proportions in the running photo align perfectly with the close-up reference portrait.",
+              "gate": "identity_structure",
+              "passed": true,
+              "reason": "The candidate's facial structure matches the reference image (Linh An) with high fidelity. The soft elongated oval face shape, balanced proportions, delicate pointed chin, and soft feminine jawline are preserved. The nose bridge is slim and natural, and the lips maintain the correct shape with a slightly fuller lower lip."
+            },
+            {
+              "evidence": "The eye shape and spacing relative to the face match the reference standard.",
+              "gate": "eye_ratio",
+              "passed": true,
+              "reason": "The eye proportions stay within the approved character design, featuring long almond eyes with a horizontal emphasis and a slightly narrow eye opening."
+            },
+            {
+              "evidence": "The character is depicted in a realistic outdoor setting with natural athletic styling, free of any forbidden elements.",
+              "gate": "forbidden_traits",
+              "passed": true,
+              "reason": "No forbidden traits are present. The skin texture is realistic and natural (not plastic or doll-like), the makeup is light and natural, and there are no visible tattoos, glasses, or heavy contouring."
+            }
+          ],
+          "faceScore": 91.05,
+          "killSwitchTriggered": false,
+          "model": "configured",
+          "provider": "gemini",
+          "qualityAcceptanceEligible": true,
+          "samples": 3,
+          "verdict": "approve",
+          "weightedScores": {
+            "eyes_and_brows": 90,
+            "facial_shape": 92,
+            "mouth_and_chin": 91,
+            "nose": 94,
+            "technical_quality": 85
+          }
+        }
+      },
+      "qcHistory": [
+        {
+          "allValidatorsApproved": false,
+          "faceScore": 91.05,
+          "killSwitchTriggered": true
+        }
+      ]
+    }
+  }
+}

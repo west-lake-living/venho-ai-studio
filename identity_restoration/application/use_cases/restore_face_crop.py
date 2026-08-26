@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 from typing import Callable, Optional
 
 from ...domain.compositing import composite_crop_into_canvas
@@ -151,16 +152,32 @@ class RestoreFaceCropUseCase:
                 qc_payload = {"faceScore": qc_result.face_score,
                               "allValidatorsApproved": qc_result.all_validators_approved,
                               "killSwitchTriggered": qc_result.kill_switch_triggered}
+                if qc_result.source_authority is not None:
+                    qc_payload["sourceAuthority"] = qc_result.source_authority
 
         runtime_ms = int((self._clock.monotonic() - started) * 1000)
         status = self._decide_status(qc_result, pixel)
         descriptor = restorer.describe()
+        restoration_params = {
+            "denoise": cmd.params.denoise,
+            "steps": cmd.params.steps,
+            "cfg": cmd.params.cfg,
+            "sampler": cmd.params.sampler,
+            "scheduler": cmd.params.scheduler,
+        }
         lineage = {
             "restorerId": descriptor.restorer_id,
             "workflowId": descriptor.workflow_id,
             "workflowSha256": descriptor.workflow_sha256,
             "modelIdentifiers": list(descriptor.model_identifiers),
             "seed": cmd.seed,
+            "restorationParams": restoration_params,
+            "effectiveConfigSha256": _effective_config_sha256(
+                workflow_id=descriptor.workflow_id,
+                workflow_sha256=descriptor.workflow_sha256,
+                seed=cmd.seed,
+                params=restoration_params,
+            ),
             "a2AuthoritySha256": a2.sha256,
             "cropTransform": {"box": list(cmd.crop_transform.to_box()), "targetSize": cmd.crop_transform.target_size},
             "maskVersion": cmd.mask.version,
@@ -208,3 +225,15 @@ class RestoreFaceCropUseCase:
             run_id=cmd.run_id, attempt_id=cmd.attempt_id, status="FAILED", pixel_lock=pixel_lock,
             error=RestorationErrorDetail(code=err.code, message=err.message, retryable=err.retryable),
         )
+
+
+def _effective_config_sha256(*, workflow_id: str | None, workflow_sha256: str | None,
+                             seed: int, params: dict[str, object]) -> str:
+    payload = {
+        "workflowId": workflow_id,
+        "workflowSha256": workflow_sha256,
+        "seed": seed,
+        "params": params,
+    }
+    canonical = json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
+    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()

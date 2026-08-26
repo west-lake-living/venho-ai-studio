@@ -35,6 +35,12 @@ class RestorationEnv:
     # Explicit geometry backend selection.  The default preserves the existing
     # InsightFace production behavior; YuNet is opt-in and never a fallback.
     geometry_backend: str = "insightface"
+    # QC is opt-in so existing mock/offline restoration behavior remains
+    # backward-compatible. The production validation command enables it
+    # explicitly through the same composition root.
+    qc_enabled: bool = False
+    qc_provider: str = "mock"
+    qc_samples: int = 3
 
 
 def read_restoration_env() -> RestorationEnv:
@@ -64,6 +70,9 @@ def read_restoration_env() -> RestorationEnv:
         ),
         face_qc_min=float(os.environ.get("IDR_FACE_QC_MIN", "90.0")),
         geometry_backend=os.environ.get("IDR_GEOMETRY_BACKEND", "insightface"),
+        qc_enabled=_as_bool(os.environ.get("IDR_QC_ENABLED", "false")),
+        qc_provider=os.environ.get("IDR_QC_PROVIDER", "mock"),
+        qc_samples=int(os.environ.get("IDR_QC_SAMPLES", "3")),
     )
 
 

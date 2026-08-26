@@ -1,0 +1,212 @@
+{
+  "a2Sha256": "1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d",
+  "attemptId": "b01-remote-smoke-1",
+  "bootstrapSmokeAllowed": true,
+  "branch": "comfyui-remote",
+  "caseId": "B01",
+  "evidence": {
+    "a2Path": "assets/linh_an/A2_Front.png",
+    "anatomyScore": null,
+    "backend": "comfyui-remote",
+    "cropTransform": {
+      "box": [
+        120,
+        0,
+        946,
+        970
+      ],
+      "targetSize": 826
+    },
+    "environmentScore": null,
+    "error": null,
+    "executorStatus": "COMPLETED",
+    "eyesBrowsScore": null,
+    "faceQcAfter": null,
+    "faceQcBefore": null,
+    "geometryScore": null,
+    "globalScore": null,
+    "gpuName": "cuda:0 NVIDIA GeForce GTX 1660 SUPER : cudaMallocAsync",
+    "host": {
+      "attemptId": "b01-remote-smoke-1",
+      "platform": "macOS-26.4-arm64-arm-64bit-Mach-O",
+      "python": "3.14.6",
+      "remoteHealth": {
+        "gpuName": "cuda:0 NVIDIA GeForce GTX 1660 SUPER : cudaMallocAsync",
+        "latencyMs": 23.078833997715265,
+        "status": "HEALTHY",
+        "vramFreeMb": 4471
+      },
+      "remoteHost": "https://harry-rog.taila40de0.ts.net",
+      "restorationStatus": "NEEDS_REVIEW"
+    },
+    "identityScore": null,
+    "lineage": {
+      "a2Sha256": "1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d",
+      "baseFramePath": "/Users/hanhpham/Developer/Claude-Workspace/projects/venho-social-content-agent/photos-ai/2026/12-08-linh-an-a2-front-closeup-1k/run-202608121022/variant-001/image.png",
+      "baseFrameSha256": "e7b00d4a65b2cc97e274e3c00f96e091bda0e614778df5a2d43f17cc3793faf9",
+      "fullCanvasMaskSha256": "0bde5b77719f9e357763e7860df9ddd664b6ae6cc470a8d44609142b578d042c",
+      "fullCanvasMaskVersion": "hierarchical_face_v1_full_canvas",
+      "geometryBackend": "insightface",
+      "geometryModel": "buffalo_l",
+      "geometryModelSha256": null,
+      "restoration": {
+        "a2AuthoritySha256": "1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d",
+        "cropTransform": {
+          "box": [
+            120,
+            0,
+            946,
+            970
+          ],
+          "targetSize": 826
+        },
+        "geometry": {
+          "finalCropHeight": 970,
+          "finalCropWidth": 826,
+          "inputHeight": 970,
+          "inputWidth": 826,
+          "padBottom": 6,
+          "padRight": 6,
+          "paddedHeight": 976,
+          "paddedWidth": 832
+        },
+        "maskSpaces": {
+          "preservation": {
+            "coordinateSpace": "full-canvas",
+            "sha256": "0bde5b77719f9e357763e7860df9ddd664b6ae6cc470a8d44609142b578d042c",
+            "version": "hierarchical_face_v1_full_canvas"
+          },
+          "restoration": {
+            "coordinateSpace": "crop-local",
+            "sha256": "d3bd5b3258c53253bb3eb4c91e2a91fac80629fd5e49ebb968ef60841f0ed6d3",
+            "version": "hierarchical_face_v1"
+          }
+        },
+        "maskVersion": "hierarchical_face_v1",
+        "modelIdentifiers": [
+          "v1-5-pruned-emaonly.safetensors",
+          "ip-adapter-faceid-plusv2_sd15.bin",
+          "ip-adapter-faceid-plusv2_sd15_lora.safetensors",
+          "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors",
+          "buffalo_l"
+        ],
+        "pixelLock": {
+          "editableRegionHash": "6146acb5c9a74fffbbc58964d090ab00a8f648321dc04e14e91f65c60a6d5c1f",
+          "mutatedPixelCount": 0,
+          "passed": true
+        },
+        "promptId": "b6929a20-aa30-446c-883f-d36a74d85de9",
+        "remoteHost": "https://harry-rog.taila40de0.ts.net",
+        "remoteOutput": {
+          "filename": "gw-p3_00030_.png",
+          "subfolder": "",
+          "type": "output"
+        },
+        "restorerId": "comfyui-remote",
+        "runtimeMs": 2318,
+        "seed": 42,
+        "workerHealth": {
+          "gpuName": "cuda:0 NVIDIA GeForce GTX 1660 SUPER : cudaMallocAsync",
+          "latencyMs": 23.078833997715265,
+          "status": "HEALTHY",
+          "vramFreeMb": 4471
+        },
+        "workflowId": "face_restore_win_sd15_ipadapter_v2",
+        "workflowSha256": "1a6421a04ce7bdedd716beea93d196551f5dbe77c3da11d1e8a6bc4f1f06ee58"
+      }
+    },
+    "maskSha256": "d3bd5b3258c53253bb3eb4c91e2a91fac80629fd5e49ebb968ef60841f0ed6d3",
+    "maskVersion": "hierarchical_face_v1",
+    "outfitScore": null,
+    "outputPath": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/data/projects/venho_hotel/identity_restoration/preflight-b01-remote-smoke/b01-remote-smoke-1/composite.png",
+    "outputSha256": "919e20a83aedb246f1124e8d919eab2a4c10d7ef6a5faba00982119508fa7be9",
+    "pixelPreservationResult": "PASS",
+    "provider": "comfyui-remote",
+    "providerRequestId": "b6929a20-aa30-446c-883f-d36a74d85de9",
+    "providerRunId": "preflight-b01-remote-smoke",
+    "restoredCropPath": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/data/projects/venho_hotel/identity_restoration/preflight-b01-remote-smoke/b01-remote-smoke-1/restored_crop.png",
+    "restoredCropSha256": "da78a3dfc4ee907df11ca54616253a4df97a7e40c856edfc90243db40991b228",
+    "retryCount": 0,
+    "runtimeMs": 2318,
+    "vramPeakMb": null,
+    "workflowId": "face_restore_win_sd15_ipadapter_v2",
+    "workflowSha256": "1a6421a04ce7bdedd716beea93d196551f5dbe77c3da11d1e8a6bc4f1f06ee58"
+  },
+  "evidenceType": "NON_BENCHMARK",
+  "local_fallback": false,
+  "mock_used": false,
+  "outputSha256": "919e20a83aedb246f1124e8d919eab2a4c10d7ef6a5faba00982119508fa7be9",
+  "phase": "PREFLIGHT",
+  "pixelPreservationResult": "PASS",
+  "promptId": "b6929a20-aa30-446c-883f-d36a74d85de9",
+  "restorationLineage": {
+    "a2AuthoritySha256": "1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d",
+    "cropTransform": {
+      "box": [
+        120,
+        0,
+        946,
+        970
+      ],
+      "targetSize": 826
+    },
+    "geometry": {
+      "finalCropHeight": 970,
+      "finalCropWidth": 826,
+      "inputHeight": 970,
+      "inputWidth": 826,
+      "padBottom": 6,
+      "padRight": 6,
+      "paddedHeight": 976,
+      "paddedWidth": 832
+    },
+    "maskSpaces": {
+      "preservation": {
+        "coordinateSpace": "full-canvas",
+        "sha256": "0bde5b77719f9e357763e7860df9ddd664b6ae6cc470a8d44609142b578d042c",
+        "version": "hierarchical_face_v1_full_canvas"
+      },
+      "restoration": {
+        "coordinateSpace": "crop-local",
+        "sha256": "d3bd5b3258c53253bb3eb4c91e2a91fac80629fd5e49ebb968ef60841f0ed6d3",
+        "version": "hierarchical_face_v1"
+      }
+    },
+    "maskVersion": "hierarchical_face_v1",
+    "modelIdentifiers": [
+      "v1-5-pruned-emaonly.safetensors",
+      "ip-adapter-faceid-plusv2_sd15.bin",
+      "ip-adapter-faceid-plusv2_sd15_lora.safetensors",
+      "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors",
+      "buffalo_l"
+    ],
+    "pixelLock": {
+      "editableRegionHash": "6146acb5c9a74fffbbc58964d090ab00a8f648321dc04e14e91f65c60a6d5c1f",
+      "mutatedPixelCount": 0,
+      "passed": true
+    },
+    "promptId": "b6929a20-aa30-446c-883f-d36a74d85de9",
+    "remoteHost": "https://harry-rog.taila40de0.ts.net",
+    "remoteOutput": {
+      "filename": "gw-p3_00030_.png",
+      "subfolder": "",
+      "type": "output"
+    },
+    "restorerId": "comfyui-remote",
+    "runtimeMs": 2318,
+    "seed": 42,
+    "workerHealth": {
+      "gpuName": "cuda:0 NVIDIA GeForce GTX 1660 SUPER : cudaMallocAsync",
+      "latencyMs": 23.078833997715265,
+      "status": "HEALTHY",
+      "vramFreeMb": 4471
+    },
+    "workflowId": "face_restore_win_sd15_ipadapter_v2",
+    "workflowSha256": "1a6421a04ce7bdedd716beea93d196551f5dbe77c3da11d1e8a6bc4f1f06ee58"
+  },
+  "runId": "preflight-b01-remote-smoke",
+  "silent_fallback": false,
+  "sourceSha256": "e7b00d4a65b2cc97e274e3c00f96e091bda0e614778df5a2d43f17cc3793faf9",
+  "status": "PASS",
+  "workflowSha256": "1a6421a04ce7bdedd716beea93d196551f5dbe77c3da11d1e8a6bc4f1f06ee58"
+}

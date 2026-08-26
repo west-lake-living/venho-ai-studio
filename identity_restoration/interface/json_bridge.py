@@ -2,7 +2,10 @@ from __future__ import annotations
 
 import hashlib
 import json
+import dataclasses
+import enum
 from io import BytesIO
+from datetime import date, datetime, time
 from pathlib import Path
 from typing import Any
 
@@ -10,6 +13,7 @@ from PIL import Image
 
 from ..application.dto.restore_command import RestoreCommand
 from ..application.dto.restoration_result import RestorationResult
+from ..application.use_cases.validate_restoration_artifact import ValidateRestorationArtifactCommand
 from ..domain.entities import CropTransform, MaskSet
 from ..domain.value_objects import RestorationParams
 
@@ -84,7 +88,60 @@ def load_restore_command(path: Path) -> RestoreCommand:
     return parse_restore_command(payload)
 
 
+def parse_validate_restoration_artifact(payload: dict[str, Any]) -> ValidateRestorationArtifactCommand:
+    if payload.get("contractVersion") != "1.0":
+        raise ValueError("validation request contractVersion must be 1.0")
+    required = ("runId", "attemptId", "compositePath", "a2Path", "artifactAttemptId")
+    if any(not isinstance(payload.get(key), str) or not payload[key] for key in required):
+        raise ValueError("validation request is missing required fields")
+    return ValidateRestorationArtifactCommand(
+        run_id=payload["runId"],
+        attempt_id=payload["attemptId"],
+        composite_path=payload["compositePath"],
+        a2_path=payload["a2Path"],
+        artifact_attempt_id=payload["artifactAttemptId"],
+    )
+
+
+def load_validate_restoration_artifact(path: Path) -> ValidateRestorationArtifactCommand:
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(payload, dict):
+        raise ValueError("validation request must be an object")
+    return parse_validate_restoration_artifact(payload)
+
+
+def _json_safe(value: Any) -> Any:
+    """Normalize boundary values without falling back to Python repr()."""
+    if isinstance(value, enum.Enum):
+        return _json_safe(value.value)
+    if isinstance(value, (datetime, date, time)):
+        return value.isoformat()
+    if isinstance(value, Path):
+        return str(value)
+    if dataclasses.is_dataclass(value) and not isinstance(value, type):
+        return _json_safe(dataclasses.asdict(value))
+    if isinstance(value, dict):
+        return {str(key): _json_safe(item) for key, item in value.items()}
+    if isinstance(value, (list, tuple, set, frozenset)):
+        return [_json_safe(item) for item in value]
+    return value
+
+
+def serialize_json(payload: Any) -> str:
+    """Return one deterministic, UTF-8-safe machine-readable JSON document."""
+    return json.dumps(_json_safe(payload), ensure_ascii=False, sort_keys=True, default=_json_default)
+
+
+def _json_default(value: Any) -> Any:
+    """Fail closed for values not covered by the explicit normalizer."""
+    raise TypeError(f"unsupported JSON value: {type(value).__name__}")
+
+
+def emit_json(payload: Any) -> None:
+    """Write exactly one JSON document to stdout, followed by one newline."""
+    print(serialize_json(payload))
+
+
 def dump_result(result: RestorationResult) -> str:
-    """Sanitized stdout payload. Never include a raw stack trace or the
-    contents of an env var (2026-07-17 OPENAI_API_KEY stdout leak)."""
-    return json.dumps(result.to_json_dict(), ensure_ascii=False, indent=2)
+    """Sanitized stdout payload; retained for callers/tests of the bridge."""
+    return serialize_json(result.to_json_dict())

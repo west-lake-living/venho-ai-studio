@@ -1,6 +1,588 @@
 # VENHO AI STUDIO — Task Status
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-08-25 (GW-P4 dual-layer status clarified · GW-P5 execution starts) · **GW-P3 CLOSED/PASS**
+**Cập nhật:** 2026-08-26 (GW-P7-T1 evidence reconciliation) · **GW-P7 IN PROGRESS / BLOCKED**
+
+### GW-P7-T1 — production evidence & registry reconciliation (2026-08-26)
+
+- GW-P7-T0 = `CLOSED / BLOCKED` (audit complete; no production behavior changed)
+- GW-P7-T1 = `BLOCKED`
+- Canonical Run 6 remains `QUALITY_FAIL`: 30/30 terminal and decision-valid;
+  treatment median `91.335`, regional gate `FAIL`, anatomy `PASS`, pixel
+  preservation `PASS` (22 quality-fail / 8 quality-pass rows).
+- GW-P4-R1 authority-only replay was performed offline from cached Run 6
+  observations. Original Run 6 artifacts are unchanged. Immutable replay:
+  `artifacts/identity-restoration/benchmarks/gw-p7-t1-post-remediation-20260826/`
+  (`reportSha256=de8f6d2e947130e5c7bf3b4150c263e0566c47ca54e99fc4bf37632ee90b14d6`).
+- Minimum `PRODUCTION_REGISTRY.md` now records candidate
+  `comfyui-remote-face_restore_win_sd15_ipadapter_v2` as `QUALITY_FAIL /
+  BLOCKED`; no official promotion or human approval is recorded.
+- Remote smoke manifest is classified `CURRENT_ARTIFACT_NOT_PHYSICALLY_PROVEN`:
+  expected SHA `f30a1ee4...15ce4b1`, current mutable artifact SHA
+  `919e20a8...08fa7be9`; manifest was not rewritten.
+- No provider calls, GPU jobs, restoration submissions, workflow/A2 changes,
+  or production behavior changes occurred.
+
+## AUTHORITATIVE CURRENT STATE — GW-P6 Q7
+
+The current roadmap state is:
+
+- GW-P0 = `CLOSED / PASS`
+- GW-P1 = `CLOSED / PASS`
+- GW-P2 = `CLOSED / PASS`
+- GW-P3 = `CLOSED / PASS`
+- GW-P4 = `CLOSED / QUALITY FAIL` (historical)
+- GW-P4-R1 = `CLOSED / PASS`
+- GW-P5 = `CLOSED / PASS`
+- GW-P6-T0 = `CLOSED / PASS`
+- GW-P6-T1 = `CLOSED / PASS`
+- GW-P6-T2 = `CLOSED / PASS`
+- GW-P6-T3 = `CLOSED / PASS`
+- GW-P6-T4 = `HUMAN ACTION REQUIRED`
+- GW-P6-T4-R1 = `CLOSED / PASS`
+- GW-P6-T4-R3 = `CLOSED / PASS` (code + offline validation; real T4 unchanged)
+- GW-P6-T4-R4 = `BLOCKED / VALIDATOR_CONTRACT_FAILURE` (3 Gemini samples; no QC result)
+- GW-P6-T4-R5 = `CLOSED / PASS` (offline forensics + bridge normalization; no provider calls)
+- GW-P6-T4-R6 = `BLOCKED / CLI_OUTPUT_INVALID` (one authorized 3-sample QC cycle; no QC result)
+- GW-P6-T4-R7 = `CLOSED / PASS` (offline CLI serialization hardening; no provider calls)
+- GW-P6-T4-R8 = `PASS / QUALITY FAIL` (final 3-sample authoritative QC; human decision required)
+- GW-P6 Quality Remediation Q1 = `CLOSED / RETRY_AUTHORIZED`
+- GW-P6 Controlled Retry Attempt 2 = `CLOSED / QUALITY FAIL`
+- GW-P6 Attempt 2 QC Secret Recovery = `CLOSED / QUALITY FAIL`
+- GW-P6 Quality Remediation Q2 = `CLOSED / ROOT_CAUSE_FOUND`
+- GW-P6 Quality Remediation Q3 = `CLOSED / PROJECTION_FIXED`
+- GW-P6 Quality Remediation Q4 = `BLOCKED / PROVIDER_503`
+- GW-P6 Quality Remediation Q5 = `CLOSED / FULL_3_SAMPLE_RESTART_REQUIRED` (offline forensics)
+- GW-P6 Quality Remediation Q6 = `CLOSED / PROSPECTIVE_TRANSIENT_HARDENING` (offline only)
+- GW-P6 Q7 = `BLOCKED / MOCK_QC_CONFIGURATION` (production validate-existing selected default mock; no Gemini request)
+- GW-P6 = `BLOCKED / MOCK_QC_CONFIGURATION` (Q7 historical invalid run; no Gemini request)
+- GW-P6 Q7-R1 = `CLOSED / CONFIG_HARDENED` (offline only; authoritative mode now fail-closed)
+- GW-P6 Q7-R2 = `BLOCKED / PERSISTENCE_CONTRACT_FAILURE` (one Gemini cycle, 3 logical samples; quality pass but cycle/checkpoint/Manifest persistence not proven)
+- GW-P6 Q7-R3 = `CLOSED / PASS` (offline authoritative persistence/promotion repair)
+- GW-P6 = `CLOSED / PASS` (human APPROVE persisted on Attempt 2)
+- GW-P7 = `READY / NOT STARTED`
+
+### GW-P6 — human approval and phase closure (2026-08-26)
+
+The explicit human `APPROVE` action was executed through the existing VENHO OS
+human-review action API/service for job `job-1787733824684-fzrqsi`. No direct
+StudioJobRecord edit, provider call, GPU job, restoration attempt, or QC cycle
+was used. Disk reload confirms `decision=APPROVED` on
+`gw-p6-t4-case-01-20260826-attempt-2-mt9x4qnc`; attempt count remains `2`.
+
+The current authority remains Gemini / `91.05` / all validators approved /
+kill switch false / Geometry PASS / Pixel Lock PASS, with Manifest 1.3 and
+EvidencePanel values matching. All prior attempt and QC history remains
+preserved. Ledger is unchanged at `23/24` (one remaining). Required offline
+approval, reload, manifest, EvidencePanel, no-direct-ComfyUI, typecheck,
+compile, changed-scope lint, and diff checks pass. GW-P6 is `CLOSED / PASS`;
+GW-P7 is `READY / NOT STARTED`.
+
+### GW-P6 Q7-R3 — authoritative persistence/promotion repair (2026-08-26)
+
+Durable audit confirmed the Q7-R2 authoritative aggregate is present in the
+Attempt 2 `StudioJobRecord`: provider `gemini`, three logical samples,
+`faceScore=91.05`, all validators approved, kill switch false, and
+`qualityAcceptanceEligible=true`. No source fields were inferred and the
+missing Q7-R2 cycle ID/checkpoints remain explicitly absent.
+
+The first failing boundary was `enrichExistingManifest13Qc`, whose
+first-non-null QC guard prevented a newer authoritative result from replacing
+stale mock QC. The repair now selects valid authoritative Gemini QC, promotes
+it on the same Attempt 2, preserves prior QC in `qcHistory`, and exposes
+`currentAuthoritativeQc` to the EvidencePanel. Manifest 1.3 disk reload now
+matches the persisted authoritative result: Gemini / 91.05 / approved / no
+kill / Pixel Lock PASS. No TypeScript QC recomputation was introduced.
+
+Q7-R2 cycle/checkpoint absence is classified `NON_BLOCKING` audit evidence
+gap; the aggregate is durable and sufficient for the locked acceptance rule.
+No provider/network/GPU call, new attempt, or ledger change occurred. Human
+review is now required; do not start GW-P7.
+
+### GW-P6 Q7-R2 — authoritative final QC cycle (2026-08-26)
+
+Exactly one authenticated production `validate-existing` request ran for
+Attempt 2 `gw-p6-t4-case-01-20260826-attempt-2-mt9x4qnc` through the VENHO OS
+API → RestorationBridge → `venho-restore validate` → ValidatorStudio → Gemini
+path. Provider was `gemini` (`gemini-3.5-flash`), with exactly three logical
+samples and three transport requests total; no retry, restoration, GPU job,
+manual ComfyUI queue, or provider bypass occurred. Ledger moved append-only
+from `20/24` to `23/24`; one authorized request remains and no further request
+is allowed for this cycle.
+
+The live authoritative aggregate passed quality fields: `faceScore=91.05`, all
+binary gates approved, `killSwitchTriggered=false`,
+`qualityAcceptanceEligible=true`, Geometry PASS, Pixel Lock PASS, and the
+restored crop differs byte-exact from the input. Workflow ID/hash and A2 hash
+are unchanged; Attempt count remains 2.
+
+Closure is blocked because the production path did not persist a `QC_CYCLE_ID`
+or per-sample durable checkpoints before aggregation, and Manifest 1.3
+enrichment left the pre-existing QC object unchanged. Persisted source
+authority is therefore only partial and Q7-R2 EvidencePanel/reload authority
+cannot be proven as required. This is `PERSISTENCE_CONTRACT_FAILURE`, not a
+Gemini quality failure. Do not rerun Q7-R2, start Attempt 3, or open GW-P7.
+
+### GW-P6 Q7-R1 — production QC configuration hardening (2026-08-26)
+
+Persisted server-only `IDR_QC_ENABLED=true`, `IDR_QC_PROVIDER=gemini`, and
+`IDR_QC_SAMPLES=3` in VENHO OS `.env.local`; the existing Gemini key remains
+resolved server-side and is never printed or client-exposed. Required
+identity-restoration validation now fails closed with
+`QC_AUTHORITY_UNAVAILABLE` when configuration is missing, disabled, or set to
+mock. Explicit mock remains available for offline/unit use, with
+`authority=non-authoritative` and `qualityAcceptanceEligible=false`; promotion
+cannot pass it. The invalid Q7 mock record is preserved and classified as
+`MOCK_CONFIGURATION_FAILURE`, and authoritative evidence selection ignores it.
+
+Offline Q7-R1/Q3/Q6 tests passed. No provider, network, GPU, restoration,
+Attempt 3, or ledger mutation occurred; ledger remains `20/24` with four
+reserved calls. Next action is Q7-R2 only after its authoritative-cycle gate.
+
+### GW-P6 Q7 — final authoritative QC blocked before provider (2026-08-26)
+
+The Q7 ledger authorization was recorded append-only: ceiling `21 → 24`,
+consumed `20`, remaining `4`, GPU authorization false. All offline pre-gates
+passed. The initial unauthenticated probe returned proxy `401` and did not
+reach the route. One authenticated production `validate-existing` API call was
+then made for job `job-1787733824684-fzrqsi` / Attempt 2. The fresh VENHO OS
+process omitted `IDR_QC_ENABLED=true` and `IDR_QC_PROVIDER=gemini`, so the
+existing required validation path selected its default mock gateway and
+persisted a non-authoritative `provider=mock`, `samples=1`, `faceScore=88`,
+`verdict=revise` result. This is a configuration failure, not Q7 quality
+evidence. Gemini provider requests remained `0`; ledger stayed `20/24`.
+
+No restoration, ComfyUI, GPU, Attempt 3, second QC cycle, approval/rejection,
+or retry occurred. Q7 is fail-closed and must not be rerun under this task.
+
+### GW-P6 Quality Remediation Q6 — prospective transient hardening (offline, 2026-08-26)
+
+The existing Gemini transport boundary now permits at most two transport
+attempts per logical sample. Only classified transport failures
+(`PROVIDER_503`, `PROVIDER_429`, `PROVIDER_TIMEOUT`) are retried, with a
+deterministic 0.25s linear backoff; contract/schema/QC failures are never
+retried. `PaidCallGuard.before_call` executes before every request, including a
+retry, so paid-call accounting remains one ledger intent per real request.
+
+Face validation preserves `samples=3`: a retry keeps the same logical sample
+index and failed transport attempts never reach `_merge_face_samples`. The
+existing raw evidence sink now receives sanitized request/response diagnostics
+and a cycle/attempt-bound parsed checkpoint for each successful logical sample
+before the next sample begins. A failed retry exhausts the current cycle closed; no
+automatic whole-cycle restart or cross-cycle mixing is possible, and Q4 has no
+retroactive checkpoint.
+
+Source authority projection remains unchanged and additive (face score,
+verdict, kill-switch, and binary gates). Q6 changed no model, rubric,
+threshold, aggregation, dashboard default, workflow, ledger, GPU, or network
+state. Offline Q6 scenarios cover first-try success, 503 retry/success,
+exhaustion, non-retryable failures, budget blocking, paid-call accounting,
+logical sample identity, and durable transport evidence. No provider, network,
+GPU, QC, restoration, attempt, or GW-P7 action occurred.
+
+Ledger remains `20/21` (one remaining). The smallest practical authorization
+for the next live three-sample cycle is four new calls (`AUTHORIZED_MAX=24`):
+three required requests plus one bounded transient retry. This is a future
+authorization calculation only; Q6 did not modify the ledger.
+
+### GW-P6 Quality Remediation Q4 — final cycle blocked by provider 503 (2026-08-26)
+
+The authorized ledger extension was applied append-only from 18 to 21; no
+historical records were changed. The corrected gateway projection and source
+authority persistence path passed offline regression. A fresh server/bridge
+process had the Gemini credential present without exposing its value.
+
+Exactly one validation API cycle was started for the existing Attempt 2. Gemini
+sample 1 completed, sample 2 failed with `503 UNAVAILABLE`, and sample 3 was
+not called. The aggregate ValidatorStudio report therefore never completed;
+no Q4 `verdict`, `kill_switch.triggered`, binary-gate aggregate, or corrected
+QcResult was persisted. Attempt 2 remains at two attempts with its prior
+91.05/false/true evidence; no sample was mixed into acceptance.
+
+Q4 stopped closed: provider calls used `2` of the authorized `3`, no GPU or
+restoration execution occurred, and no second QC cycle, Attempt 3, approval,
+rejection, or GW-P7 action occurred.
+
+### GW-P6 Quality Remediation Q5 — offline provider-resume forensics (2026-08-26)
+
+The production path is `ValidatorStudioQcGateway.validate -> validate_face ->
+_observe_face(samples=3) -> VisionClient -> GeminiVisionProvider`. Each parsed
+observation is appended to an in-process list; `_merge_face_samples` and the
+aggregate `ValidationReport` run only after all three calls succeed. A 503 from
+sample 2 raises immediately, so sample 1 leaves process memory with no
+checkpoint. The gateway does not pass `raw_response_sink`, and the durable Q4
+evidence contains only paid-call intent/result metadata (call 19 success,
+sample 1; call 20 `PROVIDER_503`, sample 2), not parsed observation or authority
+fields.
+
+Therefore Q4 sample 1 is recorded as a call but is not replayable and the
+current implementation is class **C: full 3-sample restart required**. Gemini
+classifies `503 UNAVAILABLE` as `PROVIDER_503` and retryable, but the current
+policy has no automatic/bounded retry: one request per sample, exception aborts
+the validation. Retrying sample 2 under current contracts would be a new QC
+cycle; mixing it with Q4 sample 1 would invalidate the locked three-sample
+aggregate. Consumed ledger capacity is `20/21` (remaining `1`); a fresh cycle
+needs up to three calls, so a later authorized ceiling of `23` is required
+(`+2` authorization). No ceiling change was made here.
+
+Q5 made no provider, network, GPU, QC, attempt, approval, rejection, or
+authority/denoise change. Offline mocked forensics and focused regression,
+compile, typecheck, lint, and diff checks passed. Future hardening should add
+durable sample events/checkpoints at the existing evidence boundary and a
+separately authorized bounded transport-retry design; no retry was added in Q5.
+
+### GW-P6 Quality Remediation Q3 — projection fixed, source evidence unavailable (offline, 2026-08-26)
+
+`ValidatorStudioQcGateway` now projects the typed authority correctly:
+`report.verdict == Recommendation.APPROVE` and
+`report.kill_switch.triggered`. The rubric, binary gates, weighted scoring,
+samples, aggregation, threshold 90, Recommendation semantics, and KillSwitch
+semantics are unchanged. Authority is unchanged.
+
+Four offline regression cases cover approved/rejected verdicts, a real kill
+switch, and the false-but-truthy `KillSwitch(triggered=False)` object. Focused
+gateway, QcResult, existing-artifact, manifest, EvidencePanel, no-direct,
+TypeScript, lint, compile, and diff checks pass.
+
+Attempt 2's persisted source evidence contains `faceScore=91.05`, but not the
+original `report.verdict`, `report.kill_switch.triggered`, raw observations,
+or full aggregate report. Unrelated historical manifest validation entries do
+not belong to Attempt 2 and cannot be reused. Therefore zero-cost re-projection
+is not possible without fabricating authority fields. Attempt 2 remains
+unchanged at two attempts, manifest 1.3, Geometry/Pixels PASS, and persisted
+legacy projection `false/true`; no provider, GPU, QC cycle, Attempt 3, or GW-P7
+action occurred.
+
+### GW-P6 Quality Remediation Q2 — authority mapping root cause (offline, 2026-08-26)
+
+Attempt 2's persisted `faceScore=91.05` is above the locked `>=90` target,
+Geometry and Pixel Lock are PASS, and the byte-different artifact is preserved.
+The three individual Attempt-2 provider observations were not persisted; the
+ledger contains transport metadata only, so per-sample gate values are UNKNOWN.
+However, production scoring makes the aggregate decisive: any failed binary
+gate would force `overall_score=0` and a real kill switch. The observed 91.05
+therefore implies the merged binary-gate set did not fail.
+
+The exact failure is in `ValidatorStudioQcGateway`: it maps
+`all_validators_approved` using `report.verdict == "APPROVED"`, while the
+production `Recommendation.APPROVE` enum value is lowercase `"approve"`.
+It maps `kill_switch_triggered` using `bool(report.kill_switch)`, but a
+Pydantic `KillSwitch(triggered=False)` model is truthy; the required field is
+`report.kill_switch.triggered`. These contract/mapping errors deterministically
+produce persisted `false/true` and block promotion without an image-derived
+failure.
+
+Acceptance remains the unchanged conjunction
+`face_score >= face_qc_min AND all_validators_approved AND NOT
+kill_switch_triggered AND pixel.passed`. Face identity objective is PASS;
+global validator objective is FAIL due to the mapping projection. Historical
+Gemini B08 (95.4) and B03 (90.6) reports show `verdict="approve"`, all three
+binary gates true, and `kill_switch.triggered=false`, confirming the expected
+authority shape and the Attempt-2 projection mismatch.
+
+Q2 recommendation: **NO GPU RETRY — fix authority/contract mapping first**.
+No code, workflow, threshold, provider, ledger, GPU, provider call, QC cycle,
+Attempt 3, or GW-P7 action was performed.
+
+### GW-P6 Attempt 2 Final QC — quality gate fail (2026-08-26)
+
+The credential root cause was process configuration: `GEMINI_API_KEY` existed
+in the AI Studio server-side `.env.local`, but not in VENHO OS `.env.local`.
+No source change or secret copy was needed; a fresh VENHO OS process received
+the existing server-only key through its environment, and the bridge's existing
+`env: { ...process.env }` inheritance propagated presence to the CLI child.
+The key was never printed, persisted to job/manifest/logs, exposed to the
+client, or committed.
+
+Exactly one production validation cycle ran for existing Attempt 2 with three
+Gemini `gemini-3.5-flash` samples. The append-only ledger reached consumed
+`18/18`; no ceiling increase or bypass occurred. Authoritative QC is
+`faceScore=91.05`, `allValidatorsApproved=false`,
+`killSwitchTriggered=true`, therefore `ATTEMPT_2_QUALITY=FAIL` despite the
+score exceeding 90. Attempt 1 remains immutable at `89.45`; delta is `+1.60`.
+
+Attempt 2 persisted the same workflow/A2 authority, effective config hash,
+runtime `46780 ms`, Geometry PASS, Pixel Lock PASS, and byte-different output.
+Manifest 1.3 and the VENHO OS evidence reload contain matching QC values; job
+state is `succeeded / COMPLETED`, with two attempts total. No GPU, restoration
+retry, Attempt 3, approval, rejection, or GW-P7 action occurred.
+
+### GW-P6 Attempt 2 QC Ledger Resolution — provider not reached (2026-08-26)
+
+Human authorization extended the existing append-only validator ledger ceiling
+from 15 to 18 for exactly one Attempt 2 QC cycle. The authorization record was
+appended without changing historical call records (`consumed=15`,
+`budgetRemaining` before extension `0`, GPU authorization `false`). Prechecks
+passed for the CLI JSON success/failure contract, stderr diagnostics, bridge
+parsing, Attempt 2 lineage, Geometry, Pixel Lock, and byte-different artifact.
+
+Exactly one validation API invocation was made with `IDR_QC_RERUN_FAILED=true`.
+The fresh VENHO OS process failed closed before Gemini transport because
+`GEMINI_API_KEY` was not present in that process environment. The ledger remains
+at 15 provider intents; no validator call, GPU run, restoration retry, Attempt 3,
+approval, rejection, or QC rerun occurred. Attempt 2 remains persisted as
+`QC_FAILED` / job `validating`, with Face QC unavailable. This is an
+infrastructure block, not a quality score.
+
+### GW-P6 Controlled Retry Attempt 2 — initial ledger blocker before secret recovery (historical, 2026-08-26)
+
+Exactly one `RETRY_FACE` action was submitted through the existing VENHO OS
+control path with the sole allowed change `denoise=0.30`. Attempt 1 remains
+immutable; attempt 2 is
+`gw-p6-t4-case-01-20260826-attempt-2-mt9x4qnc`. The job persisted two attempts,
+the same restorer and workflow ID, unchanged A2 authority, and effective config
+hash `45f4bbd50810e967f05c484166ca4bdb8e44cd57157fca6b1cd0af0bbbc4956f`.
+The frozen workflow hash remains
+`1a6421a04ce7bdedd716beea93d196551f5dbe77c3da11d1e8a6bc4f1f06ee58`; attempt 1
+effective config hash (computed from its persisted parameters) is
+`7af3e2f60ee8ffcafe06d346b7c67003f5484114478c064991eed7e90a3763a3`.
+
+The one new GPU execution completed with runtime `46780 ms`, healthy GTX 1660
+SUPER worker, Geometry PASS, Pixel Lock PASS, and a byte-different restored
+crop. No automatic retry or attempt 3 occurred. The single authorized QC
+enrichment then failed closed before a provider call because the locked paid-call
+ledger was exhausted (`budgetRemaining=0`, last call number `15`). Therefore no
+attempt-2 Face QC score exists and the result is infrastructure `BLOCKED`, not a
+quality pass/fail inference. Attempt 2 remains persisted as `COMPLETED` with
+`qcValidation.status=QC_FAILED`; the job is `validating / VALIDATING` and human
+review is blocked.
+
+Offline post-run checks passed: VENHO OS focused restoration/lineage/manifest/
+EvidencePanel/no-direct suites `37 passed`, integration `6 passed`, TypeScript
+typecheck, changed-scope lint, Python compile/pytest (`31 passed`), and both
+repositories' `git diff --check`. No QC rerun, provider bypass, ledger edit,
+attempt 3, approval, rejection, or GW-P7 action occurred.
+
+### GW-P6 Quality Remediation Q1 — analysis-only retry proposal (2026-08-26)
+
+The final authoritative R8 QC is a valid quality failure: `faceScore=89.45`,
+`allValidatorsApproved=false`, and `killSwitchTriggered=true`. The R7/R8
+serialization and bridge fixes removed the prior transport ambiguity; this is
+not a validator or CLI measurement defect. Existing restoration evidence still
+passes Geometry and Pixel Lock, and the restored crop is byte-different from
+the input crop.
+
+Read-only inspection of the restored crop against input/A2, together with the
+frozen v2 history, supports one bounded hypothesis: `denoise=0.35` can
+over-reconstruct the face and introduce overly smooth, symmetric, generic
+texture with eye-shape/proportion drift. The only proposed Attempt 2 change is
+`KSampler.denoise 0.35 -> 0.30`; seed `123456`, CFG `6.0`, 20 steps, Euler /
+normal scheduler, FaceID Plus V2/IPAdapter weights, crop, masks, workflow
+topology, authority hashes, and QC threshold remain unchanged. C1 lower-denoise
+artifacts have local geometry/pixel evidence but no authoritative Face-QC
+result, so the expected improvement is a hypothesis, not a claimed result.
+
+Historical actual remote benchmark evidence under the same workflow authority
+shows Face QC `95.4` (B08 best) and `90.6` (B03 jogging-style case), but those
+are different benchmark artifacts and do not prove this case's retry outcome.
+No Attempt 2, GPU job, provider call, validator cycle, or real-attempt mutation
+was made in Q1. Acceptance remains hard-gated at `FACE_QC >= 90` with no
+threshold or validator-authority change.
+
+### GW-P6-T4-R8 — final authoritative QC cycle (2026-08-26)
+
+The R7 offline pre-call gate passed: mocked CLI success and failure emitted one
+valid JSON document each, diagnostics stayed on stderr, and the bridge parsed
+structured nonzero JSON while rejecting malformed/noisy output. The immutable
+T4 precheck also passed: one attempt, one GPU attempt, unchanged restorer,
+workflow/A2 hashes, runtime `96989 ms`, geometry, Pixel Lock, and byte-different
+restored crop.
+
+Exactly one final production VENHO OS validation cycle ran through the bridge,
+`venho-restore validate`, and the existing ValidatorStudio Gemini authority.
+Exactly three samples completed (`gemini-3.5-flash`, `FinishReason.STOP` for all;
+input `5238` each; output `498`, `498`, `388`; totals `15714`/`1384`; cost not
+exposed). The CLI/bridge returned valid structured `QC_VALIDATED` JSON.
+
+Authoritative QC is a valid quality failure, not an infrastructure block:
+`faceScore=89.45`, `allValidatorsApproved=false`, and
+`killSwitchTriggered=true`. Eyes/Brows, Anatomy, Outfit, Environment, and
+Regional/Global decision were not supplied by the authority and remain
+`NOT_PROVIDED_BY_AUTHORITY`; Geometry and Pixel Lock remain PASS from existing
+restoration evidence. The same attempt and manifest 1.3 were enriched; both
+R4/R6 failure diagnostics remain in additive validation history. The job is
+`succeeded / COMPLETED`, evidence-panel values match persisted evidence, and
+human review is ready for the required human decision. No approval, rejection,
+retry, GPU, restoration, direct ComfyUI, or GW-P7 action occurred.
+
+Offline R7/R5/R3/bridge/service/API/manifest/panel/no-direct checks passed (37
+AI Studio tests, 33 VENHO OS tests), with Python compileall, TypeScript
+typecheck, changed-scope lint, and diff-check passing. R8 is complete; stop at
+human decision.
+
+### GW-P6-T4-R7 — offline CLI JSON serialization forensics (2026-08-26)
+
+The first failing boundary was the shared provider diagnostic logger:
+`shared.logging.log()` used `print()` on stdout. Gemini therefore emitted a
+valid validation result followed by diagnostic lines, producing malformed
+machine output at the VENHO OS bridge. A second independent defect was
+`health` serializing `gpuName` with Python `repr` (`!r`) rather than JSON.
+
+The minimum interface fix routes diagnostics to stderr and introduces one
+interface JSON writer that normalizes enums, dataclasses, paths, date/time
+values, Unicode, quotes, and newlines with `json.dumps`. `run`, `health`, and
+`validate` now emit exactly one JSON document; structured validate failures
+remain valid JSON on nonzero exit. The bridge continues to parse structured
+nonzero JSON and fail closed on malformed, empty, or noisy stdout.
+
+Offline raw-stdout subprocess tests cover validate success/failure, health,
+serialization edge values, and stderr diagnostics. VENHO OS bridge/service/API/
+manifest/evidence-panel/no-direct tests passed (`32`); AI Studio CLI/interface,
+validate, composition, and validator transport tests passed (`35`); Python
+compileall, TypeScript typecheck, changed-scope lint, and diff-check passed.
+No provider, network, GPU, or real T4 attempt was touched. Authority, samples,
+thresholds, workflow, A2, and QC semantics are unchanged. R8 is the next
+explicitly authorized minimum QC cycle; do not start it automatically.
+
+### GW-P6-T4-R6 — one authoritative QC cycle (2026-08-26)
+
+The existing sole T4 attempt passed the immutable precheck: attempt count `1`,
+GPU attempts total `1`, restorer `comfyui-remote`, workflow/A2 hashes,
+runtime `96989 ms`, geometry, Pixel Lock, output paths, and byte-exact crop
+difference were unchanged. The prior R4 `QC_FAILED` record was retained as
+diagnostics; no restoration attempt was created.
+
+Exactly one authorized QC validation cycle ran through the production VENHO OS
+API/service → restoration bridge → `venho-restore validate --request` →
+`ValidateRestorationArtifactUseCase` → `ValidatorStudioQcGateway`. The locked
+Gemini contract made exactly three provider calls (`gemini-3.5-flash`, samples
+1–3): each finished `FinishReason.STOP`, with `5238` input tokens and output
+tokens `498`, `388`, and `498` respectively (total input `15714`, output
+`1384`; cost not exposed). The validator CLI returned malformed JSON and the
+authoritative result is structured `QC_FAILED` with
+`CLI_OUTPUT_INVALID` (`retryable=false`). No QC score was fabricated; sample
+raw/parsed response paths remain absent under the existing logging contract.
+An earlier idempotency preflight returned the existing failed state without
+calling the bridge or provider; it is not counted as a QC cycle.
+
+The same attempt and manifest 1.3 remain intact; output, lineage, workflow/A2
+hashes, runtime, geometry, and Pixel Lock are preserved. The job is
+`VALIDATING` and human review is blocked. No GPU job, restoration retry, direct
+ComfyUI access, base-generation provider call, or GW-P7 action occurred.
+Offline R5 bridge/R3/service/API/manifest/panel/no-direct checks passed (31
+VENHO OS, 8 AI Studio, 20 validator tests), together with typecheck, lint,
+compileall, and diff-check. Next action is blocked pending an explicit
+validator/CLI remediation; do not rerun QC or start GW-P7.
+
+### GW-P6-T4 — one real initial attempt (2026-08-26)
+
+Exactly one initial `comfyui-remote` restoration was submitted through the
+production VENHO OS API and completed without retry. The persisted job is
+`job-1787733824684-fzrqsi`, run `gw-p6-t4-case-01-20260826`, attempt
+`gw-p6-t4-case-01-20260826-attempt-1-mt9uk7fw`; runtime is `96989 ms`.
+Worker evidence reports `HEALTHY`, `cuda:0 NVIDIA GeForce GTX 1660 SUPER :
+cudaMallocAsync`, and `vramFreeMb=5132` from the approved Tailscale endpoint.
+
+Persisted stages are `QUEUED → BASE_READY → CROP_READY → GPU_RESTORING →
+COMPOSITING → VALIDATING → COMPLETED`. The result is `NEEDS_REVIEW`, not a
+false success: restored crop SHA-256 differs from the input crop, geometry is
+preserved at `687×659`, and Pixel Lock is `PASS` with `mutatedPixelCount=0`.
+No validator/QC gateway was configured for this production path, so quality
+scores are `N/A` and the result is correctly review-ready rather than a
+quality pass.
+
+Manifest 1.3 was persisted at
+`staging/gw-p6-t4-real-20260826/manifest-1-3.json` with attempt, restorer,
+workflow/A2 hashes, runtime, worker metadata, and Pixel Lock evidence. The
+single durable StudioJobRecord is in the existing social-manager job store;
+no second job store was used. VENHO OS evidence-panel data matches the
+persisted record. No manual ComfyUI queue or direct TypeScript ComfyUI access
+was used, and no approve/reject/retry action was sent.
+
+T4 is therefore `HUMAN ACTION REQUIRED`; stop before any human action and do
+not submit another GPU attempt or start GW-P7.
+
+### GW-P6-T4-R1 — persistent runtime closure (2026-08-26)
+
+B1 is closed: the VENHO OS restoration bridge resolves the deterministic
+project executable `/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/.venv/bin/venho-restore`, with an explicit
+`VENHO_RESTORE_EXECUTABLE` override and no unrelated global-Python fallback.
+The persistent runtime configuration is in `venho-os/.env.local` and is loaded
+by a fresh Next environment before the bridge launches the CLI.
+
+The fresh-process production-path health probe returns `HEALTHY`, GPU
+`NVIDIA GeForce GTX 1660 SUPER`, and `vramFreeMb=5132` through the approved
+Tailscale Serve endpoint. `IDR_DEFAULT_RESTORER=mock` remains explicit, while
+`comfyui-remote` is available only when a request opts into that restorer.
+Windows-local recovery remains externally verified: `127.0.0.1:8188`
+listening, `/system_stats` HTTP 200, ComfyUI 0.33.0, `--lowvram --fp32-vae`,
+and zero GPU jobs.
+
+Frozen authority remains unchanged:
+
+- Workflow: `face_restore_win_sd15_ipadapter_v2`
+- Workflow SHA-256: `1a6421a04ce7bdedd716beea93d196551f5dbe77c3da11d1e8a6bc4f1f06ee58`
+- A2 SHA-256: `1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d`
+
+No restoration job, GPU job, provider call, QC run, network-topology change,
+or Windows configuration change was made in T4-R1. Next action is exactly one
+controlled T4 initial attempt; do not start GW-P7.
+
+### GW-P6-T4-R3 — same-attempt QC gateway implementation (2026-08-26)
+
+Implemented the existing `ValidatorStudioQcGateway` composition wiring and a
+zero-restorer `validate` CLI/use-case for completed artifacts. VENHO OS now
+invokes that command through the existing shell-free bridge, merges QC into
+the same StudioJobRecord attempt, and atomically enriches an existing manifest
+1.3 while preserving lineage, runtime, geometry, artifact paths, and Pixel
+Lock. QC failure preserves the completed output but moves the job to
+`VALIDATING`, blocking human review until authoritative QC succeeds.
+
+Offline validation passed: AI Studio R3 tests `8 passed`, VENHO OS bridge /
+service / API / manifest / no-direct tests `26 passed`, TypeScript typecheck,
+changed-scope ESLint, Python compileall, and `git diff --check`. The full AI
+Studio identity-restoration suite was `171 passed` with two unrelated
+pre-existing benchmark-preflight failures because remote physical smoke
+evidence and the opt-in remote flag are absent in the local environment.
+No network, GPU, provider, or real T4 validation was performed; the real T4
+attempt remains unmodified. Next is `GW-P6-T4-R4` only: run authoritative QC
+on the existing attempt.
+
+### GW-P6-T4-R4 — authoritative QC on existing attempt (2026-08-26)
+
+The hard precheck passed for the existing job and sole attempt: completed
+artifact and manifest 1.3 exist, QC was absent, ownership/lineage matched,
+Pixel Lock and geometry passed, workflow/A2 hashes and GPU runtime `96989 ms`
+were unchanged, and attempt count was `1`.
+
+The production VENHO OS validation API was invoked once through the R3 bridge
+and CLI with the locked Gemini Validator Studio path and `samples=3`. Exactly
+three Gemini transport calls were recorded (`gemini-3.5-flash`; input tokens
+`5238` each; output tokens `388`, `388`, `498`; cost not exposed). The CLI then
+exited nonzero without a structured QC result, classified as
+`CLI_EXIT_NONZERO` / validator contract failure. No provider retry occurred.
+
+The existing job remains the same attempt (`1`), with no GPU/restoration call;
+its output, lineage, Pixel Lock, geometry, and manifest 1.3 are preserved.
+Structured `QC_FAILED` evidence is persisted on the same attempt, job stage is
+`VALIDATING`, and human review is blocked. Offline R3/bridge/service/API/
+manifest/evidence-panel/no-direct tests passed (`30` VENHO OS, `8` AI Studio),
+with typecheck, lint, compileall, and diff-check passing. Do not retry QC
+automatically, do not run GPU, and do not start GW-P7.
+
+### GW-P6-T4-R5 — offline Validator contract forensics (2026-08-26)
+
+R4 raw provider bodies were not persisted: all three ledger records have
+`rawResponsePath=null` and `parsedEvidencePath=null`. Transport evidence is
+complete (`FinishReason.STOP`, three Gemini results), but the exact provider
+response body and underlying validator exception are unavailable and were not
+recreated.
+
+The first reproducible failing boundary is **H — CLI/bridge structured-error
+normalization**: `venho-restore validate` correctly emits structured
+`QC_FAILED` JSON with exit code 1, while the existing bridge rejected every
+nonzero exit before parsing stdout and replaced it with opaque
+`CLI_EXIT_NONZERO`. The minimal fix allows only the `validate` operation to
+parse nonzero stdout when it is present; `run` and malformed/timeout behavior
+remain unchanged. A synthetic fixture derived from the observed R4 CLI result
+shape proves the normalization.
+
+No rubric, threshold, samples, A2, workflow, model, or authority changed.
+Offline validation passed: VENHO OS `31` focused tests, AI Studio R3 `8`
+tests, Validator Studio/schema/structured-response tests `20`, typecheck,
+lint, compileall, and diff-check. No provider/network/GPU call occurred in R5;
+the real T4 attempt was not modified further. R6 must either replay preserved
+responses (none exist) or obtain explicit authorization for one minimum
+authoritative 3-sample rerun.
 
 ## AUTHORITATIVE CURRENT STATE — GW-P4 DONE (dual-layer) · GW-P5 IN PROGRESS
 

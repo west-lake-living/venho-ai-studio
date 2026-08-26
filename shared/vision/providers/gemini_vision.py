@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import base64
 import os
+import time
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Sequence
 
@@ -12,6 +14,9 @@ from shared.vision.paid_call_guard import PaidCallGuard
 
 
 DEFAULT_GEMINI_MODEL = "gemini-flash-latest"
+MAX_TRANSPORT_ATTEMPTS_PER_LOGICAL_SAMPLE = 2
+RETRYABLE_TRANSPORT_FAILURES = frozenset({"PROVIDER_503", "PROVIDER_429", "PROVIDER_TIMEOUT"})
+TRANSPORT_RETRY_BACKOFF_SECONDS = 0.25
 
 
 def classify_gemini_failure(error: Exception) -> str:
@@ -84,11 +89,18 @@ class GeminiVisionProvider:
         self.temperature = temperature
         self.last_raw_response: str | None = None
         self.raw_response_sink = None
+        self.transport_event_sink = None
         self._last_guard: PaidCallGuard | None = None
         self._last_intent: dict[str, Any] | None = None
         self._last_response: Any = None
         self.last_failure_class: str | None = None
         self.provider_availability = "UNKNOWN"
+        self.last_transport_attempt_index = 0
+
+    def _emit_transport_event(self, event: dict[str, Any]) -> None:
+        sink = getattr(self, "transport_event_sink", None)
+        if sink is not None:
+            sink(event)
 
     def _generate_config(self, system_prompt: str, response_schema: dict[str, Any] | None) -> dict[str, Any]:
         config = {
@@ -109,31 +121,86 @@ class GeminiVisionProvider:
 
     def _generate(self, contents: list[Any], system_prompt: str, *, response_schema: dict[str, Any] | None = None, sample_index: int = 1) -> str:
         config = self._generate_config(system_prompt, response_schema)
-        guard = PaidCallGuard()
-        intent = guard.before_call(model=self.model, sample_index=sample_index, config=config)
-        self._last_guard = guard
-        self._last_intent = intent
-        try:
-            response = self.client.models.generate_content(model=self.model, contents=contents, config=config)
-        except Exception as exc:
-            self.last_failure_class = classify_gemini_failure(exc)
-            if self.last_failure_class in {"PROVIDER_503", "PROVIDER_429"}:
-                self.provider_availability = "DEGRADED"
-            guard.after_call(intent, error=exc)
-            raise
-        text = (response.text or "").strip()
-        self.last_raw_response = text
-        self._last_response = response
-        if self.raw_response_sink is not None:
-            self.raw_response_sink(text)
-        if not text:
-            error = RuntimeError("Gemini returned an empty response")
-            self.last_failure_class = "PROVIDER_TRUNCATED_RESPONSE"
-            guard.after_call(intent, response=response, error=error)
-            raise error
-        self.provider_availability = "READY"
-        guard.after_call(intent, response=response)
-        return text
+        self.last_raw_response = None
+        self._last_response = None
+        for transport_attempt in range(1, MAX_TRANSPORT_ATTEMPTS_PER_LOGICAL_SAMPLE + 1):
+            self.last_transport_attempt_index = transport_attempt
+            request_started_at = datetime.now(timezone.utc).isoformat()
+            self._emit_transport_event({
+                "phase": "request_started", "logicalSampleIndex": sample_index,
+                "transportAttemptIndex": transport_attempt, "provider": "gemini",
+                "model": self.model, "requestStartedAt": request_started_at,
+            })
+            guard = PaidCallGuard()
+            try:
+                # Deliberately execute the guard for every transport attempt:
+                # retries are real paid requests, never free logical samples.
+                intent = guard.before_call(model=self.model, sample_index=sample_index, config=config)
+            except Exception as exc:
+                self._emit_transport_event({
+                    "phase": "request_blocked", "logicalSampleIndex": sample_index,
+                    "transportAttemptIndex": transport_attempt, "provider": "gemini",
+                    "model": self.model, "requestStartedAt": request_started_at,
+                    "transportStatus": "blocked", "parseStatus": "not_attempted",
+                    "schemaStatus": "not_attempted", "errorCode": type(exc).__name__,
+                    "error": str(exc),
+                })
+                raise
+            self._last_guard = guard
+            self._last_intent = intent
+            try:
+                response = self.client.models.generate_content(model=self.model, contents=contents, config=config)
+            except Exception as exc:
+                self.last_failure_class = classify_gemini_failure(exc)
+                if self.last_failure_class in {"PROVIDER_503", "PROVIDER_429"}:
+                    self.provider_availability = "DEGRADED"
+                guard.after_call(intent, error=exc)
+                self._emit_transport_event({
+                    "phase": "request_finished", "logicalSampleIndex": sample_index,
+                    "transportAttemptIndex": transport_attempt, "provider": "gemini",
+                    "model": self.model, "requestStartedAt": request_started_at,
+                    "transportStatus": self.last_failure_class, "parseStatus": "not_attempted",
+                    "schemaStatus": "not_attempted", "errorCode": self.last_failure_class,
+                    "error": str(exc), "retryable": self.last_failure_class in RETRYABLE_TRANSPORT_FAILURES,
+                })
+                if self.last_failure_class in RETRYABLE_TRANSPORT_FAILURES and transport_attempt < MAX_TRANSPORT_ATTEMPTS_PER_LOGICAL_SAMPLE:
+                    time.sleep(TRANSPORT_RETRY_BACKOFF_SECONDS * transport_attempt)
+                    continue
+                raise
+            text = (response.text or "").strip()
+            self.last_raw_response = text
+            self._last_response = response
+            if self.raw_response_sink is not None:
+                self.raw_response_sink(text)
+            if not text:
+                error = RuntimeError("Gemini returned an empty response")
+                self.last_failure_class = "PROVIDER_TRUNCATED_RESPONSE"
+                guard.after_call(intent, response=response, error=error)
+                self._emit_transport_event({
+                    "phase": "request_finished", "logicalSampleIndex": sample_index,
+                    "transportAttemptIndex": transport_attempt, "provider": "gemini",
+                    "model": self.model, "requestStartedAt": request_started_at,
+                    "transportStatus": "response", "parseStatus": "empty",
+                    "schemaStatus": "not_attempted", "errorCode": self.last_failure_class,
+                    "error": str(error), "retryable": False,
+                })
+                raise error
+            self.provider_availability = "READY"
+            guard.after_call(intent, response=response)
+            usage = getattr(response, "usage_metadata", None)
+            candidates = getattr(response, "candidates", None) or []
+            finish_reason = getattr(candidates[0], "finish_reason", None) if candidates else None
+            self._emit_transport_event({
+                "phase": "request_finished", "logicalSampleIndex": sample_index,
+                "transportAttemptIndex": transport_attempt, "provider": "gemini",
+                "model": self.model, "requestStartedAt": request_started_at,
+                "transportStatus": str(getattr(response, "status_code", 200)), "parseStatus": "raw_captured",
+                "schemaStatus": "pending", "finishReason": str(finish_reason) if finish_reason is not None else None,
+                "inputTokens": getattr(usage, "prompt_token_count", None),
+                "outputTokens": getattr(usage, "candidates_token_count", None),
+            })
+            return text
+        raise RuntimeError("Gemini transport retry policy exhausted")
 
     def analyze(self, image_path: Path, system_prompt: str, *, response_schema: dict[str, Any] | None = None, sample_index: int = 1) -> dict[str, Any]:
         return self.analyze_many([image_path], system_prompt, "Analyze this image and return JSON only.", response_schema=response_schema, sample_index=sample_index)

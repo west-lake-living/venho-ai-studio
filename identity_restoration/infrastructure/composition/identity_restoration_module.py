@@ -23,6 +23,7 @@ from ..persistence.atomic_file_artifact_sink import AtomicFileArtifactSink
 from ..persistence.file_a2_authority_repository import FileA2AuthorityRepository
 from ..persistence.file_concurrency_lease import FileConcurrencyLease
 from ..persistence.jsonl_restoration_ledger import JsonlRestorationLedger
+from ..qc.validator_studio_qc_gateway import ValidatorStudioQcGateway
 from ..restorers.comfyui_local_restorer import ComfyUILocalRestorer
 from ..restorers.comfyui_remote_restorer import ComfyUIRemoteRestorer
 from ..restorers.mock_restorer import MockIdentityRestorer
@@ -64,6 +65,37 @@ class IdentityRestorationModule:
         if self.health is None:
             return None
         return CheckWorkerHealthUseCase(health=self.health)
+
+
+def build_qc_gateway(env: Optional[RestorationEnv] = None, *, required: bool = False):
+    """Compose the existing Validator Studio adapter through one root.
+
+    QC remains opt-in for the legacy restoration command. The dedicated
+    existing-artifact validation command passes ``required=True`` so its
+    explicit operation cannot silently degrade to ``QC_NOT_CONFIGURED``;
+    no validator implementation or threshold is duplicated here.
+    """
+    env = env or read_restoration_env()
+    if not env.qc_enabled and not required:
+        return None
+    if required and (not env.qc_enabled or env.qc_provider != "gemini"):
+        return _UnavailableAuthoritativeQcGateway(
+            "authoritative QC requires IDR_QC_ENABLED=true and IDR_QC_PROVIDER=gemini"
+        )
+    return ValidatorStudioQcGateway(provider=env.qc_provider, samples=env.qc_samples)
+
+
+class _UnavailableAuthoritativeQcGateway:
+    """Fail closed when production validation would otherwise select mock QC."""
+
+    provider = "unavailable"
+    samples = 0
+
+    def __init__(self, reason: str) -> None:
+        self._reason = reason
+
+    def validate(self, _composite_path: str, _a2_path: str):
+        raise RestorationError("QC_AUTHORITY_UNAVAILABLE", self._reason, False)
 
 
 def build_worker_health(env: Optional[RestorationEnv] = None,
@@ -191,7 +223,7 @@ def build_identity_restoration_module(
         ledger=JsonlRestorationLedger(path=root / env.ledger_path),
         lease=FileConcurrencyLease(lock_path=root / env.artifact_root / ".lease"),
         clock=clock,
-        qc=None,  # wired explicitly by callers that want live QC — never by default (cost discipline)
+        qc=build_qc_gateway(env),
         health=health,
         face_qc_min=env.face_qc_min,
     )

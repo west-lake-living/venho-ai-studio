@@ -20,6 +20,7 @@ class VisionClient:
         gemini_model: str = "gemini-3.5-flash",
         temperature: float = 0.0,
         raw_response_sink: Callable[[str], None] | None = None,
+        transport_event_sink: Callable[[dict[str, Any]], None] | None = None,
     ) -> None:
         self.image_provider_name = image_provider
         self.synthesis_provider_name = synthesis_provider
@@ -27,6 +28,7 @@ class VisionClient:
         self.synthesis_model = synthesis_model
         self.last_raw_response: str | None = None
         self.raw_response_sink = raw_response_sink
+        self.transport_event_sink = transport_event_sink
 
         if image_provider == "openai":
             self._image_provider = OpenAIVisionProvider(model=image_model, temperature=temperature)
@@ -44,6 +46,7 @@ class VisionClient:
     def analyze_image(self, image_path: Path, system_prompt: str, *, response_schema: dict[str, Any] | None = None, sample_index: int = 1) -> dict[str, Any]:
         try:
             setattr(self._image_provider, "raw_response_sink", self.raw_response_sink)
+            setattr(self._image_provider, "transport_event_sink", self.transport_event_sink)
             result = self._image_provider.analyze(image_path, system_prompt, response_schema=response_schema, sample_index=sample_index)
         finally:
             self.last_raw_response = getattr(self._image_provider, "last_raw_response", None)
@@ -61,6 +64,7 @@ class VisionClient:
         """Analyze multiple images (e.g. a candidate plus approved reference photos) in one call."""
         try:
             setattr(self._image_provider, "raw_response_sink", self.raw_response_sink)
+            setattr(self._image_provider, "transport_event_sink", self.transport_event_sink)
             result = self._image_provider.analyze_many(image_paths, system_prompt, text_prompt, response_schema=response_schema, sample_index=sample_index)
         finally:
             self.last_raw_response = getattr(self._image_provider, "last_raw_response", None)
@@ -81,6 +85,7 @@ class MockVisionClient(VisionClient):
         self.synthesis_model = "mock"
         self.last_raw_response = None
         self.raw_response_sink = None
+        self.transport_event_sink = None
         self._mock = MockVisionProvider()
         self._image_provider = self._mock
         self._synthesis_provider = self._mock

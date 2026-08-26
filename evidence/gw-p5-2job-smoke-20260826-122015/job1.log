@@ -1,0 +1,7 @@
+usage: venho-restore benchmark smoke [-h] [--manifest MANIFEST]
+                                     --branch {comfyui-remote,nano-banana-edit}
+                                     --case {B01} [--request REQUEST]
+                                     [--remote-base-url REMOTE_BASE_URL]
+                                     [--a2-path A2_PATH]
+                                     [--evidence-root EVIDENCE_ROOT]
+venho-restore benchmark smoke: error: the following arguments are required: --branch, --case

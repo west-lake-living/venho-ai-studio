@@ -2,8 +2,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any, Callable
 
 from validator_studio.face_validator import validate_face
+from validator_studio.schemas.validation_base import Recommendation
 
 from ...domain.policies.promotion import QcResult
 
@@ -23,6 +25,9 @@ class ValidatorStudioQcGateway:
     subject: str = "linh_an"
     provider: str = "mock"
     samples: int = 3
+    evidence_sink: Callable[[dict[str, Any]], None] | None = None
+    validation_cycle_id: str | None = None
+    attempt_id: str | None = None
 
     def validate(self, composite_path: str, a2_path: str) -> QcResult:
         report = validate_face(
@@ -32,9 +37,35 @@ class ValidatorStudioQcGateway:
             provider=self.provider,
             reference_image_paths=[Path(a2_path)],
             samples=self.samples,
+            raw_response_sink=self.evidence_sink,
+            validation_cycle_id=self.validation_cycle_id,
+            attempt_id=self.attempt_id,
         )
+        raw_observation = report.raw_observation if isinstance(report.raw_observation, dict) else {}
+        gates = raw_observation.get("gates", [])
+        weighted_scores = raw_observation.get("weighted_scores")
+        source_provider = report.observer.provider
+        source_authority: dict[str, object] = {
+            "faceScore": float(report.overall_score),
+            "verdict": report.verdict.value,
+            "killSwitchTriggered": report.kill_switch.triggered,
+            "binaryGates": gates if isinstance(gates, list) else [],
+            "provider": source_provider,
+            "model": report.observer.model,
+            "samples": report.observer.samples,
+            "authority": "authoritative" if source_provider == "gemini" else "non-authoritative",
+            "qualityAcceptanceEligible": source_provider == "gemini",
+            "aggregateIdentity": {
+                "contractVersion": report.contract_version,
+                "validationType": report.validation_type,
+                "artifactHash": report.artifact_ref.hash,
+            },
+        }
+        if isinstance(weighted_scores, dict):
+            source_authority["weightedScores"] = weighted_scores
         return QcResult(
             face_score=float(report.overall_score),
-            all_validators_approved=report.verdict == "APPROVED",
-            kill_switch_triggered=bool(report.kill_switch),
+            all_validators_approved=report.verdict == Recommendation.APPROVE,
+            kill_switch_triggered=report.kill_switch.triggered,
+            source_authority=source_authority,
         )
