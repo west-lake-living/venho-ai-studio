@@ -15,7 +15,10 @@ class WorkerStatus(str, Enum):
 class WorkerHealth:
     status: WorkerStatus
     gpu_name: str | None = None
+    vram_total_mb: int | None = None
     vram_free_mb: int | None = None
+    torch_vram_total_mb: int | None = None
+    torch_vram_free_mb: int | None = None
     latency_ms: float | None = None
 
 

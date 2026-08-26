@@ -229,3 +229,62 @@ is created or modified by this bundle.
 Stop the worker process and remove the copied `C:\VenHoGPU\scripts\windows-gpu-worker`
 directory if required. The bundle does not modify production repositories,
 ComfyUI models, workflows, or VenHo OS.
+
+## GW-P5 hardening execution
+
+The GW-P5 bundle adds Task Scheduler auto-start and a resumable reboot verifier.
+The scheduler remains current-user/Interactive/Limited and ComfyUI remains
+loopback-only. The verifier never reboots Windows and never changes firewall or
+network exposure.
+
+Register/inspect the auto-start task (dry-run first):
+
+```powershell
+Set-Location C:\VenHoGPU\scripts\windows-gpu-worker
+.\gw_p5_t1_run_on_windows.ps1
+```
+
+Run the consolidated reboot check as two human-controlled stages:
+
+```powershell
+.\gw_p5_hardening_verify_on_windows.ps1 -Stage PreReboot
+# perform one normal Windows reboot
+.\gw_p5_hardening_verify_on_windows.ps1 -Stage PostReboot
+```
+
+From Mac, confirm the worker after logon/reboot:
+
+```bash
+IDR_COMFYUI_ENABLED=true \
+IDR_COMFYUI_BASE_URL=https://harry-rog.taila40de0.ts.net \
+./.venv/bin/python ./scripts/probe_gpu_worker.py
+```
+
+Expected health is `HEALTHY`, with `NVIDIA GeForce GTX 1660 SUPER` and a
+loopback-bound ComfyUI listener. A refused worker must map to
+`ERR_GW_WORKER_OFFLINE` and fail fast. Retry uses a new `attempt_id`; it must
+not overwrite the previous attempt's artifacts. Cleanup is explicit and safe:
+review the dry-run first, then use `cleanup_worker_cache.ps1 -Apply` only for
+the approved temporary/evidence retention paths. Low-VRAM failures must fail
+closed as `ERR_GW_VRAM_EXHAUSTED` (or the repository's canonical equivalent),
+with no false success.
+
+Rollback: unregister/disable `VenHoGPU-ComfyUI-AutoStart`, then start ComfyUI
+manually when required. Do not change the ComfyUI bind address.
+
+After the post-reboot health check, run the bounded Mac-side worker harness.
+It stops at the first failed job and allows only the prescribed `2` smoke or
+`10` soak count:
+
+```bash
+IDR_COMFYUI_REMOTE_BASE_URL=https://harry-rog.taila40de0.ts.net \
+./.venv/bin/python ./scripts/gw_p5_worker_soak.py --count 2
+# continue only when the report says "result": "PASS"
+IDR_COMFYUI_REMOTE_BASE_URL=https://harry-rog.taila40de0.ts.net \
+./.venv/bin/python ./scripts/gw_p5_worker_soak.py --count 10
+```
+
+Paste back the two JSON report paths, both results, the post-reboot verifier
+JSON path, the Mac health JSON, and the cleanup-cycle counts. Do not run a
+second soak after a failure without a new decision; the hard cap is 12 normal
+GPU jobs total.

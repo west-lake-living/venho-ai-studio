@@ -1,0 +1,42 @@
+{
+  "task": "GW-P4-T2",
+  "stage": "C1_ONLY_FACE_QC",
+  "authority": "validator_studio.face_validator",
+  "providerReadiness": {
+    "ready": true,
+    "http": "success",
+    "provider": "gemini",
+    "model": "gemini-3.5-flash",
+    "credentials": "available",
+    "samples": 3,
+    "mock": false,
+    "fallback": false
+  },
+  "cases": [
+    {
+      "case": "B03",
+      "imageSha256": "b395fc209939a0b5054092a4fdd9979afbfebf16d59b040a291c7aa07bd98a62",
+      "samples": 3,
+      "newSamples": 1,
+      "validSamples": 0,
+      "providerAvailability": "DEGRADED",
+      "failureClass": "PROVIDER_503",
+      "error": "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}"
+    }
+  ],
+  "circuitBreaker": {
+    "activated": true,
+    "failureClass": "PROVIDER_503",
+    "providerAvailability": "DEGRADED"
+  },
+  "cost": {
+    "faceQcValidatorCalls": 1,
+    "validatorSamples": 0,
+    "failedProviderCalls": 1,
+    "gpuJobs": 0,
+    "nanoCalls": 0,
+    "paidCallsDuringTests": 0
+  },
+  "finalC1Status": "PROVIDER_BLOCKED",
+  "createdAt": "2026-08-25T10:38:28.013044+00:00"
+}

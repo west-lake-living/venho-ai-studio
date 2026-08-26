@@ -1,0 +1,3 @@
+{"validator": "face", "sampleIndex": 1, "parseStatus": "raw_captured", "rawResponseBytes": 6217, "rawResponseSha256": "a8e7542464ef83d4cde51096aa68ed2bdd85de66868340aeb93439ef3507f880"}
+{"validator": "face", "sampleIndex": 1, "parseStatus": "before_contract", "rawResponseBytes": 6217, "rawResponseSha256": "a8e7542464ef83d4cde51096aa68ed2bdd85de66868340aeb93439ef3507f880"}
+{"validator": "face", "sampleIndex": 1, "parseStatus": "failed", "parseError": "Face weighted score keys mismatch. expected=['eyes_and_brows', 'facial_shape', 'mouth_and_chin', 'nose', 'technical_quality'] actual=[]", "rawResponseBytes": 6217, "rawResponseSha256": "a8e7542464ef83d4cde51096aa68ed2bdd85de66868340aeb93439ef3507f880"}

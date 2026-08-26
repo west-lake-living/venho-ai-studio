@@ -33,7 +33,14 @@ class ComfyUIHealthProbe:
         devices = body.get("devices") or []
         device = devices[0] if devices else {}
         gpu_name = device.get("name")
-        vram_free_mb = int(device.get("vram_free", 0)) // (1024 * 1024) if device.get("vram_free") else None
+        mib = 1024 * 1024
+        # The health gate is based on physical device memory. Torch allocator
+        # values are diagnostic only and can be tiny even when the GPU has
+        # ample releasable VRAM (or misleadingly high while the device is full).
+        vram_total_mb = int(device["vram_total"] // mib) if device.get("vram_total") is not None else None
+        vram_free_mb = int(device["vram_free"] // mib) if device.get("vram_free") is not None else None
+        torch_vram_total_mb = int(device["torch_vram_total"] // mib) if device.get("torch_vram_total") is not None else None
+        torch_vram_free_mb = int(device["torch_vram_free"] // mib) if device.get("torch_vram_free") is not None else None
         # DEGRADED, not a hard block: low VRAM jobs sometimes still succeed;
         # blocking them outright would reject work that would have finished,
         # while silently allowing them would let a real OOM get blamed on the
@@ -41,4 +48,6 @@ class ComfyUIHealthProbe:
         status = WorkerStatus.HEALTHY
         if vram_free_mb is not None and vram_free_mb < self.min_vram_mb_for_healthy:
             status = WorkerStatus.DEGRADED
-        return WorkerHealth(status=status, gpu_name=gpu_name, vram_free_mb=vram_free_mb, latency_ms=latency_ms)
+        return WorkerHealth(status=status, gpu_name=gpu_name, vram_total_mb=vram_total_mb,
+                            vram_free_mb=vram_free_mb, torch_vram_total_mb=torch_vram_total_mb,
+                            torch_vram_free_mb=torch_vram_free_mb, latency_ms=latency_ms)

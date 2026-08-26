@@ -1,0 +1,102 @@
+{
+  "task": "GW-P4-T2",
+  "scope": "ROADMAP",
+  "status": "PROVIDER_BLOCKED",
+  "roadmap": {
+    "GW-P0": "CLOSED / PASS",
+    "GW-P1": "CLOSED / PASS",
+    "GW-P2": "CLOSED / PASS",
+    "GW-P3": "CLOSED / PASS",
+    "GW-P4-T0": "CLOSED / PASS",
+    "GW-P4-T1": "CLOSED / QUALITY FAIL",
+    "GW-P4-T2": "PROVIDER_BLOCKED",
+    "GW-P4": "IN PROGRESS / QUALITY GATE FAILED",
+    "GW-P5": "NOT STARTED"
+  },
+  "authoritativeRun6": {
+    "run": "benchmark-20260825T160000Z-gw-p4-t1",
+    "terminalRows": "30/30",
+    "decisionValidRows": "30/30",
+    "remote": {
+      "faceQcMedian": 91.335,
+      "faceQc": "PASS",
+      "anatomy": "10/10 PASS",
+      "pixelPreservation": "10/10 PASS",
+      "lineage": "10/10 PASS",
+      "regional": "2/10 PASS",
+      "regionalPassCases": ["B01", "B08"],
+      "regionalFailCases": ["B02", "B03", "B04", "B05", "B06", "B07", "B09", "B10"]
+    },
+    "decision": "QUALITY_FAIL"
+  },
+  "tuningDiagnosis": {
+    "hypothesis": "denoise=0.35 over-reconstructs facial texture; lower denoise is the bounded hypothesis",
+    "architectureChanged": false,
+    "maskChanged": false,
+    "cropChanged": false
+  },
+  "artifacts": {
+    "C1": {
+      "denoise": 0.3,
+      "B03": {"exists": true, "localEvidence": "PASS", "quality": "UNKNOWN"},
+      "B04": {"exists": true, "localEvidence": "PASS", "quality": "UNKNOWN", "validated": false}
+    },
+    "C2": {"status": "UNTOUCHED"},
+    "C3": {"status": "UNTOUCHED"}
+  },
+  "validatorBlocker": {
+    "provider": "gemini",
+    "model": "gemini-3.5-flash",
+    "samples": 3,
+    "mock": false,
+    "fallback": false,
+    "thinkingLevel": "UNCHANGED",
+    "rubric": "UNCHANGED",
+    "thresholds": "UNCHANGED",
+    "attempts": [
+      {
+        "run": "gw-p4-t2-c1-face-qc-20260825-r8",
+        "case": "B03",
+        "maxOutputTokens": 2048,
+        "finishReason": "FinishReason.MAX_TOKENS",
+        "failureClass": "PROVIDER_TRUNCATED_RESPONSE",
+        "validSamples": 0,
+        "rawJsonBytes": 1091,
+        "rawFileSha256": "6bc5aa91cceded5289a90a32f97b712e48780c6aa4e3fcc962a432209e532277"
+      },
+      {
+        "run": "gw-p4-t2-c1-face-qc-20260825-r9",
+        "case": "B03",
+        "maxOutputTokens": 4096,
+        "finishReason": "FinishReason.MAX_TOKENS",
+        "failureClass": "PROVIDER_TRUNCATED_RESPONSE",
+        "validSamples": 0,
+        "rawJsonBytes": 1096,
+        "inputTokens": 5265,
+        "candidateOutputTokens": 3271,
+        "cachedContentTokenCount": 1918,
+        "rawFileSha256": "fe71577020b0cb8b01e9795fe0566db49990bbeebdd7b4f1f46c986d9ad8f0dd"
+      }
+    ],
+    "rootClassification": "T1 — FINISH_REASON_MAX_TOKENS",
+    "qualityConclusion": "UNKNOWN",
+    "providerBlockedIsNotPilotFail": true,
+    "noSemanticRepair": true
+  },
+  "costAndContinuation": {
+    "newProviderCallsInFreeze": 0,
+    "gpuJobs": 0,
+    "nanoCalls": 0,
+    "paidCallsDuringTests": 0,
+    "B04Validated": false,
+    "C2C3Touched": false,
+    "GW-P5Started": false
+  },
+  "evidence": [
+    "artifacts/identity-restoration/gw-p4-t2-c1-face-qc-20260825-r8/raw/B03/sample-1.jsonl",
+    "artifacts/identity-restoration/gw-p4-t2-c1-face-qc-20260825-r8/truncation-audit.json",
+    "artifacts/identity-restoration/gw-p4-t2-c1-face-qc-20260825-r9/raw/B03/sample-1.jsonl",
+    "artifacts/identity-restoration/gw-p4-t2-c1-face-qc-20260825-r9/recovery-audit.json",
+    "artifacts/identity-restoration/benchmarks/benchmark-20260825T160000Z-gw-p4-t1/summary.json"
+  ]
+}

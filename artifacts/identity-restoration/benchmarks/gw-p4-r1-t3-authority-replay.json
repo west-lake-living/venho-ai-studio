@@ -1,0 +1,43 @@
+{
+  "task": "GW-P4-R1-T3",
+  "status": "CLOSED / AUTHORITY COMPLETE",
+  "decision": "AUTHORITY_CORRECTED_QUALITY_PASS",
+  "authority_profile": "action_full_body@1.0",
+  "case_mapping": {
+    "B03": "action_full_body@1.0",
+    "B04": "action_full_body@1.0"
+  },
+  "excluded_from_restoration_gate": ["shot_distance", "hairstyle outside face restoration mask"],
+  "retained_in_restoration_gate": ["face identity", "face geometry", "eyes", "brows", "nose", "mouth/lips", "jaw/chin", "skin/face texture", "face boundary/blending"],
+  "replay": {
+    "B03": {
+      "source": "gw-p4-t2h-c1-b03-regional-20260825-r15/regional.json:imageQc.raw_observation",
+      "original_overall_global_score": 86.61,
+      "original_failing_fields": ["hair_length (partial)", "shot_distance", "hairstyle"],
+      "removed_from_gate": ["shot_distance", "hairstyle"],
+      "still_evaluated": ["hair_length (partial)", "face identity/geometry/eyes/brows/nose/mouth/jaw/skin"],
+      "offline_replay_score": 97.51,
+      "offline_replay_result": "APPROVE",
+      "face_qc": 90.98,
+      "regional": {"identity": 90.98, "eyes_brows": 90.0, "geometry": 97.8, "anatomy": 100.0, "outfit": 100.0, "environment": 100.0, "global_composite": 97.51},
+      "pixel_lock": "PASS",
+      "final_gate": "PASS"
+    },
+    "B04": {
+      "source": "gw-p4-t2h-c1-b04-regional-20260825-r16/regional.json:imageQc.raw_observation",
+      "original_overall_global_score": 83.76,
+      "original_failing_fields": ["earring_type", "shot_distance", "hairstyle"],
+      "removed_from_gate": ["shot_distance", "hairstyle"],
+      "still_evaluated": ["earring_type (mismatch)", "face identity/geometry/eyes/brows/nose/mouth/jaw/skin"],
+      "offline_replay_score": 94.14,
+      "offline_replay_result": "APPROVE",
+      "face_qc": 90.98,
+      "regional": {"identity": 90.98, "eyes_brows": 90.0, "geometry": 97.08, "anatomy": 100.0, "outfit": 100.0, "environment": 100.0, "global_composite": 94.14},
+      "pixel_lock": "PASS",
+      "final_gate": "PASS"
+    }
+  },
+  "provider_calls": 0,
+  "gpu_jobs": 0,
+  "next_task": "GW-P4-R1-T4 — Validate corrected authority across benchmark fixtures / determine GW-P4 remediation closure"
+}

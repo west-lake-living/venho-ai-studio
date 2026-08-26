@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "task": "GW-P5-T1",
+  "status": "CLOSED / PASS",
+  "evidence_types": [
+    "REPO_EVIDENCE",
+    "EXTERNAL_WINDOWS_EVIDENCE",
+    "HUMAN_CAPTURED_EVIDENCE"
+  ],
+  "repo_evidence": {
+    "scripts": [
+      "scripts/windows-gpu-worker/gw_p5_t1_run_on_windows.ps1",
+      "scripts/windows-gpu-worker/gw_p5_t1_register_autostart.ps1",
+      "scripts/windows-gpu-worker/start_comfyui_worker.ps1"
+    ],
+    "bundle_regression": "PASS",
+    "network_exposure_invariant": "PASS: launcher refuses non-loopback bind"
+  },
+  "external_windows_evidence": {
+    "report_path": "C:\\VenHoGPU\\evidence\\gw-p5-t1-20260826-092745\\gw_p5_t1_report.json",
+    "report_available_in_repo": false,
+    "registration": "PASS",
+    "task": "VenHoGPU-ComfyUI-AutoStart",
+    "trigger": "AtLogOn (Admin)",
+    "run_level": "Limited / no elevation",
+    "network_exposure_change": false
+  },
+  "human_captured_evidence": {
+    "real_logon_autostart": "PASS: log off -> login Admin -> ComfyUI started automatically",
+    "mac_remote_health": {
+      "status": "HEALTHY",
+      "gpu_name": "cuda:0 NVIDIA GeForce GTX 1660 SUPER : cudaMallocAsync",
+      "vram_total_mb": 6143,
+      "vram_free_mb": 5132,
+      "torch_vram_total_mb": 0,
+      "torch_vram_free_mb": 0,
+      "latency_ms": 71.56054198276252
+    }
+  },
+  "note": "Windows JSON is external and was not fabricated or rewritten in the repository."
+}

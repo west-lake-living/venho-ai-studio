@@ -1,0 +1,186 @@
+{
+  "task": "GW-P4-T2",
+  "stage": "C1_FACE_QC",
+  "case": "B03",
+  "candidate": "C1",
+  "samplesRequired": 3,
+  "thinkingConfig": {
+    "thinking_budget": 0,
+    "include_thoughts": false
+  },
+  "decision": "FACE_QC_COMPLETE",
+  "validSamples": 3,
+  "faceQc": {
+    "contract_version": "1.0",
+    "module": "validator_studio",
+    "project": "venho_hotel",
+    "subject": "linh_an",
+    "validation_type": "face",
+    "artifact_ref": {
+      "type": "face",
+      "file": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/gw-p4-t2-denoise-pilot-20260825-r5/restoration-artifacts/face_restore_win_sd15_ipadapter_v2_candidate_d30-b03/attempt-1/composite.png",
+      "hash": "sha256:b395fc209939a0b5054092a4fdd9979afbfebf16d59b040a291c7aa07bd98a62"
+    },
+    "source_knowledge": [
+      {
+        "file": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/data/projects/venho_hotel/knowledge/VENHO_HOTEL_LINH_AN_DNA.json",
+        "dna_version": "1.1",
+        "dna_contract_version": "1.1",
+        "hash": "sha256:71f839dff776ec6d6d085c5a1ab928295af8c32a9699f7929d78b04807ec0075"
+      }
+    ],
+    "prompt_ref": null,
+    "contract_refs": null,
+    "generated_at": "2026-08-25T19:54:31.097987",
+    "observer": {
+      "provider": "gemini",
+      "model": "configured",
+      "samples": 3
+    },
+    "kill_switch": {
+      "triggered": false,
+      "reason": ""
+    },
+    "overall_score": 90.98,
+    "verdict": "approve",
+    "dna_match_score": 90.98,
+    "section_scores": [
+      {
+        "section": "face_gate",
+        "key": "identity_structure",
+        "match_state": null,
+        "score": 100.0,
+        "status": "ok",
+        "reason": "The candidate's facial structure matches the reference image (Linh An) with high fidelity. The soft elongated oval face shape, delicate pointed chin, and soft feminine jawline are preserved. The subtle upward lip corners and natural lip fullness are consistent with the reference.",
+        "evidence": "The bone structure, cheek fullness, and overall facial proportions in the candidate image align closely with the reference portrait.",
+        "category": "face_gate"
+      },
+      {
+        "section": "face_gate",
+        "key": "eye_ratio",
+        "match_state": null,
+        "score": 100.0,
+        "status": "ok",
+        "reason": "The eye proportions, spacing, and shape stay within the approved character design. The long almond shape with horizontal emphasis and warm brown irises is maintained.",
+        "evidence": "The eye shape and spacing relative to the face width match the reference standard.",
+        "category": "face_gate"
+      },
+      {
+        "section": "face_gate",
+        "key": "forbidden_traits",
+        "match_state": null,
+        "score": 100.0,
+        "status": "ok",
+        "reason": "No forbidden traits are present in the candidate image. The skin texture looks natural and realistic rather than plastic or doll-like, there is no heavy theatrical makeup, and no visible tattoos or glasses are present.",
+        "evidence": "The candidate displays a natural, healthy skin texture and realistic athletic appearance without any of the prohibited elements.",
+        "category": "face_gate"
+      },
+      {
+        "section": "face_weighted",
+        "key": "facial_shape",
+        "match_state": null,
+        "score": 92.0,
+        "status": "ok",
+        "reason": "Weighted face rubric score.",
+        "evidence": "",
+        "category": "facial_shape"
+      },
+      {
+        "section": "face_weighted",
+        "key": "eyes_and_brows",
+        "match_state": null,
+        "score": 90.0,
+        "status": "ok",
+        "reason": "Weighted face rubric score.",
+        "evidence": "",
+        "category": "eyes_and_brows"
+      },
+      {
+        "section": "face_weighted",
+        "key": "nose",
+        "match_state": null,
+        "score": 93.67,
+        "status": "ok",
+        "reason": "Weighted face rubric score.",
+        "evidence": "",
+        "category": "nose"
+      },
+      {
+        "section": "face_weighted",
+        "key": "mouth_and_chin",
+        "match_state": null,
+        "score": 91.0,
+        "status": "ok",
+        "reason": "Weighted face rubric score.",
+        "evidence": "",
+        "category": "mouth_and_chin"
+      },
+      {
+        "section": "face_weighted",
+        "key": "technical_quality",
+        "match_state": null,
+        "score": 85.0,
+        "status": "warning",
+        "reason": "Weighted face rubric score.",
+        "evidence": "",
+        "category": "technical_quality"
+      }
+    ],
+    "category_scores": {
+      "facial_shape": 92.0,
+      "eyes_and_brows": 90.0,
+      "nose": 93.67,
+      "mouth_and_chin": 91.0,
+      "technical_quality": 85.0
+    },
+    "forbidden_violations": [],
+    "allowed_imperfections_check": [],
+    "issues": [],
+    "recommendation": "approve",
+    "validation_notes": [
+      "The candidate image is a full-body shot, which naturally reduces the pixel density of the face compared to the close-up reference, but the facial features remain highly recognizable and consistent.",
+      "The hairstyle is a high ponytail instead of the low bun, which is an approved variable under the character guidelines.",
+      "gemini face observation; grounding/web search disabled by prompt contract",
+      "no real-person or celebrity matching requested",
+      "compared against 1 approved reference image(s)",
+      "aggregated from 3 vision samples (majority-vote gates, averaged scores)"
+    ],
+    "raw_observation": {
+      "gates": [
+        {
+          "gate": "identity_structure",
+          "passed": true,
+          "reason": "The candidate's facial structure matches the reference image (Linh An) with high fidelity. The soft elongated oval face shape, delicate pointed chin, and soft feminine jawline are preserved. The subtle upward lip corners and natural lip fullness are consistent with the reference.",
+          "evidence": "The bone structure, cheek fullness, and overall facial proportions in the candidate image align closely with the reference portrait."
+        },
+        {
+          "gate": "eye_ratio",
+          "passed": true,
+          "reason": "The eye proportions, spacing, and shape stay within the approved character design. The long almond shape with horizontal emphasis and warm brown irises is maintained.",
+          "evidence": "The eye shape and spacing relative to the face width match the reference standard."
+        },
+        {
+          "gate": "forbidden_traits",
+          "passed": true,
+          "reason": "No forbidden traits are present in the candidate image. The skin texture looks natural and realistic rather than plastic or doll-like, there is no heavy theatrical makeup, and no visible tattoos or glasses are present.",
+          "evidence": "The candidate displays a natural, healthy skin texture and realistic athletic appearance without any of the prohibited elements."
+        }
+      ],
+      "weighted_scores": {
+        "facial_shape": 92.0,
+        "eyes_and_brows": 90.0,
+        "nose": 93.67,
+        "mouth_and_chin": 91.0,
+        "technical_quality": 85.0
+      },
+      "notes": [
+        "The candidate image is a full-body shot, which naturally reduces the pixel density of the face compared to the close-up reference, but the facial features remain highly recognizable and consistent.",
+        "The hairstyle is a high ponytail instead of the low bun, which is an approved variable under the character guidelines.",
+        "gemini face observation; grounding/web search disabled by prompt contract",
+        "no real-person or celebrity matching requested",
+        "compared against 1 approved reference image(s)",
+        "aggregated from 3 vision samples (majority-vote gates, averaged scores)"
+      ]
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "task": "GW-P4-R1-T4",
+  "status": "CLOSED / REMEDIATION PASS",
+  "decision": "REMEDIATION_PASS",
+  "authority_profile": "action_full_body@1.0",
+  "authority_precedence": "explicit case authority > canonical Linh An DNA; absent mapping uses canonical DNA; an unknown explicit profile fails closed",
+  "fixture_authority": {
+    "B01": {"taxonomy": "Close-up Front", "mode": "static", "expected": "canonical_default", "resolved": "canonical_default", "fallback_used": true, "resolution": "PASS", "replay": "NOT_APPLICABLE"},
+    "B02": {"taxonomy": "Half-body", "mode": "static", "expected": "canonical_default", "resolved": "canonical_default", "fallback_used": true, "resolution": "PASS", "replay": "NOT_APPLICABLE"},
+    "B03": {"taxonomy": "Full-body Standing", "mode": "action", "expected": "action_full_body@1.0", "resolved": "action_full_body@1.0", "fallback_used": false, "resolution": "PASS", "replay": "REPLAY_PASS"},
+    "B04": {"taxonomy": "Running Front 3/4", "mode": "action", "expected": "action_full_body@1.0", "resolved": "action_full_body@1.0", "fallback_used": false, "resolution": "PASS", "replay": "REPLAY_PASS"},
+    "B05": {"taxonomy": "Running Side", "mode": "action", "expected": "canonical_default (no explicit mapping)", "resolved": "canonical_default", "fallback_used": true, "resolution": "PASS", "replay": "NOT_APPLICABLE"},
+    "B06": {"taxonomy": "Walking", "mode": "action", "expected": "canonical_default (no explicit mapping)", "resolved": "canonical_default", "fallback_used": true, "resolution": "PASS", "replay": "NOT_APPLICABLE"},
+    "B07": {"taxonomy": "Sitting", "mode": "action", "expected": "canonical_default (no explicit mapping)", "resolved": "canonical_default", "fallback_used": true, "resolution": "PASS", "replay": "NOT_APPLICABLE"},
+    "B08": {"taxonomy": "Hair Motion", "mode": "action", "expected": "canonical_default (no explicit mapping)", "resolved": "canonical_default", "fallback_used": true, "resolution": "PASS", "replay": "NOT_APPLICABLE"},
+    "B09": {"taxonomy": "West Lake", "mode": "static", "expected": "canonical_default", "resolved": "canonical_default", "fallback_used": true, "resolution": "PASS", "replay": "NOT_APPLICABLE"},
+    "B10": {"taxonomy": "Ven Ho Hotel Interior", "mode": "static", "expected": "canonical_default", "resolved": "canonical_default", "fallback_used": true, "resolution": "PASS", "replay": "NOT_APPLICABLE"}
+  },
+  "reproducibility": {
+    "B03": {"source": "gw-p4-t2h-c1-b03-regional-20260825-r15/regional.json", "score": 97.51, "verdict": "APPROVE", "regional_gate": "PASS", "pixel_lock": "PASS"},
+    "B04": {"source": "gw-p4-t2h-c1-b04-regional-20260825-r16/regional.json", "score": 94.14, "verdict": "APPROVE", "regional_gate": "PASS", "pixel_lock": "PASS"}
+  },
+  "scope_regression": {"excluded": ["shot_distance", "hairstyle outside face mask"], "face_scope_still_enforced": ["identity", "face geometry", "eyes", "brows", "nose", "mouth/lips", "jaw/chin", "skin/texture", "face boundary"], "non_action_inheritance": "none", "unknown_explicit_profile": "fail_closed"},
+  "canonical_dna_sha256": "71f839dff776ec6d6d085c5a1ab928295af8c32a9699f7929d78b04807ec0075",
+  "tuning_candidates": {"R1-C1": "CANCELLED / NOT REQUIRED", "R1-C2": "CANCELLED / NOT REQUIRED", "R1-C3": "CANCELLED / NOT REQUIRED"},
+  "historical_state": {"GW-P4": "CLOSED / QUALITY FAIL", "GW-P4-R1": "CLOSED / PASS", "GW-P5": "NOT STARTED"},
+  "provider_calls": 0,
+  "network_calls": 0,
+  "gpu_jobs": 0,
+  "nano_calls": 0,
+  "gemini_calls": 0,
+  "openai_image_calls": 0,
+  "comfyui_jobs": 0,
+  "next_task": "GW-P5-T0 — Hardening readiness / entry-gate review"
+}

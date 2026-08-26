@@ -39,7 +39,10 @@ def main() -> int:
         return 1
     health = CheckWorkerHealthUseCase(health=worker_health).execute()
     print(json.dumps({"status": health.status.value, "gpuName": health.gpu_name,
-                      "vramFreeMb": health.vram_free_mb, "latencyMs": health.latency_ms}))
+                      "vramTotalMb": health.vram_total_mb, "vramFreeMb": health.vram_free_mb,
+                      "torchVramTotalMb": health.torch_vram_total_mb,
+                      "torchVramFreeMb": health.torch_vram_free_mb,
+                      "latencyMs": health.latency_ms}))
     return 0 if health.status.value in ("HEALTHY", "DEGRADED") else 1
 
 

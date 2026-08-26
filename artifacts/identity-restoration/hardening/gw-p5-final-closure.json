@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "task": "GW-P5-T6",
+  "status": "IN PROGRESS / HUMAN EXECUTION REQUIRED",
+  "roadmap": {
+    "GW-P4": "CLOSED / QUALITY FAIL (historical frozen)",
+    "GW-P4-R1": "CLOSED / PASS",
+    "GW-P5": "IN PROGRESS",
+    "GW-P6": "NOT STARTED",
+    "GW-P7": "NOT STARTED"
+  },
+  "requirement_matrix": [
+    {"id": 1, "requirement": "Task Scheduler autostart", "status": "PASS", "evidence": "gw-p5-t1-autostart-health-closure.json"},
+    {"id": 2, "requirement": "Health visible from Mac", "status": "PASS", "evidence": "human-captured T1 probe"},
+    {"id": 3, "requirement": "Timeout verified from real measurement", "status": "BLOCKED", "evidence": "gw-p5-t2-timeout-failfast.json"},
+    {"id": 4, "requirement": "ComfyUI failure fails fast", "status": "PASS", "evidence": "test_gw_p5_timeout_failfast.py"},
+    {"id": 5, "requirement": "Retry uses new attempt_id / no overwrite", "status": "PASS", "evidence": "gw-p5-t3-retry-lineage.json"},
+    {"id": 6, "requirement": "Windows reboot does not corrupt venho-os job record", "status": "BLOCKED", "evidence": "gw-p5-t4-reboot-cleanup.json"},
+    {"id": 7, "requirement": "Cleanup real cycle executed", "status": "BLOCKED", "evidence": "gw-p5-t4-reboot-cleanup.json"},
+    {"id": 8, "requirement": "Typical runtime + low-VRAM failure mode recorded", "status": "BLOCKED", "evidence": "gw-p5-t5-soak-report.json"},
+    {"id": 9, "requirement": "10+ consecutive jobs without infra failure", "status": "BLOCKED", "evidence": "gw-p5-t5-soak-report.json"},
+    {"id": 10, "requirement": "Failures observable and recoverable", "status": "PASS", "evidence": "health breaker, error mapper, retry tests"},
+    {"id": 11, "requirement": "No lineage artifact corruption", "status": "PASS", "evidence": "gw-p5-t3-retry-lineage.json"}
+  ],
+  "next": "GW-P6-T0 only after GW-P5 exit gate PASS"
+}

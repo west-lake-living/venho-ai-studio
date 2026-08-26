@@ -1,0 +1,21 @@
+{
+  "candidateId": "face_restore_win_sd15_ipadapter_v2_candidate_d30",
+  "parentWorkflowId": "face_restore_win_sd15_ipadapter_v2",
+  "parentWorkflowSha256": "1a6421a04ce7bdedd716beea93d196551f5dbe77c3da11d1e8a6bc4f1f06ee58",
+  "candidateWorkflowSha256": "45e8d9fa725dca3bd2f53964f676cd0aac1a2716c0c3654ea9f1131f85f3228d",
+  "changed": {
+    "denoise": 0.3
+  },
+  "frozen": {
+    "steps": 20,
+    "cfg": 6.0,
+    "sampler": "euler",
+    "scheduler": "normal",
+    "seed": 42,
+    "a2Sha256": "1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d",
+    "maskVersion": "hierarchical_face_v1"
+  },
+  "topologyChanged": false,
+  "validatorCalls": 0,
+  "nanoCalls": 0
+}

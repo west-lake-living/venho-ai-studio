@@ -1,0 +1,39 @@
+{
+  "schema_version": "1.0",
+  "task": "GW-P4-T2",
+  "decision": "CLOSED / QUALITY FAIL",
+  "roadmap": {
+    "GW-P4-T1": "CLOSED / QUALITY FAIL",
+    "GW-P4-T2": "CLOSED / QUALITY FAIL",
+    "GW-P4": "CLOSED / QUALITY FAIL",
+    "GW-P5": "NOT STARTED"
+  },
+  "provider_recovery": {
+    "status": "RECOVERED",
+    "changes": ["thinking_budget=0", "explicit required 07F weighted-score fields"],
+    "valid_face_qc_samples": "3/3 for every executed candidate/case"
+  },
+  "pilot": {
+    "C1_denoise_0_30": {
+      "B03_global_composite": 86.61,
+      "B04_global_composite": 83.76,
+      "result": "FAIL"
+    },
+    "C2_denoise_0_25": {
+      "B03_global_composite": 84.66,
+      "result": "FAIL"
+    },
+    "C3_denoise_0_20": {
+      "B03_global_composite": 84.66,
+      "result": "FAIL"
+    },
+    "winner": null,
+    "reason": "Every candidate fails B03 global_composite below the Regional threshold."
+  },
+  "scope_guard": {
+    "full_10_case_benchmark": "NOT RUN: no pilot winner",
+    "GW_P5": "NOT STARTED",
+    "gpu_jobs_after_checkpoint": 0,
+    "nano_calls_after_checkpoint": 0
+  }
+}

@@ -1,0 +1,52 @@
+[
+  {
+    "candidateId": "face_restore_win_sd15_ipadapter_v2_candidate_d25",
+    "denoise": 0.25,
+    "caseId": "B03",
+    "status": "NEEDS_REVIEW",
+    "outputPath": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/gw-p4-t2-denoise-pilot-20260825-r7/restoration-artifacts/face_restore_win_sd15_ipadapter_v2_candidate_d25-b03/attempt-1/composite.png",
+    "restoredCropPath": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/gw-p4-t2-denoise-pilot-20260825-r7/restoration-artifacts/face_restore_win_sd15_ipadapter_v2_candidate_d25-b03/attempt-1/restored_crop.png",
+    "outputSha256": "a73769d57b930fec8b97492a032b62f160631f3d647b8f4ec4948c131344f219",
+    "restoredCropSha256": "3b02e4bf1d961875964860bc401fcf698414186b42e92ce76ef439e93fc71a88",
+    "dimensions": [
+      1088,
+      1920
+    ],
+    "runtimeMs": 37309,
+    "pixel": "PASS",
+    "anatomy": "PASS",
+    "geometryScore": 97.44,
+    "geometry": {
+      "producer": "GeometryEvidenceProducer",
+      "source_artifacts": [
+        "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/benchmark-geometry/v2.1/B03/geometry_manifest.json",
+        "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/gw-p4-t2-denoise-pilot-20260825-r7/restoration-artifacts/face_restore_win_sd15_ipadapter_v2_candidate_d25-b03/attempt-1/composite.png"
+      ],
+      "method_version": "geometry-evidence-v1",
+      "raw_evidence": {
+        "bbox_iou": 0.956997,
+        "max_pose_delta_deg": 1.444324,
+        "pose_agreement": 0.991976,
+        "scale_agreement": 0.991525,
+        "weights": {
+          "bbox_iou": 0.5,
+          "pose_agreement": 0.3,
+          "scale_agreement": 0.2
+        }
+      },
+      "resulting_score": 97.44
+    },
+    "regional": "UNVALIDATED",
+    "regionalFailures": [
+      "identity_unvalidated",
+      "eyes_brows_unvalidated",
+      "global_composite_unvalidated"
+    ],
+    "lineageComplete": true,
+    "health": {
+      "status": "HEALTHY",
+      "vramFreeMb": 5065,
+      "torchVramFreeMb": 311
+    }
+  }
+]

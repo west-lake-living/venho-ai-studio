@@ -51,3 +51,32 @@ def test_image_validator_persists_raw_before_parse(monkeypatch, tmp_path) -> Non
         )
     assert events[-1]["parseStatus"] == "failed"
     assert events[-1]["rawResponse"] == '{"dna_matches": ['
+
+
+def test_truncation_fixture_max_tokens_is_not_semantically_repaired() -> None:
+    raw = '{"gates": [{"gate": "identity_structure", "passed": true}], "weighted_scores": {'
+    response = {"finishReason": "MAX_TOKENS", "text": raw}
+    with pytest.raises(StructuredResponseError):
+        extract_json(response["text"])
+    assert response["text"].endswith("{")
+
+
+def test_truncation_fixture_stop_is_distinct_from_max_tokens() -> None:
+    raw = '{"gates": ['
+    response = {"finishReason": "STOP", "text": raw}
+    with pytest.raises(StructuredResponseError):
+        extract_json(response["text"])
+    assert response["finishReason"] == "STOP"
+
+
+def test_complete_response_schema_failure_is_not_repaired() -> None:
+    raw = '{"gates": [], "weighted_scores": {"eyes_and_brows": "not-a-number"}}'
+    payload = extract_json(raw)
+    assert payload["weighted_scores"]["eyes_and_brows"] == "not-a-number"
+
+
+def test_multipart_fixture_requires_explicit_json_part_extraction() -> None:
+    parts = [{"text": "explanation"}, {"text": '{"gates": [], "weighted_scores": {}}'}]
+    assert extract_json(parts[1]["text"]) == {"gates": [], "weighted_scores": {}}
+    with pytest.raises(StructuredResponseError):
+        extract_json(parts[0]["text"])

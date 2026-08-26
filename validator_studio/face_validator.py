@@ -9,7 +9,7 @@ from shared.vision.client import VisionClient
 from shared.vision.structured import extract_json
 
 from validator_studio.observe_adapter import ObservationSchemaError
-from validator_studio.schemas.face_validation import FaceGateResult, FaceValidationObservation
+from validator_studio.schemas.face_validation import FaceGateResult, FaceValidationObservation, FaceWeightedScores
 from validator_studio.schemas.validation_base import ArtifactRef, ObserverInfo, SourceKnowledgeRef, ValidationReport
 from validator_studio.scoring import score_face_observation
 from validator_studio.utils import BASE_DIR, find_dna_path, load_json, load_yaml, sha256_file, validation_config
@@ -163,12 +163,12 @@ def _merge_face_samples(samples: list[FaceValidationObservation]) -> FaceValidat
         majority_passed = votes[True] >= votes[False]
         merged_gates.append(items[0].model_copy(update={"passed": majority_passed}))
 
-    score_keys = samples[0].weighted_scores.keys()
+    score_keys = samples[0].weighted_scores.model_dump().keys()
     merged_scores = {
-        key: round(sum(float(sample.weighted_scores.get(key, 0)) for sample in samples) / len(samples), 2)
+        key: round(sum(float(sample.weighted_scores.model_dump().get(key, 0)) for sample in samples) / len(samples), 2)
         for key in score_keys
     }
-    return samples[0].model_copy(update={"gates": merged_gates, "weighted_scores": merged_scores})
+    return samples[0].model_copy(update={"gates": merged_gates, "weighted_scores": FaceWeightedScores.model_validate(merged_scores)})
 
 
 def _observe_face(

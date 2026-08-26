@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0",
+  "task": "GW-P5-T4",
+  "status": "IN PROGRESS / HUMAN EXECUTION REQUIRED",
+  "durable_job_semantics_offline": "PENDING_TARGETED_TEST",
+  "windows_reboot_recovery": "PENDING",
+  "cleanup_real_cycle": "PENDING",
+  "safety": {
+    "no_automatic_reboot": true,
+    "cleanup_script_unchanged": true,
+    "models_workflows_config_protected": true
+  }
+}

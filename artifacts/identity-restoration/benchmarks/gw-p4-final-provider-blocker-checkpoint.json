@@ -1,0 +1,144 @@
+{
+  "schema_version": "1.0",
+  "roadmap_phase": "GW-P4",
+  "task": "GW-P4-T2D",
+  "decision": "PROVIDER_BLOCKED",
+  "roadmap_execution": "STOPPED_AT_GW_P4_PROVIDER_BLOCKER",
+  "quality_result": "UNRESOLVED",
+  "roadmap": {
+    "GW-P0": "CLOSED / PASS",
+    "GW-P1": "CLOSED / PASS",
+    "GW-P2": "CLOSED / PASS",
+    "GW-P3": "CLOSED / PASS",
+    "GW-P4-T0": "CLOSED / PASS",
+    "GW-P4-T1": "CLOSED / QUALITY FAIL",
+    "GW-P4-T2": "PROVIDER_BLOCKED",
+    "GW-P4": "IN PROGRESS / QUALITY GATE FAILED",
+    "GW-P5": "NOT STARTED",
+    "execution_blocker": "GW-P4-T2 PROVIDER_BLOCKED",
+    "quality_gate": "UNRESOLVED"
+  },
+  "run6": {
+    "terminal": "30/30",
+    "decision_valid": "30/30",
+    "control": "10/10 PASS",
+    "nano": "10/10 PASS",
+    "remote": "10/10 PASS",
+    "face_qc_median": "91.335 PASS",
+    "anatomy": "10/10 PASS",
+    "pixel_preservation": "10/10 PASS",
+    "lineage": "10/10 PASS",
+    "regional": {"result": "FAIL", "pass_count": 2, "total": 10, "passing_cases": ["B01", "B08"]},
+    "decision": "QUALITY_FAIL_SOLELY_ON_REGIONAL_AGGREGATE"
+  },
+  "tuning_diagnosis": {
+    "failure": "B03/B04 global_composite",
+    "hypothesis": "denoise=0.35 over-restoration produces plastic/generic face",
+    "primary_causes_excluded": ["mask", "crop geometry", "Pixel Preservation", "lineage"]
+  },
+  "pilot": {
+    "C1": {"denoise": 0.30, "B03_artifact": true, "B04_artifact": true, "quality": "UNKNOWN"},
+    "C2": {"denoise": 0.25, "B03_artifact": true, "B04_artifact": true, "touched_after_C1_blocker": false},
+    "C3": {"denoise": 0.20, "B03_artifact": true, "B04_artifact": false, "touched_after_C1_blocker": false},
+    "local_evidence": ["Pixel PASS", "Anatomy PASS", "healthy geometry", "complete lineage"],
+    "B04_validated": false,
+    "regional_authority": "UNAVAILABLE_WITHOUT_VALID_FACE_QC_SAMPLES"
+  },
+  "validator": {
+    "provider": "gemini",
+    "model": "gemini-3.5-flash",
+    "samples": 3,
+    "mock": false,
+    "fallback": false,
+    "structured_output": true,
+    "rubric": "UNCHANGED",
+    "thinking_level": "UNCHANGED",
+    "quality_thresholds": "UNCHANGED",
+    "max_output_tokens": 8192
+  },
+  "transport_attempts": [
+    {
+      "attempt": 1,
+      "max_output_tokens": 2048,
+      "finish_reason": "MAX_TOKENS",
+      "valid_samples": 0,
+      "classification": "PROVIDER_TRUNCATED_RESPONSE",
+      "root_classification": "T1 — FINISH_REASON_MAX_TOKENS",
+      "raw_evidence": {
+        "path": "artifacts/identity-restoration/gw-p4-t2-c1-face-qc-20260825-r8/raw/B03/sample-1.jsonl",
+        "raw_bytes": 1091,
+        "raw_sha256": "2ec84221c31fb2e5584aa806a00ab109fe92d9daa4d980772586dc575a91f2ee",
+        "container_bytes": 3091,
+        "container_sha256": "6bc5aa91cceded5289a90a32f97b712e48780c6aa4e3fcc962a432209e532277",
+        "immutability": "PRESERVED_NOT_REWRITTEN"
+      }
+    },
+    {
+      "attempt": 2,
+      "max_output_tokens": 4096,
+      "finish_reason": "MAX_TOKENS",
+      "valid_samples": 0,
+      "classification": "PROVIDER_TRUNCATED_RESPONSE",
+      "input_tokens": 5265,
+      "output_tokens": 3271,
+      "cached_tokens": 1918,
+      "raw_bytes": 1096,
+      "raw_evidence": {
+        "path": "artifacts/identity-restoration/gw-p4-t2-c1-face-qc-20260825-r9/raw/B03/sample-1.jsonl",
+        "raw_bytes": 1096,
+        "raw_sha256": "33943ba1184ef88b3c9a4d686ae3a61f9cd1dc80e07b34b011db6f887d01cfa7",
+        "container_bytes": 3101,
+        "container_sha256": "fe71577020b0cb8b01e9795fe0566db49990bbeebdd7b4f1f46c986d9ad8f0dd",
+        "immutability": "PRESERVED_NOT_REWRITTEN"
+      }
+    },
+    {
+      "attempt": 3,
+      "max_output_tokens": 8192,
+      "preflight": "PASS",
+      "live_gemini_calls": 1,
+      "finish_reason": "FinishReason.MAX_TOKENS",
+      "valid_samples": 0,
+      "classification": "PROVIDER_TRUNCATED_RESPONSE",
+      "input_tokens": 5265,
+      "output_tokens": 7367,
+      "cached_tokens": null,
+      "thinking_tokens": null,
+      "total_tokens": null,
+      "raw_bytes": 9856,
+      "parser": "INVALID",
+      "parser_reason": "Truncated JSON response",
+      "raw_evidence": {
+        "path": "artifacts/identity-restoration/gw-p4-t2-c1-face-qc-20260825-r10/raw/B03/sample-1.raw.json",
+        "raw_bytes": 9856,
+        "raw_sha256": "e332b982cdd71e5c83110a19b6ca3ca9b3b17b8e442f303a3f3abf304ba1f50e",
+        "container_bytes": 9856,
+        "container_sha256": "e332b982cdd71e5c83110a19b6ca3ca9b3b17b8e442f303a3f3abf304ba1f50e",
+        "immutability": "PRESERVED_NOT_REWRITTEN"
+      }
+    }
+  ],
+  "offline_remediation": {
+    "classification": "R5_NO_SAFE_OFFLINE_REMEDIATION",
+    "historical_valid_payload_bytes": {"min": 1337, "median": 1635, "p95": 1934, "max": 1982},
+    "semantic_patch": false
+  },
+  "final_blocker": {
+    "classification": "PROVIDER_BLOCKED",
+    "quality_conclusion": "UNKNOWN",
+    "pilot_fail": false,
+    "regional_result": "UNAVAILABLE_FOR_C1_B03",
+    "provider_blocked_is_not_pilot_fail": true
+  },
+  "scope_guard": {
+    "B04": "NOT_VALIDATED",
+    "C2": "UNTOUCHED_AFTER_C1_BLOCKER",
+    "C3": "UNTOUCHED_AFTER_C1_BLOCKER",
+    "gpu_jobs": 0,
+    "nano_calls": 0,
+    "provider_network_calls_during_T2D": 0,
+    "paid_test_calls": 0,
+    "GW-P5": "NOT_STARTED"
+  },
+  "next_allowed_action": "NONE_WITHIN_CURRENT_LOCKED_ROADMAP"
+}

@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0",
+  "task": "GW-P5-T2",
+  "status": "IN PROGRESS / HUMAN EXECUTION REQUIRED",
+  "configured_timeout_seconds": {
+    "health": 5.0,
+    "http_connect_read": 600.0,
+    "overall_remote_restoration": 600.0
+  },
+  "offline_verification": {
+    "dead_worker_mapping": "PASS",
+    "canonical_error": "ERR_GW_WORKER_OFFLINE",
+    "bounded_return": "PASS",
+    "history_timeout_implementation": "PRESENT: poll_until_complete deadline",
+    "circuit_breaker": "PRESENT: 3 offline probes / 300 seconds"
+  },
+  "final_timeout_verification": "PENDING_REAL_WINDOWS_GPU_SOAK",
+  "provider_calls": 0,
+  "gpu_jobs": 0,
+  "network_calls": 0
+}

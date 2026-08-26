@@ -1,0 +1,118 @@
+{
+  "schema_version": "1.0",
+  "task": "GW-P4-T2C",
+  "roadmap_state_before": {
+    "GW-P4-T2": "PROVIDER_BLOCKED",
+    "GW-P4": "IN PROGRESS / QUALITY GATE FAILED",
+    "GW-P5": "NOT STARTED"
+  },
+  "transport_change": {
+    "before": 4096,
+    "after": 8192
+  },
+  "locked_config": {
+    "passed": true,
+    "capturedAt": "2026-08-25T12:31:50.329143+00:00",
+    "provider": "gemini",
+    "model": "gemini-3.5-flash",
+    "samples": 3,
+    "mock": false,
+    "fallback": false,
+    "temperature": 0.0,
+    "thinkingLevel": "UNCHANGED / NOT EXPOSED BY SDK CONFIG",
+    "rubricVersion": "07F",
+    "rubricHash": "0c748daa684de766a0c1a5065ca603c277b4644d640bcd0d3189d2eb4658cf34",
+    "schemaHash": "d589fa15e901435eb96b7903e20321c2d1d5ad49706fce22bde5d8884b1617fd",
+    "artifactHash": "b395fc209939a0b5054092a4fdd9979afbfebf16d59b040a291c7aa07bd98a62",
+    "a2AuthorityHash": "1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d",
+    "requestDiff": {
+      "max_output_tokens": {
+        "before": 4096,
+        "after": 8192
+      }
+    },
+    "artifactPath": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/gw-p4-t2-denoise-pilot-20260825-r5/restoration-artifacts/face_restore_win_sd15_ipadapter_v2_candidate_d30-b03/attempt-1/composite.png",
+    "artifactCandidate": {
+      "candidateId": "face_restore_win_sd15_ipadapter_v2_candidate_d30",
+      "denoise": 0.3,
+      "outputSha256": "b395fc209939a0b5054092a4fdd9979afbfebf16d59b040a291c7aa07bd98a62",
+      "pixel": "PASS",
+      "anatomy": "PASS",
+      "geometryScore": 97.8,
+      "lineageComplete": true
+    },
+    "historicalConfigComparison": "IDENTICAL_EXCEPT_MAX_OUTPUT_TOKENS"
+  },
+  "offline_preflight": {
+    "passed": true,
+    "capturedAt": "2026-08-25T12:31:50.329143+00:00",
+    "provider": "gemini",
+    "model": "gemini-3.5-flash",
+    "samples": 3,
+    "mock": false,
+    "fallback": false,
+    "temperature": 0.0,
+    "thinkingLevel": "UNCHANGED / NOT EXPOSED BY SDK CONFIG",
+    "rubricVersion": "07F",
+    "rubricHash": "0c748daa684de766a0c1a5065ca603c277b4644d640bcd0d3189d2eb4658cf34",
+    "schemaHash": "d589fa15e901435eb96b7903e20321c2d1d5ad49706fce22bde5d8884b1617fd",
+    "artifactHash": "b395fc209939a0b5054092a4fdd9979afbfebf16d59b040a291c7aa07bd98a62",
+    "a2AuthorityHash": "1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d",
+    "requestDiff": {
+      "max_output_tokens": {
+        "before": 4096,
+        "after": 8192
+      }
+    },
+    "artifactPath": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/gw-p4-t2-denoise-pilot-20260825-r5/restoration-artifacts/face_restore_win_sd15_ipadapter_v2_candidate_d30-b03/attempt-1/composite.png",
+    "artifactCandidate": {
+      "candidateId": "face_restore_win_sd15_ipadapter_v2_candidate_d30",
+      "denoise": 0.3,
+      "outputSha256": "b395fc209939a0b5054092a4fdd9979afbfebf16d59b040a291c7aa07bd98a62",
+      "pixel": "PASS",
+      "anatomy": "PASS",
+      "geometryScore": 97.8,
+      "lineageComplete": true
+    },
+    "historicalConfigComparison": "IDENTICAL_EXCEPT_MAX_OUTPUT_TOKENS"
+  },
+  "live_call_count": 1,
+  "provider_result": {
+    "provider": "gemini",
+    "model": "gemini-3.5-flash",
+    "finishReason": "FinishReason.MAX_TOKENS",
+    "finishMessage": null,
+    "promptTokenCount": 5265,
+    "candidatesTokenCount": 7367,
+    "cachedContentTokenCount": null,
+    "thoughtsTokenCount": null,
+    "totalTokenCount": null,
+    "responsePartsMetadata": null,
+    "rawBytes": 9856,
+    "rawSha256": "e332b982cdd71e5c83110a19b6ca3ca9b3b17b8e442f303a3f3abf304ba1f50e",
+    "requestCount": 1
+  },
+  "parser_result": {
+    "status": "INVALID",
+    "error": "Truncated JSON response",
+    "failureClass": "PROVIDER_TRUNCATED_RESPONSE",
+    "inputBytes": 9856,
+    "errorPosition": 9856,
+    "rawTail": "                                                                                                                                                               }"
+  },
+  "valid_sample_count": 0,
+  "decision": "PROVIDER_TRUNCATED_RESPONSE",
+  "roadmap_state_after": {
+    "GW-P4-T2": "PROVIDER_BLOCKED",
+    "GW-P4": "IN PROGRESS / QUALITY GATE FAILED",
+    "GW-P5": "NOT STARTED"
+  },
+  "next_allowed_action": "STOP GW roadmap execution at GW-P4 provider blocker.",
+  "scope_guard": {
+    "B04": "NOT CALLED",
+    "C2": "UNTOUCHED",
+    "C3": "UNTOUCHED",
+    "gpuJobs": 0,
+    "nanoCalls": 0
+  }
+}

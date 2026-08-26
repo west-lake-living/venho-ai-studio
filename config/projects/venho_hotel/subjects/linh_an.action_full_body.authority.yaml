@@ -1,0 +1,21 @@
+# Human-approved GW-P4-R1-T3 authority profile. This controls only the
+# face-only Identity Restoration gate; it does not remove canonical Linh An DNA.
+profile_id: action_full_body
+profile_version: "1.0"
+scope_owner: identity_restoration_stage_b
+exclude_observation_keys:
+  - shot_distance
+  - hairstyle
+retained_restoration_scope:
+  - face_identity
+  - face_geometry
+  - eyes
+  - brows
+  - nose
+  - mouth
+  - jaw
+  - skin
+  - face_boundary
+notes:
+  - "shot_distance is upstream/global framing for action and full-body scenarios."
+  - "hairstyle is excluded only where observed outside the face restoration mask."

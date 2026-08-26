@@ -1,6 +1,298 @@
 # VENHO AI STUDIO — Task Status
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-08-25 (GW-P4-T1 Run 6 official decision) · **GW-P3 CLOSED/PASS**
+**Cập nhật:** 2026-08-25 (GW-P4 dual-layer status clarified · GW-P5 execution starts) · **GW-P3 CLOSED/PASS**
+
+## AUTHORITATIVE CURRENT STATE — GW-P4 DONE (dual-layer) · GW-P5 IN PROGRESS
+
+**Two status layers on GW-P4 — do not conflate:**
+- **GW-P4 (historical, frozen)** = `CLOSED / QUALITY FAIL` — original Regional-gate
+  run (2/10 pass, authority: `artifacts/identity-restoration/benchmarks/gw-p4-t2-pilot-exhausted-checkpoint.json`)
+  stands unmodified as frozen evidence. Do not edit or reinterpret this record.
+- **GW-P4-R1 (remediation)** = `CLOSED / PASS`, decision `REMEDIATION_PASS` —
+  root cause was QC **authority/scope**, not a real Identity Restoration defect:
+  B03/B04 had been scored against canonical default DNA instead of the
+  human-approved `action_full_body@1.0` profile. After correcting authority,
+  B03/B04 replay deterministically to `97.51`/`94.14`, both PASS, unchanged
+  Regional/Pixel gates. B01/B02/B05–B10 retain canonical default DNA (no
+  automatic action/full-body mapping). Action tuning candidates cancelled/not
+  required. Sub-tasks: `GW-P4-R1-T1 = CLOSED / ANALYSIS COMPLETE`,
+  `T2 = CLOSED / AUDIT COMPLETE`, `T3 = CLOSED / AUTHORITY COMPLETE`,
+  `T4 = CLOSED / REMEDIATION PASS`.
+
+**Net effect: no outstanding work remains under GW-P4.** The frozen FAIL label
+stays as historical evidence but no longer blocks downstream phases —
+GW-P4-R1's PASS is the operative decision for "is GW-P4 done."
+
+**GW-P5 (Worker Hardening) is now `IN PROGRESS`.** `GW-P5-T0` (hardening
+readiness / entry-gate review) is closed — see below. Execution order:
+`GW-P5-T1` (Task Scheduler auto-start prep) → `GW-P5-T3` (timeout verification)
+→ `GW-P5-T5` (safe retry on job interruption) → remaining tasks requiring
+physical Windows hands-on time (`T2`/`T4`/`T6`–`T8`).
+
+### GW-P5 consolidated execution checkpoint (2026-08-26)
+
+The GW-P5 execution directive is now the operative scope. T1 is
+`CLOSED / PASS` from external Windows registration evidence plus human-captured
+real logon and Mac Tailscale health evidence; the Windows JSON remains external
+and is not fabricated in this repository. T3 retry lineage is
+`CLOSED / PASS` offline (3/3 targeted tests). The repository now contains a
+static Windows bundle regression test, an ASCII/mojibake guard, and the
+resumable `gw_p5_hardening_verify_on_windows.ps1` (`PreReboot`/`PostReboot`, no
+automatic reboot).
+The bounded `scripts/gw_p5_worker_soak.py` harness is also ready; it accepts
+only `--count 2` or `--count 10`, stops on first failure, and hard-caps the
+normal GPU budget at 12 jobs.
+
+T2 fail-fast mapping is `PASS` offline, but final timeout verification remains
+pending real Windows GPU measurements. T4 reboot durability/cleanup and T5
+2-job smoke + 10-job soak remain `HUMAN EXECUTION REQUIRED`; GW-P5 therefore
+remains `IN PROGRESS`. Do not open GW-P6 until all 11 final requirements pass.
+
+### GW-P5-T0 — Hardening readiness / entry-gate review (2026-08-25)
+
+Reviewed all 8 GW-P5 tasks against existing repo infra. Result: 0/8 fully
+done, 4/8 have reusable foundation from GW-P1–P4 (`probe_gpu_worker.py` +
+`cached_worker_health.py` with 3-strike/5-min circuit breaker for health/
+fail-fast; `error_mapper.py` for error mapping; VRAM failure-mode data
+already captured in `GW_P4_CONTROLLED_A2_BENCHMARK_REPORT.md`), 4/8 not
+started. Three tasks (Task Scheduler auto-start, reboot-safety, cleanup
+script real-run) require physical Windows access and cannot be completed
+from Mac. No code changed in this review; 0 network/GPU/provider calls.
+**Correction:** initial review claimed real benchmark latency data existed
+for timeout tuning (task #3) — checked, this is false. No `duration_seconds`/
+`elapsed`/timing field exists anywhere in `artifacts/identity-restoration/`
+or `staging/gw-p3/`. Timeout verification against real measured latency
+needs an actual Windows GPU job and cannot be done from Mac either.
+
+### GW-P5-T1 — Task Scheduler auto-start (prepared, not deployed) (2026-08-25)
+
+Added `scripts/windows-gpu-worker/start_comfyui_worker.ps1` (launcher: reads
+the GW-P1-verified `gw_p1_winning_config.json`/`worker.env` — does not
+re-derive flags; refuses to start if bind address is not loopback),
+`scripts/windows-gpu-worker/gw_p5_t1_register_autostart.ps1` (registers an
+`AtLogOn` Scheduled Task, `Limited` run level, no elevation, no
+network-exposure change; dry-run by default, `-Apply` to register), and
+`gw_p5_t1_run_on_windows.ps1` (single entry point wrapping dry-run →
+confirm → apply for Harry to run directly on the worker).
+
+**2026-08-26 — registered on real hardware.** Harry ran
+`gw_p5_t1_run_on_windows.ps1` on HARRY-ROG. Dry-run plan matched expectations;
+`YES` confirmed; task `VenHoGPU-ComfyUI-AutoStart` registered successfully
+(trigger `AtLogOn (Admin)`, no elevation, no network change). Evidence:
+`C:\VenHoGPU\evidence\gw-p5-t1-20260826-092745\gw_p5_t1_report.json`.
+The user-provided human capture also records a real logoff/logon cycle and a
+Mac Tailscale probe returning `HEALTHY` with the GTX 1660 SUPER; this external
+Windows JSON is referenced but not fabricated in the repo. T1 is therefore
+`CLOSED / PASS`. Cosmetic-only console encoding remains non-blocking; the
+repo bundle regression test rejects the known mojibake token (`â€`).
+
+### GW-P5-T5 — Interrupted-job retry safety (verified offline) (2026-08-25)
+
+Added `tests/identity_restoration/infrastructure/test_gw_p5_t5_interrupted_job_retry.py`
+exercising the real (not fake) `FileConcurrencyLease` and
+`JsonlRestorationLedger` implementations already in the codebase — the
+crash path (`kill -9`/reboot, no `finally` ever runs) was previously
+untested; only the clean-exception release path had coverage. Confirms: a
+stale lock (older than `ttl_seconds`) is reclaimed by a new attempt (job
+crash does not permanently deadlock retries); a live lock fails fast with
+`ERR_GW_LEASE_UNAVAILABLE` (retryable) instead of hanging; two ledger
+entries with different `attempt_id` for the same `run_id` both persist —
+retry never overwrites the failed attempt. **3/3 new tests pass; full
+`tests/identity_restoration` suite 160/160 pass, 0 regression.** 0 network/
+GPU/provider calls. Task #5 DoD is satisfied by existing architecture plus
+this new test coverage — no production code changed.
+
+## AUTHORITATIVE CURRENT STATE — GW-P4-T2 PROVIDER_BLOCKED EVIDENCE FROZEN
+
+GW-P0/P1/P2/P3 and GW-P4-T0 are CLOSED/PASS. GW-P4-T1 is CLOSED/QUALITY
+FAIL. GW-P4-T2 is **PROVIDER_BLOCKED**; GW-P4 is **IN PROGRESS / QUALITY GATE
+FAILED**; GW-P5 is **NOT STARTED**.
+
+Run 6 remains authoritative: 30/30 terminal and decision-valid; Remote Face QC
+median 91.335 PASS, Anatomy/Pixel/Lineage 10/10 PASS, Regional 2/10 PASS
+(B01, B08), with Regional FAIL on B02/B03/B04/B05/B06/B07/B09/B10. The tuning
+diagnosis is denoise-only: prior 0.35 over-reconstructed face texture; C1 is
+0.30. C1/B03 and B04 artifacts have local evidence PASS, but C1 quality is
+UNKNOWN and B04 was not validated. C2/C3 are untouched.
+
+Both C1/B03 raw responses are frozen without JSON repair or inferred scores.
+The 2048 attempt and the single 4096 recovery attempt both ended with
+`MAX_TOKENS`, classified **T1 — FINISH_REASON_MAX_TOKENS** and
+`PROVIDER_TRUNCATED_RESPONSE`. `PROVIDER_BLOCKED` is explicitly not
+`PILOT_FAIL`; no C1 quality conclusion is claimable. No further provider,
+GPU, Nano, B04, C2/C3, or GW-P5 activity is authorized in this freeze.
+
+### GW-P4-T2B — Gemini output-budget containment audit (2026-08-25)
+
+Offline data-flow, schema, request-composition, historical-output, and
+authority-equivalence audit completed. Primary classification: **R5 — NO SAFE
+OFFLINE REMEDIATION**. The minimal authority subset is known, but removing
+narrative fields or duplicated prompt instructions would change the frozen
+audit/prompt contract without proof of zero provider behavior drift. No code
+semantics or output cap changed; `4096` remains locked. Verification: **37
+passed**, compileall PASS, diff-check PASS; provider/network/GPU/Nano/paid-test
+calls all `0`. GW-P4-T2 remains **PROVIDER_BLOCKED** and C1 remains **QUALITY
+UNKNOWN**.
+
+### GW-P4-T2C — Controlled Gemini output-cap recovery (2026-08-25)
+
+The mandatory offline preflight passed: provider/model, samples, mock/fallback,
+temperature, thinking configuration, rubric hash, structured schema hash, C1/B03
+artifact hash, and A2 authority hash were unchanged. The only request change was
+`max_output_tokens` **4096 → 8192**. One live Gemini request was then made for
+C1/B03 Face-QC sample 1; no readiness probe, retry, B04, C2, or C3 call occurred.
+
+Gemini returned `FinishReason.MAX_TOKENS`; raw output was 9,856 bytes and the
+strict parser returned `Truncated JSON response`. Token evidence is input `5265`,
+candidate output `7367`, cached/thinking/total unavailable. Valid authoritative
+samples remain `0/3`. Classification is **PROVIDER_TRUNCATED_RESPONSE**; final
+state remains **GW-P4-T2 = PROVIDER_BLOCKED**, not `PILOT_FAIL`, and C1 quality is
+UNKNOWN. Evidence is frozen at
+`artifacts/identity-restoration/benchmarks/gw-p4-t2c-output-cap-8192-recovery.json`.
+GPU jobs `0`, Nano calls `0`, B04 not called, C2/C3 untouched, GW-P5 not started.
+
+### GW-P4-T2D — Final provider blocker closure and roadmap freeze (2026-08-25)
+
+The three authoritative C1/B03 transport attempts are frozen: `2048`, `4096`,
+and `8192` all ended in `MAX_TOKENS`, with `0/3` valid Face-QC samples. The
+8192 attempt is preserved with raw SHA256
+`e332b982cdd71e5c83110a19b6ca3ca9b3b17b8e442f303a3f3abf304ba1f50e`. The final
+classification is **GW-P4-T2 = PROVIDER_BLOCKED**. This is not `PILOT_FAIL`;
+C1 quality remains **UNKNOWN**, so no authoritative Regional result or C1 pilot
+result exists. The blocker is transport-only, not ComfyUI/GPU, Anatomy, Pixel
+Preservation, or Lineage failure.
+
+The repository has no separate `BLOCKED / QUALITY GATE UNRESOLVED` taxonomy, so
+the existing GW-P4 status remains **IN PROGRESS / QUALITY GATE FAILED** with
+`execution_blocker = GW-P4-T2 PROVIDER_BLOCKED`, `quality_result = UNRESOLVED`,
+and `ROADMAP_EXECUTION = STOPPED_AT_GW_P4_PROVIDER_BLOCKER`. B04 is not
+validated; C2/C3 remain untouched after the C1 blocker; GW-P5 is **NOT STARTED**.
+No further roadmap execution is authorized under the locked validator contract.
+Checkpoint: `artifacts/identity-restoration/benchmarks/gw-p4-final-provider-blocker-checkpoint.json`.
+
+### GW-P4-T2 — Exploratory diagnosis checkpoint (2026-08-25)
+
+### GW-P4-T2 — Staged Regional selection checkpoint (2026-08-25)
+
+### GW-P4-T2 — C1 authoritative Face-QC gate (2026-08-25)
+
+### GW-P4-T2 — Hardened C1 transport and provider circuit-breaker (2026-08-25)
+
+### GW-P4-T2 — Evidence-producing provider probe (2026-08-25)
+
+The separate live model-readiness HTTP probe was removed. Offline schema,
+serialization, frozen provider/model, credentials, artifact SHA, local
+evidence, cache, and budget checks passed. The first real C1/B03 Face-QC
+request was therefore the readiness probe and sample 1. Gemini returned one
+`Truncated JSON response`; it was persisted and classified as
+`PROVIDER_TRUNCATED_RESPONSE`. No retry, sample 2, B04, Regional, C2/C3,
+GPU, or Nano call was made. Calls attempted `1`, valid samples `0`, failed
+provider calls `1`; paid test calls `0`. Status remains **GW-P4-T2 =
+PROVIDER_BLOCKED**.
+
+The production Face DTO now has a zero-network SDK serialization gate. The
+exact root cause of the earlier local failure was Gemini SDK rejection of the
+JSON-Schema `additionalProperties` keyword; the compatibility adapter removes
+only that keyword and keeps the semantic DTO, rubric, thresholds, and
+structured JSON output unchanged. The response ceiling is bounded at 2048
+tokens. Focused transport/guard tests pass with no paid calls.
+
+Provider readiness passed by HTTP model probe with `VALIDATOR_READY=true`,
+Gemini `gemini-3.5-flash`, credentials available, samples `3`, mock=false,
+fallback=false. The resumed C1-only batch started B03 and received one
+`PROVIDER_503` (`UNAVAILABLE`) on its first sample. The circuit breaker
+persisted the failure, marked provider availability `DEGRADED`, and stopped
+the batch; B04 was not called. No valid Face-QC sample was obtained and no
+Regional result or winner can be claimed. C2/C3, Image Validator, GPU, and
+Nano remain untouched. Current status: **GW-P4-T2 = PROVIDER_BLOCKED**.
+
+The authorized C1-only stage was started against exactly C1/B03 and C1/B04
+after zero-cost artifact checks passed. No cache entry matched the candidate
+SHA plus frozen Gemini configuration. The existing shared Gemini transport was
+fixed to remove the SDK-unsupported `additionalProperties` schema keyword;
+structured output and downstream DTO validation remain unchanged.
+
+The production paid-call guard recorded three C1/B03 transport intents: one
+SDK schema rejection before HTTP and two `503 UNAVAILABLE` responses from
+Gemini. No valid Face-QC sample was parsed (`validatorSamples=0`), so neither
+candidate reached three samples. The hard stage budget was not exceeded, but
+the remaining three intents cannot complete both candidates; execution stopped
+fail-closed. No Image Validator, RegionalScoreGateway, C2/C3, GPU, or Nano call
+was made. No winner is selected. Status: **GW-P4-T2 = SCOPED BLOCKER — C1
+Face-QC transport unavailable**; GW-P5 remains NOT STARTED.
+
+The staged-selection task was resumed without new GPU work. The required
+first stage is C1/B03 and C1/B04 only, but the current production
+`RegionalScoreGateway` is an evidence adapter: it requires upstream
+`Validator Studio` face/image reports for identity, eyes, and global scores.
+There is no separate Regional-only Gemini producer in this repository.
+
+Because this task explicitly requires `faceQcValidatorCalls=0`, evaluating
+those two candidates through the existing producer would violate the cost
+mode. Their existing local evidence remains valid (Pixel PASS, Anatomy PASS,
+geometry C1/B03 `97.80`, C1/B04 `97.08`), but both semantic Regional results
+remain `UNVALIDATED`; no winner can be selected and Group A must not start.
+
+Staged calls made: `0` Regional, `0` Face-QC, `0` Nano, `0` paid test calls.
+No additional GPU job was required. Current worker physical VRAM remains a
+real `3433 MiB`/`DEGRADED` condition, but it is not the immediate blocker.
+Status: **GW-P4-T2 = PILOT AWAITING REGIONAL DECISION**. GW-P4 remains
+QUALITY GATE FAILED; GW-P5 remains NOT STARTED.
+
+Task memory `GW-P4-T2` was resumed without reopening Run 6 validity. Offline
+inspection of the immutable Remote artifacts identified the first pilot root
+cause: B03/B04 geometry, mask boundary, crop transform, and pixel preservation
+are healthy; the v2 `denoise=0.35` FaceID restoration over-reconstructs the
+face, producing plastic/symmetrical/generic facial texture (B03 image global
+score `40.0`, B04 `83.86`). The first bounded hypothesis is lower denoise;
+mask/composite architecture remains unchanged.
+
+No candidate workflow, benchmark output, Gemini Validator call, Nano call, or
+GPU experiment was created. HARRY-ROG was reached through its HTTPS Tailscale
+hostname; the required single `/free` recovery returned HTTP 200 but VRAM
+remained about `617 MiB`, below the unchanged `4200 MiB` gate. Execution is
+therefore paused before the first GPU job, fail-closed. Zero-cost verification:
+focused tests `46 passed`, compileall passed, and `git diff --check` passed.
+
+### GW-P4-T2 — GPU owner recovery gate (2026-08-25)
+
+The worker remains below the frozen VRAM gate after the single permitted
+`/free` call: approximately `607 MiB` before and `617 MiB` after. The available
+ComfyUI HTTPS surface exposes `/system_stats` and `/free`, but no process/PID
+or `nvidia-smi` data. SSH to HARRY-ROG was attempted with the existing host
+identity and was rejected (`Permission denied (publickey,password,keyboard-interactive)`).
+
+Primary classification: **V6 — UNKNOWN_WITH_EVIDENCE**. A duplicate/stale
+ComfyUI process, another GPU application, unreleased ComfyUI cache, or driver
+state cannot be distinguished without Windows-local `nvidia-smi` and process
+inspection. No process was killed, no worker was restarted, no candidate
+workflow was created, and no pilot GPU job was submitted. Status:
+**GW-P4-T2 = RUNTIME_BLOCKED** pending the human-only Windows inspection and
+safe recovery action. GW-P4 remains QUALITY GATE FAILED; GW-P5 NOT STARTED.
+
+### GW-P4-T2 — Health metric fix and bounded pilot execution (2026-08-25)
+
+Fixed WorkerHealth to gate on physical `devices[0].vram_free`; torch allocator
+values are diagnostics only. Added healthy/low-physical regression fixtures and
+inverse allocator-decoy coverage. Re-probe passed with GTX 1660 SUPER,
+physical free `5065 MiB`, torch free `23 MiB`, threshold `4200 MiB`.
+
+Created denoise-only v2 descendants C1=`0.30`, C2=`0.25`, C3=`0.20`, preserving
+all other parameters/topology. Fixed candidate geometry binding after one
+invalid C1/B03 attempt. The bounded cap consumed six GPU prompt attempts total:
+one invalid binding attempt and five valid artifacts. Valid local evidence all
+passed decode, Pixel Preservation, Anatomy preservation, geometry sanity, and
+lineage: C1/B03 `97.80`, C1/B04 `97.08`, C2/B03 `97.44`, C2/B04 `97.72`,
+C3/B03 `97.13`.
+
+All valid outputs remained Regional `UNVALIDATED` for identity/eyes/global
+because Gemini was forbidden during pilot tuning. No winner, Group-A expansion,
+or B01/B08 preservation run was authorized. Gemini `0`, Nano `0`, paid tests
+`0`. Focused tests `24 passed`; identity-restoration plus Action
+Composite/regional suites `180 passed`; compileall and diff-check passed. After
+cleanup physical VRAM was `3433 MiB` and worker DEGRADED, so no further GPU job
+was submitted. **GW-P4-T2 = RUNTIME_BLOCKED** for continuation; GW-P4 remains
+QUALITY GATE FAILED and GW-P5 NOT STARTED.
 
 ### GW-P4-T1 — Run 6 regional quality decision (2026-08-25)
 
@@ -2417,3 +2709,16 @@ Verification: recovery/reuse/Nano/Remote focused **57 passed**; Action
 Composite/regional **97 passed**; full identity-restoration suite **153
 passed**; full suite **1117 passed / 76 pre-existing environment/fixture
 failures**; compileall and `git diff --check` passed.
+
+### GW-P4-T2 — Offline truncation audit and bounded recovery authorization (2026-08-25)
+
+Persisted C1/B03 raw response audit: 1091 bytes, parser input 1091 bytes,
+parse failure at byte 1091 while opening `weighted_scores`. Ledger evidence:
+`FinishReason.MAX_TOKENS`, prompt/input 5265, candidate output 1173. HTTP,
+finish message, candidate/parts counts, thinking, total, and cached-content
+fields were not persisted and remain null; no semantic repair was made.
+Classification: **T1**. The smallest fix changed `max_output_tokens` 2048 →
+4096; provider/model, DTO, rubric, samples=3 authority, and thinking remain
+unchanged. Offline fixtures pass (`29 passed`, paid tests `0`). One recovery
+request is bounded to C1/B03 sample 1; B04 and all downstream stages remain
+untouched.

@@ -6,7 +6,10 @@
   "properties": {
     "status": { "enum": ["HEALTHY", "DEGRADED", "OFFLINE"] },
     "gpuName": { "type": ["string", "null"] },
+    "vramTotalMb": { "type": ["integer", "null"] },
     "vramFreeMb": { "type": ["integer", "null"] },
+    "torchVramTotalMb": { "type": ["integer", "null"] },
+    "torchVramFreeMb": { "type": ["integer", "null"] },
     "latencyMs": { "type": ["number", "null"] }
   }
 }

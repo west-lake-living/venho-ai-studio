@@ -75,6 +75,9 @@ cases:
   - id: "B03"
     taxonomy: "Full-body Standing"
     status: "FROZEN"
+    identityRestorationAuthority:
+      scenarioProfileId: "action_full_body"
+      profileVersion: "1.0"
     baseFrame:
       path: "/Users/hanhpham/Developer/Claude-Workspace/projects/venho-social-content-agent/photos-ai/2026/07-08-hoang-hon-ho-tay-tu-rooftop/run-20260807130340020/variant-001/image.png"
       sha256: "098e6816fc21631fe4cd3bbd34b718f04569f8684f5347ab78525faf7ce07d87"
@@ -87,6 +90,9 @@ cases:
   - id: "B04"
     taxonomy: "Running Front 3/4"
     status: "FROZEN"
+    identityRestorationAuthority:
+      scenarioProfileId: "action_full_body"
+      profileVersion: "1.0"
     baseFrame:
       path: "/Users/hanhpham/Developer/Claude-Workspace/projects/venho-social-content-agent/assets/action-composite-live/action_01_jogging.png"
       sha256: "bb031e7adfcc0c7d79544c3edb932eebafc1f797a59881415e57addc584d26a0"

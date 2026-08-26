@@ -1,0 +1,125 @@
+{
+  "task": "GW-P4-R1-T1",
+  "status": "CLOSED / ANALYSIS COMPLETE",
+  "authority": {
+    "checkpoint": "artifacts/identity-restoration/benchmarks/gw-p4-t2-pilot-exhausted-checkpoint.json",
+    "GW-P4": "CLOSED / QUALITY FAIL",
+    "GW-P5": "NOT STARTED"
+  },
+  "baseline": {
+    "workflow": "face_restore_win_sd15_ipadapter_v2",
+    "denoise": 0.3,
+    "steps": 20,
+    "cfg": 6.0,
+    "sampler": "euler",
+    "scheduler": "normal",
+    "ipadapter_lora_strength": 0.6,
+    "ipadapter_weight": 1.0,
+    "ipadapter_faceidv2_weight": 1.0,
+    "a2_authority": "A2_FRONT pinned",
+    "mask_version": "hierarchical_face_v1"
+  },
+  "root_causes": [
+    {
+      "classification": "CONFIRMED",
+      "finding": "Every valid pilot Regional failure is solely global_composite below 90; identity, eyes/brows, geometry and preservation gates pass.",
+      "evidence": [
+        "artifacts/identity-restoration/gw-p4-t2h-c1-b03-regional-20260825-r15/regional.json",
+        "artifacts/identity-restoration/gw-p4-t2h-c1-b04-regional-20260825-r16/regional.json",
+        "artifacts/identity-restoration/gw-p4-t2j-c2-b03-regional-20260825-r18/regional.json",
+        "artifacts/identity-restoration/gw-p4-t2l-c3-b03-regional-20260825-r20/regional.json"
+      ]
+    },
+    {
+      "classification": "CONFIRMED",
+      "finding": "global_composite is copied directly from Image Validator overall_score, whose B03/B04 issues include full-body/action-incompatible default-DNA expectations: shot_distance and hairstyle.",
+      "evidence": [
+        "image_studio_runtime/action_composite/regional_score_gateway.py",
+        "validator_studio/image_validator.py",
+        "validator_studio/scoring.py",
+        "docs/identity-restoration/BENCHMARK_DATASET_V2_1.md"
+      ]
+    },
+    {
+      "classification": "CONFIRMED",
+      "finding": "No Linh An B03/B04 scenario overlay exists; validate_image supports scenario_profile_id but the executed score producer does not pass one.",
+      "evidence": [
+        "config/projects/venho_hotel/subjects/",
+        "validator_studio/image_validator.py",
+        "image_studio_runtime/action_composite/regional_score_gateway.py"
+      ]
+    },
+    {
+      "classification": "LIKELY",
+      "finding": "A face-only workflow cannot remove the decisive shot_distance mismatch and cannot reliably correct hairstyle length outside the editable mask; therefore workflow-only tuning is unlikely to make B03+B04 global_composite pass.",
+      "evidence": [
+        "artifacts/identity-restoration/benchmark-geometry/v2.1/B03/geometry_manifest.json",
+        "artifacts/identity-restoration/benchmark-geometry/v2.1/B04/geometry_manifest.json",
+        "identity_restoration/domain/compositing.py"
+      ]
+    }
+  ],
+  "rejected_tuning_axes": [
+    "denoise below 0.30: C2=0.25 and C3=0.20 did not improve B03",
+    "crop geometry, alignment, mask dilation, mask feather: no evidence of a failure; geometry and Pixel Lock pass",
+    "CFG, sampler, scheduler: no causal evidence and no expected path to the outside-mask shot-distance mismatch",
+    "QC threshold changes: prohibited"
+  ],
+  "candidates": [
+    {
+      "candidate_id": "R1-C1",
+      "single_primary_variable_changed": "KSampler steps",
+      "baseline_value": 20,
+      "candidate_value": 28,
+      "technical_hypothesis": "More diffusion steps may improve the existing technical_quality=85 face detail without changing denoise.",
+      "expected_improvement": "Face detail only; no supported expectation that it resolves global_composite.",
+      "main_risk": "More reconstruction drift and GPU time; cannot affect shot_distance.",
+      "B03_required": true,
+      "B04_required": true,
+      "estimated_GPU_executions": 2,
+      "precondition": "Run only after R1-T2 proves scenario-aware global validation is authority-equivalent or rejects the blocker.",
+      "stop_condition": "Stop after either case fails Face-QC, Pixel Lock, or Regional; do not benchmark."
+    },
+    {
+      "candidate_id": "R1-C2",
+      "single_primary_variable_changed": "IPAdapterFaceID weight_faceidv2",
+      "baseline_value": 1.0,
+      "candidate_value": 1.15,
+      "technical_hypothesis": "A modest FaceID conditioning increase may improve identity-specific details while keeping A2_FRONT and all sampler settings fixed.",
+      "expected_improvement": "Identity fidelity only; baseline identity already passes, so pass impact is unproven.",
+      "main_risk": "Over-conditioning can alter pose/lighting or reduce geometry agreement.",
+      "B03_required": true,
+      "B04_required": true,
+      "estimated_GPU_executions": 2,
+      "precondition": "Run only after R1-T2 and as a content-addressed derived workflow, not a production replacement.",
+      "stop_condition": "Stop after either case fails Face-QC, Pixel Lock, or Regional; do not benchmark."
+    },
+    {
+      "candidate_id": "R1-C3",
+      "single_primary_variable_changed": "IPAdapterUnifiedLoaderFaceID lora_strength",
+      "baseline_value": 0.6,
+      "candidate_value": 0.75,
+      "technical_hypothesis": "A modest adapter-strength increase may improve local face texture/ear detail under the same A2 reference.",
+      "expected_improvement": "Local face/ear detail only; no supported expectation that it resolves outside-mask Image-QC issues.",
+      "main_risk": "Plasticity or pose drift; baseline technical quality is already the weakest Face-QC category.",
+      "B03_required": true,
+      "B04_required": true,
+      "estimated_GPU_executions": 2,
+      "precondition": "Run only after R1-T2 and as a content-addressed derived workflow, not a production replacement.",
+      "stop_condition": "Stop after either case fails Face-QC, Pixel Lock, or Regional; do not benchmark."
+    }
+  ],
+  "pilot_gate": {
+    "requirements": [
+      "B03 valid Face-QC",
+      "B04 valid Face-QC",
+      "B03 Regional pass at unchanged thresholds",
+      "B04 Regional pass at unchanged thresholds",
+      "Pixel Lock PASS",
+      "no pipeline-invariant regression"
+    ],
+    "winner_rule": "Select a winner only when every requirement passes for B03 and B04.",
+    "no_winner_rule": "If no candidate passes B03+B04, record NO_WINNER and stop before B01-B10."
+  },
+  "next_task": "GW-P4-R1-T2 — offline scenario-authority and global-composite scope audit; no GPU pilot until it establishes whether B03/B04 can validly pass under the locked Regional semantics."
+}

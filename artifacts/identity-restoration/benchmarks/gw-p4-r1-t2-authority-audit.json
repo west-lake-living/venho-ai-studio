@@ -1,0 +1,69 @@
+{
+  "task": "GW-P4-R1-T2",
+  "status": "CLOSED / AUDIT COMPLETE",
+  "decision": "AUTHORITY_UNRESOLVED",
+  "provider_calls": 0,
+  "gpu_jobs": 0,
+  "nano_calls": 0,
+  "authority": {
+    "checkpoint": "artifacts/identity-restoration/benchmarks/gw-p4-t2-pilot-exhausted-checkpoint.json",
+    "GW-P4": "CLOSED / QUALITY FAIL",
+    "GW-P4-R1": "BLOCKED",
+    "GW-P5": "NOT STARTED"
+  },
+  "cases": {
+    "B03": {
+      "taxonomy": "Full-body Standing",
+      "scenario": "not mapped in benchmark contract",
+      "dna_authority": "data/projects/venho_hotel/knowledge/VENHO_HOTEL_LINH_AN_DNA.json",
+      "scenario_overlay": "D — absent; no scenario_profile_id passed",
+      "validator_input": {"project": "venho_hotel", "subject": "linh_an", "scenario_profile_id": null, "samples": 3},
+      "global_composite": 86.61,
+      "failed_fields": ["hair_length", "shot_distance", "hairstyle"],
+      "face_qc": 90.98,
+      "identity": 90.98,
+      "geometry": 97.8,
+      "pixel_lock": "PASS",
+      "regional": "FAIL: global_composite_below_threshold",
+      "offline_rescore": "NOT RECOMPUTABLE FROM CURRENT ARTIFACTS"
+    },
+    "B04": {
+      "taxonomy": "Running Front 3/4",
+      "scenario": "not mapped; historical non-executable record uses outdoor_action_jogging_west_lake",
+      "dna_authority": "data/projects/venho_hotel/knowledge/VENHO_HOTEL_LINH_AN_DNA.json",
+      "scenario_overlay": "D — absent; no scenario_profile_id passed",
+      "validator_input": {"project": "venho_hotel", "subject": "linh_an", "scenario_profile_id": null, "samples": 3},
+      "global_composite": 83.76,
+      "failed_fields": ["earring_type", "shot_distance", "hairstyle"],
+      "face_qc": 90.98,
+      "identity": 90.98,
+      "geometry": 97.08,
+      "pixel_lock": "PASS",
+      "regional": "FAIL: global_composite_below_threshold",
+      "offline_rescore": "NOT RECOMPUTABLE FROM CURRENT ARTIFACTS"
+    }
+  },
+  "scenario_overlay": {
+    "result": "D",
+    "current_linh_an_files": ["linh_an.yaml", "linh_an.overrides.yaml"],
+    "executor_behavior": "does not pass scenario_profile_id",
+    "historical_b04_record": "not executable in current Validator Studio authority and not historical generation provenance"
+  },
+  "scope_findings": [
+    {"field": "shot_distance", "scope": "SCENARIO-DEPENDENT / GLOBAL-GENERATION-SCOPE", "restorer_can_modify": false, "current_penalty": true, "restoration_gate": "NO"},
+    {"field": "hairstyle", "scope": "SCENARIO-DEPENDENT", "restorer_can_modify": "PARTIAL_UNRELIABLE", "current_penalty": true, "restoration_gate": "UNKNOWN"},
+    {"field": "body pose/full-body framing/background/outfit", "scope": "GLOBAL-GENERATION-SCOPE", "restorer_can_modify": false, "current_penalty": false, "restoration_gate": "NO"},
+    {"field": "face identity/geometry/eyes/brows/nose/mouth/jaw/skin/face boundary", "scope": "FACE-RESTORATION-SCOPE", "restorer_can_modify": true, "current_penalty": "FACE_QC_OR_GEOMETRY", "restoration_gate": "YES"}
+  ],
+  "authority_findings": [
+    "Benchmark executor and executed Regional script invoke Image-QC without scenario_profile_id.",
+    "No B03/B04 case-to-scenario mapping or current Linh An scenario overlay exists.",
+    "Historical B04 global reference record cannot be substituted for current B03/B04 Validator Studio authority."
+  ],
+  "offline_rescore": {
+    "status": "NOT RECOMPUTABLE FROM CURRENT ARTIFACTS",
+    "reason": "No human-approved file-backed B03/B04 scenario authority defines expected framing, action hair, or earring scope."
+  },
+  "next_task": "GW-P4-R1-T3 — Authority completion: add human-approved, versioned B03/B04 case-to-scenario mappings and file-backed validator authority/reference sets; then perform an offline authority replay. No GPU."
+}
+

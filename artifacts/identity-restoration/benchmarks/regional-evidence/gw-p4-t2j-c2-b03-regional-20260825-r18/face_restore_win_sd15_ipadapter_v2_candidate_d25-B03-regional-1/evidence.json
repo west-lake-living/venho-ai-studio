@@ -1,0 +1,315 @@
+{
+  "adapterVersion": "benchmark-regional-materialization-v1",
+  "authority": "image_studio_runtime.action_composite.regional_score_gateway.RegionalScoreGateway",
+  "benchmarkId": "GW-P4-T2",
+  "branch": "face_restore_win_sd15_ipadapter_v2_candidate_d25",
+  "evidenceId": "d2c07637e3a58d4919b7e9e722076616dd9fb7b8cecf5f3a53bc2a41309b98d6",
+  "gatewayImplementation": "image_studio_runtime.action_composite.regional_score_gateway.RegionalScoreGateway",
+  "geometryObservation": {
+    "backend": "yunet",
+    "bbox_xyxy": [
+      482.0680236816406,
+      290.2026672363281,
+      598.8540802001953,
+      450.3122253417969
+    ],
+    "confidence": 0.937517523765564,
+    "detection_count": 1,
+    "detector": "cv2.FaceDetectorYN",
+    "face_selection_policy": "exactly_one_face_required",
+    "input_color_order": "BGR",
+    "landmark_count": 5,
+    "landmark_order": [
+      "left_eye",
+      "right_eye",
+      "nose",
+      "left_mouth_corner",
+      "right_mouth_corner"
+    ],
+    "landmarks": [
+      [
+        527.220703125,
+        357.40252685546875
+      ],
+      [
+        580.9239501953125,
+        349.9330139160156
+      ],
+      [
+        569.3511352539062,
+        386.7634582519531
+      ],
+      [
+        537.659912109375,
+        414.9842529296875
+      ],
+      [
+        582.215087890625,
+        409.4750061035156
+      ]
+    ],
+    "method_version": "opencv-zoo-yunet-2023mar-pnp-v1",
+    "model": "face_detection_yunet_2023mar.onnx",
+    "model_path": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/models/geometry/yunet/face_detection_yunet_2023mar.onnx",
+    "model_sha256": "8f2383e4dd3cfbb4553ea8718107fc0423210dc964f9f4280604804ed2552fa4",
+    "original_artifact": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/gw-p4-t2-denoise-pilot-20260825-r7/restoration-artifacts/face_restore_win_sd15_ipadapter_v2_candidate_d25-b03/attempt-1/composite.png",
+    "original_dimensions": {
+      "height": 1920,
+      "width": 1088
+    },
+    "original_sha256": "a73769d57b930fec8b97492a032b62f160631f3d647b8f4ec4948c131344f219",
+    "pnp": {
+      "angle_convention": "rotation matrix XYZ decomposition; output pitch,yaw,roll in degrees",
+      "angle_range": "atan2-derived approximately [-180,180] degrees",
+      "angle_sign_convention": "existing _rotation_to_euler convention preserved",
+      "camera_matrix": [
+        [
+          1920.0,
+          0.0,
+          544.0
+        ],
+        [
+          0.0,
+          1920.0,
+          960.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "distortion_coefficients": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "image_point_count": 5,
+      "initial_solver": "cv2.SOLVEPNP_SQPNP",
+      "object_point_count": 5,
+      "refinement_method": "cv2.SOLVEPNP_ITERATIVE(useExtrinsicGuess=True)",
+      "refinement_used": true,
+      "reprojection_error_px": 3.4563774690343996,
+      "rotation_order": "existing _rotation_to_euler order preserved",
+      "rvec": [
+        -2.5525286224715495,
+        0.19831725776199063,
+        -0.4302551187301234
+      ],
+      "synthetic_landmarks_added": 0,
+      "tvec": [
+        24.926992199743296,
+        -661.0408397659754,
+        2219.3106220389795
+      ]
+    },
+    "source_decode_color_order": "RGB"
+  },
+  "imagePath": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/gw-p4-t2-denoise-pilot-20260825-r7/restoration-artifacts/face_restore_win_sd15_ipadapter_v2_candidate_d25-b03/attempt-1/composite.png",
+  "imageSha256": "a73769d57b930fec8b97492a032b62f160631f3d647b8f4ec4948c131344f219",
+  "preservationEvidence": [
+    {
+      "adapter_version": "stage-preservation-evidence-v1",
+      "applicability": "VERIFY_BY_PIXEL_PRESERVATION",
+      "candidate_sha256": "a73769d57b930fec8b97492a032b62f160631f3d647b8f4ec4948c131344f219",
+      "changed_percentage": 0.0,
+      "changed_protected_pixel_count": 0,
+      "formula": "100 * (1 - changed_protected_pixels / protected_pixel_count)",
+      "mask_sha256": "08835221c67ac8df106bc9ee80e63996ca5e9b0e5b72777ddfdb7495e4326870",
+      "max_rgb_delta": 0,
+      "mean_rgb_delta": 0.0,
+      "pixel_validator_version": "unchanged_outside_mask-v1",
+      "preservation_score": 100.0,
+      "protected_pixel_count": 2061266,
+      "region": "anatomy",
+      "source_sha256": "098e6816fc21631fe4cd3bbd34b718f04569f8684f5347ab78525faf7ce07d87",
+      "stage": "post_identity_restoration",
+      "status": "PASS",
+      "threshold": 90.0
+    },
+    {
+      "adapter_version": "stage-preservation-evidence-v1",
+      "applicability": "VERIFY_BY_PIXEL_PRESERVATION",
+      "candidate_sha256": "a73769d57b930fec8b97492a032b62f160631f3d647b8f4ec4948c131344f219",
+      "changed_percentage": 0.0,
+      "changed_protected_pixel_count": 0,
+      "formula": "100 * (1 - changed_protected_pixels / protected_pixel_count)",
+      "mask_sha256": "08835221c67ac8df106bc9ee80e63996ca5e9b0e5b72777ddfdb7495e4326870",
+      "max_rgb_delta": 0,
+      "mean_rgb_delta": 0.0,
+      "pixel_validator_version": "unchanged_outside_mask-v1",
+      "preservation_score": 100.0,
+      "protected_pixel_count": 2061266,
+      "region": "outfit",
+      "source_sha256": "098e6816fc21631fe4cd3bbd34b718f04569f8684f5347ab78525faf7ce07d87",
+      "stage": "post_identity_restoration",
+      "status": "PASS",
+      "threshold": 90.0
+    },
+    {
+      "adapter_version": "stage-preservation-evidence-v1",
+      "applicability": "VERIFY_BY_PIXEL_PRESERVATION",
+      "candidate_sha256": "a73769d57b930fec8b97492a032b62f160631f3d647b8f4ec4948c131344f219",
+      "changed_percentage": 0.0,
+      "changed_protected_pixel_count": 0,
+      "formula": "100 * (1 - changed_protected_pixels / protected_pixel_count)",
+      "mask_sha256": "08835221c67ac8df106bc9ee80e63996ca5e9b0e5b72777ddfdb7495e4326870",
+      "max_rgb_delta": 0,
+      "mean_rgb_delta": 0.0,
+      "pixel_validator_version": "unchanged_outside_mask-v1",
+      "preservation_score": 100.0,
+      "protected_pixel_count": 2061266,
+      "region": "environment",
+      "source_sha256": "098e6816fc21631fe4cd3bbd34b718f04569f8684f5347ab78525faf7ce07d87",
+      "stage": "post_identity_restoration",
+      "status": "PASS",
+      "threshold": 90.0
+    }
+  ],
+  "regionalGate": {
+    "authority": "image_studio_runtime.action_composite.workflow_v2.RegionalGate",
+    "failures": [
+      "global_composite_below_threshold"
+    ],
+    "passed": false
+  },
+  "scores": {
+    "provenance": {
+      "anatomy": {
+        "adapter_version": "stage-preservation-evidence-v1",
+        "applicability": "VERIFY_BY_PIXEL_PRESERVATION",
+        "candidate_sha256": "a73769d57b930fec8b97492a032b62f160631f3d647b8f4ec4948c131344f219",
+        "changed_percentage": 0.0,
+        "changed_protected_pixel_count": 0,
+        "formula": "100 * (1 - changed_protected_pixels / protected_pixel_count)",
+        "mask_sha256": "08835221c67ac8df106bc9ee80e63996ca5e9b0e5b72777ddfdb7495e4326870",
+        "max_rgb_delta": 0,
+        "mean_rgb_delta": 0.0,
+        "pixel_validator_version": "unchanged_outside_mask-v1",
+        "preservation_score": 100.0,
+        "protected_pixel_count": 2061266,
+        "region": "anatomy",
+        "source_sha256": "098e6816fc21631fe4cd3bbd34b718f04569f8684f5347ab78525faf7ce07d87",
+        "stage": "post_identity_restoration",
+        "status": "PASS",
+        "threshold": 90.0
+      },
+      "environment": {
+        "adapter_version": "stage-preservation-evidence-v1",
+        "applicability": "VERIFY_BY_PIXEL_PRESERVATION",
+        "candidate_sha256": "a73769d57b930fec8b97492a032b62f160631f3d647b8f4ec4948c131344f219",
+        "changed_percentage": 0.0,
+        "changed_protected_pixel_count": 0,
+        "formula": "100 * (1 - changed_protected_pixels / protected_pixel_count)",
+        "mask_sha256": "08835221c67ac8df106bc9ee80e63996ca5e9b0e5b72777ddfdb7495e4326870",
+        "max_rgb_delta": 0,
+        "mean_rgb_delta": 0.0,
+        "pixel_validator_version": "unchanged_outside_mask-v1",
+        "preservation_score": 100.0,
+        "protected_pixel_count": 2061266,
+        "region": "environment",
+        "source_sha256": "098e6816fc21631fe4cd3bbd34b718f04569f8684f5347ab78525faf7ce07d87",
+        "stage": "post_identity_restoration",
+        "status": "PASS",
+        "threshold": 90.0
+      },
+      "eyes_brows": {
+        "method_version": "regional-evidence-v1",
+        "producer": "validator_studio.face_validator",
+        "raw_evidence": {
+          "source": "face_report.category_scores.eyes_and_brows",
+          "value": 90.0
+        },
+        "resulting_score": 90.0,
+        "source_artifacts": [
+          "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/gw-p4-t2-denoise-pilot-20260825-r7/restoration-artifacts/face_restore_win_sd15_ipadapter_v2_candidate_d25-b03/attempt-1/composite.png"
+        ]
+      },
+      "geometry": {
+        "method_version": "geometry-evidence-v1",
+        "producer": "GeometryEvidenceProducer",
+        "raw_evidence": {
+          "bbox_iou": 0.956997,
+          "max_pose_delta_deg": 1.444324,
+          "pose_agreement": 0.991976,
+          "scale_agreement": 0.991525,
+          "weights": {
+            "bbox_iou": 0.5,
+            "pose_agreement": 0.3,
+            "scale_agreement": 0.2
+          }
+        },
+        "resulting_score": 97.44,
+        "source_artifacts": [
+          "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/benchmark-geometry/v2.1/B03/geometry_manifest.json",
+          "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/gw-p4-t2-denoise-pilot-20260825-r7/restoration-artifacts/face_restore_win_sd15_ipadapter_v2_candidate_d25-b03/attempt-1/composite.png"
+        ]
+      },
+      "global_composite": {
+        "method_version": "regional-evidence-v1",
+        "producer": "validator_studio.image_validator",
+        "raw_evidence": {
+          "source": "image_report.overall_score",
+          "value": 84.66
+        },
+        "resulting_score": 84.66,
+        "source_artifacts": [
+          "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/gw-p4-t2-denoise-pilot-20260825-r7/restoration-artifacts/face_restore_win_sd15_ipadapter_v2_candidate_d25-b03/attempt-1/composite.png"
+        ]
+      },
+      "identity": {
+        "method_version": "regional-evidence-v1",
+        "producer": "validator_studio.face_validator",
+        "raw_evidence": {
+          "source": "face_report.dna_match_score",
+          "value": 91.05
+        },
+        "resulting_score": 91.05,
+        "source_artifacts": [
+          "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/gw-p4-t2-denoise-pilot-20260825-r7/restoration-artifacts/face_restore_win_sd15_ipadapter_v2_candidate_d25-b03/attempt-1/composite.png"
+        ]
+      },
+      "outfit": {
+        "adapter_version": "stage-preservation-evidence-v1",
+        "applicability": "VERIFY_BY_PIXEL_PRESERVATION",
+        "candidate_sha256": "a73769d57b930fec8b97492a032b62f160631f3d647b8f4ec4948c131344f219",
+        "changed_percentage": 0.0,
+        "changed_protected_pixel_count": 0,
+        "formula": "100 * (1 - changed_protected_pixels / protected_pixel_count)",
+        "mask_sha256": "08835221c67ac8df106bc9ee80e63996ca5e9b0e5b72777ddfdb7495e4326870",
+        "max_rgb_delta": 0,
+        "mean_rgb_delta": 0.0,
+        "pixel_validator_version": "unchanged_outside_mask-v1",
+        "preservation_score": 100.0,
+        "protected_pixel_count": 2061266,
+        "region": "outfit",
+        "source_sha256": "098e6816fc21631fe4cd3bbd34b718f04569f8684f5347ab78525faf7ce07d87",
+        "stage": "post_identity_restoration",
+        "status": "PASS",
+        "threshold": 90.0
+      }
+    },
+    "scores": {
+      "anatomy": 100.0,
+      "environment": 100.0,
+      "eyes_brows": 90.0,
+      "geometry": 97.44,
+      "global_composite": 84.66,
+      "identity": 91.05,
+      "outfit": 100.0
+    },
+    "sources": {
+      "anatomy": "StagePreservationEvidenceAdapter.pixel-preservation-v1",
+      "environment": "StagePreservationEvidenceAdapter.pixel-preservation-v1",
+      "eyes_brows": "validator_studio.face_validator.category_scores.eyes_and_brows",
+      "geometry": "GeometryEvidenceProducer.geometry-evidence-v1",
+      "global_composite": "validator_studio.image_report.overall_score",
+      "identity": "validator_studio.face_report.dna_match_score",
+      "outfit": "StagePreservationEvidenceAdapter.pixel-preservation-v1"
+    }
+  },
+  "sourceArtifact": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/benchmark-geometry/v2.1/B03/geometry_manifest.json",
+  "sourceAttemptId": null,
+  "sourceRunId": null
+}

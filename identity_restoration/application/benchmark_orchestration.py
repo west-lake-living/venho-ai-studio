@@ -69,6 +69,19 @@ def _sha(path: Path) -> str:
     return _sha_bytes(path.read_bytes())
 
 
+def _scenario_profile_id(case: Mapping[str, Any]) -> str | None:
+    """Read an explicit benchmark authority mapping; never infer a scenario."""
+    authority = case.get("identityRestorationAuthority")
+    if authority is None:
+        return None
+    if not isinstance(authority, Mapping):
+        raise BenchmarkExecutionError("identityRestorationAuthority must be a mapping")
+    profile = authority.get("scenarioProfileId")
+    if not isinstance(profile, str) or not profile:
+        raise BenchmarkExecutionError("identityRestorationAuthority.scenarioProfileId is required")
+    return profile
+
+
 @dataclass(frozen=True)
 class BenchmarkCaseContext:
     case: Mapping[str, Any]
@@ -423,6 +436,7 @@ class BenchmarkValidatorAdapter:
         )
         image = validate_image(
             self.project, self.subject, image_path, provider=self.provider, samples=self.samples,
+            scenario_profile_id=_scenario_profile_id(context.case),
             raw_response_sink=persist_raw,
         )
         regional = {
@@ -562,6 +576,7 @@ class BenchmarkValidatorAdapter:
         image_report = report_from_image_observations(
             self.project, self.subject, image_path,
             [image_samples[index] for index in sorted(image_samples)], self.provider,
+            scenario_profile_id=_scenario_profile_id(context.case),
         )
         regional = {"identity": face_report.dna_match_score,
                     "eyes_brows": face_report.category_scores.get("eyes_and_brows"),

@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "task": "GW-P5-T5",
+  "status": "IN PROGRESS / HUMAN EXECUTION REQUIRED",
+  "smoke": "PENDING",
+  "soak": "PENDING",
+  "consecutive_successes": 0,
+  "runtime_statistics": {
+    "p50_ms": null,
+    "p95_ms": null,
+    "max_ms": null
+  },
+  "low_vram_failure_mode": "PENDING_SAFE_PREFLIGHT",
+  "gpu_job_budget": {"maximum_normal_jobs": 12, "executed": 0},
+  "cloud_calls": {"nano": 0, "gemini": 0, "openai_image": 0, "validator_provider": 0}
+}

@@ -1,0 +1,42 @@
+{
+  "task": "GW-P4-T2",
+  "stage": "C1/B03 offline truncation audit",
+  "network": "none",
+  "source": "raw/B03/sample-1.jsonl",
+  "httpStatus": null,
+  "candidateCount": null,
+  "candidateFinishReason": "FinishReason.MAX_TOKENS",
+  "candidateFinishMessage": null,
+  "candidatesTokenCount": 1173,
+  "thoughtsTokenCount": null,
+  "promptTokenCount": 5265,
+  "totalTokenCount": null,
+  "cachedContentTokenCount": null,
+  "responsePartsCount": null,
+  "responseParts": null,
+  "rawJsonTextByteLength": 1091,
+  "parserInputByteLength": 1091,
+  "parserError": {
+    "position": 1091,
+    "message": "Expecting property name enclosed in double quotes"
+  },
+  "rawJsonFinal200Chars": "didate image.\",\n      \"evidence\": \"There are no visible tattoos, glasses, heavy makeup, or plastic/doll-like skin textures. The features remain natural and distinct.\"\n    }\n  ],\n  \"weighted_scores\": {",
+  "endingShape": "mid-object",
+  "semanticRepair": false,
+  "classification": "T1",
+  "evidence": "Provider usage metadata and finish reason identify MAX_TOKENS; raw text ends while opening weighted_scores object.",
+  "transportFix": {
+    "maxOutputTokensChanged": true,
+    "old": 2048,
+    "new": 4096,
+    "provider": "gemini",
+    "model": "gemini-3.5-flash",
+    "authorityUnchanged": true,
+    "rubricUnchanged": true,
+    "thinkingLevelChanged": false
+  },
+  "offlineTests": {
+    "paidCallsDuringTests": 0,
+    "result": "29 passed"
+  }
+}

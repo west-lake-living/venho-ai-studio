@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0",
+  "task": "GW-P5-T3",
+  "status": "CLOSED / PASS",
+  "verification": {
+    "stale_lock_reclaim": "PASS",
+    "live_lock_fail_fast": "PASS",
+    "canonical_error": "ERR_GW_LEASE_UNAVAILABLE",
+    "new_attempt_id": "PASS",
+    "old_attempt_preserved": "PASS",
+    "namespace_collision": 0,
+    "lineage_parse": "PASS",
+    "test_count": "3/3"
+  },
+  "evidence": "tests/identity_restoration/infrastructure/test_gw_p5_t5_interrupted_job_retry.py",
+  "network_calls": 0,
+  "gpu_jobs": 0
+}

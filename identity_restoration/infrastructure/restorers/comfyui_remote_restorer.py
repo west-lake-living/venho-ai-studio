@@ -48,7 +48,11 @@ class ComfyUIRemoteRestorer:
                 retryable=False,
             )
         geometry_values = None
-        if self.workflow_id == "face_restore_win_sd15_ipadapter_v2":
+        # Experimental GW-P4-T2 identities are content-addressed descendants
+        # of v2 and must retain the same dimension-preserving graph binding.
+        # Candidate IDs may change; topology authority is established by the
+        # caller loading the derived v2 graph, not by dropping geometry values.
+        if self._is_dimension_preserving_workflow(self.workflow_id):
             width, height = crop_size
             geometry_values = {
                 "padRight": (8 - (width % 8)) % 8,
@@ -94,6 +98,12 @@ class ComfyUIRemoteRestorer:
     def execution_evidence(self) -> dict[str, Any]:
         """Return metadata from the last real backend call, never fabricate it."""
         return dict(self._last_execution_evidence)
+
+    @staticmethod
+    def _is_dimension_preserving_workflow(workflow_id: str) -> bool:
+        return workflow_id == "face_restore_win_sd15_ipadapter_v2" or workflow_id.startswith(
+            "face_restore_win_sd15_ipadapter_v2_candidate_"
+        )
 
     def free_memory(self) -> dict[str, Any]:
         """Use the already-approved ComfyUI resident-model release endpoint."""

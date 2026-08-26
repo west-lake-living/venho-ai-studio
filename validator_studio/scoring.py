@@ -236,7 +236,7 @@ def score_face_observation(observation: FaceValidationObservation, rubric: dict)
         weights = {category: 1 / len(FACE_DEFAULT_CATEGORIES) for category in FACE_DEFAULT_CATEGORIES}
 
     category_scores = {
-        category: float(observation.weighted_scores.get(category, 0))
+        category: float(observation.weighted_scores.model_dump().get(category, 0))
         for category in weights
     }
     category_scores = {

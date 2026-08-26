@@ -1,0 +1,33 @@
+{
+  "gates": [
+    {
+      "gate": "identity_structure",
+      "passed": true,
+      "reason": "The candidate's facial structure matches the reference image perfectly, maintaining the soft elongated oval face shape, delicate pointed chin, and soft feminine jawline.",
+      "evidence": "The bone structure, cheek fullness, and overall facial proportions are highly consistent with the reference image (A2 Front)."
+    },
+    {
+      "gate": "eye_ratio",
+      "passed": true,
+      "reason": "The eye proportions, spacing, and shape stay within the approved character design.",
+      "evidence": "The candidate exhibits the long almond eyes with horizontal emphasis and warm brown irises as defined in the Face DNA and shown in the reference."
+    },
+    {
+      "gate": "forbidden_traits",
+      "passed": true,
+      "reason": "No forbidden traits are present in the candidate image.",
+      "evidence": "The image features realistic skin texture without a plastic/doll-like appearance, natural makeup, and no visible tattoos or glasses."
+    }
+  ],
+  "weighted_scores": {
+    "facial_shape": 92.0,
+    "eyes_and_brows": 90.0,
+    "nose": 94.0,
+    "mouth_and_chin": 91.0,
+    "technical_quality": 85.0
+  },
+  "notes": [
+    "The candidate image is a full-body shot, which reduces the pixel density on the face compared to the close-up reference, but the facial features remain clearly identifiable and highly consistent.",
+    "The hairstyle is a high ponytail instead of the low bun, which is an approved variable under the character guidelines."
+  ]
+}

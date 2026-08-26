@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0",
+  "task": "GW-P4-T2E",
+  "candidate": "C1",
+  "case": "B03",
+  "preflight": {
+    "maxOutputTokens": 8192,
+    "thinkingConfig": {
+      "thinking_budget": 0,
+      "include_thoughts": false
+    },
+    "schema": "UNCHANGED"
+  },
+  "decision": "PROVIDER_BLOCKED",
+  "validSamples": 0,
+  "failureClass": "PROVIDER_RESPONSE_SCHEMA_FAIL",
+  "error": "Face weighted score keys mismatch. expected=['eyes_and_brows', 'facial_shape', 'mouth_and_chin', 'nose', 'technical_quality'] actual=[]",
+  "parser": "PARSED_UNEXPECTEDLY",
+  "rawBytes": 6217,
+  "rawSha256": "a8e7542464ef83d4cde51096aa68ed2bdd85de66868340aeb93439ef3507f880",
+  "scopeGuard": {
+    "B04": "NOT_CALLED",
+    "C2": "UNTOUCHED",
+    "C3": "UNTOUCHED",
+    "gpuJobs": 0,
+    "nanoCalls": 0
+  }
+}
