@@ -7464,13 +7464,13 @@
       "content_package_id": "b002127b-9d14-48d0-add4-fee5d4ae1fcb",
       "idempotency_key": "81df187dce3c061e963deb6c556ffd1f2496cf581824780827547122eb4d88d6",
       "platform": "threads",
-      "status": "PENDING_APPROVAL",
+      "status": "REJECTED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T04:16:53.236348+00:00",
-      "updated_at": "2026-08-13T04:16:53.246434+00:00",
+      "updated_at": "2026-08-26T09:25:46.106134+00:00",
       "content": {
         "title": "Ngày mưa thì ngồi lại lobby đọc nốt vài trang",
         "text": "Mưa Hà Nội có cái hay riêng: chẳng ai vội đi đâu nữa.\n\nCửa kính lối vào đọng nước, nhìn ra ngoài mọi thứ mờ đi một chút. Bên trong sảnh vẫn khô ráo, đèn để ở mức vừa đủ, không chói. Sàn gạch nâu có hoa văn tròn, mấy bộ ghế gỗ màu nâu đỏ sẫm, một bức tranh treo tường và quầy lễ tân ngay đó nếu cần hỏi gì. Không gian nhỏ thôi, đủ để ngồi đọc nốt chương sách đang dở mà không thấy trống trải. Ở Ven Hồ Hotel trên Nguyễn Đình Thi, ngày mưa thường trôi kiểu như vậy: chậm hơn dự định, và cũng không ai phàn nàn.\n\nNếu bạn tính ra Hà Nội vào mùa mưa, nhắn cho Ven Hồ Hotel để hỏi phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=threads&utm_medium=social&utm_content=pub-friday-threads-a4c20648",
@@ -7569,7 +7569,9 @@
         "claim_kill_switch_triggered": false,
         "content_brand_fit": 95,
         "content_overall_score": 93.42
-      }
+      },
+      "rejected_by": "hpham1504@gmail.com",
+      "rejected_reason": "Đã quá thời hạn"
     },
     {
       "publication_id": "pub-friday-zalo-4dd82a70",
