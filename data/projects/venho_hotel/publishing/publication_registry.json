@@ -7230,13 +7230,13 @@
       "content_package_id": "211a53ce-8e04-4271-973c-65fd12f35d4d",
       "idempotency_key": "baf0ff8e27ef1974d9df2d90b5780d2b913b7525735f55f75aa4c0b1c651a1f6",
       "platform": "facebook",
-      "status": "PENDING_APPROVAL",
+      "status": "REJECTED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T04:15:57.436966+00:00",
-      "updated_at": "2026-08-13T04:15:57.444169+00:00",
+      "updated_at": "2026-08-26T09:25:33.623952+00:00",
       "content": {
         "title": "Ngày Hà Nội mưa, sảnh nhỏ thành góc đọc sách",
         "text": "Có những ngày Hà Nội mưa từ sáng, và mọi kế hoạch đi bộ quanh Hồ Tây đều được gác lại.\n\nNhững lúc như vậy, sảnh Ven Hồ Hotel thường là nơi khách xuống ngồi.\n\nCửa kính nhìn thẳng ra phố Nguyễn Đình Thi. Mưa rơi bên ngoài, bên trong yên và khô ráo. Sàn gạch nâu với những vòng hoa văn tròn, mấy chiếc ghế gỗ màu nâu đỏ sẫm, vài bức tranh treo trên tường. Ánh sáng dịu, không quá vàng cũng không quá trắng, đủ để đọc mà không mỏi mắt.\n\nKhông gian này không lớn. Nhưng đúng vào một buổi chiều mưa, sự vừa vặn ấy lại hợp lý: đủ gần quầy lễ tân để hỏi han một câu, đủ riêng để ngồi im với cuốn sách mang theo trong vali.\n\nMưa ở Tây Hồ thường không kéo dài cả ngày. Đọc hết vài chương, ngẩng lên đã thấy phố ngoài kia sáng dần, mặt đường bắt đầu khô, và bạn lại có thể ra hồ đi bộ như dự định ban đầu.\n\nĐôi khi một chuyến đi Hà Nội đáng nhớ không nằm ở lịch trình kín, mà ở khoảng thời gian trống mà bạn không phải vội lấp đầy.\n\nNếu bạn đang tìm một khách sạn view Hồ Tây cho những ngày sắp tới, nhắn tin cho Ven Hồ Hotel để kiểm tra phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #KhachSanHoTay #HaNoi #WestLakeHanoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-friday-facebook-b91a3968",
@@ -7337,7 +7337,9 @@
         "claim_kill_switch_triggered": false,
         "content_brand_fit": 95,
         "content_overall_score": 90.87
-      }
+      },
+      "rejected_by": "hpham1504@gmail.com",
+      "rejected_reason": "Đã quá thời hạn"
     },
     {
       "publication_id": "pub-friday-instagram-8e75186d",
