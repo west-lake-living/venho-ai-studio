@@ -1047,6 +1047,14 @@ def run_daily_cycle(
     errors: list[dict[str, str]] = []
     for platform in platforms or DEFAULT_PLATFORMS:
         try:
+            # An earlier successful run (or a partial batch checkpoint) owns
+            # this scheduled platform already.  Do this before any new LLM
+            # call so a retry cannot create duplicate posts or spend again.
+            if slot_id is not None:
+                existing = registry.find_active_slot_platform(slot_id=slot_id, platform=platform)
+                if existing is not None:
+                    publications.append(existing)
+                    continue
             brief = _build_creative_brief(
                 topic, platform, day, project, scenario_registry,
                 scenario_key=scenario_key, prompt_rules=prompt_rules, recent_topics=recent_topics,
@@ -1106,8 +1114,14 @@ def run_daily_cycle(
                     "content_package_id": package["id"],
                     "idempotency_key": idempotency_key,
                     "platform": platform,
+                    "slot_id": slot_id,
                 }
             )
+            if reserved.get("duplicate"):
+                # A concurrent retry may have claimed the same slot after the
+                # preflight lookup. Never overwrite its package/content.
+                publications.append(reserved)
+                continue
             publication = registry.update(
                 reserved["publication_id"],
                 status="PENDING_APPROVAL",

@@ -9,6 +9,10 @@ from typing import Any, Iterable, Iterator
 
 
 TERMINAL_STATUSES = {"PUBLISHED", "FAILED", "NEEDS_OPERATOR"}
+# A rejected/stale draft is intentionally replaceable in the same cadence
+# slot. Every other state, including PUBLISHED and GATEWAY_ERROR, owns its
+# `(slot_id, platform)` and must not be duplicated by a retry or a second run.
+REPLACEABLE_SLOT_STATUSES = {"REJECTED", "STALE_APPROVAL", "FAILED"}
 
 
 class PublicationRegistry:
@@ -45,16 +49,22 @@ class PublicationRegistry:
     def reserve(self, command: dict[str, Any]) -> dict[str, Any]:
         idempotency_key = command["idempotency_key"]
         platform = command["platform"]
+        slot_id = command.get("slot_id")
         with self._locked():
             data = self.load()
             for item in data["publications"]:
                 if item.get("idempotency_key") == idempotency_key and item.get("platform") == platform:
                     return {**item, "duplicate": True}
+            if slot_id:
+                existing = self._active_slot_platform(data["publications"], slot_id=slot_id, platform=platform)
+                if existing is not None:
+                    return {**existing, "duplicate": True, "duplicate_reason": "slot_platform"}
             publication = {
                 "publication_id": command["publication_id"],
                 "content_package_id": command["content_package_id"],
                 "idempotency_key": idempotency_key,
                 "platform": platform,
+                "slot_id": slot_id,
                 "status": "RESERVED",
                 "gateway_status": None,
                 "platform_post_id": None,
@@ -66,6 +76,23 @@ class PublicationRegistry:
             data["publications"].append(publication)
             self._save(data)
             return publication
+
+    @staticmethod
+    def _active_slot_platform(
+        publications: Iterable[dict[str, Any]], *, slot_id: str, platform: str, exclude_publication_id: str | None = None
+    ) -> dict[str, Any] | None:
+        for item in publications:
+            if item.get("publication_id") == exclude_publication_id:
+                continue
+            if item.get("slot_id") != slot_id or item.get("platform") != platform:
+                continue
+            if item.get("status") not in REPLACEABLE_SLOT_STATUSES:
+                return item
+        return None
+
+    def find_active_slot_platform(self, *, slot_id: str, platform: str) -> dict[str, Any] | None:
+        """Return the one publication that currently owns a slot/platform."""
+        return self._active_slot_platform(self.load()["publications"], slot_id=slot_id, platform=platform)
 
     def claim(self, publication_id: str, *, expected_status: str | Iterable[str], claimed_status: str) -> dict[str, Any]:
         """Atomically test-and-set status inside the file lock.
@@ -102,6 +129,17 @@ class PublicationRegistry:
             data = self.load()
             for index, item in enumerate(data["publications"]):
                 if item.get("publication_id") == publication_id:
+                    slot_id = changes.get("slot_id", item.get("slot_id"))
+                    platform = changes.get("platform", item.get("platform"))
+                    if slot_id and platform:
+                        existing = self._active_slot_platform(
+                            data["publications"], slot_id=slot_id, platform=platform,
+                            exclude_publication_id=publication_id,
+                        )
+                        if existing is not None:
+                            raise ValueError(
+                                f"slot/platform already owned by {existing['publication_id']}: {slot_id}/{platform}"
+                            )
                     updated = {**item, **changes, "updated_at": datetime.now(timezone.utc).isoformat()}
                     data["publications"][index] = updated
                     self._save(data)

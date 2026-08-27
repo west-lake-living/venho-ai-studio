@@ -137,3 +137,28 @@ def test_duplicate_chaos_reserves_one_publication(tmp_path: Path) -> None:
 
     assert len(stored) == 1
     assert sum(1 for result in results if result.get("duplicate")) == 9
+
+
+def test_slot_platform_can_have_only_one_active_publication(tmp_path: Path) -> None:
+    registry = PublicationRegistry(data_root=tmp_path)
+    first = registry.reserve({
+        "publication_id": "slot-fb-a", "content_package_id": "pkg-a",
+        "idempotency_key": "idem-a", "platform": "facebook", "slot_id": "slot-2026-08-31-monday",
+    })
+    registry.update(first["publication_id"], status="PENDING_APPROVAL")
+
+    duplicate = registry.reserve({
+        "publication_id": "slot-fb-b", "content_package_id": "pkg-b",
+        "idempotency_key": "idem-b", "platform": "facebook", "slot_id": "slot-2026-08-31-monday",
+    })
+
+    assert duplicate["duplicate"] is True
+    assert duplicate["duplicate_reason"] == "slot_platform"
+    assert len(registry.load()["publications"]) == 1
+
+    registry.update(first["publication_id"], status="REJECTED")
+    replacement = registry.reserve({
+        "publication_id": "slot-fb-replacement", "content_package_id": "pkg-r",
+        "idempotency_key": "idem-r", "platform": "facebook", "slot_id": "slot-2026-08-31-monday",
+    })
+    assert replacement.get("duplicate") is None
