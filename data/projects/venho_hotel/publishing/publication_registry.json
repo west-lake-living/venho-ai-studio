@@ -11527,13 +11527,13 @@
       "content_package_id": "4b07861c-19a7-479d-bce6-3f4ea006ae42",
       "idempotency_key": "9381292523566de420c079165e8db78995e6af547571800812597d2191cfcf4f",
       "platform": "facebook",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-27T08:14:23.175420+00:00",
-      "updated_at": "2026-08-27T08:14:23.191303+00:00",
+      "updated_at": "2026-08-27T08:45:51.982958+00:00",
       "content": {
         "title": "Hồ Tây — tấm ảnh ai đến Hà Nội cũng muốn có",
         "text": "Ở Hà Nội có một mặt nước mà gần như ai ghé qua cũng muốn giữ lại một tấm ảnh.\n\nĐiều thú vị là Hồ Tây không có một \"góc check-in\" duy nhất. Cùng một đoạn bờ hồ, sáng và chiều đã là hai câu chuyện khác nhau.\n\nBuổi sáng, mặt hồ phẳng, sương còn vương trên nước. Người chạy bộ, người dắt chó đi dạo, mấy hàng ăn sáng mở cửa sớm. Ảnh chụp giờ này thường nhẹ và trong, ít người qua lại phía sau.\n\nGần trưa thì hồ sáng, gió mạnh hơn, hợp với những ai thích màu nước xanh và trời rộng.\n\nNhưng đông nhất vẫn là lúc cuối ngày. Hoàng hôn Hồ Tây kéo mọi người ra bờ nước: xe đạp đi chậm, các nhóm bạn ngồi bệt trên bậc đá, điện thoại giơ lên gần như cùng lúc khi nắng chuyển màu. Đoạn đường Nguyễn Đình Thi chạy sát mép hồ là một trong những nơi dễ bắt được khoảnh khắc đó nhất, chỉ cần đi bộ thong thả và không vội tìm góc đẹp.\n\nMẹo nhỏ cho lần đầu: đừng cố đi hết vòng hồ trong một buổi. Chọn một đoạn, đi bộ vài trăm mét, dừng lại ở một quán nước ven đường. Hồ Tây hợp với nhịp chậm hơn là nhịp đi cho kịp lịch trình.\n\nVen Hồ Hotel nằm ngay trên đường Nguyễn Đình Thi, nên với những ai muốn ở gần hồ để tiện dậy sớm hay ra bờ nước lúc chiều muộn, đây là một điểm dừng chân vừa tầm. Khách sạn nhỏ, sảnh gọn với quầy lễ tân gỗ và vài bức tranh treo tường, đủ để cất hành lý rồi bước ra hồ.\n\nBạn đang tính ghé Hà Nội dịp nào? Nhắn tin cho Ven Hồ Hotel để hỏi phòng trống cho những ngày đó nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanHoTay #HaNoi #KhamPhaHoTay\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-saturday-facebook-aa9dd1c8",
@@ -11637,6 +11637,28 @@
         "claim_kill_switch_triggered": false,
         "content_brand_fit": 95,
         "content_overall_score": 90.95
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-08-27T08:45:51.980338+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-4b07861c-19a7-479d-bce6-3f4ea006ae42",
+        "content_package_id": "4b07861c-19a7-479d-bce6-3f4ea006ae42",
+        "copy_version_ids": [
+          "brief-saturday-facebook-e7511e14-content_studio"
+        ],
+        "asset_version_ids": [
+          "2bb933fd-227a-4861-bc23-3da3c5949f52"
+        ],
+        "validation_snapshot_id": "3fc51bb9925487c66952a568eaef676c1b06e051eaf5c76b1d0947ec42e85109",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-saturday-facebook-e7511e14@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-08-27T08:45:51.980472+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "1f9643c8373d403d5cbbc379792d94a3f9e4565021f307b60277f9f48c747124",
+        "checksum": "4b221103ca423f7edbaef521c365ea613de2193283732ca795eece371af771de"
       }
     },
     {
@@ -11644,13 +11666,13 @@
       "content_package_id": "0292c860-7966-4343-b463-ff35635d1582",
       "idempotency_key": "4a852ecadd3cf2c73d2e1d864d287e7cacacd97d9954cf4aaeec08680a66b569",
       "platform": "instagram",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-27T08:15:01.791386+00:00",
-      "updated_at": "2026-08-27T08:15:01.807523+00:00",
+      "updated_at": "2026-08-27T08:45:51.982958+00:00",
       "content": {
         "title": "Hồ Tây: nơi ai đến Hà Nội cũng ghé một lần",
         "text": "Hồ Tây rộng đến mức mỗi người nhớ về nó theo một cách khác nhau.\n\nCó người nhớ đoạn đường Thanh Niên với hai mặt nước hai bên. Có người nhớ những chiếc xe đạp thả dốc buổi sáng, hàng nước ven đường, tiếng chuông xe lẫn trong gió.\n\nĐi hết một vòng hồ không phải chuyện của mười lăm phút. Và cũng vì thế, mỗi đoạn lại có một nhịp riêng: chỗ đông vui hàng quán, chỗ chỉ có cây và mặt nước.\n\nNếu bạn tới đây để tìm một khung hình, sẽ không thiếu góc để chụp. Nhưng thường thì tấm ảnh ưng nhất lại rơi vào lúc đã ngồi xuống, không còn vội đi tiếp nữa.\n\nĐoạn Nguyễn Đình Thi chạy sát mép nước là một trong những chỗ dễ chậm lại như vậy. Ven Hồ Hotel nằm ngay trên con đường này — đẩy cửa kính bước vào là quầy lễ tân gỗ nâu sẫm, sàn gạch hoa văn tròn, đèn sáng vừa đủ. Một chỗ để cất đồ, nghỉ chân, rồi lại ra hồ.\n\nBạn đang tính ngày nào ở Hà Nội? Nhắn cho Ven Hồ Hotel để xem còn phòng những hôm đó nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhamPhaHoTay #KhachSanHoTay #NguyenDinhThi #HaNoi #HanoiTravel",
@@ -11756,6 +11778,28 @@
         "claim_kill_switch_triggered": false,
         "content_brand_fit": 95,
         "content_overall_score": 93.7
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-08-27T08:45:51.980338+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-0292c860-7966-4343-b463-ff35635d1582",
+        "content_package_id": "0292c860-7966-4343-b463-ff35635d1582",
+        "copy_version_ids": [
+          "brief-saturday-instagram-df338e31-content_studio"
+        ],
+        "asset_version_ids": [
+          "2bb933fd-227a-4861-bc23-3da3c5949f52"
+        ],
+        "validation_snapshot_id": "05d510fba35569a2f5a6aff4deaaefc0a3d5d1ba367b0f2c135851c47751f53d",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-saturday-instagram-df338e31@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-08-27T08:45:51.980512+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "09d3f0e05f30097f1f844994535076eccf1899389d8437b63f5f4e0f6e111e69",
+        "checksum": "707d2fc51de41f14d1432b2691d9e3c1eb5e873b2bd42fd197dc900d37cf3242"
       }
     },
     {
