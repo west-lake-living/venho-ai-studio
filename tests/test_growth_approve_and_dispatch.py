@@ -104,6 +104,15 @@ def test_expire_stale_approvals_retires_only_past_unreviewed_slots(tmp_path: Pat
     assert registry.find(unslotted["publication_id"])["status"] == "PENDING_APPROVAL"
 
 
+def test_expire_stale_approvals_uses_ict_date_by_default(tmp_path: Path) -> None:
+    registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
+    overdue = _reserve_pending(registry, platform="facebook", slot_id="slot-2020-01-01-wednesday")
+
+    expired = expire_stale_approvals(project="venho_hotel", data_root=tmp_path, registry=registry)
+
+    assert [item["publication_id"] for item in expired] == [overdue]
+
+
 def test_approve_and_dispatch_calls_bridge_and_updates_status(tmp_path: Path) -> None:
     _past_shadow(tmp_path)
     registry = PublicationRegistry("venho_hotel", data_root=tmp_path)

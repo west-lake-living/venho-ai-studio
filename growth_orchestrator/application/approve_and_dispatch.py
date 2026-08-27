@@ -6,6 +6,7 @@ import tempfile
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Optional
+from zoneinfo import ZoneInfo
 
 from automation_studio.approval_snapshot import assert_dispatch_allowed, create_approval_snapshot
 from controlled_rollout.rollout_state_store import RolloutStateStore
