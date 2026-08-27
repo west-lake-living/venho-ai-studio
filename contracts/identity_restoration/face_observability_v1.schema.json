@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://venho.local/contracts/face_observability_v1/1.0",
+  "title": "Face Observability V1",
+  "description": "Measured face observability evidence used for Candidate v3 routing.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "detectorId",
+    "detectorVersion",
+    "faceCount",
+    "bbox",
+    "bboxWidthPx",
+    "bboxHeightPx",
+    "borderClipped",
+    "qualityTier",
+    "measurementConfigSha256"
+  ],
+  "properties": {
+    "detectorId": { "type": "string", "minLength": 1 },
+    "detectorVersion": { "type": "string", "minLength": 1 },
+    "faceCount": { "type": "integer", "minimum": 0 },
+    "bbox": { "$ref": "#/$defs/BoundingBox" },
+    "bboxWidthPx": { "type": "number", "minimum": 0 },
+    "bboxHeightPx": { "type": "number", "minimum": 0 },
+    "interocularDistancePx": { "type": "number", "minimum": 0 },
+    "landmarkConfidence": { "$ref": "#/$defs/NormalizedScore" },
+    "yawDeg": { "type": "number" },
+    "pitchDeg": { "type": "number" },
+    "rollDeg": { "type": "number" },
+    "sharpness": { "type": "number", "minimum": 0 },
+    "occlusionScore": { "$ref": "#/$defs/NormalizedScore" },
+    "borderClipped": { "type": "boolean" },
+    "qualityTier": {
+      "enum": ["HIGH", "LIMITED", "UNRECOVERABLE"]
+    },
+    "measurementConfigSha256": { "$ref": "#/$defs/Sha256" }
+  },
+  "$defs": {
+    "Sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "NormalizedScore": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "BoundingBox": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["left", "top", "right", "bottom"],
+      "properties": {
+        "left": { "type": "number", "minimum": 0 },
+        "top": { "type": "number", "minimum": 0 },
+        "right": { "type": "number", "minimum": 0 },
+        "bottom": { "type": "number", "minimum": 0 }
+      }
+    },
+    "RestorationRouteDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "reasons"],
+      "properties": {
+        "code": {
+          "enum": [
+            "ELIGIBLE",
+            "REVIEW_REQUIRED",
+            "BASE_REGEN_REQUIRED",
+            "REJECTED_INVALID_INPUT"
+          ]
+        },
+        "reasons": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}

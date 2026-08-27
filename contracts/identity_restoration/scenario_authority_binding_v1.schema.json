@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://venho.local/contracts/scenario_authority_binding_v1/1.0",
+  "title": "Scenario Authority Binding V1",
+  "description": "Approved scenario-specific authority and image-QC profile binding.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "bindingId",
+    "scenarioId",
+    "imageQcProfileId",
+    "imageQcProfileSha256",
+    "allowedExclusions",
+    "approvedBy",
+    "approvedAt",
+    "status"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "bindingId": { "type": "string", "minLength": 1 },
+    "scenarioId": { "type": "string", "minLength": 1 },
+    "imageQcProfileId": { "type": "string", "minLength": 1 },
+    "imageQcProfileSha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "allowedExclusions": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "shot_distance",
+          "camera_angle",
+          "hairstyle",
+          "pose",
+          "outfit",
+          "background"
+        ]
+      }
+    },
+    "approvedBy": { "type": "string", "minLength": 1 },
+    "approvedAt": { "type": "string", "format": "date-time" },
+    "status": { "enum": ["APPROVED", "RETIRED"] }
+  }
+}

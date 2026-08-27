@@ -1,0 +1,302 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://venho.local/contracts/candidate_v3_result_v1/1.0",
+  "title": "Candidate V3 Restoration Result V1",
+  "description": "Complete immutable Candidate v3 restoration evidence and QC result.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "candidateProfileId",
+    "candidateVersion",
+    "effectiveConfigSha256",
+    "inputArtifact",
+    "identityPack",
+    "scenarioAuthority",
+    "route",
+    "faceObservability",
+    "transforms",
+    "artifacts",
+    "quality",
+    "promotionEligibility"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "candidateProfileId": { "type": "string", "minLength": 1 },
+    "candidateVersion": { "type": "string", "minLength": 1 },
+    "effectiveConfigSha256": { "$ref": "#/$defs/Sha256" },
+    "inputArtifact": { "$ref": "#/$defs/ArtifactRef" },
+    "identityPack": { "$ref": "#/$defs/IdentityPackRef" },
+    "scenarioAuthority": { "$ref": "#/$defs/AuthorityRef" },
+    "route": { "$ref": "#/$defs/RestorationRouteDecision" },
+    "faceObservability": { "$ref": "#/$defs/FaceObservability" },
+    "transforms": { "$ref": "#/$defs/CanonicalFaceTransform" },
+    "artifacts": { "$ref": "#/$defs/RestorationArtifactsV3" },
+    "quality": { "$ref": "#/$defs/RestorationQualityBundleV3" },
+    "promotionEligibility": {
+      "enum": ["PASS", "FAIL", "UNVALIDATED"]
+    }
+  },
+  "$defs": {
+    "Sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "ArtifactRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "width", "height", "mimeType"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "sha256": { "$ref": "#/$defs/Sha256" },
+        "width": { "type": "integer", "minimum": 1 },
+        "height": { "type": "integer", "minimum": 1 },
+        "mimeType": { "enum": ["image/png", "application/json"] }
+      }
+    },
+    "IdentityPackRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "sha256", "selectedReferenceIds"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "sha256": { "$ref": "#/$defs/Sha256" },
+        "selectedReferenceIds": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "AuthorityRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "sha256"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "sha256": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "BoundingBox": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["left", "top", "right", "bottom"],
+      "properties": {
+        "left": { "type": "number", "minimum": 0 },
+        "top": { "type": "number", "minimum": 0 },
+        "right": { "type": "number", "minimum": 0 },
+        "bottom": { "type": "number", "minimum": 0 }
+      }
+    },
+    "RestorationRouteDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "reasons"],
+      "properties": {
+        "code": {
+          "enum": [
+            "ELIGIBLE",
+            "REVIEW_REQUIRED",
+            "BASE_REGEN_REQUIRED",
+            "REJECTED_INVALID_INPUT"
+          ]
+        },
+        "reasons": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "FaceObservability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "detectorId",
+        "detectorVersion",
+        "faceCount",
+        "bbox",
+        "bboxWidthPx",
+        "bboxHeightPx",
+        "borderClipped",
+        "qualityTier",
+        "measurementConfigSha256"
+      ],
+      "properties": {
+        "detectorId": { "type": "string", "minLength": 1 },
+        "detectorVersion": { "type": "string", "minLength": 1 },
+        "faceCount": { "type": "integer", "minimum": 0 },
+        "bbox": { "$ref": "#/$defs/BoundingBox" },
+        "bboxWidthPx": { "type": "number", "minimum": 0 },
+        "bboxHeightPx": { "type": "number", "minimum": 0 },
+        "interocularDistancePx": { "type": "number", "minimum": 0 },
+        "landmarkConfidence": { "$ref": "#/$defs/NormalizedScore" },
+        "yawDeg": { "type": "number" },
+        "pitchDeg": { "type": "number" },
+        "rollDeg": { "type": "number" },
+        "sharpness": { "type": "number", "minimum": 0 },
+        "occlusionScore": { "$ref": "#/$defs/NormalizedScore" },
+        "borderClipped": { "type": "boolean" },
+        "qualityTier": { "enum": ["HIGH", "LIMITED", "UNRECOVERABLE"] },
+        "measurementConfigSha256": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "NormalizedScore": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "CanonicalFaceTransform": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "sourceImage",
+        "canvasCropBox",
+        "modelSize",
+        "landmarkSet",
+        "forwardMatrix3x3",
+        "inverseMatrix3x3",
+        "borderMode",
+        "interpolation",
+        "transformSha256"
+      ],
+      "properties": {
+        "version": { "const": "1.0" },
+        "sourceImage": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["width", "height", "sha256"],
+          "properties": {
+            "width": { "type": "integer", "minimum": 1 },
+            "height": { "type": "integer", "minimum": 1 },
+            "sha256": { "$ref": "#/$defs/Sha256" }
+          }
+        },
+        "canvasCropBox": { "$ref": "#/$defs/BoundingBox" },
+        "modelSize": { "const": 512 },
+        "landmarkSet": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["x", "y", "confidence"],
+            "properties": {
+              "x": { "type": "number", "minimum": 0 },
+              "y": { "type": "number", "minimum": 0 },
+              "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+            }
+          }
+        },
+        "forwardMatrix3x3": { "$ref": "#/$defs/Matrix3x3" },
+        "inverseMatrix3x3": { "$ref": "#/$defs/Matrix3x3" },
+        "borderMode": { "const": "REFLECT_101" },
+        "interpolation": { "const": "LANCZOS4" },
+        "transformSha256": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "Matrix3x3": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "items": { "type": "number" }
+    },
+    "RestorationArtifactsV3": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "canonicalInput",
+        "canonicalEditableMask",
+        "canonicalFeatherMask",
+        "restoredCanonicalCrop",
+        "inverseWarpedCrop",
+        "finalComposite",
+        "fullCanvasEditableMask"
+      ],
+      "properties": {
+        "canonicalInput": { "$ref": "#/$defs/ArtifactRef" },
+        "canonicalEditableMask": { "$ref": "#/$defs/ArtifactRef" },
+        "canonicalFeatherMask": { "$ref": "#/$defs/ArtifactRef" },
+        "restoredCanonicalCrop": { "$ref": "#/$defs/ArtifactRef" },
+        "inverseWarpedCrop": { "$ref": "#/$defs/ArtifactRef" },
+        "finalComposite": { "$ref": "#/$defs/ArtifactRef" },
+        "fullCanvasEditableMask": { "$ref": "#/$defs/ArtifactRef" }
+      }
+    },
+    "RestorationQualityBundleV3": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["faceLocal", "boundary", "scenarioGlobal", "merged"],
+      "properties": {
+        "faceLocal": { "$ref": "#/$defs/ScopedQcResult" },
+        "boundary": { "$ref": "#/$defs/ScopedQcResult" },
+        "scenarioGlobal": { "$ref": "#/$defs/ScopedQcResult" },
+        "merged": { "$ref": "#/$defs/MergedQcResult" }
+      }
+    },
+    "MergedQcResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "failedScopes", "decisiveReasons"],
+      "properties": {
+        "status": {
+          "enum": ["PASS", "FAIL", "UNVALIDATED", "NEEDS_REVIEW"]
+        },
+        "failedScopes": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": ["FACE_LOCAL", "BOUNDARY", "SCENARIO_GLOBAL"]
+          }
+        },
+        "decisiveReasons": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "ScopedQcResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "validatorId",
+        "validatorConfigSha256",
+        "authorityRef",
+        "report",
+        "measuredAt",
+        "scores",
+        "binaryGates"
+      ],
+      "properties": {
+        "status": {
+          "enum": ["PASS", "FAIL", "UNVALIDATED", "NEEDS_REVIEW"]
+        },
+        "validatorId": { "type": "string", "minLength": 1 },
+        "validatorConfigSha256": { "$ref": "#/$defs/Sha256" },
+        "authorityRef": { "$ref": "#/$defs/AuthorityRef" },
+        "report": { "$ref": "#/$defs/ArtifactRef" },
+        "measuredAt": { "type": "string", "format": "date-time" },
+        "scores": {
+          "type": "object",
+          "additionalProperties": { "type": "number" }
+        },
+        "binaryGates": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/BinaryGate" }
+        }
+      }
+    },
+    "BinaryGate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "passed"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "passed": { "type": "boolean" },
+        "reason": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

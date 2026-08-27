@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://venho.local/contracts/canonical_face_transform_v1/1.0",
+  "title": "Canonical Face Transform V1",
+  "description": "Verified five-point transform between canvas space and 512px model space.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "sourceImage",
+    "canvasCropBox",
+    "modelSize",
+    "landmarkSet",
+    "forwardMatrix3x3",
+    "inverseMatrix3x3",
+    "borderMode",
+    "interpolation",
+    "transformSha256"
+  ],
+  "properties": {
+    "version": { "const": "1.0" },
+    "sourceImage": { "$ref": "#/$defs/SourceImage" },
+    "canvasCropBox": { "$ref": "#/$defs/BoundingBox" },
+    "modelSize": { "const": 512 },
+    "landmarkSet": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": { "$ref": "#/$defs/Landmark" }
+    },
+    "forwardMatrix3x3": { "$ref": "#/$defs/Matrix3x3" },
+    "inverseMatrix3x3": { "$ref": "#/$defs/Matrix3x3" },
+    "borderMode": { "const": "REFLECT_101" },
+    "interpolation": { "const": "LANCZOS4" },
+    "transformSha256": { "$ref": "#/$defs/Sha256" }
+  },
+  "$defs": {
+    "Sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "SourceImage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["width", "height", "sha256"],
+      "properties": {
+        "width": { "type": "integer", "minimum": 1 },
+        "height": { "type": "integer", "minimum": 1 },
+        "sha256": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "BoundingBox": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["left", "top", "right", "bottom"],
+      "properties": {
+        "left": { "type": "number", "minimum": 0 },
+        "top": { "type": "number", "minimum": 0 },
+        "right": { "type": "number", "minimum": 0 },
+        "bottom": { "type": "number", "minimum": 0 }
+      }
+    },
+    "Landmark": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["x", "y", "confidence"],
+      "properties": {
+        "x": { "type": "number", "minimum": 0 },
+        "y": { "type": "number", "minimum": 0 },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "Matrix3x3": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "items": { "type": "number" }
+    }
+  }
+}
