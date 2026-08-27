@@ -6,10 +6,12 @@ import re
 from typing import Optional
 
 from growth_orchestrator.application.daily_cycle import run_daily_cycle
+from growth_orchestrator.application.manage_slots import ensure_slot_horizon
 from publishing_gateway.publication_registry import PublicationRegistry
 from shared.jobs.slot_store import SlotStore
 
 _SLOT_PATTERN = re.compile(r"^slot-(\d{4}-\d{2}-\d{2})-([a-z]+)$")
+REPLACEABLE_STATUSES = {"REJECTED", "STALE_APPROVAL"}
 
 
 class ReplacementBatchError(RuntimeError):
@@ -24,30 +26,63 @@ class ReplacementBatchError(RuntimeError):
         )
 
 
+def _replacement_slot(
+    publication: dict,
+    *,
+    project: str,
+    data_root: Path,
+    slot_store: SlotStore,
+    today: date,
+) -> tuple[str, str]:
+    """Keep a future rejection in place; move an expired approval forward.
+
+    A stale approval's original publishing time has already passed, so it
+    must never be regenerated into that historical slot.  It consumes the
+    nearest still-OPEN cadence slot instead, preserving the normal calendar
+    rather than creating an unscheduled catch-up post.
+    """
+    match = _SLOT_PATTERN.match(publication.get("slot_id") or "")
+    if match is None:
+        raise ValueError(f"Publication {publication['publication_id']} has no replaceable cadence slot")
+    slot_date, day = match.groups()
+    if date.fromisoformat(slot_date) >= today:
+        return slot_date, day
+
+    ensure_slot_horizon(project=project, data_root=data_root, slot_store=slot_store, start_date=today)
+    future_open_slots = [slot for slot in slot_store.list_all(status="OPEN") if date.fromisoformat(slot.slot_date) >= today]
+    if not future_open_slots:
+        raise ValueError(f"Publication {publication['publication_id']} has no future OPEN cadence slot")
+    target = future_open_slots[0]
+    target_match = _SLOT_PATTERN.match(target.slot_id)
+    if target_match is None:  # defensive: SlotStore rows must use cadence ids
+        raise ValueError(f"Replacement slot {target.slot_id} is not a cadence slot")
+    return target_match.group(1), target_match.group(2)
+
+
 def replace_rejected_publication(
     publication_id: str,
     *,
     project: str = "venho_hotel",
     data_root: Path = Path("data/projects"),
     registry: Optional[PublicationRegistry] = None,
+    today: Optional[date] = None,
 ) -> dict:
-    """Generate a fresh, separately-reviewable draft for one rejected row."""
+    """Generate a fresh review draft for a rejected or expired approval."""
     registry = registry or PublicationRegistry(project, data_root=data_root)
     rejected = registry.find(publication_id)
     if rejected is None:
         raise KeyError(f"Unknown publication_id: {publication_id}")
-    if rejected.get("status") != "REJECTED":
-        raise ValueError(f"Publication {publication_id} is not REJECTED")
+    if rejected.get("status") not in REPLACEABLE_STATUSES:
+        raise ValueError(f"Publication {publication_id} is not rejected or stale")
     if rejected.get("replacement_publication_id"):
         replacement = registry.find(rejected["replacement_publication_id"])
         return replacement or rejected
 
-    match = _SLOT_PATTERN.match(rejected.get("slot_id") or "")
-    if match is None:
-        raise ValueError(f"Publication {publication_id} has no replaceable cadence slot")
-    slot_date, day = match.groups()
-    if date.fromisoformat(slot_date) < date.today():
-        raise ValueError(f"Publication {publication_id} belongs to an expired slot")
+    cutoff = today or date.today()
+    slot_store = SlotStore(db_path=data_root / project / "growth" / "growth.db")
+    slot_date, day = _replacement_slot(
+        rejected, project=project, data_root=data_root, slot_store=slot_store, today=cutoff
+    )
 
     result = run_daily_cycle(
         day,
@@ -55,7 +90,7 @@ def replace_rejected_publication(
         platforms=[rejected["platform"]],
         data_root=data_root,
         image_validation_provider="openai",
-        slot_store=SlotStore(db_path=data_root / project / "growth" / "growth.db"),
+        slot_store=slot_store,
         slot_date=slot_date,
     )
     if result.errors or len(result.publications) != 1:
@@ -68,16 +103,16 @@ def replace_rejected_publication(
 
 
 def replace_due_rejections(
-    *, project: str = "venho_hotel", data_root: Path = Path("data/projects"), limit: int = 8
+    *, project: str = "venho_hotel", data_root: Path = Path("data/projects"), limit: int = 8, today: Optional[date] = None,
 ) -> list[dict]:
     registry = PublicationRegistry(project, data_root=data_root)
+    cutoff = today or date.today()
     rows = registry.load()["publications"]
     candidates = [
         row for row in rows
-        if row.get("status") == "REJECTED"
+        if row.get("status") in REPLACEABLE_STATUSES
         and not row.get("replacement_publication_id")
         and _SLOT_PATTERN.match(row.get("slot_id") or "")
-        and date.fromisoformat(_SLOT_PATTERN.match(row["slot_id"]).group(1)) >= date.today()
     ]
     # A historical weekly-cycle bug could leave two rejected rows for the
     # same platform in one cadence slot.  The slot needs one replacement, not
@@ -94,7 +129,7 @@ def replace_due_rejections(
         row = group[0]
         try:
             replacement = replace_rejected_publication(
-                row["publication_id"], project=project, data_root=data_root, registry=registry
+                row["publication_id"], project=project, data_root=data_root, registry=registry, today=cutoff
             )
             publications.append(replacement)
             for duplicate in group[1:]:

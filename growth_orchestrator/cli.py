@@ -355,7 +355,7 @@ def replace_rejected_cmd(
     publication_id: Optional[str] = typer.Option(None, "--publication-id"),
     project: str = typer.Option("venho_hotel"),
 ) -> None:
-    """Regenerate rejected future-slot drafts; replacements require approval."""
+    """Regenerate rejected drafts and move expired approvals to a future slot."""
     try:
         publications = (
             [replace_rejected_publication(publication_id, project=project)]

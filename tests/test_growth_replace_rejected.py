@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 
 import growth_orchestrator.application.replace_rejected as replacement_module
 from growth_orchestrator.application.daily_cycle import DailyCycleResult
@@ -100,3 +100,31 @@ def test_replace_due_rejections_creates_one_replacement_per_slot_platform(tmp_pa
     assert calls == ["duplicate-a"]
     assert result == [{"publication_id": "one-replacement", "status": "PENDING_APPROVAL"}]
     assert registry.find("duplicate-b")["replacement_publication_id"] == "one-replacement"
+
+
+def test_stale_approval_is_replaced_in_the_nearest_future_open_slot(tmp_path, monkeypatch) -> None:
+    today = date(2026, 8, 27)
+    registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
+    old = registry.reserve({
+        "publication_id": "stale", "content_package_id": "stale-pkg",
+        "idempotency_key": "stale-idem", "platform": "facebook",
+    })
+    registry.update(old["publication_id"], status="STALE_APPROVAL", slot_id="slot-2026-08-24-monday")
+
+    calls = []
+
+    def fake_cycle(day, **kwargs):
+        calls.append((day, kwargs["slot_date"]))
+        new = registry.reserve({
+            "publication_id": "future", "content_package_id": "future-pkg",
+            "idempotency_key": "future-idem", "platform": kwargs["platforms"][0],
+        })
+        registry.update(new["publication_id"], status="PENDING_APPROVAL", slot_id=f"slot-{kwargs['slot_date']}-{day}")
+        return DailyCycleResult(day=day, topic={"topic": "replacement"}, publications=[registry.find("future")])
+
+    monkeypatch.setattr(replacement_module, "run_daily_cycle", fake_cycle)
+    result = replacement_module.replace_due_rejections(data_root=tmp_path, today=today)
+
+    assert result[0]["publication_id"] == "future"
+    assert calls == [("friday", (today + timedelta(days=1)).isoformat())]
+    assert registry.find("stale")["replacement_publication_id"] == "future"
