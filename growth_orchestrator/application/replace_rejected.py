@@ -6,9 +6,17 @@ import re
 from typing import Optional
 
 from growth_orchestrator.application.daily_cycle import run_daily_cycle
-from growth_orchestrator.application.manage_slots import ensure_slot_horizon
+from growth_orchestrator.application.manage_slots import ensure_slot_horizon, load_cadence_policy
 from publishing_gateway.publication_registry import PublicationRegistry
 from shared.jobs.slot_store import SlotStore
+
+# Steady-state operation drafts content for the whole cadence horizon almost
+# immediately (OPEN -> PENDING_APPROVAL), so a plain ensure_slot_horizon()
+# call at the default horizon virtually never finds an OPEN slot -- every
+# slot in range is already spoken for. Extend the search this many times
+# (each by one more full horizon) before giving up, so a replacement can
+# still land somewhere reasonably close instead of failing forever.
+_MAX_HORIZON_EXTENSIONS = 8
 
 _SLOT_PATTERN = re.compile(r"^slot-(\d{4}-\d{2}-\d{2})-([a-z]+)$")
 REPLACEABLE_STATUSES = {"REJECTED", "STALE_APPROVAL"}
@@ -48,10 +56,24 @@ def _replacement_slot(
     if date.fromisoformat(slot_date) >= today:
         return slot_date, day
 
-    ensure_slot_horizon(project=project, data_root=data_root, slot_store=slot_store, start_date=today)
-    future_open_slots = [slot for slot in slot_store.list_all(status="OPEN") if date.fromisoformat(slot.slot_date) >= today]
+    base_horizon = load_cadence_policy(project)["slot_creation_horizon_days"]
+    horizon_days = base_horizon
+    future_open_slots: list = []
+    for _ in range(_MAX_HORIZON_EXTENSIONS):
+        ensure_slot_horizon(
+            project=project, data_root=data_root, slot_store=slot_store, start_date=today, horizon_days=horizon_days
+        )
+        future_open_slots = [
+            slot for slot in slot_store.list_all(status="OPEN") if date.fromisoformat(slot.slot_date) >= today
+        ]
+        if future_open_slots:
+            break
+        horizon_days += base_horizon
     if not future_open_slots:
-        raise ValueError(f"Publication {publication['publication_id']} has no future OPEN cadence slot")
+        raise ValueError(
+            f"Publication {publication['publication_id']} has no future OPEN cadence slot "
+            f"even after extending the horizon to {horizon_days} days"
+        )
     target = future_open_slots[0]
     target_match = _SLOT_PATTERN.match(target.slot_id)
     if target_match is None:  # defensive: SlotStore rows must use cadence ids

@@ -1,0 +1,48 @@
+{
+  "policyId": "restoration-v3-quality-policy-1",
+  "version": "1.0",
+  "approvedBy": "Harry Pham",
+  "approvedAt": "2026-08-27",
+  "faceLocal": {
+    "minimumScore": 90,
+    "required": true
+  },
+  "seamRing": {
+    "radiusPx": 3,
+    "symmetric": true,
+    "connectivity": 8,
+    "distanceMetric": "EUCLIDEAN",
+    "imageBorder": "IGNORE",
+    "featherRedefinesBoundary": false
+  },
+  "boundaryMetrics": {
+    "pixelLockOutsideMask": {
+      "required": "EXACT_ZERO"
+    },
+    "maxChannelSeamDelta": {
+      "passMax": 32,
+      "needsReviewMax": 48
+    },
+    "meanSeamDelta": {
+      "passMax": 12,
+      "needsReviewMax": 20
+    },
+    "localTextureDiscontinuity": {
+      "formula": "abs(mean_gradient_inner - mean_gradient_outer) / max(mean_gradient_outer, 1.0)",
+      "passMax": 0.25,
+      "needsReviewMax": 0.4,
+      "gradient": "GRAYSCALE_SOBEL_MAGNITUDE"
+    }
+  },
+  "boundaryStatusMapping": {
+    "pixelLockFailure": "FAIL",
+    "anyMetricFail": "FAIL",
+    "anyMetricNeedsReview": "NEEDS_REVIEW",
+    "allRequiredMetricsPass": "PASS",
+    "otherwise": "UNVALIDATED"
+  },
+  "precedence": ["FAIL", "UNVALIDATED", "NEEDS_REVIEW", "PASS"],
+  "requiredScopes": ["FACE_LOCAL", "BOUNDARY", "SCENARIO_GLOBAL"],
+  "missingEvidence": "UNVALIDATED",
+  "policySha256": "49ff52fd48147c10ecd4076a9e0995bfa3eae2162010a483cef377f1066f2025"
+}

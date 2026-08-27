@@ -1,5 +1,55 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-08-27 — Candidate v3 Phase 4 closure
+
+Human authority approved `BOUNDARY-B`: a symmetric 3 px seam ring around the
+full-canvas editable-mask edge, 8-connected Euclidean geometry, image-border
+portions ignored, and feathering unable to redefine the hard boundary. The
+approved thresholds are max-channel `32/48`, mean seam `12/20`, normalized
+Sobel texture discontinuity `0.25/0.40`, and exact-zero outside-mask pixel
+lock. The policy is `restoration-v3-quality-policy-1@1.0`, approved by Harry
+Pham on `2026-08-27`, with SHA-256
+`49ff52fd48147c10ecd4076a9e0995bfa3eae2162010a483cef377f1066f2025`.
+
+Phase 4 — Composite and split QC is `CLOSED / PASS`:
+
+- P4-T1 inverse-composites only through the verified `CanonicalFaceTransform`,
+  intersects inverse-warped editable masks with the full-canvas mask, applies
+  feathering only inside that approved intersection, and retains exact
+  outside-mask pixel lock.
+- P4-T2 implements the approved boundary metrics and independent
+  `FACE_LOCAL`, `BOUNDARY`, and `SCENARIO_GLOBAL` scopes. `QualityBundleMerger`
+  is fail-closed with precedence `FAIL > UNVALIDATED > NEEDS_REVIEW > PASS`;
+  missing scenario binding is `UNVALIDATED` and exclusions cannot waive local,
+  boundary, or correctness gates.
+- P4-T3 writes immutable QC reports once, appends QC history without rewriting
+  prior entries, and emits additive Manifest 1.4 quality-policy/report/history
+  evidence with a validating schema.
+
+Focused Phase 4 and relevant Candidate v3 tests pass; the identity suite is
+`313 passed`. Python compileall and Manifest 1.4 schema validation pass. No
+provider/network or GPU execution occurred; Candidate v3 remains feature-gated
+`OFF`; v2/v2.1 and architecture remain unchanged; Phase 5 was not started.
+
+## 2026-08-27 — Candidate v3 Phase 4 authority blocker
+
+Phase 4 — Composite and split QC is `BLOCKED / HUMAN DECISION REQUIRED` before
+implementation. The authoritative roadmap defines inverse composite, hard
+pixel lock, boundary ownership, three QC scopes, and the fail-closed merger,
+but does not define the seam-ring geometry, boundary seam/color/texture
+thresholds, boundary status mapping, or the contents/hash of the named
+`restoration-v3-quality-policy-1`.
+
+These are materially behavioral PASS/FAIL policy values and cannot be derived
+from the existing exact pixel lock or the necessary-but-not-sufficient Face-QC
+score of `90`. A single decision pack was created at
+`docs/Image studio/candidate_v3_phase4_quality_authority_decision.md`.
+P4-T1, P4-T2, and P4-T3 remain `NOT STARTED`; no Phase 4 code, schema,
+manifest, provider, GPU, v2/v2.1, or prior-phase change was made.
+
+Candidate v3 remains feature-gated `OFF`; Phase 3 remains `CLOSED / PASS`;
+GPU calls `0`; provider/network calls `0`.
+
 ## 2026-08-27 — Candidate v3 Phase 3 closure
 
 Phase 3 — Candidate v3 workflow adapter is `CLOSED / PASS`. The minimal

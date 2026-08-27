@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://venho.local/contracts/restoration_manifest_1_4/1.0",
+  "title": "Candidate V3 Restoration Manifest 1.4 Enrichment",
+  "description": "Additive Candidate v3 quality evidence; legacy manifest fields remain unchanged.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["manifestVersion", "candidateV3"],
+  "properties": {
+    "manifestVersion": { "const": "1.4" },
+    "candidateV3": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["qualityPolicy", "qualityReports", "mergedQuality", "historyMode"],
+      "properties": {
+        "qualityPolicy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "version", "sha256"],
+          "properties": {
+            "id": { "const": "restoration-v3-quality-policy-1" },
+            "version": { "const": "1.0" },
+            "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+          }
+        },
+        "qualityReports": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["FACE_LOCAL", "BOUNDARY", "SCENARIO_GLOBAL"],
+          "properties": {
+            "FACE_LOCAL": { "$ref": "#/$defs/ReportRef" },
+            "BOUNDARY": { "$ref": "#/$defs/ReportRef" },
+            "SCENARIO_GLOBAL": { "$ref": "#/$defs/ReportRef" }
+          }
+        },
+        "mergedQuality": { "$ref": "#/$defs/MergedQuality" },
+        "historyMode": { "const": "APPEND_ONLY" }
+      }
+    }
+  },
+  "$defs": {
+    "ReportRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "MergedQuality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "failedScopes", "decisiveReasons"],
+      "properties": {
+        "status": { "enum": ["PASS", "FAIL", "UNVALIDATED", "NEEDS_REVIEW"] },
+        "failedScopes": { "type": "array", "uniqueItems": true, "items": { "enum": ["FACE_LOCAL", "BOUNDARY", "SCENARIO_GLOBAL"] } },
+        "decisiveReasons": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      }
+    }
+  }
+}

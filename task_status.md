@@ -1,5 +1,48 @@
 # VENHO AI STUDIO — Task Status
 
+### Candidate v3 Identity Restoration — Phase 4 closure (2026-08-27)
+
+- Authoritative phase: `Phase 4 — Composite and split QC`.
+- Phase 4 = `CLOSED / PASS`.
+- `P4-T1 = CLOSED / PASS`: inverse composite uses the verified
+  `CanonicalFaceTransform` only; inverse-warped editable masks are intersected
+  with the full-canvas editable mask; feathering is confined to that approved
+  region; exact outside-mask pixel lock is retained.
+- `P4-T2 = CLOSED / PASS`: approved 3 px symmetric Euclidean/8-connected
+  boundary ring and seam/color/texture thresholds are implemented; FACE_LOCAL,
+  BOUNDARY, and SCENARIO_GLOBAL remain independent; quality merging is
+  fail-closed with `FAIL > UNVALIDATED > NEEDS_REVIEW > PASS`.
+- `P4-T3 = CLOSED / PASS`: immutable single-write QC reports, append-only
+  history, the additive Manifest 1.4 enrichment, and its schema are present.
+- Quality authority is `restoration-v3-quality-policy-1@1.0`, approved by
+  Harry Pham on `2026-08-27`, policy SHA-256
+  `49ff52fd48147c10ecd4076a9e0995bfa3eae2162010a483cef377f1066f2025`.
+- Candidate v3 remains feature-gated `OFF`; v2/v2.1 and architecture are
+  unchanged; GPU calls `0`; provider/network calls `0`.
+- Candidate v3 identity regression: `313 passed`; compileall and Manifest 1.4
+  schema validation passed. No Phase 5 work was started.
+
+### Candidate v3 Identity Restoration — Phase 4 authority blocker (2026-08-27)
+
+- Authoritative phase: `Phase 4 — Composite and split QC`.
+- Objective: make correctness and quality independently explainable.
+- Phase 4 = `BLOCKED / HUMAN DECISION REQUIRED`; `P4-T1`, `P4-T2`, and `P4-T3`
+  remain `NOT STARTED`.
+- The roadmap requires inverse composite through `CanonicalFaceTransform`,
+  hard pixel lock, boundary seam/color/texture QC, canonical/reference-aware
+  face QC, explicit scenario-bound global QC, fail-closed quality merging, and
+  immutable reports/Manifest 1.4.
+- Implementation is blocked because no authoritative seam-ring definition,
+  boundary acceptance thresholds/status mapping, or content/hash for the named
+  `restoration-v3-quality-policy-1` exists. These values materially affect
+  PASS/FAIL and cannot be inferred safely from the existing pixel lock or
+  Face-QC score.
+- Decision pack:
+  `docs/Image studio/candidate_v3_phase4_quality_authority_decision.md`.
+- No Phase 4 implementation, schema, manifest, provider/network, GPU,
+  v2/v2.1, or prior-phase change was made. Candidate v3 remains feature-gated
+  `OFF`; GPU calls `0`; provider/network calls `0`.
+
 ### Candidate v3 Identity Restoration — Phase 3 closure (2026-08-27)
 
 - Authoritative phase: `Phase 3 — Candidate v3 workflow adapter`.
