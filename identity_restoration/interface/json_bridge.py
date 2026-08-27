@@ -11,11 +11,24 @@ from typing import Any
 
 from PIL import Image
 
+from ..application.dto.candidate_v3 import (
+    ArtifactRef,
+    BoundingBox,
+    CandidateV3Request,
+    CanonicalFaceTransform,
+    Landmark,
+    SourceImage,
+)
 from ..application.dto.restore_command import RestoreCommand
 from ..application.dto.restoration_result import RestorationResult
 from ..application.use_cases.validate_restoration_artifact import ValidateRestorationArtifactCommand
 from ..domain.entities import CropTransform, MaskSet
 from ..domain.value_objects import RestorationParams
+from .candidate_v3_schema import (
+    CandidateV3ContractError,
+    validate_candidate_v3_request_payload,
+    validate_candidate_v3_result_payload as _validate_candidate_v3_result_payload,
+)
 
 # stdin/stdout contract for venho-os (GW-D3: subprocess + JSON, same pattern
 # as the existing generate_image.py / validate_generated.py bridge). This is
@@ -27,6 +40,89 @@ from ..domain.value_objects import RestorationParams
 # enumerates the flat contracts/ directory by an explicit whitelist, so this
 # bounded context's schemas live one level down, not mixed into it) for the
 # authoritative, versioned shape.
+
+
+def _candidate_v3_artifact_ref(payload: dict[str, Any]) -> ArtifactRef:
+    return ArtifactRef(
+        path=payload["path"],
+        sha256=payload["sha256"],
+        width=payload["width"],
+        height=payload["height"],
+        mime_type=payload["mimeType"],
+    )
+
+
+def _candidate_v3_transform(payload: dict[str, Any]) -> CanonicalFaceTransform:
+    source_image = payload["sourceImage"]
+    crop_box = payload["canvasCropBox"]
+    landmarks = tuple(
+        Landmark(x=item["x"], y=item["y"], confidence=item["confidence"])
+        for item in payload["landmarkSet"]
+    )
+    return CanonicalFaceTransform(
+        version=payload["version"],
+        source_image=SourceImage(
+            width=source_image["width"],
+            height=source_image["height"],
+            sha256=source_image["sha256"],
+        ),
+        canvas_crop_box=BoundingBox(
+            left=crop_box["left"],
+            top=crop_box["top"],
+            right=crop_box["right"],
+            bottom=crop_box["bottom"],
+        ),
+        model_size=payload["modelSize"],
+        landmark_set=landmarks,
+        forward_matrix_3x3=tuple(payload["forwardMatrix3x3"]),
+        inverse_matrix_3x3=tuple(payload["inverseMatrix3x3"]),
+        border_mode=payload["borderMode"],
+        interpolation=payload["interpolation"],
+        transform_sha256=payload["transformSha256"],
+    )
+
+
+def parse_candidate_v3_request(payload: dict[str, Any]) -> CandidateV3Request:
+    """Validate and convert an internal Candidate v3 request at the boundary."""
+    validated = validate_candidate_v3_request_payload(payload)
+    return CandidateV3Request(
+        contract_version=validated["contractVersion"],
+        run_id=validated["runId"],
+        attempt_id=validated["attemptId"],
+        canonical_image=_candidate_v3_artifact_ref(validated["canonicalImage"]),
+        canonical_editable_mask=_candidate_v3_artifact_ref(validated["canonicalEditableMask"]),
+        canonical_feather_mask=_candidate_v3_artifact_ref(validated["canonicalFeatherMask"]),
+        transform=_candidate_v3_transform(validated["transform"]),
+        selected_identity_references=tuple(
+            _candidate_v3_artifact_ref(item)
+            for item in validated["selectedIdentityReferences"]
+        ),
+        candidate_profile_id=validated["candidateProfileId"],
+        seed=validated["seed"],
+        effective_config_sha256=validated["effectiveConfigSha256"],
+        timeout_seconds=validated["timeoutSeconds"],
+    )
+
+
+def load_candidate_v3_request(path: Path) -> CandidateV3Request:
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise CandidateV3ContractError(
+            f"candidate-v3 request invalid JSON at {path}: {exc.msg}"
+        ) from exc
+    return parse_candidate_v3_request(payload)
+
+
+def validate_candidate_v3_result_payload(payload: Any) -> dict[str, Any]:
+    """Normalize a result boundary value, then validate its complete evidence shape."""
+    normalized = _json_safe(payload)
+    return _validate_candidate_v3_result_payload(normalized)
+
+
+def dump_candidate_v3_result(result: Any) -> str:
+    """Validate a Candidate v3 result before deterministic JSON serialization."""
+    return serialize_json(validate_candidate_v3_result_payload(result))
 
 
 def parse_restore_command(payload: dict[str, Any]) -> RestoreCommand:
