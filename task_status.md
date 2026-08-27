@@ -14,18 +14,44 @@
 
 ### Candidate v3 Identity Restoration — Phase 2 decomposition (2026-08-27)
 
-- Phase 1 = `CLOSED / PASS` through P1-T2. Phase 2 = `IN PROGRESS`.
+- Phase 1 = `CLOSED / PASS` through P1-T2. Phase 2 = `CLOSED / PASS`.
 - P2-T1 = `CLOSED / PASS`: FaceObservabilityService and the CPU-only
   observability contract.
-- P2-T2-B1 = `BLOCKED`: calibration authority lock for the deterministic route
-  policy. P2-T2 is now `READY / NOT STARTED` after human calibration approval.
-- P2-T3-B2 = `CLOSED / PASS`; P2-T3 = `READY / NOT STARTED`: CP-B crop-padding
-  semantics are approved; P2-T3-B1 authority is also approved.
-- P2-T4 = `NOT STARTED`: fixed CPU fixtures, coordinate/mask property tests,
-  threshold calibration, and the Phase 2 closure gate.
+- P2-T2-B1 = `CLOSED / PASS`; P2-T2 = `CLOSED / PASS`: deterministic route
+  policy and human calibration authority are locked.
+- P2-T3-B1 = `CLOSED / PASS`; P2-T3-B2 = `CLOSED / PASS`; P2-T3 =
+  `CLOSED / PASS`: canonical transform, masks, inverse mapping, and crop
+  semantics are implemented and verified.
+- P2-T4 = `CLOSED / PASS`: fixed CPU fixture, coordinate/mask property, hash,
+  determinism, feature-flag, and regression closure checks passed.
 - Strict order is P2-T1 → P2-T2 → P2-T3 → P2-T4. All tasks remain CPU-only;
   the feature flag stays `OFF`, v2/v2.1 stays untouched, and no provider or
   network execution is authorized.
+
+### Candidate v3 Identity Restoration — Phase 2 closure (2026-08-27)
+
+- Phase 2 = `CLOSED / PASS`; P2-T1 = `CLOSED / PASS`; P2-T2 =
+  `CLOSED / PASS`; P2-T3 = `CLOSED / PASS`; P2-T4 = `CLOSED / PASS`.
+- P2-T3 uses template `candidate_v3_face_template` v1.0, template SHA-256
+  `de9d7616686086dbd217b1fbdb65c9c890a3e0bd086c4507328ba77562d96600`, and
+  transform policy `candidate_v3_canonical_transform_policy` v1.0, policy
+  SHA-256 `ebe134ca42cfc3066c24c04299e005f4a389c4037f57267201ceb2ff96d941c9`.
+- Canonical geometry is 512×512 with CP-B square crop, `1.40 × max(w, h)`
+  side, bbox-center origin, OOB-A reflected bounds, TO-A crop-first order,
+  `floor(min) / ceil(max)` rasterization, and shared image/mask/landmark
+  geometry.
+- Image/binary/feather interpolation is `LANCZOS4`/`NEAREST`/`LINEAR`, binary
+  threshold is `0.5`, border is `REFLECT_101`, and landmark round-trip is
+  limited to `0.5 px`.
+- P2-T3/P2-T4 focused and integrated Candidate v3 validation: `303 passed`.
+  CPU-only = `PASS`; coordinate/mask properties = `PASS`; deterministic
+  B05/B06 eligibility and B10-like `BASE_REGEN_REQUIRED` routing = `PASS`.
+- Candidate v3 feature flag remains `OFF`; v2/v2.1 modified = `NO`; GPU calls
+  `0`; provider/network calls `0`. No ComfyUI, image-generation, or Phase 3
+  execution was performed.
+- The repository-wide suite had unrelated baseline failures outside this
+  bounded context (legacy missing fixtures/environment and invalid Google Drive
+  test token); the Candidate v3 identity suite remained fully green.
 
 ### Candidate v3 Identity Restoration — P2-T3-B2 crop padding semantics decision pack (2026-08-27)
 

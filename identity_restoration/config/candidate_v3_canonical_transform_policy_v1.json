@@ -1,0 +1,45 @@
+{
+  "policyId": "candidate_v3_canonical_transform_policy",
+  "version": "1.0",
+  "template": {
+    "templateId": "candidate_v3_face_template",
+    "version": "1.0",
+    "canvasSize": 512,
+    "landmarks": [
+      { "name": "left_eye", "x": 192.0, "y": 208.0 },
+      { "name": "right_eye", "x": 320.0, "y": 208.0 },
+      { "name": "nose", "x": 256.0, "y": 272.0 },
+      { "name": "left_mouth", "x": 208.0, "y": 336.0 },
+      { "name": "right_mouth", "x": 304.0, "y": 336.0 }
+    ],
+    "templateSha256": "de9d7616686086dbd217b1fbdb65c9c890a3e0bd086c4507328ba77562d96600"
+  },
+  "crop": {
+    "convention": "CP-B",
+    "ratioReference": "max(face_bbox_width, face_bbox_height)",
+    "paddingPerSide": 0.2,
+    "shape": "SQUARE",
+    "center": "FACE_BBOX_CENTER",
+    "outOfBounds": "OOB-A",
+    "transformOrder": "TO-A",
+    "rasterization": {
+      "minimum": "floor",
+      "maximum": "ceil",
+      "preserveExtent": true,
+      "outsideSource": "REFLECT_101"
+    }
+  },
+  "interpolation": {
+    "image": "LANCZOS4",
+    "binaryMask": "NEAREST",
+    "binaryThreshold": 0.5,
+    "featherMask": "LINEAR"
+  },
+  "borderMode": "REFLECT_101",
+  "roundTrip": {
+    "scope": "landmark point max Euclidean error",
+    "maxErrorPx": 0.5
+  },
+  "templatePolicySha256": "de9d7616686086dbd217b1fbdb65c9c890a3e0bd086c4507328ba77562d96600",
+  "policySha256": "ebe134ca42cfc3066c24c04299e005f4a389c4037f57267201ceb2ff96d941c9"
+}

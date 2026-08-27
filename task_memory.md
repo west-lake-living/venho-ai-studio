@@ -52,6 +52,30 @@ change, v2/v2.1 change, GPU call, or provider/network call was made.
   by Harry Pham on `2026-08-27`. No implementation, executable configuration,
   schema, feature-flag, v2/v2.1, GPU, or provider/network change was made.
 
+## 2026-08-27 — Candidate v3 Phase 2 closure
+
+Phase 2 is `CLOSED / PASS`. P2-T1, P2-T2, P2-T3-B1, P2-T3-B2, P2-T3, and P2-T4
+are all `CLOSED / PASS`. P2-T3 implements the approved
+`candidate_v3_canonical_transform_policy` v1.0 with policy SHA-256
+`ebe134ca42cfc3066c24c04299e005f4a389c4037f57267201ceb2ff96d941c9` and the
+`candidate_v3_face_template` v1.0 with template SHA-256
+`de9d7616686086dbd217b1fbdb65c9c890a3e0bd086c4507328ba77562d96600`.
+
+The CPU-only implementation uses 512×512 CP-B square crop semantics, 20%
+padding per side, face-bbox center, OOB-A `REFLECT_101`, TO-A crop-first
+ordering, deterministic `floor(min) / ceil(max)` rasterization, shared image
+and mask geometry, `LANCZOS4`/`NEAREST`/`LINEAR` mask modes, binary threshold
+`0.5`, and landmark round-trip limit `0.5 px`. Inverse artifact mapping and
+lineage hashes are implemented and fail closed on tamper, invalid route,
+invalid geometry, mask mismatch, and non-finite evidence.
+
+The bounded Candidate v3 suite passed `303 tests`. Observability, route
+determinism, canonical geometry, coordinate/mask properties, B05/B06 routes,
+and B10-like non-eligible routing all pass. Candidate v3 remains feature-gated
+`OFF`; v2/v2.1 is unchanged; GPU calls `0`; provider/network calls `0`. No
+Phase 3 task was created or started. Full repository failures were unrelated
+legacy fixture/environment failures outside this bounded context.
+
 ## 2026-08-27 — Candidate v3 Phase 2 approved decomposition
 
 Phase 2 is `IN PROGRESS`; P2-T1 is `CLOSED / PASS`; P2-T2-B1 is `BLOCKED`, and
