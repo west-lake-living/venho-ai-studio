@@ -63,6 +63,26 @@ workflows:
       sampler: "euler"
       scheduler: "normal"
 
+  # Candidate v3 Phase 3 graph. This is a separate semantic-title graph;
+  # the active v2 workflow above remains unchanged.
+  face_restore_win_sd15_ipadapter_v3:
+    filename: "face_restore_win_sd15_ipadapter_v3.api.json"
+    sha256: "53dc090691b8feac2a8b8a4309d43af737e304b09330e072b4ab5632ed5aad91"
+    status: "CANDIDATE V3 — Phase 3, feature-gated OFF"
+    models:
+      checkpoint: "v1-5-pruned-emaonly.safetensors"
+      ipadapter: "ip-adapter-faceid-plusv2_sd15.bin"
+      lora: "ip-adapter-faceid-plusv2_sd15_lora.safetensors"
+      clip_vision: "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors"
+      insightface: "buffalo_l"
+    min_vram_mb: 4200
+    defaults:
+      denoise: 0.35
+      steps: 20
+      cfg: 6.0
+      sampler: "euler"
+      scheduler: "normal"
+
   # Workflow v1.0 (SDXL/PuLID) đã dùng để đóng băng golden-master GW-P0-T2.
   # SUPERSEDED — giữ lại pin để golden-master vẫn kiểm chứng được, không xoá.
   face_restore_v1_api:

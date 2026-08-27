@@ -1,5 +1,33 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-08-27 — Candidate v3 Phase 3 closure
+
+Phase 3 — Candidate v3 workflow adapter is `CLOSED / PASS`. The minimal
+sequential decomposition was executed completely:
+
+- P3-T1 — pinned Candidate v3 workflow artifact: duplicated the active v2
+  graph into `face_restore_win_sd15_ipadapter_v3.api.json`, added the declared
+  semantic titles, changed only the v3 output crop to canonical `512×512`, and
+  pinned SHA-256
+  `53dc090691b8feac2a8b8a4309d43af737e304b09330e072b4ab5632ed5aad91`.
+- P3-T2 — graph contract and adapter: added exact title/type/cardinality
+  validation, strict declared-input binding, `ComfyUiCandidateV3Adapter`
+  behind `RestorerRegistry`, canonical 512×512 input/output enforcement,
+  workflow/config/reference/model/GPU/timing evidence, and explicit GPU
+  authorization fail-closed behavior.
+- P3-T3 — closure validation: added CPU fake-backend contract tests and
+  verified feature-flag registration, graph binding, malformed graph,
+  geometry, health, lease, cancel, OOM mapping, schema, layering, and legacy
+  workflow boundaries.
+
+Execution order was P3-T1 → P3-T2 → P3-T3. Candidate v3 remains feature-gated
+`OFF`; even an explicitly enabled configuration registers the adapter with GPU
+execution authorization `false` unless a caller supplies explicit authority.
+The active v2 workflow SHA remains unchanged and no Phase 4 work was started.
+Candidate v3 identity tests passed `308`; the full repository run passed `1338`
+with the known `77` unrelated legacy baseline failures. Python compileall and
+both diff checks passed. GPU calls `0`; provider/network calls `0`.
+
 ## 2026-08-27 — Candidate v3 P1-T2 authority closure
 
 Closed Candidate v3 Phase 1 authority work: P1-T2A, P1-T2B, and P1-T2C are

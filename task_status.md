@@ -1,5 +1,29 @@
 # VENHO AI STUDIO — Task Status
 
+### Candidate v3 Identity Restoration — Phase 3 closure (2026-08-27)
+
+- Authoritative phase: `Phase 3 — Candidate v3 workflow adapter`.
+- Objective: run a pinned model-space restoration while preserving the current
+  architecture. Phase 3 = `CLOSED / PASS`.
+- Internal execution order: `P3-T1` → `P3-T2` → `P3-T3`.
+- `P3-T1 = CLOSED / PASS`: duplicated the active v2 graph into the separate
+  v3 workflow, added mandatory semantic titles, required canonical `512×512`
+  output geometry, and pinned workflow SHA-256
+  `53dc090691b8feac2a8b8a4309d43af737e304b09330e072b4ab5632ed5aad91`.
+- `P3-T2 = CLOSED / PASS`: added strict Candidate v3 graph title/type/
+  cardinality validation and declared-input-only binding; implemented
+  `ComfyUiCandidateV3Adapter` behind `RestorerRegistry` with distinct
+  `restorerId`/candidate profile, canonical input/output enforcement, and
+  workflow/config/reference/model/GPU/timing lineage evidence.
+- `P3-T3 = CLOSED / PASS`: verified explicit GPU authorization fail-closed
+  behavior, feature-flag registration, schema/layering/graph contract tests,
+  and unchanged health/lease/cancel/OOM behavior. Candidate v3 identity suite
+  passed `308`; full repository passed `1338` with the known `77` unrelated
+  legacy baseline failures.
+- Phase 3 guardrails held: Candidate v3 feature flag `OFF` by default, v2/v2.1
+  workflow behavior unchanged, no production cutover, no Phase 4 work, GPU
+  calls `0`, provider/network calls `0`.
+
 ### Candidate v3 Identity Restoration — P1-T2 closure (2026-08-27)
 
 - P1-T2A = `CLOSED / PASS`; P1-T2B = `CLOSED / PASS`; P1-T2C =

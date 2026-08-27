@@ -53,12 +53,31 @@ class WorkflowInputSpec:
     sentinel: str | None = None
 
 
+@dataclass(frozen=True)
+class CandidateV3NodeContract:
+    """Exact semantic graph contract for the Candidate v3 workflow."""
+
+    class_type: str
+    required_inputs: frozenset[str]
+
+
 WORKFLOW_INPUT_SPECS: Final[Mapping[str, WorkflowInputSpec]] = MappingProxyType({
     NODE_TITLES["LOAD_CROP"]: WorkflowInputSpec("LoadImage", "image", "input_crop.png"),
     NODE_TITLES["LOAD_MASK"]: WorkflowInputSpec("LoadImageMask", "image", "current_restoration_mask.png"),
     NODE_TITLES["LOAD_A2"]: WorkflowInputSpec("LoadImage", "image", "A2_Front_plate.png"),
     NODE_TITLES["SAMPLER"]: WorkflowInputSpec("KSampler", "seed"),
     NODE_TITLES["SAVE_RESTORED"]: WorkflowInputSpec("SaveImage", "images"),
+})
+
+
+CANDIDATE_V3_NODE_CONTRACT: Final[Mapping[str, CandidateV3NodeContract]] = MappingProxyType({
+    NODE_TITLES["LOAD_CROP"]: CandidateV3NodeContract("LoadImage", frozenset({"image"})),
+    NODE_TITLES["LOAD_MASK"]: CandidateV3NodeContract("LoadImageMask", frozenset({"image"})),
+    NODE_TITLES["LOAD_A2"]: CandidateV3NodeContract("LoadImage", frozenset({"image"})),
+    NODE_TITLES["SAMPLER"]: CandidateV3NodeContract(
+        "KSampler", frozenset({"seed", "denoise", "steps", "cfg", "sampler_name", "scheduler"})
+    ),
+    NODE_TITLES["SAVE_RESTORED"]: CandidateV3NodeContract("SaveImage", frozenset({"images"})),
 })
 
 

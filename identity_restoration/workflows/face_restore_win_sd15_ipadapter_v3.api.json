@@ -1,0 +1,125 @@
+{
+  "1": {
+    "class_type": "CheckpointLoaderSimple",
+    "inputs": {"ckpt_name": "v1-5-pruned-emaonly.safetensors"}
+  },
+  "2": {
+    "class_type": "LoadImage",
+    "_meta": {"title": "VENHO_INPUT_CROP"},
+    "inputs": {"image": "input_crop.png"}
+  },
+  "3": {
+    "class_type": "LoadImage",
+    "_meta": {"title": "VENHO_INPUT_A2_FRONT"},
+    "inputs": {"image": "A2_Front_plate.png"}
+  },
+  "4": {
+    "class_type": "LoadImageMask",
+    "_meta": {"title": "VENHO_INPUT_MASK"},
+    "inputs": {"channel": "red", "image": "current_restoration_mask.png"}
+  },
+  "5": {
+    "class_type": "VAEEncode",
+    "inputs": {"pixels": ["16", 0], "vae": ["1", 2]}
+  },
+  "6": {
+    "class_type": "SetLatentNoiseMask",
+    "inputs": {"mask": ["18", 0], "samples": ["5", 0]}
+  },
+  "7": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {"clip": ["1", 1], "text": "identity restoration"}
+  },
+  "8": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {"clip": ["1", 1], "text": "low quality, deformed face"}
+  },
+  "9": {
+    "class_type": "IPAdapterInsightFaceLoader",
+    "inputs": {"model_name": "buffalo_l", "provider": "CUDA"}
+  },
+  "10": {
+    "class_type": "IPAdapterUnifiedLoaderFaceID",
+    "inputs": {
+      "lora_strength": 0.6,
+      "model": ["1", 0],
+      "preset": "FACEID PLUS V2",
+      "provider": "CUDA"
+    }
+  },
+  "11": {
+    "class_type": "IPAdapterFaceID",
+    "inputs": {
+      "combine_embeds": "concat",
+      "embeds_scaling": "V only",
+      "end_at": 1.0,
+      "image": ["3", 0],
+      "insightface": ["9", 0],
+      "ipadapter": ["10", 1],
+      "model": ["10", 0],
+      "start_at": 0.0,
+      "weight": 1.0,
+      "weight_faceidv2": 1.0,
+      "weight_type": "linear"
+    }
+  },
+  "12": {
+    "class_type": "KSampler",
+    "_meta": {"title": "VENHO_SAMPLER"},
+    "inputs": {
+      "cfg": 6.0,
+      "denoise": 0.35,
+      "latent_image": ["6", 0],
+      "model": ["11", 0],
+      "negative": ["8", 0],
+      "positive": ["7", 0],
+      "sampler_name": "euler",
+      "scheduler": "normal",
+      "seed": 123456,
+      "steps": 20
+    }
+  },
+  "13": {
+    "class_type": "VAEDecode",
+    "inputs": {"samples": ["12", 0], "vae": ["1", 2]}
+  },
+  "14": {
+    "class_type": "SaveImage",
+    "_meta": {"title": "VENHO_OUTPUT_RESTORED_CROP"},
+    "inputs": {"filename_prefix": "candidate-v3", "images": ["19", 0]}
+  },
+  "15": {
+    "class_type": "MaskToImage",
+    "inputs": {"mask": ["4", 0]}
+  },
+  "16": {
+    "class_type": "ImagePadForOutpaint",
+    "inputs": {
+      "bottom": 0,
+      "feathering": 0,
+      "image": ["2", 0],
+      "left": 0,
+      "right": 0,
+      "top": 0
+    }
+  },
+  "17": {
+    "class_type": "ImagePadForOutpaint",
+    "inputs": {
+      "bottom": 0,
+      "feathering": 0,
+      "image": ["15", 0],
+      "left": 0,
+      "right": 0,
+      "top": 0
+    }
+  },
+  "18": {
+    "class_type": "ImageToMask",
+    "inputs": {"channel": "red", "image": ["17", 0]}
+  },
+  "19": {
+    "class_type": "ImageCrop",
+    "inputs": {"height": 512, "image": ["13", 0], "width": 512, "x": 0, "y": 0}
+  }
+}

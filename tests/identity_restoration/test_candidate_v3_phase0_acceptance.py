@@ -34,6 +34,7 @@ V3_SCHEMAS = [
 EXPECTED_RESTORER_IDS = {
     "comfyui-local",
     "comfyui-remote",
+    "comfyui-candidate-v3",
     "nano-banana-edit",
     "mock",
 }
@@ -71,11 +72,10 @@ def test_phase0_disabled_candidate_v3_has_no_executable_registration(tmp_path: P
 
 def test_phase0_historical_and_candidate_boundaries_are_preserved() -> None:
     workflow = WORKFLOWS / "face_restore_win_sd15_ipadapter_v2.api.json"
+    candidate_workflow = WORKFLOWS / "face_restore_win_sd15_ipadapter_v3.api.json"
 
     assert workflow.is_file()
     assert hashlib.sha256(workflow.read_bytes()).hexdigest() == EXPECTED_V2_WORKFLOW_SHA256
+    assert candidate_workflow.is_file()
+    assert candidate_workflow != workflow
     assert (CONTRACTS / "restoration_manifest_1_3.schema.json").is_file()
-    assert not any(
-        path.is_file() and ("v3" in path.name.lower() or "candidate" in path.name.lower())
-        for path in WORKFLOWS.iterdir()
-    )

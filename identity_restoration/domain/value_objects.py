@@ -7,7 +7,13 @@ from typing import Literal
 # already-running ComfyUIIdentityRestorer (patch v2.1 §2.3) — it is NOT the
 # same id as v2.0's original "comfyui-remote" placeholder; remote is added in
 # GW-P3 without renaming this one, so config never needs a silent migration.
-RestorerId = Literal["comfyui-local", "comfyui-remote", "nano-banana-edit", "mock"]
+RestorerId = Literal[
+    "comfyui-local",
+    "comfyui-remote",
+    "comfyui-candidate-v3",
+    "nano-banana-edit",
+    "mock",
+]
 
 WorkflowId = str
 

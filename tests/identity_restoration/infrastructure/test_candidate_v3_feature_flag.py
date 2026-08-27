@@ -3,9 +3,18 @@ from __future__ import annotations
 import pytest
 
 from identity_restoration.infrastructure.composition.env import read_restoration_env
+from identity_restoration.infrastructure.composition.env import RestorationEnv
+from identity_restoration.infrastructure.composition.identity_restoration_module import (
+    build_identity_restoration_module,
+)
+from identity_restoration.infrastructure.restorers.comfyui_candidate_v3_adapter import (
+    ComfyUiCandidateV3Adapter,
+)
+from pathlib import Path
 
 
 FEATURE_FLAG = "IDR_CANDIDATE_V3_ENABLED"
+ROOT = Path(__file__).resolve().parents[3]
 
 
 def test_missing_candidate_v3_flag_defaults_to_disabled(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -37,3 +46,13 @@ def test_unknown_value_fails_closed_to_disabled(monkeypatch: pytest.MonkeyPatch)
 
     assert read_restoration_env().candidate_v3_enabled is False
 
+
+def test_explicit_candidate_v3_flag_registers_pinned_adapter_without_execution() -> None:
+    module = build_identity_restoration_module(
+        RestorationEnv(candidate_v3_enabled=True),
+        repo_root=ROOT,
+    )
+
+    adapter = module.registry.resolve("comfyui-candidate-v3")
+    assert isinstance(adapter, ComfyUiCandidateV3Adapter)
+    assert adapter.gpu_execution_authorized is False

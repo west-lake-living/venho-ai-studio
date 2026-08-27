@@ -26,6 +26,10 @@ from ..persistence.jsonl_restoration_ledger import JsonlRestorationLedger
 from ..qc.validator_studio_qc_gateway import ValidatorStudioQcGateway
 from ..restorers.comfyui_local_restorer import ComfyUILocalRestorer
 from ..restorers.comfyui_remote_restorer import ComfyUIRemoteRestorer
+from ..restorers.comfyui_candidate_v3_adapter import (
+    CANDIDATE_V3_WORKFLOW_ID,
+    ComfyUiCandidateV3Adapter,
+)
 from ..restorers.mock_restorer import MockIdentityRestorer
 from ..restorers.nano_banana_edit_adapter import NanoBananaEditAdapter
 from ..restorers.venho_os_nano_banana_port import VenhoOsNanoBananaPort
@@ -145,6 +149,35 @@ def _try_load_remote_restorer(env: RestorationEnv, root: Path) -> Optional[Comfy
     )
 
 
+def _try_load_candidate_v3_restorer(
+    env: RestorationEnv, root: Path
+) -> Optional[ComfyUiCandidateV3Adapter]:
+    """Register Candidate v3 only behind its explicit feature flag.
+
+    Loading and hash-verifying the pinned graph is local. The adapter's
+    separate GPU authorization remains false by default, so enabling the
+    feature flag alone cannot submit a job.
+    """
+    if not env.candidate_v3_enabled:
+        return None
+    workflow_repo = FileWorkflowRepository(
+        workflow_root=root / env.workflow_root,
+        pins_path=root / "config/projects/venho_hotel/identity_restoration/workflow_pins.yaml",
+    )
+    workflow, descriptor = workflow_repo.load(CANDIDATE_V3_WORKFLOW_ID)
+    return ComfyUiCandidateV3Adapter(
+        client=ComfyUIHttpClient(
+            base_url=env.comfyui_remote_base_url,
+            timeout_s=env.comfyui_remote_timeout_seconds,
+        ),
+        workflow=workflow,
+        workflow_id=descriptor.workflow_id,
+        workflow_sha256=descriptor.sha256,
+        model_identifiers=descriptor.models,
+        timeout_seconds=env.comfyui_remote_timeout_seconds,
+    )
+
+
 def build_nano_banana_benchmark_executor(
     *,
     env: RestorationEnv,
@@ -213,6 +246,10 @@ def build_identity_restoration_module(
     remote_restorer = _try_load_remote_restorer(env, root)
     if remote_restorer is not None:
         restorers["comfyui-remote"] = remote_restorer
+
+    candidate_v3_restorer = _try_load_candidate_v3_restorer(env, root)
+    if candidate_v3_restorer is not None:
+        restorers["comfyui-candidate-v3"] = candidate_v3_restorer
 
     registry = RestorerRegistry(restorers=restorers, default_id=env.default_restorer)  # type: ignore[arg-type]
 
