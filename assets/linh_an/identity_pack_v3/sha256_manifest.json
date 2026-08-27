@@ -1,0 +1,20 @@
+{
+  "linh_an_three_quarter_closeup.png": {
+    "sha256": "377f11dc7aa8c6276c70fc932307aedb189bad33a4ed0e6ef4cac28d266bfda0",
+    "role": "THREE_QUARTER"
+  },
+  "linh_an_three_quarter_medium.png": {
+    "sha256": "f19836af0b04f4e18287b11e0491e82d75b5954346463ea80c371d812b409167",
+    "role": "THREE_QUARTER"
+  },
+  "linh_an_profile.png": {
+    "sha256": "ced14faa608cbdf88eb02dec7f9643cf6a239e210a46b33eecd795c8c89f53e7",
+    "role": "PROFILE",
+    "source_crop": {
+      "left": 694,
+      "top": 872,
+      "right": 1055,
+      "bottom": 1491
+    }
+  }
+}
