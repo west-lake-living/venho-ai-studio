@@ -1,24 +1,6 @@
 {
-  "generated_at": "2026-08-25T23:27:31.369922",
+  "generated_at": "2026-08-27T04:24:45.293871",
   "signals": [
-    {
-      "rs_id": "RS-weather-2026-08-26",
-      "type": "weather",
-      "domain": "weather_signal",
-      "evidence_level": "R2-T",
-      "forecast_date": "2026-08-26",
-      "condition": "rain",
-      "temperature_range": [
-        25.6,
-        31.9
-      ],
-      "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
-      "matching_scenario_keys": [
-        "venho_lobby_cozy"
-      ],
-      "expires_at": "2026-08-27T23:27:31.365043",
-      "fact_key": null
-    },
     {
       "rs_id": "RS-weather-2026-08-27",
       "type": "weather",
@@ -27,14 +9,14 @@
       "forecast_date": "2026-08-27",
       "condition": "rain",
       "temperature_range": [
-        26.0,
-        32.2
+        26.1,
+        31.0
       ],
       "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
       "matching_scenario_keys": [
         "venho_lobby_cozy"
       ],
-      "expires_at": "2026-08-27T23:27:31.365043",
+      "expires_at": "2026-08-29T04:24:45.289035",
       "fact_key": null
     },
     {
@@ -45,14 +27,14 @@
       "forecast_date": "2026-08-28",
       "condition": "rain",
       "temperature_range": [
-        26.1,
-        31.9
+        25.9,
+        32.9
       ],
       "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
       "matching_scenario_keys": [
         "venho_lobby_cozy"
       ],
-      "expires_at": "2026-08-27T23:27:31.365043",
+      "expires_at": "2026-08-29T04:24:45.289035",
       "fact_key": null
     },
     {
@@ -63,14 +45,14 @@
       "forecast_date": "2026-08-29",
       "condition": "rain",
       "temperature_range": [
-        26.1,
-        32.1
+        26.2,
+        30.5
       ],
       "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
       "matching_scenario_keys": [
         "venho_lobby_cozy"
       ],
-      "expires_at": "2026-08-27T23:27:31.365043",
+      "expires_at": "2026-08-29T04:24:45.289035",
       "fact_key": null
     },
     {
@@ -81,14 +63,14 @@
       "forecast_date": "2026-08-30",
       "condition": "rain",
       "temperature_range": [
-        25.7,
-        33.1
+        26.2,
+        33.0
       ],
       "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
       "matching_scenario_keys": [
         "venho_lobby_cozy"
       ],
-      "expires_at": "2026-08-27T23:27:31.365043",
+      "expires_at": "2026-08-29T04:24:45.289035",
       "fact_key": null
     },
     {
@@ -99,14 +81,14 @@
       "forecast_date": "2026-08-31",
       "condition": "rain",
       "temperature_range": [
-        25.3,
-        30.0
+        25.6,
+        28.3
       ],
       "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
       "matching_scenario_keys": [
         "venho_lobby_cozy"
       ],
-      "expires_at": "2026-08-27T23:27:31.365043",
+      "expires_at": "2026-08-29T04:24:45.289035",
       "fact_key": null
     },
     {
@@ -117,14 +99,32 @@
       "forecast_date": "2026-09-01",
       "condition": "rain",
       "temperature_range": [
-        25.1,
-        27.2
+        24.8,
+        29.9
       ],
       "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
       "matching_scenario_keys": [
         "venho_lobby_cozy"
       ],
-      "expires_at": "2026-08-27T23:27:31.365043",
+      "expires_at": "2026-08-29T04:24:45.289035",
+      "fact_key": null
+    },
+    {
+      "rs_id": "RS-weather-2026-09-02",
+      "type": "weather",
+      "domain": "weather_signal",
+      "evidence_level": "R2-T",
+      "forecast_date": "2026-09-02",
+      "condition": "golden_sunset",
+      "temperature_range": [
+        23.9,
+        31.9
+      ],
+      "visual_opportunity": "Hoàng hôn vàng trên Hồ Tây — rooftop cuối ngày",
+      "matching_scenario_keys": [
+        "venho_rooftop_sunset"
+      ],
+      "expires_at": "2026-08-29T04:24:45.289035",
       "fact_key": null
     }
   ]
