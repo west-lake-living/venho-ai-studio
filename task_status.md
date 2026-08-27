@@ -1,4 +1,5 @@
 # VENHO AI STUDIO — Task Status
+**Growth Agent v3.1 reliability repair:** STEPS 1–6 COMPLETE · Registry checkpointing, provider retry, stale/rejected replacement, slot/platform uniqueness, Dashboard queue separation, Drive retry and Make reconciliation shipped 2026-08-27. AI Studio `2dcd6f6`; VENHO OS `5225d63`. AI Studio focused tests and VENHO OS `450/450` tests + TypeScript pass. `spawnSync gh ENOBUFS` fixed.
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
 **Cập nhật:** 2026-08-27 (GW-P7-T3-R1 lineage repair) · **GW-P7 CLOSED / QUALITY FAIL — CURRENT CANDIDATE REJECTED / NO PROMOTION**
 

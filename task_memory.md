@@ -1,5 +1,28 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-08-27 — Growth Agent v3.1 reliability repair (steps 1–6)
+
+Completed and pushed the six-step Growth Agent repair across `venho-ai-studio`
+and `venho-os`. Weekly generation now checkpoints partial Registry state even
+when a provider fails; Claude requests retry transient 429/5xx/529/transport
+errors per content item with bounded jitter; rejected and stale approvals get
+fresh drafts in the same or nearest future OPEN slot; and the Registry enforces
+one active publication per `(slot_id, platform)` to prevent duplicate posts and
+images. VENHO OS now reads the Git-backed Registry as source of truth and
+separates the approval queue, publishing incidents, and audit history.
+
+Google Drive uploads retry transient TLS/connection failures before falling
+back to the rotated hotel image. Make posts that report `PUBLISHED` without a
+Post ID can be reconciled from the Dashboard without re-sending the webhook.
+The Dashboard Registry sync was also hardened against `spawnSync gh ENOBUFS`
+by increasing GET buffer capacity and suppressing the large PUT response body.
+
+Commits pushed: AI Studio `2dcd6f6`; VENHO OS `5225d63` (plus prior step
+commits `a8d688e`, `6a3218b`, `64df499`, `3470f14`, `1d408c2`, `fff7f02`).
+Validation: AI Studio focused Growth tests passed; VENHO OS Vitest 450/450 and
+TypeScript passed. Runtime Registry changes from the approval action are
+preserved in this checkpoint.
+
 ## 2026-08-27 — GW-P7-T3-R1 evidence lineage repair and final closure
 
 Repaired the proven metadata-only lineage defect for candidate
