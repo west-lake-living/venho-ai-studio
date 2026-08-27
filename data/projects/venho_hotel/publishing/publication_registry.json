@@ -10683,13 +10683,13 @@
       "content_package_id": "5b392fea-bf83-48e7-966b-6036828be85c",
       "idempotency_key": "7c304282e4387e282e1f2bb6f95e367bcb8a182ca35a6d919117231053c7cddd",
       "platform": "facebook",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-27T08:09:10.228918+00:00",
-      "updated_at": "2026-08-27T08:09:10.246755+00:00",
+      "updated_at": "2026-08-27T08:40:54.313562+00:00",
       "content": {
         "title": "Góc phố quen trên đường Nguyễn Đình Thi và những buổi sáng đầu tuần",
         "text": "Có những góc phố người Hà Nội đi qua mỗi ngày mà vẫn không thấy chán. Nguyễn Đình Thi là một trong số đó.\n\nSáng đầu tuần, con đường ven hồ thức dậy theo một trật tự rất riêng. Vài chiếc xe chở hàng đi chậm sát lề. Người tập thể dục vòng nốt đoạn cuối. Hàng cây đổ bóng loang lổ xuống mặt đường, và bên kia là mặt nước Hồ Tây, sáng dần lên theo từng phút.\n\nGóc phố này không có gì để \"check-in\". Không cổng chào, không điểm nhấn nào để chỉ tay vào. Nhưng đó lại là lý do nó dễ chịu: bạn đi qua mà không cần phải làm gì cả.\n\nBước qua cánh cửa kính của Ven Hồ Hotel, tiếng phố lùi lại một nhịp. Sàn gạch nâu với những vòng tròn lặp đi lặp lại dưới chân. Quầy lễ tân gỗ màu nâu đỏ đậm, một bức tranh treo trên tường, ánh sáng vừa đủ, không gắt. Sảnh không rộng, và có lẽ chính vì thế mà nó ấm.\n\nMột góc phố quen, một chỗ để đặt hành lý xuống rồi bắt đầu hoặc kết thúc một ngày ở Hà Nội. Đôi khi chuyến đi chỉ cần đúng chừng đó.\n\nNếu bạn đang tính một chuyến Hà Nội và muốn ở gần Hồ Tây, nhắn cho Ven Hồ Hotel để xem phòng trống những ngày đó nhé.\n\n#VenHoHotelHanoi #HoTay #NguyenDinhThi #WestLakeHanoi #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-monday-facebook-77635f18",
@@ -10788,8 +10788,28 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 92.81
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-08-27T08:40:54.310455+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-5b392fea-bf83-48e7-966b-6036828be85c",
+        "content_package_id": "5b392fea-bf83-48e7-966b-6036828be85c",
+        "copy_version_ids": [
+          "brief-monday-facebook-f3324e78-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "f076148205f8a31131f435922ca532c0e60e7d8707abc1f3ad04a43ca7337fa2",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-monday-facebook-f3324e78@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-08-27T08:40:54.310584+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "ede7fea5a79d121189b489e7b3a8c4409b51eae5d93644d4256f932623c79d80",
+        "checksum": "f2a91a2dfa9a042def6883b183c72d6a3e5eac75a67faf8161da45bd24389b0d"
       }
     },
     {
@@ -10797,13 +10817,13 @@
       "content_package_id": "2ce3cf7c-682a-4df3-b239-ecc7715e9d8b",
       "idempotency_key": "50143ee3dbd3b071a59f4160a2411876fa6b7664eec79267eef0a38196e7f79f",
       "platform": "instagram",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-27T08:09:42.856619+00:00",
-      "updated_at": "2026-08-27T08:09:42.873074+00:00",
+      "updated_at": "2026-08-27T08:40:54.313562+00:00",
       "content": {
         "title": "Góc phố quen mà đi qua mỗi ngày vẫn không chán",
         "text": "Có những góc phố ở Hà Nội gần như không đổi, nhưng đi qua mỗi ngày lại thấy khác một chút.\n\nĐầu tuần, đoạn phố Nguyễn Đình Thi tỉnh dậy khá gọn gàng. Vài người đi bộ men theo mép hồ, một chị dắt xe ra khỏi ngõ, tiếng còi xa xa từ phía đường lớn. Hàng cây vẫn đứng đúng chỗ hôm qua, chỉ có ánh sáng là đổi: hôm thì trong và gắt, hôm thì đục như phủ một lớp sương mỏng lên mặt hồ.\n\nCó lẽ vì thế mà người Hà Nội đi qua đây mãi không chán. Cái quen không nằm ở cảnh, mà ở nhịp — biết chỗ nào gió lùa, chỗ nào mặt nước sáng lên trước tiên.\n\nSảnh Ven Hồ Hotel nhìn ra đúng nhịp phố ấy qua khung cửa kính. Bên trong là sàn gạch nâu với những vòng tròn hoa văn, quầy lễ tân gỗ nâu đỏ sẫm, mấy bức tranh treo tường và ánh đèn dịu, không quá sáng. Một khoảng lặng vừa đủ để uống hết ly cà phê rồi mới bước ra đường.\n\nNếu bạn đang xếp lịch cho một chuyến Hà Nội, nhắn cho Ven Hồ Hotel để xem còn phòng những ngày đó nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #NguyenDinhThi #KhachSanHoTay #HaNoi #KhamPhaHoTay",
@@ -10904,8 +10924,28 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.57
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-08-27T08:40:54.310455+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-2ce3cf7c-682a-4df3-b239-ecc7715e9d8b",
+        "content_package_id": "2ce3cf7c-682a-4df3-b239-ecc7715e9d8b",
+        "copy_version_ids": [
+          "brief-monday-instagram-68d1b89f-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "d5c6504d0c956db12cd90029aca574708bbc575956ef3322968f57ca352479cc",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-monday-instagram-68d1b89f@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-08-27T08:40:54.310621+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "3e28d2e705c079cc137c1ce0f3eebee2bb38b2f7755fcaebb7a8a2723de59f26",
+        "checksum": "e77fa61f9ac1bbc6b8258624741f8f32a742769519305783f27e8bbbccf3e988"
       }
     },
     {
@@ -11033,7 +11073,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 92.55
       }
     },
@@ -11163,7 +11203,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.06
       }
     },
@@ -11277,7 +11317,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 92.4
       }
     },
@@ -11394,7 +11434,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.7
       }
     },
@@ -11511,7 +11551,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 90.95
       }
     },
@@ -11630,7 +11670,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.7
       }
     },
@@ -11744,7 +11784,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 92.32
       }
     },
@@ -11860,7 +11900,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.7
       }
     },
@@ -11986,7 +12026,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 92.6
       }
     },
@@ -12115,7 +12155,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.7
       }
     },
@@ -12229,7 +12269,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 92.3
       }
     },
@@ -12346,7 +12386,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.7
       }
     },
@@ -12463,7 +12503,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 91.71
       }
     },
@@ -12581,7 +12621,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.22
       }
     }
