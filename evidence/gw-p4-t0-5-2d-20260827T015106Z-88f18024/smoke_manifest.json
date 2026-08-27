@@ -1,0 +1,228 @@
+{
+  "a2Sha256": "1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d",
+  "attemptId": "b01-remote-smoke-1",
+  "bootstrapSmokeAllowed": true,
+  "branch": "comfyui-remote",
+  "caseId": "B01",
+  "evidence": {
+    "a2Path": "assets/linh_an/A2_Front.png",
+    "anatomyScore": null,
+    "backend": "comfyui-remote",
+    "cropTransform": {
+      "box": [
+        120,
+        0,
+        946,
+        970
+      ],
+      "targetSize": 826
+    },
+    "environmentScore": null,
+    "error": null,
+    "executorStatus": "COMPLETED",
+    "eyesBrowsScore": null,
+    "faceQcAfter": null,
+    "faceQcBefore": null,
+    "geometryScore": null,
+    "globalScore": null,
+    "gpuName": "cuda:0 NVIDIA GeForce GTX 1660 SUPER : cudaMallocAsync",
+    "host": {
+      "attemptId": "b01-remote-smoke-1",
+      "platform": "macOS-26.4-arm64-arm-64bit",
+      "python": "3.9.6",
+      "remoteHealth": {
+        "gpuName": "cuda:0 NVIDIA GeForce GTX 1660 SUPER : cudaMallocAsync",
+        "latencyMs": 28.270958000000235,
+        "status": "HEALTHY",
+        "vramFreeMb": 5132
+      },
+      "remoteHost": "https://harry-rog.taila40de0.ts.net",
+      "restorationStatus": "NEEDS_REVIEW"
+    },
+    "identityScore": null,
+    "lineage": {
+      "a2Sha256": "1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d",
+      "baseFramePath": "/Users/hanhpham/Developer/Claude-Workspace/projects/venho-social-content-agent/photos-ai/2026/12-08-linh-an-a2-front-closeup-1k/run-202608121022/variant-001/image.png",
+      "baseFrameSha256": "e7b00d4a65b2cc97e274e3c00f96e091bda0e614778df5a2d43f17cc3793faf9",
+      "fullCanvasMaskSha256": "280b5af2b0ef47f8c2d9fc7555577ce765a8e8076b7f0683dac836ec0db2fd9d",
+      "fullCanvasMaskVersion": "hierarchical_face_v1_full_canvas",
+      "geometryBackend": "insightface",
+      "geometryModel": "buffalo_l",
+      "geometryModelSha256": null,
+      "restoration": {
+        "a2AuthoritySha256": "1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d",
+        "cropTransform": {
+          "box": [
+            120,
+            0,
+            946,
+            970
+          ],
+          "targetSize": 826
+        },
+        "effectiveConfigSha256": "5227c806cab1ea8d9f48f0fa8fea3208c85b33efb6f78ea7c180a031043997ea",
+        "geometry": {
+          "finalCropHeight": 970,
+          "finalCropWidth": 826,
+          "inputHeight": 970,
+          "inputWidth": 826,
+          "padBottom": 6,
+          "padRight": 6,
+          "paddedHeight": 976,
+          "paddedWidth": 832
+        },
+        "maskSpaces": {
+          "preservation": {
+            "coordinateSpace": "full-canvas",
+            "sha256": "280b5af2b0ef47f8c2d9fc7555577ce765a8e8076b7f0683dac836ec0db2fd9d",
+            "version": "hierarchical_face_v1_full_canvas"
+          },
+          "restoration": {
+            "coordinateSpace": "crop-local",
+            "sha256": "8f25d0ffc5a64b2ee7b7045f934dbf3dcbc338571e3faab005b08efc12b023d0",
+            "version": "hierarchical_face_v1"
+          }
+        },
+        "maskVersion": "hierarchical_face_v1",
+        "modelIdentifiers": [
+          "v1-5-pruned-emaonly.safetensors",
+          "ip-adapter-faceid-plusv2_sd15.bin",
+          "ip-adapter-faceid-plusv2_sd15_lora.safetensors",
+          "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors",
+          "buffalo_l"
+        ],
+        "pixelLock": {
+          "editableRegionHash": "6146acb5c9a74fffbbc58964d090ab00a8f648321dc04e14e91f65c60a6d5c1f",
+          "mutatedPixelCount": 0,
+          "passed": true
+        },
+        "promptId": "b498b2fe-bdd9-4173-a070-62c52462567a",
+        "remoteHost": "https://harry-rog.taila40de0.ts.net",
+        "remoteOutput": {
+          "filename": "gw-p3_00033_.png",
+          "subfolder": "",
+          "type": "output"
+        },
+        "restorationParams": {
+          "cfg": 6.0,
+          "denoise": 0.35,
+          "sampler": "euler",
+          "scheduler": "normal",
+          "steps": 20
+        },
+        "restorerId": "comfyui-remote",
+        "runtimeMs": 107168,
+        "seed": 42,
+        "workerHealth": {
+          "gpuName": "cuda:0 NVIDIA GeForce GTX 1660 SUPER : cudaMallocAsync",
+          "latencyMs": 28.270958000000235,
+          "status": "HEALTHY",
+          "vramFreeMb": 5132
+        },
+        "workflowId": "face_restore_win_sd15_ipadapter_v2",
+        "workflowSha256": "1a6421a04ce7bdedd716beea93d196551f5dbe77c3da11d1e8a6bc4f1f06ee58"
+      }
+    },
+    "maskSha256": "8f25d0ffc5a64b2ee7b7045f934dbf3dcbc338571e3faab005b08efc12b023d0",
+    "maskVersion": "hierarchical_face_v1",
+    "outfitScore": null,
+    "outputPath": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/gw-p7-t2a-r2-physical-smoke-20260827/preflight-b01-remote-smoke/b01-remote-smoke-1/composite.png",
+    "outputSha256": "919e20a83aedb246f1124e8d919eab2a4c10d7ef6a5faba00982119508fa7be9",
+    "pixelPreservationResult": "PASS",
+    "provider": "comfyui-remote",
+    "providerRequestId": "b498b2fe-bdd9-4173-a070-62c52462567a",
+    "providerRunId": "preflight-b01-remote-smoke",
+    "restoredCropPath": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/gw-p7-t2a-r2-physical-smoke-20260827/preflight-b01-remote-smoke/b01-remote-smoke-1/restored_crop.png",
+    "restoredCropSha256": "c05b59724699bef6e2da4f65d89b5374bcb258e3092f3e68e5c8ada70c8508d7",
+    "retryCount": 0,
+    "runtimeMs": 107168,
+    "vramPeakMb": null,
+    "workflowId": "face_restore_win_sd15_ipadapter_v2",
+    "workflowSha256": "1a6421a04ce7bdedd716beea93d196551f5dbe77c3da11d1e8a6bc4f1f06ee58"
+  },
+  "evidenceType": "NON_BENCHMARK",
+  "local_fallback": false,
+  "mock_used": false,
+  "outputSha256": "919e20a83aedb246f1124e8d919eab2a4c10d7ef6a5faba00982119508fa7be9",
+  "phase": "PREFLIGHT",
+  "pixelPreservationResult": "PASS",
+  "promptId": "b498b2fe-bdd9-4173-a070-62c52462567a",
+  "restorationLineage": {
+    "a2AuthoritySha256": "1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d",
+    "cropTransform": {
+      "box": [
+        120,
+        0,
+        946,
+        970
+      ],
+      "targetSize": 826
+    },
+    "effectiveConfigSha256": "5227c806cab1ea8d9f48f0fa8fea3208c85b33efb6f78ea7c180a031043997ea",
+    "geometry": {
+      "finalCropHeight": 970,
+      "finalCropWidth": 826,
+      "inputHeight": 970,
+      "inputWidth": 826,
+      "padBottom": 6,
+      "padRight": 6,
+      "paddedHeight": 976,
+      "paddedWidth": 832
+    },
+    "maskSpaces": {
+      "preservation": {
+        "coordinateSpace": "full-canvas",
+        "sha256": "280b5af2b0ef47f8c2d9fc7555577ce765a8e8076b7f0683dac836ec0db2fd9d",
+        "version": "hierarchical_face_v1_full_canvas"
+      },
+      "restoration": {
+        "coordinateSpace": "crop-local",
+        "sha256": "8f25d0ffc5a64b2ee7b7045f934dbf3dcbc338571e3faab005b08efc12b023d0",
+        "version": "hierarchical_face_v1"
+      }
+    },
+    "maskVersion": "hierarchical_face_v1",
+    "modelIdentifiers": [
+      "v1-5-pruned-emaonly.safetensors",
+      "ip-adapter-faceid-plusv2_sd15.bin",
+      "ip-adapter-faceid-plusv2_sd15_lora.safetensors",
+      "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors",
+      "buffalo_l"
+    ],
+    "pixelLock": {
+      "editableRegionHash": "6146acb5c9a74fffbbc58964d090ab00a8f648321dc04e14e91f65c60a6d5c1f",
+      "mutatedPixelCount": 0,
+      "passed": true
+    },
+    "promptId": "b498b2fe-bdd9-4173-a070-62c52462567a",
+    "remoteHost": "https://harry-rog.taila40de0.ts.net",
+    "remoteOutput": {
+      "filename": "gw-p3_00033_.png",
+      "subfolder": "",
+      "type": "output"
+    },
+    "restorationParams": {
+      "cfg": 6.0,
+      "denoise": 0.35,
+      "sampler": "euler",
+      "scheduler": "normal",
+      "steps": 20
+    },
+    "restorerId": "comfyui-remote",
+    "runtimeMs": 107168,
+    "seed": 42,
+    "workerHealth": {
+      "gpuName": "cuda:0 NVIDIA GeForce GTX 1660 SUPER : cudaMallocAsync",
+      "latencyMs": 28.270958000000235,
+      "status": "HEALTHY",
+      "vramFreeMb": 5132
+    },
+    "workflowId": "face_restore_win_sd15_ipadapter_v2",
+    "workflowSha256": "1a6421a04ce7bdedd716beea93d196551f5dbe77c3da11d1e8a6bc4f1f06ee58"
+  },
+  "runId": "preflight-b01-remote-smoke",
+  "silent_fallback": false,
+  "sourceSha256": "e7b00d4a65b2cc97e274e3c00f96e091bda0e614778df5a2d43f17cc3793faf9",
+  "status": "PASS",
+  "workflowSha256": "1a6421a04ce7bdedd716beea93d196551f5dbe77c3da11d1e8a6bc4f1f06ee58"
+}

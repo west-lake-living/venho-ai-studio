@@ -1,5 +1,43 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-08-27 — GW-P7-T3-R1 evidence lineage repair and final closure
+
+Repaired the proven metadata-only lineage defect for candidate
+`comfyui-remote-face_restore_win_sd15_ipadapter_v2`. Source Run 6
+`benchmark-20260825T160000Z-gw-p4-t1` → GW-P7-T1 report
+`de8f6d2e947130e5c7bf3b4150c263e0566c47ca54e99fc4bf37632ee90b14d6` → T2
+classification `d2379e39c562e742c47e9546210bc302bcdae81ce17764aea7f7b987334a8f5c`,
+whose source SHA field had the transposed value
+`de8f6d2e947130e5c7bf3b4150c263e0566c47ca54e99cf4bf37632ee90b14d6`.
+→ physical smoke manifest
+`0b8b09647b32573df1db61e67f454422819920b342c6a036e784da4bded20c2d`.
+
+The immutable post-remediation benchmark remains 30/30 valid with 8 quality
+passes and 22 deterministic `RC1_TRUE_OUTPUT_QUALITY_FAILURE` rows; no RC2–RC5
+defect is evidenced. Regional gate is `FAIL`, so the candidate is
+`REJECTED_QUALITY`. Physical HARRY-ROG smoke remains `PASS` and is preserved as
+runtime evidence only; it cannot promote a failed regional candidate.
+
+Safe-default audit found no regression: AI Studio selection is
+environment-controlled with version-controlled `mock` fallback,
+`comfyui-remote` is opt-in, and `IDR_DEFAULT_RESTORER=comfyui-local` remains a
+one-step rollback setting. VenHo OS RestorerSelector defaults to explicit
+`none`; GPU selection requires conscious user action. Promotion policy remains
+human-only and the registry records `BLOCKED` / `NOT_REQUESTED`.
+
+Created corrective artifact
+`artifacts/identity-restoration/benchmarks/gw-p7-t3-r1-lineage-correction-20260827T021930Z/lineage_correction.json`
+with SHA
+`15d2afde5310e1cbcb4c6317f5eb8d6335d9deeb0a6641e59d33203fa8986834`.
+The original T2 classification and all historical evidence remain immutable.
+T3-R1 made no production-behavior, workflow, model, A2, QC-threshold, benchmark,
+GPU, provider, or historical-evidence changes. Offline targeted tests,
+compile/type/lint checks, registry/promotion checks, and diff checks were run;
+execution counts for T3 are GPU jobs `0`, provider calls `0`, production
+promotions `0`, new benchmark runs `0`, and new production candidates `0`.
+The corrected evidence chain is PASS; GW-P7 closes as quality fail with no
+promotion.
+
 ## 2026-08-26 — GW-P7-T1 production evidence & registry reconciliation
 
 Run 6 (`benchmark-20260825T160000Z-gw-p4-t1`) was reconciled against the

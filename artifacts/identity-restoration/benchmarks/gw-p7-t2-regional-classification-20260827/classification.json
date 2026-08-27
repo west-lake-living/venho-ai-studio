@@ -1,0 +1,102 @@
+{
+  "artifactType": "GW-P7-T2 regional failure classification",
+  "sourceRowsPath": "artifacts/identity-restoration/benchmarks/gw-p7-t1-post-remediation-20260826/rows.jsonl",
+  "sourceRowsSha256": "f4417374c33168bd00418d50f2d1feb87b8ec98067c06bdcad06a37e7181b73f",
+  "sourcePostRemediationReportSha256": "de8f6d2e947130e5c7bf3b4150c263e0566c47ca54e99cf4bf37632ee90b14d6",
+  "physicalSmokeEvidenceSha256": "0b8b09647b32573df1db61e67f454422819920b342c6a036e784da4bded20c2d",
+  "decision": {
+    "regionalFailureCount": 22,
+    "rootCause": "RC1",
+    "regionalGate": "FAIL",
+    "productionCandidate": "REJECTED_QUALITY"
+  },
+  "validityEvidence": {
+    "decisionValidity": true,
+    "authorityValidity": true,
+    "evidenceValidity": true,
+    "executionValidity": true,
+    "validatorValidity": true,
+    "regionalValidity": true,
+    "pixelValidity": true,
+    "cachedOutputHashesMatch": true,
+    "regionalSourceArtifactsPresent": true,
+    "validatorCacheArtifactsPresent": true,
+    "allRowsDeterministicFromCachedEvidence": true
+  },
+  "aggregateCounts": {
+    "byCase": {
+      "B01": 1,
+      "B02": 3,
+      "B03": 2,
+      "B05": 3,
+      "B06": 3,
+      "B07": 2,
+      "B08": 2,
+      "B09": 3,
+      "B10": 3
+    },
+    "byBackend": {
+      "control": 7,
+      "nano-banana-edit": 8,
+      "comfyui-remote": 7
+    },
+    "byAuthorityProfile": {
+      "action_full_body@1.0": 2,
+      "UNKNOWN_NOT_RECORDED": 20
+    },
+    "byFailingGate": {
+      "identity_below_threshold": 9,
+      "eyes_brows_below_threshold": 9,
+      "geometry_below_threshold": 2,
+      "global_composite_below_threshold": 18,
+      "pixel_preservation_failed": 8
+    },
+    "byFailingDimension": {
+      "FACE_IDENTITY": 9,
+      "GEOMETRY": 2,
+      "ANATOMY": 0,
+      "PIXEL_PRESERVATION": 8,
+      "GLOBAL_COMPOSITE": 18,
+      "SCENARIO_AUTHORITY": 0,
+      "OTHER": 0
+    },
+    "byRootCause": {
+      "RC1_TRUE_OUTPUT_QUALITY_FAILURE": 22,
+      "RC2_AUTHORITY_MAPPING_DEFECT": 0,
+      "RC3_QC_IMPLEMENTATION_DEFECT": 0,
+      "RC4_STALE_OR_CORRUPT_EVIDENCE": 0,
+      "RC5_BENCHMARK_CONTRACT_DEFECT": 0
+    }
+  },
+  "thresholds": {
+    "identity": 90.0,
+    "eyes_brows": 90.0,
+    "geometry": 92.0,
+    "global_composite": 90.0,
+    "pixel_preservation": "PASS required"
+  },
+  "rows": [
+    {"caseId":"B01","backend":"nano-banana-edit","authorityProfile":"UNKNOWN_NOT_RECORDED","score":{"identity":96.35,"eyes_brows":95.67,"geometry":93.99,"global_composite":94.29,"pixel_preservation":"FAIL"},"failingGates":["pixel_preservation_failed"],"failingDimensions":["PIXEL_PRESERVATION"],"rootCause":"RC1","deterministic":true,"productionBlocking":true},
+    {"caseId":"B02","backend":"control","authorityProfile":"UNKNOWN_NOT_RECORDED","score":{"identity":94.18,"eyes_brows":94.0,"geometry":100.0,"global_composite":89.34,"pixel_preservation":"PASS"},"failingGates":["global_composite_below_threshold"],"failingDimensions":["GLOBAL_COMPOSITE"],"rootCause":"RC1","deterministic":true,"productionBlocking":true},
+    {"caseId":"B02","backend":"nano-banana-edit","authorityProfile":"UNKNOWN_NOT_RECORDED","score":{"identity":93.62,"eyes_brows":92.67,"geometry":98.21,"global_composite":89.34,"pixel_preservation":"FAIL"},"failingGates":["global_composite_below_threshold","pixel_preservation_failed"],"failingDimensions":["GLOBAL_COMPOSITE","PIXEL_PRESERVATION"],"rootCause":"RC1","deterministic":true,"productionBlocking":true},
+    {"caseId":"B02","backend":"comfyui-remote","authorityProfile":"UNKNOWN_NOT_RECORDED","score":{"identity":94.55,"eyes_brows":94.0,"geometry":97.34,"global_composite":89.06,"pixel_preservation":"PASS"},"failingGates":["global_composite_below_threshold"],"failingDimensions":["GLOBAL_COMPOSITE"],"rootCause":"RC1","deterministic":true,"productionBlocking":true},
+    {"caseId":"B03","backend":"control","authorityProfile":"action_full_body@1.0","score":{"identity":91.07,"eyes_brows":91.33,"geometry":100.0,"global_composite":40.0,"pixel_preservation":"PASS"},"failingGates":["global_composite_below_threshold"],"failingDimensions":["GLOBAL_COMPOSITE"],"rootCause":"RC1","deterministic":true,"productionBlocking":true},
+    {"caseId":"B03","backend":"comfyui-remote","authorityProfile":"action_full_body@1.0","score":{"identity":90.6,"eyes_brows":90.0,"geometry":97.87,"global_composite":40.0,"pixel_preservation":"PASS"},"failingGates":["global_composite_below_threshold"],"failingDimensions":["GLOBAL_COMPOSITE"],"rootCause":"RC1","deterministic":true,"productionBlocking":true},
+    {"caseId":"B05","backend":"control","authorityProfile":"UNKNOWN_NOT_RECORDED","score":{"identity":87.17,"eyes_brows":86.67,"geometry":100.0,"global_composite":83.61,"pixel_preservation":"PASS"},"failingGates":["identity_below_threshold","eyes_brows_below_threshold","global_composite_below_threshold"],"failingDimensions":["FACE_IDENTITY","GLOBAL_COMPOSITE"],"rootCause":"RC1","deterministic":true,"productionBlocking":true},
+    {"caseId":"B05","backend":"nano-banana-edit","authorityProfile":"UNKNOWN_NOT_RECORDED","score":{"identity":88.65,"eyes_brows":88.0,"geometry":98.04,"global_composite":83.38,"pixel_preservation":"FAIL"},"failingGates":["identity_below_threshold","eyes_brows_below_threshold","global_composite_below_threshold","pixel_preservation_failed"],"failingDimensions":["FACE_IDENTITY","GLOBAL_COMPOSITE","PIXEL_PRESERVATION"],"rootCause":"RC1","deterministic":true,"productionBlocking":true},
+    {"caseId":"B05","backend":"comfyui-remote","authorityProfile":"UNKNOWN_NOT_RECORDED","score":{"identity":88.0,"eyes_brows":86.67,"geometry":96.86,"global_composite":83.96,"pixel_preservation":"PASS"},"failingGates":["identity_below_threshold","eyes_brows_below_threshold","global_composite_below_threshold"],"failingDimensions":["FACE_IDENTITY","GLOBAL_COMPOSITE"],"rootCause":"RC1","deterministic":true,"productionBlocking":true},
+    {"caseId":"B06","backend":"control","authorityProfile":"UNKNOWN_NOT_RECORDED","score":{"identity":85.78,"eyes_brows":85.0,"geometry":100.0,"global_composite":85.22,"pixel_preservation":"PASS"},"failingGates":["identity_below_threshold","eyes_brows_below_threshold","global_composite_below_threshold"],"failingDimensions":["FACE_IDENTITY","GLOBAL_COMPOSITE"],"rootCause":"RC1","deterministic":true,"productionBlocking":true},
+    {"caseId":"B06","backend":"nano-banana-edit","authorityProfile":"UNKNOWN_NOT_RECORDED","score":{"identity":88.55,"eyes_brows":88.33,"geometry":98.44,"global_composite":91.34,"pixel_preservation":"FAIL"},"failingGates":["identity_below_threshold","eyes_brows_below_threshold","pixel_preservation_failed"],"failingDimensions":["FACE_IDENTITY","PIXEL_PRESERVATION"],"rootCause":"RC1","deterministic":true,"productionBlocking":true},
+    {"caseId":"B06","backend":"comfyui-remote","authorityProfile":"UNKNOWN_NOT_RECORDED","score":{"identity":85.3,"eyes_brows":85.0,"geometry":97.76,"global_composite":90.7,"pixel_preservation":"PASS"},"failingGates":["identity_below_threshold","eyes_brows_below_threshold"],"failingDimensions":["FACE_IDENTITY"],"rootCause":"RC1","deterministic":true,"productionBlocking":true},
+    {"caseId":"B07","backend":"nano-banana-edit","authorityProfile":"UNKNOWN_NOT_RECORDED","score":{"identity":90.6,"eyes_brows":90.0,"geometry":99.32,"global_composite":92.74,"pixel_preservation":"FAIL"},"failingGates":["pixel_preservation_failed"],"failingDimensions":["PIXEL_PRESERVATION"],"rootCause":"RC1","deterministic":true,"productionBlocking":true},
+    {"caseId":"B07","backend":"comfyui-remote","authorityProfile":"UNKNOWN_NOT_RECORDED","score":{"identity":92.28,"eyes_brows":92.67,"geometry":99.03,"global_composite":87.92,"pixel_preservation":"PASS"},"failingGates":["global_composite_below_threshold"],"failingDimensions":["GLOBAL_COMPOSITE"],"rootCause":"RC1","deterministic":true,"productionBlocking":true},
+    {"caseId":"B08","backend":"control","authorityProfile":"UNKNOWN_NOT_RECORDED","score":{"identity":95.8,"eyes_brows":95.0,"geometry":100.0,"global_composite":87.36,"pixel_preservation":"PASS"},"failingGates":["global_composite_below_threshold"],"failingDimensions":["GLOBAL_COMPOSITE"],"rootCause":"RC1","deterministic":true,"productionBlocking":true},
+    {"caseId":"B08","backend":"nano-banana-edit","authorityProfile":"UNKNOWN_NOT_RECORDED","score":{"identity":95.15,"eyes_brows":94.67,"geometry":97.7,"global_composite":87.56,"pixel_preservation":"FAIL"},"failingGates":["global_composite_below_threshold","pixel_preservation_failed"],"failingDimensions":["GLOBAL_COMPOSITE","PIXEL_PRESERVATION"],"rootCause":"RC1","deterministic":true,"productionBlocking":true},
+    {"caseId":"B09","backend":"control","authorityProfile":"UNKNOWN_NOT_RECORDED","score":{"identity":93.85,"eyes_brows":92.33,"geometry":100.0,"global_composite":88.94,"pixel_preservation":"PASS"},"failingGates":["global_composite_below_threshold"],"failingDimensions":["GLOBAL_COMPOSITE"],"rootCause":"RC1","deterministic":true,"productionBlocking":true},
+    {"caseId":"B09","backend":"nano-banana-edit","authorityProfile":"UNKNOWN_NOT_RECORDED","score":{"identity":93.65,"eyes_brows":92.0,"geometry":97.0,"global_composite":89.02,"pixel_preservation":"FAIL"},"failingGates":["global_composite_below_threshold","pixel_preservation_failed"],"failingDimensions":["GLOBAL_COMPOSITE","PIXEL_PRESERVATION"],"rootCause":"RC1","deterministic":true,"productionBlocking":true},
+    {"caseId":"B09","backend":"comfyui-remote","authorityProfile":"UNKNOWN_NOT_RECORDED","score":{"identity":91.85,"eyes_brows":90.0,"geometry":96.11,"global_composite":89.34,"pixel_preservation":"PASS"},"failingGates":["global_composite_below_threshold"],"failingDimensions":["GLOBAL_COMPOSITE"],"rootCause":"RC1","deterministic":true,"productionBlocking":true},
+    {"caseId":"B10","backend":"control","authorityProfile":"UNKNOWN_NOT_RECORDED","score":{"identity":65.58,"eyes_brows":58.33,"geometry":100.0,"global_composite":73.75,"pixel_preservation":"PASS"},"failingGates":["identity_below_threshold","eyes_brows_below_threshold","global_composite_below_threshold"],"failingDimensions":["FACE_IDENTITY","GLOBAL_COMPOSITE"],"rootCause":"RC1","deterministic":true,"productionBlocking":true},
+    {"caseId":"B10","backend":"nano-banana-edit","authorityProfile":"UNKNOWN_NOT_RECORDED","score":{"identity":68.45,"eyes_brows":65.0,"geometry":91.11,"global_composite":85.05,"pixel_preservation":"FAIL"},"failingGates":["identity_below_threshold","eyes_brows_below_threshold","geometry_below_threshold","global_composite_below_threshold","pixel_preservation_failed"],"failingDimensions":["FACE_IDENTITY","GEOMETRY","GLOBAL_COMPOSITE","PIXEL_PRESERVATION"],"rootCause":"RC1","deterministic":true,"productionBlocking":true},
+    {"caseId":"B10","backend":"comfyui-remote","authorityProfile":"UNKNOWN_NOT_RECORDED","score":{"identity":0.0,"eyes_brows":6.67,"geometry":77.52,"global_composite":73.78,"pixel_preservation":"PASS"},"failingGates":["identity_below_threshold","eyes_brows_below_threshold","geometry_below_threshold","global_composite_below_threshold"],"failingDimensions":["FACE_IDENTITY","GEOMETRY","GLOBAL_COMPOSITE"],"rootCause":"RC1","deterministic":true,"productionBlocking":true}
+  ]
+}

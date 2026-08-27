@@ -1,6 +1,34 @@
 # VENHO AI STUDIO — Task Status
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
-**Cập nhật:** 2026-08-26 (GW-P7-T1 evidence reconciliation) · **GW-P7 IN PROGRESS / BLOCKED**
+**Cập nhật:** 2026-08-27 (GW-P7-T3-R1 lineage repair) · **GW-P7 CLOSED / QUALITY FAIL — CURRENT CANDIDATE REJECTED / NO PROMOTION**
+
+### GW-P7-T3-R1 — evidence lineage repair and final closure (2026-08-27)
+
+- GW-P0 through GW-P6 remain closed in their authoritative states; no GW-P8
+  exists in the roadmap.
+- GW-P7-T0 = `CLOSED / BLOCKERS IDENTIFIED`; GW-P7-T1 = `CLOSED / EVIDENCE
+  RECONCILED`; GW-P7-T2A-R2 = `PASS_PHYSICAL_SMOKE_COMPLETE`; GW-P7-T2 =
+  `CLOSED_CANDIDATE_REJECTED`.
+- T3-R1 proved a metadata-only defect: T1 report bytes, the T1 hash manifest,
+  and registry agree on
+  `de8f6d2e947130e5c7bf3b4150c263e0566c47ca54e99fc4bf37632ee90b14d6`; the
+  immutable T2 classification had one transposed source SHA. The original T2
+  artifact remains unchanged.
+- New corrective artifact:
+  `artifacts/identity-restoration/benchmarks/gw-p7-t3-r1-lineage-correction-20260827T021930Z/lineage_correction.json`
+  (`sha256=15d2afde5310e1cbcb4c6317f5eb8d6335d9deeb0a6641e59d33203fa8986834`).
+- Corrected evidence chain is PASS. Quality decision is unchanged: 22 RC1
+  failures, regional gate `FAIL`, candidate `REJECTED_QUALITY`; physical smoke
+  remains `PASS`.
+- The candidate has 30/30 valid rows, 22 deterministic `RC1` quality failures,
+  regional gate `FAIL`, and final state `REJECTED_QUALITY`. Physical smoke is
+  `PASS`; this does not override the regional gate.
+- Safe runtime state remains: AI Studio default is environment-controlled with a
+  `mock` fallback and remote adapter opt-in; VenHo OS RestorerSelector defaults
+  to `none`; promotion remains human-controlled. No production promotion,
+  provider call, GPU job, benchmark rerun, or candidate creation occurred.
+- GW-P7-T3-R1 = `CLOSED_NO_PROMOTION`; no production promotion, provider call,
+  GPU job, benchmark rerun, or new candidate occurred.
 
 ### GW-P7-T1 — production evidence & registry reconciliation (2026-08-26)
 
