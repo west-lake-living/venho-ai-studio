@@ -1,0 +1,95 @@
+{
+  "schemaVersion": "1.0",
+  "identityPackId": "linh-an-production-v3-2026-08",
+  "identitySubjectId": "linh-an",
+  "status": "APPROVED",
+  "approvedAt": "2026-08-27T00:00:00Z",
+  "approvedBy": "human-owner",
+  "references": [
+    {
+      "referenceId": "linh-an-a2-front",
+      "artifactPath": "assets/linh_an/A2_Front.png",
+      "artifactSha256": "1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d",
+      "role": "PRIMARY_FRONTAL",
+      "pose": {
+        "yawDeg": 0,
+        "pitchDeg": 0,
+        "rollDeg": 0,
+        "toleranceDeg": 10
+      },
+      "faceBounds": {
+        "left": 176,
+        "top": 214,
+        "right": 503,
+        "bottom": 672
+      },
+      "usableRegions": ["eyes", "nose", "mouth", "jaw", "hairline"],
+      "consentOrAuthorityRef": "config/projects/venho_hotel/subjects/linh_an.yaml",
+      "approved": true
+    },
+    {
+      "referenceId": "linh-an-b3-hero-v3",
+      "artifactPath": "assets/linh_an/identity_pack_v3/B3_Hero_single_face.png",
+      "artifactSha256": "599ea338d34d80b0b453fc18ca0bc62fa7389d9539768dbeb66793e5a7e16530",
+      "role": "THREE_QUARTER",
+      "pose": {
+        "yawDeg": -30,
+        "pitchDeg": 0,
+        "rollDeg": 0,
+        "toleranceDeg": 15
+      },
+      "faceBounds": {
+        "left": 75,
+        "top": 197,
+        "right": 362,
+        "bottom": 572
+      },
+      "usableRegions": ["eyes", "nose", "mouth", "jaw", "hairline"],
+      "consentOrAuthorityRef": "config/projects/venho_hotel/subjects/linh_an.yaml",
+      "approved": true
+    },
+    {
+      "referenceId": "linh-an-c-left-profile-v3",
+      "artifactPath": "assets/linh_an/identity_pack_v3/C_LeftProfile_single_face.png",
+      "artifactSha256": "286eb5ad50345c1ce4a443b1a1829a579dce2553d25ce9c01a1eda4b8735b638",
+      "role": "PROFILE",
+      "pose": {
+        "yawDeg": -90,
+        "pitchDeg": 0,
+        "rollDeg": 0,
+        "toleranceDeg": 20
+      },
+      "faceBounds": {
+        "left": 36,
+        "top": 235,
+        "right": 240,
+        "bottom": 560
+      },
+      "usableRegions": ["eyes", "nose", "mouth", "jaw", "hairline"],
+      "consentOrAuthorityRef": "config/projects/venho_hotel/subjects/linh_an.yaml",
+      "approved": true
+    },
+    {
+      "referenceId": "linh-an-d-right-profile-v3",
+      "artifactPath": "assets/linh_an/identity_pack_v3/D_RightProfile_single_face.png",
+      "artifactSha256": "0ba30d59f22cba5a64f5297ad5ebb55494a46c0dbb344c49adf0ed1edba393b6",
+      "role": "PROFILE",
+      "pose": {
+        "yawDeg": 90,
+        "pitchDeg": 0,
+        "rollDeg": 0,
+        "toleranceDeg": 20
+      },
+      "faceBounds": {
+        "left": 319,
+        "top": 211,
+        "right": 531,
+        "bottom": 566
+      },
+      "usableRegions": ["eyes", "nose", "mouth", "jaw", "hairline"],
+      "consentOrAuthorityRef": "config/projects/venho_hotel/subjects/linh_an.yaml",
+      "approved": true
+    }
+  ],
+  "sha256": "fc185a9e47a33092fbafe357a140b65f9449bac0de28d7e20b9f33d8ddcbb406"
+}
