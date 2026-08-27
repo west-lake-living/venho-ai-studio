@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import random
+import time
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Mapping, Protocol
@@ -93,7 +95,15 @@ class GoogleDriveUploader:
             meta["parents"] = [parent_id]
         return self._service.files().create(body=meta, fields="id").execute()["id"]
 
-    def upload_and_publish(self, file_path: Path, *, folder_path: list[str], mimetype: str = "image/png") -> str:
+    @staticmethod
+    def _is_transient_upload_error(exc: Exception) -> bool:
+        status = getattr(exc, "status_code", None) or getattr(getattr(exc, "resp", None), "status", None)
+        if status in {408, 429, 500, 502, 503, 504}:
+            return True
+        message = str(exc).lower()
+        return any(token in message for token in ("ssleoferror", "eof occurred", "ssl", "timeout", "timed out", "connection reset", "temporarily unavailable"))
+
+    def _upload_and_publish_once(self, file_path: Path, *, folder_path: list[str], mimetype: str) -> str:
         from googleapiclient.http import MediaFileUpload
 
         parent_id: str | None = None
@@ -110,6 +120,25 @@ class GoogleDriveUploader:
         # module (no Google auth) to fetch the bytes before posting.
         self._service.permissions().create(fileId=file_id, body={"type": "anyone", "role": "reader"}).execute()
         return f"https://drive.google.com/uc?export=download&id={file_id}"
+
+    def upload_and_publish(self, file_path: Path, *, folder_path: list[str], mimetype: str = "image/png") -> str:
+        """Retry transient Drive transport failures before allowing fallback.
+
+        A short TLS EOF during GitHub Actions previously caused an otherwise
+        valid generated image to be discarded and a rotated fallback reused.
+        Auth/permission errors still fail immediately so no invalid token is
+        hidden behind retries.
+        """
+        attempts = 3
+        for attempt in range(attempts):
+            try:
+                return self._upload_and_publish_once(file_path, folder_path=folder_path, mimetype=mimetype)
+            except Exception as exc:
+                if not self._is_transient_upload_error(exc) or attempt == attempts - 1:
+                    raise
+                delay = 2**attempt + random.uniform(0.0, 0.5)
+                time.sleep(delay)
+        raise AssertionError("unreachable")
 
 
 def google_drive_uploader_from_env(env: Mapping[str, str]) -> "GoogleDriveUploader | MockDriveUploader":
