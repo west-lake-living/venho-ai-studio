@@ -19,6 +19,39 @@ Candidate v3 remains feature-gated `OFF`; v2/v2.1 behavior was not modified;
 GPU calls `0`; provider/network calls `0`. No runtime QC integration, GPU job,
 provider call, browser job, benchmark generation, or image generation was run.
 
+## 2026-08-27 — Candidate v3 P2-T3-B2 crop padding semantics decision pack
+
+P2-T3-B2 is now `CLOSED / PASS`; P2-T3 is `READY / NOT STARTED`; P2-T4 is
+`NOT STARTED`. The approved transform authority supplies the scalar crop
+padding ratio `0.20`, and human authority has now fixed its exact CP-B
+interpretation and the associated out-of-bounds, transform-order, and
+rasterization semantics.
+
+The decision pack
+`docs/Image studio/candidate_v3_phase2_crop_padding_semantics_decision.md`
+records the prior evidence classification as `ABSENT` for the Candidate v3
+convention and records the approved CP-B (square maximum dimension, per-side),
+OOB-A, TO-A, and deterministic rasterization rule.
+No crop implementation, executable configuration, schema mutation, feature-flag
+change, v2/v2.1 change, GPU call, or provider/network call was made.
+
+### P2-T3-B2 — Crop Padding Semantics Approval (2026-08-27)
+
+- Result: `CLOSED / PASS`; P2-T3 is `READY / NOT STARTED`; P2-T4 is
+  `NOT STARTED`.
+- Human authority approved CP-B: square crop centered on the face bbox center,
+  with side `1.40 × max(face_bbox_width, face_bbox_height)` (`0.20` per side).
+- OOB-A is approved: preserve requested crop bounds, synthesize missing pixels
+  with `REFLECT_101`, and do not clamp or shrink. TO-A is approved: source
+  image → padded square crop → canonical `512×512` alignment.
+- Continuous float bounds use deterministic `floor(min) / ceil(max)` raster
+  bounds; the resulting extent, crop origin, and geometry are shared by image,
+  binary mask, feather mask, and landmarks.
+- Approval is recorded in
+  `docs/Image studio/candidate_v3_phase2_crop_padding_semantics_decision.md`
+  by Harry Pham on `2026-08-27`. No implementation, executable configuration,
+  schema, feature-flag, v2/v2.1, GPU, or provider/network change was made.
+
 ## 2026-08-27 — Candidate v3 Phase 2 approved decomposition
 
 Phase 2 is `IN PROGRESS`; P2-T1 is `CLOSED / PASS`; P2-T2-B1 is `BLOCKED`, and

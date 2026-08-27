@@ -19,14 +19,49 @@
   observability contract.
 - P2-T2-B1 = `BLOCKED`: calibration authority lock for the deterministic route
   policy. P2-T2 is now `READY / NOT STARTED` after human calibration approval.
-- P2-T3 = `READY / NOT STARTED`: five-point canonical face transform plus
-  mask/inverse transform and round-trip verification; P2-T3-B1 authority is
-  approved.
+- P2-T3-B2 = `CLOSED / PASS`; P2-T3 = `READY / NOT STARTED`: CP-B crop-padding
+  semantics are approved; P2-T3-B1 authority is also approved.
 - P2-T4 = `NOT STARTED`: fixed CPU fixtures, coordinate/mask property tests,
   threshold calibration, and the Phase 2 closure gate.
 - Strict order is P2-T1 → P2-T2 → P2-T3 → P2-T4. All tasks remain CPU-only;
   the feature flag stays `OFF`, v2/v2.1 stays untouched, and no provider or
   network execution is authorized.
+
+### Candidate v3 Identity Restoration — P2-T3-B2 crop padding semantics decision pack (2026-08-27)
+
+- `P2-T3-B2 = HUMAN DECISION REQUIRED`; `P2-T3 = BLOCKED / NOT STARTED`;
+  `P2-T4 = NOT STARTED`.
+- The approved transform authority fixes `cropPaddingRatio = 0.20`, but the
+  Candidate v3 convention for per-side versus total expansion, crop shape,
+  center, out-of-bounds sampling, transform order detail, and rasterization is
+  not defined by repository evidence.
+- Decision pack:
+  `docs/Image studio/candidate_v3_phase2_crop_padding_semantics_decision.md`.
+  It presents CP-A bbox-per-side, CP-B square-max-dimension-per-side, and CP-C
+  square-max-dimension-total options without approving one.
+- No implementation, executable config, schema, feature-flag, v2/v2.1, GPU,
+  provider, or network change was made. Human crop semantics approval is the
+  blocker for P2-T3.
+
+### Candidate v3 Identity Restoration — P2-T3-B2 crop padding semantics approval (2026-08-27)
+
+- `P2-T3-B2 = CLOSED / PASS`; `P2-T3 = READY / NOT STARTED`;
+  `P2-T4 = NOT STARTED`.
+- Human authority approved `CP-B`: square crop centered on
+  `FACE_BBOX_CENTER`, with side `1.40 × max(face_bbox_width,
+  face_bbox_height)`, meaning `0.20` padding per side.
+- Approved border semantics are `OOB-A`: preserve requested crop bounds,
+  synthesize missing pixels with `REFLECT_101`, and never clamp or shrink.
+  Approved order is `TO-A`: source image → padded square crop → canonical
+  `512×512` alignment.
+- Approved rasterization computes continuous float bounds, uses
+  `floor(min) / ceil(max)`, preserves the resulting raster extent, and uses
+  the same crop origin and geometry for image, binary mask, feather mask, and
+  landmarks.
+- Approval is recorded in
+  `docs/Image studio/candidate_v3_phase2_crop_padding_semantics_decision.md`
+  by Harry Pham on `2026-08-27`. No implementation, executable config,
+  feature-flag, v2/v2.1, GPU, provider, or network change was made.
 
 ### Candidate v3 Identity Restoration — P2-T2-B1 calibration authority lock (2026-08-27)
 
