@@ -1,0 +1,49 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "project": "venho_hotel",
+  "content_type": "instagram_post",
+  "target_language": "vi",
+  "generated_at": "2026-08-27T08:20:47.627648+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_OUTSIDE_DNA.json",
+      "dna_version": "1.1",
+      "hash": "sha256:a690674cea4135c5b96163b3672a5571a1f5b9a999d9376fada2778aa09de882"
+    }
+  ],
+  "source_prompt": {
+    "file": "data/projects/venho_hotel/prompts/content/OUTSIDE__instagram-ngu-n-0-xu-t-abc-coffee-roasters-l-qu-n-c-ph-ban-c-ng-view-tr-n-v-n-h-__CONTENT_PROMPT_v1.0.json",
+    "prompt_id": "outside__content__instagram-ngu-n-0-xu-t-abc-coffee-roasters-l-qu-n-c-ph-ban-c-ng-view-tr-n-v-n-h-",
+    "prompt_version": "1.0"
+  },
+  "generator": {
+    "provider": "mock",
+    "model": "deterministic-social-builder",
+    "temperature": 0.6
+  },
+  "title": "Một ban công nhìn trọn Hồ Tây",
+  "hook": "Có những quán cà phê phải leo lên một tầng mới thấy hết lý do người ta yêu Hồ Tây.",
+  "body": "ABC Coffee Roasters là một gợi ý như vậy: ban công mở thẳng ra mặt hồ, không vướng gì ở phía trước.\n\nBuổi chiều trời trong, mặt nước ánh lên màu xanh xám. Phía dưới là hàng cây lâu năm ven đường, xa hơn một chút là những mái nhà cao thấp của Tây Hồ chen nhau trong nắng.\n\nBan công không bày biện nhiều. Chỉ có nền gạch sạch, lan can và khoảng trống đủ để đứng tựa vào đó một lúc lâu. Đôi khi một chỗ ngồi gọn gàng và một tầm nhìn rộng là đủ cho cả buổi chiều.\n\nTừ Ven Hồ Hotel trên phố Nguyễn Đình Thi, những quán cà phê nhìn ra hồ như thế nằm trong tầm đi bộ hoặc một quãng xe ngắn — tiện cho những ngày bạn muốn đi chậm quanh Hồ Tây.",
+  "cta": "Nếu bạn đang lên lịch cho một chuyến Hà Nội thong thả, nhắn tin cho Ven Hồ Hotel để xem phòng trống những ngày đó nhé.",
+  "hashtags": [
+    "#VenHoHotelHanoi",
+    "#HoTay",
+    "#WestLakeHanoi",
+    "#KhamPhaHoTay",
+    "#KhachSanHoTay",
+    "#CafeHoTay",
+    "#HaNoi",
+    "#HanoiTravel"
+  ],
+  "visual_note": null,
+  "contract_refs": null,
+  "payload": {},
+  "status": "draft",
+  "validation": {
+    "required": true,
+    "status": "pending",
+    "report_file": null,
+    "notes": []
+  }
+}

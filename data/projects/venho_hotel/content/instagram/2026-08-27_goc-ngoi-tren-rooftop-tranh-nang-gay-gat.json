@@ -1,0 +1,49 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "project": "venho_hotel",
+  "content_type": "instagram_post",
+  "target_language": "vi",
+  "generated_at": "2026-08-27T08:21:53.500851+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_LOBBY_DNA.json",
+      "dna_version": "1.1",
+      "hash": "sha256:e01fc1fa26c2318ce93d3a670067bac2ccbf9dc329a141ea906e80fb108c673f"
+    }
+  ],
+  "source_prompt": {
+    "file": "data/projects/venho_hotel/prompts/content/LOBBY__instagram-goc-ngoi-tren-rooftop-tranh-nang-gay-gat__CONTENT_PROMPT_v1.0.json",
+    "prompt_id": "lobby__content__instagram-goc-ngoi-tren-rooftop-tranh-nang-gay-gat",
+    "prompt_version": "1.0"
+  },
+  "generator": {
+    "provider": "mock",
+    "model": "deterministic-social-builder",
+    "temperature": 0.6
+  },
+  "title": "Góc râm trên tầng thượng, dành cho những ngày nắng Hồ Tây",
+  "hook": "Nắng Hồ Tây buổi trưa thì gắt. Nhưng trên tầng thượng luôn có một mảng râm để ngồi.",
+  "body": "Đi bộ hay đạp xe quanh hồ vào giữa trưa là kiểu trải nghiệm mà ai thử một lần cũng nhớ, theo nghĩa đen.\n\nCách dễ chịu hơn: quay về, đẩy cánh cửa kính bước vào sảnh. Sàn gạch nâu với những vòng hoa văn tròn, quầy lễ tân gỗ nâu đỏ, vài bức tranh treo trên tường, ánh sáng dịu vừa đủ. Nhiệt độ hạ xuống ngay từ bước chân đầu tiên.\n\nRồi lên tầng thượng, chọn phía có bóng râm. Mặt hồ vẫn ở đó, sáng loá dưới nắng, gió từ mặt nước thổi lên mát hơn hẳn dưới đường.\n\nNgồi đó chờ khoảng ba, bốn giờ chiều. Nắng nhạt dần, mặt nước đổi màu, và đó là lúc hợp nhất để bắt đầu lại vòng đi bộ dọc Nguyễn Đình Thi.\n\nMùa hè ở Hồ Tây không cần đi cả ngày. Chỉ cần biết lúc nào nên nghỉ.",
+  "cta": "Nếu bạn đang tìm một khách sạn view Hồ Tây cho chuyến Hà Nội sắp tới, nhắn Ven Hồ Hotel để xem lịch phòng trống nhé.",
+  "hashtags": [
+    "#VenHoHotelHanoi",
+    "#HoTay",
+    "#WestLakeHanoi",
+    "#KhachSanHoTay",
+    "#NguyenDinhThi",
+    "#HoangHonHoTay",
+    "#HaNoi",
+    "#HanoiTravel"
+  ],
+  "visual_note": null,
+  "contract_refs": null,
+  "payload": {},
+  "status": "draft",
+  "validation": {
+    "required": true,
+    "status": "pending",
+    "report_file": null,
+    "notes": []
+  }
+}

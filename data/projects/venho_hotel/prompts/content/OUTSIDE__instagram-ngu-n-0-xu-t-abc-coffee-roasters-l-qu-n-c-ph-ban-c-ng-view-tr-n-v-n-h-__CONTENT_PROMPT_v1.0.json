@@ -1,0 +1,300 @@
+{
+  "contract_version": "1.0",
+  "module": "prompt_studio",
+  "project": "venho_hotel",
+  "prompt_type": "content",
+  "prompt_id": "outside__content__instagram-ngu-n-0-xu-t-abc-coffee-roasters-l-qu-n-c-ph-ban-c-ng-view-tr-n-v-n-h-",
+  "prompt_version": "1.0",
+  "generated_at": "2026-08-27T08:20:26.006174+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_OUTSIDE_DNA.json",
+      "dna_version": "1.1",
+      "dna_contract_version": "1.1",
+      "hash": "sha256:a690674cea4135c5b96163b3672a5571a1f5b9a999d9376fada2778aa09de882"
+    }
+  ],
+  "template": {
+    "name": "content_prompt.yaml",
+    "template_version": "1.0"
+  },
+  "task_brief": "Create a instagram_post draft about 'Nguồn 0 đề xuất ABC Coffee Roasters là quán cà phê ban công view trọn vẹn Hồ Tây.' for Vietnamese leisure guests. Content pillar: Diem den & su kien quanh Ho Tay. Tone: warm, clear, trustworthy. Length: medium. CTA type: booking_soft.",
+  "target_language": "vi",
+  "required_dna": [
+    {
+      "key": "cityscape_visible",
+      "value": "mixed cityscape visible"
+    },
+    {
+      "key": "sky_condition",
+      "value": "clear blue sky"
+    },
+    {
+      "key": "street_trees_visible",
+      "value": "mature street trees visible"
+    },
+    {
+      "key": "lighting_condition",
+      "value": "natural daylight"
+    },
+    {
+      "key": "space_condition",
+      "value": "well maintained space"
+    },
+    {
+      "key": "outdoor_furniture",
+      "value": "no outdoor furniture"
+    }
+  ],
+  "allowed_variations": [
+    {
+      "key": "lake_view_visible",
+      "value_range": [
+        "full_panoramic",
+        "none",
+        "partial"
+      ]
+    },
+    {
+      "key": "lake_water_color",
+      "value_range": [
+        "blue_gray",
+        "jade_teal"
+      ]
+    },
+    {
+      "key": "floor_level",
+      "value_range": [
+        "ground_floor",
+        "upper_floor"
+      ]
+    },
+    {
+      "key": "space_type",
+      "value_range": [
+        "balcony",
+        "entrance_area",
+        "rooftop_terrace",
+        "street_level_exterior"
+      ]
+    },
+    {
+      "key": "flooring_material",
+      "value_range": [
+        "concrete",
+        "tile"
+      ]
+    },
+    {
+      "key": "time_of_day",
+      "value_range": [
+        "afternoon",
+        "midday"
+      ]
+    },
+    {
+      "key": "plants_present",
+      "value_range": [
+        "none",
+        "yes_landscaped",
+        "yes_potted"
+      ]
+    },
+    {
+      "key": "railing_type",
+      "value_range": [
+        "black_iron_scroll",
+        "concrete_parapet",
+        "metal_bar",
+        "none"
+      ]
+    }
+  ],
+  "allowed_imperfections": [
+    {
+      "value": "Hanoi haze over lake view acceptable and authentic",
+      "source": "curated"
+    },
+    {
+      "value": "weathered tiles or concrete surface acceptable",
+      "source": "curated"
+    },
+    {
+      "value": "visible neighboring rooftops acceptable",
+      "source": "curated"
+    },
+    {
+      "value": "natural sky variation (clouds, smog) acceptable",
+      "source": "curated"
+    },
+    {
+      "value": "modest outdoor furniture showing wear acceptable",
+      "source": "curated"
+    },
+    {
+      "value": "Some dirt or wear on the building facade",
+      "source": "observed"
+    },
+    {
+      "value": "motorbikes parked on sidewalk",
+      "source": "observed"
+    },
+    {
+      "value": "none",
+      "source": "observed"
+    },
+    {
+      "value": "Some trees appear to have dry branches.",
+      "source": "observed"
+    },
+    {
+      "value": "slight cloud cover",
+      "source": "observed"
+    },
+    {
+      "value": "Some buildings show signs of wear.",
+      "source": "observed"
+    },
+    {
+      "value": "Some dirt on the street",
+      "source": "observed"
+    },
+    {
+      "value": "slightly uneven pavement",
+      "source": "observed"
+    },
+    {
+      "value": "slightly worn facade",
+      "source": "observed"
+    },
+    {
+      "value": "slight wear on pavement",
+      "source": "observed"
+    },
+    {
+      "value": "Some shadows on the pavement",
+      "source": "observed"
+    }
+  ],
+  "forbidden": [
+    {
+      "rule": "no infinity pool or resort-style pool deck — hotel has no pool",
+      "source": "curated"
+    },
+    {
+      "rule": "no rooftop bar with full commercial bar setup",
+      "source": "curated"
+    },
+    {
+      "rule": "no luxury resort terrace furniture (cabanas, daybeds)",
+      "source": "curated"
+    },
+    {
+      "rule": "no city high-rise skyline — West Lake area is low-rise",
+      "source": "curated"
+    },
+    {
+      "rule": "no generic rooftop lounge aesthetic — this is a simple urban terrace",
+      "source": "curated"
+    },
+    {
+      "rule": "no manicured hotel garden — space is compact and urban",
+      "source": "curated"
+    },
+    {
+      "rule": "no infinity pool or resort-style pool deck",
+      "source": "observed"
+    },
+    {
+      "rule": "no rooftop bar with full bar setup",
+      "source": "observed"
+    },
+    {
+      "rule": "no luxury resort terrace furniture",
+      "source": "observed"
+    },
+    {
+      "rule": "no city high-rise skyline in background",
+      "source": "observed"
+    },
+    {
+      "rule": "No visible outdoor furniture",
+      "source": "observed"
+    },
+    {
+      "rule": "No visible plants on the balcony",
+      "source": "observed"
+    },
+    {
+      "rule": "No visible flooring material",
+      "source": "observed"
+    },
+    {
+      "rule": "No specific outdoor furniture",
+      "source": "observed"
+    },
+    {
+      "rule": "No visible railing",
+      "source": "observed"
+    },
+    {
+      "rule": "No visible outdoor furniture or specific flooring material",
+      "source": "observed"
+    },
+    {
+      "rule": "No people visible",
+      "source": "observed"
+    },
+    {
+      "rule": "No vehicles other than motorbike",
+      "source": "observed"
+    },
+    {
+      "rule": "No visible lake or cityscape",
+      "source": "observed"
+    },
+    {
+      "rule": "No outdoor furniture",
+      "source": "observed"
+    }
+  ],
+  "final_prompt": "Create a instagram_post draft about 'Nguồn 0 đề xuất ABC Coffee Roasters là quán cà phê ban công view trọn vẹn Hồ Tây.' for Vietnamese leisure guests. Content pillar: Diem den & su kien quanh Ho Tay. Tone: warm, clear, trustworthy. Length: medium. CTA type: booking_soft.\n\nWrite the content in Vietnamese.\n\nAudience: Travelers considering a stay near West Lake (Ho Tay), Hanoi — leisure and business, VN + international.\nTone: Warm, authentic, unhurried. Show real daily life beside West Lake, not a sales pitch.\n\nBrand DNA:\n- The West Lake Living — gold #C9A84C accent, deep navy #1B2D4F, warm white #F7F4EF background.\n- Tagline: 'Where West Lake Meets Elegance'.\n- Ven Ho Hotel is the gateway/base camp of the universe — boutique mid-range, not luxury resort.\n\nRequired facts (ground your writing in these, do not contradict them, but never copy hex codes or raw English descriptors literally — paraphrase in the target language):\n- cityscape_visible: mixed cityscape visible\n- sky_condition: clear blue sky\n- street_trees_visible: mature street trees visible\n- lighting_condition: natural daylight\n- space_condition: well maintained space\n- outdoor_furniture: no outdoor furniture\n\nFlexible details (any one of the listed options is acceptable):\n- lake_view_visible: full_panoramic / none / partial\n- lake_water_color: blue_gray / jade_teal\n- floor_level: ground_floor / upper_floor\n- space_type: balcony / entrance_area / rooftop_terrace / street_level_exterior\n- flooring_material: concrete / tile\n- time_of_day: afternoon / midday\n- plants_present: none / yes_landscaped / yes_potted\n- railing_type: black_iron_scroll / concrete_parapet / metal_bar / none\n\nCall-to-action: End with one soft call-to-action inviting the reader to check availability or message the page — never pushy, never a hard sell.",
+  "optimizer": {
+    "used": false,
+    "provider": null,
+    "model": null,
+    "temperature": null
+  },
+  "validation": {
+    "structural": "pending",
+    "faithfulness": "pending"
+  },
+  "notes": [],
+  "contract_refs": null,
+  "restrictions": [
+    "no infinity pool or resort-style pool deck — hotel has no pool",
+    "no rooftop bar with full commercial bar setup",
+    "no luxury resort terrace furniture (cabanas, daybeds)",
+    "no city high-rise skyline — West Lake area is low-rise",
+    "no generic rooftop lounge aesthetic — this is a simple urban terrace",
+    "no manicured hotel garden — space is compact and urban",
+    "no infinity pool or resort-style pool deck",
+    "no rooftop bar with full bar setup",
+    "no luxury resort terrace furniture",
+    "no city high-rise skyline in background",
+    "No visible outdoor furniture",
+    "No visible plants on the balcony",
+    "No visible flooring material",
+    "No specific outdoor furniture",
+    "No visible railing",
+    "No visible outdoor furniture or specific flooring material",
+    "No people visible",
+    "No vehicles other than motorbike",
+    "No visible lake or cityscape",
+    "No outdoor furniture",
+    "Do not claim '5 star' or 'best in Hanoi' — Ven Ho Hotel is boutique mid-range, not luxury.",
+    "Do not use the phrase 'sang chảnh nhất' or overclaim luxury positioning.",
+    "Do not fabricate guest reviews, ratings, or awards not present in Knowledge.",
+    "Do not describe West Lake as a generic tourist postcard — keep it authentic, local, unhurried."
+  ]
+}

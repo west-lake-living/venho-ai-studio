@@ -1,0 +1,46 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "project": "venho_hotel",
+  "content_type": "facebook_post",
+  "target_language": "vi",
+  "generated_at": "2026-08-27T08:12:08.032265+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_LOBBY_DNA.json",
+      "dna_version": "1.1",
+      "hash": "sha256:e01fc1fa26c2318ce93d3a670067bac2ccbf9dc329a141ea906e80fb108c673f"
+    }
+  ],
+  "source_prompt": {
+    "file": "data/projects/venho_hotel/prompts/content/LOBBY__facebook-chi-tiet-nho-trong-phong-khien-khach-nho-lau__CONTENT_PROMPT_v1.0.json",
+    "prompt_id": "lobby__content__facebook-chi-tiet-nho-trong-phong-khien-khach-nho-lau",
+    "prompt_version": "1.0"
+  },
+  "generator": {
+    "provider": "mock",
+    "model": "deterministic-social-builder",
+    "temperature": 0.6
+  },
+  "title": "Những chi tiết nhỏ thường ở lại lâu hơn ta tưởng",
+  "hook": "Sau một chuyến đi, thứ còn lại trong trí nhớ hiếm khi là những gì to tát.",
+  "body": "Thường là một chi tiết rất nhỏ. Cách cánh cửa kính khép lại sau lưng khi bạn vừa đi bộ về từ đường Nguyễn Đình Thi. Những vòng tròn lặp đi lặp lại trên nền gạch nâu dưới chân, thứ hoa văn mà đến ngày thứ hai bạn đã quen mắt. Mặt quầy lễ tân bằng gỗ tông nâu đỏ sẫm, hơi trầm, đủ để căn phòng bớt lạnh.\n\nPhía sau quầy là chiếc tủ đựng chìa khóa, mỗi ô một số phòng. Trên tường có một bức tranh. Ánh sáng trung tính, không gắt, không tối, kiểu ánh sáng khiến người ta hạ giọng xuống một chút khi bước vào.\n\nVen Hồ Hotel không phải một khách sạn lớn. Không gian vừa phải, mọi thứ được giữ sạch sẽ và ở đúng chỗ của nó. Có lẽ chính vì vừa vặn nên những chi tiết nhỏ mới dễ nhớ đến vậy: bạn nhận ra mình đã quen với chúng, trước cả khi kịp để ý.\n\nMột chuyến đi Hà Nội thường được nhớ bằng Hồ Tây, bằng vài quán ăn, vài buổi chiều đi bộ. Nhưng chỗ để quay về sau tất cả những điều đó cũng góp phần vào cảm giác chung của cả chuyến đi.",
+  "cta": "Nếu bạn đang sắp xếp lịch cho những ngày ở Hà Nội, nhắn tin cho Ven Hồ Hotel để xem còn phòng trống vào thời gian bạn dự định nhé.",
+  "hashtags": [
+    "#VenHoHotelHanoi",
+    "#HoTay",
+    "#KhachSanHoTay",
+    "#HaNoi",
+    "#WestLakeHanoi"
+  ],
+  "visual_note": null,
+  "contract_refs": null,
+  "payload": {},
+  "status": "draft",
+  "validation": {
+    "required": true,
+    "status": "pending",
+    "report_file": null,
+    "notes": []
+  }
+}

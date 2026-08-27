@@ -1,0 +1,49 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "project": "venho_hotel",
+  "content_type": "instagram_post",
+  "target_language": "vi",
+  "generated_at": "2026-08-27T08:15:01.779277+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_LOBBY_DNA.json",
+      "dna_version": "1.1",
+      "hash": "sha256:e01fc1fa26c2318ce93d3a670067bac2ccbf9dc329a141ea906e80fb108c673f"
+    }
+  ],
+  "source_prompt": {
+    "file": "data/projects/venho_hotel/prompts/content/LOBBY__instagram-h-t-y-a-i-m-du-l-ch-check-in-n-i-ti-ng-gi-a-l-ng-h-n-i__CONTENT_PROMPT_v1.0.json",
+    "prompt_id": "lobby__content__instagram-h-t-y-a-i-m-du-l-ch-check-in-n-i-ti-ng-gi-a-l-ng-h-n-i",
+    "prompt_version": "1.0"
+  },
+  "generator": {
+    "provider": "mock",
+    "model": "deterministic-social-builder",
+    "temperature": 0.6
+  },
+  "title": "Hồ Tây: nơi ai đến Hà Nội cũng ghé một lần",
+  "hook": "Hồ Tây rộng đến mức mỗi người nhớ về nó theo một cách khác nhau.",
+  "body": "Có người nhớ đoạn đường Thanh Niên với hai mặt nước hai bên. Có người nhớ những chiếc xe đạp thả dốc buổi sáng, hàng nước ven đường, tiếng chuông xe lẫn trong gió.\n\nĐi hết một vòng hồ không phải chuyện của mười lăm phút. Và cũng vì thế, mỗi đoạn lại có một nhịp riêng: chỗ đông vui hàng quán, chỗ chỉ có cây và mặt nước.\n\nNếu bạn tới đây để tìm một khung hình, sẽ không thiếu góc để chụp. Nhưng thường thì tấm ảnh ưng nhất lại rơi vào lúc đã ngồi xuống, không còn vội đi tiếp nữa.\n\nĐoạn Nguyễn Đình Thi chạy sát mép nước là một trong những chỗ dễ chậm lại như vậy. Ven Hồ Hotel nằm ngay trên con đường này — đẩy cửa kính bước vào là quầy lễ tân gỗ nâu sẫm, sàn gạch hoa văn tròn, đèn sáng vừa đủ. Một chỗ để cất đồ, nghỉ chân, rồi lại ra hồ.",
+  "cta": "Bạn đang tính ngày nào ở Hà Nội? Nhắn cho Ven Hồ Hotel để xem còn phòng những hôm đó nhé.",
+  "hashtags": [
+    "#VenHoHotelHanoi",
+    "#HoTay",
+    "#WestLakeHanoi",
+    "#KhamPhaHoTay",
+    "#KhachSanHoTay",
+    "#NguyenDinhThi",
+    "#HaNoi",
+    "#HanoiTravel"
+  ],
+  "visual_note": null,
+  "contract_refs": null,
+  "payload": {},
+  "status": "draft",
+  "validation": {
+    "required": true,
+    "status": "pending",
+    "report_file": null,
+    "notes": []
+  }
+}
