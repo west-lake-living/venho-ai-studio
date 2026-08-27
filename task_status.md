@@ -1,4 +1,61 @@
 # VENHO AI STUDIO — Task Status
+
+### Candidate v3 Identity Restoration — P1-T2 closure (2026-08-27)
+
+- P1-T2A = `CLOSED / PASS`; P1-T2B = `CLOSED / PASS`; P1-T2C =
+  `CLOSED / PASS`; P1-T2 = `CLOSED / PASS`.
+- Locked scenario coverage is `10/10`: approved `10`, resolved `10`,
+  unmatched `0`, unexpected `0`, duplicate approved `0`.
+- Profile integrity is `PASS`; B03/B04 remain pinned to
+  `action_full_body@1.0` with only `shot_distance` and `hairstyle` excluded;
+  B01/B02/B05–B10 remain `canonical_default` with no exclusions.
+- Candidate v3 feature flag remains `OFF`; v2/v2.1 behavior was not modified;
+  GPU calls `0`; provider/network calls `0`.
+
+### Candidate v3 Identity Restoration — Phase 2 decomposition (2026-08-27)
+
+- Phase 1 = `CLOSED / PASS` through P1-T2. Phase 2 = `IN PROGRESS`.
+- P2-T1 = `CLOSED / PASS`: FaceObservabilityService and the CPU-only
+  observability contract.
+- P2-T2-B1 = `BLOCKED`: calibration authority lock for the deterministic route
+  policy. P2-T2 remains `BLOCKED / NOT STARTED`.
+- P2-T3 = `NOT STARTED`: five-point canonical face transform plus mask/inverse
+  transform and round-trip verification.
+- P2-T4 = `NOT STARTED`: fixed CPU fixtures, coordinate/mask property tests,
+  threshold calibration, and the Phase 2 closure gate.
+- Strict order is P2-T1 → P2-T2 → P2-T3 → P2-T4. All tasks remain CPU-only;
+  the feature flag stays `OFF`, v2/v2.1 stays untouched, and no provider or
+  network execution is authorized.
+
+### Candidate v3 Identity Restoration — P2-T2-B1 calibration authority lock (2026-08-27)
+
+- `P2-T2-B1 = BLOCKED`; `P2-T2 = BLOCKED / NOT STARTED`; P2-T3 and P2-T4
+  remain `NOT STARTED`.
+- Frozen B05/B06/B10 geometry manifests provide deterministic YuNet
+  measurements, but only B10-like non-`ELIGIBLE` behavior and multiple-face
+  review are explicitly authoritative. B05/B06 have no expected route labels.
+- No repository-pinned threshold exists for general microface/recoverability,
+  extreme pose, landmark uncertainty, or positive `ELIGIBLE` proof. No
+  executable route policy or partial policy config was created.
+- Authority audit report:
+  `docs/Image studio/candidate_v3_phase2_route_calibration.md`.
+- CPU-only = `PASS`; Candidate v3 feature flag = `OFF`; v2/v2.1 modified =
+  `NO`; GPU calls `0`; provider/network calls `0`.
+
+### Candidate v3 Identity Restoration — P2-T1 closure (2026-08-27)
+
+- Phase 2 = `IN PROGRESS`; P2-T1 = `CLOSED / PASS`; P2-T2-B1 = `BLOCKED`;
+  P2-T2 = `BLOCKED / NOT STARTED`; P2-T3 = `NOT STARTED`; P2-T4 = `NOT
+  STARTED`.
+- P2-T1 provides schema-valid immutable `FaceObservability` evidence, the
+  CPU-only service, pinned YuNet detector/config provenance, canonical
+  measurement hashing, and deterministic face-to-editable-mask measurements.
+- Focused validation is `40 passed`; determinism, malformed input, no-face,
+  multiple-face, confidence, bbox, landmark, mask-target, schema, immutability,
+  and detector/config fail-closed coverage are PASS.
+- CPU-only = `PASS`; Candidate v3 feature flag = `OFF`; v2/v2.1 modified =
+  `NO`; GPU calls `0`; provider/network calls `0`.
+
 **Growth Agent v3.1 reliability repair:** STEPS 1–6 COMPLETE · Registry checkpointing, provider retry, stale/rejected replacement, slot/platform uniqueness, Dashboard queue separation, Drive retry and Make reconciliation shipped 2026-08-27. AI Studio `2dcd6f6`; VENHO OS `5225d63`. AI Studio focused tests and VENHO OS `450/450` tests + TypeScript pass. `spawnSync gh ENOBUFS` fixed.
 **Repo:** `venho-ai-studio` · **Workspace:** THE WEST LAKE LIVING
 **Cập nhật:** 2026-08-27 (GW-P7-T3-R1 lineage repair) · **GW-P7 CLOSED / QUALITY FAIL — CURRENT CANDIDATE REJECTED / NO PROMOTION**

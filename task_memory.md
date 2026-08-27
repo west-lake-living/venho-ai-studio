@@ -1,5 +1,175 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-08-27 — Candidate v3 P1-T2 authority closure
+
+Closed Candidate v3 Phase 1 authority work: P1-T2A, P1-T2B, and P1-T2C are
+`CLOSED / PASS`, so P1-T2 is `CLOSED / PASS`. The deterministic audit and
+closure gate verify the locked B01–B10 dataset at 10/10 approved and resolved,
+with zero unmatched, unexpected, duplicate approved, missing profile, SHA
+mismatch, or invalid exclusion findings.
+
+B03/B04 remain explicitly bound to `action_full_body@1.0`, excluding only
+`shot_distance` and `hairstyle`; B01/B02/B05–B10 remain bound to
+`canonical_default` with no exclusions. Profile hashes are recomputed from
+raw source bytes. Fail-closed audit tests cover missing/unexpected/duplicate/
+missing-profile/tampered-SHA/invalid-exclusion/RETIRED cases, determinism, and
+non-mutation.
+
+Candidate v3 remains feature-gated `OFF`; v2/v2.1 behavior was not modified;
+GPU calls `0`; provider/network calls `0`. No runtime QC integration, GPU job,
+provider call, browser job, benchmark generation, or image generation was run.
+
+## 2026-08-27 — Candidate v3 Phase 2 approved decomposition
+
+Phase 2 is `IN PROGRESS`; P2-T1 is `CLOSED / PASS`; P2-T2-B1 is `BLOCKED`, and
+P2-T2 remains `BLOCKED / NOT STARTED`. P2-T3 and P2-T4 remain not started. The
+minimal executable order is P2-T1 → P2-T2 → P2-T3 → P2-T4, directly matching the
+authoritative Phase 2 bullets in
+`docs/Image studio/CANDIDATE_V3_Nangcapcho_comfy_v2_1.md`.
+
+### P2-T2-B1 — Calibration Authority Lock (2026-08-27)
+
+- Result: `BLOCKED`. The frozen B05/B06/B10 geometry manifests contain
+  deterministic YuNet measurements, but B05/B06 have no authoritative route
+  labels. No general microface/recoverability, extreme-pose, landmark-
+  uncertainty, or positive-`ELIGIBLE` threshold is pinned in the repository.
+- Invalid input and multiple-face review are authoritative from the Candidate v3
+  roadmap. B10-like behavior is authoritative as non-`ELIGIBLE` / base
+  regeneration, but does not establish a general boundary.
+- No executable policy config, route evaluator, calibration test, fixture
+  mutation, GPU/provider/network call, feature-flag change, or v2/v2.1 change
+  was made.
+- Evidence report:
+  `docs/Image studio/candidate_v3_phase2_route_calibration.md`.
+
+### P2-T1 — FaceObservabilityService / CPU observability contract
+
+- Objective: normalize EXIF orientation and color space, run the pinned
+  detector/version, and emit schema-compatible `FaceObservability` evidence.
+- Inputs: immutable image bytes, editable-region mask, pinned detector/config,
+  and measurement-config hash.
+- Outputs: face count, bbox and dimensions, five-point landmark confidence,
+  interocular distance, pose, border clipping, sharpness, occlusion, quality
+  tier, and deterministic measurement evidence.
+- Likely modules: `contracts/identity_restoration/face_observability_v1.schema.json`,
+  `identity_restoration/domain/` or `application/`, a detector port/adapter,
+  and focused CPU tests.
+- Prerequisites: Phase 1 authority closure and a pinned detector/version plus
+  versioned measurement configuration.
+- Required tests: repeated-input determinism; malformed/no-face/multiple-face;
+  low-confidence detection; invalid bbox/landmarks; target outside editable
+  region; schema validation.
+- Fail closed: malformed input, no eligible face, low detector confidence,
+  invalid measurements, or unresolved target association cannot produce an
+  eligible observation.
+- DoD: complete deterministic observation evidence is emitted without GPU,
+  provider, network, or production-runtime integration.
+- Non-goals: route decisions, canonical warping, model execution, QC scoring,
+  threshold tuning, and feature-flag changes.
+
+### P2-T2 — Deterministic route policy
+
+- Objective: map observability and input validity to a versioned `RouteCode`
+  and serialized first/all applicable reasons.
+- Inputs: P2-T1 observation, input/mask validity, and a versioned calibrated
+  policy with its SHA-256.
+- Outputs: `ELIGIBLE`, `REVIEW_REQUIRED`, `BASE_REGEN_REQUIRED`, or
+  `REJECTED_INVALID_INPUT`, with deterministic reasons and policy evidence.
+- Likely modules: `identity_restoration/domain/policies/`, Candidate v3 route
+  DTO/contract, and route-policy tests.
+- Prerequisites: P2-T1; locked calibration examples including B05, B06, and a
+  B10-like case must be available to the policy work.
+- Required tests: precedence and repeatability for malformed/no-face,
+  unrecoverable microface, multiple candidates, extreme pose, uncertain
+  landmarks, and eligible input.
+- Fail closed: malformed/no-face/invalid-mask input routes to rejection;
+  below-threshold information routes to base regeneration; ambiguity routes
+  to review; no implicit eligible fallback is allowed.
+- DoD: route and reasons are reproducible, version/hash-pinned, and serialized
+  without allocating GPU or calling a provider.
+- Non-goals: base-image generation, GPU routing, production cutover, and
+  score-based promotion.
+
+### P2-T3 — Canonical face transform and mask mapping
+
+- Objective: implement the roadmap's canvas-space → padded crop → five-point
+  similarity alignment → 512×512 model-space mapping and verified inverse.
+- Inputs: P2-T1 landmarks, immutable source image, editable/feather masks,
+  calibrated crop padding, and the fixed 512×512 template.
+- Outputs: `CanonicalFaceTransform`, canonical image and both masks, inverse
+  mapping, artifact hashes, and round-trip verification evidence.
+- Likely modules: `contracts/identity_restoration/canonical_face_transform_v1.schema.json`,
+  `identity_restoration/application/dto/candidate_v3.py`,
+  `identity_restoration/domain/`, geometry/mask policies, and CPU transform tests.
+- Prerequisites: P2-T1 observations and P2-T2 `ELIGIBLE` route; fixed
+  interpolation `LANCZOS4` and border mode `REFLECT_101`.
+- Required tests: matrix invertibility, landmark/template mapping, reflected
+  border padding, identical image/mask transforms, dimension/hash agreement,
+  and inverse round-trip error.
+- Fail closed: weak landmarks, invalid matrix/condition number, out-of-bounds
+  target mapping, excessive round-trip error, mask mismatch, or silent resize/
+  aspect-ratio distortion.
+- DoD: transform and masks are schema-valid, deterministic, hashable, and
+  verified entirely on CPU.
+- Non-goals: restoration model/workflow, ComfyUI, compositing production
+  integration, QC evaluation, and GPU execution.
+
+### P2-T4 — CPU fixtures, property validation, calibration, and closure gate
+
+- Objective: validate the complete Phase 2 path on a fixed labelled CPU-only
+  fixture set and calibrate/version/hash thresholds without tuning only on
+  passing examples.
+- Inputs: P2-T1/T2/T3 outputs and fixtures for microface/B10-like, multiple
+  faces, border clipping, profile/extreme pose, blur, invalid landmarks, and
+  EXIF orientation.
+- Outputs: reproducible fixture/property test results, versioned calibration
+  policy and hash, deterministic route evidence, and the Phase 2 closure
+  report.
+- Likely modules: `tests/identity_restoration/`, `identity_restoration/domain/`
+  policy tests, calibration/config storage, and the existing Candidate v3
+  feature-flag tests.
+- Prerequisites: P2-T1, P2-T2, and P2-T3 all locally validated; no live
+  benchmark or provider prerequisite.
+- Required tests: all named fixtures; coordinate/mask property tests;
+  transform round-trip; repeated-run determinism; feature flag remains OFF;
+  and regression checks showing v2/v2.1 files and behavior are unchanged.
+- Fail closed: any property failure, nondeterminism, missing evidence, or
+  B10-like fixture proceeding as normal restoration blocks Phase 2 closure.
+- DoD: no GPU dependency; coordinate/mask properties PASS; every named fixture
+  routes deterministically; B10-like input does not proceed as normal
+  restoration; closure gate records zero provider/network calls and unchanged
+  v2/v2.1 behavior.
+- Non-goals: GPU jobs, providers, image generation, workflow adapter,
+  production integration, quality-score tuning, or advancing Phase 3.
+
+## 2026-08-27 — Candidate v3 P2-T1 implementation closure
+
+P2-T1 is `CLOSED / PASS`; Phase 2 is `IN PROGRESS`. P2-T2 is now
+`READY / NOT STARTED`; P2-T3 and P2-T4 remain `NOT STARTED`. The implementation
+stays inside the existing Python `identity_restoration` bounded context and
+does not alter v2/v2.1 execution.
+
+Added the CPU-only `FaceObservabilityService` and immutable evidence DTO. It
+normalizes EXIF orientation before RGB decoding, hashes raw image/mask bytes,
+validates mask dimensions and grayscale semantics, preserves all detector
+candidates for multiple-face observation, validates bbox/landmarks/confidence,
+and measures bbox/mask intersection, overlap ratio, mask coverage, and center
+containment. It emits no P2-T2 route code.
+
+The concrete adapter uses the existing pinned YuNet authority: OpenCV
+`FaceDetectorYN`, method `opencv-zoo-yunet-2023mar-pnp-v1`, model
+`face_detection_yunet_2023mar.onnx`, model SHA
+`8f2383e4dd3cfbb4553ea8718107fc0423210dc964f9f4280604804ed2552fa4`, input
+`320×320`, confidence `0.6`, and NMS `0.3`. Detector configuration and
+measurement content are canonical-hash pinned; mismatches fail closed.
+
+The observability contract and Candidate v3 result schema now carry image/mask
+identity, detector/config hashes, selected/all detections, measurements,
+validity state, machine-readable failure reasons, and measurement SHA. Focused
+P2-T1/schema/Phase 0 validation passed: `40 passed`; compileall and
+`git diff --check` passed. GPU calls `0`, provider/network calls `0`, and the
+Candidate v3 feature flag remains `OFF`.
+
 ## 2026-08-27 — Growth Agent v3.1 reliability repair (steps 1–6)
 
 Completed and pushed the six-step Growth Agent repair across `venho-ai-studio`
