@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import os
 from typing import Any, Sequence
 
 from openai import OpenAI
@@ -14,7 +15,11 @@ class OpenAIVisionProvider:
     """Single- and multi-image vision analysis using OpenAI gpt-4o."""
 
     def __init__(self, model: str = "gpt-4o", temperature: float = 0.0) -> None:
-        self.client = OpenAI()
+        timeout = float(os.environ.get("OPENAI_VISION_TIMEOUT_SECONDS") or "180")
+        try:
+            self.client = OpenAI(timeout=timeout)
+        except TypeError:  # test doubles / older SDKs without timeout support
+            self.client = OpenAI()
         self.model = model
         self.temperature = temperature
         self.last_raw_response: str | None = None

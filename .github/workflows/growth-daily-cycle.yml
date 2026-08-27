@@ -35,6 +35,7 @@ concurrency:
 jobs:
   weekly-cycle:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -56,6 +57,8 @@ jobs:
           # approved alternative is enabled for this Anthropic account.
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           CLAUDE_CONTENT_MODEL: ${{ vars.CLAUDE_CONTENT_MODEL }}
+          ANTHROPIC_TIMEOUT_SECONDS: "120"
+          OPENAI_VISION_TIMEOUT_SECONDS: "180"
           # Google Drive upload for generated images so Make.com's "HTTP: Get
           # a file" step has a real public URL to fetch -- see
           # shared/storage/google_drive.py. Reuses the same OAuth app/token
@@ -87,6 +90,7 @@ jobs:
       # per-week idempotency guard would not stop a re-trigger from
       # regenerating (and re-billing) the same week.
       - name: Commit generated content and registry state
+        if: always()
         run: |
           venho-growth slots --weeks-ahead 2 > data/projects/venho_hotel/growth/slots_snapshot.json
           git config user.name "venho-growth-bot"

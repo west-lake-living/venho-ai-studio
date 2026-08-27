@@ -74,7 +74,11 @@ def claude_social_generator(
     system_prompt = select_system_prompt(request)
     user_message = build_user_message(request, prompt.final_prompt)
 
-    client = Anthropic(api_key=api_key)
+    timeout = float(os.environ.get("ANTHROPIC_TIMEOUT_SECONDS") or "120")
+    try:
+        client = Anthropic(api_key=api_key, timeout=timeout)
+    except TypeError:  # test doubles / older SDKs without timeout support
+        client = Anthropic(api_key=api_key)
     response = create_anthropic_message(
         client,
         # os.environ.get's default only fires when the key is absent -- a repo

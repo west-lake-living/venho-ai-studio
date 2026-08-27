@@ -114,7 +114,11 @@ def claude_longform_generator(
     if not api_key:
         raise RuntimeError("ANTHROPIC_API_KEY not set in environment")
 
-    client = Anthropic(api_key=api_key)
+    timeout = float(os.environ.get("ANTHROPIC_TIMEOUT_SECONDS") or "120")
+    try:
+        client = Anthropic(api_key=api_key, timeout=timeout)
+    except TypeError:  # test doubles / older SDKs without timeout support
+        client = Anthropic(api_key=api_key)
     response = create_anthropic_message(
         client,
         # see claude_social_generator.py: `.get(key, default)` doesn't fall
