@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import json
 import os
+import random
 import time
 from typing import Any, Dict
 
@@ -36,19 +37,47 @@ def _is_anthropic_overloaded(exc: Exception) -> bool:
     return getattr(exc, "status_code", None) == 529 or "overloaded" in str(exc).lower()
 
 
+def _is_retryable_anthropic_error(exc: Exception) -> bool:
+    """Return true only for provider/transport failures safe to replay.
+
+    Each generated draft has its own call to this helper, so retrying here is
+    a per-content queue: a busy Claude request waits and retries in place,
+    while malformed prompts, authentication and schema errors fail fast for
+    the normal replacement flow.
+    """
+    status_code = getattr(exc, "status_code", None)
+    if status_code in {408, 429, 500, 502, 503, 504, 529}:
+        return True
+    message = str(exc).lower()
+    return any(token in message for token in ("overloaded", "timeout", "timed out", "connection", "temporarily unavailable"))
+
+
+def _retry_delay_seconds(exc: Exception, attempt: int) -> float:
+    """Exponential delay with bounded jitter, respecting Retry-After when sent."""
+    base = max(0.1, float(os.environ.get("ANTHROPIC_RETRY_BASE_SECONDS") or "2"))
+    cap = max(base, float(os.environ.get("ANTHROPIC_RETRY_MAX_SECONDS") or "30"))
+    retry_after = getattr(exc, "retry_after", None)
+    headers = getattr(exc, "headers", None) or getattr(getattr(exc, "response", None), "headers", None) or {}
+    retry_after = retry_after or headers.get("retry-after") or headers.get("Retry-After")
+    try:
+        delay = min(cap, max(0.0, float(retry_after))) if retry_after is not None else min(cap, base * (2**attempt))
+    except (TypeError, ValueError):
+        delay = min(cap, base * (2**attempt))
+    # A small bounded jitter prevents every FB/IG generation from retrying at
+    # exactly the same second after an Anthropic capacity incident.
+    return delay + random.uniform(0.0, min(1.0, delay * 0.25))
+
+
 def create_anthropic_message(client: Any, **kwargs: Any) -> Any:
-    """Retry transient Opus overloads without retrying content/API errors."""
-    attempts = max(1, int(os.environ.get("ANTHROPIC_RETRY_ATTEMPTS") or "4"))
+    """Retry each content request independently for transient provider errors."""
+    attempts = max(1, int(os.environ.get("ANTHROPIC_RETRY_ATTEMPTS") or "5"))
     for attempt in range(attempts):
         try:
             return client.messages.create(**kwargs)
         except Exception as exc:
-            if not _is_anthropic_overloaded(exc) or attempt == attempts - 1:
+            if not _is_retryable_anthropic_error(exc) or attempt == attempts - 1:
                 raise
-            # Short exponential backoff: 2s, 4s, 8s by default. A 529 is
-            # transient and retrying it is safe; malformed prompts and 4xx
-            # errors still fail immediately for Validator/recovery handling.
-            time.sleep(2**attempt)
+            time.sleep(_retry_delay_seconds(exc, attempt))
 
 
 def claude_social_generator(

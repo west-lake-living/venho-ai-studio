@@ -40,6 +40,20 @@ class _OverloadedMessages(_FakeMessages):
         return _FakeMessage(self.response_text)
 
 
+class _StatusMessages(_FakeMessages):
+    def __init__(self, response_text: str, status_code: int) -> None:
+        super().__init__(response_text)
+        self.status_code = status_code
+
+    def create(self, **kwargs):
+        self.calls.append(kwargs)
+        if len(self.calls) == 1:
+            error = RuntimeError(f"Error code: {self.status_code}")
+            error.status_code = self.status_code
+            raise error
+        return _FakeMessage(self.response_text)
+
+
 class _FakeAnthropic:
     def __init__(self, api_key: str, response_text: str = "") -> None:
         self.messages = _FakeMessages(response_text)
@@ -153,6 +167,36 @@ def test_overloaded_opus_call_retries_with_backoff(monkeypatch) -> None:
 
     assert result["title"] == "t"
     assert len(holder_client.messages.calls) == 3
+
+
+def test_retry_queue_uses_bounded_jitter_for_a_transient_rate_limit(monkeypatch) -> None:
+    messages = _StatusMessages(json.dumps({"title": "t"}), 429)
+    client = type("Client", (), {"messages": messages})()
+    delays: list[float] = []
+    monkeypatch.setattr(gen_module.time, "sleep", delays.append)
+    monkeypatch.setattr(gen_module.random, "uniform", lambda start, end: end)
+    monkeypatch.setenv("ANTHROPIC_RETRY_BASE_SECONDS", "2")
+    monkeypatch.setenv("ANTHROPIC_RETRY_MAX_SECONDS", "30")
+
+    response = gen_module.create_anthropic_message(client, model="test")
+
+    assert response.content[1].type == "text"
+    assert len(messages.calls) == 2
+    assert delays == [2.5]  # 2 seconds plus bounded 0.5-second jitter
+
+
+def test_retry_queue_does_not_retry_non_transient_api_errors(monkeypatch) -> None:
+    messages = _StatusMessages(json.dumps({"title": "t"}), 401)
+    client = type("Client", (), {"messages": messages})()
+    monkeypatch.setattr(gen_module.time, "sleep", lambda seconds: None)
+
+    try:
+        gen_module.create_anthropic_message(client, model="test")
+    except RuntimeError as exc:
+        assert "401" in str(exc)
+    else:
+        raise AssertionError("401 must fail without retry")
+    assert len(messages.calls) == 1
 
 
 def test_saturday_lane_uses_weekend_events_prompt_and_appends_events(monkeypatch) -> None:
