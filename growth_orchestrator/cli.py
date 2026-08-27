@@ -13,6 +13,7 @@ from growth_orchestrator.application.approve_and_dispatch import (
     approve_publications,
     approve_week,
     edit_publication,
+    expire_stale_approvals,
     list_pending,
     reject_publication,
     retry_dispatch,
@@ -28,6 +29,15 @@ from growth_orchestrator.application.replace_rejected import replace_due_rejecti
 from shared.jobs.slot_store import SlotStore
 
 app = typer.Typer(help="Ven Ho Growth Orchestrator")
+
+
+@app.command("expire-stale-approvals")
+def expire_stale_approvals_cmd(
+    project: str = typer.Option("venho_hotel"),
+) -> None:
+    """Retire PENDING_APPROVAL drafts whose publishing date has passed."""
+    publications = expire_stale_approvals(project=project)
+    typer.echo(json.dumps({"ok": True, "expired": publications}, ensure_ascii=False, indent=2))
 
 
 @app.command("run")

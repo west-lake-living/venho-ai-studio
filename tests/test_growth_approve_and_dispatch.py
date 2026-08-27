@@ -11,6 +11,7 @@ from growth_orchestrator.application.approve_and_dispatch import (
     approve_publications,
     approve_week,
     edit_publication,
+    expire_stale_approvals,
     list_pending,
     reject_publication,
     retry_dispatch,
@@ -79,6 +80,28 @@ def test_list_pending_also_surfaces_gateway_error_rows_so_they_are_never_invisib
     assert {item["publication_id"] for item in pending} == {pending_id, "pub-stranded"}
     stranded_row = next(item for item in pending if item["publication_id"] == "pub-stranded")
     assert stranded_row["status"] == "GATEWAY_ERROR"
+
+
+def test_expire_stale_approvals_retires_only_past_unreviewed_slots(tmp_path: Path) -> None:
+    registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
+    overdue = _reserve_pending(registry, platform="facebook", slot_id="slot-2026-08-17-monday")
+    future = registry.reserve(
+        {"publication_id": "pub-future", "content_package_id": "pkg-future", "idempotency_key": "idem-future", "platform": "instagram"}
+    )
+    registry.update(future["publication_id"], status="PENDING_APPROVAL", slot_id="slot-2026-08-29-saturday")
+    unslotted = registry.reserve(
+        {"publication_id": "pub-unslotted", "content_package_id": "pkg-unslotted", "idempotency_key": "idem-unslotted", "platform": "threads"}
+    )
+    registry.update(unslotted["publication_id"], status="PENDING_APPROVAL")
+
+    expired = expire_stale_approvals(project="venho_hotel", data_root=tmp_path, registry=registry, today=date(2026, 8, 27))
+
+    assert [item["publication_id"] for item in expired] == [overdue]
+    stale = registry.find(overdue)
+    assert stale["status"] == "STALE_APPROVAL"
+    assert stale["stale_reason"] == "Approval window closed on 2026-08-17."
+    assert registry.find(future["publication_id"])["status"] == "PENDING_APPROVAL"
+    assert registry.find(unslotted["publication_id"])["status"] == "PENDING_APPROVAL"
 
 
 def test_approve_and_dispatch_calls_bridge_and_updates_status(tmp_path: Path) -> None:

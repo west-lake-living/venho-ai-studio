@@ -25,6 +25,7 @@ DISPATCHING_STATUS = "DISPATCHING"
 GATEWAY_ERROR_STATUS = "GATEWAY_ERROR"
 REJECTED_STATUS = "REJECTED"
 NEEDS_REVISION_STATUS = "NEEDS_REVISION"
+STALE_APPROVAL_STATUS = "STALE_APPROVAL"
 EDITING_STATUS = "EDITING"
 SHADOW_HELD_STATUS = "SHADOW_HELD"
 EDITABLE_STATUSES = {PENDING_STATUS, GATEWAY_ERROR_STATUS, SHADOW_HELD_STATUS}
@@ -91,6 +92,45 @@ def list_pending(
         slot_date = _slot_date(item)
         rows.append({**item, "slot_date": slot_date.isoformat() if slot_date else None})
     return rows
+
+
+def expire_stale_approvals(
+    *,
+    project: str = "venho_hotel",
+    data_root: Path = Path("data/projects"),
+    registry: Optional[PublicationRegistry] = None,
+    today: Optional[date] = None,
+) -> list[dict]:
+    """Retire unreviewed drafts after their immutable publishing date.
+
+    An expired draft is neither safe to approve nor a failed dispatch to retry.
+    It remains auditable in the registry, but leaves the operator action queue.
+    """
+    registry = registry or PublicationRegistry(project, data_root=data_root)
+    cutoff = today or datetime.now(ZoneInfo("Asia/Ho_Chi_Minh")).date()
+    stale = [
+        item
+        for item in registry.load()["publications"]
+        if item.get("status") == PENDING_STATUS
+        and (slot_date := _slot_date(item)) is not None
+        and slot_date < cutoff
+    ]
+    return registry.update_many_if_status(
+        [
+            (
+                item["publication_id"],
+                PENDING_STATUS,
+                {
+                    "status": STALE_APPROVAL_STATUS,
+                    "stale_at": datetime.now(timezone.utc).isoformat(),
+                    "stale_reason": f"Approval window closed on {slot_date.isoformat()}.",
+                },
+            )
+            for item in stale
+            for slot_date in [_slot_date(item)]
+            if slot_date is not None
+        ]
+    )
 
 
 def approve_publications(
