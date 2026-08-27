@@ -30,6 +30,16 @@ class _FakeMessages:
         return _FakeMessage(self.response_text)
 
 
+class _OverloadedMessages(_FakeMessages):
+    def create(self, **kwargs):
+        self.calls.append(kwargs)
+        if len(self.calls) < 3:
+            error = RuntimeError("Error code: 529 overloaded")
+            error.status_code = 529
+            raise error
+        return _FakeMessage(self.response_text)
+
+
 class _FakeAnthropic:
     def __init__(self, api_key: str, response_text: str = "") -> None:
         self.messages = _FakeMessages(response_text)
@@ -130,6 +140,19 @@ def test_content_model_falls_back_when_env_var_is_set_but_empty(monkeypatch) -> 
     gen_module.claude_social_generator(_request(), _FakePrompt(), {})
 
     assert holder["client"].messages.calls[0]["model"] == gen_module.DEFAULT_CLAUDE_CONTENT_MODEL
+
+
+def test_overloaded_opus_call_retries_with_backoff(monkeypatch) -> None:
+    holder_client = _FakeAnthropic("test-key", json.dumps({"title": "t", "hook": "h", "body": "b", "cta": "c"}))
+    holder_client.messages = _OverloadedMessages(json.dumps({"title": "t", "hook": "h", "body": "b", "cta": "c"}))
+    monkeypatch.setattr(anthropic, "Anthropic", lambda api_key: holder_client)
+    monkeypatch.setattr(gen_module.time, "sleep", lambda seconds: None)
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
+
+    result = gen_module.claude_social_generator(_request(), _FakePrompt(), {})
+
+    assert result["title"] == "t"
+    assert len(holder_client.messages.calls) == 3
 
 
 def test_saturday_lane_uses_weekend_events_prompt_and_appends_events(monkeypatch) -> None:

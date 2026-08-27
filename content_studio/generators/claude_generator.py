@@ -15,7 +15,10 @@ from typing import Any, Dict
 
 from prompt_studio.schemas.content_prompt import ContentPromptContract
 
-from content_studio.generators.claude_social_generator import DEFAULT_CLAUDE_CONTENT_MODEL
+from content_studio.generators.claude_social_generator import (
+    DEFAULT_CLAUDE_CONTENT_MODEL,
+    create_anthropic_message,
+)
 from content_studio.schemas.content_request import ContentRequest
 
 GeneratedDraft = Dict[str, Any]
@@ -112,7 +115,8 @@ def claude_longform_generator(
         raise RuntimeError("ANTHROPIC_API_KEY not set in environment")
 
     client = Anthropic(api_key=api_key)
-    response = client.messages.create(
+    response = create_anthropic_message(
+        client,
         # see claude_social_generator.py: `.get(key, default)` doesn't fall
         # back when the key is present but empty (CI repo var was "").
         model=os.environ.get("CLAUDE_CONTENT_MODEL") or DEFAULT_CLAUDE_CONTENT_MODEL,

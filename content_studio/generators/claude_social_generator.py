@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import json
 import os
+import time
 from typing import Any, Dict
 
 from prompt_studio.schemas.content_prompt import ContentPromptContract
@@ -28,6 +29,26 @@ GeneratedDraft = Dict[str, Any]
 # Use the Opus model enabled for this Anthropic account. An explicit
 # deployment-approved model may be supplied through env.
 DEFAULT_CLAUDE_CONTENT_MODEL = "claude-opus-5"
+
+
+def _is_anthropic_overloaded(exc: Exception) -> bool:
+    """Anthropic uses HTTP 529 for temporary account/model overload."""
+    return getattr(exc, "status_code", None) == 529 or "overloaded" in str(exc).lower()
+
+
+def create_anthropic_message(client: Any, **kwargs: Any) -> Any:
+    """Retry transient Opus overloads without retrying content/API errors."""
+    attempts = max(1, int(os.environ.get("ANTHROPIC_RETRY_ATTEMPTS") or "4"))
+    for attempt in range(attempts):
+        try:
+            return client.messages.create(**kwargs)
+        except Exception as exc:
+            if not _is_anthropic_overloaded(exc) or attempt == attempts - 1:
+                raise
+            # Short exponential backoff: 2s, 4s, 8s by default. A 529 is
+            # transient and retrying it is safe; malformed prompts and 4xx
+            # errors still fail immediately for Validator/recovery handling.
+            time.sleep(2**attempt)
 
 
 def claude_social_generator(
@@ -54,7 +75,8 @@ def claude_social_generator(
     user_message = build_user_message(request, prompt.final_prompt)
 
     client = Anthropic(api_key=api_key)
-    response = client.messages.create(
+    response = create_anthropic_message(
+        client,
         # os.environ.get's default only fires when the key is absent -- a repo
         # variable set to "" (as CLAUDE_CONTENT_MODEL was in CI) still passes
         # an empty model string straight to Anthropic and 400s. `or` catches
