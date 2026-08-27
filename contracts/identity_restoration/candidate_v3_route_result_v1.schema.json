@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://venho.local/contracts/candidate_v3_route_result_v1/1.0",
+  "title": "Candidate V3 Route Result V1",
+  "description": "Immutable deterministic CPU-only Candidate v3 route evidence.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "policyId",
+    "policyVersion",
+    "policySha256",
+    "observationMeasurementSha256",
+    "routeCode",
+    "reasons",
+    "decisionSha256"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "policyId": { "const": "candidate_v3_route_policy" },
+    "policyVersion": { "const": "1.0" },
+    "policySha256": { "$ref": "#/$defs/Sha256" },
+    "observationMeasurementSha256": { "$ref": "#/$defs/Sha256" },
+    "routeCode": {
+      "enum": [
+        "REJECTED_INVALID_INPUT",
+        "BASE_REGEN_REQUIRED",
+        "REVIEW_REQUIRED",
+        "ELIGIBLE"
+      ]
+    },
+    "reasons": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "decisionSha256": { "$ref": "#/$defs/Sha256" }
+  },
+  "$defs": {
+    "Sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  }
+}

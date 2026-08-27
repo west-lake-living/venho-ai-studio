@@ -18,9 +18,10 @@
 - P2-T1 = `CLOSED / PASS`: FaceObservabilityService and the CPU-only
   observability contract.
 - P2-T2-B1 = `BLOCKED`: calibration authority lock for the deterministic route
-  policy. P2-T2 remains `BLOCKED / NOT STARTED`.
-- P2-T3 = `NOT STARTED`: five-point canonical face transform plus mask/inverse
-  transform and round-trip verification.
+  policy. P2-T2 is now `READY / NOT STARTED` after human calibration approval.
+- P2-T3 = `READY / NOT STARTED`: five-point canonical face transform plus
+  mask/inverse transform and round-trip verification; P2-T3-B1 authority is
+  approved.
 - P2-T4 = `NOT STARTED`: fixed CPU fixtures, coordinate/mask property tests,
   threshold calibration, and the Phase 2 closure gate.
 - Strict order is P2-T1 → P2-T2 → P2-T3 → P2-T4. All tasks remain CPU-only;
@@ -41,6 +42,56 @@
   `docs/Image studio/candidate_v3_phase2_route_calibration.md`.
 - CPU-only = `PASS`; Candidate v3 feature flag = `OFF`; v2/v2.1 modified =
   `NO`; GPU calls `0`; provider/network calls `0`.
+
+### Candidate v3 Identity Restoration — P2-T2-B2 human calibration approval (2026-08-27)
+
+- `P2-T2-B1 = BLOCKED / evidence exhausted`; `P2-T2-B2 = CLOSED / PASS`;
+  `P2-T2 = READY / NOT STARTED`; P2-T3 = `NOT STARTED`.
+- Human authority approved B05/B06 as `ELIGIBLE_IF_ALL_POSITIVE_RULES_PASS`,
+  B10 as `BASE_REGEN_REQUIRED`, the M-B microface threshold, the P-A extreme
+  pose threshold, the L-A landmark rule, and the E-A positive contract.
+- Approved policy is `candidate_v3_route_policy` version `1.0`, approved by
+  Harry Pham on `2026-08-27`:
+  `docs/Image studio/candidate_v3_phase2_human_calibration_decision.md`.
+- This approval records policy authority only; executable policy and production
+  behavior remain unimplemented. Feature flag, v2/v2.1 behavior, GPU, and
+  provider/network state were not changed.
+
+### Candidate v3 Identity Restoration — P2-T2 deterministic route policy (2026-08-27)
+
+- `P2-T2-B1 = CLOSED`; `P2-T2-B2 = CLOSED / PASS`; `P2-T2 = CLOSED / PASS`;
+  `P2-T3 = READY / NOT STARTED`; `P2-T4 = NOT STARTED`.
+- Implemented the immutable CPU-only policy `candidate_v3_route_policy` version
+  `1.0`, SHA-256
+  `171019b8fcf62449b3f5d6af37372f9861eb80bd21a7b621ae89c760199fdb33`.
+- Precedence is invalid input → `REJECTED_INVALID_INPUT`, microface →
+  `BASE_REGEN_REQUIRED`, ambiguity/extreme pose → `REVIEW_REQUIRED`, and only
+  explicit all-pass positive proof → `ELIGIBLE`; no implicit eligible fallback.
+- Locked routing is B05/B06 conditional `ELIGIBLE`, B10
+  `BASE_REGEN_REQUIRED`. Route results link the observation measurement SHA and
+  include a deterministic decision SHA.
+- Focused P2-T2/P2-T1/schema/feature-flag tests and compileall passed. CPU-only
+  = `PASS`; GPU calls `0`; provider/network calls `0`; Candidate v3 feature
+  flag `OFF`; v2/v2.1 modified = `NO`.
+
+### Candidate v3 Identity Restoration — P2-T3-B1 transform authority approval (2026-08-27)
+
+- `P2-T3-B1 = CLOSED / PASS`; `P2-T3 = READY / NOT STARTED`;
+  `P2-T4 = NOT STARTED`.
+- Human authority approved the 512×512 five-point template
+  `candidate_v3_face_template` v1.0 with coordinates
+  `(192,208),(320,208),(256,272),(208,336),(304,336)`, crop padding `0.20`,
+  image/binary/feather mask interpolation `LANCZOS4`/`NEAREST`/`LINEAR`,
+  binary threshold `0.5`, and landmark-point max Euclidean round-trip error
+  `0.5 px`.
+- Approved transform policy ID/version:
+  `candidate_v3_canonical_transform_policy` / `1.0`. Its contents and derived
+  SHA-256 are implementation outputs for P2-T3.
+- Decision pack:
+  `docs/Image studio/candidate_v3_phase2_transform_authority_decision.md`.
+- No transform implementation, executable transform policy, schema mutation,
+  feature-flag change, v2/v2.1 change, GPU call, or provider/network call was
+  made.
 
 ### Candidate v3 Identity Restoration — P2-T1 closure (2026-08-27)
 

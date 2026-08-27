@@ -42,6 +42,88 @@ authoritative Phase 2 bullets in
 - Evidence report:
   `docs/Image studio/candidate_v3_phase2_route_calibration.md`.
 
+### P2-T2-B2 — Human Calibration Approval (2026-08-27)
+
+- Result: `CLOSED / PASS`. Human authority approved B05 and B06 as
+  `ELIGIBLE_IF_ALL_POSITIVE_RULES_PASS`, B10 as `BASE_REGEN_REQUIRED`, M-B
+  (`face_area_ratio <= 0.0030488715`), P-A (`abs(yaw) >= 79.361665°`), and
+  L-A (exactly five finite landmarks and positive interocular distance).
+- The approved positive contract is E-A: structurally valid input, exactly one
+  eligible face, valid detector/config pin, confidence, bbox, five finite
+  landmarks, positive interocular distance, finite measurements, valid mask
+  relation, face area ratio above `0.0030488715`, absolute yaw below
+  `79.361665°`, and no unresolved ambiguity.
+- Approved policy is `candidate_v3_route_policy` version `1.0`, approved by
+  Harry Pham on `2026-08-27`:
+  `docs/Image studio/candidate_v3_phase2_human_calibration_decision.md`.
+- `P2-T2-B1 = BLOCKED / evidence exhausted`; `P2-T2-B2 = CLOSED / PASS`;
+  `P2-T2 = READY / NOT STARTED`; P2-T3 = `NOT STARTED`.
+- This is policy authority only: no executable policy, route evaluator,
+  implementation change, fixture mutation, GPU/provider/network call,
+  feature-flag change, or v2/v2.1 change was made.
+
+### P2-T2 — Deterministic Route Policy Implementation (2026-08-27)
+
+- Result: `CLOSED / PASS`. Added the server-owned immutable policy config at
+  `identity_restoration/config/candidate_v3_route_policy_v1.json` with policy
+  ID `candidate_v3_route_policy`, version `1.0`, and SHA-256
+  `171019b8fcf62449b3f5d6af37372f9861eb80bd21a7b621ae89c760199fdb33`.
+- The pure evaluator at
+  `identity_restoration/domain/policies/candidate_v3_route_policy.py` consumes
+  only P2-T1 `FaceObservability`; policy file loading is isolated in the
+  application layer. It performs no detector, I/O, network, provider, or GPU
+  work during evaluation.
+- Route precedence is invalid input → `REJECTED_INVALID_INPUT`, microface
+  (`face_area_ratio <= 0.0030488715`) → `BASE_REGEN_REQUIRED`, unresolved
+  multiple-face/extreme pose (`abs(yaw) >= 79.361665`) → `REVIEW_REQUIRED`, and
+  explicit all-pass positive proof → `ELIGIBLE`.
+- B05 and B06 route `ELIGIBLE` when all positive rules pass; B10 routes
+  `BASE_REGEN_REQUIRED`, with microface taking precedence over extreme pose.
+  Route results are immutable, schema-valid, measurement-linked, and decision
+  hash-pinned with stable reason ordering.
+- Focused P2-T2/P2-T1/schema/feature-flag tests passed (`72 passed` with
+  layering); compileall passed; `git diff --check` passed. Phase 2 remains
+  CPU-only with Candidate v3 feature flag `OFF`, v2/v2.1 unchanged, GPU calls
+  `0`, and provider/network calls `0`.
+- `P2-T3 = READY / NOT STARTED`; `P2-T4 = NOT STARTED`. No canonical transform,
+  production cutover, QC scoring, GPU workflow, provider, or ComfyUI execution
+  was added.
+
+### P2-T3-B1 — Canonical Transform Authority Decision Pack (2026-08-27)
+
+- Result: `HUMAN DECISION REQUIRED`; P2-T3 remains `BLOCKED / NOT STARTED` and
+  P2-T4 remains `NOT STARTED`.
+- Repository audit confirms the authoritative P2-T3 facts are canonical size
+  `512×512`, image padding `REFLECT_101`, image interpolation `LANCZOS4`, and
+  the P2-T1 landmark order. No authoritative five-point target template
+  coordinates/ID/version/hash, crop padding ratio/policy hash, binary/feather
+  mask interpolation policy, or floating-point round-trip tolerance exists.
+- Existing integer `CropTransform` exact round-trip and pixel-lock tolerance
+  `0` are not substitutes for a canonical similarity-transform tolerance. The
+  existing QC `2.0` values are not transform authority.
+- Decision pack created at
+  `docs/Image studio/candidate_v3_phase2_transform_authority_decision.md`.
+  It records evidence-only facts and human placeholders with status `PENDING`.
+- No transform code, executable transform policy, schema mutation, production
+  integration, feature-flag change, v2/v2.1 change, GPU call, or
+  provider/network call was made.
+
+### P2-T3-B1 — Canonical Transform Authority Approval (2026-08-27)
+
+- Result: `CLOSED / PASS`; P2-T3 is now `READY / NOT STARTED` and P2-T4
+  remains `NOT STARTED`.
+- Human authority approved template `candidate_v3_face_template` v1.0 on a
+  512×512 canvas with points `(192,208),(320,208),(256,272),(208,336),
+  (304,336)`, crop padding ratio `0.20`, mask modes image `LANCZOS4`, binary
+  `NEAREST`, feather `LINEAR`, binary threshold `0.5`, and landmark-point max
+  Euclidean round-trip limit `0.5 px`.
+- Approved transform policy identity is
+  `candidate_v3_canonical_transform_policy` version `1.0`. Policy contents and
+  its derived SHA-256 must be created and verified by P2-T3 implementation.
+- Approval only unblocks implementation; no transform code, executable policy,
+  schema mutation, production integration, feature-flag change, v2/v2.1
+  change, GPU call, or provider/network call was made.
+
 ### P2-T1 — FaceObservabilityService / CPU observability contract
 
 - Objective: normalize EXIF orientation and color space, run the pinned

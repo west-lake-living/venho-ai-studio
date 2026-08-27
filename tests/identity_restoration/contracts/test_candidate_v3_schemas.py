@@ -13,6 +13,7 @@ SCHEMA_NAMES = [
     "identity_pack_v1.schema.json",
     "scenario_authority_binding_v1.schema.json",
     "face_observability_v1.schema.json",
+    "candidate_v3_route_result_v1.schema.json",
     "canonical_face_transform_v1.schema.json",
     "candidate_v3_request_v1.schema.json",
     "candidate_v3_result_v1.schema.json",

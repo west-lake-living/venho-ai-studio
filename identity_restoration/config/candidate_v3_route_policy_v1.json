@@ -1,0 +1,58 @@
+{
+  "policyId": "candidate_v3_route_policy",
+  "version": "1.0",
+  "microface": {
+    "metric": "face_area_ratio",
+    "comparison": "<=",
+    "threshold": 0.0030488715,
+    "routeCode": "BASE_REGEN_REQUIRED"
+  },
+  "extremePose": {
+    "metric": "abs(yaw)",
+    "comparison": ">=",
+    "threshold": 79.361665,
+    "routeCode": "REVIEW_REQUIRED"
+  },
+  "landmarkUncertainty": {
+    "landmarkCountRequired": 5,
+    "interocularComparison": ">",
+    "interocularMinimum": 0
+  },
+  "precedence": [
+    {
+      "condition": "structurally_invalid_input",
+      "routeCode": "REJECTED_INVALID_INPUT"
+    },
+    {
+      "condition": "microface_or_unrecoverable",
+      "routeCode": "BASE_REGEN_REQUIRED"
+    },
+    {
+      "condition": "unresolved_ambiguity_multiple_face_or_extreme_pose",
+      "routeCode": "REVIEW_REQUIRED"
+    },
+    {
+      "condition": "explicit_all_pass_positive_proof",
+      "routeCode": "ELIGIBLE"
+    }
+  ],
+  "positiveEligible": {
+    "allOf": [
+      "input_structurally_valid",
+      "exactly_one_eligible_face",
+      "detector_config_pin_valid",
+      "confidence_valid",
+      "bbox_valid",
+      "exactly_five_finite_landmarks",
+      "interocular_distance_gt_zero",
+      "measurements_finite",
+      "mask_relation_valid",
+      "face_area_ratio_gt_microface_threshold",
+      "abs_yaw_lt_extreme_pose_threshold",
+      "no_unresolved_ambiguity"
+    ],
+    "routeCode": "ELIGIBLE",
+    "implicitFallback": false
+  },
+  "policySha256": "171019b8fcf62449b3f5d6af37372f9861eb80bd21a7b621ae89c760199fdb33"
+}
