@@ -92,7 +92,11 @@ jobs:
       - name: Commit generated content and registry state
         if: always()
         run: |
-          venho-growth slots --weeks-ahead 2 > data/projects/venho_hotel/growth/slots_snapshot.json
+          # The registry is updated immediately after every successful
+          # platform draft.  Do not let the diagnostic snapshot command
+          # prevent that already-created approval work from being committed
+          # when the generation command exits non-zero for another platform.
+          venho-growth slots --weeks-ahead 2 > data/projects/venho_hotel/growth/slots_snapshot.json || true
           git config user.name "venho-growth-bot"
           git config user.email "venho-growth-bot@users.noreply.github.com"
           # Persist every tracked runtime store changed by the cycle. This

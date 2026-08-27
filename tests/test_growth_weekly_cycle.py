@@ -32,6 +32,16 @@ def test_generation_runs_sunday_evening_for_a_two_week_batch() -> None:
     assert 'cron: "0 15 * * 0"' in workflow
 
 
+def test_weekly_cycle_persists_partial_drafts_after_a_generation_failure() -> None:
+    """A failed platform must not stop the final checkpoint of drafts that
+    were already written to PublicationRegistry during the same run."""
+    workflow = Path(".github/workflows/growth-daily-cycle.yml").read_text(encoding="utf-8")
+
+    assert "- name: Commit generated content and registry state\n        if: always()" in workflow
+    assert "venho-growth slots --weeks-ahead 2 > data/projects/venho_hotel/growth/slots_snapshot.json || true" in workflow
+    assert "git add -f data/projects/*/publishing/publication_registry.json" in workflow
+
+
 def _tmp_data_root(tmp_path: Path) -> Path:
     root = tmp_path / "data" / "projects"
     knowledge_dir = root / "venho_hotel" / "knowledge"
