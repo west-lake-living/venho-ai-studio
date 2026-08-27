@@ -8525,13 +8525,13 @@
       "content_package_id": "55a73dd9-0062-4e8b-8919-6b80420fbaae",
       "idempotency_key": "c68250d893ed8ace2c7ae03553d08b9c77e7e04248bc4aacf75ab75656f13d81",
       "platform": "facebook",
-      "status": "PENDING_APPROVAL",
+      "status": "STALE_APPROVAL",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T11:33:19.538668+00:00",
-      "updated_at": "2026-08-13T11:33:19.550494+00:00",
+      "updated_at": "2026-08-27T07:24:17.266263+00:00",
       "content": {
         "title": "Sương sớm trên mặt Hồ Tây, trước khi Hà Nội thức giấc",
         "text": "Có những buổi sáng ở Hồ Tây, mặt nước và trời chưa kịp phân ranh giới. Chỉ một lớp sương mỏng, và tiếng bước chân trên đường ven hồ.\n\nTrước 6 giờ, khu vực quanh Hồ Tây có một nhịp riêng.\n\nNgười đi bộ đi thành từng đoạn ngắn, dừng lại nhìn ra mặt nước rồi lại đi. Vài người đạp xe qua, chậm, không vội. Xa hơn một chút, thuyền nhỏ của người làm việc trên hồ hiện ra mờ mờ rồi lại lẫn vào sương.\n\nGió sáng ở đây khác gió chiều. Nó lạnh hơn, sạch hơn, và làm người ta tỉnh nhanh hơn cả một ly cà phê.\n\nĐây cũng là lúc dễ nhìn Hồ Tây rõ nhất, theo một cách hơi ngược: không phải rõ về hình ảnh, mà rõ về cảm giác. Mặt hồ rộng, phố còn vắng, và cả một ngày đầu tuần vẫn còn nguyên phía trước.\n\nỞ Ven Hồ Hotel trên phố Nguyễn Đình Thi, sảnh khách sạn thường sáng đèn trước khi trời sáng. Sàn gạch nâu với những vòng tròn quen mắt, quầy lễ tân gỗ nâu sẫm, tủ chìa khóa gọn gàng phía sau, và cánh cửa kính mở ra con đường ven hồ.\n\nMột buổi sáng ở Hà Nội có thể bắt đầu đơn giản như vậy: gửi lại chìa khóa, đẩy cửa, rồi đi bộ vài trăm mét là tới mặt nước.\n\nNếu bạn đang tính một chuyến Hà Nội và muốn bắt đầu ngày mới cạnh Hồ Tây, nhắn tin cho Ven Hồ Hotel để xem phòng trống cho những ngày bạn dự định ở nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanViewHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-monday-facebook-a2fd842d",
@@ -8634,20 +8634,22 @@
         "claim_kill_switch_triggered": false,
         "content_brand_fit": 95,
         "content_overall_score": 91.99
-      }
+      },
+      "stale_at": "2026-08-27T07:24:17.256700+00:00",
+      "stale_reason": "Approval window closed on 2026-08-17."
     },
     {
       "publication_id": "pub-monday-instagram-70a799f0",
       "content_package_id": "62684586-d54a-40eb-b873-bbf399ae2adf",
       "idempotency_key": "6c24052c20a73f620c3f605f5d897bb5f3898dc75eb4f0e030cbcb8c720a2569",
       "platform": "instagram",
-      "status": "PENDING_APPROVAL",
+      "status": "STALE_APPROVAL",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T11:33:43.283809+00:00",
-      "updated_at": "2026-08-13T11:33:43.295469+00:00",
+      "updated_at": "2026-08-27T07:24:17.266263+00:00",
       "content": {
         "title": "Sương sớm trên mặt hồ, trước khi Hà Nội thức giấc",
         "text": "Có những buổi sớm ở Hồ Tây, bờ bên kia chỉ còn là một đường mờ.\n\nSương đọng thấp trên mặt nước, không dày, chỉ vừa đủ để mọi thứ mềm đi một chút.\n\nĐường Nguyễn Đình Thi lúc này khá vắng. Vài người chạy bộ, vài người dắt xe đạp ra khỏi ngõ, một quán nhỏ mới mở nắp nồi nước dùng. Tiếng còi xe vẫn chưa xuất hiện, nên cái nghe rõ nhất lại là nước vỗ nhẹ vào kè đá.\n\nĐầu tuần thường là lúc người ta muốn đi nhanh hơn. Nhưng đi bộ chừng hai mươi phút ven hồ vào giờ này lại làm cả ngày sau đó chậm lại đúng lúc.\n\nSương tan khá nhanh. Đến khoảng bảy giờ, hồ đã sáng hẳn, và Hà Nội bắt đầu nhịp của nó.\n\nVen Hồ Hotel nằm trên đoạn đường ấy, nên buổi sáng của khách thường bắt đầu ngay ngoài cửa kính lễ tân: bước ra là hồ, quay về là một sảnh nhỏ, gọn gàng, đủ ấm để ngồi lại thêm một lát.\n\nNếu bạn đang tìm một khách sạn view Hồ Tây cho những ngày ở Hà Nội, nhắn cho Ven Hồ Hotel để xem còn phòng trống dịp bạn định đi nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhamPhaHoTay #KhachSanHoTay #HaNoi #HanoiTravel #NguyenDinhThi",
@@ -8753,20 +8755,22 @@
         "claim_kill_switch_triggered": false,
         "content_brand_fit": 95,
         "content_overall_score": 93.5
-      }
+      },
+      "stale_at": "2026-08-27T07:24:17.256714+00:00",
+      "stale_reason": "Approval window closed on 2026-08-17."
     },
     {
       "publication_id": "pub-wednesday-facebook-b250c3de",
       "content_package_id": "0a9b61d7-74bb-4b31-9357-1b7e60b426d7",
       "idempotency_key": "1a1cb9d99c9605c2d9cafaab5e83fe87fa135ded4954aeea769da2ae026dcb3b",
       "platform": "facebook",
-      "status": "PENDING_APPROVAL",
+      "status": "STALE_APPROVAL",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T11:36:18.124784+00:00",
-      "updated_at": "2026-08-13T11:36:18.136843+00:00",
+      "updated_at": "2026-08-27T07:24:17.266263+00:00",
       "content": {
         "title": "Xanh và trắng bên mặt nước Hồ Tây",
         "text": "Hồ Tây vốn nhiều sắc xám và xanh lục. Nên khi bắt gặp một mảng xanh biển và trắng ngay bên hồ, mắt sẽ tự dừng lại.\n\nSantorini Vibes là một trong những quán cà phê view Hồ Tây được nhắc tới nhờ tông màu xanh trắng khá riêng. Kiểu màu ấy không phải để chụp cho đẹp là xong. Nó làm mặt nước phía trước trông sáng hơn, và làm buổi chiều bớt trầm hơn một chút.\n\nCà phê ven hồ ở Hà Nội thường có một nhịp riêng. Người ta gọi đồ uống rồi ngồi rất lâu, không vội. Gió từ mặt hồ lên đều đều, đủ để câu chuyện kéo dài thêm vài phần. Nếu bạn tới vào cuối buổi chiều, ánh sáng ngả dần và nền tường sáng màu sẽ đổi sắc theo trời — đó là lúc dễ chịu nhất để ngồi.\n\nMột gợi ý nhỏ cho lịch trình: đi bộ một đoạn ven hồ trước, ghé quán khi nắng đã bớt gắt, rồi thong thả về chỗ nghỉ.\n\nVen Hồ Hotel nằm trên Nguyễn Đình Thi, ngay khu vực này. Chúng tôi vẫn hay chỉ đường cho khách tới những quán cà phê quanh hồ, và luôn thấy vui khi mọi người quay về kể lại chỗ họ vừa ngồi.\n\nNếu bạn đang tính vài ngày ở Hà Nội và muốn lấy Hồ Tây làm điểm xuất phát, nhắn cho Ven Hồ Hotel để hỏi phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #CaPheHoTay #KhamPhaHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-b250c3de",
@@ -8878,20 +8882,22 @@
         "claim_kill_switch_triggered": false,
         "content_brand_fit": 95,
         "content_overall_score": 92.76
-      }
+      },
+      "stale_at": "2026-08-27T07:24:17.256718+00:00",
+      "stale_reason": "Approval window closed on 2026-08-19."
     },
     {
       "publication_id": "pub-wednesday-instagram-f8466a74",
       "content_package_id": "7794d669-050d-49a4-a969-29267b811fdd",
       "idempotency_key": "3ece929a593caa99f4abf19e5c9fa0b7c8a08faacb3048bafd56ba4497bd89e0",
       "platform": "instagram",
-      "status": "PENDING_APPROVAL",
+      "status": "STALE_APPROVAL",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T11:36:46.044678+00:00",
-      "updated_at": "2026-08-13T11:36:46.056884+00:00",
+      "updated_at": "2026-08-27T07:24:17.266263+00:00",
       "content": {
         "title": "Xanh trắng bên Hồ Tây",
         "text": "Xanh và trắng, đặt ngay cạnh một mặt hồ nước ngọt giữa Hà Nội.\n\nSantorini Vibes là quán cà phê view Hồ Tây được nhắc tới nhiều nhờ cách phối màu này. Tường trắng, những mảng xanh, và phía trước là mặt nước rộng.\n\nNgồi ở đây, phần thú vị lại không nằm ở tông màu. Nó nằm ở việc bạn nhìn thấy Hồ Tây đổi màu theo giờ: sáng thì nhạt và mờ, đầu giờ chiều sáng trắng lóa, rồi chuyển dần sang cam khi hoàng hôn Hồ Tây bắt đầu.\n\nMột ly cà phê, một chỗ ngồi hướng hồ, và không cần làm gì thêm.\n\nVen Hồ Hotel nằm trên Nguyễn Đình Thi, cùng chung mặt hồ ấy. Sảnh nhỏ, sàn gạch nâu với hoa văn tròn, quầy lễ tân gỗ sẫm — đủ để bước vào là thấy mình đã về tới nơi nghỉ, rồi mai lại đi tiếp.\n\nNếu Hồ Tây đang nằm trong lịch trình Hà Nội của bạn, nhắn cho Ven Hồ Hotel để xem phòng trống những ngày đó nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhamPhaHoTay #CafeHoTay #KhachSanHoTay #HaNoi",
@@ -9004,7 +9010,9 @@
         "claim_kill_switch_triggered": false,
         "content_brand_fit": 95,
         "content_overall_score": 93.7
-      }
+      },
+      "stale_at": "2026-08-27T07:24:17.256722+00:00",
+      "stale_reason": "Approval window closed on 2026-08-19."
     },
     {
       "publication_id": "pub-friday-facebook-cf961950",
