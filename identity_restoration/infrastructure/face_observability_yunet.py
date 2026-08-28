@@ -8,7 +8,10 @@ from typing import Any
 import numpy as np
 from PIL import Image
 
-from image_studio_runtime.action_composite.geometry import YuNetGeometryExtractor
+from image_studio_runtime.action_composite.geometry import (
+    InsightFaceGeometryExtractor,
+    YuNetGeometryExtractor,
+)
 
 from ..application.face_observability import (
     MEASUREMENT_CONFIG_SHA256,
@@ -79,7 +82,9 @@ class YuNetFaceDetector:
             x, y, width, height = values[:4]
             landmarks = tuple((values[index], values[index + 1]) for index in range(4, 14, 2))
             bbox = (x, y, x + width, y + height)
-            geometry = YuNetGeometryExtractor._to_geometry(
+            # YuNet supplies detections; the existing PnP/pose conversion is
+            # the shared geometry authority owned by the InsightFace extractor.
+            geometry = InsightFaceGeometryExtractor._to_geometry(
                 bbox,
                 np.asarray(landmarks, dtype="float64"),
                 image_width=array.shape[1],

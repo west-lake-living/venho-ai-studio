@@ -1,5 +1,107 @@
 # VENHO AI STUDIO — Task Status
 
+### Candidate v3 final roadmap closure (2026-08-28)
+
+- Candidate v3 = `REJECTED / NON-PRODUCTION`.
+- Phase 0 through Phase 6 remain `CLOSED / PASS` without reopening earlier
+  work.
+- Phase 7 = `CLOSED / QUALITY FAIL`; final disposition is
+  `NO_PROMOTION_QUALITY`.
+- Phase 8 exists in the roadmap but is `BLOCKED / ENTRY CONDITION NOT MET`.
+  Its entry condition is the Phase 7 exit gate requiring every promotion
+  predicate to pass. No Phase 8 work was started.
+- Remediation is `NOT AUTHORIZED / NOT SPECIFIED` by the current roadmap. No
+  Candidate v4 was created and no quality tuning or retry was performed.
+- Physical result: correctness `PASS 9/9`; outside-mask pixel lock
+  `PASS 9/9`; BOUNDARY `PASS 0/9`; FACE_LOCAL `UNVALIDATED`;
+  SCENARIO_GLOBAL `UNVALIDATED`; complete quality PASS `0/9`.
+- Physical execution used `9` GPU jobs and `0` provider calls. Evidence is
+  retained at
+  `artifacts/identity-restoration/phase7-candidate-v3/phase7-evaluation-summary-20260828.json`.
+- Candidate v3 feature flag remains `OFF`; production promotion is `NO`.
+  No threshold changed post hoc. v2/v2.1 and the existing architecture
+  remain unchanged.
+
+### Candidate v3 Identity Restoration — Phase 7 evaluation (2026-08-28)
+
+- Authoritative phase: `Phase 7 — Technical validation and candidate evaluation`.
+- `P7-T1 = CLOSED / PASS`: CPU/contract/adapter/flag/layering regression passed;
+  identity suite `328 passed`. Frozen CPU routing retained all 10 rows:
+  B01–B09 `ELIGIBLE`, B10 `BASE_REGEN_REQUIRED`.
+- `P7-T2 = CLOSED / PASS`: the dedicated evaluation-only entrypoint called the
+  existing CandidateV3 service stack and ComfyUI Candidate v3 adapter, with
+  exact purpose `PHASE_7_CANDIDATE_V3_EVALUATION`, pinned workflow SHA, and
+  `evaluationOnly=true` / `productionEligible=false`. Production registry and
+  feature flag were untouched.
+- HARRY-ROG preflight passed: ComfyUI HEALTHY, NVIDIA GTX 1660 SUPER 6GB,
+  5132 MiB free VRAM.
+- `P7-T3 = CLOSED / PASS` technically: B05 and B06 each used one GPU job;
+  B10 remained `BASE_REGEN_REQUIRED` with zero GPU jobs. Both diagnostics had
+  correctness/pixel-lock PASS but quality FAIL at BOUNDARY; FACE_LOCAL and
+  SCENARIO_GLOBAL were UNVALIDATED because provider calls are prohibited.
+- `P7-T4 = CLOSED / QUALITY FAIL`: B01–B04 and B07–B09 used seven additional
+  GPU jobs; B05/B06 diagnostic evidence was reused with exact lineage. All
+  nine physical cases completed with correctness/pixel-lock PASS, BOUNDARY
+  FAIL, FACE_LOCAL/SCENARIO_GLOBAL UNVALIDATED. B10 remained terminal.
+- Phase 7 = `CLOSED / QUALITY FAIL`; final disposition is
+  `NO_PROMOTION_QUALITY`. No tuning, threshold change, retry, v2 evidence
+  reuse, production promotion, or Phase 8 start occurred.
+- Candidate v3 feature flag remains `OFF`; v2/v2.1 and production registry
+  selection remain unchanged; GPU jobs `9`; provider calls `0`.
+- Evidence summary:
+  `artifacts/identity-restoration/phase7-candidate-v3/phase7-evaluation-summary-20260828.json`.
+
+### Candidate v3 Identity Restoration — Phase 6 closure (2026-08-27)
+
+- Authoritative phase: `Phase 6 — Frontend integration`.
+- Objective: make the operational decision understandable and safe.
+- Phase 6 = `CLOSED / PASS`.
+- Internal execution order: `P6-T1` → `P6-T2` → `P6-T3`.
+- `P6-T1 = CLOSED / PASS`: added the deterministic frontend projection with
+  profile selector IDs, preflight status, and separate
+  `FACE_LOCAL`/`BOUNDARY`/`SCENARIO_GLOBAL` evidence. Missing evidence is
+  fail-closed as `UNVALIDATED`; paths, configuration, artifact, workflow,
+  model, token, secret, mask, and hash values are not exposed to the client.
+- `P6-T2 = CLOSED / PASS`: added controlled action state derivation. Non-pass
+  or incomplete correctness/QC states cannot render approval; the Phase 5
+  production-promotion block remains effective. `BASE_REGEN_REQUIRED` is
+  rendered explicitly and never becomes an automatic retry. Retry state is
+  explicit and requires a new attempt ID.
+- `P6-T3 = CLOSED / PASS`: added CPU-only integration coverage for redaction,
+  scope separation, missing-evidence fail-closed behavior, approval gating,
+  explicit base regeneration, retry/new-attempt semantics, and IDs-only
+  client payloads. The API now exposes only the safe frontend projection of
+  additive Candidate v3 scope evidence.
+- Phase 6 requires no physical execution, GPU worker, provider, or network
+  access. Candidate v3 remains feature-gated `OFF`; v2/v2.1 and architecture
+  are unchanged; production promotion remains blocked.
+- Candidate v3 identity suite: `323 passed`; compileall and all identity
+  schemas pass. No Phase 7 work was started.
+
+### Candidate v3 Identity Restoration — Phase 5 closure (2026-08-27)
+
+- Authoritative phase: `Phase 5 — Service, bridge, and API integration`.
+- Phase 5 = `CLOSED / PASS`.
+- `P5-T1 = CLOSED / PASS`: the Candidate v3 service composes approved
+  ScenarioAuthority, IdentityPack, FaceObservability, route policy,
+  CanonicalFaceTransform, bridge, inverse composite, split QC, Manifest 1.4,
+  and job transitions in one ordered path.
+- `P5-T2 = CLOSED / PASS`: the bridge contract requires canonical `512x512`
+  output and pinned workflow lineage; invalid output/hash/lineage fails closed.
+  Existing job records are extended additively with persistent atomic job
+  records, deterministic request fingerprints, duplicate replay, cancellation,
+  retry with a new attempt ID, and orphan recovery.
+- `P5-T3 = CLOSED / PASS`: authenticated API boundary, redacted responses,
+  explicit route responses, controlled cancel/retry actions, and blocked
+  production promotion are implemented.
+- Phase 5 mocked end-to-end coverage passes eligible, microface,
+  validation-failure, cancellation, duplicate-retry, and orphaned-job paths.
+  Candidate v3 identity suite: `318 passed`; all identity schemas and
+  compileall pass. No Phase 6 work was started.
+- Locked Phase 1–4 authority IDs, versions, and hashes remain unchanged.
+  Candidate v3 remains feature-gated `OFF`; v2/v2.1 and architecture are
+  unchanged; GPU calls `0`; provider/network calls `0`.
+
 ### Candidate v3 Identity Restoration — Phase 4 closure (2026-08-27)
 
 - Authoritative phase: `Phase 4 — Composite and split QC`.

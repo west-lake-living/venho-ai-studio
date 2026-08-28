@@ -1,5 +1,113 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-08-28 — Candidate v3 final roadmap closure
+
+The current Candidate v3 attempt is finalized as `REJECTED / NON-PRODUCTION`.
+Phase 0 through Phase 6 remain `CLOSED / PASS`; Phase 7 is
+`CLOSED / QUALITY FAIL` with final disposition `NO_PROMOTION_QUALITY`.
+
+- Phase 8 exists in the authoritative roadmap, but its entry condition was
+  not met and its tracking state is `BLOCKED / ENTRY CONDITION NOT MET`.
+  No Phase 8 work was started.
+- Remediation is `NOT AUTHORIZED / NOT SPECIFIED` by the current roadmap. No
+  Candidate v4, quality tuning, threshold change, retry, or promotion was
+  authorized.
+- Final quality evidence: correctness `PASS 9/9`; outside-mask pixel lock
+  `PASS 9/9`; BOUNDARY `PASS 0/9`; FACE_LOCAL `UNVALIDATED`;
+  SCENARIO_GLOBAL `UNVALIDATED`; complete quality PASS `0/9`.
+- Physical execution totaled `9` GPU jobs and `0` provider calls. The
+  append-only evidence remains under
+  `artifacts/identity-restoration/phase7-candidate-v3/`, with aggregate
+  report `phase7-evaluation-summary-20260828.json`.
+- Candidate v3 remains feature-gated `OFF` and promotion is `NO`. No
+  threshold was changed post hoc. v2/v2.1 behavior and the existing
+  architecture remain unchanged.
+
+## 2026-08-28 — Candidate v3 Phase 7 closure
+
+Phase 7 — Technical validation and candidate evaluation is `CLOSED / QUALITY
+FAIL`, with final disposition `NO_PROMOTION_QUALITY`. The evaluation-only
+authority was honored and no production promotion occurred.
+
+- P7-T1 passed with the identity suite at `328 passed`; CPU B01–B10 retained
+  all rows and routed B01–B09 `ELIGIBLE`, B10 `BASE_REGEN_REQUIRED`.
+- P7-T2 passed through the dedicated exact-purpose entrypoint. It used the
+  existing CandidateV3 service stack and ComfyUiCandidateV3Adapter, preserved
+  workflow/route/transform/quality/IdentityPack/ScenarioAuthority lineage,
+  rejected production or missing purpose, and never registered in production.
+- HARRY-ROG preflight was HEALTHY with GTX 1660 SUPER 6GB and 5132 MiB free.
+- P7-T3 technical diagnostic passed: B05 and B06 each consumed one GPU job;
+  B10 consumed zero. Both B05/B06 correctness and pixel lock passed, while
+  BOUNDARY failed. FACE_LOCAL and SCENARIO_GLOBAL were UNVALIDATED because
+  provider calls remained zero.
+- P7-T4 technical benchmark completed with seven additional GPU jobs for
+  B01–B04 and B07–B09. B05/B06 were reused only as exact diagnostic evidence;
+  total physical GPU jobs were `9`, all nine physical cases completed, and
+  B10 remained terminal `BASE_REGEN_REQUIRED`.
+- All nine physical cases had correctness/pixel-lock PASS but BOUNDARY FAIL;
+  all FACE_LOCAL and SCENARIO_GLOBAL scopes were UNVALIDATED. The approved
+  split-QC precedence therefore prevents quality PASS and promotion.
+- Evidence is retained under
+  `artifacts/identity-restoration/phase7-candidate-v3/`, with aggregate
+  summary `phase7-evaluation-summary-20260828.json` and per-case manifests,
+  QC reports, restored crops, inverse composites, and pixel diffs.
+- No tuning, threshold changes, regeneration, v2 physical evidence reuse,
+  production promotion, feature-flag change, or Phase 8 work occurred.
+  Candidate v3 remains OFF; provider calls `0`; GPU jobs `9`.
+
+## 2026-08-27 — Candidate v3 Phase 6 closure
+
+Phase 6 — Frontend integration is `CLOSED / PASS`. The authoritative goal was
+to make the operational decision understandable and safe. The minimal
+sequential decomposition was P6-T1 → P6-T2 → P6-T3.
+
+- P6-T1 adds `identity_restoration/interface/candidate_v3_frontend.py`, a
+  deterministic frontend projection containing profile IDs, preflight status,
+  and separate `FACE_LOCAL`, `BOUNDARY`, and `SCENARIO_GLOBAL` evidence. It
+  strips paths/configuration and other internal lineage values before the
+  client boundary and maps missing scope/correctness evidence to
+  `UNVALIDATED`.
+- P6-T2 adds fail-closed controlled action states: approval is not visible for
+  any non-pass or incomplete state; `BASE_REGEN_REQUIRED` is explicit and is
+  never an automatic retry; retry is explicit and requires a new attempt ID.
+  The Phase 5 production-promotion block is preserved.
+- P6-T3 adds `tests/identity_restoration/interface/test_candidate_v3_frontend.py`
+  and validates redaction, scope separation, approval gating, base
+  regeneration, retry/new-attempt behavior, and IDs-only client payloads.
+  CandidateV3 service/API results expose only the safe additive frontend
+  projection of scope evidence.
+
+The Phase 6 work is CPU/code-only: no physical GPU execution, provider, or
+network call was needed. Candidate v3 remains feature-gated `OFF`, production
+promotion remains blocked, v2/v2.1 and architecture remain unchanged, and
+Phase 7 was not started. Candidate v3 identity regression is `323 passed`;
+compileall and all identity schemas pass.
+
+## 2026-08-27 — Candidate v3 Phase 5 closure
+
+Phase 5 — Service, bridge, and API integration is `CLOSED / PASS`. The
+minimal execution order was P5-T1 → P5-T2 → P5-T3.
+
+- P5-T1 composes the approved ScenarioAuthority/IdentityPack authorities,
+  CPU FaceObservability and route policy, canonicalization, Candidate v3
+  bridge, Phase 4 inverse composite/split QC, Manifest 1.4, and terminal job
+  transition. Microface and other non-eligible routes stop before the bridge.
+- P5-T2 adds a canonical `512x512` bridge result contract, pinned workflow
+  lineage validation, atomic persistent job records, deterministic request
+  fingerprints, same-request replay, cancellation, new-attempt retry, and
+  orphan recovery. The existing v2 job/service path was not changed.
+- P5-T3 adds an authenticated API façade with ID/status/route-only redacted
+  responses. Cancel and retry are controlled actions; production promotion is
+  explicitly rejected because Phase 5 does not authorize promotion.
+
+The mocked end-to-end tests cover eligible, microface, validation failure,
+cancellation, duplicate retry, and orphaned job paths, plus bridge lineage
+failure and API authorization/redaction. Candidate v3 identity regression is
+`318 passed`; all identity schemas and Python compileall pass. No Phase 6
+work was started. Locked Phase 1–4 authority IDs/versions/hashes remain
+unchanged; Candidate v3 remains feature-gated `OFF`; v2/v2.1 and architecture
+remain unchanged; GPU calls `0`; provider/network calls `0`.
+
 ## 2026-08-27 — Candidate v3 Phase 4 closure
 
 Human authority approved `BOUNDARY-B`: a symmetric 3 px seam ring around the
