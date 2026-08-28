@@ -1,0 +1,182 @@
+{
+  "roadmap": "candidate_v3_quality_remediation_r1",
+  "task": "r1_p0_failure_evidence_reconstruction",
+  "status": "PASS",
+  "auditOnly": true,
+  "candidateFeatureFlag": false,
+  "productionPromotion": false,
+  "phase_0_6_reopened": false,
+  "gpu_calls": 0,
+  "provider_calls": 0,
+  "priorEvaluation": {
+    "runIds": [
+      "phase7-diagnostic-20260828",
+      "phase7-benchmark-20260828"
+    ],
+    "gpuJobs": 9,
+    "providerCalls": 0,
+    "workerHealthProbes": 1,
+    "note": "Prior physical evidence was read only; R1-P0 made no execution calls."
+  },
+  "authorities": {
+    "benchmarkManifest": {
+      "path": "contracts/identity_restoration/benchmark_set.yaml",
+      "sha256": "baf893b92bdde0d7ce11ed3f736303de1b96b97d91cfd45fb267673f2a5015af"
+    },
+    "identityPack": {
+      "id": "linh-an-production-v3-2026-08",
+      "sha256": "fc185a9e47a33092fbafe357a140b65f9449bac0de28d7e20b9f33d8ddcbb406"
+    },
+    "qualityPolicy": {
+      "id": "restoration-v3-quality-policy-1",
+      "version": "1.0",
+      "sha256": "49ff52fd48147c10ecd4076a9e0995bfa3eae2162010a483cef377f1066f2025"
+    },
+    "routePolicy": {
+      "id": "candidate_v3_route_policy",
+      "version": "1.0",
+      "sha256": "171019b8fcf62449b3f5d6af37372f9861eb80bd21a7b621ae89c760199fdb33"
+    },
+    "transformPolicy": {
+      "id": "candidate_v3_canonical_transform_policy",
+      "version": "1.0",
+      "sha256": "ebe134ca42cfc3066c24c04299e005f4a389c4037f57267201ceb2ff96d941c9"
+    },
+    "workflowSha256": "53dc090691b8feac2a8b8a4309d43af737e304b09330e072b4ab5632ed5aad91"
+  },
+  "blockers": {
+    "BOUNDARY": {
+      "reported_state": "0/9",
+      "expected_count": 9,
+      "expected_cases": ["B01", "B02", "B03", "B04", "B05", "B06", "B07", "B08", "B09"],
+      "valid_evaluation_count": 9,
+      "pass_count": 0,
+      "fail_count": 9,
+      "missing_count": 0,
+      "unexecuted_count": 0,
+      "root_cause_class": "TRUE_QUALITY_FAILURE",
+      "root_cause_detail": "evaluate_boundary_qc executed against every eligible final composite; maxChannelSeamDelta failed all nine cases. This is not a missing-sample or aggregation result.",
+      "break_point": "BOUNDARY validator result: valid metric evaluation -> FAIL",
+      "sample_states": [
+        {"caseId": "B01", "state": "valid/fail", "maxChannelSeamDelta": 106.0, "meanSeamDelta": 6.626410965215388, "localTextureDiscontinuity": 0.13031829864544212, "metricStatuses": {"maxChannelSeamDelta": "FAIL", "meanSeamDelta": "PASS", "localTextureDiscontinuity": "PASS"}, "report": "artifacts/identity-restoration/phase7-candidate-v3/phase7-benchmark-20260828/B01-attempt-1/qc/BOUNDARY.json", "reportSha256": "6ec82b29f0c7b8aa316a9ea12e28f02c5014bfbb6308de14f8a59d9f6b0d18ae"},
+        {"caseId": "B02", "state": "valid/fail", "maxChannelSeamDelta": 182.0, "meanSeamDelta": 14.32882882882883, "localTextureDiscontinuity": 0.1538388900275487, "metricStatuses": {"maxChannelSeamDelta": "FAIL", "meanSeamDelta": "NEEDS_REVIEW", "localTextureDiscontinuity": "PASS"}, "report": "artifacts/identity-restoration/phase7-candidate-v3/phase7-benchmark-20260828/B02-attempt-1/qc/BOUNDARY.json", "reportSha256": "e78170762b0b6bb980a2c511ebf3a5508643f45e29c649eb5eba856dde295d64"},
+        {"caseId": "B03", "state": "valid/fail", "maxChannelSeamDelta": 164.0, "meanSeamDelta": 16.533765801729874, "localTextureDiscontinuity": 0.010572748189523199, "metricStatuses": {"maxChannelSeamDelta": "FAIL", "meanSeamDelta": "NEEDS_REVIEW", "localTextureDiscontinuity": "PASS"}, "report": "artifacts/identity-restoration/phase7-candidate-v3/phase7-benchmark-20260828/B03-attempt-1/qc/BOUNDARY.json", "reportSha256": "8bb3548ab35e03570cd0d8b4b8561387ead1b6c3401057c32dd32a263ccff0e1"},
+        {"caseId": "B04", "state": "valid/fail", "maxChannelSeamDelta": 148.0, "meanSeamDelta": 15.979423868312757, "localTextureDiscontinuity": 0.07854356617211927, "metricStatuses": {"maxChannelSeamDelta": "FAIL", "meanSeamDelta": "NEEDS_REVIEW", "localTextureDiscontinuity": "PASS"}, "report": "artifacts/identity-restoration/phase7-candidate-v3/phase7-benchmark-20260828/B04-attempt-1/qc/BOUNDARY.json", "reportSha256": "d896368c3819e7c974cc085be23d5accacba8053c599621fbddbb3bb3162acd4"},
+        {"caseId": "B05", "state": "valid/fail", "maxChannelSeamDelta": 200.0, "meanSeamDelta": 17.96122860020141, "localTextureDiscontinuity": 0.20064088784792614, "metricStatuses": {"maxChannelSeamDelta": "FAIL", "meanSeamDelta": "NEEDS_REVIEW", "localTextureDiscontinuity": "PASS"}, "report": "artifacts/identity-restoration/phase7-candidate-v3/phase7-diagnostic-20260828/B05-attempt-1/qc/BOUNDARY.json", "reportSha256": "793524c90f2526f1a3be690bc2b11ad8933a3c9f67504f8741583bea943346a8"},
+        {"caseId": "B06", "state": "valid/fail", "maxChannelSeamDelta": 177.0, "meanSeamDelta": 19.72027290448343, "localTextureDiscontinuity": 0.1084529161903157, "metricStatuses": {"maxChannelSeamDelta": "FAIL", "meanSeamDelta": "NEEDS_REVIEW", "localTextureDiscontinuity": "PASS"}, "report": "artifacts/identity-restoration/phase7-candidate-v3/phase7-diagnostic-20260828/B06-attempt-1/qc/BOUNDARY.json", "reportSha256": "fabee41c99487406d744198f0040fb09752a2e19033065226706866711b2e770"},
+        {"caseId": "B07", "state": "valid/fail", "maxChannelSeamDelta": 184.0, "meanSeamDelta": 15.683188090050836, "localTextureDiscontinuity": 0.1450710608654093, "metricStatuses": {"maxChannelSeamDelta": "FAIL", "meanSeamDelta": "NEEDS_REVIEW", "localTextureDiscontinuity": "PASS"}, "report": "artifacts/identity-restoration/phase7-candidate-v3/phase7-benchmark-20260828/B07-attempt-1/qc/BOUNDARY.json", "reportSha256": "dd887bfb86622880926ad0bf911ee23449753228d6fe59aa2758f9f12dbdec64"},
+        {"caseId": "B08", "state": "valid/fail", "maxChannelSeamDelta": 186.0, "meanSeamDelta": 11.552863802863802, "localTextureDiscontinuity": 0.09494648320867582, "metricStatuses": {"maxChannelSeamDelta": "FAIL", "meanSeamDelta": "PASS", "localTextureDiscontinuity": "PASS"}, "report": "artifacts/identity-restoration/phase7-candidate-v3/phase7-benchmark-20260828/B08-attempt-1/qc/BOUNDARY.json", "reportSha256": "c2a1ae7668a9dc7a66ccc06bc9e8dd5fbd218260cfaddc33e878520fecad5098"},
+        {"caseId": "B09", "state": "valid/fail", "maxChannelSeamDelta": 174.0, "meanSeamDelta": 11.457748309932397, "localTextureDiscontinuity": 0.05797645717306409, "metricStatuses": {"maxChannelSeamDelta": "FAIL", "meanSeamDelta": "PASS", "localTextureDiscontinuity": "PASS"}, "report": "artifacts/identity-restoration/phase7-candidate-v3/phase7-benchmark-20260828/B09-attempt-1/qc/BOUNDARY.json", "reportSha256": "1a91c105f96721e9542ff1149d338d1148e17f76b9bfff987c690da7b514f96e"}
+      ],
+      "excluded_cases": [{"caseId": "B10", "state": "unexecuted", "reason": "BASE_REGEN_REQUIRED before bridge/composite/QC", "job": "artifacts/identity-restoration/phase7-candidate-v3/jobs/phase7-diagnostic-20260828-B10.json"}]
+    },
+    "FACE_LOCAL": {
+      "reported_state": "UNVALIDATED",
+      "expected_count": 9,
+      "expected_cases": ["B01", "B02", "B03", "B04", "B05", "B06", "B07", "B08", "B09"],
+      "expected_samples_per_case": 1,
+      "benchmark_manifest_face_qc_samples_per_case": 3,
+      "benchmark_manifest_atomic_sample_expectation": 27,
+      "valid_evaluation_count": 0,
+      "actual_evaluator_result_count": 0,
+      "actual_atomic_sample_count": 0,
+      "placeholder_report_count": 9,
+      "root_cause_class": "VALIDATOR_NOT_EXECUTED",
+      "secondary_root_cause_class": "INSUFFICIENT_EVIDENCE",
+      "root_cause_detail": "Phase 7 entrypoint constructs CandidateV3RestorationService with face_qc=None. The service writes nine reports with score=null, then face_local_qc_candidate_v3 maps the missing score to UNVALIDATED.",
+      "break_point": "service composition -> face_qc callback is absent; no Face QC evaluator result reaches lane aggregation",
+      "feature_flag_relation": "not causal; evaluation-only entrypoint is enabled while production feature flag remains OFF",
+      "gpu_relation": "not causal; candidate output and composite completed for all nine eligible cases",
+      "provider_relation": "no provider output was produced or consumed; provider calls remained 0",
+      "lineage_status": "LINEAGE_UNPROVEN_FOR_SCOPE_RESULT",
+      "sample_states": [
+        {"caseId": "B01", "state": "invalid evidence", "classification": "VALIDATOR_NOT_EXECUTED", "score": null, "reportSha256": "76e31c86738eaf9ad4977d9a54b9804097dbf0d99ed5540b16e4eae92a8ef383"},
+        {"caseId": "B02", "state": "invalid evidence", "classification": "VALIDATOR_NOT_EXECUTED", "score": null, "reportSha256": "76e31c86738eaf9ad4977d9a54b9804097dbf0d99ed5540b16e4eae92a8ef383"},
+        {"caseId": "B03", "state": "invalid evidence", "classification": "VALIDATOR_NOT_EXECUTED", "score": null, "reportSha256": "76e31c86738eaf9ad4977d9a54b9804097dbf0d99ed5540b16e4eae92a8ef383"},
+        {"caseId": "B04", "state": "invalid evidence", "classification": "VALIDATOR_NOT_EXECUTED", "score": null, "reportSha256": "76e31c86738eaf9ad4977d9a54b9804097dbf0d99ed5540b16e4eae92a8ef383"},
+        {"caseId": "B05", "state": "invalid evidence", "classification": "VALIDATOR_NOT_EXECUTED", "score": null, "reportSha256": "76e31c86738eaf9ad4977d9a54b9804097dbf0d99ed5540b16e4eae92a8ef383"},
+        {"caseId": "B06", "state": "invalid evidence", "classification": "VALIDATOR_NOT_EXECUTED", "score": null, "reportSha256": "76e31c86738eaf9ad4977d9a54b9804097dbf0d99ed5540b16e4eae92a8ef383"},
+        {"caseId": "B07", "state": "invalid evidence", "classification": "VALIDATOR_NOT_EXECUTED", "score": null, "reportSha256": "76e31c86738eaf9ad4977d9a54b9804097dbf0d99ed5540b16e4eae92a8ef383"},
+        {"caseId": "B08", "state": "invalid evidence", "classification": "VALIDATOR_NOT_EXECUTED", "score": null, "reportSha256": "76e31c86738eaf9ad4977d9a54b9804097dbf0d99ed5540b16e4eae92a8ef383"},
+        {"caseId": "B09", "state": "invalid evidence", "classification": "VALIDATOR_NOT_EXECUTED", "score": null, "reportSha256": "76e31c86738eaf9ad4977d9a54b9804097dbf0d99ed5540b16e4eae92a8ef383"}
+      ],
+      "report_root": "artifacts/identity-restoration/phase7-candidate-v3/{phase7-benchmark-20260828|phase7-diagnostic-20260828}/{caseId}-attempt-1/qc/FACE_LOCAL.json",
+      "report_pattern": "Each case has qc/FACE_LOCAL.json; each contains scope=FACE_LOCAL, score=null, and four selected reference IDs, but no evaluator result, validator version, run ID, output hash, or case ID in the report payload. The frozen benchmark manifest declares three underlying Face QC samples per case; neither atomic samples nor the aggregate score result exists."
+    },
+    "SCENARIO_GLOBAL": {
+      "reported_state": "UNVALIDATED",
+      "expected_count": 9,
+      "expected_cases": ["B01", "B02", "B03", "B04", "B05", "B06", "B07", "B08", "B09"],
+      "expected_samples_per_case": 1,
+      "benchmark_manifest_scenario_qc_samples_per_case": 1,
+      "valid_evaluation_count": 0,
+      "actual_evaluator_result_count": 0,
+      "placeholder_report_count": 9,
+      "root_cause_class": "VALIDATOR_NOT_EXECUTED",
+      "secondary_root_cause_class": "INSUFFICIENT_EVIDENCE",
+      "root_cause_detail": "Phase 7 entrypoint constructs CandidateV3RestorationService with scenario_validator=None. The service writes nine reports with passed=null and maps the absent result to UNVALIDATED.",
+      "break_point": "service composition -> scenario_validator callback is absent; no Scenario Global evaluator result reaches lane aggregation",
+      "authority_resolution": "PASS for all ten bindings; no authority resolution defect",
+      "authority_bindings": {
+        "B01": {"profile": "canonical_default", "exclusions": [], "bindingSha256": "71f839dff776ec6d6d085c5a1ab928295af8c32a9699f7929d78b04807ec0075"},
+        "B02": {"profile": "canonical_default", "exclusions": [], "bindingSha256": "71f839dff776ec6d6d085c5a1ab928295af8c32a9699f7929d78b04807ec0075"},
+        "B03": {"profile": "action_full_body@1.0", "exclusions": ["shot_distance", "hairstyle"], "bindingSha256": "fe4a2b454a5868e9fc4dfbc4216e413a69a186cc8b4ab89c066943843c869b1c"},
+        "B04": {"profile": "action_full_body@1.0", "exclusions": ["shot_distance", "hairstyle"], "bindingSha256": "fe4a2b454a5868e9fc4dfbc4216e413a69a186cc8b4ab89c066943843c869b1c"},
+        "B05": {"profile": "canonical_default", "exclusions": [], "bindingSha256": "71f839dff776ec6d6d085c5a1ab928295af8c32a9699f7929d78b04807ec0075"},
+        "B06": {"profile": "canonical_default", "exclusions": [], "bindingSha256": "71f839dff776ec6d6d085c5a1ab928295af8c32a9699f7929d78b04807ec0075"},
+        "B07": {"profile": "canonical_default", "exclusions": [], "bindingSha256": "71f839dff776ec6d6d085c5a1ab928295af8c32a9699f7929d78b04807ec0075"},
+        "B08": {"profile": "canonical_default", "exclusions": [], "bindingSha256": "71f839dff776ec6d6d085c5a1ab928295af8c32a9699f7929d78b04807ec0075"},
+        "B09": {"profile": "canonical_default", "exclusions": [], "bindingSha256": "71f839dff776ec6d6d085c5a1ab928295af8c32a9699f7929d78b04807ec0075"}
+      },
+      "feature_flag_relation": "not causal; evaluation-only entrypoint is enabled while production feature flag remains OFF",
+      "gpu_relation": "not causal; candidate output and composite completed for all nine eligible cases",
+      "provider_relation": "no provider output was produced or consumed; provider calls remained 0",
+      "lineage_status": "LINEAGE_UNPROVEN_FOR_SCOPE_RESULT",
+      "sample_states": [
+        {"caseId": "B01", "state": "invalid evidence", "classification": "VALIDATOR_NOT_EXECUTED", "passed": null, "reportSha256": "187a1ce7bb598d1d7a521ce3acc821daee6e316e69f9b5ea7ec08d652a0dacda"},
+        {"caseId": "B02", "state": "invalid evidence", "classification": "VALIDATOR_NOT_EXECUTED", "passed": null, "reportSha256": "4cf09fefd05f42a517c9a440b87c4127907fddead65f74a9c032067074bb15fc"},
+        {"caseId": "B03", "state": "invalid evidence", "classification": "VALIDATOR_NOT_EXECUTED", "passed": null, "reportSha256": "c913138aff312943483fd93de7d56b34e333e6b58e241fd8e43d87726e8c9298"},
+        {"caseId": "B04", "state": "invalid evidence", "classification": "VALIDATOR_NOT_EXECUTED", "passed": null, "reportSha256": "7266fac5a236b40e68017ab1a8c1360ecde862e7e7c0925ade4dcfc810fd326b"},
+        {"caseId": "B05", "state": "invalid evidence", "classification": "VALIDATOR_NOT_EXECUTED", "passed": null, "reportSha256": "cf00e6bb700ffd93d52d1041239c6a1140757a0395789f16d535d822cefdc206"},
+        {"caseId": "B06", "state": "invalid evidence", "classification": "VALIDATOR_NOT_EXECUTED", "passed": null, "reportSha256": "f8a1ee5cdcbbf729abb130c238e48d8eb5b1c68be101b10d2ac706423f8d1528"},
+        {"caseId": "B07", "state": "invalid evidence", "classification": "VALIDATOR_NOT_EXECUTED", "passed": null, "reportSha256": "04d9795d608545b5794b0de65668d48e846ec4c2d2a99f532dd34128c7ec7577"},
+        {"caseId": "B08", "state": "invalid evidence", "classification": "VALIDATOR_NOT_EXECUTED", "passed": null, "reportSha256": "5a38104efc1912bdbd826aeba6f0a485393484da068c228fa0c4ed86a87ab7e2"},
+        {"caseId": "B09", "state": "invalid evidence", "classification": "VALIDATOR_NOT_EXECUTED", "passed": null, "reportSha256": "fc72c991d990bdf7d54b0f58271e776234cbe14832b0dcb1098eb88108bb55af"}
+      ],
+      "report_root": "artifacts/identity-restoration/phase7-candidate-v3/{phase7-benchmark-20260828|phase7-diagnostic-20260828}/{caseId}-attempt-1/qc/SCENARIO_GLOBAL.json",
+      "excluded_cases": [{"caseId": "B10", "state": "unexecuted", "reason": "BASE_REGEN_REQUIRED before bridge/composite/QC", "report": null}]
+    }
+  },
+  "aggregation": {
+    "qualityPolicy": "restoration-v3-quality-policy-1@1.0",
+    "precedence": ["FAIL", "UNVALIDATED", "NEEDS_REVIEW", "PASS"],
+    "observedPerEligibleCase": {"BOUNDARY": "FAIL", "FACE_LOCAL": "UNVALIDATED", "SCENARIO_GLOBAL": "UNVALIDATED"},
+    "observedMergedQuality": "FAIL",
+    "observedDecisiveReason": "SCOPE_FAIL:BOUNDARY",
+    "interpretation": "BOUNDARY 0/9 means zero PASS among nine valid BOUNDARY evaluations, not zero valid samples and not a missing validator run. The two UNVALIDATED scopes remain blockers independently, but BOUNDARY is decisive in the merged result."
+  },
+  "dependency_map": [
+    {"lane": "BOUNDARY", "path": ["candidate output", "inverse composite + pixel lock", "qc/BOUNDARY.json", "evaluate_boundary_qc", "BOUNDARY=FAIL", "QualityBundleMerger", "Phase 7 QUALITY_FAIL"], "break": "valid boundary metric failure"},
+    {"lane": "FACE_LOCAL", "path": ["candidate output", "qc/FACE_LOCAL.json placeholder", "face_qc callback", "FACE_LOCAL=UNVALIDATED", "QualityBundleMerger", "Phase 7 blocked"], "break": "face_qc=None; validator not executed"},
+    {"lane": "SCENARIO_GLOBAL", "path": ["candidate output", "scenario binding + qc/SCENARIO_GLOBAL.json placeholder", "scenario_validator callback", "SCENARIO_GLOBAL=UNVALIDATED", "QualityBundleMerger", "Phase 7 blocked"], "break": "scenario_validator=None; validator not executed"}
+  ],
+  "root_causes": [
+    {"lane": "BOUNDARY", "classification": "TRUE_QUALITY_FAILURE", "evidence": "Nine valid BOUNDARY reports; all have maxChannelSeamDelta FAIL and reason BOUNDARY_METRIC_FAILED."},
+    {"lane": "FACE_LOCAL", "classification": "VALIDATOR_NOT_EXECUTED", "secondary": "INSUFFICIENT_EVIDENCE", "evidence": "Nine score=null reports; Phase 7 composition passes face_qc=None; actual evaluator result count is zero."},
+    {"lane": "SCENARIO_GLOBAL", "classification": "VALIDATOR_NOT_EXECUTED", "secondary": "INSUFFICIENT_EVIDENCE", "evidence": "Nine passed=null reports; Phase 7 composition passes scenario_validator=None; actual evaluator result count is zero."}
+  ],
+  "stale_or_mismatched_evidence": {
+    "currentCandidateV3ArtifactsUsed": true,
+    "historicalV2EvidenceReused": false,
+    "manifestReportHashesVerified": true,
+    "authorityBindingMismatch": false,
+    "workflowLineageMismatch": false,
+    "transformGeometryFailure": false,
+    "note": "Historical GW-P7 quality reports were not used to classify this Candidate v3 result."
+  },
+  "recommended_next_task": "R1-P1 Boundary Quality Remediation",
+  "architecture_changed": false,
+  "policy_changed": false,
+  "workflow_changed": false,
+  "identity_pack_changed": false
+}

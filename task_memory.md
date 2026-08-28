@@ -1,5 +1,37 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-08-28 — Candidate v3 R1-P0 failure/evidence reconstruction
+
+`Candidate v3 Quality Remediation R1 / R1-P0 = CLOSED / PASS`. This was an
+offline, audit-only reconstruction; no code, policy, workflow, IdentityPack,
+architecture, feature flag, production registry, GPU, or provider state was
+changed.
+
+- The nine BOUNDARY cases are B01–B09. All nine have valid final-composite
+  BOUNDARY evaluations and all nine fail `maxChannelSeamDelta`, so the
+  authoritative `BOUNDARY 0/9` means zero PASS among nine valid evaluations.
+  B10 is `BASE_REGEN_REQUIRED` before bridge/composite/QC and is not part of
+  the nine-case quality denominator.
+- FACE_LOCAL expected nine eligible-case results but has zero evaluator
+  results. The evaluation-only composition passes `face_qc=None`; nine
+  placeholder reports contain `score=null` and are not valid QC evidence.
+  Root cause: `VALIDATOR_NOT_EXECUTED`, secondary `INSUFFICIENT_EVIDENCE`.
+- SCENARIO_GLOBAL expected nine eligible-case results but has zero evaluator
+  results. The evaluation-only composition passes `scenario_validator=None`;
+  nine placeholder reports contain `passed=null`. Root cause:
+  `VALIDATOR_NOT_EXECUTED`, secondary `INSUFFICIENT_EVIDENCE`.
+- Scenario authority resolution is correct: B03/B04 use
+  `action_full_body@1.0` with only `shot_distance` and `hairstyle` excluded;
+  B01/B02/B05–B09 use `canonical_default` with no exclusions. No historical
+  v2 evidence was used and no lineage, transform, mapping, or aggregation
+  defect was found.
+- R1-P0 itself made `0` GPU calls and `0` provider calls. The prior physical
+  run remains recorded as nine GPU jobs and zero provider calls. The immutable
+  audit checkpoint and report are under
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p0-reconstruction-20260828/`.
+
+Recommended next task: `R1-P1 Boundary Quality Remediation`.
+
 ## 2026-08-28 — Candidate v3 final roadmap closure
 
 The current Candidate v3 attempt is finalized as `REJECTED / NON-PRODUCTION`.

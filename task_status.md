@@ -1,5 +1,27 @@
 # VENHO AI STUDIO — Task Status
 
+### Candidate v3 Quality Remediation R1 — R1-P0 closure (2026-08-28)
+
+- `R1-P0 = CLOSED / PASS`: read-only failure and evidence reconstruction is
+  complete for BOUNDARY, FACE_LOCAL, and SCENARIO_GLOBAL.
+- `BOUNDARY 0/9` is zero PASS among nine valid evaluations. B01–B09 are all
+  `valid/fail` because `maxChannelSeamDelta` failed; B10 was correctly
+  excluded after `BASE_REGEN_REQUIRED`.
+- FACE_LOCAL and SCENARIO_GLOBAL each have nine placeholder reports but zero
+  evaluator results. The Phase 7 evaluation composition passes
+  `face_qc=None` and `scenario_validator=None`, so both scopes fail closed to
+  `UNVALIDATED`. This is validator/evidence non-execution, not a quality,
+  authority, mapping, transform, or aggregation defect.
+- B03/B04 retain `action_full_body@1.0` with only `shot_distance` and
+  `hairstyle` excluded; B01/B02/B05–B09 retain `canonical_default` with no
+  exclusions. Historical v2 evidence was not reused.
+- No implementation or authority was changed. R1-P0 made `0` GPU calls and
+  `0` provider calls; Candidate v3 remains feature-gated `OFF`, production
+  promotion remains `NO`, and Phase 0–6 remain closed.
+- Checkpoint/report:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p0-reconstruction-20260828/`.
+- Recommended next task: `R1-P1 Boundary Quality Remediation`.
+
 ### Candidate v3 final roadmap closure (2026-08-28)
 
 - Candidate v3 = `REJECTED / NON-PRODUCTION`.
