@@ -7230,13 +7230,13 @@
       "content_package_id": "211a53ce-8e04-4271-973c-65fd12f35d4d",
       "idempotency_key": "baf0ff8e27ef1974d9df2d90b5780d2b913b7525735f55f75aa4c0b1c651a1f6",
       "platform": "facebook",
-      "status": "REJECTED",
+      "status": "CANCELLED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T04:15:57.436966+00:00",
-      "updated_at": "2026-08-26T09:25:33.623952+00:00",
+      "updated_at": "2026-08-28T00:35:36.609804+00:00",
       "content": {
         "title": "Ngày Hà Nội mưa, sảnh nhỏ thành góc đọc sách",
         "text": "Có những ngày Hà Nội mưa từ sáng, và mọi kế hoạch đi bộ quanh Hồ Tây đều được gác lại.\n\nNhững lúc như vậy, sảnh Ven Hồ Hotel thường là nơi khách xuống ngồi.\n\nCửa kính nhìn thẳng ra phố Nguyễn Đình Thi. Mưa rơi bên ngoài, bên trong yên và khô ráo. Sàn gạch nâu với những vòng hoa văn tròn, mấy chiếc ghế gỗ màu nâu đỏ sẫm, vài bức tranh treo trên tường. Ánh sáng dịu, không quá vàng cũng không quá trắng, đủ để đọc mà không mỏi mắt.\n\nKhông gian này không lớn. Nhưng đúng vào một buổi chiều mưa, sự vừa vặn ấy lại hợp lý: đủ gần quầy lễ tân để hỏi han một câu, đủ riêng để ngồi im với cuốn sách mang theo trong vali.\n\nMưa ở Tây Hồ thường không kéo dài cả ngày. Đọc hết vài chương, ngẩng lên đã thấy phố ngoài kia sáng dần, mặt đường bắt đầu khô, và bạn lại có thể ra hồ đi bộ như dự định ban đầu.\n\nĐôi khi một chuyến đi Hà Nội đáng nhớ không nằm ở lịch trình kín, mà ở khoảng thời gian trống mà bạn không phải vội lấp đầy.\n\nNếu bạn đang tìm một khách sạn view Hồ Tây cho những ngày sắp tới, nhắn tin cho Ven Hồ Hotel để kiểm tra phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #KhachSanHoTay #HaNoi #WestLakeHanoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-friday-facebook-b91a3968",
@@ -7339,20 +7339,22 @@
         "content_overall_score": 90.87
       },
       "rejected_by": "hpham1504@gmail.com",
-      "rejected_reason": "Đã quá thời hạn"
+      "rejected_reason": "Đã quá thời hạn",
+      "cancelled_by": "hpham1504@gmail.com",
+      "cancelled_reason": "stale duplicate row: same slot/platform already has a real PUBLISHED post"
     },
     {
       "publication_id": "pub-friday-instagram-8e75186d",
       "content_package_id": "90912a12-a022-47a4-8be0-220d7949d9b3",
       "idempotency_key": "004885a3886a7bb7d510b19f8f4fb5fbca470d38025748b03297ee7e54a14b0c",
       "platform": "instagram",
-      "status": "REJECTED",
+      "status": "CANCELLED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T04:16:31.541624+00:00",
-      "updated_at": "2026-08-26T09:25:39.775598+00:00",
+      "updated_at": "2026-08-28T00:35:36.617875+00:00",
       "content": {
         "title": "Ngày mưa, lobby thành chỗ ngồi lâu nhất",
         "text": "Mưa Hà Nội hay đến ngang chừng buổi chiều. Và lobby là chỗ đầu tiên bạn dừng lại.\n\nCửa kính khép lại, tiếng mưa ngoài phố Nguyễn Đình Thi nhỏ dần đi một nửa.\n\nSàn gạch nâu với những vòng tròn xoay đều dưới chân. Quầy lễ tân gỗ nâu đỏ sẫm, một bức tranh treo trên tường, ánh đèn vừa đủ sáng để đọc mà không chói mắt.\n\nKhông gian ở đây nhỏ, gọn và sạch. Đủ để bạn kéo một chiếc ghế ra, lấy cuốn sách vẫn nằm trong balo từ hôm lên máy bay, rồi đọc hết chương dang dở mà không thấy sốt ruột.\n\nMưa ở Tây Hồ ít khi kéo dài cả ngày. Đọc xong vài trang, ngẩng lên là trời đã hửng, mặt hồ lại sáng ra, vừa kịp cho một vòng đi bộ trước khi hoàng hôn Hồ Tây xuống.\n\nNếu bạn đang lên lịch vài ngày ở Hà Nội, nhắn Ven Hồ Hotel để xem phòng trống cho ngày bạn định đến nhé.\n\n#VenHoHotelHanoi #KhachSanViewHoTay #HoTay #NguyenDinhThi #WestLakeHanoi #HaNoi #HanoiTravel",
@@ -7457,7 +7459,9 @@
         "content_overall_score": 92.37
       },
       "rejected_by": "hpham1504@gmail.com",
-      "rejected_reason": "Đã quá thời hạn"
+      "rejected_reason": "Đã quá thời hạn",
+      "cancelled_by": "hpham1504@gmail.com",
+      "cancelled_reason": "stale duplicate row: same slot/platform already has a real PUBLISHED post"
     },
     {
       "publication_id": "pub-friday-threads-a4c20648",
@@ -8645,13 +8649,13 @@
       "content_package_id": "62684586-d54a-40eb-b873-bbf399ae2adf",
       "idempotency_key": "6c24052c20a73f620c3f605f5d897bb5f3898dc75eb4f0e030cbcb8c720a2569",
       "platform": "instagram",
-      "status": "STALE_APPROVAL",
+      "status": "CANCELLED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T11:33:43.283809+00:00",
-      "updated_at": "2026-08-27T07:24:17.266263+00:00",
+      "updated_at": "2026-08-28T00:35:36.626393+00:00",
       "content": {
         "title": "Sương sớm trên mặt hồ, trước khi Hà Nội thức giấc",
         "text": "Có những buổi sớm ở Hồ Tây, bờ bên kia chỉ còn là một đường mờ.\n\nSương đọng thấp trên mặt nước, không dày, chỉ vừa đủ để mọi thứ mềm đi một chút.\n\nĐường Nguyễn Đình Thi lúc này khá vắng. Vài người chạy bộ, vài người dắt xe đạp ra khỏi ngõ, một quán nhỏ mới mở nắp nồi nước dùng. Tiếng còi xe vẫn chưa xuất hiện, nên cái nghe rõ nhất lại là nước vỗ nhẹ vào kè đá.\n\nĐầu tuần thường là lúc người ta muốn đi nhanh hơn. Nhưng đi bộ chừng hai mươi phút ven hồ vào giờ này lại làm cả ngày sau đó chậm lại đúng lúc.\n\nSương tan khá nhanh. Đến khoảng bảy giờ, hồ đã sáng hẳn, và Hà Nội bắt đầu nhịp của nó.\n\nVen Hồ Hotel nằm trên đoạn đường ấy, nên buổi sáng của khách thường bắt đầu ngay ngoài cửa kính lễ tân: bước ra là hồ, quay về là một sảnh nhỏ, gọn gàng, đủ ấm để ngồi lại thêm một lát.\n\nNếu bạn đang tìm một khách sạn view Hồ Tây cho những ngày ở Hà Nội, nhắn cho Ven Hồ Hotel để xem còn phòng trống dịp bạn định đi nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhamPhaHoTay #KhachSanHoTay #HaNoi #HanoiTravel #NguyenDinhThi",
@@ -8759,7 +8763,9 @@
         "content_overall_score": 93.5
       },
       "stale_at": "2026-08-27T07:24:17.256714+00:00",
-      "stale_reason": "Approval window closed on 2026-08-17."
+      "stale_reason": "Approval window closed on 2026-08-17.",
+      "cancelled_by": "hpham1504@gmail.com",
+      "cancelled_reason": "stale duplicate row: same slot/platform already has a real PUBLISHED post"
     },
     {
       "publication_id": "pub-wednesday-facebook-b250c3de",
@@ -8893,13 +8899,13 @@
       "content_package_id": "7794d669-050d-49a4-a969-29267b811fdd",
       "idempotency_key": "3ece929a593caa99f4abf19e5c9fa0b7c8a08faacb3048bafd56ba4497bd89e0",
       "platform": "instagram",
-      "status": "STALE_APPROVAL",
+      "status": "CANCELLED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T11:36:46.044678+00:00",
-      "updated_at": "2026-08-27T07:24:17.266263+00:00",
+      "updated_at": "2026-08-28T00:35:36.633810+00:00",
       "content": {
         "title": "Xanh trắng bên Hồ Tây",
         "text": "Xanh và trắng, đặt ngay cạnh một mặt hồ nước ngọt giữa Hà Nội.\n\nSantorini Vibes là quán cà phê view Hồ Tây được nhắc tới nhiều nhờ cách phối màu này. Tường trắng, những mảng xanh, và phía trước là mặt nước rộng.\n\nNgồi ở đây, phần thú vị lại không nằm ở tông màu. Nó nằm ở việc bạn nhìn thấy Hồ Tây đổi màu theo giờ: sáng thì nhạt và mờ, đầu giờ chiều sáng trắng lóa, rồi chuyển dần sang cam khi hoàng hôn Hồ Tây bắt đầu.\n\nMột ly cà phê, một chỗ ngồi hướng hồ, và không cần làm gì thêm.\n\nVen Hồ Hotel nằm trên Nguyễn Đình Thi, cùng chung mặt hồ ấy. Sảnh nhỏ, sàn gạch nâu với hoa văn tròn, quầy lễ tân gỗ sẫm — đủ để bước vào là thấy mình đã về tới nơi nghỉ, rồi mai lại đi tiếp.\n\nNếu Hồ Tây đang nằm trong lịch trình Hà Nội của bạn, nhắn cho Ven Hồ Hotel để xem phòng trống những ngày đó nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhamPhaHoTay #CafeHoTay #KhachSanHoTay #HaNoi",
@@ -9014,7 +9020,9 @@
         "content_overall_score": 93.7
       },
       "stale_at": "2026-08-27T07:24:17.256722+00:00",
-      "stale_reason": "Approval window closed on 2026-08-19."
+      "stale_reason": "Approval window closed on 2026-08-19.",
+      "cancelled_by": "hpham1504@gmail.com",
+      "cancelled_reason": "stale duplicate row: same slot/platform already has a real PUBLISHED post"
     },
     {
       "publication_id": "pub-friday-facebook-cf961950",
@@ -12761,13 +12769,13 @@
       "idempotency_key": "4ede3bd9b47cda9fef389cc42c486eabd19be0d947a9d2288e7192466a979183",
       "platform": "facebook",
       "slot_id": "slot-2026-09-14-monday",
-      "status": "PENDING_APPROVAL",
+      "status": "CANCELLED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-28T00:22:14.256432+00:00",
-      "updated_at": "2026-08-28T00:22:14.293459+00:00",
+      "updated_at": "2026-08-28T00:34:41.305978+00:00",
       "content": {
         "title": "Đường Nguyễn Đình Thi những ngày mưa",
         "text": "Mưa xuống, đường Nguyễn Đình Thi bỗng yên hơn hẳn. Tán cây cổ thụ hai bên khép lại, giữ mưa ở trên cao, chỉ để rơi xuống từng giọt chậm.\n\nCon đường này vốn hẹp, một bên là Hồ Tây, một bên là những gốc cây to đến mức phải hai người ôm. Ngày mưa, mặt hồ mờ đi, mấy chiếc xe đạp đi chậm lại, tiếng lốp lăn trên mặt đường ướt nghe rõ hơn tiếng còi xe.\n\nĐầu tuần ở Hà Nội thường vội. Nhưng nếu bạn đi bộ đoạn từ đầu Nguyễn Đình Thi hướng ra hồ, nhịp đi sẽ tự chậm lại. Không cần ô quá to, tán cây đã che gần hết. Vài quán cà phê ven đường mở cửa sớm, mùi cà phê lẫn với mùi lá ướt — thứ mùi rất riêng của Hồ Tây mùa mưa.\n\nĐi hết một vòng, quần áo hơi ẩm, chân hơi mỏi, thì cái cảm giác đẩy cửa kính bước vào sảnh Ven Hồ Hotel lại dễ chịu lạ. Nền gạch nâu, ánh sáng vừa đủ, quầy lễ tân gỗ sẫm màu và mấy bức tranh treo trên tường. Không quá rộng, nhưng đủ ấm để ngồi lại một lát, hong khô đôi giày trước khi lên phòng.\n\nMưa ở Hồ Tây không làm hỏng chuyến đi. Nó chỉ đổi cách bạn nhìn con đường thôi.\n\nNếu bạn đang tính một chuyến Hà Nội đầu tuần, nhắn tin cho Ven Hồ Hotel để xem phòng trống những ngày bạn định ở nhé.\n\n#VenHoHotelHanoi #HoTay #NguyenDinhThi #KhachSanHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-monday-facebook-e9f37649",
@@ -12870,7 +12878,9 @@
         "content_brand_fit": 95.0,
         "content_overall_score": 92.53
       },
-      "replaces_publication_id": "pub-friday-facebook-b91a3968"
+      "replaces_publication_id": "pub-friday-facebook-b91a3968",
+      "cancelled_by": "hpham1504@gmail.com",
+      "cancelled_reason": "orphaned duplicate draft created before replace_rejected.py slot-ownership pre-check fix (2026-08-28)"
     },
     {
       "publication_id": "pub-wednesday-instagram-fbfc9c44",
@@ -12878,13 +12888,13 @@
       "idempotency_key": "9f1a015d934f1a037e6fbc6644c60a40f421eb41b874cca0796a1f31cfec6f6d",
       "platform": "instagram",
       "slot_id": "slot-2026-09-16-wednesday",
-      "status": "PENDING_APPROVAL",
+      "status": "CANCELLED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-28T00:22:42.039951+00:00",
-      "updated_at": "2026-08-28T00:22:42.077259+00:00",
+      "updated_at": "2026-08-28T00:34:41.315706+00:00",
       "content": {
         "title": "Mở xưởng 'I Send You My Love' — một tháng để đi xem tranh ở Hà Nội",
         "text": "Có những sự kiện không cần phải chạy theo. Mở xưởng kéo dài gần một tháng, nghĩa là bạn được chọn ngày của mình.\n\nTừ 07/08/2026 đến 06/09/2026, nghệ sĩ lưu trú Phạm Minh Đức mở xưởng với dự án 'I Send You My Love' tại Hà Nội. Một khoảng thời gian đủ rộng để bạn không phải sắp lịch gấp gáp, không phải chen vào một buổi khai mạc đông người, mà có thể đến vào đúng buổi chiều bạn thấy sẵn sàng.\n\nVà đó cũng là cách Hồ Tây vận hành. Bước ra khỏi cửa vào một buổi chiều trời trong, nắng rơi qua tán những hàng cây lâu năm, vỉa hè sạch, xa xa là những mái nhà cao thấp xen nhau của thành phố. Không ghế, không bàn, không gì níu chân — chỉ có một quãng đường để đi bộ và một cái đầu đang trống ra sau vài giờ ngồi trước tranh.\n\nMột ngày ở Hà Nội có thể sắp như thế: sáng thong thả, chiều đi xem một triển lãm, tối quay về phía hồ khi ánh sáng bắt đầu đổi màu. Ven Hồ Hotel nằm trên phố Nguyễn Đình Thi, đủ gần mặt nước để chuyến đi luôn có một nhịp nghỉ, và đủ thuận tiện để bạn di chuyển vào trung tâm khi cần.\n\nNếu bạn đang tính ghé Hà Nội trong khoảng thời gian đó, nhắn tin cho Ven Hồ Hotel để kiểm tra phòng trống cho những ngày bạn dự định nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanViewHoTay #NguyenDinhThi #HaNoi #HanoiArt #KhamPhaHoTay",
@@ -13000,7 +13010,9 @@
         "content_brand_fit": 95.0,
         "content_overall_score": 92.17
       },
-      "replaces_publication_id": "pub-friday-instagram-8e75186d"
+      "replaces_publication_id": "pub-friday-instagram-8e75186d",
+      "cancelled_by": "hpham1504@gmail.com",
+      "cancelled_reason": "orphaned duplicate draft created before replace_rejected.py slot-ownership pre-check fix (2026-08-28)"
     },
     {
       "publication_id": "pub-friday-threads-21ff805d",
@@ -13236,13 +13248,13 @@
       "idempotency_key": "e291d2d15857822e948c86a67517ed30668057193d540a8694ad8b0f154010a9",
       "platform": "facebook",
       "slot_id": "slot-2026-09-21-monday",
-      "status": "PENDING_APPROVAL",
+      "status": "CANCELLED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-28T00:23:55.132690+00:00",
-      "updated_at": "2026-08-28T00:23:55.173657+00:00",
+      "updated_at": "2026-08-28T00:34:41.324646+00:00",
       "content": {
         "title": "Màu nước Hồ Tây đổi theo từng giờ trong ngày",
         "text": "Cùng một mặt hồ, nhưng sáng sớm và cuối chiều gần như là hai nơi khác nhau.\n\nSáng sớm, nước Hồ Tây thường ngả xám bạc, mặt hồ phẳng, chỉ gợn lên khi có chiếc thuyền nhỏ đi qua hoặc một cơn gió sớm. Người đi bộ, người đạp xe, vài quán bún riêu mở cửa ven đường, nhịp đầu tuần bắt đầu khá nhẹ.\n\nĐến khoảng chín, mười giờ, khi nắng lên cao hơn, nước chuyển sang xanh lục pha lam. Giữa trưa lại khác nữa: ánh sáng gắt làm mặt hồ sáng trắng, nhìn lâu hơi chói, và đây thường là lúc ít người ra hồ nhất.\n\nGần cuối chiều mới là quãng đẹp nhất với nhiều người. Nước ngả vàng rồi cam, hoàng hôn Hồ Tây kéo dài chừng mươi lăm phút trước khi tối hẳn. Sau đó, mặt nước chuyển sang xanh thẫm, chỉ còn lại ánh đèn từ đường ven hồ hắt xuống.\n\nNếu ở ngay khu Nguyễn Đình Thi, bạn có thể xem gần như đủ các sắc độ đó trong một ngày mà không cần đi đâu xa. Sáng đi bộ một vòng, trưa về nghỉ, chiều quay lại hồ.\n\nVen Hồ Hotel nằm trên chính con đường này. Một sảnh nhỏ gọn gàng sau cánh cửa kính, quầy lễ tân gỗ nâu trầm, vài bức tranh treo tường và ánh đèn dịu, vừa đủ cho một chỗ nghỉ chân giữa hai lần ra hồ.\n\nNếu bạn đang tính vài ngày ở Hà Nội, nhắn tin cho Ven Hồ Hotel để hỏi phòng trống cho lịch của bạn nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #NguyenDinhThi #HaNoi #KhamPhaHoTay\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-monday-facebook-b2899ba8",
@@ -13344,7 +13356,9 @@
         "content_brand_fit": 95.0,
         "content_overall_score": 92.12
       },
-      "replaces_publication_id": "pub-monday-facebook-a2fd842d"
+      "replaces_publication_id": "pub-monday-facebook-a2fd842d",
+      "cancelled_by": "hpham1504@gmail.com",
+      "cancelled_reason": "orphaned duplicate draft created before replace_rejected.py slot-ownership pre-check fix (2026-08-28)"
     },
     {
       "publication_id": "pub-wednesday-instagram-1e421ec6",
@@ -13352,13 +13366,13 @@
       "idempotency_key": "19eef2352079b3bae3efb8092e021e790e744c0f126982886876d19a9f5535c3",
       "platform": "instagram",
       "slot_id": "slot-2026-09-23-wednesday",
-      "status": "PENDING_APPROVAL",
+      "status": "CANCELLED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-28T00:25:49.510129+00:00",
-      "updated_at": "2026-08-28T00:25:49.551174+00:00",
+      "updated_at": "2026-08-28T00:34:41.332267+00:00",
       "content": {
         "title": "Treebee Coffee ở Vệ Hồ: một buổi chiều ngồi cao hơn mặt hồ một chút",
         "text": "Trời trong, nắng đứng bóng, và một chỗ ngồi nhìn thẳng ra mặt nước xanh xám.\n\nTreebee Coffee nằm ở 171 Vệ Hồ, một trong những quán cà phê quanh Hồ Tây được nhắc đến nhiều nhờ thiết kế riêng và góc nhìn ra hồ.\n\nĐường Vệ Hồ có hàng cây lớn hai bên, tán phủ xuống vỉa hè nên đoạn đi bộ tới đây khá dễ chịu. Phía sau lưng là dãy nhà cao thấp xen nhau của Tây Hồ, phía trước là mặt hồ mở ra.\n\nBuổi chiều là lúc dễ chọn chỗ nhất. Ánh sáng tự nhiên đổ đều, không gian sạch sẽ, gọn gàng, và bạn có thể ngồi im khá lâu mà không thấy sốt ruột.\n\nTừ Nguyễn Đình Thi, chỗ Ven Hồ Hotel, bạn có thể đi men theo mép hồ để tới. Đây là kiểu điểm dừng hợp với những ngày ở Hà Nội mà không muốn lịch trình quá dày.\n\nNếu bạn đang tính vài ngày ở Hồ Tây, nhắn Ven Hồ Hotel để hỏi phòng trống cho lịch của mình nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #CaPheHoTay #KhamPhaHoTay #HaNoi",
@@ -13472,7 +13486,9 @@
         "content_brand_fit": 95.0,
         "content_overall_score": 93.7
       },
-      "replaces_publication_id": "pub-monday-instagram-70a799f0"
+      "replaces_publication_id": "pub-monday-instagram-70a799f0",
+      "cancelled_by": "hpham1504@gmail.com",
+      "cancelled_reason": "orphaned duplicate draft created before replace_rejected.py slot-ownership pre-check fix (2026-08-28)"
     },
     {
       "publication_id": "pub-friday-facebook-90a93375",
@@ -13480,13 +13496,13 @@
       "idempotency_key": "4acb2d76d4c45fee14a8ed23b4930e7ee4dde4829c937d7b7b74ae18495179f0",
       "platform": "facebook",
       "slot_id": "slot-2026-09-25-friday",
-      "status": "PENDING_APPROVAL",
+      "status": "CANCELLED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-28T00:26:24.102565+00:00",
-      "updated_at": "2026-08-28T00:26:24.142810+00:00",
+      "updated_at": "2026-08-28T00:34:41.340090+00:00",
       "content": {
         "title": "Một đêm yên tĩnh trong phòng hướng hồ",
         "text": "Có những tối, thứ duy nhất bạn cần sau một ngày đi bộ quanh Hồ Tây là một căn phòng đủ yên.\n\nKhu Nguyễn Đình Thi về khuya không tắt hẳn, chỉ nhỏ dần. Vài chiếc xe chạy chậm, tiếng bước chân của người đi bộ vòng cuối cùng, rồi thôi.\n\nBạn đẩy cánh cửa kính bước vào sảnh Ven Hồ Hotel. Ánh đèn ở đây không gắt, vừa đủ để nhìn rõ nền gạch nâu với những vòng tròn lặp lại dưới chân. Quầy lễ tân bằng gỗ nâu đỏ sẫm, phía sau là tủ chìa khóa, trên tường là mấy bức tranh đã quen mắt sau vài đêm ở lại. Nhận chìa khóa, chào một câu, thế là xong một ngày.\n\nLên phòng, việc đầu tiên nhiều người làm là tắt bớt đèn. Không phải để ngủ ngay, mà để nhìn ra ngoài rõ hơn. Ban đêm, mặt hồ gần như không còn màu, chỉ còn những đốm sáng hắt xuống từ bờ bên kia, run rẩy theo gió.\n\nMột khách sạn view Hồ Tây không hứa hẹn điều gì to tát. Nó chỉ cho bạn một khung cửa sổ, một buổi tối không phải di chuyển thêm, và sáng hôm sau thức dậy đã thấy hồ ở ngay đó — trước cả khi bạn kịp mở bản đồ xem hôm nay đi đâu.\n\nĐôi khi, đó là phần dễ chịu nhất của cả chuyến đi Hà Nội.\n\nNếu bạn đang xếp lịch cho vài ngày ở Hà Nội, nhắn cho Ven Hồ Hotel để xem phòng hướng hồ còn trống vào đúng những đêm bạn cần nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-friday-facebook-90a93375",
@@ -13587,7 +13603,9 @@
         "content_brand_fit": 95.0,
         "content_overall_score": 92.12
       },
-      "replaces_publication_id": "pub-wednesday-facebook-b250c3de"
+      "replaces_publication_id": "pub-wednesday-facebook-b250c3de",
+      "cancelled_by": "hpham1504@gmail.com",
+      "cancelled_reason": "orphaned duplicate draft created before replace_rejected.py slot-ownership pre-check fix (2026-08-28)"
     },
     {
       "publication_id": "pub-saturday-instagram-2c35cbf5",
@@ -13595,13 +13613,13 @@
       "idempotency_key": "a43867a93e5c96c3baa8ad3913f87f2ec8e288cf7edde82a465b23b28a65b2d9",
       "platform": "instagram",
       "slot_id": "slot-2026-09-26-saturday",
-      "status": "PENDING_APPROVAL",
+      "status": "CANCELLED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-28T00:28:32.179830+00:00",
-      "updated_at": "2026-08-28T00:28:32.221533+00:00",
+      "updated_at": "2026-08-28T00:34:41.347910+00:00",
       "content": {
         "title": "Cuối tuần bắt đầu từ một cánh cửa kính mở ra phía hồ",
         "text": "Cuối tuần ở Tây Hồ thường bắt đầu bằng một cánh cửa kính đẩy ra, và một chút gió từ phía hồ theo vào.\n\nSảnh Ven Hồ Hotel không rộng. Sàn gạch nâu với những vòng tròn hoa văn, quầy lễ tân gỗ nâu đỏ, vài bức tranh treo tường và thứ ánh sáng vừa đủ để không ai thấy chói mắt sau một chặng đường dài.\n\nCũng chỉ cần thế. Nhận chìa khóa, gửi tạm vali, rồi bước ra Nguyễn Đình Thi.\n\nTây Hồ cuối tuần là kiểu đi không cần lịch trình chặt: đi bộ một đoạn ven hồ, ghé một quán cà phê nhìn ra mặt nước, tìm vài góc hoa để chụp, rồi ngồi lại chờ hoàng hôn Hồ Tây chuyển màu.\n\nMột khách sạn view Hồ Tây, với người đi chơi cuối tuần, đôi khi chỉ cần làm đúng một việc: là chỗ để đặt đồ xuống và là chỗ để quay về khi trời đã tối.\n\nNếu bạn đang tính một cuối tuần ở phía Tây Hồ, nhắn cho Ven Hồ Hotel để xem còn phòng những ngày đó nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanHoTay #NguyenDinhThi #HaNoi #HanoiTravel",
@@ -13704,7 +13722,9 @@
         "content_brand_fit": 95.0,
         "content_overall_score": 93.7
       },
-      "replaces_publication_id": "pub-wednesday-instagram-f8466a74"
+      "replaces_publication_id": "pub-wednesday-instagram-f8466a74",
+      "cancelled_by": "hpham1504@gmail.com",
+      "cancelled_reason": "orphaned duplicate draft created before replace_rejected.py slot-ownership pre-check fix (2026-08-28)"
     }
   ]
 }
