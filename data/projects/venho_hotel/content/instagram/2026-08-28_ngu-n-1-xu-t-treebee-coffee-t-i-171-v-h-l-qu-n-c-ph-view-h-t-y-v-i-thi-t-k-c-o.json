@@ -1,0 +1,47 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "project": "venho_hotel",
+  "content_type": "instagram_post",
+  "target_language": "vi",
+  "generated_at": "2026-08-28T00:25:49.497819+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_OUTSIDE_DNA.json",
+      "dna_version": "1.1",
+      "hash": "sha256:a690674cea4135c5b96163b3672a5571a1f5b9a999d9376fada2778aa09de882"
+    }
+  ],
+  "source_prompt": {
+    "file": "data/projects/venho_hotel/prompts/content/OUTSIDE__instagram-ngu-n-1-xu-t-treebee-coffee-t-i-171-v-h-l-qu-n-c-ph-view-h-t-y-v-i-thi__CONTENT_PROMPT_v1.0.json",
+    "prompt_id": "outside__content__instagram-ngu-n-1-xu-t-treebee-coffee-t-i-171-v-h-l-qu-n-c-ph-view-h-t-y-v-i-thi",
+    "prompt_version": "1.0"
+  },
+  "generator": {
+    "provider": "mock",
+    "model": "deterministic-social-builder",
+    "temperature": 0.6
+  },
+  "title": "Treebee Coffee ở Vệ Hồ: một buổi chiều ngồi cao hơn mặt hồ một chút",
+  "hook": "Trời trong, nắng đứng bóng, và một chỗ ngồi nhìn thẳng ra mặt nước xanh xám.",
+  "body": "Treebee Coffee nằm ở 171 Vệ Hồ, một trong những quán cà phê quanh Hồ Tây được nhắc đến nhiều nhờ thiết kế riêng và góc nhìn ra hồ.\n\nĐường Vệ Hồ có hàng cây lớn hai bên, tán phủ xuống vỉa hè nên đoạn đi bộ tới đây khá dễ chịu. Phía sau lưng là dãy nhà cao thấp xen nhau của Tây Hồ, phía trước là mặt hồ mở ra.\n\nBuổi chiều là lúc dễ chọn chỗ nhất. Ánh sáng tự nhiên đổ đều, không gian sạch sẽ, gọn gàng, và bạn có thể ngồi im khá lâu mà không thấy sốt ruột.\n\nTừ Nguyễn Đình Thi, chỗ Ven Hồ Hotel, bạn có thể đi men theo mép hồ để tới. Đây là kiểu điểm dừng hợp với những ngày ở Hà Nội mà không muốn lịch trình quá dày.",
+  "cta": "Nếu bạn đang tính vài ngày ở Hồ Tây, nhắn Ven Hồ Hotel để hỏi phòng trống cho lịch của mình nhé.",
+  "hashtags": [
+    "#VenHoHotelHanoi",
+    "#HoTay",
+    "#WestLakeHanoi",
+    "#CaPheHoTay",
+    "#KhamPhaHoTay",
+    "#HaNoi"
+  ],
+  "visual_note": null,
+  "contract_refs": null,
+  "payload": {},
+  "status": "draft",
+  "validation": {
+    "required": true,
+    "status": "pending",
+    "report_file": null,
+    "notes": []
+  }
+}

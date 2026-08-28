@@ -1,0 +1,231 @@
+{
+  "contract_version": "1.0",
+  "module": "prompt_studio",
+  "project": "venho_hotel",
+  "prompt_type": "content",
+  "prompt_id": "lobby__content__facebook-mau-nuoc-ho-tay-thay-doi-theo-tung-gio-trong-ngay",
+  "prompt_version": "1.0",
+  "generated_at": "2026-08-28T00:23:21.773611+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_LOBBY_DNA.json",
+      "dna_version": "1.1",
+      "dna_contract_version": "1.1",
+      "hash": "sha256:e01fc1fa26c2318ce93d3a670067bac2ccbf9dc329a141ea906e80fb108c673f"
+    }
+  ],
+  "template": {
+    "name": "content_prompt.yaml",
+    "template_version": "1.0"
+  },
+  "task_brief": "Create a facebook_post draft about 'mau nuoc Ho Tay thay doi theo tung gio trong ngay' for Vietnamese leisure guests. Content pillar: Ho Tay & nhip song Ha Noi dau tuan. Tone: warm, clear, trustworthy. Length: medium. CTA type: booking_soft.",
+  "target_language": "vi",
+  "required_dna": [
+    {
+      "key": "ceiling_treatment",
+      "value": "flat_white"
+    },
+    {
+      "key": "cleanliness",
+      "value": "clean"
+    },
+    {
+      "key": "wall_artwork",
+      "value": "present"
+    },
+    {
+      "key": "ambient_lighting",
+      "value": "neutral"
+    },
+    {
+      "key": "hotel_signage",
+      "value": "logo_visible"
+    },
+    {
+      "key": "floor_material",
+      "value": "tile"
+    },
+    {
+      "key": "floor_color",
+      "value": "brown with circular patterns"
+    },
+    {
+      "key": "entrance_door",
+      "value": "glass_door"
+    },
+    {
+      "key": "hotel_tier_impression",
+      "value": "mid_range"
+    },
+    {
+      "key": "furniture_wood_tone",
+      "value": "dark_reddish_brown"
+    },
+    {
+      "key": "staircase_visible",
+      "value": "False"
+    }
+  ],
+  "allowed_variations": [
+    {
+      "key": "wall_treatment",
+      "value_range": [
+        "painted_smooth",
+        "tile"
+      ]
+    },
+    {
+      "key": "pendant_or_chandelier",
+      "value_range": [
+        "ceiling_recessed",
+        "chandelier",
+        "none",
+        "pendant_lights"
+      ]
+    },
+    {
+      "key": "style_category",
+      "value_range": [
+        "generic_hotel",
+        "traditional_asian"
+      ]
+    },
+    {
+      "key": "waiting_seating",
+      "value_range": [
+        "chairs",
+        "none"
+      ]
+    },
+    {
+      "key": "key_cabinet",
+      "value_range": [
+        "present"
+      ]
+    },
+    {
+      "key": "natural_light",
+      "value_range": [
+        "high",
+        "low",
+        "moderate",
+        "none"
+      ]
+    },
+    {
+      "key": "scale",
+      "value_range": [
+        "compact",
+        "medium"
+      ]
+    },
+    {
+      "key": "reception_desk",
+      "value_range": [
+        "present_wood"
+      ]
+    },
+    {
+      "key": "plants",
+      "value_range": [
+        "none",
+        "present_multiple",
+        "present_single"
+      ]
+    }
+  ],
+  "allowed_imperfections": [
+    {
+      "value": "slight wear on reception desk surface acceptable",
+      "source": "curated"
+    },
+    {
+      "value": "minor asymmetry in decorative arrangement acceptable",
+      "source": "curated"
+    },
+    {
+      "value": "natural lighting variation across time of day acceptable",
+      "source": "curated"
+    },
+    {
+      "value": "small personal items on reception counter acceptable — authentic, not sterile",
+      "source": "curated"
+    }
+  ],
+  "forbidden": [
+    {
+      "rule": "no marble floor — actual flooring is tile or stone, not polished marble",
+      "source": "curated"
+    },
+    {
+      "rule": "no luxury hotel chandeliers — lighting is warm and functional, not grand",
+      "source": "curated"
+    },
+    {
+      "rule": "no resort-scale lobby — this is a compact boutique reception, not a 5-star atrium",
+      "source": "curated"
+    },
+    {
+      "rule": "no modern minimalist glass-and-steel design",
+      "source": "curated"
+    },
+    {
+      "rule": "no generic international hotel style",
+      "source": "curated"
+    },
+    {
+      "rule": "no over-staged decorative props — keep it authentic Vietnamese boutique",
+      "source": "curated"
+    },
+    {
+      "rule": "no marble floor",
+      "source": "observed"
+    },
+    {
+      "rule": "no luxury hotel chandeliers",
+      "source": "observed"
+    },
+    {
+      "rule": "no resort-scale lobby",
+      "source": "observed"
+    },
+    {
+      "rule": "no Dubai-style luxury interior",
+      "source": "observed"
+    },
+    {
+      "rule": "no marble grand staircase",
+      "source": "observed"
+    }
+  ],
+  "final_prompt": "Create a facebook_post draft about 'mau nuoc Ho Tay thay doi theo tung gio trong ngay' for Vietnamese leisure guests. Content pillar: Ho Tay & nhip song Ha Noi dau tuan. Tone: warm, clear, trustworthy. Length: medium. CTA type: booking_soft.\n\nWrite the content in Vietnamese.\n\nAudience: Travelers considering a stay near West Lake (Ho Tay), Hanoi — leisure and business, VN + international.\nTone: Warm, authentic, unhurried. Show real daily life beside West Lake, not a sales pitch.\n\nBrand DNA:\n- The West Lake Living — gold #C9A84C accent, deep navy #1B2D4F, warm white #F7F4EF background.\n- Tagline: 'Where West Lake Meets Elegance'.\n- Ven Ho Hotel is the gateway/base camp of the universe — boutique mid-range, not luxury resort.\n\nRequired facts (ground your writing in these, do not contradict them, but never copy hex codes or raw English descriptors literally — paraphrase in the target language):\n- ceiling_treatment: flat_white\n- cleanliness: clean\n- wall_artwork: present\n- ambient_lighting: neutral\n- hotel_signage: logo_visible\n- floor_material: tile\n- floor_color: brown with circular patterns\n- entrance_door: glass_door\n- hotel_tier_impression: mid_range\n- furniture_wood_tone: dark_reddish_brown\n- staircase_visible: False\n\nFlexible details (any one of the listed options is acceptable):\n- wall_treatment: painted_smooth / tile\n- pendant_or_chandelier: ceiling_recessed / chandelier / none / pendant_lights\n- style_category: generic_hotel / traditional_asian\n- waiting_seating: chairs / none\n- key_cabinet: present\n- natural_light: high / low / moderate / none\n- scale: compact / medium\n- reception_desk: present_wood\n- plants: none / present_multiple / present_single\n\nCall-to-action: End with one soft call-to-action inviting the reader to check availability or message the page — never pushy, never a hard sell.",
+  "optimizer": {
+    "used": false,
+    "provider": null,
+    "model": null,
+    "temperature": null
+  },
+  "validation": {
+    "structural": "pending",
+    "faithfulness": "pending"
+  },
+  "notes": [],
+  "contract_refs": null,
+  "restrictions": [
+    "no marble floor — actual flooring is tile or stone, not polished marble",
+    "no luxury hotel chandeliers — lighting is warm and functional, not grand",
+    "no resort-scale lobby — this is a compact boutique reception, not a 5-star atrium",
+    "no modern minimalist glass-and-steel design",
+    "no generic international hotel style",
+    "no over-staged decorative props — keep it authentic Vietnamese boutique",
+    "no marble floor",
+    "no luxury hotel chandeliers",
+    "no resort-scale lobby",
+    "no Dubai-style luxury interior",
+    "no marble grand staircase",
+    "Do not claim '5 star' or 'best in Hanoi' — Ven Ho Hotel is boutique mid-range, not luxury.",
+    "Do not use the phrase 'sang chảnh nhất' or overclaim luxury positioning.",
+    "Do not fabricate guest reviews, ratings, or awards not present in Knowledge.",
+    "Do not describe West Lake as a generic tourist postcard — keep it authentic, local, unhurried."
+  ]
+}
