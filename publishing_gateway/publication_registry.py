@@ -131,7 +131,14 @@ class PublicationRegistry:
                 if item.get("publication_id") == publication_id:
                     slot_id = changes.get("slot_id", item.get("slot_id"))
                     platform = changes.get("platform", item.get("platform"))
-                    if slot_id and platform:
+                    resulting_status = changes.get("status", item.get("status"))
+                    # A row that's being (or already is) relinquished doesn't
+                    # claim its slot/platform any more, so it can never be
+                    # the thing this guard needs to protect against -- only
+                    # check when the update would leave this row in a status
+                    # that still owns the slot (matches _active_slot_platform's
+                    # own "not in REPLACEABLE_SLOT_STATUSES" ownership test).
+                    if slot_id and platform and resulting_status not in REPLACEABLE_SLOT_STATUSES | {"CANCELLED"}:
                         existing = self._active_slot_platform(
                             data["publications"], slot_id=slot_id, platform=platform,
                             exclude_publication_id=publication_id,
