@@ -1,5 +1,28 @@
 # VENHO AI STUDIO — Task Status
 
+### Candidate v3 Quality Remediation R1 — R1-P1 closure (2026-08-28)
+
+- `Candidate v3 Quality Remediation R1`
+- `R1-P0 = CLOSED / PASS`
+- `R1-P1 = CLOSED / PASS`
+- The nine existing BOUNDARY outputs were re-evaluated offline without
+  regeneration. Baseline was `PASS 0/9`; the locked
+  `maxChannelSeamDelta <= 32` validator failed all nine valid cases.
+- Added a deterministic inner 3px boundary continuity postprocess in the
+  Candidate v3 composite path. It uses immutable outer samples, fixed 3x3
+  softening, and the existing policy envelope; it does not change the
+  validator, threshold, mask authority, canonical transform, route policy,
+  IdentityPack, or scenario authority.
+- Derived evidence from the same nine outputs is `BOUNDARY PASS 9/9` with
+  pixel lock, mean seam, and local texture gates passing. FACE_LOCAL and
+  SCENARIO_GLOBAL were not touched.
+- R1-P1 made `0` GPU calls and `0` provider calls. Candidate v3 remains
+  feature-gated `OFF`, production promotion remains `NO`, and Phase 0–6
+  remain closed.
+- Checkpoint/report:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p1-boundary-remediation-20260828/`.
+- Next task: `R1-P2 FACE_LOCAL Validation`.
+
 ### Candidate v3 Quality Remediation R1 — R1-P0 closure (2026-08-28)
 
 - `R1-P0 = CLOSED / PASS`: read-only failure and evidence reconstruction is

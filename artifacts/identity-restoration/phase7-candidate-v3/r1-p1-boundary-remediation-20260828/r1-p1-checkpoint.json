@@ -1,0 +1,55 @@
+{
+  "boundary": {
+    "baseline": {
+      "fail": 9,
+      "maxChannelSeamDelta": {
+        "max": 200.0,
+        "mean": 169.0,
+        "median": 177.0,
+        "min": 106.0
+      },
+      "pass": 0
+    },
+    "expectedCases": 9,
+    "metric": "maxChannelSeamDelta",
+    "postRemediation": {
+      "fail": 0,
+      "maxChannelSeamDelta": {
+        "max": 32.0,
+        "mean": 30.0,
+        "median": 32.0,
+        "min": 24.0
+      },
+      "pass": 9
+    },
+    "remediation": "Deterministic 3px inner-ring continuity using immutable outer samples, Gaussian 3x3 softening, and existing policy envelope.",
+    "rootCause": "Inverse composite had no local boundary continuity postprocess; current seam sampling includes natural source edge contrast, and the benchmark path supplies a binary feather mask.",
+    "threshold": 32
+  },
+  "createdAtLocal": "2026-08-28",
+  "evidence": {
+    "baseline": "baseline.json",
+    "perSampleResults": "per-sample-results.json",
+    "remediationMetrics": "remediation-metrics.json",
+    "rootCauseReport": "root-cause-report.md"
+  },
+  "faceLocalChanged": false,
+  "gpuCalls": 0,
+  "locksUnchanged": true,
+  "phase": "R1-P1",
+  "productionEligible": false,
+  "productionFeatureFlag": "OFF",
+  "providerCalls": 0,
+  "regressions": {
+    "canonicalTransform": "PASS",
+    "geometry": "PASS",
+    "offlineDeterministic": "PASS",
+    "pixelLock": "PASS"
+  },
+  "scenarioGlobalChanged": false,
+  "schemaVersion": "candidate-v3-r1-p1-checkpoint-1.0",
+  "status": "CLOSED / PASS",
+  "task": "Candidate v3 Quality Remediation R1",
+  "thresholdChanged": false,
+  "validatorBypassed": false
+}

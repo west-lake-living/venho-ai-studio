@@ -1,5 +1,32 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-08-28 — Candidate v3 R1-P1 boundary quality remediation
+
+`Candidate v3 Quality Remediation R1 / R1-P1 = CLOSED / PASS`.
+R1-P1 used only the nine existing B01–B09 Phase 7 outputs and made zero GPU
+and provider calls. FACE_LOCAL and SCENARIO_GLOBAL were not changed.
+
+- Baseline BOUNDARY was `PASS 0/9`, with valid samples in every case. The
+  locked `maxChannelSeamDelta` threshold remained `32`; baseline statistics
+  were min `106`, max `200`, mean `169`, median `177`. The nearest case was
+  B01 (`106`); the worst was B05 (`200`).
+- A no-op base-as-final experiment failed the same metric on all nine cases,
+  proving the current boundary samples include pre-existing source edge
+  contrast. The composite also had no local continuity postprocess, and the
+  Phase 7 benchmark supplied a binary mask as its feather mask.
+- `apply_boundary_color_continuity` now runs after inverse compositing and
+  before pixel-lock evidence. It operates only on the authoritative inner
+  3px ring, seeds from immutable outer samples, applies deterministic 3x3
+  Gaussian softening, and bounds only editable ring pixels by the existing
+  policy pass envelope. The validator and threshold are unchanged.
+- Offline derived outputs from the same nine artifacts returned BOUNDARY
+  `PASS 9/9`; all pixel-lock, mean-seam, and local-texture gates passed. Prior
+  Phase 7 and R1-P0 directories were not overwritten.
+- Evidence is under
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p1-boundary-remediation-20260828/`.
+
+Recommended next task: `R1-P2 FACE_LOCAL Validation`.
+
 ## 2026-08-28 — Candidate v3 R1-P0 failure/evidence reconstruction
 
 `Candidate v3 Quality Remediation R1 / R1-P0 = CLOSED / PASS`. This was an

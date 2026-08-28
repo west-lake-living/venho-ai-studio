@@ -15,11 +15,14 @@ from identity_restoration.application.phase4_quality import (
     QualityBundleMerger,
     ScopedQcResult,
     append_qc_history,
+    apply_boundary_color_continuity,
     evaluate_boundary_qc,
     evaluate_correctness_qc,
     inverse_composite_candidate_v3,
     load_candidate_v3_quality_policy,
     manifest_1_4_enrichment,
+    _nearest_pairs,
+    _rings,
     scenario_global_qc,
     write_immutable_qc_report,
 )
@@ -103,6 +106,29 @@ def test_boundary_passes_for_unchanged_image_and_requires_exact_pixel_lock():
     failed = evaluate_boundary_qc(before_canvas_png=flat, final_composite_png=altered_bytes, full_canvas_editable_mask_png=mask)
     assert failed.status == "FAIL"
     assert "PIXEL_LOCK_OUTSIDE_MASK_FAILED" in failed.reasons
+
+
+def test_boundary_continuity_only_changes_inner_ring_and_respects_policy_limit():
+    before = np.zeros((32, 32, 3), dtype=np.uint8)
+    before[:, 16:] = (240, 180, 120)
+    composite = before.copy()
+    mask = np.zeros((32, 32), dtype=np.uint8)
+    mask[5:27, 5:27] = 255
+    composite[5:27, 5:27] = (255, 255, 255)
+
+    result = apply_boundary_color_continuity(
+        before_canvas=before,
+        composite=composite,
+        editable_mask=mask,
+    )
+    inner, outer = _rings(mask)
+    pairs = _nearest_pairs(inner, outer)
+    assert np.array_equal(result[~(mask >= 128)], composite[~(mask >= 128)])
+    assert np.any(result[inner] != composite[inner])
+    assert all(
+        np.max(np.abs(result[iy, ix].astype(np.int16) - before[oy, ox].astype(np.int16))) <= 32
+        for (iy, ix), (oy, ox) in pairs
+    )
 
 
 def _scope(name: str, status: str) -> ScopedQcResult:

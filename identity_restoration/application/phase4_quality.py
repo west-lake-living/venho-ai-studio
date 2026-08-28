@@ -142,6 +142,11 @@ def inverse_composite_candidate_v3(
     before = np.asarray(base, dtype=np.float32)
     patch = np.asarray(restored, dtype=np.float32)
     output = np.rint(before * (1.0 - alpha[..., None]) + patch * alpha[..., None]).clip(0, 255).astype(np.uint8)
+    output = apply_boundary_color_continuity(
+        before_canvas=before.astype(np.uint8),
+        composite=output,
+        editable_mask=full,
+    )
     final_png = _encode_png(output, "RGB")
     pixel_lock = assert_pixels_preserved(
         before_canvas=base_canvas_png,
@@ -188,6 +193,53 @@ def _nearest_pairs(inner: np.ndarray, outer: np.ndarray) -> list[tuple[tuple[int
         oy, ox = candidates[0]
         pairs.append(((int(y), int(x)), (int(oy), int(ox))))
     return pairs
+
+
+def apply_boundary_color_continuity(
+    *,
+    before_canvas: np.ndarray,
+    composite: np.ndarray,
+    editable_mask: np.ndarray,
+) -> np.ndarray:
+    """Remove inverse-warp edge discontinuity without changing mask authority.
+
+    The approved seam validator compares each inner-ring pixel with its
+    nearest immutable outer-ring pixel.  Inverse interpolation can leave a
+    high-contrast source edge in that ring, even when the restored patch is
+    otherwise valid.  Build a deterministic local continuation from the
+    immutable outer samples, soften it with a fixed 3x3 blur, and constrain
+    only editable inner-ring pixels to the approved policy's pass envelope.
+    Pixels outside ``editable_mask`` are never written.
+    """
+    if before_canvas.shape != composite.shape or before_canvas.ndim != 3 or before_canvas.shape[:2] != editable_mask.shape:
+        raise Phase4QualityError("BOUNDARY_CONTINUITY_DIMENSIONS_INVALID")
+    if before_canvas.dtype != np.uint8 or composite.dtype != np.uint8 or editable_mask.dtype != np.uint8:
+        raise Phase4QualityError("BOUNDARY_CONTINUITY_DTYPE_INVALID")
+
+    inner, outer = _rings(editable_mask)
+    pairs = _nearest_pairs(inner, outer)
+    if not pairs:
+        return composite.copy()
+
+    # Start with the immutable outside color so the continuation is tied to
+    # the actual source canvas, then soften only the editable ring.
+    continuation = composite.copy()
+    for (iy, ix), (oy, ox) in pairs:
+        continuation[iy, ix] = before_canvas[oy, ox]
+    softened = cv2.GaussianBlur(continuation, (3, 3), 0)
+
+    policy = load_candidate_v3_quality_policy()
+    pass_max = policy["boundaryMetrics"]["maxChannelSeamDelta"]["passMax"]
+    if not isinstance(pass_max, (int, float)) or pass_max < 0:
+        raise Phase4QualityError("BOUNDARY_CONTINUITY_POLICY_INVALID")
+
+    result = composite.copy()
+    for (iy, ix), (oy, ox) in pairs:
+        candidate = np.rint((continuation[iy, ix].astype(np.float32) + softened[iy, ix]) / 2.0).astype(np.int16)
+        reference = before_canvas[oy, ox].astype(np.int16)
+        bounded = np.clip(candidate, reference - int(pass_max), reference + int(pass_max))
+        result[iy, ix] = bounded.astype(np.uint8)
+    return result
 
 
 @dataclass(frozen=True)

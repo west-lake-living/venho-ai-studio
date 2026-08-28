@@ -1,0 +1,16 @@
+{
+  "localTextureDiscontinuity": 0.17057051955765018,
+  "maxChannelSeamDelta": 29.0,
+  "meanSeamDelta": 1.7218895542248835,
+  "metricStatuses": {
+    "localTextureDiscontinuity": "PASS",
+    "maxChannelSeamDelta": "PASS",
+    "meanSeamDelta": "PASS"
+  },
+  "pixelLockPassed": true,
+  "policyId": "restoration-v3-quality-policy-1",
+  "policyVersion": "1.0",
+  "reasons": [],
+  "status": "PASS",
+  "validatorId": "candidate-v3-boundary-qc"
+}
