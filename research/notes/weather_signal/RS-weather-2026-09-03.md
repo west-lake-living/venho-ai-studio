@@ -1,5 +1,5 @@
 ---
-rs_id: RS-weather-2026-08-31
+rs_id: RS-weather-2026-09-03
 type: trend
 domain: weather_signal
 evidence_level: R2-T
@@ -13,10 +13,10 @@ related_briefs: []
 verified_by_human: false
 tags:
 - weather
-- rain
+- golden_sunset
 ---
 
-# 2026-08-31 — rain
+# 2026-09-03 — golden_sunset
 
-- Mưa ngoài cửa kính — không gian ấm trong sảnh
-- Scenario: venho_lobby_cozy
+- Hoàng hôn vàng trên Hồ Tây — rooftop cuối ngày
+- Scenario: venho_rooftop_sunset
