@@ -100,6 +100,24 @@ def replace_rejected_publication(
         replacement = registry.find(rejected["replacement_publication_id"])
         return replacement or rejected
 
+    # A historical duplicate-row bug can leave a REJECTED/STALE_APPROVAL row
+    # sharing its (slot_id, platform) with a separate publication that has
+    # already gone out (PUBLISHED) or is otherwise active. Generating a fresh
+    # replacement for it would draft (and pay for) a duplicate of a post that
+    # already exists, then fail to link back to this row anyway -- the
+    # registry's own slot/platform-ownership guard rejects that update once
+    # run_daily_cycle has already spent the API call. Catch it here, before
+    # any generation happens.
+    active_owner = registry.find_active_slot_platform(
+        slot_id=rejected.get("slot_id"), platform=rejected.get("platform")
+    )
+    if active_owner is not None:
+        raise ValueError(
+            f"Publication {publication_id} is a stale duplicate: slot "
+            f"{rejected.get('slot_id')}/{rejected.get('platform')} is already owned by "
+            f"{active_owner['publication_id']} (status={active_owner['status']})"
+        )
+
     cutoff = today or date.today()
     slot_store = SlotStore(db_path=data_root / project / "growth" / "growth.db")
     slot_date, day = _replacement_slot(
