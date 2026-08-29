@@ -4,19 +4,19 @@ type: trend
 domain: weather_signal
 evidence_level: R2-T
 status: draft
-collected_at: '2026-08-28'
+collected_at: '2026-08-29'
 source_uri: https://api.open-meteo.com/v1/forecast
 confidence: 0.6
-expires_at: '2026-08-30'
+expires_at: '2026-08-31'
 promoted_fact_keys: []
 related_briefs: []
 verified_by_human: false
 tags:
 - weather
-- rain
+- heat
 ---
 
-# 2026-09-01 — rain
+# 2026-09-01 — heat
 
-- Mưa ngoài cửa kính — không gian ấm trong sảnh
-- Scenario: venho_lobby_cozy
+- Nắng gắt — bóng râm rooftop, đồ uống mát
+- Scenario: venho_rooftop_shade

@@ -4,19 +4,19 @@ type: trend
 domain: weather_signal
 evidence_level: R2-T
 status: draft
-collected_at: '2026-08-28'
+collected_at: '2026-08-29'
 source_uri: https://api.open-meteo.com/v1/forecast
 confidence: 0.6
-expires_at: '2026-08-30'
+expires_at: '2026-08-31'
 promoted_fact_keys: []
 related_briefs: []
 verified_by_human: false
 tags:
 - weather
-- golden_sunset
+- heat
 ---
 
-# 2026-09-02 — golden_sunset
+# 2026-09-02 — heat
 
-- Hoàng hôn vàng trên Hồ Tây — rooftop cuối ngày
-- Scenario: venho_rooftop_sunset
+- Nắng gắt — bóng râm rooftop, đồ uống mát
+- Scenario: venho_rooftop_shade

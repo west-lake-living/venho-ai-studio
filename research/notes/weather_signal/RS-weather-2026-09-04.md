@@ -1,5 +1,5 @@
 ---
-rs_id: RS-weather-2026-08-29
+rs_id: RS-weather-2026-09-04
 type: trend
 domain: weather_signal
 evidence_level: R2-T
@@ -13,10 +13,10 @@ related_briefs: []
 verified_by_human: false
 tags:
 - weather
-- rain
+- heat
 ---
 
-# 2026-08-29 — rain
+# 2026-09-04 — heat
 
-- Mưa ngoài cửa kính — không gian ấm trong sảnh
-- Scenario: venho_lobby_cozy
+- Nắng gắt — bóng râm rooftop, đồ uống mát
+- Scenario: venho_rooftop_shade
