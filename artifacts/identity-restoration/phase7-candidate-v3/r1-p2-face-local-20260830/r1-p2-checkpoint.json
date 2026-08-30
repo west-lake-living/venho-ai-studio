@@ -1,0 +1,37 @@
+{
+  "architecture_changed": false,
+  "boundary_regression": "PASS",
+  "canonical_transform_changed": false,
+  "evidence": {
+    "baseline": "baseline.json",
+    "boundaryRegression": "boundary-regression.json",
+    "faceLocalAggregate": "FACE_LOCAL.json",
+    "perSampleResults": "per-sample-results.json",
+    "rootCauseReport": "root-cause-report.md"
+  },
+  "face_local": {
+    "blocker": "OFFLINE_AUTHORITATIVE_FACE_EVALUATOR_UNAVAILABLE",
+    "evaluated_count": 0,
+    "expected_count": 9,
+    "placeholder_count_after": 9,
+    "placeholder_count_before": 9,
+    "quality_fail_count": null,
+    "quality_pass_count": null,
+    "remediation": "BLOCKED: real face_qc wiring requires configured provider access or immutable exact-artifact evaluator evidence; provider=mock is synthetic and prohibited.",
+    "reported_state": "UNVALIDATED",
+    "root_cause": "VALIDATOR_NOT_EXECUTED / INSUFFICIENT_EVIDENCE: face_qc=None in the dedicated Phase 7 builder, with no offline authoritative evaluator or exact candidate-artifact cache available.",
+    "validated": false
+  },
+  "gpu_calls": 0,
+  "identity_pack_changed": false,
+  "policy_changed": false,
+  "production_feature_flag": "OFF",
+  "production_promotion": "NO",
+  "provider_calls": 0,
+  "roadmap": "candidate_v3_quality_remediation_r1",
+  "route_policy_changed": false,
+  "scenario_global_changed": false,
+  "status": "BLOCKED",
+  "task": "r1_p2_face_local_validation",
+  "workflow_changed": false
+}

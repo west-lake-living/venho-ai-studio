@@ -1,5 +1,24 @@
 # VENHO AI STUDIO — Task Status
 
+### Candidate v3 Quality Remediation R1 — R1-P2 status (2026-08-30)
+
+- `Candidate v3 Quality Remediation R1`
+- `R1-P0 = CLOSED / PASS`
+- `R1-P1 = CLOSED / PASS`
+- `R1-P2 = BLOCKED`
+- FACE_LOCAL baseline is `9` expected cases, `9` placeholder reports, and
+  `0` valid evaluator results. The break point is `_build_entrypoint`, which
+  injects `face_qc=None` into the Candidate v3 service.
+- All nine candidate artifacts and canonical face inputs are present, but no
+  offline authoritative FACE_LOCAL evaluator evidence matches those artifact
+  hashes. Existing cache entries match frozen base frames only. The real
+  validator requires a configured provider; `provider=mock` is synthetic and
+  prohibited.
+- No score was fabricated, no placeholder was promoted, and no GPU/provider
+  call was made. BOUNDARY regression remains `PASS 9/9`.
+- Checkpoint/report:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p2-face-local-20260830/`.
+
 ### Candidate v3 Quality Remediation R1 — R1-P1 closure (2026-08-28)
 
 - `Candidate v3 Quality Remediation R1`

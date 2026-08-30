@@ -1,0 +1,29 @@
+{
+  "files": [
+    {
+      "path": "FACE_LOCAL.json",
+      "sha256": "f2beb99196c8ee1b0f557240bd56154825ff32bb34c9589dbedf110a0418620f"
+    },
+    {
+      "path": "baseline.json",
+      "sha256": "4b50129ea3c3933ca2fae791e3e73cfdd4837f506822e193b093c0db55ab964f"
+    },
+    {
+      "path": "boundary-regression.json",
+      "sha256": "fc104d9607d077230df4681f7905a0bef52b3e77690c15a50c28bb346a50db75"
+    },
+    {
+      "path": "per-sample-results.json",
+      "sha256": "49d95fdfa7653555d50477d4890846299392d23f44e720f572c36f012b65103a"
+    },
+    {
+      "path": "r1-p2-checkpoint.json",
+      "sha256": "4ef4a8ea76a49742eb5365e73acb8db0d5ab3a1e7850c68c818c5e4b56406b9c"
+    },
+    {
+      "path": "root-cause-report.md",
+      "sha256": "6ce644fe6e7a3384c77f626de94d6ed1803d6523db7a6b1d7ba091af6e2da94a"
+    }
+  ],
+  "schemaVersion": "candidate-v3-r1-p2-evidence-hashes-1.0"
+}

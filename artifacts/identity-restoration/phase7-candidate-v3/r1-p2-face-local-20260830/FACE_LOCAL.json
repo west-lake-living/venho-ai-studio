@@ -1,0 +1,28 @@
+{
+  "authority": {
+    "approvedReferenceCount": 4,
+    "identityPackId": "linh-an-production-v3-2026-08",
+    "identityPackSha256": "b2df0f34c123706525d40676ed53adac0c93113729eaa8c5c88425e62c6be460",
+    "scenarioProfileNote": "FACE_LOCAL does not consume scenario exclusions; it uses the canonical crop and approved IdentityPack references. B03/B04 bindings remain action_full_body@1.0 with shot_distance/hairstyle exclusions only; all other eligible cases remain canonical_default."
+  },
+  "blocker": "validate_face requires a real configured provider for authoritative observation; provider=mock returns synthetic values and is prohibited for acceptance.",
+  "cacheAudit": {
+    "cacheRoot": "artifacts/identity-restoration/benchmarks/validator-cache",
+    "candidateAndCanonicalExactMatches": 0,
+    "note": "Existing cache records match frozen base-frame hashes, not the nine candidate/restored-canonical artifacts; reuse would violate artifact lineage."
+  },
+  "evaluatorResults": 0,
+  "expectedResults": 9,
+  "placeholderReportsAfter": 9,
+  "placeholderReportsBefore": 9,
+  "qualityFailCount": null,
+  "qualityPassCount": null,
+  "reason": "OFFLINE_AUTHORITATIVE_FACE_EVALUATOR_UNAVAILABLE",
+  "reportedStateAfter": "UNVALIDATED",
+  "reportedStateBefore": "UNVALIDATED",
+  "schemaVersion": "candidate-v3-r1-p2-face-local-aggregate-1.0",
+  "scope": "FACE_LOCAL",
+  "scores": null,
+  "status": "BLOCKED",
+  "validatorId": "validator-studio-face-qc"
+}

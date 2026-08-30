@@ -1,0 +1,66 @@
+{
+  "expected_count": 9,
+  "fail_count": 0,
+  "pass_count": 9,
+  "rows": [
+    {
+      "maxChannelSeamDelta": 25.0,
+      "report": "artifacts/identity-restoration/phase7-candidate-v3/r1-p1-boundary-remediation-20260828/B01/BOUNDARY.json",
+      "sample_id": "B01",
+      "status": "PASS"
+    },
+    {
+      "maxChannelSeamDelta": 32.0,
+      "report": "artifacts/identity-restoration/phase7-candidate-v3/r1-p1-boundary-remediation-20260828/B02/BOUNDARY.json",
+      "sample_id": "B02",
+      "status": "PASS"
+    },
+    {
+      "maxChannelSeamDelta": 29.0,
+      "report": "artifacts/identity-restoration/phase7-candidate-v3/r1-p1-boundary-remediation-20260828/B03/BOUNDARY.json",
+      "sample_id": "B03",
+      "status": "PASS"
+    },
+    {
+      "maxChannelSeamDelta": 24.0,
+      "report": "artifacts/identity-restoration/phase7-candidate-v3/r1-p1-boundary-remediation-20260828/B04/BOUNDARY.json",
+      "sample_id": "B04",
+      "status": "PASS"
+    },
+    {
+      "maxChannelSeamDelta": 32.0,
+      "report": "artifacts/identity-restoration/phase7-candidate-v3/r1-p1-boundary-remediation-20260828/B05/BOUNDARY.json",
+      "sample_id": "B05",
+      "status": "PASS"
+    },
+    {
+      "maxChannelSeamDelta": 32.0,
+      "report": "artifacts/identity-restoration/phase7-candidate-v3/r1-p1-boundary-remediation-20260828/B06/BOUNDARY.json",
+      "sample_id": "B06",
+      "status": "PASS"
+    },
+    {
+      "maxChannelSeamDelta": 32.0,
+      "report": "artifacts/identity-restoration/phase7-candidate-v3/r1-p1-boundary-remediation-20260828/B07/BOUNDARY.json",
+      "sample_id": "B07",
+      "status": "PASS"
+    },
+    {
+      "maxChannelSeamDelta": 32.0,
+      "report": "artifacts/identity-restoration/phase7-candidate-v3/r1-p1-boundary-remediation-20260828/B08/BOUNDARY.json",
+      "sample_id": "B08",
+      "status": "PASS"
+    },
+    {
+      "maxChannelSeamDelta": 32.0,
+      "report": "artifacts/identity-restoration/phase7-candidate-v3/r1-p1-boundary-remediation-20260828/B09/BOUNDARY.json",
+      "sample_id": "B09",
+      "status": "PASS"
+    }
+  ],
+  "schemaVersion": "candidate-v3-r1-p2-boundary-regression-1.0",
+  "scope": "BOUNDARY",
+  "status": "PASS",
+  "threshold_changed": false,
+  "validator_bypassed": false
+}

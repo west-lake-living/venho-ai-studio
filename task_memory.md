@@ -1,5 +1,31 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-08-30 — Candidate v3 R1-P2 FACE_LOCAL validation blocked
+
+`Candidate v3 Quality Remediation R1 / R1-P2 = BLOCKED`.
+
+- Baseline was `9` expected FACE_LOCAL cases, `9` placeholder reports, and
+  `0` valid evaluator results. The exact break point is
+  `phase7_candidate_v3_evaluation.py::_build_entrypoint`, which constructs the
+  service with `face_qc=None`; `_execute` then writes `score=null` and
+  `MISSING_FACE_LOCAL_EVIDENCE`.
+- The authoritative evaluator is
+  `validator_studio.face_validator.validate_face`. It requires the existing
+  07F rubric, canonical crop, approved IdentityPack references, and a real
+  configured provider. The `mock` branch emits synthetic fixed scores and is
+  not valid evidence.
+- All nine candidate artifacts and canonical face inputs are present. The
+  immutable validator cache has zero exact matches for those candidate or
+  canonical hashes; available records match frozen base frames and cannot be
+  reused without violating lineage.
+- No provider/GPU call, fake score, threshold change, validator bypass, or
+  artifact regeneration was performed. BOUNDARY regression remains `9/9 PASS`.
+- Evidence is under
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p2-face-local-20260830/`.
+
+Next authorized task remains blocked pending an offline authoritative cache or
+explicit provider authorization. Do not start R1-P3.
+
 ## 2026-08-28 — Candidate v3 R1-P1 boundary quality remediation
 
 `Candidate v3 Quality Remediation R1 / R1-P1 = CLOSED / PASS`.
