@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "candidate-v3-r1-p3-sha256-manifest-1.0",
+  "files": {
+    "aggregate.json": "ae0c2ef738c9b126a814bd63171ddae7903788a49d58c099812987c41ce97918",
+    "baseline.json": "859902d4afdc1b32ed1df4e80d294788b31789ae8d227d6e42c847dbaeb881dc",
+    "boundary-regression.json": "2030c1e5d42a7f6a464846aa51e3392c4835f5552def354f7d54cfaac7cfb37d",
+    "contract-authority-audit.json": "f56be7024b2168af24c2d99e59c0ca132149d5ccd5d3b22c47c3294f466e83b9",
+    "per-sample-results.json": "aaa24a1058d93f2e6f4010887fad649589f49e2b9178c01d6cf2885ae47ce1e0",
+    "r1-p3-checkpoint.json": "e1f5eb2da230bcc1d18baaa077f516d50080554521f978bc0855bf7939903601",
+    "root-cause-report.md": "faa7f75b0517a8552beba694bb5230eec9df696f74a38c887ce9db27681a6674"
+  },
+  "selfExcluded": true
+}

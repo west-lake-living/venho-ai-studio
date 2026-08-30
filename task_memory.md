@@ -1,5 +1,32 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-08-30 — Candidate v3 R1-P3 SCENARIO_GLOBAL validation blocked
+
+`Candidate v3 Quality Remediation R1 / R1-P3 = BLOCKED`.
+
+- Baseline is 9 expected eligible cases B01–B09, 9 placeholder
+  `SCENARIO_GLOBAL` reports, and 0 valid evaluator results. B10 remains
+  excluded by the prior `BASE_REGEN_REQUIRED` state.
+- The exact break point is `phase7_candidate_v3_evaluation.py::_build_entrypoint`,
+  which constructs the service with `scenario_validator=None`.
+- The existing authoritative implementation is
+  `validator_studio.image_validator`; its live observation path requires a
+  configured provider. `report_from_image_observations` can replay only
+  parsed evidence, but no exact candidate/R1-P1 artifact cache matches exist.
+  The mock evaluator is synthetic and was not used.
+- Candidate authority assignments remain locked: B03/B04 are
+  `action_full_body@1.0` with only `shot_distance` and `hairstyle` excluded;
+  B01/B02/B05–B10 are `canonical_default` with no exclusions. The existing
+  Python resolver uses the unversioned `action_full_body` file ID, so direct
+  callback wiring would also fail closed; no fallback authority was created.
+- The two historical `nguyen_dinh_thi_street_2026` test failures remain
+  unrelated to this Candidate v3 lane. Candidate v3/Phase 7/authority tests
+  pass; BOUNDARY regression is 9/9 PASS.
+- R1-P3 made 0 GPU/provider calls, changed no source code or policy, and did
+  not start R1-P4.
+- Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p3-scenario-global-20260830/`.
+
 ## 2026-08-30 — Candidate v3 R1-P2 FACE_LOCAL validation blocked
 
 `Candidate v3 Quality Remediation R1 / R1-P2 = BLOCKED`.

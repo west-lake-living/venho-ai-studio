@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "candidate-v3-r1-p3-scenario-global-baseline-1.0",
+  "status": "BLOCKED",
+  "expectedCount": 9,
+  "expectedCases": ["B01", "B02", "B03", "B04", "B05", "B06", "B07", "B08", "B09"],
+  "placeholderReports": 9,
+  "validEvaluatorResults": 0,
+  "scenarioValidatorConfigured": false,
+  "scenarioValidatorPath": "identity_restoration/application/phase7_candidate_v3_evaluation.py::_build_entrypoint",
+  "scenarioValidatorValue": null,
+  "candidateArtifactsPresent": 9,
+  "lineage": "Candidate v3 R1-P1 derived composite -> scenario binding -> SCENARIO_GLOBAL report placeholder",
+  "rows": [
+    {"sampleId":"B01","candidateArtifactPresent":true,"candidateArtifactSha256":"9e47e5f09327e79e1f8d9f1fb5f37af1251a3663393d41a5409415c9f0a36aad","scenarioProfile":"canonical_default","authorityProfile":"canonical_default","allowedExclusions":[],"validatorAvailable":false,"validatorCalled":false,"resultPresent":false,"passed":null,"classification":"BLOCKED / NO_OFFLINE_AUTHORITATIVE_EVALUATOR"},
+    {"sampleId":"B02","candidateArtifactPresent":true,"candidateArtifactSha256":"8d95919b3b169f93d4292383cc6904279c9238e31898f4efb5e92e5cc2b11096","scenarioProfile":"canonical_default","authorityProfile":"canonical_default","allowedExclusions":[],"validatorAvailable":false,"validatorCalled":false,"resultPresent":false,"passed":null,"classification":"BLOCKED / NO_OFFLINE_AUTHORITATIVE_EVALUATOR"},
+    {"sampleId":"B03","candidateArtifactPresent":true,"candidateArtifactSha256":"0885d191ae09ca9c743ad057a74e7bfd776fefb1ab0174457c6cdfafb372047c","scenarioProfile":"action_full_body@1.0","authorityProfile":"action_full_body@1.0","allowedExclusions":["shot_distance","hairstyle"],"validatorAvailable":false,"validatorCalled":false,"resultPresent":false,"passed":null,"classification":"BLOCKED / NO_OFFLINE_AUTHORITATIVE_EVALUATOR"},
+    {"sampleId":"B04","candidateArtifactPresent":true,"candidateArtifactSha256":"a9b0eeb6bc7978ca87c18210b537cbe903c3e26e1c1a1a2f94ff45f2d5d0f04e","scenarioProfile":"action_full_body@1.0","authorityProfile":"action_full_body@1.0","allowedExclusions":["shot_distance","hairstyle"],"validatorAvailable":false,"validatorCalled":false,"resultPresent":false,"passed":null,"classification":"BLOCKED / NO_OFFLINE_AUTHORITATIVE_EVALUATOR"},
+    {"sampleId":"B05","candidateArtifactPresent":true,"candidateArtifactSha256":"8d124b09a4400bcf76b84671d30fe540faefeac6b396ce2fbac9727bda5308f0","scenarioProfile":"canonical_default","authorityProfile":"canonical_default","allowedExclusions":[],"validatorAvailable":false,"validatorCalled":false,"resultPresent":false,"passed":null,"classification":"BLOCKED / NO_OFFLINE_AUTHORITATIVE_EVALUATOR"},
+    {"sampleId":"B06","candidateArtifactPresent":true,"candidateArtifactSha256":"dcea8aaf17269c1b73ceb09ff38db6a9ee711e2ccdcef38f2110c2314ea7236a","scenarioProfile":"canonical_default","authorityProfile":"canonical_default","allowedExclusions":[],"validatorAvailable":false,"validatorCalled":false,"resultPresent":false,"passed":null,"classification":"BLOCKED / NO_OFFLINE_AUTHORITATIVE_EVALUATOR"},
+    {"sampleId":"B07","candidateArtifactPresent":true,"candidateArtifactSha256":"33af141d82101210eabe39ab3a90f53256cc1463db3b8693e35cd2011401532f","scenarioProfile":"canonical_default","authorityProfile":"canonical_default","allowedExclusions":[],"validatorAvailable":false,"validatorCalled":false,"resultPresent":false,"passed":null,"classification":"BLOCKED / NO_OFFLINE_AUTHORITATIVE_EVALUATOR"},
+    {"sampleId":"B08","candidateArtifactPresent":true,"candidateArtifactSha256":"6f68eb364e3212c853f867553ae5bf669f4fa8fb998f6d890a2ea0c07f0a7d21","scenarioProfile":"canonical_default","authorityProfile":"canonical_default","allowedExclusions":[],"validatorAvailable":false,"validatorCalled":false,"resultPresent":false,"passed":null,"classification":"BLOCKED / NO_OFFLINE_AUTHORITATIVE_EVALUATOR"},
+    {"sampleId":"B09","candidateArtifactPresent":true,"candidateArtifactSha256":"ee141a898d56cee1038a42a004712829fe37d393b56fe79bcdc95d3694f05891","scenarioProfile":"canonical_default","authorityProfile":"canonical_default","allowedExclusions":[],"validatorAvailable":false,"validatorCalled":false,"resultPresent":false,"passed":null,"classification":"BLOCKED / NO_OFFLINE_AUTHORITATIVE_EVALUATOR"}
+  ],
+  "excludedCases": [{"sampleId":"B10","state":"BASE_REGEN_REQUIRED","reason":"No Phase 7 candidate artifact; excluded by prior R1-P0 population definition."}],
+  "gpuCalls": 0,
+  "providerCalls": 0
+}

@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "candidate-v3-r1-p3-scenario-global-contract-audit-1.0",
+  "status": "BLOCKED",
+  "executionPath": [
+    "candidate artifact",
+    "CandidateV3RestorationService._execute",
+    "scenario_resolver(request.scenario_id)",
+    "scenario_validator(binding, composite.final_composite_png)",
+    "qc/SCENARIO_GLOBAL.json",
+    "QualityBundleMerger"
+  ],
+  "breakPoint": "_build_entrypoint injects scenario_validator=None; _execute then writes passed=null.",
+  "authoritativeImplementation": {
+    "path": "validator_studio/image_validator.py::validate_image",
+    "observationPath": "validator_studio/observe_adapter.py::observe_image_against_dna",
+    "scoringPath": "validator_studio/scoring.py::score_image_observation",
+    "offlineParsedEvidencePath": "validator_studio/image_validator.py::report_from_image_observations",
+    "providerRequiredForNewObservation": true,
+    "mockIsAuthoritative": false
+  },
+  "inputContract": {
+    "candidateImage": "full composite image path",
+    "project": "venho_hotel",
+    "subject": "linh_an",
+    "scenarioProfileId": "optional explicit profile; unknown profiles fail closed",
+    "requiredObservationFields": ["dna_matches", "forbidden", "allowed_imperfections", "notes"],
+    "scoreSource": "deterministic score_image_observation over parsed observation",
+    "candidateServiceCallbackContract": "Callable[[binding, bytes], bool | None]"
+  },
+  "authority": {
+    "canonicalDefault": {"cases":"B01/B02/B05-B10","profileId":"canonical_default","sha256":"71f839dff776ec6d6d085c5a1ab928295af8c32a9699f7929d78b04807ec0075","exclusions":[]},
+    "actionFullBody": {"cases":"B03/B04","profileId":"action_full_body@1.0","sha256":"fe4a2b454a5868e9fc4dfbc4216e413a69a186cc8b4ab89c066943843c869b1c","exclusions":["shot_distance","hairstyle"]},
+    "unknownProfileBehavior":"FAIL_CLOSED",
+    "candidateBindingResolution":"PASS for B01-B10 registry data; B10 has no eligible Phase 7 candidate artifact"
+  },
+  "profileWiringFinding": {
+    "candidateBindingId":"action_full_body@1.0",
+    "validatorFileResolverId":"action_full_body",
+    "directLookup":"would fail closed because no action_full_body@1.0 authority file exists",
+    "classification":"MAPPING_MISMATCH / SECONDARY_BLOCKER",
+    "notPatched":"No contract/profile change is authorized while authoritative evaluation is unavailable."
+  },
+  "thresholdsChanged": false,
+  "validatorBypassed": false,
+  "historicalEvidenceReuse": false,
+  "cacheAudit": {"cacheRoot":"artifacts/identity-restoration/benchmarks/validator-cache","exactCandidateOrCompositeMatches":0,"historicalBaseFrameMatchesNotReusable":true}
+}

@@ -1,5 +1,31 @@
 # VENHO AI STUDIO — Task Status
 
+### Candidate v3 Quality Remediation R1 — R1-P3 status (2026-08-30)
+
+- `Candidate v3 Quality Remediation R1`
+- `R1-P0 = CLOSED / PASS`
+- `R1-P1 = CLOSED / PASS`
+- `R1-P2 = BLOCKED`
+- `R1-P3 = BLOCKED`
+- SCENARIO_GLOBAL baseline is `9` expected cases (B01–B09), `9` placeholder
+  reports, and `0` valid evaluator results. The exact break point is
+  `_build_entrypoint`, which injects `scenario_validator=None`.
+- The authoritative implementation is `validator_studio.image_validator`,
+  but new observation requires a configured provider. Offline parsed evidence
+  and exact candidate-artifact cache matches are both unavailable (`0`). The
+  `mock` path is synthetic and was not accepted.
+- The locked authority audit remains intact: B03/B04 use
+  `action_full_body@1.0` with `shot_distance`/`hairstyle` exclusions; all
+  other locked cases use `canonical_default` with no exclusions. A secondary
+  profile-ID mapping mismatch (`action_full_body@1.0` vs the Python resolver's
+  `action_full_body`) was recorded and not altered.
+- No provider/GPU call, fake score, threshold change, validator bypass,
+  placeholder promotion, artifact regeneration, or R1-P3 source change was
+  made. BOUNDARY regression remains `PASS 9/9`; FACE_LOCAL remains
+  `UNVALIDATED / BLOCKED`.
+- Checkpoint/report:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p3-scenario-global-20260830/`.
+
 ### Candidate v3 Quality Remediation R1 — R1-P2 status (2026-08-30)
 
 - `Candidate v3 Quality Remediation R1`

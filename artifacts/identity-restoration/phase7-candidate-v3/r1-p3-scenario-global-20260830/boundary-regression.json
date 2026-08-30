@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "candidate-v3-r1-p3-boundary-regression-1.0",
+  "scope": "BOUNDARY",
+  "status": "PASS",
+  "expectedCount": 9,
+  "passCount": 9,
+  "failCount": 0,
+  "source": "R1-P1 derived artifacts re-evaluated with locked boundary policy",
+  "thresholdChanged": false,
+  "providerCalls": 0,
+  "gpuCalls": 0
+}

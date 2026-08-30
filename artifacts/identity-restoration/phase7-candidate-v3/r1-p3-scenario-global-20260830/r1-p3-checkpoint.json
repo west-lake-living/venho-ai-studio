@@ -1,0 +1,32 @@
+{
+  "roadmap": "candidate_v3_quality_remediation_r1",
+  "task": "r1_p3_scenario_global_validation",
+  "status": "BLOCKED",
+  "gpu_calls": 0,
+  "provider_calls": 0,
+  "scenario_global": {
+    "reported_state": "UNVALIDATED",
+    "expected_count": 9,
+    "evaluated_count": 0,
+    "placeholder_count_before": 9,
+    "placeholder_count_after": 9,
+    "validated": false,
+    "quality_pass_count": null,
+    "quality_fail_count": null,
+    "root_cause": "VALIDATOR_NOT_EXECUTED / INSUFFICIENT_EVIDENCE: scenario_validator=None in _build_entrypoint; no offline authoritative evaluator or exact candidate cache.",
+    "authoritative_evaluator_available": false,
+    "blocker": "OFFLINE_AUTHORITATIVE_SCENARIO_EVALUATOR_UNAVAILABLE"
+  },
+  "boundary_regression": "PASS",
+  "face_local_state": "UNVALIDATED_BLOCKED",
+  "candidate_feature_flag": "OFF",
+  "production_promotion": "NO",
+  "architecture_changed": false,
+  "policy_changed": false,
+  "workflow_changed": false,
+  "identity_pack_changed": false,
+  "route_policy_changed": false,
+  "canonical_transform_changed": false,
+  "r1_p3_source_changes": false,
+  "promotions": 0
+}

@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "candidate-v3-r1-p3-scenario-global-results-1.0",
+  "scope": "SCENARIO_GLOBAL",
+  "status": "BLOCKED",
+  "evaluatedCount": 0,
+  "samples": [
+    {"sampleId":"B01","scenarioId":"B01","authorityProfile":"canonical_default","validatorCalled":false,"resultPresent":false,"passed":null,"placeholderReportSha256":"187a1ce7bb598d1d7a521ce3acc821daee6e316e69f9b5ea7ec08d652a0dacda"},
+    {"sampleId":"B02","scenarioId":"B02","authorityProfile":"canonical_default","validatorCalled":false,"resultPresent":false,"passed":null,"placeholderReportSha256":"4cf09fefd05f42a517c9a440b87c4127907fddead65f74a9c032067074bb15fc"},
+    {"sampleId":"B03","scenarioId":"B03","authorityProfile":"action_full_body@1.0","allowedExclusions":["shot_distance","hairstyle"],"validatorCalled":false,"resultPresent":false,"passed":null,"placeholderReportSha256":"c913138aff312943483fd93de7d56b34e333e6b58e241fd8e43d87726e8c9298"},
+    {"sampleId":"B04","scenarioId":"B04","authorityProfile":"action_full_body@1.0","allowedExclusions":["shot_distance","hairstyle"],"validatorCalled":false,"resultPresent":false,"passed":null,"placeholderReportSha256":"7266fac5a236b40e68017ab1a8c1360ecde862e7e7c0925ade4dcfc810fd326b"},
+    {"sampleId":"B05","scenarioId":"B05","authorityProfile":"canonical_default","validatorCalled":false,"resultPresent":false,"passed":null,"placeholderReportSha256":"cf00e6bb700ffd93d52d1041239c6a1140757a0395789f16d535d822cefdc206"},
+    {"sampleId":"B06","scenarioId":"B06","authorityProfile":"canonical_default","validatorCalled":false,"resultPresent":false,"passed":null,"placeholderReportSha256":"f8a1ee5cdcbbf729abb130c238e48d8eb5b1c68be101b10d2ac706423f8d1528"},
+    {"sampleId":"B07","scenarioId":"B07","authorityProfile":"canonical_default","validatorCalled":false,"resultPresent":false,"passed":null,"placeholderReportSha256":"04d9795d608545b5794b0de65668d48e846ec4c2d2a99f532dd34128c7ec7577"},
+    {"sampleId":"B08","scenarioId":"B08","authorityProfile":"canonical_default","validatorCalled":false,"resultPresent":false,"passed":null,"placeholderReportSha256":"5a38104efc1912bdbd826aeba6f0a485393484da068c228fa0c4ed86a87ab7e2"},
+    {"sampleId":"B09","scenarioId":"B09","authorityProfile":"canonical_default","validatorCalled":false,"resultPresent":false,"passed":null,"placeholderReportSha256":"fc72c991d990bdf7d54b0f58271e776234cbe14832b0dcb1098eb88108bb55af"}
+  ],
+  "rootCause":"VALIDATOR_NOT_EXECUTED / INSUFFICIENT_EVIDENCE",
+  "blocker":"OFFLINE_AUTHORITATIVE_SCENARIO_EVALUATOR_UNAVAILABLE",
+  "gpuCalls":0,
+  "providerCalls":0
+}

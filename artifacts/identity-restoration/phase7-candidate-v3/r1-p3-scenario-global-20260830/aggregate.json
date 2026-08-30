@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "candidate-v3-r1-p3-scenario-global-aggregate-1.0",
+  "scope": "SCENARIO_GLOBAL",
+  "status": "BLOCKED",
+  "reportedStateBefore": "UNVALIDATED",
+  "reportedStateAfter": "UNVALIDATED",
+  "expectedCount": 9,
+  "placeholderCountBefore": 9,
+  "placeholderCountAfter": 9,
+  "evaluatedCount": 0,
+  "qualityPassCount": null,
+  "qualityFailCount": null,
+  "validated": false,
+  "authoritativeEvaluatorAvailable": false,
+  "rootCause": "scenario_validator=None in Phase 7 composition; real image validator requires configured provider; no exact immutable candidate cache/evidence exists.",
+  "finalDisposition": "UNVALIDATED / BLOCKED"
+}
