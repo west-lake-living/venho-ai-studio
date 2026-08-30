@@ -1,5 +1,5 @@
 ---
-rs_id: RS-weather-2026-09-02
+rs_id: RS-weather-2026-09-05
 type: trend
 domain: weather_signal
 evidence_level: R2-T
@@ -13,10 +13,10 @@ related_briefs: []
 verified_by_human: false
 tags:
 - weather
-- heat
+- golden_sunset
 ---
 
-# 2026-09-02 — heat
+# 2026-09-05 — golden_sunset
 
-- Nắng gắt — bóng râm rooftop, đồ uống mát
-- Scenario: venho_rooftop_shade
+- Hoàng hôn vàng trên Hồ Tây — rooftop cuối ngày
+- Scenario: venho_rooftop_sunset

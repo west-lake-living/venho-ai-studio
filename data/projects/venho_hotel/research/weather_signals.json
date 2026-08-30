@@ -1,24 +1,6 @@
 {
-  "generated_at": "2026-08-29T04:04:14.040438",
+  "generated_at": "2026-08-30T01:09:53.245392",
   "signals": [
-    {
-      "rs_id": "RS-weather-2026-08-29",
-      "type": "weather",
-      "domain": "weather_signal",
-      "evidence_level": "R2-T",
-      "forecast_date": "2026-08-29",
-      "condition": "rain",
-      "temperature_range": [
-        26.4,
-        30.5
-      ],
-      "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
-      "matching_scenario_keys": [
-        "venho_lobby_cozy"
-      ],
-      "expires_at": "2026-08-31T04:04:14.035637",
-      "fact_key": null
-    },
     {
       "rs_id": "RS-weather-2026-08-30",
       "type": "weather",
@@ -27,14 +9,14 @@
       "forecast_date": "2026-08-30",
       "condition": "rain",
       "temperature_range": [
-        26.0,
-        33.6
+        26.5,
+        33.7
       ],
       "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
       "matching_scenario_keys": [
         "venho_lobby_cozy"
       ],
-      "expires_at": "2026-08-31T04:04:14.035637",
+      "expires_at": "2026-09-01T01:09:53.240393",
       "fact_key": null
     },
     {
@@ -46,13 +28,13 @@
       "condition": "rain",
       "temperature_range": [
         25.9,
-        30.5
+        34.3
       ],
       "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
       "matching_scenario_keys": [
         "venho_lobby_cozy"
       ],
-      "expires_at": "2026-08-31T04:04:14.035637",
+      "expires_at": "2026-09-01T01:09:53.240393",
       "fact_key": null
     },
     {
@@ -63,14 +45,14 @@
       "forecast_date": "2026-09-01",
       "condition": "heat",
       "temperature_range": [
-        25.7,
-        33.8
+        25.2,
+        34.3
       ],
       "visual_opportunity": "Nắng gắt — bóng râm rooftop, đồ uống mát",
       "matching_scenario_keys": [
         "venho_rooftop_shade"
       ],
-      "expires_at": "2026-08-31T04:04:14.035637",
+      "expires_at": "2026-09-01T01:09:53.240393",
       "fact_key": null
     },
     {
@@ -81,14 +63,14 @@
       "forecast_date": "2026-09-02",
       "condition": "heat",
       "temperature_range": [
-        24.4,
-        33.1
+        24.7,
+        33.7
       ],
       "visual_opportunity": "Nắng gắt — bóng râm rooftop, đồ uống mát",
       "matching_scenario_keys": [
         "venho_rooftop_shade"
       ],
-      "expires_at": "2026-08-31T04:04:14.035637",
+      "expires_at": "2026-09-01T01:09:53.240393",
       "fact_key": null
     },
     {
@@ -99,14 +81,14 @@
       "forecast_date": "2026-09-03",
       "condition": "heat",
       "temperature_range": [
-        23.4,
-        33.0
+        24.2,
+        33.2
       ],
       "visual_opportunity": "Nắng gắt — bóng râm rooftop, đồ uống mát",
       "matching_scenario_keys": [
         "venho_rooftop_shade"
       ],
-      "expires_at": "2026-08-31T04:04:14.035637",
+      "expires_at": "2026-09-01T01:09:53.240393",
       "fact_key": null
     },
     {
@@ -115,16 +97,34 @@
       "domain": "weather_signal",
       "evidence_level": "R2-T",
       "forecast_date": "2026-09-04",
-      "condition": "heat",
+      "condition": "rain",
       "temperature_range": [
-        24.4,
-        33.1
+        25.4,
+        32.4
       ],
-      "visual_opportunity": "Nắng gắt — bóng râm rooftop, đồ uống mát",
+      "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
       "matching_scenario_keys": [
-        "venho_rooftop_shade"
+        "venho_lobby_cozy"
       ],
-      "expires_at": "2026-08-31T04:04:14.035637",
+      "expires_at": "2026-09-01T01:09:53.240393",
+      "fact_key": null
+    },
+    {
+      "rs_id": "RS-weather-2026-09-05",
+      "type": "weather",
+      "domain": "weather_signal",
+      "evidence_level": "R2-T",
+      "forecast_date": "2026-09-05",
+      "condition": "golden_sunset",
+      "temperature_range": [
+        26.0,
+        32.5
+      ],
+      "visual_opportunity": "Hoàng hôn vàng trên Hồ Tây — rooftop cuối ngày",
+      "matching_scenario_keys": [
+        "venho_rooftop_sunset"
+      ],
+      "expires_at": "2026-09-01T01:09:53.240393",
       "fact_key": null
     }
   ]
