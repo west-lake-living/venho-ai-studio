@@ -1,0 +1,12 @@
+{
+  "calls": 2,
+  "failedCalls": 2,
+  "logicalSamplesCompleted": 0,
+  "model": "gemini-flash-latest",
+  "provider": "gemini",
+  "records": [],
+  "reusedValidCalls": 0,
+  "schemaVersion": "candidate-v3-r1-p4-r1-execution-manifest-1.0",
+  "status": "PROVIDER_BLOCKED",
+  "successfulCalls": 0
+}

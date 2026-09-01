@@ -1,5 +1,25 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-09-01 — Candidate v3 R1-P4-R1 provider execution remediation blocked
+
+`Candidate v3 Quality Remediation R1 / R1-P4-R1 = PROVIDER_BLOCKED`.
+
+- Gemini `gemini-flash-latest` remained the sole authoritative provider. The
+  adapter audit confirmed `503 -> PROVIDER_503`, bounded two-attempt retry,
+  `0.25s` backoff, no jitter, and fail-closed circuit behavior.
+- The only deterministic defect found was in R1-P4 orchestration: reuse was
+  hard-coded to B01/sample 1 and did not verify a complete request/artifact/
+  validator/policy metadata tuple. A runner-only resumable harness now persists
+  attempt history, schema-valid responses, request hashes, and checkpoints.
+- R1-P4-R1 called Gemini twice for B01 FACE_LOCAL sample 1; both transport
+  attempts returned 503. No valid response was produced or reused; execution
+  stopped before all remaining Face and Scenario calls. FACE_LOCAL and
+  SCENARIO_GLOBAL remain `0/9 valid`; BOUNDARY remains `9/9 PASS`.
+- No quality logic, rubric, authority, threshold, architecture, workflow,
+  IdentityPack, GPU, generation, mock, synthetic result, or promotion changed.
+- Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p4-r1-provider-remediation-20260901T065908Z/`.
+
 ## 2026-09-01 — Candidate v3 R1-P4 authoritative provider validation blocked
 
 `Candidate v3 Quality Remediation R1 / R1-P4 = PROVIDER_BLOCKED`.

@@ -1,5 +1,24 @@
 # VENHO AI STUDIO — Task Status
 
+### Candidate v3 Quality Remediation R1 — R1-P4-R1 provider execution remediation (2026-09-01)
+
+- `R1-P4-R1 = PROVIDER_BLOCKED`; authoritative provider remained Gemini
+  `gemini-flash-latest`.
+- Adapter audit confirmed correct bounded classification/retry: `PROVIDER_503`
+  with two transport attempts and `0.25s` backoff. The deterministic defect was
+  prior runner orchestration: hard-coded single-sample reuse and no generic
+  request/artifact/validator/policy checkpoint contract. Added a runner-only
+  resumable execution harness; provider adapter, rubric, thresholds, authority,
+  architecture, workflow, and IdentityPack were unchanged.
+- This run made `2` provider calls, both failed `503`; `0` successful and `0`
+  reusable responses. Circuit breaker opened after the bounded retry and the
+  run stopped fail-closed before FACE_LOCAL/SCENARIO_GLOBAL completion.
+- `FACE_LOCAL = 0/9 valid`, `SCENARIO_GLOBAL = 0/9 valid`; quality remains
+  unknown, not quality fail. `BOUNDARY = 9/9 PASS`.
+- No mock/synthetic result, GPU/ComfyUI call, regeneration, promotion, or
+  policy/threshold change. Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p4-r1-provider-remediation-20260901T065908Z/`.
+
 ### Candidate v3 Quality Remediation R1 — R1-P4 status (2026-09-01)
 
 - `Candidate v3 Quality Remediation R1`
