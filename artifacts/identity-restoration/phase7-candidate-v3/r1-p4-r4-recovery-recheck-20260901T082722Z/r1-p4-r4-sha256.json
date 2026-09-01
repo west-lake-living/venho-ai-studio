@@ -1,0 +1,26 @@
+{
+  "algorithm": "SHA-256",
+  "count": 20,
+  "files": {
+    "FACE_LOCAL.json": "59070c2ad7a52fbe562c2f660cca79f61f4b79b506c72b533dab91084a80ce5e",
+    "SCENARIO_GLOBAL.json": "cf1716a8eab92cec1a4d914c7021fb5069a62eb548ee679ab18aab9f9ee7005e",
+    "adapter-audit.json": "cf7100b47d5339c6c424e82191aa9ee0e3b5c4cba0c30b2b5c1623e5d8ba2dd3",
+    "attempt-history.jsonl": "e2326c34c883e9b4af4f73e08ea8c23fb1e251d7a52c87e1804fde5d0040153e",
+    "authorization.json": "8428c74fffe316df5bba356cbc477301492f215df2fec3b3090e878a227873d2",
+    "checkpoint.json": "84265c175669f561d0b0b5ff5a49d2d8758fa99f407d32004ba9e295183015de",
+    "execution-manifest.json": "cb6801b7b598503093859b0234f00fad6a2c5394b4cc388246c2ee35bc5b3f08",
+    "lineage-manifest.json": "8624b459af3f5013637cd6e5bf2f22f76ca43abd798b9c1e12e87ce3d7f87952",
+    "parsed-output-status.json": "17b8242156f2503579f877f2611630fa32870de66e77f72fae5511ec5f6a35ee",
+    "pending-validation-manifest.json": "01d35b11b136441cbbfec13bd9f8438e14a74b205dab83bfb03b689d7926919f",
+    "preflight.json": "1c41192070eab8e2e7b9dcedb37047cb9a7e20c579c388e04779b688f55b867a",
+    "provider-call-manifest.json": "8c407e409b9efba608540d90e534f8b1b266852d642534c1a9c9fe9483c9f128",
+    "provider-paid-call-ledger.jsonl": "3dc2169eb57f04ab3de7ffbc95820aaaa95895233b7e92f3fafcaab10442aa77",
+    "r1-p4-r4-checkpoint.json": "0f029ecb4d3e9e47af8fb1690a2619ab2b44d33bea32461f1c455a1583fb6a01",
+    "r1-p4-r4-results.json": "181de1cb5693011812f1a92991a41075c6c2966b045bf51832352f2a223e247a",
+    "raw-output-status.json": "bfe8b69ead8b36e47a8e68d71483f161f1e3feb0ebd9538c0e2eed2101bb51a8",
+    "recovery-execution-manifest.json": "7c46f8542540dfaf4c9245bddeafc78616736b450c7767bb119c7f4a99c72cb5",
+    "recovery-report.md": "b1de3955f6578f9bb7de8c7351eeb3a1a1a5adeb0269435e95c14db3be5e0e0d",
+    "reused-response-manifest.json": "6f73a1718cbd2f75a8c784255c9bf4194fcb58531298a2cb48fd39fe782f416d",
+    "root-cause-report.md": "a5f768b1d60ac35527e45c997f8a275d3b6b693045efbcc0ecbcdd688603cc67"
+  }
+}

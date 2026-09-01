@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "candidate-v3-r1-p4-r4-results-1.0",
+  "status": "PROVIDER_BLOCKED",
+  "provider_hold": "ACTIVE",
+  "face_local": {"expected": 9, "valid": 0, "quality_pass": null, "quality_fail": null, "disposition": "VALIDATION NOT AVAILABLE"},
+  "scenario_global": {"expected": 9, "valid": 0, "quality_pass": null, "quality_fail": null, "disposition": "VALIDATION NOT AVAILABLE"},
+  "boundary": {"pass": 9, "fail": 0, "evidence": "immutable R1-P1 per-sample-results.json"},
+  "pending_remaining": 18
+}

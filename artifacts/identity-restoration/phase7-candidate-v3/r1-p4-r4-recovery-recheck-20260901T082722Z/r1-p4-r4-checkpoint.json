@@ -1,0 +1,30 @@
+{
+  "roadmap": "candidate_v3_quality_remediation_r1",
+  "task": "r1_p4_r4_recovery_recheck",
+  "authorization": "RECOVERY_RECHECK_AUTHORIZED",
+  "status": "PROVIDER_BLOCKED",
+  "provider_hold_before": true,
+  "provider_hold_after": true,
+  "provider": {
+    "name": "Gemini",
+    "model": "gemini-flash-latest",
+    "calls": 2,
+    "successful": 0,
+    "failed": 2,
+    "provider_503": 2,
+    "input_tokens": null,
+    "output_tokens": null,
+    "reused": 0
+  },
+  "face_local": {"expected": 9, "valid": 0, "quality_pass": null, "quality_fail": null, "disposition": "UNVALIDATED / PROVIDER_BLOCKED"},
+  "scenario_global": {"expected": 9, "valid": 0, "quality_pass": null, "quality_fail": null, "disposition": "UNVALIDATED / PROVIDER_BLOCKED"},
+  "boundary": {"pass": 9, "fail": 0},
+  "gpu_calls": 0,
+  "promotions": 0,
+  "architecture_changed": false,
+  "policy_changed": false,
+  "workflow_changed": false,
+  "identity_pack_changed": false,
+  "threshold_changed": false,
+  "stop_reason": "PROVIDER_503 after bounded retry; remaining pending evaluations not attempted"
+}

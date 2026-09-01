@@ -1,0 +1,10 @@
+{
+  "status": "NO_VALID_RAW_RESPONSE",
+  "provider": "Gemini",
+  "model": "gemini-flash-latest",
+  "calls": 2,
+  "raw_outputs": 0,
+  "reason": "both bounded transport attempts returned PROVIDER_503",
+  "attempt_evidence": "attempt-history.jsonl",
+  "paid_call_evidence": "provider-paid-call-ledger.jsonl"
+}

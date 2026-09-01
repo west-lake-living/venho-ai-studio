@@ -1,0 +1,10 @@
+{
+  "rejectedHistoricalR1P4": [
+    {
+      "reason": "missing requestHash, validatorVersion, and policy lineage; not reusable under R1-P4-R1",
+      "source": "r1-p4-authoritative-validation-20260901-final/raw-evidence-index.json"
+    }
+  ],
+  "reused": [],
+  "reusedValidCalls": 0
+}

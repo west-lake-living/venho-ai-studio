@@ -1,5 +1,23 @@
 # VENHO AI STUDIO — Task Status
 
+### Candidate v3 Quality Remediation R1 — R1-P4-R4 recovery recheck (2026-09-01)
+
+- `R1-P4-R4 = PROVIDER_BLOCKED`; explicit `RECOVERY_RECHECK_AUTHORIZED` was
+  granted for one bounded recheck.
+- Gemini `gemini-flash-latest` returned `503 UNAVAILABLE` on both allowed
+  transport attempts for the first pending request (`FACE_LOCAL/B01`). The
+  runner stopped fail-closed before remaining samples.
+- Provider calls: `2`; successful: `0`; failed: `2`; `503: 2`; reused: `0`.
+  Input/output token counts were not returned by the failed provider calls.
+- `PROVIDER_HOLD` remains `ACTIVE`; `FACE_LOCAL = 0/9` valid and
+  `SCENARIO_GLOBAL = 0/9` valid, both remain `UNVALIDATED / PROVIDER_BLOCKED`.
+  `BOUNDARY = 9/9 PASS`.
+- No provider fallback, mock/synthetic result, GPU, promotion, validator,
+  threshold, authority, architecture, policy, workflow, or IdentityPack
+  change was made. No automatic retry task was created.
+- Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p4-r4-recovery-recheck-20260901T082722Z/`.
+
 ### Candidate v3 Quality Remediation R1 — R1-P4-R3 provider blocker hold (2026-09-01)
 
 - `R1-P4-R3 = CLOSED / PASS`; `PROVIDER_HOLD = ACTIVE` for authoritative

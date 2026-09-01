@@ -1,0 +1,32 @@
+{
+  "circuitBreaker": "ProviderCircuitBreaker opens fail-closed after one terminal retryable logical-sample failure; no in-run reset; a new resume invocation is the reset boundary",
+  "classification": "503/UNAVAILABLE -> PROVIDER_503; 429/RESOURCE_EXHAUSTED -> PROVIDER_429; timeout -> PROVIDER_TIMEOUT",
+  "existingRetry": {
+    "backoffSeconds": [
+      0.25
+    ],
+    "jitter": false,
+    "maxTransportAttemptsPerLogicalSample": 2,
+    "nonRetryable": [
+      "LOCAL_SCHEMA_BUILD_FAIL",
+      "LOCAL_REQUEST_SERIALIZATION_FAIL",
+      "PROVIDER_TRUNCATED_RESPONSE",
+      "PROVIDER_RESPONSE_SCHEMA_FAIL",
+      "AUTH_FAILURE",
+      "UNSUPPORTED_MODEL",
+      "MALFORMED_LOCAL_INPUT"
+    ],
+    "retryable": [
+      "PROVIDER_503",
+      "PROVIDER_429",
+      "PROVIDER_TIMEOUT"
+    ]
+  },
+  "model": "gemini-flash-latest",
+  "persistence": "append-only attempt-history plus execution-manifest after schema-valid response",
+  "provider": "gemini",
+  "remediation": "runner-only; provider adapter, rubric, thresholds, authority, architecture unchanged",
+  "requestIdempotency": "safe at logical-sample level; each retry is separately guarded/ledgered",
+  "resume": "completed response is reusable only when request/artifact/provider/model/validator/authority hashes and files verify",
+  "rootCause": "R1-P4 orchestration had hard-coded B01 reuse and no general checkpoint/reuse contract; Gemini 503 remains provider availability, not payload defect"
+}

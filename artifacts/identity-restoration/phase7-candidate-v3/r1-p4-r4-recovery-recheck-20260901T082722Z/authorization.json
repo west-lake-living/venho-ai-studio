@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "candidate-v3-r1-p4-r4-authorization-1.0",
+  "authorization": "RECOVERY_RECHECK_AUTHORIZED",
+  "authorized": true,
+  "scope": "one bounded authoritative Gemini recovery recheck",
+  "provider_hold_before": true,
+  "provider": "Gemini",
+  "model": "gemini-flash-latest",
+  "readiness_probe": false,
+  "automatic_retry": false
+}

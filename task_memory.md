@@ -1,5 +1,26 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-09-01 — Candidate v3 R1-P4-R4 recovery recheck blocked
+
+`Candidate v3 Quality Remediation R1 / R1-P4-R4 = PROVIDER_BLOCKED`.
+
+- Human authorization `RECOVERY_RECHECK_AUTHORIZED` was recorded and used for
+  exactly one bounded authoritative Gemini recheck. The hold was active before
+  and remains active after the recheck.
+- The first pending request, FACE_LOCAL B01, received two retryable
+  `503 UNAVAILABLE` responses. Provider calls `2`, successful `0`, failed `2`,
+  503 `2`, reused `0`; input/output tokens were unavailable.
+- Circuit breaker stopped execution before remaining samples. FACE_LOCAL and
+  SCENARIO_GLOBAL remain `0/9 valid` and `UNVALIDATED / PROVIDER_BLOCKED`;
+  BOUNDARY remains immutable `9/9 PASS`.
+- No fallback provider, mock/synthetic output, GPU, promotion, validator,
+  threshold, authority, architecture, policy, workflow, or IdentityPack
+  change occurred. No automatic retry task was started.
+- Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p4-r4-recovery-recheck-20260901T082722Z/`.
+
+Wait for a new explicit recovery authorization before any future recheck.
+
 ## 2026-09-01 — Candidate v3 R1-P4-R3 provider blocker hold
 
 `Candidate v3 Quality Remediation R1 / R1-P4-R3 = CLOSED / PASS`.
