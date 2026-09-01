@@ -1,5 +1,20 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-09-01 — Candidate v3 R1-P4-R2 provider availability recheck blocked
+
+`Candidate v3 Quality Remediation R1 / R1-P4-R2 = PROVIDER_BLOCKED`.
+
+- Gemini `gemini-flash-latest` remained correctly configured and authoritative.
+  The bounded recheck made two transport calls; both returned `503 UNAVAILABLE`
+  after the existing two-attempt retry policy.
+- No R1-P4 or R1-P4-R1 response met the complete request/artifact/validator/
+  authority lineage needed for reuse. No mock, synthetic, GPU, regeneration,
+  quality change, or provider fallback was used.
+- Execution stopped before both lanes: FACE_LOCAL `0/9`, SCENARIO_GLOBAL `0/9`;
+  BOUNDARY remains `9/9 PASS`.
+- Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p4-r2-provider-recheck-20260901T072511Z/`.
+
 ## 2026-09-01 — Candidate v3 R1-P4-R1 provider execution remediation blocked
 
 `Candidate v3 Quality Remediation R1 / R1-P4-R1 = PROVIDER_BLOCKED`.

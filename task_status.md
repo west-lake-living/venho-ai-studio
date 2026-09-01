@@ -1,5 +1,18 @@
 # VENHO AI STUDIO — Task Status
 
+### Candidate v3 Quality Remediation R1 — R1-P4-R2 provider availability recheck (2026-09-01)
+
+- `R1-P4-R2 = PROVIDER_BLOCKED`; Gemini `gemini-flash-latest` vẫn trả
+  `503 UNAVAILABLE` sau bounded retry.
+- Recheck thực hiện `2` provider calls, `0` success, `0` reusable response;
+  circuit breaker dừng fail-closed trước validation hai lane.
+- `FACE_LOCAL = 0/9`, `SCENARIO_GLOBAL = 0/9`, quality vẫn `UNKNOWN`;
+  `BOUNDARY = 9/9 PASS`.
+- Không code/config/validator/rubric/threshold/authority/workflow/IdentityPack
+  change; GPU, mock, synthetic, regeneration, promotion đều `0`.
+- Evidence mới:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p4-r2-provider-recheck-20260901T072511Z/`.
+
 ### Candidate v3 Quality Remediation R1 — R1-P4-R1 provider execution remediation (2026-09-01)
 
 - `R1-P4-R1 = PROVIDER_BLOCKED`; authoritative provider remained Gemini

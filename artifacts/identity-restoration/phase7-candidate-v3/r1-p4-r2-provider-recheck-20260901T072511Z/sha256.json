@@ -1,0 +1,18 @@
+{
+  "algorithm": "SHA-256",
+  "count": 12,
+  "files": {
+    "FACE_LOCAL.json": "38f66759c6243c07f2485f9938abe5b231711933ff577c1397a21d6ffc7495fe",
+    "SCENARIO_GLOBAL.json": "ee2fdb4f90ed97ff5a42d34d86efda56fed2d3268af6d570615a628922f0fd40",
+    "adapter-audit.json": "cf7100b47d5339c6c424e82191aa9ee0e3b5c4cba0c30b2b5c1623e5d8ba2dd3",
+    "attempt-history.jsonl": "a286ebfe18ab0d6c3e8eec78fca9eb47613067b7a46ee55c5fb357f692af9b46",
+    "checkpoint.json": "fd08ac4e5ed71dd5b97b92a3b4d361d5fa45a8042844ce7a9e3443abc8b0c407",
+    "execution-manifest.json": "c50e522c6a5e9593fcd5a1b804839bb47062afbde1b2d50bd96f0e23ff0ee91e",
+    "lineage-manifest.json": "8624b459af3f5013637cd6e5bf2f22f76ca43abd798b9c1e12e87ce3d7f87952",
+    "preflight.json": "2e2c94e4634e6f4d4fbb5cb98141d58f7ed5bb00a3c0b0a824a26e7562d67c50",
+    "provider-call-manifest.json": "43cf35c61b388bf075d0f4f4b63932db88fd6ba229866ef01ab2c1f91c243836",
+    "provider-paid-call-ledger.jsonl": "c6d5728a92aa525c821b879835c8002e96d2831ee3aa13bfdef929824b5a824d",
+    "reused-response-manifest.json": "6f73a1718cbd2f75a8c784255c9bf4194fcb58531298a2cb48fd39fe782f416d",
+    "root-cause-report.md": "b8be4f01ff72b067e6641820fa0d52b7d4d54fe398f77f90ca875a68802bb20d"
+  }
+}
