@@ -18,6 +18,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from shared.vision.provider_recovery_gate import ProviderRecoveryGate
+
 
 ROOT = Path(__file__).resolve().parents[1]
 PHASE7 = ROOT / "artifacts/identity-restoration/phase7-candidate-v3"
@@ -287,7 +289,9 @@ def main() -> int:
         print(json.dumps({"status": summary["recoveryRecheck"], "output": str(OUT), "providerCalls": summary["callAccounting"]["providerCalls"], "faceLocal": summary["faceLocal"]["valid"], "scenarioGlobal": summary["scenarioGlobal"]["valid"]}, ensure_ascii=False))
         return 2
 
-    runner.enforce_provider_hold_gate()
+    hold = json.loads(HOLD_GATE.read_text(encoding="utf-8"))
+    recovery_gate = ProviderRecoveryGate(hold, environment=os.environ)
+    recovery_gate.begin_recovery_probe()
     runner.load_env()
     os.environ["VALIDATOR_LIVE_ENABLED"] = "true"
     os.environ["VALIDATOR_MAX_NEW_CALLS"] = "36"
@@ -304,9 +308,28 @@ def main() -> int:
     write_json(OUT / "baseline.json", baseline(runner, preflight_report))
     write_json(OUT / "offline_preflight.json", {"status": "PASS", "report": preflight_report, "lineage": lineage})
     probe = run_probe(runner, preflight_report, lineage)
+    probe_evidence = {
+        "request_succeeded": probe.get("status") == "PASS",
+        "no_503": probe.get("classification") != "PROVIDER_503",
+        "no_timeout": probe.get("classification") != "PROVIDER_TIMEOUT",
+        "no_truncation": probe.get("classification") != "PROVIDER_TRUNCATED_RESPONSE",
+        "no_malformed_json": probe.get("classification") != "MALFORMED_JSON",
+        "no_unsupported_schema": probe.get("classification") != "LOCAL_SCHEMA_BUILD_FAIL",
+        "parsed_without_repair": probe.get("parseRepair") is False,
+        "required_fields_present": probe.get("schemaValid") is True,
+        "dto_schema_valid": probe.get("schemaValid") is True,
+        "raw_response_preserved": bool(probe.get("rawPath")),
+        "raw_response_hash_recorded": bool(probe.get("rawSha256")),
+        "lineage_complete": probe.get("lineageComplete") is True,
+        "authoritative_response": probe.get("status") == "PASS",
+        "quality_verdict": probe.get("qualityVerdict", "UNKNOWN"),
+    }
+    probe["gateAssessment"] = recovery_gate.complete_recovery_probe(probe_evidence).__dict__
+    # R1-P5 separates provider recovery from the 18 pending authoritative
+    # evaluations.  A successful probe may release the hold, but never starts
+    # FACE_LOCAL or SCENARIO_GLOBAL bulk execution in this task; a separate
+    # separate authoritative resume task required.
     runner_status: int | None = None
-    if probe.get("status") == "PASS":
-        runner_status = runner.run()
     summary = final_summary(probe, runner_status)
     write_json(OUT / "recovery_checkpoint.json", {
         **summary,

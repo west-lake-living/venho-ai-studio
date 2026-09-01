@@ -1,0 +1,11 @@
+{
+  "compileallExitCode": 0,
+  "credentialLoad": "not_performed",
+  "gitDiffCheckExitCode": 0,
+  "gpuJobs": 0,
+  "liveValidation": "not_enabled",
+  "nanoCalls": 0,
+  "providerCalls": 0,
+  "status": "PASS",
+  "testsExitCode": 0
+}

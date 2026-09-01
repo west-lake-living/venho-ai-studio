@@ -1,5 +1,34 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-09-01 — Candidate v3 R1-P5 provider recovery gate
+
+`Candidate v3 Quality Remediation R1 / R1-P5 = CLOSED / PASS` for
+control-plane hardening only.
+
+- Added the fail-closed `ProviderRecoveryGate` using the existing authoritative
+  provider-hold document. Its states are `ACTIVE`,
+  `RECOVERY_CHECK_AUTHORIZED`, `RECOVERY_PROBE_IN_PROGRESS`, and `RECOVERED`.
+- Recovery requires the strict human-controlled
+  `PROVIDER_RECOVERY_RECHECK_AUTHORIZED=TRUE` value. Missing, false,
+  malformed, or unknown authorization leaves `PROVIDER_HOLD = ACTIVE` and
+  `PROVIDER_CALLS = 0`; authorization is never inferred from task status,
+  retries, elapsed time, availability, test mode, or CLI invocation.
+- The gate permits at most one logical recovery probe, locks provider/model to
+  Gemini `gemini-flash-latest`, rejects fallback/model switching, and blocks
+  both FACE_LOCAL and SCENARIO_GLOBAL bulk execution. Recovery PASS requires
+  complete transport, parse, DTO/schema, raw-response hash, and lineage
+  evidence; a complete quality FAIL response is still valid provider recovery.
+- R1-P5 was executed offline with no probe: `28 passed`, compileall PASS,
+  `git diff --check` PASS, provider calls `0`, GPU `0`, Nano `0`. Hold remains
+  ACTIVE, FACE_LOCAL and SCENARIO_GLOBAL remain `0/9`, pending remains `18`,
+  BOUNDARY remains `9/9 PASS`, quality remains `UNVALIDATED`, feature flag is
+  OFF, and promotion is NO.
+- The prior recovery wrapper no longer chains a successful probe into bulk
+  evaluation. A separate authoritative resume task is required after a real
+  recovery transition.
+- Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p5-provider-recovery-gate-20260901T091815Z/`.
+
 ## 2026-09-01 — Candidate v3 R1 recovery recheck blocked
 
 `Candidate v3 Quality Remediation R1 / R1-RECOVERY-RECHECK = PROVIDER_BLOCKED`.

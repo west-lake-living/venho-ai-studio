@@ -25,9 +25,8 @@ def test_recovery_recheck_is_locked_to_the_existing_probe_and_provider() -> None
     source = SCRIPT.read_text(encoding="utf-8")
     assert '"FACE_LOCAL", "B01", 1' in source
     assert 'provider="gemini"' in source
-    assert "runner.run()" in source
-    assert 'probe.get("status") == "PASS"' in source
-    assert "PROVIDER_BLOCKED_PARTIAL" in source
+    assert "runner.run()" not in source
+    assert "separate authoritative resume task required" in source
 
 
 def test_recovery_recheck_has_no_generation_or_provider_switch_path() -> None:

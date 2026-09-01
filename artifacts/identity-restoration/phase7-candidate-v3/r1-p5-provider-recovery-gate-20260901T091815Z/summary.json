@@ -1,0 +1,47 @@
+{
+  "authorizationError": "PROVIDER_HOLD_ACTIVE: explicit PROVIDER_RECOVERY_RECHECK_AUTHORIZED=TRUE is required",
+  "authorizationResult": "ACTIVE",
+  "automaticFallbackCalls": 0,
+  "automaticModelSwitches": 0,
+  "boundary": {
+    "fail": 0,
+    "pass": 9
+  },
+  "faceLocal": {
+    "expected": 9,
+    "pending": 9,
+    "valid": 0
+  },
+  "featureFlag": "OFF",
+  "gpuJobs": 0,
+  "maxRecoveryProbeCalls": 1,
+  "nanoCalls": 0,
+  "pendingAuthoritativeEvaluations": 18,
+  "probeStarted": false,
+  "productionPromotion": "NO",
+  "providerCalls": 0,
+  "providerHold": "ACTIVE",
+  "qualityDisposition": "UNVALIDATED",
+  "scenarioGlobal": {
+    "expected": 9,
+    "pending": 9,
+    "valid": 0
+  },
+  "stateSnapshot": {
+    "authorization": {
+      "accepted": false,
+      "name": "PROVIDER_RECOVERY_RECHECK_AUTHORIZED",
+      "rawValuePresent": false
+    },
+    "bulkEvaluation": "BLOCKED_IN_R1_P5",
+    "maxRecoveryProbes": 1,
+    "model": "gemini-flash-latest",
+    "pendingAuthoritativeEvaluations": 18,
+    "probeCount": 0,
+    "provider": "Gemini",
+    "state": "ACTIVE",
+    "transitions": []
+  },
+  "status": "CLOSED / PASS",
+  "taskId": "candidate-v3-r1-p5-provider-recovery-gate"
+}

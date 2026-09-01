@@ -1,0 +1,18 @@
+{
+  "approvedModel": "gemini-flash-latest",
+  "approvedProvider": "Gemini",
+  "automaticFallback": false,
+  "automaticModelSwitch": false,
+  "bulkEvaluationInR1P5": "BLOCKED",
+  "gpuJobs": 0,
+  "maxRecoveryProbeCalls": 1,
+  "nanoCalls": 0,
+  "pendingEvaluationsPreserved": 18,
+  "schemaVersion": "candidate-v3-r1-p5-provider-recovery-gate-1.0",
+  "states": [
+    "ACTIVE",
+    "RECOVERY_CHECK_AUTHORIZED",
+    "RECOVERY_PROBE_IN_PROGRESS",
+    "RECOVERED"
+  ]
+}

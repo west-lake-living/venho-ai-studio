@@ -1,0 +1,8 @@
+{
+  "model": "gemini-flash-latest",
+  "nextAction": "NEW_EXPLICIT_AUTHORIZATION_REQUIRED_FOR_MINIMAL_PROBE",
+  "provider": "Gemini",
+  "providerCalls": 0,
+  "status": "HOLD_REMAINS_ACTIVE",
+  "transitions": []
+}

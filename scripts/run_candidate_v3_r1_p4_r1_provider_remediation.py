@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Any
 
 from dotenv import load_dotenv
+from shared.vision.provider_recovery_gate import ProviderRecoveryGate
 
 ROOT = Path(__file__).resolve().parents[1]
 P4 = ROOT / "artifacts/identity-restoration/phase7-candidate-v3/r1-p4-authoritative-validation-20260901-final"
@@ -91,6 +92,15 @@ def enforce_provider_hold_gate() -> None:
         "PROVIDER_HOLD_ACTIVE: explicit RECOVERY_RECHECK_AUTHORIZED is required "
         f"for {provider_hold.get('provider')}/{provider_hold.get('model')}"
     )
+
+
+def enforce_bulk_provider_hold_gate() -> None:
+    """Keep this historical bulk runner fail-closed under the R1-P5 gate."""
+    if not R1_P4_R3_HOLD_GATE.is_file():
+        raise RuntimeError("PROVIDER_HOLD_STATE_INVALID: authoritative hold document is missing")
+    hold = json.loads(R1_P4_R3_HOLD_GATE.read_text(encoding="utf-8"))
+    gate = ProviderRecoveryGate(hold, environment=os.environ)
+    gate.assert_bulk_evaluation_authorized("FACE_LOCAL/SCENARIO_GLOBAL")
 
 
 def job_payload(case_id: str) -> tuple[dict[str, Any], Path, Path, Path]:
@@ -290,7 +300,7 @@ def checkpoint(status: str, provider: dict[str, Any], face: list[dict[str, Any]]
 
 
 def run() -> int:
-    enforce_provider_hold_gate()
+    enforce_bulk_provider_hold_gate()
     load_env()
     os.environ["VALIDATOR_LIVE_ENABLED"] = "true"
     os.environ["VALIDATOR_MAX_NEW_CALLS"] = "36"

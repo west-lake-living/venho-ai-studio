@@ -1,0 +1,29 @@
+{
+  "boundary": {
+    "fail": 0,
+    "pass": 9
+  },
+  "capturedAt": "2026-09-01T09:18:15.097061+00:00",
+  "faceLocal": {
+    "disposition": "UNVALIDATED / PROVIDER_BLOCKED",
+    "expected": 9,
+    "valid": 0
+  },
+  "featureFlag": "OFF",
+  "pendingAuthoritativeEvaluations": 18,
+  "productionPromotion": "NO",
+  "providerHold": {
+    "active": true,
+    "model": "gemini-flash-latest",
+    "provider": "Gemini",
+    "reason": "REPEATED_PROVIDER_503",
+    "resume_requires_explicit_authorization": true
+  },
+  "qualityDisposition": "UNVALIDATED",
+  "scenarioGlobal": {
+    "disposition": "UNVALIDATED / PROVIDER_BLOCKED",
+    "expected": 9,
+    "valid": 0
+  },
+  "taskId": "candidate-v3-r1-p5-provider-recovery-gate"
+}

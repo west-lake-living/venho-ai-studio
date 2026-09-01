@@ -1,5 +1,28 @@
 # VENHO AI STUDIO — Task Status
 
+### Candidate v3 Quality Remediation R1 — R1-P5 Provider Recovery Gate (2026-09-01)
+
+- `R1-P5 = CLOSED / PASS` as a control-plane/state-machine hardening task;
+  no live provider probe or quality evaluation was authorized or executed.
+- The authoritative Gemini hold now has explicit states:
+  `ACTIVE -> RECOVERY_CHECK_AUTHORIZED -> RECOVERY_PROBE_IN_PROGRESS ->
+  RECOVERED`, with fail-closed transitions back to `ACTIVE` when recovery is
+  not proven.
+- Recovery requires strict human authorization
+  `PROVIDER_RECOVERY_RECHECK_AUTHORIZED=TRUE`; absent, `FALSE`, malformed, or
+  unknown values leave the hold active and permit `0` provider calls. The
+  recovery probe budget is exactly `1`; R1-P5 itself starts no probe.
+- ACTIVE hold blocks FACE_LOCAL, SCENARIO_GLOBAL, bulk execution, automatic
+  provider/model fallback, and Nano/GPU paths. A recovered hold still does not
+  authorize the 18 pending evaluations; those require a separate task and
+  explicit resume authorization.
+- Offline result: `28 passed`, compileall PASS, and `git diff --check` PASS.
+  `PROVIDER_CALLS = 0`, `FACE_LOCAL = 0/9`, `SCENARIO_GLOBAL = 0/9`,
+  `PENDING = 18`, `BOUNDARY = 9/9 PASS`, quality remains `UNVALIDATED`,
+  feature flag remains `OFF`, and production promotion remains `NO`.
+- Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p5-provider-recovery-gate-20260901T091815Z/`.
+
 ### Candidate v3 Quality Remediation R1 — R1-RECOVERY-RECHECK (2026-09-01)
 
 - `RECOVERY_RECHECK_AUTHORIZED = TRUE`; offline preflight passed before live
