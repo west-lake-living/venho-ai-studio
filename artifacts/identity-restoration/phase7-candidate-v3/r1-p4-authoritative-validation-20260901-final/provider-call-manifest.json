@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "candidate-v3-r1-p4-final-provider-call-manifest-1.0",
+  "provider": "gemini",
+  "model": "gemini-flash-latest",
+  "calls": 4,
+  "successfulCalls": 1,
+  "failedCalls": 3,
+  "logicalSamplesCompleted": 1,
+  "inputTokens": 5254,
+  "outputTokens": 340,
+  "estimatedCost": null,
+  "failures": [
+    {"classification":"PROVIDER_503","count":3,"message":"Gemini model currently experiencing high demand; 503 UNAVAILABLE."},
+    {"classification":"HARNESS_EVIDENCE_CONFLICT","count":1,"message":"First attempt raw sink compared a stored newline as a different response; no quality result was accepted."}
+  ],
+  "retryPolicy": {"maxTransportAttemptsPerLogicalSample": 2,"retryable":["PROVIDER_503","PROVIDER_429","PROVIDER_TIMEOUT"]},
+  "gpuCalls": 0,
+  "mockCalls": 0,
+  "syntheticResults": 0,
+  "promotions": 0,
+  "sourceLedgers": [
+    "../r1-p4-authoritative-validation-20260901/provider-paid-call-ledger.jsonl",
+    "../r1-p4-authoritative-validation-20260901-r2/provider-paid-call-ledger.jsonl"
+  ]
+}

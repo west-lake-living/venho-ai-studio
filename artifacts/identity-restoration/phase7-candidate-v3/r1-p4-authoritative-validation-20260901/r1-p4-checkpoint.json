@@ -1,0 +1,48 @@
+{
+  "architecture_changed": false,
+  "boundary": {
+    "fail": 0,
+    "pass": 9
+  },
+  "face_local": {
+    "disposition": "PROVIDER_BLOCKED",
+    "evaluated": 0,
+    "expected": 9,
+    "quality_fail": null,
+    "quality_pass": null,
+    "valid": 0
+  },
+  "failure": {
+    "classification": "PROVIDER_BLOCKED",
+    "error": "IMMUTABLE_RAW_EVIDENCE_CONFLICT: /Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/phase7-candidate-v3/r1-p4-authoritative-validation-20260901/raw-provider/FACE_LOCAL/B01/sample-1.txt",
+    "lane": "FACE_LOCAL",
+    "sampleId": "B01"
+  },
+  "gpu_calls": 0,
+  "identity_pack_changed": false,
+  "policy_changed": false,
+  "production_promotion": false,
+  "provider": {
+    "calls": 2,
+    "estimated_cost": null,
+    "failed_calls": 1,
+    "input_tokens": 5254,
+    "model": "gemini-flash-latest",
+    "name": "gemini",
+    "output_tokens": 340,
+    "successful_calls": 1
+  },
+  "provider_calls": 2,
+  "roadmap": "candidate_v3_quality_remediation_r1",
+  "scenario_global": {
+    "disposition": "PROVIDER_BLOCKED",
+    "evaluated": 0,
+    "expected": 9,
+    "quality_fail": null,
+    "quality_pass": null,
+    "valid": 0
+  },
+  "status": "PROVIDER_BLOCKED",
+  "task": "r1_p4_authoritative_provider_validation",
+  "workflow_changed": false
+}

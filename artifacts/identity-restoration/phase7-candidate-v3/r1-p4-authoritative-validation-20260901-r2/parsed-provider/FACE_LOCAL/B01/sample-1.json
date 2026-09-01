@@ -1,0 +1,33 @@
+{
+  "gates": [
+    {
+      "evidence": "Candidate exhibits the same soft elongated oval face, delicate chin, natural bridge width, and subtle lip corner uplift as seen in Reference A2.",
+      "gate": "identity_structure",
+      "passed": true,
+      "reason": "Face shape, cheek fullness, nose bridge, jawline, and lip contours strongly align with the reference identity."
+    },
+    {
+      "evidence": "Horizontal almond eye shape with warm brown irises and thin upper eyelid definition matches reference proportions.",
+      "gate": "eye_ratio",
+      "passed": true,
+      "reason": "Eye shape and spacing match approved character design."
+    },
+    {
+      "evidence": "Skin retains realistic texture without doll-like plasticity, natural asymmetry is present, no heavy makeup, glasses, or tattoos.",
+      "gate": "forbidden_traits",
+      "passed": true,
+      "reason": "No forbidden traits detected."
+    }
+  ],
+  "notes": [
+    "Candidate shows high photographic detail and fidelity to the reference facial identity.",
+    "Hairstyle and background variations are correctly handled as independent variables."
+  ],
+  "weighted_scores": {
+    "eyes_and_brows": 89.0,
+    "facial_shape": 92.0,
+    "mouth_and_chin": 93.0,
+    "nose": 90.0,
+    "technical_quality": 95.0
+  }
+}

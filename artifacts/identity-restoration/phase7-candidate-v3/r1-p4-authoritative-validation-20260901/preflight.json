@@ -1,0 +1,43 @@
+{
+  "adapter": "VisionClient -> GeminiVisionProvider",
+  "credentials": "configured",
+  "gpuCalls": 0,
+  "grounding": false,
+  "httpReadinessProbe": "not_performed",
+  "lineageVerified": true,
+  "model": "gemini-flash-latest",
+  "outputCap": 8192,
+  "provider": "gemini",
+  "retry": {
+    "maxTransportAttemptsPerLogicalSample": 2,
+    "retryable": [
+      "PROVIDER_503",
+      "PROVIDER_429",
+      "PROVIDER_TIMEOUT"
+    ]
+  },
+  "samples": {
+    "faceLocalPerCase": 3,
+    "logicalSamplesPlanned": 36,
+    "scenarioGlobalPerCase": 1
+  },
+  "schemaVersion": "candidate-v3-r1-p4-preflight-1.0",
+  "schemas": {
+    "faceObservation": {
+      "id": "FaceValidationObservation",
+      "sha256": "7ed87aad43c4db1dd3853a642ee36eaec0df63cbba372dbb3a14aef7f43bd142"
+    },
+    "scenarioObservation": {
+      "id": "ImageObservation",
+      "sha256": "d4c2de9ae73a024bd77f077699a1c95a19d20b4becfd4b7d58bd379b6b73102f"
+    }
+  },
+  "status": "PASS",
+  "temperature": 0.0,
+  "thresholdsChanged": false,
+  "validatorBypassed": false,
+  "validatorEntrypoints": {
+    "faceLocal": "validator_studio.face_validator.validate_face",
+    "scenarioGlobal": "validator_studio.image_validator.validate_image"
+  }
+}

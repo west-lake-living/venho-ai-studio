@@ -1,0 +1,10 @@
+{
+  "scope": "BOUNDARY",
+  "status": "PASS",
+  "pass": 9,
+  "fail": 0,
+  "source": "R1-P1 derived evidence re-evaluated without implementation change",
+  "thresholdChanged": false,
+  "gpuCalls": 0,
+  "providerCalls": 0
+}

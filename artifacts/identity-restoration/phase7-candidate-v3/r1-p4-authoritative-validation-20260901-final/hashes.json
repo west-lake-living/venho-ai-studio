@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "candidate-v3-r1-p4-final-sha256-manifest-1.0",
+  "files": {
+    "FACE_LOCAL.json": "3405cbde8d41293b57f83469485906507f999d4588f0bac844f8c2561cea1750",
+    "SCENARIO_GLOBAL.json": "cfe190de442a78975db67b4c1e4281e3dc534a748d498d0c7ba6be88aa2450d1",
+    "boundary-regression.json": "f51b24fe8991324df8d0113a6b9f844c1b1506f31c0eee166acded521efc59b2",
+    "lineage-manifest.json": "a18658eea47783b51af6e0b66c814d1d8228c76f34c53df29d1215f0ed85cdd4",
+    "preflight.json": "bb31efa1d9040ee5abc4ec12647a0e25d6328031db8a6b3b13c600c26ba98d19",
+    "provider-call-manifest.json": "731f6045c198faf68b0f9a21c6e94f29f07dd4c2cb0302d14bc12d1f9c8a9d2e",
+    "r1-p4-checkpoint.json": "2462aef21b08c214e1e438050828b37b9076078add31a70cf30e4f59c34e0251",
+    "raw-evidence-index.json": "eb1f4cba32944734f6e699d61710d25e4d34bda988ed64011b0c334230a76608",
+    "root-cause-report.md": "dfb195534169cc941ff877560424474cc124fe359552be0d702cfa292bee153c",
+    "parsed-provider/FACE_LOCAL/B01/sample-1.json": "6ae348f882d32f2b6939935c8aaed69e6a5bd8f00da23ac0f7cfba62131c3281"
+  },
+  "selfExcluded": true,
+  "note": "aggregate.json is intentionally absent because provider-blocked execution produced no aggregate quality report."
+}

@@ -1,0 +1,27 @@
+{
+  "calls": 2,
+  "estimatedCost": null,
+  "failedCalls": 1,
+  "failure": {
+    "classification": "PROVIDER_BLOCKED",
+    "error": "IMMUTABLE_RAW_EVIDENCE_CONFLICT: /Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/phase7-candidate-v3/r1-p4-authoritative-validation-20260901/raw-provider/FACE_LOCAL/B01/sample-1.txt",
+    "lane": "FACE_LOCAL",
+    "sampleId": "B01"
+  },
+  "inputTokens": 5254,
+  "ledger": "artifacts/identity-restoration/phase7-candidate-v3/r1-p4-authoritative-validation-20260901/provider-paid-call-ledger.jsonl",
+  "logicalSamples": 0,
+  "model": "gemini-flash-latest",
+  "outputTokens": 340,
+  "provider": "gemini",
+  "retryPolicy": {
+    "maxTransportAttemptsPerLogicalSample": 2,
+    "retryable": [
+      "PROVIDER_503",
+      "PROVIDER_429",
+      "PROVIDER_TIMEOUT"
+    ]
+  },
+  "schemaVersion": "candidate-v3-r1-p4-provider-calls-1.0",
+  "successfulCalls": 1
+}

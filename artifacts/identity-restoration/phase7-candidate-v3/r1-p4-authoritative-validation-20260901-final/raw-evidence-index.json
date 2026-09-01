@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "candidate-v3-r1-p4-raw-evidence-index-1.0",
+  "immutable": true,
+  "rawProviderEvidence": [
+    {
+      "lane": "FACE_LOCAL",
+      "sampleId": "B01",
+      "sample": 1,
+      "source": "../r1-p4-authoritative-validation-20260901/raw-provider/FACE_LOCAL/B01/sample-1.txt",
+      "parsedEvidencePath": "parsed-provider/FACE_LOCAL/B01/sample-1.json",
+      "rawResponseSha256": "6da4023f6589d25ab685f3f4264d4c11d7f91a62013bc638c916db7861e1df4e",
+      "parsedResultSha256": "adcf2fa8af5c2b15ce0a3e5f2994f711a10229df226fe31391fac9ff7f1e39ac",
+      "provider": "gemini",
+      "model": "gemini-flash-latest",
+      "artifactSha256": "d542bef4f5017db175948f2e532414bbad1a6e4d2384a4d43439713bf7d39450",
+      "validAtomicObservation": true,
+      "caseEvaluationComplete": false
+    }
+  ],
+  "otherProviderAttempts": "B01 FACE_LOCAL sample 1 retried once with 503; subsequent R2 retry also received 503 after the existing two-attempt policy.",
+  "completeLaneResults": false
+}

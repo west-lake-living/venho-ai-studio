@@ -1,5 +1,28 @@
 # VENHO AI STUDIO — Task Status
 
+### Candidate v3 Quality Remediation R1 — R1-P4 status (2026-09-01)
+
+- `Candidate v3 Quality Remediation R1`
+- `R1-P0 = CLOSED / PASS`
+- `R1-P1 = CLOSED / PASS`
+- `R1-P2 = BLOCKED`
+- `R1-P3 = BLOCKED`
+- `R1-P4 = PROVIDER_BLOCKED`
+- Preflight identified the existing authoritative path as `gemini` with
+  `gemini-flash-latest`, using `VisionClient -> GeminiVisionProvider`,
+  `validate_face`, and `validate_image`. All nine B01–B09 artifact lineages
+  passed before provider execution.
+- Provider execution stopped fail-closed after Gemini returned `503
+  UNAVAILABLE` through the existing two-attempt retry policy. Across the
+  two execution attempts there were `4` transport calls, `1` successful
+  response, and `3` failed responses. Only one atomic FACE_LOCAL observation
+  was valid; neither lane reached a complete 9-case evaluation.
+- No mock/synthetic result, GPU/ComfyUI call, regeneration, threshold,
+  authority, workflow, IdentityPack, or production change was made.
+- BOUNDARY regression remains `PASS 9/9`; FACE_LOCAL and SCENARIO_GLOBAL
+  remain provider-blocked. Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p4-authoritative-validation-20260901-final/`.
+
 ### Candidate v3 Quality Remediation R1 — R1-P3 status (2026-08-30)
 
 - `Candidate v3 Quality Remediation R1`

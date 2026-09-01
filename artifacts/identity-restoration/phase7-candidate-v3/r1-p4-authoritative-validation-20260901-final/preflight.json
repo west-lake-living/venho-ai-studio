@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "candidate-v3-r1-p4-final-preflight-1.0",
+  "status": "PASS",
+  "authoritativeProvider": "gemini",
+  "model": "gemini-flash-latest",
+  "adapter": "VisionClient -> GeminiVisionProvider",
+  "faceValidator": "validator_studio.face_validator.validate_face",
+  "scenarioValidator": "validator_studio.image_validator.validate_image",
+  "faceSamplesPerCase": 3,
+  "scenarioSamplesPerCase": 1,
+  "maxTransportAttemptsPerLogicalSample": 2,
+  "maxOutputTokens": 8192,
+  "temperature": 0.0,
+  "grounding": false,
+  "credentials": "configured",
+  "lineage": "9/9 VERIFIED",
+  "httpReadinessProbe": "not_performed",
+  "providerConfigSource": ["config/settings.yaml", ".env.local"],
+  "mockCalls": 0,
+  "syntheticResults": 0,
+  "gpuCalls": 0
+}

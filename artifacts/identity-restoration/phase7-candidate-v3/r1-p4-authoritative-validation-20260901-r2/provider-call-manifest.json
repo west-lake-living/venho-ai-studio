@@ -1,0 +1,27 @@
+{
+  "calls": 2,
+  "estimatedCost": null,
+  "failedCalls": 2,
+  "failure": {
+    "classification": "PROVIDER_BLOCKED",
+    "error": "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
+    "lane": "FACE_LOCAL",
+    "sampleId": "B01"
+  },
+  "inputTokens": 0,
+  "ledger": "artifacts/identity-restoration/phase7-candidate-v3/r1-p4-authoritative-validation-20260901-r2/provider-paid-call-ledger.jsonl",
+  "logicalSamples": 0,
+  "model": "gemini-flash-latest",
+  "outputTokens": 0,
+  "provider": "gemini",
+  "retryPolicy": {
+    "maxTransportAttemptsPerLogicalSample": 2,
+    "retryable": [
+      "PROVIDER_503",
+      "PROVIDER_429",
+      "PROVIDER_TIMEOUT"
+    ]
+  },
+  "schemaVersion": "candidate-v3-r1-p4-provider-calls-1.0",
+  "successfulCalls": 0
+}

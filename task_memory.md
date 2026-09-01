@@ -1,5 +1,29 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-09-01 — Candidate v3 R1-P4 authoritative provider validation blocked
+
+`Candidate v3 Quality Remediation R1 / R1-P4 = PROVIDER_BLOCKED`.
+
+- Existing project config selected one provider only: Gemini with model
+  `gemini-flash-latest`; the existing adapter/retry/schema path passed
+  preflight and all nine B01–B09 artifact lineages were verified.
+- The first B01 FACE_LOCAL sample had one valid provider response after a
+  503 retry. The first attempt's evidence harness had a newline comparison
+  defect, which was corrected without changing validator semantics. A second
+  attempt then received 503 on both retry attempts. The batch stopped
+  fail-closed before remaining FACE_LOCAL samples or any SCENARIO_GLOBAL
+  call.
+- Total R1-P4 provider transports: 4; successful: 1; failed: 3. Complete
+  valid case evaluations: FACE_LOCAL 0/9, SCENARIO_GLOBAL 0/9. No provider
+  failure was converted to a quality failure.
+- BOUNDARY remains 9/9 PASS. GPU calls, mock calls, synthetic results,
+  regeneration, promotion, threshold changes, and policy/authority/workflow/
+  IdentityPack changes: 0/NO.
+- Final evidence is under
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p4-authoritative-validation-20260901-final/`.
+
+Do not start a quality remediation task until provider execution is available.
+
 ## 2026-08-30 — Candidate v3 R1-P3 SCENARIO_GLOBAL validation blocked
 
 `Candidate v3 Quality Remediation R1 / R1-P3 = BLOCKED`.

@@ -1,0 +1,11 @@
+{
+  "scope": "SCENARIO_GLOBAL",
+  "status": "PROVIDER_BLOCKED",
+  "expected": 9,
+  "evaluated": 0,
+  "valid": 0,
+  "qualityPass": null,
+  "qualityFail": null,
+  "rootFailures": ["PROVIDER_503", "PROVIDER_BLOCKED_BEFORE_SCENARIO_EXECUTION"],
+  "sourceAttemptDirectories": ["../r1-p4-authoritative-validation-20260901", "../r1-p4-authoritative-validation-20260901-r2"]
+}

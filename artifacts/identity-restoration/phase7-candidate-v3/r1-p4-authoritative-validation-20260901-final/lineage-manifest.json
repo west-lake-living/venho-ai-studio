@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "candidate-v3-r1-p4-final-lineage-index-1.0",
+  "status": "VERIFIED",
+  "source": "../r1-p4-authoritative-validation-20260901-r2/lineage-manifest.json",
+  "verifiedCases": 9,
+  "candidateArtifactHashesVerified": 9,
+  "workflowSha256": "53dc090691b8feac2a8b8a4309d43af737e304b09330e072b4ab5632ed5aad91",
+  "identityPackId": "linh-an-production-v3-2026-08",
+  "identityPackSha256": "fc185a9e47a33092fbafe357a140b65f9449bac0de28d7e20b9f33d8ddcbb406",
+  "referenceArtifactsVerified": 1,
+  "b03_b04_authority": "action_full_body@1.0; exclusions=shot_distance,hairstyle",
+  "default_authority": "canonical_default; exclusions=none",
+  "b10": "excluded: BASE_REGEN_REQUIRED before Phase 7 candidate artifact"
+}

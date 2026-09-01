@@ -1,0 +1,17 @@
+{
+  "roadmap": "candidate_v3_quality_remediation_r1",
+  "task": "r1_p4_authoritative_provider_validation",
+  "status": "PROVIDER_BLOCKED",
+  "gpu_calls": 0,
+  "provider_calls": 4,
+  "boundary": {"pass": 9,"fail": 0},
+  "face_local": {"expected": 9,"evaluated": 0,"valid": 0,"quality_pass": null,"quality_fail": null,"disposition":"PROVIDER_BLOCKED"},
+  "scenario_global": {"expected": 9,"evaluated": 0,"valid": 0,"quality_pass": null,"quality_fail": null,"disposition":"PROVIDER_BLOCKED"},
+  "provider": {"name":"gemini","model":"gemini-flash-latest","calls":4,"successful_calls":1,"failed_calls":3,"input_tokens":5254,"output_tokens":340,"estimated_cost":null},
+  "blocker": "PROVIDER_503 after the existing two-attempt retry policy; provider could not produce complete authoritative results for 9 cases.",
+  "architecture_changed": false,
+  "policy_changed": false,
+  "workflow_changed": false,
+  "identity_pack_changed": false,
+  "production_promotion": false
+}
