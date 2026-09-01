@@ -1,5 +1,34 @@
 # VENHO AI STUDIO — Task Status
 
+### Candidate v3 Quality Remediation R1 — R1-P5-R2 Provider Recovery Recheck (2026-09-01)
+
+- `R1-P5-R2-PROVIDER-RECOVERY-RECHECK = CLOSED / PROVIDER_BLOCKED`; explicit
+  `PROVIDER_RECOVERY_RECHECK_AUTHORIZED=TRUE` was recorded against the
+  authoritative start state: `R1-P5 = CLOSED / PASS`, `R1-P5-R1 = CLOSED /
+  PROVIDER_BLOCKED`, and `PROVIDER_HOLD = ACTIVE`.
+- Offline preflight passed before live execution: the existing R1-P5 gate and
+  provider recovery tests recorded `36 passed`, compileall PASS, and
+  `git diff --check` PASS. The R2 harness regression suite also passed `38`
+  focused tests in total.
+- Exactly one live Gemini `gemini-flash-latest` probe ran on the existing
+  authoritative `FACE_LOCAL/B01/sample-1` fixture. Transport attempts `1`,
+  retries `0`, provider calls `1`; Gemini returned `503 UNAVAILABLE`. No
+  complete response, raw response, or parsed response was produced.
+- Recovery was not proven: `RECOVERY_PROBE = PROVIDER_BLOCKED`,
+  `PROVIDER_RECOVERY_STATUS = PROVIDER_BLOCKED`, and `PROVIDER_HOLD = ACTIVE`.
+  No FACE_LOCAL or SCENARIO_GLOBAL batch ran; `FACE_LOCAL = 0/9`,
+  `SCENARIO_GLOBAL = 0/9`, `PENDING = 18`, `BOUNDARY = 9/9 PASS`, and quality
+  remains `UNVALIDATED`.
+- GPU jobs `0`, Nano calls `0`, alternative-provider calls `0`; no provider or
+  model switch, fallback, retry, generation, architecture, feature-flag, or
+  promotion change occurred. Candidate v3 remains `OFF`; promotion remains
+  `NO`.
+- Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p5-r2-provider-recovery-recheck-20260901T104029Z/`.
+
+Keep the provider hold active; a new explicit authorization is required for
+any future recovery probe.
+
 ### Candidate v3 Quality Remediation R1 — R1-P5-R1 Provider Recovery Probe (2026-09-01)
 
 - `R1-P5-R1-PROVIDER-RECOVERY-PROBE = PROVIDER_BLOCKED`; explicit

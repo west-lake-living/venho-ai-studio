@@ -1,5 +1,36 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-09-01 — Candidate v3 R1-P5-R2 provider recovery recheck blocked
+
+`Candidate v3 Quality Remediation R1 / R1-P5-R2-PROVIDER-RECOVERY-RECHECK =
+CLOSED / PROVIDER_BLOCKED`.
+
+- Explicit human authorization `PROVIDER_RECOVERY_RECHECK_AUTHORIZED=TRUE`
+  was used. The authoritative start state was verified as R1-P5 PASS,
+  R1-P5-R1 provider-blocked, provider hold ACTIVE, boundary 9/9 PASS, and 18
+  pending authoritative evaluations.
+- Offline preflight passed before execution: the existing R1-P5 gate/recovery
+  focused tests recorded `36 passed`, compileall PASS, and `git diff --check`
+  PASS; the R2 harness suite recorded `38 passed` including its regression
+  checks.
+- Exactly one live probe ran against Gemini `gemini-flash-latest` using the
+  existing authoritative `FACE_LOCAL/B01/sample-1` fixture. The transport cap
+  was one attempt, so provider calls `1`, retries `0`; Gemini returned `503
+  UNAVAILABLE`. No raw or parsed response exists because the provider failed
+  before response generation.
+- Recovery gate returned to ACTIVE after
+  `ACTIVE -> RECOVERY_CHECK_AUTHORIZED -> RECOVERY_PROBE_IN_PROGRESS`; no
+  recovery, quality verdict, bulk evaluation, second probe, fallback, model
+  switch, GPU, Nano, generation, or promotion occurred.
+- State integrity remains: `FACE_LOCAL = 0/9`, `SCENARIO_GLOBAL = 0/9`,
+  `PENDING = 18`, `BOUNDARY = 9/9 PASS`, quality `UNVALIDATED`, feature flag
+  `OFF`, promotion `NO`, architecture unchanged.
+- Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p5-r2-provider-recovery-recheck-20260901T104029Z/`.
+
+Keep the provider hold active; require new explicit authorization before any
+future recovery probe.
+
 ## 2026-09-01 — Candidate v3 R1-P5-R1 provider recovery probe blocked
 
 `Candidate v3 Quality Remediation R1 / R1-P5-R1-PROVIDER-RECOVERY-PROBE =

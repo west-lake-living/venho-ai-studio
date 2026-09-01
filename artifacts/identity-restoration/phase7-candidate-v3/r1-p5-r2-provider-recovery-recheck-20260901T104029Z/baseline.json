@@ -1,0 +1,27 @@
+{
+  "architectureChanged": false,
+  "authorization": {
+    "name": "PROVIDER_RECOVERY_RECHECK_AUTHORIZED",
+    "receivedValue": null,
+    "requiredValue": "TRUE"
+  },
+  "boundary": {
+    "fail": 0,
+    "pass": 9
+  },
+  "faceLocal": {
+    "expected": 9,
+    "valid": 0
+  },
+  "featureFlag": "OFF",
+  "model": "gemini-flash-latest",
+  "pendingAuthoritativeEvaluations": 18,
+  "productionPromotion": "NO",
+  "provider": "Gemini",
+  "providerHold": "ACTIVE",
+  "scenarioGlobal": {
+    "expected": 9,
+    "valid": 0
+  },
+  "taskId": "R1-P5-R2-PROVIDER-RECOVERY-RECHECK"
+}
