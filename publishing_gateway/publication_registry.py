@@ -12,7 +12,10 @@ TERMINAL_STATUSES = {"PUBLISHED", "FAILED", "NEEDS_OPERATOR"}
 # A rejected/stale draft is intentionally replaceable in the same cadence
 # slot. Every other state, including PUBLISHED and GATEWAY_ERROR, owns its
 # `(slot_id, platform)` and must not be duplicated by a retry or a second run.
-REPLACEABLE_SLOT_STATUSES = {"REJECTED", "STALE_APPROVAL", "FAILED"}
+# CANCELLED belongs here too: a cancelled row has explicitly given its slot
+# up, so continuing to treat it as the owner would block the replacement that
+# cancelling it was meant to make room for.
+REPLACEABLE_SLOT_STATUSES = {"REJECTED", "STALE_APPROVAL", "FAILED", "CANCELLED"}
 
 
 class PublicationRegistry:
@@ -138,7 +141,7 @@ class PublicationRegistry:
                     # check when the update would leave this row in a status
                     # that still owns the slot (matches _active_slot_platform's
                     # own "not in REPLACEABLE_SLOT_STATUSES" ownership test).
-                    if slot_id and platform and resulting_status not in REPLACEABLE_SLOT_STATUSES | {"CANCELLED"}:
+                    if slot_id and platform and resulting_status not in REPLACEABLE_SLOT_STATUSES:
                         existing = self._active_slot_platform(
                             data["publications"], slot_id=slot_id, platform=platform,
                             exclude_publication_id=publication_id,

@@ -3,6 +3,7 @@ from __future__ import annotations
 from datetime import date, datetime
 from zoneinfo import ZoneInfo
 from pathlib import Path
+import json
 
 import pytest
 
@@ -937,3 +938,119 @@ def test_platform_rejection_lands_on_gateway_error_not_a_false_accept(tmp_path: 
     assert result["status"] == "GATEWAY_ERROR"
     assert "36003" in result["gateway_error"]
     assert [row["publication_id"] for row in list_pending(project="venho_hotel", data_root=tmp_path, registry=registry)] == [publication_id]
+
+
+def _seed_duplicate_slot_rows(tmp_path: Path, *, second_status: str, second_gateway_status: str | None = None) -> Path:
+    """Write two rows sharing one (slot_id, platform) straight to disk.
+
+    reserve()/update() both refuse to create this state now, but production
+    carries rows from before that guard existed -- which is exactly the state
+    that made the scheduler publish twice into one slot.
+    """
+    path = tmp_path / "venho_hotel" / "publishing" / "publication_registry.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    rows = []
+    for index, status in enumerate(("APPROVED_SCHEDULED", second_status), start=1):
+        rows.append({
+            "publication_id": f"pub-monday-facebook-dup{index}",
+            "content_package_id": f"pkg-{index}",
+            "idempotency_key": f"idem-{index}",
+            "platform": "facebook",
+            "slot_id": "slot-2026-08-10-monday",
+            "status": status,
+            "gateway_status": second_gateway_status if index == 2 else None,
+            "platform_post_id": None,
+            "permalink": None,
+            "content": {"text": "hello"},
+            "approved_by": "harry",
+            "created_at": "2026-08-01T00:00:00+00:00",
+            "updated_at": "2026-08-01T00:00:00+00:00",
+        })
+    path.write_text(json.dumps({"publications": rows}, ensure_ascii=False, indent=2), encoding="utf-8")
+    return path
+
+
+def _recording_bridge() -> tuple[M07PublishingBridge, list]:
+    calls: list = []
+    make_adapter = MakeGatewayAdapter(enabled=True)
+    make_adapter.send = lambda command: calls.append(command) or {"status": "GATEWAY_ACCEPTED", "published": False}
+    return M07PublishingBridge(make_adapter=make_adapter, zalo_adapter=ZaloOAAdapter(enabled=True)), calls
+
+
+def test_scheduler_publishes_one_slot_once_when_two_approved_rows_share_it(tmp_path: Path) -> None:
+    """Two due rows on one slot/platform must not become two real posts.
+
+    Reproduces 2026-08-15 on Instagram (two posts 12 seconds apart) and the
+    same shape on Facebook 2026-08-17 / 2026-08-26: claim() only serialises
+    concurrent ticks against a single row, so both siblings sailed through.
+    """
+    _past_shadow(tmp_path)
+    _seed_duplicate_slot_rows(tmp_path, second_status="APPROVED_SCHEDULED")
+    registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
+    bridge, calls = _recording_bridge()
+
+    results = dispatch_due(
+        project="venho_hotel",
+        data_root=tmp_path,
+        registry=registry,
+        bridge=bridge,
+        now=datetime(2026, 8, 10, 9, 0, tzinfo=ZoneInfo("Asia/Ho_Chi_Minh")),
+    )
+
+    assert [call["publication_id"] for call in calls] == ["pub-monday-facebook-dup1"]
+    assert [result["publication_id"] for result in results] == ["pub-monday-facebook-dup1"]
+    assert registry.find("pub-monday-facebook-dup2")["status"] == "CANCELLED"
+
+
+def test_scheduler_skips_a_row_whose_slot_already_reached_the_gateway(tmp_path: Path) -> None:
+    """A GATEWAY_ERROR sibling still consumed the slot's real post.
+
+    The Make.com receipt-mapping failures record GATEWAY_ERROR even though
+    Facebook did publish, so re-dispatching the leftover row would duplicate
+    a post that is already live.
+    """
+    _past_shadow(tmp_path)
+    _seed_duplicate_slot_rows(tmp_path, second_status="GATEWAY_ERROR", second_gateway_status="GATEWAY_ERROR")
+    registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
+    bridge, calls = _recording_bridge()
+
+    results = dispatch_due(
+        project="venho_hotel",
+        data_root=tmp_path,
+        registry=registry,
+        bridge=bridge,
+        now=datetime(2026, 8, 10, 9, 0, tzinfo=ZoneInfo("Asia/Ho_Chi_Minh")),
+    )
+
+    assert calls == []
+    assert results == []
+    assert registry.find("pub-monday-facebook-dup1")["status"] == "CANCELLED"
+
+
+def test_scheduler_still_retries_a_row_that_never_reached_the_gateway(tmp_path: Path) -> None:
+    """MISSED_DISPATCH_WINDOW is written before any gateway call.
+
+    That slot is therefore NOT spent, and the catch-up path must still work --
+    the duplicate guard must not swallow legitimate recovery.
+    """
+    _past_shadow(tmp_path)
+    path = _seed_duplicate_slot_rows(
+        tmp_path, second_status="GATEWAY_ERROR", second_gateway_status="MISSED_DISPATCH_WINDOW"
+    )
+    data = json.loads(path.read_text(encoding="utf-8"))
+    data["publications"] = [data["publications"][1]]  # only the missed-window row
+    path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+    registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
+    bridge, calls = _recording_bridge()
+
+    results = dispatch_due(
+        project="venho_hotel",
+        data_root=tmp_path,
+        registry=registry,
+        bridge=bridge,
+        now=datetime(2026, 8, 10, 9, 20, tzinfo=ZoneInfo("Asia/Ho_Chi_Minh")),
+        catch_up_today=True,
+    )
+
+    assert [call["publication_id"] for call in calls] == ["pub-monday-facebook-dup2"]
+    assert len(results) == 1
