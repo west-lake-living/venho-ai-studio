@@ -1,58 +1,22 @@
 {
-  "generated_at": "2026-08-30T01:09:53.245392",
+  "generated_at": "2026-09-01T01:43:40.810308",
   "signals": [
-    {
-      "rs_id": "RS-weather-2026-08-30",
-      "type": "weather",
-      "domain": "weather_signal",
-      "evidence_level": "R2-T",
-      "forecast_date": "2026-08-30",
-      "condition": "rain",
-      "temperature_range": [
-        26.5,
-        33.7
-      ],
-      "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
-      "matching_scenario_keys": [
-        "venho_lobby_cozy"
-      ],
-      "expires_at": "2026-09-01T01:09:53.240393",
-      "fact_key": null
-    },
-    {
-      "rs_id": "RS-weather-2026-08-31",
-      "type": "weather",
-      "domain": "weather_signal",
-      "evidence_level": "R2-T",
-      "forecast_date": "2026-08-31",
-      "condition": "rain",
-      "temperature_range": [
-        25.9,
-        34.3
-      ],
-      "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
-      "matching_scenario_keys": [
-        "venho_lobby_cozy"
-      ],
-      "expires_at": "2026-09-01T01:09:53.240393",
-      "fact_key": null
-    },
     {
       "rs_id": "RS-weather-2026-09-01",
       "type": "weather",
       "domain": "weather_signal",
       "evidence_level": "R2-T",
       "forecast_date": "2026-09-01",
-      "condition": "heat",
+      "condition": "rain",
       "temperature_range": [
-        25.2,
-        34.3
+        26.8,
+        34.2
       ],
-      "visual_opportunity": "Nắng gắt — bóng râm rooftop, đồ uống mát",
+      "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
       "matching_scenario_keys": [
-        "venho_rooftop_shade"
+        "venho_lobby_cozy"
       ],
-      "expires_at": "2026-09-01T01:09:53.240393",
+      "expires_at": "2026-09-03T01:43:40.805413",
       "fact_key": null
     },
     {
@@ -64,13 +28,13 @@
       "condition": "heat",
       "temperature_range": [
         24.7,
-        33.7
+        34.3
       ],
       "visual_opportunity": "Nắng gắt — bóng râm rooftop, đồ uống mát",
       "matching_scenario_keys": [
         "venho_rooftop_shade"
       ],
-      "expires_at": "2026-09-01T01:09:53.240393",
+      "expires_at": "2026-09-03T01:43:40.805413",
       "fact_key": null
     },
     {
@@ -81,14 +45,14 @@
       "forecast_date": "2026-09-03",
       "condition": "heat",
       "temperature_range": [
-        24.2,
-        33.2
+        25.2,
+        33.4
       ],
       "visual_opportunity": "Nắng gắt — bóng râm rooftop, đồ uống mát",
       "matching_scenario_keys": [
         "venho_rooftop_shade"
       ],
-      "expires_at": "2026-09-01T01:09:53.240393",
+      "expires_at": "2026-09-03T01:43:40.805413",
       "fact_key": null
     },
     {
@@ -97,16 +61,16 @@
       "domain": "weather_signal",
       "evidence_level": "R2-T",
       "forecast_date": "2026-09-04",
-      "condition": "rain",
+      "condition": "golden_sunset",
       "temperature_range": [
-        25.4,
-        32.4
+        25.1,
+        32.5
       ],
-      "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
+      "visual_opportunity": "Hoàng hôn vàng trên Hồ Tây — rooftop cuối ngày",
       "matching_scenario_keys": [
-        "venho_lobby_cozy"
+        "venho_rooftop_sunset"
       ],
-      "expires_at": "2026-09-01T01:09:53.240393",
+      "expires_at": "2026-09-03T01:43:40.805413",
       "fact_key": null
     },
     {
@@ -117,14 +81,50 @@
       "forecast_date": "2026-09-05",
       "condition": "golden_sunset",
       "temperature_range": [
-        26.0,
-        32.5
+        25.8,
+        32.6
       ],
       "visual_opportunity": "Hoàng hôn vàng trên Hồ Tây — rooftop cuối ngày",
       "matching_scenario_keys": [
         "venho_rooftop_sunset"
       ],
-      "expires_at": "2026-09-01T01:09:53.240393",
+      "expires_at": "2026-09-03T01:43:40.805413",
+      "fact_key": null
+    },
+    {
+      "rs_id": "RS-weather-2026-09-06",
+      "type": "weather",
+      "domain": "weather_signal",
+      "evidence_level": "R2-T",
+      "forecast_date": "2026-09-06",
+      "condition": "rain",
+      "temperature_range": [
+        26.5,
+        33.7
+      ],
+      "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
+      "matching_scenario_keys": [
+        "venho_lobby_cozy"
+      ],
+      "expires_at": "2026-09-03T01:43:40.805413",
+      "fact_key": null
+    },
+    {
+      "rs_id": "RS-weather-2026-09-07",
+      "type": "weather",
+      "domain": "weather_signal",
+      "evidence_level": "R2-T",
+      "forecast_date": "2026-09-07",
+      "condition": "rain",
+      "temperature_range": [
+        26.4,
+        32.9
+      ],
+      "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
+      "matching_scenario_keys": [
+        "venho_lobby_cozy"
+      ],
+      "expires_at": "2026-09-03T01:43:40.805413",
       "fact_key": null
     }
   ]
