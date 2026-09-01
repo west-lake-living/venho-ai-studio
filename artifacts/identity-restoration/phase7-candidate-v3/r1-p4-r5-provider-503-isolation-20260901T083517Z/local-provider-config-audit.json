@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "candidate-v3-r1-p4-r5-local-provider-config-1.0",
+  "provider": "Gemini",
+  "model_alias": "gemini-flash-latest",
+  "model_resolution": {
+    "request_value": "gemini-flash-latest",
+    "resolved_concrete_model_observable_offline": false,
+    "invalid_model_signal_observed": false,
+    "decision": "not a proven MODEL_RESOLUTION_BLOCKER"
+  },
+  "sdk": {
+    "package": "google-genai",
+    "declared_requirement": "google-genai>=1.0",
+    "runtime_version": "1.47.0",
+    "api_method": "client.models.generate_content",
+    "image_method": "client.models.generate_content with google.genai.types.Part.from_bytes",
+    "structured_output": {"response_mime_type": "application/json", "response_schema": "validator schema after Gemini-compatible additionalProperties removal"},
+    "generation_config": {"temperature": 0.0, "max_output_tokens": 8192, "thinking_budget": 0, "include_thoughts": false, "grounding": false}
+  },
+  "transport": {
+    "endpoint": "https://generativelanguage.googleapis.com/",
+    "api_version": "v1beta",
+    "request_path": "models/{model}:generateContent",
+    "http_method": "POST",
+    "timeout": null,
+    "timeout_meaning": "no application timeout override; SDK HttpOptions.timeout observed as None",
+    "response_headers": "not captured by prior evidence"
+  },
+  "authentication": {
+    "configured": true,
+    "source_type": "environment variable loaded from local dotenv file",
+    "lookup_order": ["GEMINI_API_KEY", "GOOGLE_API_KEY"],
+    "lookup_path_type": ".env.local/.env variable names only; secret value omitted",
+    "credential_mode": "API key",
+    "project_id": "not configured/observable in the audited local environment"
+  },
+  "retry_and_breaker": {
+    "max_transport_attempts_per_logical_sample": 2,
+    "retryable": ["PROVIDER_503", "PROVIDER_429", "PROVIDER_TIMEOUT"],
+    "backoff_seconds": [0.25],
+    "jitter": false,
+    "circuit_breaker": "fail-closed after one terminal retryable logical-sample failure; reset only by explicit new invocation"
+  },
+  "source_hashes": {
+    "shared/vision/providers/gemini_vision.py": "bb30532e5686e6ca499f3a4941d3c34e28fb1856139161d70c1f357e9d4d5e19",
+    "shared/vision/client.py": "b0a37c97cc55c7a4e2c0af8ea73c55d07b5c670a2b249e300413c044e6e71911",
+    "pyproject.toml": "2eb45624983d37e30cbac28e09a32dc2e5cf8d708d4c3baa0abf9fd327fce7ab",
+    "config/settings.yaml": "503da2118ca22ef0370a9913f965cf5208332742203ece6c24c8286d8b2a0fc0"
+  },
+  "audit_conclusion": "local provider path is internally consistent; no deterministic local SDK, endpoint, auth-status, schema, or alias-invalid defect is evidenced"
+}

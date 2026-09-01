@@ -1,5 +1,32 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-09-01 — Candidate v3 R1-P4-R5 provider 503 root-cause isolation
+
+`Candidate v3 Quality Remediation R1 / R1-P4-R5 = CLOSED / PASS`.
+
+- Offline audit covered every recorded provider transport from R1-P4,
+  R1-P4-R1, R1-P4-R2, and R1-P4-R4: 10 transports total, one valid response
+  and nine repeated `503 UNAVAILABLE` failures. Every failure carried the
+  same machine status `UNAVAILABLE` and high-demand message.
+- Local audit confirmed `google-genai 1.47.0`, API-key authentication, default
+  `generativelanguage.googleapis.com/v1beta` endpoint,
+  `client.models.generate_content`, locked `gemini-flash-latest`, structured
+  JSON configuration, and bounded retry/circuit-breaker behavior. No
+  deterministic local SDK, endpoint, schema, authentication-status, or invalid
+  model defect was evidenced. No diagnostic provider call was made.
+- Decision: `PROVIDER_OUTAGE_CONFIRMED` / `PROVIDER_SERVICE_UNAVAILABLE`, with
+  high confidence for external availability/capacity but no unsupported claim
+  about a specific account, project, quota, or region.
+- Hold remains active. FACE_LOCAL and SCENARIO_GLOBAL remain `0/9 valid` with
+  18 pending total; BOUNDARY remains `9/9 PASS`. No provider switch, GPU,
+  generation, validator, threshold, authority, policy, workflow, IdentityPack,
+  quality, or promotion change occurred.
+- Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p4-r5-provider-503-isolation-20260901T083517Z/`.
+
+Next action is `KEEP HOLD`; any later resume requires a new explicit recovery
+authorization after provider availability is restored.
+
 ## 2026-09-01 — Candidate v3 R1-P4-R4 recovery recheck blocked
 
 `Candidate v3 Quality Remediation R1 / R1-P4-R4 = PROVIDER_BLOCKED`.

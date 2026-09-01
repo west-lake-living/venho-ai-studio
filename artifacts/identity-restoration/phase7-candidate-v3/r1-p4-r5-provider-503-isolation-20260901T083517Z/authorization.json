@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "candidate-v3-r1-p4-r5-authorization-1.0",
+  "authorization": "RECOVERY_RECHECK_AUTHORIZED",
+  "authorized": true,
+  "scope": "offline provider 503 root-cause isolation",
+  "provider_hold_before": true,
+  "provider_hold_after": true,
+  "diagnostic_call_performed": false
+}

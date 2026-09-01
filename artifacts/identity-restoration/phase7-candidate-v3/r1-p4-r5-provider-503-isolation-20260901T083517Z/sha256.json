@@ -1,0 +1,13 @@
+{
+  "algorithm": "SHA-256",
+  "count": 7,
+  "files": {
+    "attempt-audit.json": "5a0e199c6308ce628ca863d1cb158f75dc3ef2de8f97c2b95449de4fe3add3ed",
+    "authorization.json": "75a8cf3bd4fa3be91215a27fb7b6a51e7d1239c7970ea8ff6538933bb9caf819",
+    "checkpoint.json": "fd51b010e13e0f27606955bb787cf88706cd87c0f21d59ac547d58fb704d8cc2",
+    "chronological-failure-table.md": "e5a5a9ce472691f5756c0e2b5e7e37a55adeaf27092ae04435d2c8a060366025",
+    "local-provider-config-audit.json": "37f88ed86a98822a52efb26f064468ce950969a4dafa7b9a1bef46350518ea19",
+    "recovery-decision.json": "2145c75ea592a1bbc1d180cb8bac41ed4ae2c21ba2aa29a360d7034a4d9c5200",
+    "root-cause-report.md": "c7c40b3df738b0f34d2caad63530b722d4dc95fe01d83c955920c88e893a12a0"
+  }
+}

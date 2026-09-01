@@ -1,0 +1,23 @@
+{
+  "roadmap": "candidate_v3_quality_remediation_r1",
+  "task": "r1_p4_r5_provider_503_root_cause_isolation",
+  "authorization": "RECOVERY_RECHECK_AUTHORIZED",
+  "status": "CLOSED_PASS",
+  "provider_hold_before": true,
+  "provider_hold_after": true,
+  "decision": "PROVIDER_OUTAGE_CONFIRMED",
+  "classification": "PROVIDER_SERVICE_UNAVAILABLE",
+  "provider": {"name":"Gemini","model":"gemini-flash-latest","calls":0,"successful":0,"failed":0,"provider_503":0},
+  "face_local": {"expected":9,"valid":0,"pending":9,"disposition":"UNVALIDATED / PROVIDER_BLOCKED"},
+  "scenario_global": {"expected":9,"valid":0,"pending":9,"disposition":"UNVALIDATED / PROVIDER_BLOCKED"},
+  "boundary": {"pass":9,"fail":0},
+  "gpu_calls": 0,
+  "promotions": 0,
+  "architecture_changed": false,
+  "policy_changed": false,
+  "workflow_changed": false,
+  "identity_pack_changed": false,
+  "threshold_changed": false,
+  "diagnostic_call_performed": false,
+  "quality_conclusion": {"face_local":"NONE_AVAILABLE","scenario_global":"NONE_AVAILABLE"}
+}

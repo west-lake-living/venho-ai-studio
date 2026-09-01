@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "candidate-v3-r1-p4-r5-recovery-decision-1.0",
+  "decision": "PROVIDER_OUTAGE_CONFIRMED",
+  "classification": "PROVIDER_SERVICE_UNAVAILABLE",
+  "confidence": "HIGH for external service availability/capacity; narrower account/project/quota attribution not proven",
+  "provider_hold": "ACTIVE",
+  "provider_calls": 0,
+  "validation_can_resume_now": false,
+  "next": "KEEP HOLD",
+  "required_next_task": "R1-P4-R6 Resume Authoritative Validation only after a new explicit authorization and provider availability recovery",
+  "pending": {"FACE_LOCAL": 9, "SCENARIO_GLOBAL": 9, "total": 18},
+  "boundary": {"pass": 9, "fail": 0}
+}
