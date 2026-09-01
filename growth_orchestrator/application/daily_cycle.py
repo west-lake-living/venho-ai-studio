@@ -667,7 +667,15 @@ def _generate_topic_image(
         )
         dna = read_dna(dna_path)
         image_contract = build_image_prompt(dna, f"A real photo for: {topic['topic']}", brief_slug=slugify(topic["topic"]))
-        reference_images = reference_resolver.resolve(list(scenario.reference_asset_ids)) if scenario.reference_asset_ids else None
+        # rotation_key (this run's slot_date) also drives which photo a
+        # folder-backed reference asset picks -- see
+        # ReferenceAssetResolver._pick_from_folder. Without it every run
+        # would deterministically pick the same first file forever, no
+        # matter how many photos Harry adds to the folder.
+        reference_images = (
+            reference_resolver.resolve(list(scenario.reference_asset_ids), rotation_key=rotation_key)
+            if scenario.reference_asset_ids else None
+        )
         prompt_contract = {
             "creative_brief_id": f"daily-cycle-{day}",
             "scenario_key": scenario_key,

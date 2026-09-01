@@ -1,26 +1,32 @@
-# Maps scenario_registry.yaml's opaque reference_asset_ids to an actual file
-# under assets/raw/ so image_studio_runtime can load real bytes for
-# GPTImageProvider's edit-with-reference call.
+# Maps scenario_registry.yaml's opaque reference_asset_ids to a folder under
+# assets/raw/ so image_studio_runtime can load real bytes for GPTImageProvider's
+# edit-with-reference call.
 #
-# NOT a curation/approval workflow -- picks are provisional defaults (first
-# usable raw photo found per subject at the time this file was written,
-# 2026-08-04). Harry should review and swap paths for the actual best shot
-# per scenario; nothing here has been through a QC/approval gate the way
-# Linh An's B3/A2/C/D reference pack has (see projects/CLAUDE.md).
+# Folder mode (2026-09-01): each id maps to a whole assets/raw/<subject>/
+# folder, not one hardcoded filename. ReferenceAssetResolver pools every
+# .jpg/.jpeg/.png under that folder (recursively, so sub-albums like
+# room/ViewHo-room-1/ + ViewHo-room-2/ both count) and rotates through them
+# by the run's slot_date. Harry's workflow going forward: drop a new photo
+# straight into the matching assets/raw/<subject>/ folder -- no edit to this
+# file needed, it is picked up on the next run automatically.
+#
+# NOT a curation/approval workflow -- pools are whatever's in the folder,
+# nothing here has been through a QC/approval gate the way Linh An's
+# B3/A2/C/D reference pack has (see projects/CLAUDE.md). One consequence:
+# assets/raw/westlake/ still has a few older night/skyline-heavy shots that
+# can occasionally trip the `no modern glass high-rise backdrop` forbidden
+# rule on the day rotation lands on them -- that now shows up as one day's
+# image_is_fallback instead of a silent repeat, not a hard failure (see
+# weekly_cycle's weekly_image_fallback_rate alert). Worth a pass to weed out
+# the worst offenders, not done here.
 assets:
-  venho_rooftop_railing_approved: assets/raw/outside/IMG_5125.jpg
-  venho_room_lake_view_approved: data/projects/venho_hotel/media/lake_view_room_1/IMG_5584.jpeg
-  # Provisional on the same terms as the two above -- first usable lobby
-  # shot, not a QC'd pick. Added 2026-08-06 with venho_lobby_cozy.
-  venho_lobby_approved: assets/raw/lobby/IMG_5175.jpeg
-  # Added 2026-09-01: the two `westlake` scenarios (street + landscape) had
-  # reference_asset_ids: [] since this file was written, so gpt-image-2 was
-  # drawing Ho Tay from text alone and kept inventing a modern glass
-  # high-rise skyline -- the `no modern glass high-rise backdrop` curated
-  # rule then killed 16/16 of those generations (2026-08-27 investigation).
-  # Picked the two `assets/raw/westlake/` shots where the far shore reads as
-  # low-rise (matches CLAUDE.md's Ho Tay Identity Block), not the ones where
-  # towers dominate the frame -- same provisional-pick basis as the other
-  # entries here, not a QC'd choice.
-  venho_street_railing_approved: assets/raw/westlake/IMG_5127.jpg
-  venho_lake_landscape_approved: assets/raw/westlake/IMG_7204.jpeg
+  venho_rooftop_railing_approved: assets/raw/outside
+  # Was pinned to data/projects/venho_hotel/media/lake_view_room_1/IMG_5584.jpeg
+  # (a single photo outside assets/raw/ entirely) -- switched to the existing
+  # assets/raw/room/ pool (16 photos across ViewHo-room-1/ and -2/) so this
+  # id follows the same "drop a file in, it's picked up" convention as
+  # every other subject.
+  venho_room_lake_view_approved: assets/raw/room
+  venho_lobby_approved: assets/raw/lobby
+  venho_street_railing_approved: assets/raw/westlake
+  venho_lake_landscape_approved: assets/raw/westlake
