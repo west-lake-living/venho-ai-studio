@@ -1,0 +1,1 @@
+{"status": "PROVIDER_BLOCKED", "output": "artifacts/identity-restoration/phase7-candidate-v3/r1-recovery-recheck-20260901T090543Z", "providerCalls": 2, "faceLocal": 0, "scenarioGlobal": 0}

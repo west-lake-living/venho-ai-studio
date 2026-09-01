@@ -1,0 +1,18 @@
+{
+  "algorithm": "SHA-256",
+  "count": 12,
+  "files": {
+    "attempt-history.jsonl": "a79c701b6032c9d4355ef80d699d6e7c5d2d38d207cab8e2340220f6a2f6718a",
+    "baseline.json": "03d475eaed533adf33ca2368542173b300bb9c3666e7ff33dde2ebfa233a945d",
+    "compileall.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "finalize-output.txt": "d6c560a8d208d0ded3e52ad1a91909e86611e218119466cb5bdaf640cb69b63e",
+    "git-diff-check.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "offline_preflight.json": "987e5babf068374f80b14635a5a884a567a4e1b32c871f3f6405082fbefec67d",
+    "provider-paid-call-ledger.jsonl": "96b6267e1a4ba1189de75f3ec6c5e98f9fee7a9bee13be81768997180c90be97",
+    "recovery_checkpoint.json": "588626c9f607b471bd6b387c36d8c376b542d0cdf65c8234a9bbed4d150ce8e1",
+    "recovery_probe_failure.json": "a6c5decc231d3c2d59fe3268706245b2fb8dfdad194f047be8c032d7ed73f36a",
+    "recovery_probe_request_metadata.json": "f8ed1b4c7840a6eb1897646b7f749b740d14421a8dc935f304d115991346eeaf",
+    "summary.json": "d4c590a471ca102f163ab925d8c748f0c36e7eceda0570ce3d506c558c78636f",
+    "test-results.txt": "61aa41fcbf465ec37f20b45c1198ee0eff34cf926b1cb4180a277ca5475f3b06"
+  }
+}

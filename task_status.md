@@ -1,5 +1,26 @@
 # VENHO AI STUDIO — Task Status
 
+### Candidate v3 Quality Remediation R1 — R1-RECOVERY-RECHECK (2026-09-01)
+
+- `RECOVERY_RECHECK_AUTHORIZED = TRUE`; offline preflight passed before live
+  execution: `58 passed`, compileall PASS, and `git diff --check` PASS.
+- The single authorized recovery probe used the existing Gemini
+  `gemini-flash-latest` path against `FACE_LOCAL/B01/sample-1`. Existing
+  bounded retry made `2` provider calls; both returned `503 UNAVAILABLE` with
+  the repeated high-demand payload. No complete authoritative response was
+  produced, so bulk evaluation was not started.
+- Final disposition: `RECOVERY_RECHECK = PROVIDER_BLOCKED`; `FACE_LOCAL = 0/9`
+  valid, `SCENARIO_GLOBAL = 0/9` valid, `PENDING = 18`, and
+  `PROVIDER_HOLD = ACTIVE`. `BOUNDARY = 9/9 PASS` remains unchanged.
+- Call accounting: provider `2`, valid responses `0`, invalid responses `0`,
+  GPU jobs `0`, Nano calls `0`. Candidate v3 remains feature-gated `OFF` and
+  production promotion remains `NO`.
+- No architecture, production routing, provider/model, rubric, threshold,
+  validator, generation, or GPU changes were made. Task-specific wrapper and
+  regression tests were added; prior artifacts remain immutable.
+- Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-recovery-recheck-20260901T090543Z/`.
+
 ### Candidate v3 Quality Remediation R1 — R1-P4-R5 provider 503 root-cause isolation (2026-09-01)
 
 - `R1-P4-R5 = CLOSED / PASS`; recovery decision:

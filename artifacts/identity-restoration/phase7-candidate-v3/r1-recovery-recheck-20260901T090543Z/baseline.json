@@ -1,0 +1,138 @@
+{
+  "authorization": {
+    "RECOVERY_RECHECK_AUTHORIZED": true
+  },
+  "capturedAt": "2026-09-01T09:05:44.153261+00:00",
+  "holdGateSha256": "78817f131a2b52a44a9951589d924136e35d41dd90438cca78fd41594f67f927",
+  "offlinePreflight": {
+    "adapter": "VisionClient -> GeminiVisionProvider",
+    "architectureChanged": false,
+    "circuitBreaker": {
+      "failClosed": true,
+      "reset": "new resumable invocation only",
+      "scope": "run",
+      "threshold": 1
+    },
+    "credentials": "configured",
+    "gpuCalls": 0,
+    "grounding": false,
+    "httpReadinessProbe": "not_performed",
+    "identityPackChanged": false,
+    "lineage": "9/9 VERIFIED",
+    "mockCalls": 0,
+    "model": "gemini-flash-latest",
+    "outputCap": 8192,
+    "policyChanged": false,
+    "provider": "gemini",
+    "retryPolicy": {
+      "backoffSeconds": [
+        0.25
+      ],
+      "jitter": false,
+      "maxTransportAttemptsPerLogicalSample": 2,
+      "nonRetryable": [
+        "LOCAL_SCHEMA_BUILD_FAIL",
+        "LOCAL_REQUEST_SERIALIZATION_FAIL",
+        "PROVIDER_TRUNCATED_RESPONSE",
+        "PROVIDER_RESPONSE_SCHEMA_FAIL",
+        "AUTH_FAILURE",
+        "UNSUPPORTED_MODEL",
+        "MALFORMED_LOCAL_INPUT"
+      ],
+      "retryable": [
+        "PROVIDER_503",
+        "PROVIDER_429",
+        "PROVIDER_TIMEOUT"
+      ]
+    },
+    "samples": {
+      "faceLocalPerCase": 3,
+      "logicalSamplesPlanned": 36,
+      "scenarioGlobalPerCase": 1
+    },
+    "schemaVersion": "candidate-v3-r1-p4-r1-preflight-1.0",
+    "schemas": {
+      "faceObservation": {
+        "id": "FaceValidationObservation",
+        "sha256": "7ed87aad43c4db1dd3853a642ee36eaec0df63cbba372dbb3a14aef7f43bd142"
+      },
+      "scenarioObservation": {
+        "id": "ImageObservation",
+        "sha256": "d4c2de9ae73a024bd77f077699a1c95a19d20b4becfd4b7d58bd379b6b73102f"
+      }
+    },
+    "status": "PASS",
+    "syntheticResults": 0,
+    "temperature": 0.0,
+    "thresholdChanged": false,
+    "validatorEntrypoints": {
+      "faceLocal": "validator_studio.face_validator.validate_face",
+      "scenarioGlobal": "validator_studio.image_validator.validate_image"
+    },
+    "workflowChanged": false
+  },
+  "previousBlocker": "PROVIDER_SERVICE_UNAVAILABLE / repeated Gemini 503 high-demand responses",
+  "priorEvidence": "artifacts/identity-restoration/phase7-candidate-v3/r1-p4-r5-provider-503-isolation-20260901T083517Z",
+  "provider": {
+    "circuitBreaker": {
+      "failClosed": true,
+      "reset": "new resumable invocation only",
+      "scope": "run",
+      "threshold": 1
+    },
+    "model": "gemini-flash-latest",
+    "name": "gemini",
+    "outputCap": 8192,
+    "retryPolicy": {
+      "backoffSeconds": [
+        0.25
+      ],
+      "jitter": false,
+      "maxTransportAttemptsPerLogicalSample": 2,
+      "nonRetryable": [
+        "LOCAL_SCHEMA_BUILD_FAIL",
+        "LOCAL_REQUEST_SERIALIZATION_FAIL",
+        "PROVIDER_TRUNCATED_RESPONSE",
+        "PROVIDER_RESPONSE_SCHEMA_FAIL",
+        "AUTH_FAILURE",
+        "UNSUPPORTED_MODEL",
+        "MALFORMED_LOCAL_INPUT"
+      ],
+      "retryable": [
+        "PROVIDER_503",
+        "PROVIDER_429",
+        "PROVIDER_TIMEOUT"
+      ]
+    }
+  },
+  "providerHold": {
+    "active": true,
+    "model": "gemini-flash-latest",
+    "provider": "Gemini",
+    "reason": "REPEATED_PROVIDER_503",
+    "resume_requires_explicit_authorization": true
+  },
+  "roadmapState": {
+    "phase7": "CLOSED / QUALITY FAIL",
+    "r1P4": "PROVIDER_BLOCKED",
+    "r1P4R5": "CLOSED / PASS"
+  },
+  "startState": {
+    "boundary": {
+      "fail": 0,
+      "pass": 9
+    },
+    "faceLocal": {
+      "disposition": "UNVALIDATED / PROVIDER_BLOCKED",
+      "expected": 9,
+      "valid": 0
+    },
+    "pendingAuthoritativeEvaluations": 18,
+    "scenarioGlobal": {
+      "disposition": "UNVALIDATED / PROVIDER_BLOCKED",
+      "expected": 9,
+      "valid": 0
+    }
+  },
+  "taskId": "candidate-v3-r1-recovery-recheck"
+}

@@ -1,0 +1,48 @@
+{
+  "architectureChanged": false,
+  "authorization": true,
+  "boundary": {
+    "fail": 0,
+    "pass": 9
+  },
+  "callAccounting": {
+    "failedProviderResponses": 2,
+    "gpuJobs": 0,
+    "invalidProviderResponses": 0,
+    "nanoCalls": 0,
+    "providerCalls": 2,
+    "validProviderResponses": 0
+  },
+  "faceLocal": {
+    "expected": 9,
+    "fail": null,
+    "invalid": 0,
+    "pass": null,
+    "unexecuted": 9,
+    "valid": 0
+  },
+  "featureFlag": "OFF",
+  "pendingAuthoritativeEvaluations": 18,
+  "productionPromotion": "NO",
+  "providerHold": "ACTIVE",
+  "qualityDisposition": "UNVALIDATED",
+  "recoveryProbe": {
+    "classification": "PROVIDER_503",
+    "error": "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
+    "failedResponses": 2,
+    "providerCalls": 2,
+    "status": "PROVIDER_BLOCKED",
+    "successfulResponses": 0
+  },
+  "recoveryRecheck": "PROVIDER_BLOCKED",
+  "runnerExitCode": null,
+  "scenarioGlobal": {
+    "expected": 9,
+    "fail": null,
+    "invalid": 0,
+    "pass": null,
+    "unexecuted": 9,
+    "valid": 0
+  },
+  "taskId": "candidate-v3-r1-recovery-recheck"
+}

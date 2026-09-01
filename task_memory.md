@@ -1,5 +1,29 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-09-01 — Candidate v3 R1 recovery recheck blocked
+
+`Candidate v3 Quality Remediation R1 / R1-RECOVERY-RECHECK = PROVIDER_BLOCKED`.
+
+- Explicit authorization `RECOVERY_RECHECK_AUTHORIZED = TRUE` was recorded.
+  Offline preflight passed with `58` focused tests, compileall PASS, and
+  `git diff --check` PASS before any live provider call.
+- Exactly one minimal probe was attempted against the existing authoritative
+  Gemini `gemini-flash-latest` path: `FACE_LOCAL/B01/sample-1`. The existing
+  two-attempt retry policy made `2` provider calls; both returned
+  `503 UNAVAILABLE` with the same high-demand provider message.
+- The probe produced no complete authoritative response: valid `0`, invalid
+  `0`, and no raw response to parse. Fail-closed termination prevented bulk
+  FACE_LOCAL and SCENARIO_GLOBAL execution. No second probe, speculative retry,
+  provider switch, GPU job, Nano call, regeneration, or promotion occurred.
+- Final state: `FACE_LOCAL = 0/9`, `SCENARIO_GLOBAL = 0/9`, `PENDING = 18`,
+  `BOUNDARY = 9/9 PASS`, `PROVIDER_HOLD = ACTIVE`, feature flag `OFF`, and
+  production promotion `NO`. No architecture or production behavior changed.
+- Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-recovery-recheck-20260901T090543Z/`.
+
+Keep the provider hold active; a later recovery attempt requires a new explicit
+authorization and must begin with another bounded probe.
+
 ## 2026-09-01 — Candidate v3 R1-P4-R5 provider 503 root-cause isolation
 
 `Candidate v3 Quality Remediation R1 / R1-P4-R5 = CLOSED / PASS`.
