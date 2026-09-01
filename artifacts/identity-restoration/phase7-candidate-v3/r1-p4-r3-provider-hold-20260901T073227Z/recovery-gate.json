@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "candidate-v3-r1-p4-r3-recovery-gate-1.0",
+  "status": "CLOSED_PASS",
+  "provider_hold": {
+    "active": true,
+    "provider": "Gemini",
+    "model": "gemini-flash-latest",
+    "blocker": "REPEATED_PROVIDER_503",
+    "resume_requires_explicit_authorization": true
+  },
+  "transition": {
+    "from": "PROVIDER_HOLD_ACTIVE",
+    "to": "RECOVERY_RECHECK_AUTHORIZED",
+    "next_action": "bounded provider recheck",
+    "automatic": false,
+    "polling": false
+  },
+  "guard": {
+    "entrypoint": "scripts/run_candidate_v3_r1_p4_r1_provider_remediation.py",
+    "protection": "active hold gate rejects invocation before credential load/provider execution",
+    "authorization_variable": "R1_P4_R3_RECOVERY_RECHECK_AUTHORIZED=1"
+  },
+  "pending": {
+    "face_local": 9,
+    "scenario_global": 9,
+    "total": 18
+  },
+  "boundary": {
+    "pass": 9,
+    "fail": 0,
+    "evidence": "artifacts/identity-restoration/phase7-candidate-v3/r1-p1-boundary-remediation-20260828/per-sample-results.json",
+    "evidence_sha256": "eacfb3673a5aba313d9af81a50dea1f5ddde328a619676ebb95978bd0b401832"
+  }
+}

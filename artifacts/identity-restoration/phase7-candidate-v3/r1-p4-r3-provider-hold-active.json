@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "candidate-v3-r1-p4-r3-provider-hold-gate-1.0",
+  "provider_hold": {
+    "active": true,
+    "provider": "Gemini",
+    "model": "gemini-flash-latest",
+    "reason": "REPEATED_PROVIDER_503",
+    "resume_requires_explicit_authorization": true
+  },
+  "recovery_transition": {
+    "current": "PROVIDER_HOLD_ACTIVE",
+    "required_next": "RECOVERY_RECHECK_AUTHORIZED",
+    "then": "BOUNDED_PROVIDER_RECHECK",
+    "automatic_transition": false
+  },
+  "source": "r1-p4-r3-provider-hold-20260901T073227Z/checkpoint.json"
+}

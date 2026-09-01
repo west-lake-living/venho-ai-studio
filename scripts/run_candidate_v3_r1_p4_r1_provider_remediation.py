@@ -22,6 +22,7 @@ ROOT = Path(__file__).resolve().parents[1]
 P4 = ROOT / "artifacts/identity-restoration/phase7-candidate-v3/r1-p4-authoritative-validation-20260901-final"
 P1 = ROOT / "artifacts/identity-restoration/phase7-candidate-v3/r1-p1-boundary-remediation-20260828"
 PHASE7 = ROOT / "artifacts/identity-restoration/phase7-candidate-v3"
+R1_P4_R3_HOLD_GATE = PHASE7 / "r1-p4-r3-provider-hold-active.json"
 OUT = Path(os.environ.get(
     "R1_P4_R1_OUTPUT_DIR",
     str(ROOT / "artifacts/identity-restoration/phase7-candidate-v3" / (
@@ -74,6 +75,22 @@ def load_env() -> None:
     for path in (social / ".env.local", social / ".env", ROOT / ".env.local", ROOT / ".env"):
         if path.is_file():
             load_dotenv(path, override=False)
+
+
+def enforce_provider_hold_gate() -> None:
+    """Require explicit authorization before a new provider invocation."""
+    if not R1_P4_R3_HOLD_GATE.is_file():
+        return
+    hold = json.loads(R1_P4_R3_HOLD_GATE.read_text(encoding="utf-8"))
+    if not hold.get("provider_hold", {}).get("active"):
+        return
+    if os.environ.get("R1_P4_R3_RECOVERY_RECHECK_AUTHORIZED") == "1":
+        return
+    provider_hold = hold["provider_hold"]
+    raise RuntimeError(
+        "PROVIDER_HOLD_ACTIVE: explicit RECOVERY_RECHECK_AUTHORIZED is required "
+        f"for {provider_hold.get('provider')}/{provider_hold.get('model')}"
+    )
 
 
 def job_payload(case_id: str) -> tuple[dict[str, Any], Path, Path, Path]:
@@ -273,6 +290,7 @@ def checkpoint(status: str, provider: dict[str, Any], face: list[dict[str, Any]]
 
 
 def run() -> int:
+    enforce_provider_hold_gate()
     load_env()
     os.environ["VALIDATOR_LIVE_ENABLED"] = "true"
     os.environ["VALIDATOR_MAX_NEW_CALLS"] = "36"

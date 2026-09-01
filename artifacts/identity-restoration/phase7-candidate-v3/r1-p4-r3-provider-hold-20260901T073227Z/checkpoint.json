@@ -1,0 +1,42 @@
+{
+  "roadmap": "candidate_v3_quality_remediation_r1",
+  "task": "r1_p4_r3_provider_blocker_hold",
+  "status": "CLOSED_PASS",
+  "provider_hold": {
+    "active": true,
+    "provider": "Gemini",
+    "model": "gemini-flash-latest",
+    "reason": "REPEATED_PROVIDER_503",
+    "resume_requires_explicit_authorization": true
+  },
+  "face_local": {
+    "expected": 9,
+    "valid": 0,
+    "state": "UNVALIDATED_PROVIDER_BLOCKED"
+  },
+  "scenario_global": {
+    "expected": 9,
+    "valid": 0,
+    "state": "UNVALIDATED_PROVIDER_BLOCKED"
+  },
+  "boundary": {
+    "pass": 9,
+    "fail": 0
+  },
+  "provider_calls": 0,
+  "gpu_calls": 0,
+  "promotions": 0,
+  "architecture_changed": false,
+  "policy_changed": false,
+  "workflow_changed": false,
+  "identity_pack_changed": false,
+  "threshold_changed": false,
+  "quality_conclusion": {
+    "face_local": "NONE_AVAILABLE",
+    "scenario_global": "NONE_AVAILABLE"
+  },
+  "lineage": {
+    "source": "r1-p4-r2-provider-recheck-20260901T072511Z/lineage-manifest.json",
+    "status": "9/9 VERIFIED"
+  }
+}

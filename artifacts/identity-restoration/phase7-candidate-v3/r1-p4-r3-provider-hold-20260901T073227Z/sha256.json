@@ -1,0 +1,11 @@
+{
+  "algorithm": "SHA-256",
+  "files": {
+    "checkpoint.json": "4373c551482ac238e6b2f49421a05b171943d729b9bce0d1d2ea65e200d8a5f1",
+    "pending-validation-manifest.json": "08a6f980b2b425489eb0822c07f65472eb4347ecf1a4652b3e60fef0332d7e01",
+    "provider-hold-report.md": "bb038dfcf3069ce39c6b7541d9da0b8acdcd45105134b0bd3d71dacf412a43a0",
+    "recovery-gate.json": "b6c5cf801271fce624345b6e90710521723f7f3fda8d91e416fdd3c5531aaa32",
+    "retry-history-summary.json": "c17ea924177739ea67550ddde111b84eb2fdf024600c57e1fc32d15fd7aa207b"
+  },
+  "count": 5
+}

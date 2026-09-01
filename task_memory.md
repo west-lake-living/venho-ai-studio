@@ -1,5 +1,29 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-09-01 — Candidate v3 R1-P4-R3 provider blocker hold
+
+`Candidate v3 Quality Remediation R1 / R1-P4-R3 = CLOSED / PASS`.
+
+- Provider hold is authoritative and active for Gemini
+  `gemini-flash-latest`; reason is repeated retryable `503` availability
+  failure across R1-P4-R1 and R1-P4-R2.
+- R1-P4-R3 is offline-only: provider calls `0`, readiness probes `0`, GPU
+  calls `0`, promotions `0`, and no synthetic/mock result.
+- The existing runner had no background retry loop, but a new invocation could
+  reset its per-run breaker. A minimal entrypoint guard now rejects execution
+  before credential load/provider execution while the hold gate is active.
+- Recovery requires the explicit transition
+  `PROVIDER_HOLD_ACTIVE -> RECOVERY_RECHECK_AUTHORIZED -> bounded provider
+  recheck`; there is no time-based or automatic transition.
+- Pending manifest preserves exact artifact SHA and authority lineage for 18
+  evaluations: FACE_LOCAL B01–B09 and SCENARIO_GLOBAL B01–B09. Both lanes are
+  `UNVALIDATED_PROVIDER_BLOCKED`; BOUNDARY remains immutable `9/9 PASS`.
+- Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p4-r3-provider-hold-20260901T073227Z/`.
+
+Do not start provider recheck until the next task explicitly authorizes
+`RECOVERY_RECHECK_AUTHORIZED`.
+
 ## 2026-09-01 — Candidate v3 R1-P4-R2 provider availability recheck blocked
 
 `Candidate v3 Quality Remediation R1 / R1-P4-R2 = PROVIDER_BLOCKED`.

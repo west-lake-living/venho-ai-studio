@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "candidate-v3-r1-p4-r3-retry-history-1.0",
+  "provider": "Gemini",
+  "model": "gemini-flash-latest",
+  "r1_p4": {
+    "provider_transport_calls": 4,
+    "successful_calls": 1,
+    "failed_calls": 3,
+    "retryable_503": 3,
+    "status": "PROVIDER_BLOCKED",
+    "evidence": "r1-p4-authoritative-validation-20260901-final"
+  },
+  "r1_p4_r1": {
+    "provider_transport_calls": 2,
+    "successful_calls": 0,
+    "failed_calls": 2,
+    "retryable_503": 2,
+    "status": "PROVIDER_BLOCKED",
+    "evidence": "r1-p4-r1-provider-remediation-20260901T065908Z"
+  },
+  "r1_p4_r2": {
+    "provider_transport_calls": 2,
+    "successful_calls": 0,
+    "failed_calls": 2,
+    "retryable_503": 2,
+    "status": "PROVIDER_BLOCKED",
+    "evidence": "r1-p4-r2-provider-recheck-20260901T072511Z"
+  },
+  "r1_p4_r3": {
+    "provider_calls": 0,
+    "status": "CLOSED_PASS",
+    "action": "hold_only_no_provider_execution"
+  }
+}
