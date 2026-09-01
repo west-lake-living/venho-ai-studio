@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import hmac
+import json
 import re
 from typing import Any, Callable
 from urllib.parse import urlparse
@@ -29,6 +30,25 @@ def _is_real_platform_post_id(value: Any) -> bool:
     if "{{" in post_id or "}}" in post_id:
         return False
     return re.fullmatch(r"[A-Za-z0-9_-]+", post_id) is not None
+
+
+def _describe_receipt(body: dict[str, Any], *, limit: int = 300) -> str:
+    """Compact rendering of what Make actually replied, for the error text.
+
+    Why (2026-09-01): "check Webhook response mapping" named the broken thing
+    but never recorded WHAT arrived, so eleven consecutive Facebook failures
+    (2026-08-15 .. 2026-08-31) could only be diagnosed by opening Make and
+    guessing. The reply is Make's own output -- the request signature and
+    secret are not part of it -- so echoing it back is safe and makes the
+    next occurrence answerable from the run log alone.
+    """
+    try:
+        rendered = json.dumps(body, ensure_ascii=False, sort_keys=True)
+    except (TypeError, ValueError):
+        rendered = repr(body)
+    if len(rendered) > limit:
+        rendered = rendered[:limit] + "..."
+    return rendered
 
 
 def _response_value(body: dict[str, Any], *keys: str) -> Any:
@@ -129,14 +149,20 @@ def interpret_make_response(
             "status": "GATEWAY_ERROR",
             "command_id": publication_id,
             "published": False,
-            "error": "Make.com reported PUBLISHED without a valid platform_post_id; check Webhook response mapping.",
+            "error": (
+                "Make.com reported PUBLISHED without a valid platform_post_id; "
+                f"check Webhook response mapping. Received: {_describe_receipt(body)}"
+            ),
         }
     if post_id and not _is_real_platform_post_id(post_id):
         return {
             "status": "GATEWAY_ERROR",
             "command_id": publication_id,
             "published": False,
-            "error": "Make.com returned an invalid platform_post_id placeholder; check Webhook response mapping.",
+            "error": (
+                "Make.com returned an invalid platform_post_id placeholder; "
+                f"check Webhook response mapping. Received: {_describe_receipt(body)}"
+            ),
         }
     if status == "PUBLISHED" or post_id:
         return {

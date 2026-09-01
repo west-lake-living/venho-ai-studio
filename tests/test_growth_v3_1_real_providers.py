@@ -416,6 +416,28 @@ def test_make_adapter_rejects_static_make_mapping_label_as_post_id() -> None:
     assert "valid platform_post_id" in result["error"]
 
 
+def test_make_adapter_error_records_what_make_actually_replied() -> None:
+    """Naming the broken mapping is not enough to fix it.
+
+    Eleven consecutive Facebook failures (2026-08-15 .. 2026-08-31) all
+    carried the same generic "check Webhook response mapping" text, so the
+    only way to learn what Make was sending was to open Make and guess.
+    """
+    adapter = MakeGatewayAdapter(
+        enabled=True,
+        webhook_url="https://hook.example/fb",
+        http_post=FakeHttpPost({"status": "PUBLISHED", "platform_post_id": "", "permalink": ""}),
+    )
+
+    result = adapter.send(
+        {"publication_id": "pub-1", "idempotency_key": "idem-1", "platform": "facebook"}
+    )
+
+    assert result["status"] == "GATEWAY_ERROR"
+    assert '"platform_post_id": ""' in result["error"]
+    assert '"status": "PUBLISHED"' in result["error"]
+
+
 def test_make_adapter_rejects_published_without_post_id() -> None:
     adapter = MakeGatewayAdapter(
         enabled=True,
