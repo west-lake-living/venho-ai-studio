@@ -90,7 +90,6 @@ aggregation_keys:
     values: [spotless, clean, worn, not_visible]
 
 forbidden_defaults:
-  - no marble floor
   - no luxury hotel chandeliers
   - no resort-scale lobby
   - no modern minimalist glass-and-steel design

@@ -4,7 +4,6 @@
 # This file is curated by humans. Never overwrite via DNA regeneration.
 
 forbidden:
-  - "no marble floor — actual flooring is tile or stone, not polished marble"
   - "no luxury hotel chandeliers — lighting is warm and functional, not grand"
   - "no resort-scale lobby — this is a compact boutique reception, not a 5-star atrium"
   - "no modern minimalist glass-and-steel design"
@@ -22,6 +21,11 @@ wording_overrides:
   hotel_tier: "boutique mid-range — warm and personal, not luxury"
 
 notes:
+  - "2026-09-01: confirmed by Harry against real lobby photos — the floor IS
+    marble (polished/marble-look). Removed the old 'no marble floor' forbidden
+    rule; it was wrong and was tripping the kill-switch (validator reject)
+    against the hotel's actual reception floor. Scale/tier language stays —
+    marble floor does not make this a resort-scale/luxury lobby."
   - "Scale: boutique 12-room hotel — reception is compact and intimate"
   - "Character: warm, personal, traditional Vietnamese hospitality"
   - "Lighting: warm ambient — NOT cool corporate fluorescent"

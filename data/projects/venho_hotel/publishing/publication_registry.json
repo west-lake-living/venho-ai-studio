@@ -12891,7 +12891,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 92.53
       },
       "replaces_publication_id": "pub-friday-facebook-b91a3968",
@@ -13023,7 +13023,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 92.17
       },
       "replaces_publication_id": "pub-friday-instagram-8e75186d",
@@ -13138,7 +13138,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.7
       },
       "replaces_publication_id": "pub-friday-threads-a4c20648"
@@ -13253,7 +13253,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.7
       },
       "replaces_publication_id": "pub-friday-zalo-4dd82a70"
@@ -13369,7 +13369,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 92.12
       },
       "replaces_publication_id": "pub-monday-facebook-a2fd842d",
@@ -13499,7 +13499,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.7
       },
       "replaces_publication_id": "pub-monday-instagram-70a799f0",
@@ -13616,7 +13616,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 92.12
       },
       "replaces_publication_id": "pub-wednesday-facebook-b250c3de",
@@ -13735,7 +13735,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.7
       },
       "replaces_publication_id": "pub-wednesday-instagram-f8466a74",
