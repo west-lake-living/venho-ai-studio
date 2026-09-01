@@ -505,9 +505,15 @@ def test_run_daily_cycle_asset_version_ids_empty_when_image_generation_disabled(
     assert result.publications[0]["package_snapshot"]["asset_version_ids"] == []
 
 
-def test_run_daily_cycle_monday_has_no_reference_asset_but_still_generates(tmp_path: Path, monkeypatch) -> None:
-    # westlake's scenario (venho_west_lake_landscape) has reference_mode: none
-    # -- text-to-image only, no reference asset lookup should happen.
+def test_run_daily_cycle_monday_westlake_scenarios_use_their_reference_asset(tmp_path: Path, monkeypatch) -> None:
+    # All three of monday's scenario_pool candidates (venho_west_lake_landscape,
+    # venho_nguyen_dinh_thi_street, venho_rooftop_sunrise) require a reference
+    # asset since 2026-09-01 -- text-only generation for the westlake subject
+    # was inventing a high-rise skyline and getting killed by the curated
+    # `no modern glass high-rise backdrop` forbidden rule every time (16/16
+    # rejects, 2026-08-27 investigation). Was
+    # test_run_daily_cycle_monday_has_no_reference_asset_but_still_generates,
+    # which asserted the old (broken) text-to-image-only path.
     import growth_orchestrator.application.daily_cycle as daily_cycle_module
 
     class _FakeKillSwitch:
@@ -520,18 +526,35 @@ def test_run_daily_cycle_monday_has_no_reference_asset_but_still_generates(tmp_p
         def model_dump_json(self, indent=2):
             return "{}"
 
-    # This test is about the reference-asset-less image path, not the mock
+    # This test is about the reference-asset image path, not the mock
     # vision observer's score against westlake's DNA -- stub validate_image
     # to always approve so it isn't at the mercy of that unrelated score.
     monkeypatch.setattr(daily_cycle_module, "validate_image", lambda *a, **k: _FakeReport())
 
+    from shared.storage.google_drive import MockDriveUploader
+
     data_root = _tmp_data_root(tmp_path)
     provider = MockImageProvider()
-    resolver = ReferenceAssetResolver({}, assets_root=Path("."))
+    # A tiny real image file so ReferenceAssetResolver._load_as_png can open
+    # it -- content doesn't matter, only that every id monday's scenario_pool
+    # can pick resolves to *something*.
+    from PIL import Image
+
+    fake_ref = tmp_path / "fake_ref.jpg"
+    Image.new("RGB", (4, 4)).save(fake_ref)
+    resolver = ReferenceAssetResolver(
+        {
+            "venho_lake_landscape_approved": "fake_ref.jpg",
+            "venho_street_railing_approved": "fake_ref.jpg",
+            "venho_rooftop_railing_approved": "fake_ref.jpg",
+        },
+        assets_root=tmp_path,
+    )
 
     result = run_daily_cycle(
-        "monday", platforms=["facebook"], data_root=data_root, image_provider=provider, reference_resolver=resolver
-    , content_bridge=_mock_content_bridge(data_root), validator_bridge=_AlwaysApproveValidatorBridge())
+        "monday", platforms=["facebook"], data_root=data_root, image_provider=provider, reference_resolver=resolver,
+        drive_uploader=MockDriveUploader(),
+        content_bridge=_mock_content_bridge(data_root), validator_bridge=_AlwaysApproveValidatorBridge())
 
     assert provider.calls == 1
     assert result.publications[0]["content"]["image_run_path"] is not None

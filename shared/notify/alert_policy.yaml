@@ -12,3 +12,9 @@ events:
   budget_threshold_crossed: { channel: telegram, severity: warning }
   image_rejected_by_constraint: { channel: telegram, severity: warning }
   backup_verify_failed: { channel: telegram, severity: critical }
+  # 2026-09-01: image_is_fallback was invisible outside the dashboard --
+  # a week could silently post its cadence photos as rotated stock hotel
+  # shots (budget cap, QC never reaching APPROVE, missing reference, Drive
+  # upload exhausted its own retries) and nothing told Harry. See
+  # weekly_cycle.run_weekly_cycle's post-run summary.
+  weekly_image_fallback_rate: { channel: telegram, severity: warning }

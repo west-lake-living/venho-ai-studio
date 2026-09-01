@@ -11,6 +11,7 @@ from growth_orchestrator.application.daily_cycle import DailyCycleResult
 from growth_orchestrator.application.weekly_cycle import WEEKLY_CADENCE_ORDER, run_weekly_cycle
 from shared.jobs.job_store import JobStore
 from shared.jobs.slot_store import SlotStore
+from shared.storage.google_drive import MockDriveUploader
 
 
 def test_publish_scheduler_is_independent_from_weekly_approval() -> None:
@@ -177,3 +178,64 @@ def test_run_weekly_cycle_recovers_a_week_stuck_running_from_a_crashed_prior_att
     assert result.skipped_already_run is False
     assert len(result.days) == 2 * len(WEEKLY_CADENCE_ORDER)
     assert job_store.get(week_key)["status"] == "SUCCEEDED"
+
+
+def test_weekly_cycle_alerts_when_posts_used_a_fallback_photo(tmp_path: Path, monkeypatch) -> None:
+    """Regression test: image_is_fallback sat on every publication's content
+    since 2026-08-06 but nothing ever read it -- a week that lost every real
+    generation (budget cap, DNA mismatch, Drive upload failure) queued a
+    full batch of rotated stock photos with no signal outside the dashboard
+    (2026-09-01 investigation)."""
+    data_root = _tmp_data_root(tmp_path)
+
+    def _fake_run_daily_cycle(day: str, **kwargs):
+        return DailyCycleResult(
+            day=day,
+            topic={"topic": "ok"},
+            publications=[
+                {"day": day, "platform": "facebook", "content": {"image_is_fallback": True}},
+                {"day": day, "platform": "instagram", "content": {"image_is_fallback": False}},
+            ],
+        )
+
+    monkeypatch.setattr(weekly_cycle_module, "run_daily_cycle", _fake_run_daily_cycle)
+
+    alerts: list[tuple[str, str]] = []
+    monkeypatch.setattr(
+        weekly_cycle_module, "_send_alert_best_effort", lambda event, message: alerts.append((event, message))
+    )
+
+    run_weekly_cycle(
+        data_root=data_root, start_date=date(2026, 8, 10), drive_uploader=MockDriveUploader()
+    )
+
+    assert len(alerts) == 1
+    event, message = alerts[0]
+    assert event == "weekly_image_fallback_rate"
+    assert f"{len(WEEKLY_CADENCE_ORDER) * 2}/{len(WEEKLY_CADENCE_ORDER) * 2 * 2} posts" in message
+    assert "monday/facebook" in message
+    assert "monday/instagram" not in message
+
+
+def test_weekly_cycle_does_not_alert_when_every_post_got_a_real_image(tmp_path: Path, monkeypatch) -> None:
+    data_root = _tmp_data_root(tmp_path)
+
+    def _fake_run_daily_cycle(day: str, **kwargs):
+        return DailyCycleResult(
+            day=day,
+            topic={"topic": "ok"},
+            publications=[{"day": day, "platform": "facebook", "content": {"image_is_fallback": False}}],
+        )
+
+    monkeypatch.setattr(weekly_cycle_module, "run_daily_cycle", _fake_run_daily_cycle)
+
+    alerts: list[tuple[str, str]] = []
+    monkeypatch.setattr(
+        weekly_cycle_module, "_send_alert_best_effort", lambda event, message: alerts.append((event, message))
+    )
+
+    run_weekly_cycle(
+        data_root=data_root, start_date=date(2026, 8, 10), drive_uploader=MockDriveUploader()
+    )
+
+    assert alerts == []

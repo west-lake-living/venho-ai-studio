@@ -13,3 +13,14 @@ assets:
   # Provisional on the same terms as the two above -- first usable lobby
   # shot, not a QC'd pick. Added 2026-08-06 with venho_lobby_cozy.
   venho_lobby_approved: assets/raw/lobby/IMG_5175.jpeg
+  # Added 2026-09-01: the two `westlake` scenarios (street + landscape) had
+  # reference_asset_ids: [] since this file was written, so gpt-image-2 was
+  # drawing Ho Tay from text alone and kept inventing a modern glass
+  # high-rise skyline -- the `no modern glass high-rise backdrop` curated
+  # rule then killed 16/16 of those generations (2026-08-27 investigation).
+  # Picked the two `assets/raw/westlake/` shots where the far shore reads as
+  # low-rise (matches CLAUDE.md's Ho Tay Identity Block), not the ones where
+  # towers dominate the frame -- same provisional-pick basis as the other
+  # entries here, not a QC'd choice.
+  venho_street_railing_approved: assets/raw/westlake/IMG_5127.jpg
+  venho_lake_landscape_approved: assets/raw/westlake/IMG_7204.jpeg

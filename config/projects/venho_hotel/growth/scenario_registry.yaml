@@ -61,18 +61,21 @@ scenarios:
     dna_subject: westlake
     environment_reference: null
     dna_version: "2.7"
-    reference_asset_ids: []
+    # Was [] -- text-only generation kept inventing a high-rise skyline and
+    # got killed by the curated forbidden rule every time (2026-09-01 fix).
+    reference_asset_ids: [venho_street_railing_approved]
     required_entities: [west_lake, nguyen_dinh_thi_street]
     forbidden_entities: [green_lamp_post, green_railing]
-    reference_mode: none
+    reference_mode: environment
     linh_an_allowed_actions: [standing, portrait, leaning, cycling, running]
   venho_west_lake_landscape:
     display_name: West Lake landscape
     dna_subject: westlake
     environment_reference: null
     dna_version: "2.7"
-    reference_asset_ids: []
+    # Was [] -- same fix as venho_nguyen_dinh_thi_street above.
+    reference_asset_ids: [venho_lake_landscape_approved]
     required_entities: [west_lake]
     forbidden_entities: [tourist_postcard_aesthetic, modern_highrise_backdrop]
-    reference_mode: none
+    reference_mode: environment
     linh_an_allowed_actions: []

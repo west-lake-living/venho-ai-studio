@@ -13,6 +13,7 @@ from growth_orchestrator.application.daily_cycle import (
     CADENCE_DAYS,
     SPECIAL_CADENCE_DAY,
     DailyCycleResult,
+    _send_alert_best_effort,
     run_daily_cycle,
 )
 from growth_orchestrator.application.manage_slots import ensure_slot_horizon
@@ -263,6 +264,8 @@ def run_weekly_cycle(
 
     job_store.complete(week_key)
 
+    _alert_on_image_fallback_rate(results)
+
     try:
         # Re-check the horizon this run just (re)ensured (PB-003) -- best
         # effort, never blocks a week that already generated successfully.
@@ -273,3 +276,32 @@ def run_weekly_cycle(
         pass
 
     return WeeklyCycleResult(days=results)
+
+
+def _alert_on_image_fallback_rate(results: list[DailyCycleResult]) -> None:
+    """Tell Harry when this week's drafts leaned on rotated stock photos.
+
+    Why (2026-09-01): `image_is_fallback` has been on every publication's
+    `content` since 2026-08-06, but nothing ever read it outside the
+    dashboard -- a week where every AI generation lost to a budget cap,
+    a DNA/reference mismatch, or an exhausted Drive-upload retry queued a
+    full batch of "no new photo" posts and nothing said so. Harry only
+    caught it by noticing the same seven photos on Facebook (2026-09-01
+    investigation). One summary per run, not one alert per fallback post:
+    a normal week already has some fallback rows (image generation is
+    best-effort by design), so a per-row alert would just be noise: what's
+    actually informative is the week's rate.
+    """
+    publications = [pub for day in results for pub in day.publications if isinstance(pub.get("content"), dict)]
+    if not publications:
+        return
+    fallback = [pub for pub in publications if pub["content"].get("image_is_fallback")]
+    if not fallback:
+        return
+    by_day = sorted({f"{pub.get('day')}/{pub.get('platform')}" for pub in fallback})
+    _send_alert_best_effort(
+        "weekly_image_fallback_rate",
+        f"VENHO Growth: {len(fallback)}/{len(publications)} posts this run used a rotated "
+        f"hotel photo instead of a new AI image ({', '.join(by_day)}). Check budget cap, "
+        "DNA/reference mismatch, or Drive upload errors in the run log.",
+    )
