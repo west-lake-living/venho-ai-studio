@@ -1,5 +1,34 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-09-01 — Candidate v3 R1-P5-R1 provider recovery probe blocked
+
+`Candidate v3 Quality Remediation R1 / R1-P5-R1-PROVIDER-RECOVERY-PROBE =
+PROVIDER_BLOCKED`.
+
+- Explicit human authorization `PROVIDER_RECOVERY_RECHECK_AUTHORIZED=TRUE` was
+  used. The first local preflight attempt correctly made zero provider calls
+  but exposed an incorrect test filename in the new harness; its evidence is
+  preserved. The corrected preflight passed `36` tests, compileall, and
+  `git diff --check` before live execution.
+- One and only one live probe ran on the existing authoritative Gemini
+  `gemini-flash-latest` / `FACE_LOCAL/B01/sample-1` path. The probe was capped
+  at one transport attempt and one paid-call budget; it returned `503
+  UNAVAILABLE`. Provider calls `1`, retries `0`, successful responses `0`,
+  failed responses `1`, with no raw or parsed response available.
+- Recovery gate transitioned
+  `ACTIVE -> RECOVERY_CHECK_AUTHORIZED -> RECOVERY_PROBE_IN_PROGRESS ->
+  ACTIVE`. Recovery is not proven; hold remains active. No second probe, bulk
+  evaluation, fallback provider/model, GPU, Nano, generation, or promotion was
+  performed.
+- State integrity remains: `BOUNDARY = 9/9 PASS`, FACE_LOCAL `0/9`,
+  SCENARIO_GLOBAL `0/9`, pending `18`, quality `UNVALIDATED`, feature flag
+  `OFF`, production promotion `NO`, architecture unchanged.
+- Finalized evidence (copied without another provider call):
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p5-r1-provider-recovery-probe-20260901T095300Z/`.
+
+Keep the provider hold active; a new explicit authorization is required for
+any future recovery probe.
+
 ## 2026-09-01 — Candidate v3 R1-P5 provider recovery gate
 
 `Candidate v3 Quality Remediation R1 / R1-P5 = CLOSED / PASS` for

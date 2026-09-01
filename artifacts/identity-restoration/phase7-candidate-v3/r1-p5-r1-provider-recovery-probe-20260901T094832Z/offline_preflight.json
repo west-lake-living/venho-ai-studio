@@ -1,0 +1,14 @@
+{
+  "approvedModel": "gemini-flash-latest",
+  "approvedProvider": "Gemini",
+  "compileallExitCode": 0,
+  "credentialLoad": "not_performed",
+  "gitDiffCheckExitCode": 0,
+  "gpuJobs": 0,
+  "nanoCalls": 0,
+  "providerCalls": 0,
+  "retries": 0,
+  "status": "BLOCKED_LOCAL_REGRESSION",
+  "testExitCode": 4,
+  "transportAttempts": 1
+}

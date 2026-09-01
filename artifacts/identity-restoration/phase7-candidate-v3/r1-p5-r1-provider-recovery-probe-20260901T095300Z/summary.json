@@ -1,0 +1,65 @@
+{
+  "alternativeProviderCalls": 0,
+  "architectureChanged": false,
+  "boundary": {
+    "fail": 0,
+    "pass": 9
+  },
+  "faceLocal": {
+    "expected": 9,
+    "valid": 0
+  },
+  "failedResponses": 1,
+  "featureFlag": "OFF",
+  "finalizedFrom": "artifacts/identity-restoration/phase7-candidate-v3/r1-p5-r1-provider-recovery-probe-20260901T094854Z",
+  "gate": {
+    "authorization": {
+      "accepted": true,
+      "name": "PROVIDER_RECOVERY_RECHECK_AUTHORIZED",
+      "rawValuePresent": true
+    },
+    "bulkEvaluation": "BLOCKED_IN_R1_P5",
+    "maxRecoveryProbes": 1,
+    "model": "gemini-flash-latest",
+    "pendingAuthoritativeEvaluations": 18,
+    "probeCount": 1,
+    "provider": "Gemini",
+    "state": "ACTIVE",
+    "transitions": [
+      {
+        "from": "ACTIVE",
+        "reason": "explicit_human_authorization",
+        "to": "RECOVERY_CHECK_AUTHORIZED"
+      },
+      {
+        "from": "RECOVERY_CHECK_AUTHORIZED",
+        "reason": "single_minimal_probe_started",
+        "to": "RECOVERY_PROBE_IN_PROGRESS"
+      },
+      {
+        "from": "RECOVERY_PROBE_IN_PROGRESS",
+        "reason": "recovery_criteria_not_proven",
+        "to": "ACTIVE"
+      }
+    ]
+  },
+  "gpuJobs": 0,
+  "isProviderRecovered": false,
+  "nanoCalls": 0,
+  "nextAction": "KEEP_PROVIDER_HOLD_ACTIVE",
+  "pendingAuthoritativeEvaluations": 18,
+  "productionPromotion": "NO",
+  "providerCalls": 1,
+  "providerHold": "ACTIVE",
+  "providerRecoveryStatus": "PROVIDER_BLOCKED",
+  "qualityDisposition": "UNVALIDATED",
+  "retries": 0,
+  "scenarioGlobal": {
+    "expected": 9,
+    "valid": 0
+  },
+  "status": "PROVIDER_BLOCKED",
+  "successfulResponses": 0,
+  "taskId": "R1-P5-R1-PROVIDER-RECOVERY-PROBE",
+  "transportAttempts": 1
+}

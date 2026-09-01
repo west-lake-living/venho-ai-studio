@@ -19,6 +19,25 @@ RETRYABLE_TRANSPORT_FAILURES = frozenset({"PROVIDER_503", "PROVIDER_429", "PROVI
 TRANSPORT_RETRY_BACKOFF_SECONDS = 0.25
 
 
+def configured_transport_attempts() -> int:
+    """Return the bounded transport budget for this invocation.
+
+    The normal validator contract remains two attempts. Recovery probes can
+    explicitly lower the budget to one without changing provider behavior,
+    schema, prompts, or model selection.
+    """
+    raw = os.environ.get("GEMINI_MAX_TRANSPORT_ATTEMPTS")
+    if raw is None:
+        return MAX_TRANSPORT_ATTEMPTS_PER_LOGICAL_SAMPLE
+    try:
+        attempts = int(raw)
+    except ValueError as exc:
+        raise RuntimeError("GEMINI_MAX_TRANSPORT_ATTEMPTS must be a positive integer") from exc
+    if attempts < 1:
+        raise RuntimeError("GEMINI_MAX_TRANSPORT_ATTEMPTS must be a positive integer")
+    return attempts
+
+
 def classify_gemini_failure(error: Exception) -> str:
     """Map transport/contract failures to the frozen Validator classes."""
     text = str(error).upper()
@@ -123,7 +142,7 @@ class GeminiVisionProvider:
         config = self._generate_config(system_prompt, response_schema)
         self.last_raw_response = None
         self._last_response = None
-        for transport_attempt in range(1, MAX_TRANSPORT_ATTEMPTS_PER_LOGICAL_SAMPLE + 1):
+        for transport_attempt in range(1, configured_transport_attempts() + 1):
             self.last_transport_attempt_index = transport_attempt
             request_started_at = datetime.now(timezone.utc).isoformat()
             self._emit_transport_event({
@@ -163,7 +182,7 @@ class GeminiVisionProvider:
                     "schemaStatus": "not_attempted", "errorCode": self.last_failure_class,
                     "error": str(exc), "retryable": self.last_failure_class in RETRYABLE_TRANSPORT_FAILURES,
                 })
-                if self.last_failure_class in RETRYABLE_TRANSPORT_FAILURES and transport_attempt < MAX_TRANSPORT_ATTEMPTS_PER_LOGICAL_SAMPLE:
+                if self.last_failure_class in RETRYABLE_TRANSPORT_FAILURES and transport_attempt < configured_transport_attempts():
                     time.sleep(TRANSPORT_RETRY_BACKOFF_SECONDS * transport_attempt)
                     continue
                 raise

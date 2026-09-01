@@ -1,0 +1,12 @@
+{
+  "algorithm": "SHA-256",
+  "count": 6,
+  "files": {
+    "baseline.json": "e09581b65a45676d48281557c28299e73a9f3437893ab4685d59f819fd3ee4bf",
+    "compileall.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "git_diff_check.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "offline_preflight.json": "2333620f3db807aa45d849a34e724cdc3b319ea6c8349605b5f4807d6cf2cf11",
+    "summary.json": "fba3ffac326398148db7c2d39bc71b17d3f52f212fe33f032439aa24b7e95585",
+    "test_results.txt": "e1319bf83363b21073f5905379ea1d323d4a95fbf7daf44b6327730d3fecd484"
+  }
+}
