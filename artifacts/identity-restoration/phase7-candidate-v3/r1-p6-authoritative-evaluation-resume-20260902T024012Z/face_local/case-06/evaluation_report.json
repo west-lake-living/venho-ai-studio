@@ -1,0 +1,171 @@
+{
+  "allowed_imperfections_check": [],
+  "artifact_ref": {
+    "file": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/phase7-candidate-v3/phase7-diagnostic-20260828/B06-attempt-1/restored-canonical.png",
+    "hash": "sha256:2c57e94a3bcd2c1845802b6988c0971f9736b1faea8e82f9c7e9bcdb1eeeaf46",
+    "type": "face"
+  },
+  "category_scores": {
+    "eyes_and_brows": 90.0,
+    "facial_shape": 92.0,
+    "mouth_and_chin": 89.0,
+    "nose": 88.0,
+    "technical_quality": 93.0
+  },
+  "contract_refs": null,
+  "contract_version": "1.0",
+  "dna_match_score": 90.35,
+  "forbidden_violations": [],
+  "generated_at": "2026-09-02T09:40:36.238577",
+  "issues": [],
+  "kill_switch": {
+    "reason": "",
+    "triggered": false
+  },
+  "module": "validator_studio",
+  "observer": {
+    "model": "configured",
+    "provider": "gemini",
+    "samples": 1
+  },
+  "overall_score": 90.35,
+  "project": "venho_hotel",
+  "prompt_ref": null,
+  "raw_observation": {
+    "gates": [
+      {
+        "evidence": "Facial contours, almond eye shape, eyebrow alignment, and philtrum-to-chin proportions closely correspond to the reference image.",
+        "gate": "identity_structure",
+        "passed": true,
+        "reason": "The candidate matches the structural geometry of the authoritative reference (soft oval face, delicate chin, facial landmarks, and nose bridge alignment)."
+      },
+      {
+        "evidence": "Almond horizontal emphasis with consistent spacing and natural opening ratio matching Reference A2.",
+        "gate": "eye_ratio",
+        "passed": true,
+        "reason": "Eye shape and spacing adhere to the approved character design."
+      },
+      {
+        "evidence": "Skin maintains natural realistic texture, makeup is subtle, and no heavy styling, glasses, or tattoos are observed.",
+        "gate": "forbidden_traits",
+        "passed": true,
+        "reason": "No forbidden traits are present."
+      }
+    ],
+    "notes": [
+      "Slight variation in smile intensity (subtle open vs closed lip corner extension) within acceptable variable range.",
+      "Strong fidelity to facial landmarks and core Face DNA structure.",
+      "gemini face observation; grounding/web search disabled by prompt contract",
+      "no real-person or celebrity matching requested",
+      "compared against 1 approved reference image(s)"
+    ],
+    "weighted_scores": {
+      "eyes_and_brows": 90.0,
+      "facial_shape": 92.0,
+      "mouth_and_chin": 89.0,
+      "nose": 88.0,
+      "technical_quality": 93.0
+    }
+  },
+  "recommendation": "approve",
+  "section_scores": [
+    {
+      "category": "face_gate",
+      "evidence": "Facial contours, almond eye shape, eyebrow alignment, and philtrum-to-chin proportions closely correspond to the reference image.",
+      "key": "identity_structure",
+      "match_state": null,
+      "reason": "The candidate matches the structural geometry of the authoritative reference (soft oval face, delicate chin, facial landmarks, and nose bridge alignment).",
+      "score": 100.0,
+      "section": "face_gate",
+      "status": "ok"
+    },
+    {
+      "category": "face_gate",
+      "evidence": "Almond horizontal emphasis with consistent spacing and natural opening ratio matching Reference A2.",
+      "key": "eye_ratio",
+      "match_state": null,
+      "reason": "Eye shape and spacing adhere to the approved character design.",
+      "score": 100.0,
+      "section": "face_gate",
+      "status": "ok"
+    },
+    {
+      "category": "face_gate",
+      "evidence": "Skin maintains natural realistic texture, makeup is subtle, and no heavy styling, glasses, or tattoos are observed.",
+      "key": "forbidden_traits",
+      "match_state": null,
+      "reason": "No forbidden traits are present.",
+      "score": 100.0,
+      "section": "face_gate",
+      "status": "ok"
+    },
+    {
+      "category": "facial_shape",
+      "evidence": "",
+      "key": "facial_shape",
+      "match_state": null,
+      "reason": "Weighted face rubric score.",
+      "score": 92.0,
+      "section": "face_weighted",
+      "status": "ok"
+    },
+    {
+      "category": "eyes_and_brows",
+      "evidence": "",
+      "key": "eyes_and_brows",
+      "match_state": null,
+      "reason": "Weighted face rubric score.",
+      "score": 90.0,
+      "section": "face_weighted",
+      "status": "ok"
+    },
+    {
+      "category": "nose",
+      "evidence": "",
+      "key": "nose",
+      "match_state": null,
+      "reason": "Weighted face rubric score.",
+      "score": 88.0,
+      "section": "face_weighted",
+      "status": "warning"
+    },
+    {
+      "category": "mouth_and_chin",
+      "evidence": "",
+      "key": "mouth_and_chin",
+      "match_state": null,
+      "reason": "Weighted face rubric score.",
+      "score": 89.0,
+      "section": "face_weighted",
+      "status": "warning"
+    },
+    {
+      "category": "technical_quality",
+      "evidence": "",
+      "key": "technical_quality",
+      "match_state": null,
+      "reason": "Weighted face rubric score.",
+      "score": 93.0,
+      "section": "face_weighted",
+      "status": "ok"
+    }
+  ],
+  "source_knowledge": [
+    {
+      "dna_contract_version": "1.1",
+      "dna_version": "1.1",
+      "file": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/data/projects/venho_hotel/knowledge/VENHO_HOTEL_LINH_AN_DNA.json",
+      "hash": "sha256:71f839dff776ec6d6d085c5a1ab928295af8c32a9699f7929d78b04807ec0075"
+    }
+  ],
+  "subject": "linh_an",
+  "validation_notes": [
+    "Slight variation in smile intensity (subtle open vs closed lip corner extension) within acceptable variable range.",
+    "Strong fidelity to facial landmarks and core Face DNA structure.",
+    "gemini face observation; grounding/web search disabled by prompt contract",
+    "no real-person or celebrity matching requested",
+    "compared against 1 approved reference image(s)"
+  ],
+  "validation_type": "face",
+  "verdict": "approve"
+}

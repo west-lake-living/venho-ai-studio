@@ -1,0 +1,33 @@
+{
+  "gates": [
+    {
+      "evidence": "Direct geometric match to Image 2 with consistent eye placement, nose proportion, and jaw contours.",
+      "gate": "identity_structure",
+      "passed": true,
+      "reason": "Candidate closely reproduces the reference character's bone structure, oval facial shape, jawline, cheek fullness, nose bridge, and lip contour."
+    },
+    {
+      "evidence": "Slightly narrow, elongated almond eyes with brown irises consistent with reference proportions.",
+      "gate": "eye_ratio",
+      "passed": true,
+      "reason": "Eye shape, intercanthal distance, and horizontal almond proportions remain within the approved Face DNA design."
+    },
+    {
+      "evidence": "Natural skin texture and realistic, delicate makeup.",
+      "gate": "forbidden_traits",
+      "passed": true,
+      "reason": "No forbidden character traits, heavy makeup, tattoos, or unnatural doll-like skin are present."
+    }
+  ],
+  "notes": [
+    "High identity consistency with reference image 2 across all key facial landmarks.",
+    "Lighting and camera angle show slight variation but facial structure remains firmly preserved."
+  ],
+  "weighted_scores": {
+    "eyes_and_brows": 90.0,
+    "facial_shape": 92.0,
+    "mouth_and_chin": 91.0,
+    "nose": 93.0,
+    "technical_quality": 95.0
+  }
+}

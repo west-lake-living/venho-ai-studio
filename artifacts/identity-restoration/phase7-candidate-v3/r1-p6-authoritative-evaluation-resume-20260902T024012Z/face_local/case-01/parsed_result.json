@@ -1,0 +1,33 @@
+{
+  "gates": [
+    {
+      "evidence": "Matches the soft oval face contour, cheek shape, delicate pointed chin, nose bridge profile, and lip structure.",
+      "gate": "identity_structure",
+      "passed": true,
+      "reason": "Candidate displays consistent facial structural geometry matching the reference character Linh An."
+    },
+    {
+      "evidence": "Almond eye shape with warm brown irises and correct inter-ocular distance relative to face width.",
+      "gate": "eye_ratio",
+      "passed": true,
+      "reason": "Eye shape and spacing adhere directly to approved almond horizontal proportions."
+    },
+    {
+      "evidence": "Realistic skin texture, natural makeup, appropriate ethnic features, no glasses or tattoos.",
+      "gate": "forbidden_traits",
+      "passed": true,
+      "reason": "No forbidden traits detected."
+    }
+  ],
+  "notes": [
+    "High structural fidelity to authoritative reference A2 Front.",
+    "Natural skin lighting and microtexture well-preserved."
+  ],
+  "weighted_scores": {
+    "eyes_and_brows": 89.0,
+    "facial_shape": 91.0,
+    "mouth_and_chin": 90.0,
+    "nose": 92.0,
+    "technical_quality": 95.0
+  }
+}

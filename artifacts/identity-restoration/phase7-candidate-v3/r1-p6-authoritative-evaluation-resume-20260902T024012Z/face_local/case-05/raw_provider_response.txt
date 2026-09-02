@@ -1,0 +1,33 @@
+{
+  "gates": [
+    {
+      "gate": "identity_structure",
+      "passed": true,
+      "reason": "Facial structure closely matches the reference image, including the jawline, soft cheek contours, eye shape, nose profile, and delicate chin.",
+      "evidence": "Candidate exhibits consistent bone structure, facial proportions, lip shape, and eye characteristics aligned with Reference 2."
+    },
+    {
+      "gate": "eye_ratio",
+      "passed": true,
+      "reason": "Eyes have the appropriate almond shape, natural horizontal emphasis, and proportion relative to the face structure.",
+      "evidence": "Almond eye shape with warm brown irises and proper lid opening consistent with the character design."
+    },
+    {
+      "gate": "forbidden_traits",
+      "passed": true,
+      "reason": "No forbidden traits (heavy contouring, plastic skin, glasses, tattoos, exaggerated Western features) are present.",
+      "evidence": "Natural skin texture and subtle makeup without any prohibited items or styles."
+    }
+  ],
+  "weighted_scores": {
+    "facial_shape": 88,
+    "eyes_and_brows": 86,
+    "nose": 85,
+    "mouth_and_chin": 87,
+    "technical_quality": 84
+  },
+  "notes": [
+    "Candidate is shown in a three-quarter angle profile view.",
+    "Facial landmarks are clearly defined and align well with the reference."
+  ]
+}

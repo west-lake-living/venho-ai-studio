@@ -1,5 +1,35 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-09-02 — Candidate v3 R1-P6 authoritative evaluation completed with quality FAIL
+
+`Candidate v3 Quality Remediation R1 / R1-P6-AUTHORITATIVE-EVALUATION-RESUME =
+CLOSED / PASS`; `QUALITY_DISPOSITION = FAIL`.
+
+- Explicit human authorization `AUTHORITATIVE_EVALUATION_RESUME_AUTHORIZED=TRUE`
+  was used. Start state was R1-P5-R4 PASS, Gemini
+  `gemini-flash-latest`, provider hold RECOVERED, boundary 9/9 PASS, and 18
+  pending authoritative evaluations.
+- Offline preflight passed: focused evaluator, provider gate, schema/DTO,
+  parser, lineage, invalid-response, failure-classification, partial-run, and
+  aggregation tests recorded `81 passed`; compileall and `git diff --check`
+  also passed.
+- Evaluation ran sequentially. FACE_LOCAL completed 9 valid cases, the
+  stability gate passed, and SCENARIO_GLOBAL completed 9 valid cases. Exactly
+  18 Gemini calls were made with 0 retries; all 18 responses were valid and
+  have separate raw/parsed evidence and verified hashes.
+- Existing quality aggregation returned FACE_LOCAL `7 pass / 2 fail` and
+  SCENARIO_GLOBAL `6 pass / 3 fail`, therefore overall quality is `FAIL`.
+  This is a completed evaluation result, not a remediation decision.
+- Pending authoritative evaluations are `0`; boundary remains 9/9 PASS.
+  Provider hold remains RECOVERED, feature flag OFF, promotion NO, and
+  architecture unchanged. No provider/model switch, fallback, GPU, Nano,
+  generation, rubric, threshold, or schema change occurred.
+- Evidence hashes verify `84/84` files:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p6-authoritative-evaluation-resume-20260902T024012Z/`.
+
+Any remediation or production promotion requires a separate explicit
+authorization.
+
 ## 2026-09-02 — Candidate v3 R1-P5-R4 provider recovery recheck passed
 
 `Candidate v3 Quality Remediation R1 / R1-P5-R4-PROVIDER-RECOVERY-RECHECK =

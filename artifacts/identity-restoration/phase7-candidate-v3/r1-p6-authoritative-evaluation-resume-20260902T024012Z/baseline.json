@@ -1,0 +1,48 @@
+{
+  "authorization": {
+    "name": "AUTHORITATIVE_EVALUATION_RESUME_AUTHORIZED",
+    "receivedValue": "TRUE",
+    "requiredValue": "TRUE"
+  },
+  "capturedAt": "2026-09-02T02:40:12.530444+00:00",
+  "limits": {
+    "execution": "sequential",
+    "faceLocalCases": 9,
+    "maxProviderCalls": 18,
+    "retries": 0,
+    "scenarioGlobalCases": 9
+  },
+  "recoveryEvidence": {
+    "hashManifestSha256": "60fa8096015f165c7c47942025dedb491e60ccab1cca8741c6ffc9876701108a",
+    "model": "gemini-flash-latest",
+    "path": "artifacts/identity-restoration/phase7-candidate-v3/r1-p5-r4-provider-recovery-recheck-20260902T010010Z",
+    "provider": "Gemini",
+    "providerHold": "RECOVERED",
+    "status": "PASS",
+    "summarySha256": "477b01593e44f0dc83faee3db4926e116b8652835432e9f04b7e35c34a0cf700"
+  },
+  "startState": {
+    "architectureChanged": false,
+    "boundary": {
+      "fail": 0,
+      "pass": 9
+    },
+    "faceLocal": {
+      "expected": 9,
+      "valid": 0
+    },
+    "featureFlag": "OFF",
+    "model": "gemini-flash-latest",
+    "pendingAuthoritativeEvaluations": 18,
+    "productionPromotion": "NO",
+    "provider": "Gemini",
+    "providerHold": "RECOVERED",
+    "qualityDisposition": "UNVALIDATED",
+    "r1P5R4": "CLOSED / PASS",
+    "scenarioGlobal": {
+      "expected": 9,
+      "valid": 0
+    }
+  },
+  "taskId": "R1-P6-AUTHORITATIVE-EVALUATION-RESUME"
+}

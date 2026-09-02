@@ -1,0 +1,60 @@
+{
+  "authorityProfile": "canonical_default",
+  "callStatus": "SUCCESS",
+  "caseId": "B07",
+  "descriptor": {
+    "artifactSha256": "ddc3253bde488bbd7f5f709a1c5b61c83bc208e1b775b6d5d53f3952e2338470",
+    "authorityProfile": "canonical_default",
+    "lane": "FACE_LOCAL",
+    "model": "gemini-flash-latest",
+    "provider": "gemini",
+    "referenceSha256": "1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d",
+    "retryPolicy": {
+      "backoffSeconds": [
+        0.25
+      ],
+      "jitter": false,
+      "maxTransportAttemptsPerLogicalSample": 2,
+      "nonRetryable": [
+        "LOCAL_SCHEMA_BUILD_FAIL",
+        "LOCAL_REQUEST_SERIALIZATION_FAIL",
+        "PROVIDER_TRUNCATED_RESPONSE",
+        "PROVIDER_RESPONSE_SCHEMA_FAIL",
+        "AUTH_FAILURE",
+        "UNSUPPORTED_MODEL",
+        "MALFORMED_LOCAL_INPUT"
+      ],
+      "retryable": [
+        "PROVIDER_503",
+        "PROVIDER_429",
+        "PROVIDER_TIMEOUT"
+      ]
+    },
+    "sample": 1,
+    "sampleId": "B07",
+    "validatorProfile": null,
+    "validatorVersion": "validator-studio-existing-production-entrypoint"
+  },
+  "evaluatorVersion": "validator-studio-existing-production-entrypoint",
+  "inputId": "artifacts/identity-restoration/phase7-candidate-v3/phase7-benchmark-20260828/B07-attempt-1/restored-canonical.png",
+  "inputSha256": "ddc3253bde488bbd7f5f709a1c5b61c83bc208e1b775b6d5d53f3952e2338470",
+  "lane": "FACE_LOCAL",
+  "lineage": "VERIFIED",
+  "model": "gemini-flash-latest",
+  "parsedHash": "6a83aa1b70346698f179481868cff675e530ea1b31a85c9696d69659779264e5",
+  "provider": "Gemini",
+  "qualityPass": false,
+  "rawHash": "1326bc9f7c7d34f4b5300c37b7a94dc48d49c574cd8ae4a11a5cc89b93f0192d",
+  "referenceArtifacts": [
+    {
+      "path": "assets/linh_an/A2_Front.png",
+      "sha256": "1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d"
+    }
+  ],
+  "reportHash": "01ed49e39e5524ae7c11ee2ac862d1a32b2e9b7af53bd76d1e4db0acdc8ba359",
+  "score": 89.25,
+  "taskId": "R1-P6-AUTHORITATIVE-EVALUATION-RESUME",
+  "validResponse": true,
+  "validatorProfile": null,
+  "verdict": "revise"
+}

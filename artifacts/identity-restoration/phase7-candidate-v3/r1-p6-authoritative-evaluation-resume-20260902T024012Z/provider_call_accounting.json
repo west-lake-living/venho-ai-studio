@@ -1,0 +1,14 @@
+{
+  "alternativeProviderCalls": 0,
+  "faceLocalCalls": 9,
+  "gpuJobs": 0,
+  "ledgerIntents": 18,
+  "ledgerResults": 18,
+  "maxProviderCalls": 18,
+  "model": "gemini-flash-latest",
+  "nanoCalls": 0,
+  "provider": "Gemini",
+  "providerCalls": 18,
+  "retries": 0,
+  "scenarioGlobalCalls": 9
+}

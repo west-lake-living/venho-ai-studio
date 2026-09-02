@@ -1,0 +1,33 @@
+{
+  "gates": [
+    {
+      "gate": "identity_structure",
+      "passed": true,
+      "reason": "Facial structure closely aligns with the reference: soft elongated oval face, delicate pointed chin, thin upper eyelid, and matching nose and brow features.",
+      "evidence": "Cheek contour, jawline tapering, and eyebrow curvature match the authoritative reference."
+    },
+    {
+      "gate": "eye_ratio",
+      "passed": true,
+      "reason": "Eye shape and spacing remain consistent with the almond horizontal emphasis and eye opening.",
+      "evidence": "Almond eye shape with warm brown irises and proper inter-canthal distance."
+    },
+    {
+      "gate": "forbidden_traits",
+      "passed": true,
+      "reason": "No forbidden traits (heavy contouring, westernized facial structure, extreme round eyes, unnatural doll skin) are present.",
+      "evidence": "Natural skin texture, delicate Asian facial features, and subtle makeup."
+    }
+  ],
+  "weighted_scores": {
+    "facial_shape": 92,
+    "eyes_and_brows": 90,
+    "nose": 93,
+    "mouth_and_chin": 88,
+    "technical_quality": 85
+  },
+  "notes": [
+    "Smile introduces slight dynamic shifts in mouth corner and cheek fullness, which are expected and within acceptable variable bounds.",
+    "Landmarks are clear and suitable for identity verification."
+  ]
+}

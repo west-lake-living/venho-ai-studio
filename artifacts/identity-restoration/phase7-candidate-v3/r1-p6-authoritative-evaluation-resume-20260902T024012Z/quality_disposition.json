@@ -1,0 +1,15 @@
+{
+  "aggregationPolicy": "existing validator score threshold >= 90.0 per authoritative lane; no new rule",
+  "faceLocal": {
+    "fail": 2,
+    "pass": 7,
+    "valid": 9
+  },
+  "qualityDisposition": "FAIL",
+  "scenarioGlobal": {
+    "fail": 3,
+    "pass": 6,
+    "valid": 9
+  },
+  "taskId": "R1-P6-AUTHORITATIVE-EVALUATION-RESUME"
+}

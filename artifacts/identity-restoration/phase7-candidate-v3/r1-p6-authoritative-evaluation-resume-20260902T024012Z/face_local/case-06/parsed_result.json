@@ -1,0 +1,33 @@
+{
+  "gates": [
+    {
+      "evidence": "Facial contours, almond eye shape, eyebrow alignment, and philtrum-to-chin proportions closely correspond to the reference image.",
+      "gate": "identity_structure",
+      "passed": true,
+      "reason": "The candidate matches the structural geometry of the authoritative reference (soft oval face, delicate chin, facial landmarks, and nose bridge alignment)."
+    },
+    {
+      "evidence": "Almond horizontal emphasis with consistent spacing and natural opening ratio matching Reference A2.",
+      "gate": "eye_ratio",
+      "passed": true,
+      "reason": "Eye shape and spacing adhere to the approved character design."
+    },
+    {
+      "evidence": "Skin maintains natural realistic texture, makeup is subtle, and no heavy styling, glasses, or tattoos are observed.",
+      "gate": "forbidden_traits",
+      "passed": true,
+      "reason": "No forbidden traits are present."
+    }
+  ],
+  "notes": [
+    "Slight variation in smile intensity (subtle open vs closed lip corner extension) within acceptable variable range.",
+    "Strong fidelity to facial landmarks and core Face DNA structure."
+  ],
+  "weighted_scores": {
+    "eyes_and_brows": 90.0,
+    "facial_shape": 92.0,
+    "mouth_and_chin": 89.0,
+    "nose": 88.0,
+    "technical_quality": 93.0
+  }
+}

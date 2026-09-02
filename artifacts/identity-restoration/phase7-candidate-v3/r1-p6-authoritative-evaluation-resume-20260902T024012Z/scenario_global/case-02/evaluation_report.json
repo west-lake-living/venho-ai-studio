@@ -1,0 +1,567 @@
+{
+  "allowed_imperfections_check": [
+    {
+      "item": "very subtle natural eye asymmetry is correct and required",
+      "penalized": false,
+      "present": true,
+      "reason": "Subtle, organic asymmetry is visible between the left and right eyes."
+    },
+    {
+      "item": "slightly uneven lip corners acceptable — natural upward tendency",
+      "penalized": false,
+      "present": true,
+      "reason": "Lip line exhibits realistic micro-asymmetry."
+    },
+    {
+      "item": "natural skin texture with realistic pores acceptable — no airbrushing",
+      "penalized": false,
+      "present": true,
+      "reason": "Fine facial details and subtle pore texture are preserved under indoor window lighting."
+    },
+    {
+      "item": "slight hair strand variation acceptable — natural look",
+      "penalized": false,
+      "present": true,
+      "reason": "Individual loose hair strands and organic wave texture are present across the hairstyle."
+    }
+  ],
+  "artifact_ref": {
+    "file": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/phase7-candidate-v3/r1-p1-boundary-remediation-20260828/B02/inverse-composite-remediated.png",
+    "hash": "sha256:8d95919b3b169f93d4292383cc6904279c9238e31898f4efb5e92e5cc2b11096",
+    "type": "image"
+  },
+  "category_scores": {
+    "authenticity": 90.57,
+    "composition": 90.57,
+    "dna_match": 90.57,
+    "forbidden": 100.0,
+    "lighting": 90.57,
+    "material": 90.57,
+    "technical_quality": 90.57
+  },
+  "contract_refs": null,
+  "contract_version": "1.0",
+  "dna_match_score": 90.57,
+  "forbidden_violations": [
+    {
+      "confidence": 0.95,
+      "reason": "Skin shows natural fine texture, lighting gradations, and anatomical realism.",
+      "rule": "no plastic skin texture or doll face",
+      "severity": "high",
+      "source": "curated",
+      "violated": false
+    },
+    {
+      "confidence": 0.95,
+      "reason": "Makeup is soft, understated, and natural-looking without heavy harsh lines or excessive contour.",
+      "rule": "no exaggerated makeup or heavy contouring",
+      "severity": "high",
+      "source": "curated",
+      "violated": false
+    },
+    {
+      "confidence": 0.88,
+      "reason": "Features are distinct with specific structural realism.",
+      "rule": "no generic Asian face (pan-Asian ambiguity)",
+      "severity": "high",
+      "source": "curated",
+      "violated": false
+    },
+    {
+      "confidence": 0.98,
+      "reason": "Facial structure retains natural East/Southeast Asian anatomical characteristics.",
+      "rule": "no Western facial structure",
+      "severity": "high",
+      "source": "curated",
+      "violated": false
+    },
+    {
+      "confidence": 0.92,
+      "reason": "Face displays natural minor asymmetry in eyebrow height, eye opening, and head angle.",
+      "rule": "no symmetrical perfect face (lacks natural asymmetry)",
+      "severity": "high",
+      "source": "curated",
+      "violated": false
+    },
+    {
+      "confidence": 0.95,
+      "reason": "Eyes are distinctly almond-shaped with horizontal elongation, not round or exaggerated.",
+      "rule": "no large round eyes (must be long almond, horizontal emphasis)",
+      "severity": "high",
+      "source": "curated",
+      "violated": false
+    },
+    {
+      "confidence": 0.92,
+      "reason": "Eyebrows have a natural, gentle soft arch without excessive height.",
+      "rule": "no high-arch eyebrows (must be low-position, minimal arch)",
+      "severity": "high",
+      "source": "curated",
+      "violated": false
+    },
+    {
+      "confidence": 0.94,
+      "reason": "Upper eyelid crease is delicate and thin, not heavy or exaggerated.",
+      "rule": "no thick upper eyelid",
+      "severity": "high",
+      "source": "curated",
+      "violated": false
+    },
+    {
+      "confidence": 0.85,
+      "reason": "Appearance is realistic, professional, and consistent with the required individual identity.",
+      "rule": "no generic influencer look — must be distinctly Vietnamese",
+      "severity": "high",
+      "source": "curated",
+      "violated": false
+    }
+  ],
+  "generated_at": "2026-09-02T09:41:08.123633",
+  "issues": [
+    {
+      "issue": "shot_distance does not fully match DNA.",
+      "severity": "medium",
+      "suggestion": "Strengthen prompt/output direction for: portrait_head_shoulders"
+    },
+    {
+      "issue": "hairstyle does not fully match DNA.",
+      "severity": "high",
+      "suggestion": "Strengthen prompt/output direction for: elegant_low_bun"
+    }
+  ],
+  "kill_switch": {
+    "reason": "",
+    "triggered": false
+  },
+  "module": "validator_studio",
+  "observer": {
+    "model": "configured",
+    "provider": "gemini",
+    "samples": 1
+  },
+  "overall_score": 92.46,
+  "project": "venho_hotel",
+  "prompt_ref": null,
+  "raw_observation": {
+    "allowed_imperfections": [
+      {
+        "item": "very subtle natural eye asymmetry is correct and required",
+        "present": true,
+        "reason": "Subtle, organic asymmetry is visible between the left and right eyes."
+      },
+      {
+        "item": "slightly uneven lip corners acceptable — natural upward tendency",
+        "present": true,
+        "reason": "Lip line exhibits realistic micro-asymmetry."
+      },
+      {
+        "item": "natural skin texture with realistic pores acceptable — no airbrushing",
+        "present": true,
+        "reason": "Fine facial details and subtle pore texture are preserved under indoor window lighting."
+      },
+      {
+        "item": "slight hair strand variation acceptable — natural look",
+        "present": true,
+        "reason": "Individual loose hair strands and organic wave texture are present across the hairstyle."
+      }
+    ],
+    "dna_matches": [
+      {
+        "category": "dna_match",
+        "confidence": 0.95,
+        "evidence": "Small metallic/pearl drop earring seen dangling from her ear.",
+        "expected": "small_pearl_drop",
+        "key": "earring_type",
+        "match_state": "match",
+        "observed": "small_pearl_drop",
+        "reason": "A small pearl drop earring is visible on the subject's right earlobe."
+      },
+      {
+        "category": "dna_match",
+        "confidence": 0.98,
+        "evidence": "Long dark wavy hair extending to chest/mid-torso length.",
+        "expected": "long_past_shoulders",
+        "key": "hair_length",
+        "match_state": "match",
+        "observed": "long_past_shoulders",
+        "reason": "Subject's wavy hair cascades well past her shoulders down over her chest."
+      },
+      {
+        "category": "dna_match",
+        "confidence": 0.95,
+        "evidence": "Natural distance between upper eyelid and browline.",
+        "expected": "standard",
+        "key": "eyebrow_position",
+        "match_state": "match",
+        "observed": "standard",
+        "reason": "Eyebrows are set at a standard, natural anatomical height above the orbital rim."
+      },
+      {
+        "category": "dna_match",
+        "confidence": 0.95,
+        "evidence": "Smooth, tapered curve from mandibular angle to chin.",
+        "expected": "soft_feminine",
+        "key": "jaw_line",
+        "match_state": "match",
+        "observed": "soft_feminine",
+        "reason": "The lower jawline is softly contoured without sharp angularity."
+      },
+      {
+        "category": "dna_match",
+        "confidence": 0.95,
+        "evidence": "Horizontal almond elongation, subtle eyelid crease, dark warm brown iris color.",
+        "expected": "long almond eyes, horizontal eye emphasis, slightly narrow eye opening, thin upper eyelid, warm brown irises",
+        "key": "eye_shape",
+        "match_state": "match",
+        "observed": "long almond eyes, horizontal eye emphasis, slightly narrow eye opening, thin upper eyelid, warm brown irises",
+        "reason": "Subject features elongated almond-shaped eyes with subtle double eyelid creases and warm dark brown irises."
+      },
+      {
+        "category": "dna_match",
+        "confidence": 0.92,
+        "evidence": "Curved brown brows with gentle peak and natural taper.",
+        "expected": "medium_arch",
+        "key": "eyebrow_shape",
+        "match_state": "match",
+        "observed": "medium_arch",
+        "reason": "Eyebrows display a gentle, soft medium arch with tapered tails."
+      },
+      {
+        "category": "dna_match",
+        "confidence": 0.95,
+        "evidence": "Neat, narrow nasal bridge with soft tip definition.",
+        "expected": "slim_natural",
+        "key": "nose_bridge",
+        "match_state": "match",
+        "observed": "slim_natural",
+        "reason": "The nasal bridge is slim, straight, and naturally proportioned."
+      },
+      {
+        "category": "dna_match",
+        "confidence": 0.95,
+        "evidence": "Smooth oval perimeter with soft cheek fullness.",
+        "expected": "soft elongated oval face, balanced facial proportions, slightly fuller cheeks",
+        "key": "face_shape",
+        "match_state": "match",
+        "observed": "soft elongated oval face, balanced facial proportions, slightly fuller cheeks",
+        "reason": "Face is an elongated oval shape with soft cheek volume and balanced proportions."
+      },
+      {
+        "category": "dna_match",
+        "confidence": 0.95,
+        "evidence": "Warm light undertones with natural specular highlights across forehead, cheeks, and nose.",
+        "expected": "fair warm ivory skin, healthy natural glow, realistic skin texture",
+        "key": "skin_tone",
+        "match_state": "match",
+        "observed": "fair warm ivory skin, healthy natural glow, realistic skin texture",
+        "reason": "Skin displays a natural warm ivory hue with subtle specular highlights and realistic texture."
+      },
+      {
+        "category": "dna_match",
+        "confidence": 0.9,
+        "evidence": "Framing captures subject from the top of the head down past the waist to the upper thighs.",
+        "expected": "portrait_head_shoulders",
+        "key": "shot_distance",
+        "match_state": "partial",
+        "observed": "three_quarter_medium_shot",
+        "reason": "Shot framing extends down to the hips/upper thighs rather than a close head-and-shoulders crop."
+      },
+      {
+        "category": "dna_match",
+        "confidence": 0.94,
+        "evidence": "Subtly tapered, rounded point at the inferior apex of the jaw.",
+        "expected": "delicate_pointed",
+        "key": "chin_shape",
+        "match_state": "match",
+        "observed": "delicate_pointed",
+        "reason": "Chin tapers into a delicate, slightly pointed feminine shape."
+      },
+      {
+        "category": "dna_match",
+        "confidence": 0.96,
+        "evidence": "Rich dark brown color visible throughout the hair strands.",
+        "expected": "dark_chocolate_brown",
+        "key": "hair_color",
+        "match_state": "match",
+        "observed": "dark_chocolate_brown",
+        "reason": "Hair exhibits deep chocolate brown tones with subtle warm highlights under the lighting."
+      },
+      {
+        "category": "dna_match",
+        "confidence": 0.92,
+        "evidence": "Subtle upward curve at the outer commissures of the mouth.",
+        "expected": "very_subtle_upward",
+        "key": "lip_corners",
+        "match_state": "match",
+        "observed": "very_subtle_upward",
+        "reason": "Lip corners have a mild, natural upward tilt in a relaxed closed-mouth expression."
+      },
+      {
+        "category": "dna_match",
+        "confidence": 0.98,
+        "evidence": "Hair is fully let down framing the face and falling across shoulders and chest.",
+        "expected": "elegant_low_bun",
+        "key": "hairstyle",
+        "match_state": "mismatch",
+        "observed": "long_wavy_hair_down",
+        "reason": "Hair is worn down in loose, cascading waves rather than gathered into an elegant low bun."
+      },
+      {
+        "category": "dna_match",
+        "confidence": 0.96,
+        "evidence": "Proportionally balanced lips with slightly fuller bottom lip and natural contours.",
+        "expected": "natural full lips, slightly thinner upper lip, slightly fuller lower lip, very subtle upward lip corners",
+        "key": "lip_shape",
+        "match_state": "match",
+        "observed": "natural full lips, slightly thinner upper lip, slightly fuller lower lip, very subtle upward lip corners",
+        "reason": "Lips are naturally full with a well-defined cupid's bow, slightly fuller lower lip, and soft pinkish-nude tone."
+      }
+    ],
+    "forbidden": [
+      {
+        "confidence": 0.95,
+        "reason": "Skin shows natural fine texture, lighting gradations, and anatomical realism.",
+        "rule": "no plastic skin texture or doll face",
+        "severity": "high",
+        "source": "curated",
+        "violated": false
+      },
+      {
+        "confidence": 0.95,
+        "reason": "Makeup is soft, understated, and natural-looking without heavy harsh lines or excessive contour.",
+        "rule": "no exaggerated makeup or heavy contouring",
+        "severity": "high",
+        "source": "curated",
+        "violated": false
+      },
+      {
+        "confidence": 0.88,
+        "reason": "Features are distinct with specific structural realism.",
+        "rule": "no generic Asian face (pan-Asian ambiguity)",
+        "severity": "high",
+        "source": "curated",
+        "violated": false
+      },
+      {
+        "confidence": 0.98,
+        "reason": "Facial structure retains natural East/Southeast Asian anatomical characteristics.",
+        "rule": "no Western facial structure",
+        "severity": "high",
+        "source": "curated",
+        "violated": false
+      },
+      {
+        "confidence": 0.92,
+        "reason": "Face displays natural minor asymmetry in eyebrow height, eye opening, and head angle.",
+        "rule": "no symmetrical perfect face (lacks natural asymmetry)",
+        "severity": "high",
+        "source": "curated",
+        "violated": false
+      },
+      {
+        "confidence": 0.95,
+        "reason": "Eyes are distinctly almond-shaped with horizontal elongation, not round or exaggerated.",
+        "rule": "no large round eyes (must be long almond, horizontal emphasis)",
+        "severity": "high",
+        "source": "curated",
+        "violated": false
+      },
+      {
+        "confidence": 0.92,
+        "reason": "Eyebrows have a natural, gentle soft arch without excessive height.",
+        "rule": "no high-arch eyebrows (must be low-position, minimal arch)",
+        "severity": "high",
+        "source": "curated",
+        "violated": false
+      },
+      {
+        "confidence": 0.94,
+        "reason": "Upper eyelid crease is delicate and thin, not heavy or exaggerated.",
+        "rule": "no thick upper eyelid",
+        "severity": "high",
+        "source": "curated",
+        "violated": false
+      },
+      {
+        "confidence": 0.85,
+        "reason": "Appearance is realistic, professional, and consistent with the required individual identity.",
+        "rule": "no generic influencer look — must be distinctly Vietnamese",
+        "severity": "high",
+        "source": "curated",
+        "violated": false
+      }
+    ],
+    "notes": [
+      "Hairstyle is worn down in loose waves rather than in an elegant low bun.",
+      "Shot distance is a medium three-quarter shot rather than a close head-and-shoulders portrait."
+    ]
+  },
+  "recommendation": "approve",
+  "section_scores": [
+    {
+      "category": "dna_match",
+      "evidence": "Small metallic/pearl drop earring seen dangling from her ear.",
+      "key": "earring_type",
+      "match_state": "match",
+      "reason": "A small pearl drop earring is visible on the subject's right earlobe.",
+      "score": 100.0,
+      "section": "dna_match",
+      "status": "ok"
+    },
+    {
+      "category": "dna_match",
+      "evidence": "Long dark wavy hair extending to chest/mid-torso length.",
+      "key": "hair_length",
+      "match_state": "match",
+      "reason": "Subject's wavy hair cascades well past her shoulders down over her chest.",
+      "score": 100.0,
+      "section": "dna_match",
+      "status": "ok"
+    },
+    {
+      "category": "dna_match",
+      "evidence": "Natural distance between upper eyelid and browline.",
+      "key": "eyebrow_position",
+      "match_state": "match",
+      "reason": "Eyebrows are set at a standard, natural anatomical height above the orbital rim.",
+      "score": 100.0,
+      "section": "dna_match",
+      "status": "ok"
+    },
+    {
+      "category": "dna_match",
+      "evidence": "Smooth, tapered curve from mandibular angle to chin.",
+      "key": "jaw_line",
+      "match_state": "match",
+      "reason": "The lower jawline is softly contoured without sharp angularity.",
+      "score": 100.0,
+      "section": "dna_match",
+      "status": "ok"
+    },
+    {
+      "category": "dna_match",
+      "evidence": "Horizontal almond elongation, subtle eyelid crease, dark warm brown iris color.",
+      "key": "eye_shape",
+      "match_state": "match",
+      "reason": "Subject features elongated almond-shaped eyes with subtle double eyelid creases and warm dark brown irises.",
+      "score": 100.0,
+      "section": "dna_match",
+      "status": "ok"
+    },
+    {
+      "category": "dna_match",
+      "evidence": "Curved brown brows with gentle peak and natural taper.",
+      "key": "eyebrow_shape",
+      "match_state": "match",
+      "reason": "Eyebrows display a gentle, soft medium arch with tapered tails.",
+      "score": 100.0,
+      "section": "dna_match",
+      "status": "ok"
+    },
+    {
+      "category": "dna_match",
+      "evidence": "Neat, narrow nasal bridge with soft tip definition.",
+      "key": "nose_bridge",
+      "match_state": "match",
+      "reason": "The nasal bridge is slim, straight, and naturally proportioned.",
+      "score": 100.0,
+      "section": "dna_match",
+      "status": "ok"
+    },
+    {
+      "category": "dna_match",
+      "evidence": "Smooth oval perimeter with soft cheek fullness.",
+      "key": "face_shape",
+      "match_state": "match",
+      "reason": "Face is an elongated oval shape with soft cheek volume and balanced proportions.",
+      "score": 100.0,
+      "section": "dna_match",
+      "status": "ok"
+    },
+    {
+      "category": "dna_match",
+      "evidence": "Warm light undertones with natural specular highlights across forehead, cheeks, and nose.",
+      "key": "skin_tone",
+      "match_state": "match",
+      "reason": "Skin displays a natural warm ivory hue with subtle specular highlights and realistic texture.",
+      "score": 100.0,
+      "section": "dna_match",
+      "status": "ok"
+    },
+    {
+      "category": "dna_match",
+      "evidence": "Framing captures subject from the top of the head down past the waist to the upper thighs.",
+      "key": "shot_distance",
+      "match_state": "partial",
+      "reason": "Shot framing extends down to the hips/upper thighs rather than a close head-and-shoulders crop.",
+      "score": 60.0,
+      "section": "dna_match",
+      "status": "warning"
+    },
+    {
+      "category": "dna_match",
+      "evidence": "Subtly tapered, rounded point at the inferior apex of the jaw.",
+      "key": "chin_shape",
+      "match_state": "match",
+      "reason": "Chin tapers into a delicate, slightly pointed feminine shape.",
+      "score": 100.0,
+      "section": "dna_match",
+      "status": "ok"
+    },
+    {
+      "category": "dna_match",
+      "evidence": "Rich dark brown color visible throughout the hair strands.",
+      "key": "hair_color",
+      "match_state": "match",
+      "reason": "Hair exhibits deep chocolate brown tones with subtle warm highlights under the lighting.",
+      "score": 100.0,
+      "section": "dna_match",
+      "status": "ok"
+    },
+    {
+      "category": "dna_match",
+      "evidence": "Subtle upward curve at the outer commissures of the mouth.",
+      "key": "lip_corners",
+      "match_state": "match",
+      "reason": "Lip corners have a mild, natural upward tilt in a relaxed closed-mouth expression.",
+      "score": 100.0,
+      "section": "dna_match",
+      "status": "ok"
+    },
+    {
+      "category": "dna_match",
+      "evidence": "Hair is fully let down framing the face and falling across shoulders and chest.",
+      "key": "hairstyle",
+      "match_state": "mismatch",
+      "reason": "Hair is worn down in loose, cascading waves rather than gathered into an elegant low bun.",
+      "score": 0.0,
+      "section": "dna_match",
+      "status": "fail"
+    },
+    {
+      "category": "dna_match",
+      "evidence": "Proportionally balanced lips with slightly fuller bottom lip and natural contours.",
+      "key": "lip_shape",
+      "match_state": "match",
+      "reason": "Lips are naturally full with a well-defined cupid's bow, slightly fuller lower lip, and soft pinkish-nude tone.",
+      "score": 100.0,
+      "section": "dna_match",
+      "status": "ok"
+    }
+  ],
+  "source_knowledge": [
+    {
+      "dna_contract_version": "1.1",
+      "dna_version": "1.1",
+      "file": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/data/projects/venho_hotel/knowledge/VENHO_HOTEL_LINH_AN_DNA.json",
+      "hash": "sha256:71f839dff776ec6d6d085c5a1ab928295af8c32a9699f7929d78b04807ec0075"
+    }
+  ],
+  "subject": "linh_an",
+  "validation_notes": [
+    "Hairstyle is worn down in loose waves rather than in an elegant low bun.",
+    "Shot distance is a medium three-quarter shot rather than a close head-and-shoulders portrait."
+  ],
+  "validation_type": "image",
+  "verdict": "approve"
+}

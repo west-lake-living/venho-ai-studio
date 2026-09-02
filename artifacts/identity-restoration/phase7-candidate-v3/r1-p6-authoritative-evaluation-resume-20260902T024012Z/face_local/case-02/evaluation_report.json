@@ -1,0 +1,171 @@
+{
+  "allowed_imperfections_check": [],
+  "artifact_ref": {
+    "file": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/phase7-candidate-v3/phase7-benchmark-20260828/B02-attempt-1/restored-canonical.png",
+    "hash": "sha256:f50741c675d71d6083804b7f3fd7a938f3e51672dee247b7d2da250b756ba937",
+    "type": "face"
+  },
+  "category_scores": {
+    "eyes_and_brows": 90.0,
+    "facial_shape": 92.0,
+    "mouth_and_chin": 91.0,
+    "nose": 93.0,
+    "technical_quality": 95.0
+  },
+  "contract_refs": null,
+  "contract_version": "1.0",
+  "dna_match_score": 91.85,
+  "forbidden_violations": [],
+  "generated_at": "2026-09-02T09:40:21.546358",
+  "issues": [],
+  "kill_switch": {
+    "reason": "",
+    "triggered": false
+  },
+  "module": "validator_studio",
+  "observer": {
+    "model": "configured",
+    "provider": "gemini",
+    "samples": 1
+  },
+  "overall_score": 91.85,
+  "project": "venho_hotel",
+  "prompt_ref": null,
+  "raw_observation": {
+    "gates": [
+      {
+        "evidence": "Candidate image matches reference facial contours, eye shape, nose bridge, and lip curves.",
+        "gate": "identity_structure",
+        "passed": true,
+        "reason": "The facial geometry matches the approved reference, maintaining the soft oval facial shape, jawline, delicate chin, nose structure, and natural lip proportions."
+      },
+      {
+        "evidence": "Almond-shaped eyes with matching proportions to the reference.",
+        "gate": "eye_ratio",
+        "passed": true,
+        "reason": "Eye shape and spacing adhere to the approved character design, with horizontally emphasized almond eyes and warm brown irises."
+      },
+      {
+        "evidence": "Natural skin texture and realistic, subtle makeup visible.",
+        "gate": "forbidden_traits",
+        "passed": true,
+        "reason": "No forbidden traits such as plastic doll skin, heavy theatrical makeup, or exaggerated Western facial features are present."
+      }
+    ],
+    "notes": [
+      "High structural fidelity to reference image A2 Front.",
+      "Natural lighting and subtle head tilt handled consistently.",
+      "gemini face observation; grounding/web search disabled by prompt contract",
+      "no real-person or celebrity matching requested",
+      "compared against 1 approved reference image(s)"
+    ],
+    "weighted_scores": {
+      "eyes_and_brows": 90.0,
+      "facial_shape": 92.0,
+      "mouth_and_chin": 91.0,
+      "nose": 93.0,
+      "technical_quality": 95.0
+    }
+  },
+  "recommendation": "approve",
+  "section_scores": [
+    {
+      "category": "face_gate",
+      "evidence": "Candidate image matches reference facial contours, eye shape, nose bridge, and lip curves.",
+      "key": "identity_structure",
+      "match_state": null,
+      "reason": "The facial geometry matches the approved reference, maintaining the soft oval facial shape, jawline, delicate chin, nose structure, and natural lip proportions.",
+      "score": 100.0,
+      "section": "face_gate",
+      "status": "ok"
+    },
+    {
+      "category": "face_gate",
+      "evidence": "Almond-shaped eyes with matching proportions to the reference.",
+      "key": "eye_ratio",
+      "match_state": null,
+      "reason": "Eye shape and spacing adhere to the approved character design, with horizontally emphasized almond eyes and warm brown irises.",
+      "score": 100.0,
+      "section": "face_gate",
+      "status": "ok"
+    },
+    {
+      "category": "face_gate",
+      "evidence": "Natural skin texture and realistic, subtle makeup visible.",
+      "key": "forbidden_traits",
+      "match_state": null,
+      "reason": "No forbidden traits such as plastic doll skin, heavy theatrical makeup, or exaggerated Western facial features are present.",
+      "score": 100.0,
+      "section": "face_gate",
+      "status": "ok"
+    },
+    {
+      "category": "facial_shape",
+      "evidence": "",
+      "key": "facial_shape",
+      "match_state": null,
+      "reason": "Weighted face rubric score.",
+      "score": 92.0,
+      "section": "face_weighted",
+      "status": "ok"
+    },
+    {
+      "category": "eyes_and_brows",
+      "evidence": "",
+      "key": "eyes_and_brows",
+      "match_state": null,
+      "reason": "Weighted face rubric score.",
+      "score": 90.0,
+      "section": "face_weighted",
+      "status": "ok"
+    },
+    {
+      "category": "nose",
+      "evidence": "",
+      "key": "nose",
+      "match_state": null,
+      "reason": "Weighted face rubric score.",
+      "score": 93.0,
+      "section": "face_weighted",
+      "status": "ok"
+    },
+    {
+      "category": "mouth_and_chin",
+      "evidence": "",
+      "key": "mouth_and_chin",
+      "match_state": null,
+      "reason": "Weighted face rubric score.",
+      "score": 91.0,
+      "section": "face_weighted",
+      "status": "ok"
+    },
+    {
+      "category": "technical_quality",
+      "evidence": "",
+      "key": "technical_quality",
+      "match_state": null,
+      "reason": "Weighted face rubric score.",
+      "score": 95.0,
+      "section": "face_weighted",
+      "status": "ok"
+    }
+  ],
+  "source_knowledge": [
+    {
+      "dna_contract_version": "1.1",
+      "dna_version": "1.1",
+      "file": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/data/projects/venho_hotel/knowledge/VENHO_HOTEL_LINH_AN_DNA.json",
+      "hash": "sha256:71f839dff776ec6d6d085c5a1ab928295af8c32a9699f7929d78b04807ec0075"
+    }
+  ],
+  "subject": "linh_an",
+  "validation_notes": [
+    "High structural fidelity to reference image A2 Front.",
+    "Natural lighting and subtle head tilt handled consistently.",
+    "gemini face observation; grounding/web search disabled by prompt contract",
+    "no real-person or celebrity matching requested",
+    "compared against 1 approved reference image(s)"
+  ],
+  "validation_type": "face",
+  "verdict": "approve"
+}

@@ -1,0 +1,55 @@
+{
+  "authorityProfile": "canonical_default",
+  "callStatus": "SUCCESS",
+  "caseId": "B01",
+  "descriptor": {
+    "artifactSha256": "9e47e5f09327e79e1f8d9f1fb5f37af1251a3663393d41a5409415c9f0a36aad",
+    "authorityProfile": "canonical_default",
+    "lane": "SCENARIO_GLOBAL",
+    "model": "gemini-flash-latest",
+    "provider": "gemini",
+    "referenceSha256": null,
+    "retryPolicy": {
+      "backoffSeconds": [
+        0.25
+      ],
+      "jitter": false,
+      "maxTransportAttemptsPerLogicalSample": 2,
+      "nonRetryable": [
+        "LOCAL_SCHEMA_BUILD_FAIL",
+        "LOCAL_REQUEST_SERIALIZATION_FAIL",
+        "PROVIDER_TRUNCATED_RESPONSE",
+        "PROVIDER_RESPONSE_SCHEMA_FAIL",
+        "AUTH_FAILURE",
+        "UNSUPPORTED_MODEL",
+        "MALFORMED_LOCAL_INPUT"
+      ],
+      "retryable": [
+        "PROVIDER_503",
+        "PROVIDER_429",
+        "PROVIDER_TIMEOUT"
+      ]
+    },
+    "sample": 1,
+    "sampleId": "B01",
+    "validatorProfile": null,
+    "validatorVersion": "validator-studio-existing-production-entrypoint"
+  },
+  "evaluatorVersion": "validator-studio-existing-production-entrypoint",
+  "inputId": "artifacts/identity-restoration/phase7-candidate-v3/r1-p1-boundary-remediation-20260828/B01/inverse-composite-remediated.png",
+  "inputSha256": "9e47e5f09327e79e1f8d9f1fb5f37af1251a3663393d41a5409415c9f0a36aad",
+  "lane": "SCENARIO_GLOBAL",
+  "lineage": "VERIFIED",
+  "model": "gemini-flash-latest",
+  "parsedHash": "8a751d84cd32f1c223867a929eb0ce3ad164405063e1a596709977d3283d88b8",
+  "provider": "Gemini",
+  "qualityPass": true,
+  "rawHash": "578587a13be4a1739874eb6fef24ea03476c993b743b1f155ff0820ca8e46ee5",
+  "referenceArtifacts": [],
+  "reportHash": "9624473dd21d016a06dfb89022f606f51ca3c60607834c4fb5eca108488c1273",
+  "score": 94.01,
+  "taskId": "R1-P6-AUTHORITATIVE-EVALUATION-RESUME",
+  "validResponse": true,
+  "validatorProfile": null,
+  "verdict": "approve"
+}

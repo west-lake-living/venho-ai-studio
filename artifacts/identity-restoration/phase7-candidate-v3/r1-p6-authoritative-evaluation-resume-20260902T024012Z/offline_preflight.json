@@ -1,0 +1,17 @@
+{
+  "compileallExitCode": 0,
+  "executionOrder": [
+    "offline_preflight",
+    "FACE_LOCAL",
+    "stability_gate",
+    "SCENARIO_GLOBAL",
+    "quality_disposition"
+  ],
+  "gitDiffCheckExitCode": 0,
+  "lineage": "9/9 VERIFIED",
+  "model": "gemini-flash-latest",
+  "provider": "Gemini",
+  "providerCalls": 0,
+  "status": "PASS",
+  "testExitCode": 0
+}

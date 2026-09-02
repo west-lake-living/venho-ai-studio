@@ -1,0 +1,60 @@
+{
+  "authorityProfile": "canonical_default",
+  "callStatus": "SUCCESS",
+  "caseId": "B08",
+  "descriptor": {
+    "artifactSha256": "90d397143da59fc99fe40edf76cc323cdd310a6aac99b542238da49d4f29494a",
+    "authorityProfile": "canonical_default",
+    "lane": "FACE_LOCAL",
+    "model": "gemini-flash-latest",
+    "provider": "gemini",
+    "referenceSha256": "1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d",
+    "retryPolicy": {
+      "backoffSeconds": [
+        0.25
+      ],
+      "jitter": false,
+      "maxTransportAttemptsPerLogicalSample": 2,
+      "nonRetryable": [
+        "LOCAL_SCHEMA_BUILD_FAIL",
+        "LOCAL_REQUEST_SERIALIZATION_FAIL",
+        "PROVIDER_TRUNCATED_RESPONSE",
+        "PROVIDER_RESPONSE_SCHEMA_FAIL",
+        "AUTH_FAILURE",
+        "UNSUPPORTED_MODEL",
+        "MALFORMED_LOCAL_INPUT"
+      ],
+      "retryable": [
+        "PROVIDER_503",
+        "PROVIDER_429",
+        "PROVIDER_TIMEOUT"
+      ]
+    },
+    "sample": 1,
+    "sampleId": "B08",
+    "validatorProfile": null,
+    "validatorVersion": "validator-studio-existing-production-entrypoint"
+  },
+  "evaluatorVersion": "validator-studio-existing-production-entrypoint",
+  "inputId": "artifacts/identity-restoration/phase7-candidate-v3/phase7-benchmark-20260828/B08-attempt-1/restored-canonical.png",
+  "inputSha256": "90d397143da59fc99fe40edf76cc323cdd310a6aac99b542238da49d4f29494a",
+  "lane": "FACE_LOCAL",
+  "lineage": "VERIFIED",
+  "model": "gemini-flash-latest",
+  "parsedHash": "d003418ff55851753a2b83599b3d47ef9b9bc02473fb77116e50d858d63db0de",
+  "provider": "Gemini",
+  "qualityPass": true,
+  "rawHash": "b5c67c375bc87d7bdb7fb998891ed575b688cb284804124fd28841e7e0615a9d",
+  "referenceArtifacts": [
+    {
+      "path": "assets/linh_an/A2_Front.png",
+      "sha256": "1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d"
+    }
+  ],
+  "reportHash": "ff28b72e1c9c3b6042d4e2e176c6ab78945a4e3f912eb7c094afd87a6edafc61",
+  "score": 90.45,
+  "taskId": "R1-P6-AUTHORITATIVE-EVALUATION-RESUME",
+  "validResponse": true,
+  "validatorProfile": null,
+  "verdict": "approve"
+}

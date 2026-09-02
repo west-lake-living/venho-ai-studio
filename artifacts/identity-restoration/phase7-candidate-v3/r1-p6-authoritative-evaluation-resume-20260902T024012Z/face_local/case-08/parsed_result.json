@@ -1,0 +1,33 @@
+{
+  "gates": [
+    {
+      "evidence": "Candidate exhibits the consistent soft elongated oval face, delicate pointed chin, thin natural nose bridge, and subtle upward lip corners seen in the reference.",
+      "gate": "identity_structure",
+      "passed": true,
+      "reason": "The facial geometry, including jawline, nose structure, eye shape, and lip contours, closely aligns with the reference character."
+    },
+    {
+      "evidence": "Candidate maintains the horizontally emphasized almond eye contours, thin upper eyelid fold, and iris scale of the reference.",
+      "gate": "eye_ratio",
+      "passed": true,
+      "reason": "Eye shape and spacing match the horizontal almond proportions of the approved reference design."
+    },
+    {
+      "evidence": "Skin maintains natural texture and glow; makeup remains soft and natural.",
+      "gate": "forbidden_traits",
+      "passed": true,
+      "reason": "No forbidden traits such as plastic skin texture, heavy theatrical makeup, or exaggerated Western features are present."
+    }
+  ],
+  "notes": [
+    "Dynamic wind-blown hair does not obscure underlying bone structure and facial landmarks.",
+    "Expression is slightly more open/active with a parted lip smile, consistent with approved variable ranges."
+  ],
+  "weighted_scores": {
+    "eyes_and_brows": 88.0,
+    "facial_shape": 92.0,
+    "mouth_and_chin": 89.0,
+    "nose": 90.0,
+    "technical_quality": 95.0
+  }
+}

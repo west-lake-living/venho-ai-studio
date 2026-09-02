@@ -1,0 +1,33 @@
+{
+  "gates": [
+    {
+      "evidence": "Candidate image matches reference facial contours, eye shape, nose bridge, and lip curves.",
+      "gate": "identity_structure",
+      "passed": true,
+      "reason": "The facial geometry matches the approved reference, maintaining the soft oval facial shape, jawline, delicate chin, nose structure, and natural lip proportions."
+    },
+    {
+      "evidence": "Almond-shaped eyes with matching proportions to the reference.",
+      "gate": "eye_ratio",
+      "passed": true,
+      "reason": "Eye shape and spacing adhere to the approved character design, with horizontally emphasized almond eyes and warm brown irises."
+    },
+    {
+      "evidence": "Natural skin texture and realistic, subtle makeup visible.",
+      "gate": "forbidden_traits",
+      "passed": true,
+      "reason": "No forbidden traits such as plastic doll skin, heavy theatrical makeup, or exaggerated Western facial features are present."
+    }
+  ],
+  "notes": [
+    "High structural fidelity to reference image A2 Front.",
+    "Natural lighting and subtle head tilt handled consistently."
+  ],
+  "weighted_scores": {
+    "eyes_and_brows": 90.0,
+    "facial_shape": 92.0,
+    "mouth_and_chin": 91.0,
+    "nose": 93.0,
+    "technical_quality": 95.0
+  }
+}

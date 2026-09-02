@@ -1,5 +1,31 @@
 # VENHO AI STUDIO — Task Status
 
+### Candidate v3 Quality Remediation R1 — R1-P6 Authoritative Evaluation Resume (2026-09-02)
+
+- `R1-P6-AUTHORITATIVE-EVALUATION-RESUME = CLOSED / PASS`; explicit
+  `AUTHORITATIVE_EVALUATION_RESUME_AUTHORIZED=TRUE` was recorded against
+  `R1-P5-R4 = CLOSED / PASS` and `PROVIDER_HOLD = RECOVERED`.
+- Offline preflight passed: focused evaluator, gate, schema/DTO, parser,
+  lineage, invalid-response, provider-failure, partial-run, and aggregation
+  tests recorded `81 passed`; compileall PASS and `git diff --check` PASS.
+- Evaluation executed sequentially in the required order. FACE_LOCAL completed
+  `9/9` valid cases, then the stability gate passed; SCENARIO_GLOBAL completed
+  `9/9` valid cases. Gemini `gemini-flash-latest` made exactly `18` calls,
+  with `18` results and `0` retries. Every case has preserved raw and parsed
+  evidence with verified lineage and hashes.
+- Existing aggregation produced `QUALITY_DISPOSITION = FAIL`: FACE_LOCAL
+  `7 pass / 2 fail`; SCENARIO_GLOBAL `6 pass / 3 fail`. Invalid responses:
+  `0`; pending authoritative evaluations: `0`.
+- Boundary remains `9/9 PASS`. Provider hold remains `RECOVERED`; GPU jobs,
+  Nano calls, and alternative-provider calls are `0`. No rubric, threshold,
+  schema, fixture, provider/model, architecture, feature flag, or promotion
+  change occurred. Candidate v3 remains `OFF`; promotion remains `NO`.
+- Evidence hashes verify `84/84` files:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p6-authoritative-evaluation-resume-20260902T024012Z/`.
+
+R1-P6 is an evaluation result only; any remediation or production promotion
+requires a separate authorized task.
+
 ### Candidate v3 Quality Remediation R1 — R1-P5-R4 Provider Recovery Recheck (2026-09-02)
 
 - `R1-P5-R4-PROVIDER-RECOVERY-RECHECK = CLOSED / PASS`; explicit

@@ -1,0 +1,33 @@
+{
+  "gates": [
+    {
+      "gate": "identity_structure",
+      "passed": true,
+      "reason": "The candidate image closely matches the structural facial features of the reference character, including oval face shape, nose bridge, eye spacing, and jawline contours.",
+      "evidence": "Candidate maintains the soft elongated oval face, delicate pointed chin, and similar nose structure present in Reference 2."
+    },
+    {
+      "gate": "eye_ratio",
+      "passed": true,
+      "reason": "Eye shape and proportions align well with the reference design, featuring subtle almond contour and warm brown irises.",
+      "evidence": "Horizontal emphasis and thin upper lid line are consistent with the reference facial design."
+    },
+    {
+      "gate": "forbidden_traits",
+      "passed": true,
+      "reason": "No forbidden features (such as heavy theatrical makeup, plastic skin texture, glasses, or westernized bone structure) are observed.",
+      "evidence": "Skin texture appears natural, makeup is understated, and proportions remain consistent with approved parameters."
+    }
+  ],
+  "weighted_scores": {
+    "facial_shape": 90,
+    "eyes_and_brows": 88,
+    "nose": 92,
+    "mouth_and_chin": 87,
+    "technical_quality": 88
+  },
+  "notes": [
+    "Candidate shows high fidelity to the authoritative reference face geometry.",
+    "Slight digital artifacting visible near the lower-left collar/shoulder region does not compromise facial landmark evaluation."
+  ]
+}
