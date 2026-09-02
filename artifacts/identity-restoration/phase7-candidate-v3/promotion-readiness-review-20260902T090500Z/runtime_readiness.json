@@ -1,0 +1,8 @@
+{
+  "candidateAdapterFeatureGated": true,
+  "gpuJobs": 0,
+  "qualityProviderCalls": 0,
+  "runtimePinReady": false,
+  "status": "CONFIGURATION_READY",
+  "workerProbe": "NOT_RUN (review does not need a quality or GPU call)"
+}

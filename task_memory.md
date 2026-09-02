@@ -1,5 +1,22 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-09-02 — Candidate v3 Promotion Readiness Review
+
+`CANDIDATE-V3-PROMOTION-READINESS-REVIEW = NOT_READY_FOR_PROMOTION` under
+`CANDIDATE_V3_PROMOTION_READINESS_REVIEW_AUTHORIZED=TRUE`.
+
+- Roadmap closure, R2 quality (`9/9` in every lane, pending `0`), evidence
+  lineage (`47/47` R2 hashes), regression (`96 passed`), feature gate, and
+  rollback audits passed. No GPU job or quality-provider call was made.
+- The verified B05 winner and confirmation are `denoise=0.35`, `CFG=6.1`,
+  `steps=21`; however, Candidate v3 runtime binds caller-supplied request
+  parameters and has no consumed runtime pin for that configuration. Existing
+  workflow defaults remain `0.35 / 6.0 / 20`.
+- Sole blocker: `WINNING_CONFIG_NOT_PINNED`. Feature remains `OFF`, promotion
+  `NO`, architecture unchanged. A separate authorization is required to add a
+  runtime-consumed B05 winning-config pin. Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/promotion-readiness-review-20260902T090500Z/`.
+
 ## 2026-09-02 — Candidate v3 Quality Remediation R2 B05 FACE_LOCAL closed pass
 
 `CANDIDATE-V3-QUALITY-REMEDIATION-R2-B05-FACE-LOCAL = CLOSED / QUALITY_PASS`

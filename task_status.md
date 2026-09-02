@@ -1,5 +1,19 @@
 # VENHO AI STUDIO — Task Status
 
+### Candidate v3 Promotion Readiness Review (2026-09-02)
+
+- `CANDIDATE-V3-PROMOTION-READINESS-REVIEW = NOT_READY_FOR_PROMOTION` under
+  `CANDIDATE_V3_PROMOTION_READINESS_REVIEW_AUTHORIZED=TRUE`.
+- PASS: Phase 0–6 closure, R2 quality `9/9` / `9/9` / `9/9`, pending `0`,
+  evidence `47/47`, focused/wider regression `96 passed`, compileall,
+  diff-check, feature-gate, and rollback readiness. No GPU/provider quality
+  calls were made.
+- Blocker: `WINNING_CONFIG_NOT_PINNED`. Winner B05 is `0.35 / 6.1 / 21`, but
+  runtime still binds request parameters and no runtime-consumed B05 pin exists;
+  workflow defaults remain `0.35 / 6.0 / 20`. Feature `OFF`, promotion `NO`,
+  architecture unchanged. Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/promotion-readiness-review-20260902T090500Z/`.
+
 ### Candidate v3 Quality Remediation R2 — B05 FACE_LOCAL Focused Recovery (2026-09-02)
 
 - `CANDIDATE-V3-QUALITY-REMEDIATION-R2-B05-FACE-LOCAL = CLOSED / QUALITY_PASS`

@@ -1,0 +1,8 @@
+{
+  "architectureMigrationRequired": false,
+  "documented": true,
+  "fallback": "comfyui-local",
+  "featureDisableRollback": true,
+  "productionIsolation": true,
+  "status": "PASS"
+}

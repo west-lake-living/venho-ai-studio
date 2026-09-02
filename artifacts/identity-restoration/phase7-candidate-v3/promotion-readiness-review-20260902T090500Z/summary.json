@@ -1,0 +1,12 @@
+{
+  "architectureChanged": false,
+  "blockers": [
+    "WINNING_CONFIG_NOT_PINNED"
+  ],
+  "disposition": "NOT_READY_FOR_PROMOTION",
+  "evidenceRoot": "artifacts/identity-restoration/phase7-candidate-v3/promotion-readiness-review-20260902T090500Z",
+  "featureFlag": "OFF",
+  "productionPromotion": "NO",
+  "quality": "PASS",
+  "taskId": "CANDIDATE-V3-PROMOTION-READINESS-REVIEW"
+}

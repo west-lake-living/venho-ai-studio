@@ -1,0 +1,18 @@
+{
+  "blockers": [
+    "WINNING_CONFIG_NOT_PINNED"
+  ],
+  "checks": {
+    "evidenceIntegrity": true,
+    "featureGate": true,
+    "regression": true,
+    "roadmapClosure": true,
+    "rollback": true,
+    "runtimeConfiguration": true,
+    "winningConfigPinned": false
+  },
+  "disposition": "NOT_READY_FOR_PROMOTION",
+  "featureFlag": "OFF",
+  "nextAuthorizedAction": "SEPARATE_AUTHORIZATION_TO_ADD_RUNTIME_CONSUMED_B05_WINNING_CONFIG_PIN",
+  "promotion": "NO"
+}

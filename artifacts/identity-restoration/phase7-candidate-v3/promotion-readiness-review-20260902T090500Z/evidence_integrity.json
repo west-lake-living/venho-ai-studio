@@ -1,0 +1,24 @@
+{
+  "r2HashLedger": {
+    "total": 47,
+    "valid": 47
+  },
+  "source": "artifacts/identity-restoration/phase7-candidate-v3/r2-b05-face-local-focused-recovery-20260902T080000Z",
+  "status": "PASS",
+  "winnerAndConfirmation": [
+    {
+      "artifactHashValid": true,
+      "case": "candidate-B",
+      "parametersMatch": true,
+      "parsedHashValid": true,
+      "rawHashValid": true
+    },
+    {
+      "artifactHashValid": true,
+      "case": "candidate-confirmation",
+      "parametersMatch": true,
+      "parsedHashValid": true,
+      "rawHashValid": true
+    }
+  ]
+}

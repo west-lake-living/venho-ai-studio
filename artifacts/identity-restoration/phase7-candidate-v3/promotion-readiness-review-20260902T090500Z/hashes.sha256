@@ -1,0 +1,19 @@
+{
+  "algorithm": "SHA-256",
+  "count": 13,
+  "files": {
+    "baseline.json": "dc28f5dea3472c38c6acc387db24461ee65da4c9eaf60aedc080bc6cbe98d777",
+    "compileall.txt": "973ed2a2950562422f7b020a70220236f32bef40caaa997dd698e42dbbc6c2a5",
+    "evidence_integrity.json": "bccb896a996ffb0ad837c782d50901a6f8c5e2a85fd7e0ce1bfe0611dc2e3183",
+    "feature_gate_review.json": "53d532fbbf3598cfed9fcdcce35e187adf94caa45d3c0eba373c6d68793dcd08",
+    "git_diff_check.txt": "531a62067629ec38e912d348148c7183f3fefa118a984525fe78804a85755a4d",
+    "promotion_readiness_decision.json": "54138ff239f303c3227aa2e498b9b15b8d553d15b5cf6e2ecae4f71e30a13cab",
+    "regression_validation.json": "41387504d21ea14a0fec141b7887d50fd5093657095199f605f1954ff100b82e",
+    "roadmap_closure_audit.json": "ca61ed8800841d6770958c11c864968df4340523832b050a39f6494c81f10e5b",
+    "rollback_readiness.json": "0b83df4040ee4835121ab9379f18cdc0614d328a2e19ed370871c5a17f70e77b",
+    "runtime_readiness.json": "bad292ce397d08a85c044256ec1714c355895eaf4b5c365dc43e7b86914b4db2",
+    "summary.json": "0279c222121c77068ec1c969bfda63f259cb1baeb41689619c21ae8bb6400bc8",
+    "test_results.txt": "65da2331dcf8d0e1a424895990f722f298266c4b78a1b2e88228693eb91ff144",
+    "winning_config_audit.json": "f0a3837073651993163c04fd77c707c3f2d392f50d332603ad39c8c7081ff2f3"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "autoPromotionAllowed": false,
+  "candidateAdapterRequiresExplicitFlag": true,
+  "featureFlagDefault": "OFF",
+  "humanPromotionRequired": true,
+  "productionRouteActive": false,
+  "status": "PASS"
+}

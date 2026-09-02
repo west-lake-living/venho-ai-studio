@@ -1,0 +1,36 @@
+{
+  "blocker": "WINNING_CONFIG_NOT_PINNED",
+  "finding": "The verified B05 values exist only in R2 evidence; production composition does not consume a B05 runtime pin.",
+  "noChangeReason": "Adding a runtime configuration consumer/wiring is an architecture change prohibited by this review-only authorization.",
+  "reproduced": true,
+  "reproducibilityConfirmation": {
+    "cfg": 6.1,
+    "denoise": 0.35,
+    "id": "confirmation",
+    "rationale": "minimal 0.1 CFG adjustment while retaining R1's improving steps=21",
+    "steps": 21
+  },
+  "runtimeBindsRequestParams": true,
+  "staleOverrideRisk": "HIGH",
+  "status": "BLOCKED",
+  "winner": {
+    "candidate": "B",
+    "parameters": {
+      "cfg": 6.1,
+      "denoise": 0.35,
+      "id": "B",
+      "rationale": "minimal 0.1 CFG adjustment while retaining R1's improving steps=21",
+      "score": 90.15,
+      "steps": 21
+    }
+  },
+  "winningConfigPinned": false,
+  "workflow": "face_restore_win_sd15_ipadapter_v3",
+  "workflowPinDefaults": {
+    "cfg": 6.0,
+    "denoise": 0.35,
+    "sampler": "euler",
+    "scheduler": "normal",
+    "steps": 20
+  }
+}
