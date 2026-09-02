@@ -1,0 +1,24 @@
+{
+  "authorization": {
+    "name": "R1_P9_B05_ARTIFACT_CONTRACT_AND_CLOSURE_AUTHORIZED",
+    "receivedValue": "TRUE",
+    "requiredValue": "TRUE"
+  },
+  "startReasons": [],
+  "startState": {
+    "architectureChanged": false,
+    "blocker": "REMEDIATION_CONTRACT_INCOMPLETE",
+    "boundary": "9/9 PASS",
+    "faceLocal": "8/9 PASS",
+    "featureFlag": "OFF",
+    "pending": 1,
+    "productionPromotion": "NO",
+    "providerHold": "RECOVERED",
+    "qualityDisposition": "FAIL_PENDING_B05_RECHECK",
+    "r1P7R2": "CLOSED / REMEDIATION_READY",
+    "r1P7R2R1": "BLOCKED_LOCAL_REGRESSION",
+    "r1P8": "BLOCKED / REMEDIATION_CONTRACT_INCOMPLETE",
+    "scenarioGlobal": "9/9 PASS"
+  },
+  "taskId": "R1-P9-B05-ARTIFACT-CONTRACT-AND-FINAL-CLOSURE"
+}

@@ -1,0 +1,28 @@
+{
+  "alternativeProviderCalls": 0,
+  "architectureChanged": false,
+  "blockers": [
+    "The R2 evidence identifies a face-detail variant intent but proves no concrete denoise/CFG/strength/seed or other restore delta."
+  ],
+  "boundary": "9/9 PASS",
+  "faceLocal": "8/9 PASS",
+  "featureFlag": "OFF",
+  "gpuJobs": 0,
+  "nanoCalls": 0,
+  "nextAction": "COMPLETE_CONCRETE_B05_REMEDIATION_PARAMETER_CONTRACT",
+  "pendingAuthoritativeEvaluations": 1,
+  "productionPromotion": "NO",
+  "providerCalls": 0,
+  "qualityDisposition": "FAIL_PENDING_B05_RECHECK",
+  "retries": 0,
+  "scenarioGlobal": "9/9 PASS",
+  "status": "BLOCKED / REMEDIATION_PARAMETER_UNRESOLVED",
+  "t0": "PASS",
+  "t1": "BLOCKED / REMEDIATION_PARAMETER_UNRESOLVED",
+  "t2": "NOT_EXECUTED",
+  "t3": "NOT_EXECUTED",
+  "t4": "NOT_EXECUTED",
+  "t5": "NOT_EXECUTED",
+  "t6": "NOT_EXECUTED",
+  "taskId": "R1-P9-B05-ARTIFACT-CONTRACT-AND-FINAL-CLOSURE"
+}

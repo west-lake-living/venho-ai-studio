@@ -1,5 +1,28 @@
 # VENHO AI STUDIO — Task Status
 
+### Candidate v3 Quality Remediation R1 — R1-P9 B05 Artifact Contract & Final Closure (2026-09-02)
+
+- `R1-P9-B05-ARTIFACT-CONTRACT-AND-FINAL-CLOSURE = BLOCKED / REMEDIATION_PARAMETER_UNRESOLVED`
+  under explicit `R1_P9_B05_ARTIFACT_CONTRACT_AND_CLOSURE_AUTHORIZED=TRUE`.
+- T0 reconstructed the proven R2 authority: B05-only variant
+  `r1-p7-r2-b05-face-detail-v1`, workflow
+  `face_restore_win_sd15_ipadapter_v3`, approved A2 binding, frozen geometry,
+  masks, and baseline restore config.
+- T1 cannot complete the contract without inventing remediation: missing
+  concrete restore change, workflow version, new-variant source manifest,
+  deterministic output artifact ID/path/manifest, and output binding hash.
+  Therefore T2–T6 did not execute.
+- Provider calls `0`, retries `0`, GPU jobs `0`, Nano/alternative-provider
+  calls `0`; no artifact was created and no passing case was changed. Protected
+  state remains Boundary `9/9 PASS`, FACE_LOCAL `8/9 PASS`, SCENARIO_GLOBAL
+  `9/9 PASS`, pending `1`, quality `FAIL_PENDING_B05_RECHECK`, feature `OFF`,
+  promotion `NO`, architecture unchanged.
+- Offline validation: `81 passed`, compileall PASS, `git diff --check` PASS.
+  Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p9-b05-artifact-contract-final-closure-20260902T034520Z/`.
+- Next action: provide an evidence-backed concrete B05 remediation parameter
+  and deterministic output contract before materialization or recheck.
+
 ### Candidate v3 Quality Remediation R1 — R1-P8 B05 Recovery & Final Quality Closure (2026-09-02)
 
 - `R1-P8-B05-RECOVERY-AND-FINAL-QUALITY-CLOSURE = BLOCKED / REMEDIATION_CONTRACT_INCOMPLETE`

@@ -1,5 +1,30 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-09-02 — R1-P9 B05 artifact contract remains unresolved
+
+`R1-P9-B05-ARTIFACT-CONTRACT-AND-FINAL-CLOSURE = BLOCKED /
+REMEDIATION_PARAMETER_UNRESOLVED` under explicit
+`R1_P9_B05_ARTIFACT_CONTRACT_AND_CLOSURE_AUTHORIZED=TRUE`.
+
+- T0 verified the P8 start state and reconstructed known authority from
+  R1-P6/P7/P7-R1/P7-R2/P7-R2-R1/P8: B05, root cause
+  `TRUE_LOCAL_FACE_QUALITY_FAILURE / FACE_DETAIL_FAILURE`, variant
+  `r1-p7-r2-b05-face-detail-v1`, existing v3 workflow, A2 reference, geometry,
+  masks, and preservation rules.
+- T1 identified seven unproven contract fields: concrete remediation change,
+  workflow version, new-variant source manifest, output artifact ID, output
+  path, output manifest, and output binding hash. Existing baseline parameters
+  are known, but the actual R2 restore delta is not evidence-backed.
+- Per the task rule, no values were guessed. T2–T6 stopped; artifact count,
+  GPU jobs, provider calls, retries, Nano, and alternative-provider calls all
+  remain `0`. Passing baseline and production safety remain unchanged.
+- Offline validation recorded `81 passed`, compileall PASS, and diff check
+  PASS. Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p9-b05-artifact-contract-final-closure-20260902T034520Z/`.
+
+Next action: complete the concrete B05 remediation parameter/output contract;
+then resume the bounded one-artifact, one-provider-call flow.
+
 ## 2026-09-02 — R1-P8 B05 recovery blocked by incomplete R2 contract
 
 `R1-P8-B05-RECOVERY-AND-FINAL-QUALITY-CLOSURE = BLOCKED /

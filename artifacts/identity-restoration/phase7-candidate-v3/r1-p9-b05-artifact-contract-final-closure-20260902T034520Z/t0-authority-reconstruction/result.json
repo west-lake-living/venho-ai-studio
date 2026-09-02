@@ -1,0 +1,122 @@
+{
+  "knownAuthority": {
+    "approvedPreservationRules": [
+      "B05_frozen_source_artifact",
+      "B05_geometry_manifest",
+      "B05_crop_and_masks",
+      "A2_reference",
+      "existing_validator_rubric",
+      "existing_quality_thresholds"
+    ],
+    "approvedReferenceBinding": {
+      "a2Sha256": "1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d",
+      "referencePackId": "linh-an-production-v3-2026-08",
+      "source": "B05 immutable job lineage / approved A2"
+    },
+    "approvedVariantId": "r1-p7-r2-b05-face-detail-v1",
+    "approvedWorkflow": {
+      "id": "face_restore_win_sd15_ipadapter_v3",
+      "sha256": "53dc090691b8feac2a8b8a4309d43af737e304b09330e072b4ab5632ed5aad91",
+      "source": "B05 immutable job lineage"
+    },
+    "caseId": "B05",
+    "knownFaceLocalDefects": {
+      "dimensions": {
+        "eyes_and_brows": {
+          "deltaToPass": -3.0,
+          "measuredResult": 87.0,
+          "status": "FAIL",
+          "thresholdExpectation": 90.0
+        },
+        "facial_shape": {
+          "deltaToPass": -2.0,
+          "measuredResult": 88.0,
+          "status": "FAIL",
+          "thresholdExpectation": 90.0
+        },
+        "mouth_and_chin": {
+          "deltaToPass": -1.0,
+          "measuredResult": 89.0,
+          "status": "FAIL",
+          "thresholdExpectation": 90.0
+        },
+        "nose": {
+          "deltaToPass": 0.0,
+          "measuredResult": 90.0,
+          "status": "PASS",
+          "thresholdExpectation": 90.0
+        },
+        "technical_quality": {
+          "deltaToPass": 0.0,
+          "measuredResult": 90.0,
+          "status": "PASS",
+          "thresholdExpectation": 90.0
+        }
+      },
+      "score": 88.5,
+      "source": "R1-P7-R1 valid FACE_LOCAL result",
+      "verdict": "revise"
+    },
+    "knownGeometry": {
+      "cropSize": {
+        "height": 286,
+        "width": 186
+      },
+      "faceScale": 0.072265625,
+      "source": "benchmark geometry v2.1",
+      "yaw": -49.07742057379534
+    },
+    "knownInputLineage": {
+      "inputPath": "artifacts/identity-restoration/phase7-candidate-v3/phase7-diagnostic-20260828/B05-attempt-1/restored-canonical.png",
+      "inputSha256": "a9552ddda2726d66623246c654982c60cdef41269d6952c1ffc33a47bfa650f3",
+      "source": "R1-P7-R1 request metadata",
+      "sourceCase": "candidate-v3-sd15-faceid-canonical-512"
+    },
+    "knownWorkflowParameters": {
+      "canonicalSize": {
+        "height": 512,
+        "width": 512
+      },
+      "canonicalTransformSha256": "cf9f5a4c98cdf06de38513c05f6d81a09fca1a38e3c295249ef1acab1205b8d8",
+      "cfg": 6.0,
+      "denoise": 0.35,
+      "effectiveConfigSha256": "516b53f48f97937a163767e8b1dd09c56682c9b9ed4c3f54836a6850e605f4f9",
+      "maskSha256": "f8b6b5ab50509e7c5a5aee70293d7fa3dce077751f4dd492d9f890a5f1e7954e",
+      "sampler": "euler",
+      "scheduler": "normal",
+      "seed": 42,
+      "source": "B05 immutable job lineage",
+      "steps": 20
+    },
+    "missingFields": [
+      "restore_parameters.remediation_change",
+      "workflow_version",
+      "source_manifest_for_new_variant",
+      "output_artifact_id",
+      "output_path",
+      "output_manifest",
+      "output_binding_hash"
+    ],
+    "rootCause": "TRUE_LOCAL_FACE_QUALITY_FAILURE / FACE_DETAIL_FAILURE",
+    "unresolvedParameters": [
+      "The R2 evidence identifies a face-detail variant intent but proves no concrete denoise/CFG/strength/seed or other restore delta."
+    ]
+  },
+  "missingFields": [
+    "restore_parameters.remediation_change",
+    "workflow_version",
+    "source_manifest_for_new_variant",
+    "output_artifact_id",
+    "output_path",
+    "output_manifest",
+    "output_binding_hash"
+  ],
+  "sourceEvidence": {
+    "p6": "artifacts/identity-restoration/phase7-candidate-v3/r1-p6-authoritative-evaluation-resume-20260902T024012Z",
+    "p7": "artifacts/identity-restoration/phase7-candidate-v3/r1-p7-targeted-quality-remediation-20260902T030000Z",
+    "p8": "artifacts/identity-restoration/phase7-candidate-v3/r1-p8-b05-recovery-final-closure-20260902T033721Z",
+    "r2": "artifacts/identity-restoration/phase7-candidate-v3/r1-p7-r2-b05-face-local-remediation-20260902T033100Z",
+    "r2R1": "artifacts/identity-restoration/phase7-candidate-v3/r1-p7-r2-r1-b05-face-local-recheck-20260902T033242Z"
+  },
+  "status": "PASS"
+}

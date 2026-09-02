@@ -1,0 +1,13 @@
+{
+  "architectureChanged": false,
+  "boundary": "9/9 PASS",
+  "faceLocal": "8/9 PASS",
+  "featureFlag": "OFF",
+  "nextAction": "COMPLETE_CONCRETE_B05_REMEDIATION_PARAMETER_CONTRACT",
+  "pendingAuthoritativeEvaluations": 1,
+  "productionPromotion": "NO",
+  "qualityDisposition": "FAIL_PENDING_B05_RECHECK",
+  "scenarioGlobal": "9/9 PASS",
+  "status": "BLOCKED / REMEDIATION_PARAMETER_UNRESOLVED",
+  "taskId": "R1-P9-B05-ARTIFACT-CONTRACT-AND-FINAL-CLOSURE"
+}
