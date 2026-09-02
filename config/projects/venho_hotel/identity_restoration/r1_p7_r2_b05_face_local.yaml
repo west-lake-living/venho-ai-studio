@@ -1,0 +1,45 @@
+task_id: R1-P7-R2-TARGETED-REMEDIATION-B05-FACE-LOCAL
+version: "1.0"
+authorization:
+  targetedRemediationR2Authorized: true
+  b05FaceLocalRecheckAuthorized: false
+  providerCalls: 0
+  gpuJobs: 0
+  nanoCalls: 0
+  alternativeProviderCalls: 0
+target:
+  caseId: B05
+  lane: FACE_LOCAL
+  currentScore: 88.50
+  currentVerdict: revise
+  currentDisposition: FAIL
+  nextTask: R1-P7-R2-R1 B05 FACE_LOCAL AUTHORITATIVE RECHECK
+rootCause:
+  class: TRUE_LOCAL_FACE_QUALITY_FAILURE
+  secondaryClass: FACE_DETAIL_FAILURE
+  confidence: HIGH_FOR_FAILURE_CLASS_MEDIUM_FOR_MECHANISM
+  evidence: "R1-P7-R1 produced a valid Gemini response with three below-threshold face dimensions; B05 geometry is valid but is the smallest/highest-yaw face among the closest peers."
+  unresolved: "The exact provider-side parameter responsible for the residual detail loss is not proven offline."
+remediation:
+  status: READY_FOR_TARGETED_RERENDER
+  scope: B05_ONLY
+  variantId: r1-p7-r2-b05-face-detail-v1
+  workflow: face_restore_win_sd15_ipadapter_v3
+  execution: DEFERRED_UNTIL_B05_FACE_LOCAL_RECHECK_AUTHORIZED
+  preserve:
+    - B05_frozen_source_artifact
+    - B05_geometry_manifest
+    - B05_crop_and_masks
+    - A2_reference
+    - existing_validator_rubric
+    - existing_quality_thresholds
+  requiredOutcome: "Produce a new B05-only restored artifact through the existing approved workflow, then run exactly one authoritative FACE_LOCAL recheck."
+  forbidden: [global_parameter_tuning, threshold_change, rubric_change, provider_switch, frozen_artifact_mutation]
+  liveRecheckRequired: true
+protection:
+  boundary: 9/9_PASS
+  faceLocalPassingCases: 8
+  scenarioGlobalPassingCases: 9
+  featureFlag: "OFF"
+  productionPromotion: "NO"
+  architectureChanged: false

@@ -1,0 +1,20 @@
+{
+  "caseId": "B05",
+  "change": "Bind a new B05-only targeted restore variant request to the existing v3 workflow, preserving the frozen source, geometry, crop, masks, A2 reference, rubric, and thresholds.",
+  "expectedFaceLocalEffect": "Improve B05 side-pose local facial detail; prove only by the next one-call authoritative recheck.",
+  "expectedScenarioGlobalEffect": "No change; B05 SCENARIO_GLOBAL remains protected at 93.79/approve.",
+  "filesAndConfigs": [
+    "config/projects/venho_hotel/identity_restoration/r1_p7_r2_b05_face_local.yaml"
+  ],
+  "liveRecheckRequired": true,
+  "nextAction": "R1-P7-R2-R1 B05 FACE_LOCAL AUTHORITATIVE RECHECK",
+  "passingCasesAtRisk": "None by scope; B07 and all other passing paths are not rerun or reclassified.",
+  "regressionProtection": [
+    "B05_ONLY",
+    "no global parameter tuning",
+    "no threshold/rubric change",
+    "no provider switch",
+    "no frozen artifact mutation"
+  ],
+  "rootCause": "TRUE_LOCAL_FACE_QUALITY_FAILURE / FACE_DETAIL_FAILURE"
+}

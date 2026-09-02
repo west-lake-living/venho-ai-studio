@@ -1,0 +1,17 @@
+{
+  "alternativeProviderCalls": 0,
+  "baseline": {
+    "boundary": "9/9 PASS",
+    "faceLocal": "8/9 PASS",
+    "scenarioGlobal": "9/9 PASS"
+  },
+  "gpuJobs": 0,
+  "nanoCalls": 0,
+  "nextAction": "R1-P7-R2-R1 B05 FACE_LOCAL AUTHORITATIVE RECHECK",
+  "providerCalls": 0,
+  "qualityDisposition": "FAIL_PENDING_B05_RECHECK",
+  "remainingFailure": "B05 / FACE_LOCAL",
+  "requiresSeparateAuthorization": true,
+  "status": "CLOSED / REMEDIATION_READY",
+  "taskId": "R1-P7-R2-TARGETED-REMEDIATION-B05-FACE-LOCAL"
+}

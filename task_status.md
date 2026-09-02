@@ -1,5 +1,29 @@
 # VENHO AI STUDIO — Task Status
 
+### Candidate v3 Quality Remediation R1 — R1-P7-R2 B05 FACE_LOCAL Remediation (2026-09-02)
+
+- `R1-P7-R2-TARGETED-REMEDIATION-B05-FACE-LOCAL = CLOSED / REMEDIATION_READY`
+  under explicit `TARGETED_REMEDIATION_R2_AUTHORIZED=TRUE`. The separate
+  `B05_FACE_LOCAL_RECHECK_AUTHORIZED` flag was not present, so no provider call
+  or image regeneration was made.
+- Remaining B05 FACE_LOCAL failure is reconstructed from R1-P7-R1 as
+  `88.50 / revise`: `eyes_and_brows=87`, `facial_shape=88`, and
+  `mouth_and_chin=89` fail the unchanged `90` threshold; nose and technical
+  quality are `90`. Root cause class is true local face-quality/detail failure
+  under B05's measured small-face/extreme-side-pose geometry, with exact
+  provider parameter mechanism unresolved.
+- Implemented a B05-only targeted restore-variant manifest preserving source,
+  geometry, masks, A2, rubric, thresholds, and all existing authority paths.
+  No global tuning, threshold/rubric change, provider switch, or frozen artifact
+  mutation occurred.
+- Protected state remains Boundary `9/9 PASS`, FACE_LOCAL `8/9 PASS`,
+  SCENARIO_GLOBAL `9/9 PASS`, feature `OFF`, promotion `NO`, architecture
+  unchanged. Offline validation: `76 passed`, compileall PASS, diff check PASS.
+- Final: `QUALITY_DISPOSITION = FAIL_PENDING_B05_RECHECK`.
+  Next action: `R1-P7-R2-R1 B05 FACE_LOCAL AUTHORITATIVE RECHECK` with separate
+  authorization. Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p7-r2-b05-face-local-remediation-20260902T033100Z/`.
+
 ### Candidate v3 Quality Remediation R1 — R1-P7-R1 Targeted Authoritative Recheck (2026-09-02)
 
 - `R1-P7-R1-TARGETED-AUTHORITATIVE-RECHECK = CLOSED / PASS` về execution,

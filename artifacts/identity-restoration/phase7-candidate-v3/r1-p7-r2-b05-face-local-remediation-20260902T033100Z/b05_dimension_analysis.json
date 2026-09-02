@@ -1,0 +1,66 @@
+{
+  "failedDimensions": {
+    "eyes_and_brows": {
+      "deltaToPass": -3.0,
+      "measuredResult": 87.0,
+      "status": "FAIL",
+      "thresholdExpectation": 90.0
+    },
+    "facial_shape": {
+      "deltaToPass": -2.0,
+      "measuredResult": 88.0,
+      "status": "FAIL",
+      "thresholdExpectation": 90.0
+    },
+    "mouth_and_chin": {
+      "deltaToPass": -1.0,
+      "measuredResult": 89.0,
+      "status": "FAIL",
+      "thresholdExpectation": 90.0
+    }
+  },
+  "geometryEvidence": {
+    "B05": {
+      "cropSize": {
+        "height": 286,
+        "width": 186
+      },
+      "faceBboxPixels": [
+        74,
+        114
+      ],
+      "faceScale": 0.072265625,
+      "geometrySha256": "92aafb5e4b153567808c34148762690a91a26378497d44e34cb2a0ac7dce15e6",
+      "yaw": -49.07742057379534
+    },
+    "B07": {
+      "cropSize": {
+        "height": 363,
+        "width": 283
+      },
+      "faceBboxPixels": [
+        113,
+        145
+      ],
+      "faceScale": 0.1103515625,
+      "geometrySha256": "e342e56f72c22c13bfa26bb3c99e3ec29a39e4fdc9e32daddfabbc1b7a32f6ab",
+      "yaw": 9.610868968731234
+    }
+  },
+  "interpretation": "B05 has the smallest face and most extreme yaw among the closest face-local controls; this is a measured difficulty condition, not evidence that the geometry extractor or mask is defective.",
+  "passingDimensions": {
+    "nose": {
+      "deltaToPass": 0.0,
+      "measuredResult": 90.0,
+      "status": "PASS",
+      "thresholdExpectation": 90.0
+    },
+    "technical_quality": {
+      "deltaToPass": 0.0,
+      "measuredResult": 90.0,
+      "status": "PASS",
+      "thresholdExpectation": 90.0
+    }
+  },
+  "threshold": 90.0
+}

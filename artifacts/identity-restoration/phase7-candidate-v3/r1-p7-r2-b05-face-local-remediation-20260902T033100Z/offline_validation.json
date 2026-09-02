@@ -1,0 +1,20 @@
+{
+  "architectureChanged": false,
+  "compileallExitCode": 0,
+  "featureFlag": "OFF",
+  "gitDiffCheckExitCode": 0,
+  "productionPromotion": "NO",
+  "providerCalls": 0,
+  "providerGateChanged": false,
+  "retries": 0,
+  "rubricChanged": false,
+  "scopedBindings": {
+    "B05": "B05_ONLY",
+    "B07": "unchanged",
+    "scenarioGlobal": "unchanged"
+  },
+  "status": "PASS",
+  "testsExitCode": 0,
+  "thresholdsChanged": false,
+  "unknownAuthorityFailClosed": true
+}

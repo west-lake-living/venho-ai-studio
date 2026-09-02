@@ -1,5 +1,33 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-09-02 — Candidate v3 R1-P7-R2 B05 FACE_LOCAL remediation ready
+
+`Candidate v3 Quality Remediation R1 / R1-P7-R2-TARGETED-REMEDIATION-B05-FACE-LOCAL =
+CLOSED / REMEDIATION_READY`; `TARGETED_REMEDIATION_R2_AUTHORIZED=TRUE` was used.
+
+- Start state preserved from R1-P7-R1: Boundary `9/9 PASS`, FACE_LOCAL `8/9
+  PASS`, SCENARIO_GLOBAL `9/9 PASS`, pending `0`, quality `FAIL`, feature
+  `OFF`, promotion `NO`, architecture unchanged. Only B05/FACE_LOCAL was in
+  scope.
+- R1-P7-R1 B05 remains `88.50 / revise`; failed dimensions are
+  eyes/brows `87` (`-3`), facial shape `88` (`-2`), and mouth/chin `89` (`-1`)
+  against threshold `90`. Nose and technical quality are exactly `90`.
+- Evidence supports `TRUE_LOCAL_FACE_QUALITY_FAILURE / FACE_DETAIL_FAILURE`
+  with high confidence for the failure class: B05 has valid geometry but the
+  smallest close-peer face (`0.072265625`, bbox `74x114`) and most extreme yaw
+  (`-49.077°`). B07 uses the same workflow/reference/config and passes at
+  `92.25`; B05 SCENARIO_GLOBAL passes at `93.79`. The exact provider-side
+  parameter is unresolved and was not guessed.
+- Added a B05-only targeted restore variant manifest, preserving all frozen
+  inputs and approved quality policy. No live recheck, provider call, GPU,
+  Nano, regeneration, threshold/rubric change, or production change occurred.
+- Offline validation recorded `76 passed`, compileall PASS, diff check PASS;
+  provider calls `0`. Final disposition is
+  `FAIL_PENDING_B05_RECHECK`; next action is
+  `R1-P7-R2-R1 B05 FACE_LOCAL AUTHORITATIVE RECHECK` under separate authority.
+- Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p7-r2-b05-face-local-remediation-20260902T033100Z/`.
+
 ## 2026-09-02 — Candidate v3 R1-P7-R1 targeted authoritative recheck completed
 
 `Candidate v3 Quality Remediation R1 / R1-P7-R1-TARGETED-AUTHORITATIVE-RECHECK =

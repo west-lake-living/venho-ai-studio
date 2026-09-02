@@ -1,0 +1,121 @@
+{
+  "closestControl": {
+    "authorityProfile": "canonical_default",
+    "caseId": "B07",
+    "effectiveConfigSha256": "516b53f48f97937a163767e8b1dd09c56682c9b9ed4c3f54836a6850e605f4f9",
+    "faceScale": 0.1103515625,
+    "score": 92.25,
+    "verdict": "approve",
+    "workflowId": "face_restore_win_sd15_ipadapter_v3",
+    "workflowSha256": "53dc090691b8feac2a8b8a4309d43af737e304b09330e072b4ab5632ed5aad91",
+    "yaw": 9.610868968731234
+  },
+  "keyDifference": "The workflow, A2 reference, effective config, authority, and validator path are not a B05-only defect; B05 is uniquely small-face/extreme-side-pose, and its residual failure is local face detail rather than scenario/global quality.",
+  "sameWorkflowPassingPeers": [
+    {
+      "authorityProfile": "canonical_default",
+      "caseId": "B01",
+      "effectiveConfigSha256": "516b53f48f97937a163767e8b1dd09c56682c9b9ed4c3f54836a6850e605f4f9",
+      "faceScale": 0.32421875,
+      "score": 90.95,
+      "verdict": "approve",
+      "workflowId": "face_restore_win_sd15_ipadapter_v3",
+      "workflowSha256": "53dc090691b8feac2a8b8a4309d43af737e304b09330e072b4ab5632ed5aad91",
+      "yaw": 2.7149336096321948
+    },
+    {
+      "authorityProfile": "canonical_default",
+      "caseId": "B02",
+      "effectiveConfigSha256": "516b53f48f97937a163767e8b1dd09c56682c9b9ed4c3f54836a6850e605f4f9",
+      "faceScale": 0.14453125,
+      "score": 91.85,
+      "verdict": "approve",
+      "workflowId": "face_restore_win_sd15_ipadapter_v3",
+      "workflowSha256": "53dc090691b8feac2a8b8a4309d43af737e304b09330e072b4ab5632ed5aad91",
+      "yaw": -12.001024941543562
+    },
+    {
+      "authorityProfile": "action_full_body@1.0",
+      "caseId": "B03",
+      "effectiveConfigSha256": "516b53f48f97937a163767e8b1dd09c56682c9b9ed4c3f54836a6850e605f4f9",
+      "faceScale": 0.10845588235294118,
+      "score": 90.4,
+      "verdict": "approve",
+      "workflowId": "face_restore_win_sd15_ipadapter_v3",
+      "workflowSha256": "53dc090691b8feac2a8b8a4309d43af737e304b09330e072b4ab5632ed5aad91",
+      "yaw": -16.669613234743526
+    },
+    {
+      "authorityProfile": "action_full_body@1.0",
+      "caseId": "B04",
+      "effectiveConfigSha256": "516b53f48f97937a163767e8b1dd09c56682c9b9ed4c3f54836a6850e605f4f9",
+      "faceScale": 0.0947265625,
+      "score": 91.85,
+      "verdict": "approve",
+      "workflowId": "face_restore_win_sd15_ipadapter_v3",
+      "workflowSha256": "53dc090691b8feac2a8b8a4309d43af737e304b09330e072b4ab5632ed5aad91",
+      "yaw": 3.4456632747817935
+    },
+    {
+      "authorityProfile": "canonical_default",
+      "caseId": "B06",
+      "effectiveConfigSha256": "516b53f48f97937a163767e8b1dd09c56682c9b9ed4c3f54836a6850e605f4f9",
+      "faceScale": 0.080078125,
+      "score": 90.35,
+      "verdict": "approve",
+      "workflowId": "face_restore_win_sd15_ipadapter_v3",
+      "workflowSha256": "53dc090691b8feac2a8b8a4309d43af737e304b09330e072b4ab5632ed5aad91",
+      "yaw": -7.58699119147546
+    },
+    {
+      "authorityProfile": "canonical_default",
+      "caseId": "B07",
+      "effectiveConfigSha256": "516b53f48f97937a163767e8b1dd09c56682c9b9ed4c3f54836a6850e605f4f9",
+      "faceScale": 0.1103515625,
+      "score": 89.25,
+      "verdict": "revise",
+      "workflowId": "face_restore_win_sd15_ipadapter_v3",
+      "workflowSha256": "53dc090691b8feac2a8b8a4309d43af737e304b09330e072b4ab5632ed5aad91",
+      "yaw": 9.610868968731234
+    },
+    {
+      "authorityProfile": "canonical_default",
+      "caseId": "B08",
+      "effectiveConfigSha256": "516b53f48f97937a163767e8b1dd09c56682c9b9ed4c3f54836a6850e605f4f9",
+      "faceScale": 0.234375,
+      "score": 90.45,
+      "verdict": "approve",
+      "workflowId": "face_restore_win_sd15_ipadapter_v3",
+      "workflowSha256": "53dc090691b8feac2a8b8a4309d43af737e304b09330e072b4ab5632ed5aad91",
+      "yaw": -5.052022568397853
+    },
+    {
+      "authorityProfile": "canonical_default",
+      "caseId": "B09",
+      "effectiveConfigSha256": "516b53f48f97937a163767e8b1dd09c56682c9b9ed4c3f54836a6850e605f4f9",
+      "faceScale": 0.1494140625,
+      "score": 93.75,
+      "verdict": "approve",
+      "workflowId": "face_restore_win_sd15_ipadapter_v3",
+      "workflowSha256": "53dc090691b8feac2a8b8a4309d43af737e304b09330e072b4ab5632ed5aad91",
+      "yaw": -16.403418762994175
+    }
+  ],
+  "scenarioControl": {
+    "caseId": "B05",
+    "profile": "action_full_body",
+    "score": 93.79,
+    "verdict": "approve"
+  },
+  "target": {
+    "authorityProfile": "action_full_body",
+    "caseId": "B05",
+    "effectiveConfigSha256": "516b53f48f97937a163767e8b1dd09c56682c9b9ed4c3f54836a6850e605f4f9",
+    "faceScale": 0.072265625,
+    "score": 88.5,
+    "verdict": "revise",
+    "workflowId": "face_restore_win_sd15_ipadapter_v3",
+    "workflowSha256": "53dc090691b8feac2a8b8a4309d43af737e304b09330e072b4ab5632ed5aad91",
+    "yaw": -49.07742057379534
+  }
+}

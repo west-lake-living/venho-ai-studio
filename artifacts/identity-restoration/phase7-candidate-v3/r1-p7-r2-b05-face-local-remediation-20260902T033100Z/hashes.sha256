@@ -1,0 +1,18 @@
+{
+  "algorithm": "SHA-256",
+  "count": 12,
+  "files": {
+    "b05_dimension_analysis.json": "cb9080fa891464177429758c1244459cd1383c75fcadcf09d02b34d647dc4e7d",
+    "b05_failure_reconstruction.json": "9bd65be6077fdb3ae9bb9125b1c7482406f358ba9ef8e8a006602f837ef156f7",
+    "baseline.json": "c19516851722c5f742df8b2c4462dd7a698446fc2b09b01233a5a1753bb27fb8",
+    "compileall.txt": "973ed2a2950562422f7b020a70220236f32bef40caaa997dd698e42dbbc6c2a5",
+    "git_diff_check.txt": "531a62067629ec38e912d348148c7183f3fefa118a984525fe78804a85755a4d",
+    "offline_validation.json": "f61a7cb16e00ca45a0767e26e771bcd5389f567e211d7fc57102d00193f48e0a",
+    "passing_case_protection.json": "9b60b6b533cd005f169762dd638ed2defb6c366576edfa1d8eae1ed76366fef7",
+    "passing_peer_comparison.json": "4597f5eb91614f848d9e059c4bdfda05ff9a0da514c8effc245c09973a01bf49",
+    "remediation_plan.json": "164b7b8c171d932cf0e91af97804fc57273e5459cd3ed8a666dc3b1a07d96183",
+    "root_cause_report.json": "f0721a8000ba3b2baa4421cf1c3a30a476836d1029102c26ad85413b153caa03",
+    "summary.json": "b3af8c3471aef831586e8540bdd9d76f82e0f07af9df8c45c63b833155e7ddea",
+    "test_results.txt": "2cf4ba48b6489c36b1622d038d396a09e2d3b4f969cf421e9388e27766b9fe31"
+  }
+}

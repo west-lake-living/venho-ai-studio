@@ -1,0 +1,18 @@
+{
+  "caseId": "B05",
+  "causalEvidence": [
+    "R1-P7-R1 returned valid provider, schema, DTO, and lineage evidence; only eyes_and_brows, facial_shape, and mouth_and_chin remain below 90.",
+    "The same frozen B05 input remains 88.50/revise after R1-P7-R1; B05 SCENARIO_GLOBAL is 93.79/approve.",
+    "B05 uses the same v3 workflow, A2 reference, effective config, and canonical validator path as passing peers.",
+    "B05 geometry is valid but has face scale 0.072265625 and yaw -49.077 degrees, versus B07 face scale 0.1103515625 and yaw 9.6109 degrees."
+  ],
+  "decision": "Do not invent a parameter change offline; prepare one B05-only restore variant and defer its single authoritative recheck.",
+  "notProven": [
+    "specific provider-side denoise/CFG/strength parameter",
+    "geometry extractor defect",
+    "mask defect",
+    "reference binding defect"
+  ],
+  "rootCause": "TRUE_LOCAL_FACE_QUALITY_FAILURE / FACE_DETAIL_FAILURE",
+  "rootCauseConfidence": "HIGH_FOR_FAILURE_CLASS_MEDIUM_FOR_GEOMETRY_MECHANISM"
+}

@@ -1,0 +1,47 @@
+{
+  "caseId": "B05",
+  "dimensions": {
+    "eyes_and_brows": {
+      "deltaToPass": -3.0,
+      "measuredResult": 87.0,
+      "status": "FAIL",
+      "thresholdExpectation": 90.0
+    },
+    "facial_shape": {
+      "deltaToPass": -2.0,
+      "measuredResult": 88.0,
+      "status": "FAIL",
+      "thresholdExpectation": 90.0
+    },
+    "mouth_and_chin": {
+      "deltaToPass": -1.0,
+      "measuredResult": 89.0,
+      "status": "FAIL",
+      "thresholdExpectation": 90.0
+    },
+    "nose": {
+      "deltaToPass": 0.0,
+      "measuredResult": 90.0,
+      "status": "PASS",
+      "thresholdExpectation": 90.0
+    },
+    "technical_quality": {
+      "deltaToPass": 0.0,
+      "measuredResult": 90.0,
+      "status": "PASS",
+      "thresholdExpectation": 90.0
+    }
+  },
+  "evaluator": "FACE_LOCAL",
+  "inputId": "artifacts/identity-restoration/phase7-candidate-v3/phase7-diagnostic-20260828/B05-attempt-1/restored-canonical.png",
+  "inputSha256": "a9552ddda2726d66623246c654982c60cdef41269d6952c1ffc33a47bfa650f3",
+  "lineage": "VERIFIED",
+  "model": "gemini-flash-latest",
+  "parsedHash": "1d4f04201109e3dfdfcc78f7d172685109cfb3b6a640485f83ce9606c32b4c64",
+  "provider": "Gemini",
+  "providerCalls": 0,
+  "rawHash": "f0f226969769567af07af8e27463537bc58efac3650a4cfe3e39c70f76cb36b9",
+  "score": 88.5,
+  "validResponse": true,
+  "verdict": "revise"
+}
