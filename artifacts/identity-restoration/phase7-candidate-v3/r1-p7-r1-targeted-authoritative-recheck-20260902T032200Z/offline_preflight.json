@@ -1,0 +1,10 @@
+{
+  "compileallExitCode": 0,
+  "gitDiffCheckExitCode": 0,
+  "lineage": "targeted five-case inputs verified against R1-P6/R1-P7",
+  "model": "gemini-flash-latest",
+  "provider": "Gemini",
+  "providerCalls": 0,
+  "status": "PASS",
+  "testsExitCode": 0
+}

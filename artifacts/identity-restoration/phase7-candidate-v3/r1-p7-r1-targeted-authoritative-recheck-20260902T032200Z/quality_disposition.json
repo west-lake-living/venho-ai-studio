@@ -1,0 +1,21 @@
+{
+  "aggregationPolicy": "existing approved score threshold >= 90.0; no policy change",
+  "architectureChanged": false,
+  "boundary": "9/9 PASS",
+  "faceLocal": {
+    "fail": 1,
+    "pass": 1,
+    "valid": 2
+  },
+  "featureFlag": "OFF",
+  "pendingAuthoritativeEvaluations": 0,
+  "productionPromotion": "NO",
+  "qualityDisposition": "FAIL",
+  "r1P7R1": "CLOSED / PASS",
+  "scenarioGlobal": {
+    "fail": 0,
+    "pass": 3,
+    "valid": 3
+  },
+  "taskId": "R1-P7-R1-TARGETED-AUTHORITATIVE-RECHECK"
+}

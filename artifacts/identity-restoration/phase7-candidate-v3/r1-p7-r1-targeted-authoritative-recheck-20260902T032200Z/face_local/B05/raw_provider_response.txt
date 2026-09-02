@@ -1,0 +1,32 @@
+{
+  "gates": [
+    {
+      "gate": "identity_structure",
+      "passed": true,
+      "reason": "The facial bone structure, jawline, nose bridge, lip morphology, and cheek contours closely match the reference identity from this three-quarter angle.",
+      "evidence": "Consistent delicate pointed chin, slim natural nose profile, and proportional eye and brow shape."
+    },
+    {
+      "gate": "eye_ratio",
+      "passed": true,
+      "reason": "Eye shape and proportion maintain the character's long almond design with natural horizontal emphasis and warm brown irises.",
+      "evidence": "Almond contour with slight horizontal elongation matches reference proportions."
+    },
+    {
+      "gate": "forbidden_traits",
+      "passed": true,
+      "reason": "No forbidden traits or artifacts are present in the candidate image.",
+      "evidence": "Natural skin texture present without heavy makeup, glasses, tattoos, or plastic doll-like appearance."
+    }
+  ],
+  "weighted_scores": {
+    "facial_shape": 88,
+    "eyes_and_brows": 87,
+    "nose": 90,
+    "mouth_and_chin": 89,
+    "technical_quality": 90
+  },
+  "notes": [
+    "Three-quarter angle accurately reflects the character's structural DNA."
+  ]
+}

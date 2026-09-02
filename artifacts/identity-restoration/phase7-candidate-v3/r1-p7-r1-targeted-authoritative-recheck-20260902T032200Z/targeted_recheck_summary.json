@@ -1,0 +1,131 @@
+{
+  "architectureChanged": false,
+  "boundary": "9/9 PASS",
+  "faceLocal": {
+    "attempted": 2,
+    "cases": [
+      "B05",
+      "B07"
+    ],
+    "expected": 2,
+    "fail": 1,
+    "invalid": 0,
+    "pass": 1,
+    "results": [
+      {
+        "callStatus": "SUCCESS",
+        "caseId": "B05",
+        "evaluatorVersion": "validator-studio-existing-production-entrypoint",
+        "inputId": "artifacts/identity-restoration/phase7-candidate-v3/phase7-diagnostic-20260828/B05-attempt-1/restored-canonical.png",
+        "lane": "FACE_LOCAL",
+        "lineage": "VERIFIED",
+        "model": "gemini-flash-latest",
+        "parsedHash": "1d4f04201109e3dfdfcc78f7d172685109cfb3b6a640485f83ce9606c32b4c64",
+        "provider": "Gemini",
+        "qualityPass": false,
+        "rawHash": "f0f226969769567af07af8e27463537bc58efac3650a4cfe3e39c70f76cb36b9",
+        "score": 88.5,
+        "validResponse": true,
+        "verdict": "revise"
+      },
+      {
+        "callStatus": "SUCCESS",
+        "caseId": "B07",
+        "evaluatorVersion": "validator-studio-existing-production-entrypoint",
+        "inputId": "artifacts/identity-restoration/phase7-candidate-v3/phase7-benchmark-20260828/B07-attempt-1/restored-canonical.png",
+        "lane": "FACE_LOCAL",
+        "lineage": "VERIFIED",
+        "model": "gemini-flash-latest",
+        "parsedHash": "4b458a60193d703ff2c30980c3cee293880afcba4159806800c4d768b2a71b34",
+        "provider": "Gemini",
+        "qualityPass": true,
+        "rawHash": "5eab6cae8d672506f194d97fe2c94c080c657dfd2f5ac844fe536d6c707d2677",
+        "score": 92.25,
+        "validResponse": true,
+        "verdict": "approve"
+      }
+    ],
+    "valid": 2
+  },
+  "featureFlag": "OFF",
+  "finalFaceLocalBaselinePlusTargeted": {
+    "fail": 1,
+    "pass": 8
+  },
+  "finalScenarioGlobalBaselinePlusTargeted": {
+    "fail": 0,
+    "pass": 9
+  },
+  "nextAction": "TARGETED_REMEDIATION_R2_REQUIRES_SEPARATE_AUTHORIZATION",
+  "pendingTargeted": 0,
+  "productionPromotion": "NO",
+  "providerCalls": 5,
+  "qualityDisposition": "FAIL",
+  "retries": 0,
+  "scenarioGlobal": {
+    "attempted": 3,
+    "cases": [
+      "B05",
+      "B06",
+      "B09"
+    ],
+    "expected": 3,
+    "fail": 0,
+    "invalid": 0,
+    "pass": 3,
+    "results": [
+      {
+        "callStatus": "SUCCESS",
+        "caseId": "B05",
+        "evaluatorVersion": "validator-studio-existing-production-entrypoint",
+        "inputId": "artifacts/identity-restoration/phase7-candidate-v3/r1-p1-boundary-remediation-20260828/B05/inverse-composite-remediated.png",
+        "lane": "SCENARIO_GLOBAL",
+        "lineage": "VERIFIED",
+        "model": "gemini-flash-latest",
+        "parsedHash": "58a12b984dd4b5fc350551a44eadac194a97441dedf4606f8daf8ca9efdd18ce",
+        "provider": "Gemini",
+        "qualityPass": true,
+        "rawHash": "9ecc9d4d779c67565b3e097f75b26120ab01010c3d429f7615ac63f750b03dae",
+        "score": 93.79,
+        "validResponse": true,
+        "verdict": "approve"
+      },
+      {
+        "callStatus": "SUCCESS",
+        "caseId": "B06",
+        "evaluatorVersion": "validator-studio-existing-production-entrypoint",
+        "inputId": "artifacts/identity-restoration/phase7-candidate-v3/r1-p1-boundary-remediation-20260828/B06/inverse-composite-remediated.png",
+        "lane": "SCENARIO_GLOBAL",
+        "lineage": "VERIFIED",
+        "model": "gemini-flash-latest",
+        "parsedHash": "83cf5258c4c691313d760b78b5f4a6f636ffe7a460852061e56fa63a9069e3df",
+        "provider": "Gemini",
+        "qualityPass": true,
+        "rawHash": "02ff47ed64518eb2f411cb697c0155664a671e7ec83d4ac92f24d18792115c57",
+        "score": 91.54,
+        "validResponse": true,
+        "verdict": "approve"
+      },
+      {
+        "callStatus": "SUCCESS",
+        "caseId": "B09",
+        "evaluatorVersion": "validator-studio-existing-production-entrypoint",
+        "inputId": "artifacts/identity-restoration/phase7-candidate-v3/r1-p1-boundary-remediation-20260828/B09/inverse-composite-remediated.png",
+        "lane": "SCENARIO_GLOBAL",
+        "lineage": "VERIFIED",
+        "model": "gemini-flash-latest",
+        "parsedHash": "23983aa210b6ef1e7b2b0f14ecb7ef7a7da41a8d7f72c891799db90a1362efb3",
+        "provider": "Gemini",
+        "qualityPass": true,
+        "rawHash": "f28a6cbfc117a3c89b5b7d19ff9b90578860f57f3a65b934019699529d1c19e2",
+        "score": 92.4,
+        "validResponse": true,
+        "verdict": "approve"
+      }
+    ],
+    "valid": 3
+  },
+  "stabilityGate": "PASS",
+  "status": "CLOSED / PASS",
+  "taskId": "R1-P7-R1-TARGETED-AUTHORITATIVE-RECHECK"
+}

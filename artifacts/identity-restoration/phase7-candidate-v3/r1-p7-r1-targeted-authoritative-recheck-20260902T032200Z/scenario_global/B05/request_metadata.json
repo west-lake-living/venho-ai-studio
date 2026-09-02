@@ -1,0 +1,58 @@
+{
+  "authorityProfile": "action_full_body",
+  "callStatus": "SUCCESS",
+  "caseId": "B05",
+  "descriptor": {
+    "artifactSha256": "8d124b09a4400bcf76b84671d30fe540faefeac6b396ce2fbac9727bda5308f0",
+    "authorityProfile": "action_full_body",
+    "lane": "SCENARIO_GLOBAL",
+    "model": "gemini-flash-latest",
+    "provider": "gemini",
+    "referenceSha256": null,
+    "retryPolicy": {
+      "backoffSeconds": [
+        0.25
+      ],
+      "jitter": false,
+      "maxTransportAttemptsPerLogicalSample": 2,
+      "nonRetryable": [
+        "LOCAL_SCHEMA_BUILD_FAIL",
+        "LOCAL_REQUEST_SERIALIZATION_FAIL",
+        "PROVIDER_TRUNCATED_RESPONSE",
+        "PROVIDER_RESPONSE_SCHEMA_FAIL",
+        "AUTH_FAILURE",
+        "UNSUPPORTED_MODEL",
+        "MALFORMED_LOCAL_INPUT"
+      ],
+      "retryable": [
+        "PROVIDER_503",
+        "PROVIDER_429",
+        "PROVIDER_TIMEOUT"
+      ]
+    },
+    "sample": 1,
+    "sampleId": "B05",
+    "validatorProfile": "action_full_body",
+    "validatorVersion": "validator-studio-existing-production-entrypoint"
+  },
+  "evaluatorVersion": "validator-studio-existing-production-entrypoint",
+  "frozenInputPreserved": true,
+  "inputId": "artifacts/identity-restoration/phase7-candidate-v3/r1-p1-boundary-remediation-20260828/B05/inverse-composite-remediated.png",
+  "inputSha256": "8d124b09a4400bcf76b84671d30fe540faefeac6b396ce2fbac9727bda5308f0",
+  "lane": "SCENARIO_GLOBAL",
+  "lineage": "VERIFIED",
+  "lineageToR1P6Failure": "R1-P6/SCENARIO_GLOBAL/B05",
+  "model": "gemini-flash-latest",
+  "parsedHash": "58a12b984dd4b5fc350551a44eadac194a97441dedf4606f8daf8ca9efdd18ce",
+  "provider": "Gemini",
+  "qualityPass": true,
+  "rawHash": "9ecc9d4d779c67565b3e097f75b26120ab01010c3d429f7615ac63f750b03dae",
+  "referenceArtifacts": [],
+  "remediationSource": "R1-P7 targeted binding/variant plan",
+  "reportHash": "e2711bd86df147bf79672af5ab7b7a38ce9e5b1cf28f3526ba36d4a8f435cd92",
+  "score": 93.79,
+  "taskId": "R1-P7-R1-TARGETED-AUTHORITATIVE-RECHECK",
+  "validResponse": true,
+  "validatorProfile": "action_full_body",
+  "verdict": "approve"
+}

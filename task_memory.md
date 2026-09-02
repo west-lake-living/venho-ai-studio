@@ -1,5 +1,28 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-09-02 — Candidate v3 R1-P7-R1 targeted authoritative recheck completed
+
+`Candidate v3 Quality Remediation R1 / R1-P7-R1-TARGETED-AUTHORITATIVE-RECHECK =
+CLOSED / PASS` về execution; `TARGETED_RECHECK_AUTHORIZED=TRUE` đã được dùng.
+
+- Chỉ chạy đúng 5 case: FACE_LOCAL B05/B07 và SCENARIO_GLOBAL B05/B06/B09.
+  Tất cả `5/5` response valid, provider `5`, retries `0`, GPU/Nano/alternative
+  provider `0`; lineage và raw/parsed hashes đều verified.
+- FACE_LOCAL: B05 `88.50 / revise` vẫn fail; B07 `92.25 / approve` pass.
+  SCENARIO_GLOBAL: B05 `93.79`, B06 `91.54`, B09 `92.40`, cả ba approve.
+- Tổng authoritative sau khi thay thế đúng các failed baseline: Boundary
+  `9/9 PASS`, FACE_LOCAL `8/9 PASS`, SCENARIO_GLOBAL `9/9 PASS`, pending `0`.
+  Vì B05 FACE_LOCAL còn fail, `QUALITY_DISPOSITION = FAIL`; không set
+  quality PASS và không promotion.
+- Feature flag `OFF`, production promotion `NO`, architecture unchanged.
+  Không rerun 13 passing baseline case và không sửa thêm remediation trong
+  task này.
+- Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p7-r1-targeted-authoritative-recheck-20260902T032200Z/`.
+
+Next action: `TARGETED_REMEDIATION_R2_REQUIRES_SEPARATE_AUTHORIZATION` cho B05
+FACE_LOCAL còn lại.
+
 ## 2026-09-02 — Candidate v3 R1-P7 targeted quality remediation ready
 
 `Candidate v3 Quality Remediation R1 / R1-P7-TARGETED-QUALITY-REMEDIATION =

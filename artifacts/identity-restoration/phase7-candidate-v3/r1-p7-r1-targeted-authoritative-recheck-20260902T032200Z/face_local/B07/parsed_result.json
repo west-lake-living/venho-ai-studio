@@ -1,0 +1,33 @@
+{
+  "gates": [
+    {
+      "evidence": "Consistent elongated oval jaw, almond eye configuration, thin nose bridge, and mouth structure matching reference 2.",
+      "gate": "identity_structure",
+      "passed": true,
+      "reason": "Candidate demonstrates strong structural face similarity to reference image A2 Front, maintaining the correct oval face shape, eye spacing, nose bridge, jawline, and subtle smile."
+    },
+    {
+      "evidence": "Almond-shaped eyes with subtle double-eyelid fold and correct inter-ocular distance.",
+      "gate": "eye_ratio",
+      "passed": true,
+      "reason": "Eye shape and proportions match the approved horizontal emphasis and spacing found in reference 2."
+    },
+    {
+      "evidence": "Skin texture is natural and makeup remains delicate.",
+      "gate": "forbidden_traits",
+      "passed": true,
+      "reason": "No forbidden traits (heavy makeup, plastic skin texture, exaggerated Western features, tattoos, or glasses) are present."
+    }
+  ],
+  "notes": [
+    "Slight digital artifacting along the lower left collar/shoulder area, but facial landmark clarity remains high for identity verification.",
+    "Excellent preservation of facial DNA features and subtle expression."
+  ],
+  "weighted_scores": {
+    "eyes_and_brows": 92.0,
+    "facial_shape": 94.0,
+    "mouth_and_chin": 91.0,
+    "nose": 93.0,
+    "technical_quality": 88.0
+  }
+}

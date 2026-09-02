@@ -1,0 +1,130 @@
+{
+  "cases": {
+    "FACE_LOCAL": {
+      "B05": {
+        "after": {
+          "callStatus": "SUCCESS",
+          "caseId": "B05",
+          "evaluatorVersion": "validator-studio-existing-production-entrypoint",
+          "inputId": "artifacts/identity-restoration/phase7-candidate-v3/phase7-diagnostic-20260828/B05-attempt-1/restored-canonical.png",
+          "lane": "FACE_LOCAL",
+          "lineage": "VERIFIED",
+          "model": "gemini-flash-latest",
+          "parsedHash": "1d4f04201109e3dfdfcc78f7d172685109cfb3b6a640485f83ce9606c32b4c64",
+          "provider": "Gemini",
+          "qualityPass": false,
+          "rawHash": "f0f226969769567af07af8e27463537bc58efac3650a4cfe3e39c70f76cb36b9",
+          "score": 88.5,
+          "validResponse": true,
+          "verdict": "revise"
+        },
+        "before": {
+          "parsedHash": "de067890e1d18d67cbafa82bfd4a3ddf26ce580f84990e3c5922352fb63c240e",
+          "rawHash": "92191a20e46f7943efb77d9600e6875ba8b11c54e2a60cc2170e836286c40a6f",
+          "score": 86.35,
+          "verdict": "revise"
+        }
+      },
+      "B07": {
+        "after": {
+          "callStatus": "SUCCESS",
+          "caseId": "B07",
+          "evaluatorVersion": "validator-studio-existing-production-entrypoint",
+          "inputId": "artifacts/identity-restoration/phase7-candidate-v3/phase7-benchmark-20260828/B07-attempt-1/restored-canonical.png",
+          "lane": "FACE_LOCAL",
+          "lineage": "VERIFIED",
+          "model": "gemini-flash-latest",
+          "parsedHash": "4b458a60193d703ff2c30980c3cee293880afcba4159806800c4d768b2a71b34",
+          "provider": "Gemini",
+          "qualityPass": true,
+          "rawHash": "5eab6cae8d672506f194d97fe2c94c080c657dfd2f5ac844fe536d6c707d2677",
+          "score": 92.25,
+          "validResponse": true,
+          "verdict": "approve"
+        },
+        "before": {
+          "parsedHash": "6a83aa1b70346698f179481868cff675e530ea1b31a85c9696d69659779264e5",
+          "rawHash": "1326bc9f7c7d34f4b5300c37b7a94dc48d49c574cd8ae4a11a5cc89b93f0192d",
+          "score": 89.25,
+          "verdict": "revise"
+        }
+      }
+    },
+    "SCENARIO_GLOBAL": {
+      "B05": {
+        "after": {
+          "callStatus": "SUCCESS",
+          "caseId": "B05",
+          "evaluatorVersion": "validator-studio-existing-production-entrypoint",
+          "inputId": "artifacts/identity-restoration/phase7-candidate-v3/r1-p1-boundary-remediation-20260828/B05/inverse-composite-remediated.png",
+          "lane": "SCENARIO_GLOBAL",
+          "lineage": "VERIFIED",
+          "model": "gemini-flash-latest",
+          "parsedHash": "58a12b984dd4b5fc350551a44eadac194a97441dedf4606f8daf8ca9efdd18ce",
+          "provider": "Gemini",
+          "qualityPass": true,
+          "rawHash": "9ecc9d4d779c67565b3e097f75b26120ab01010c3d429f7615ac63f750b03dae",
+          "score": 93.79,
+          "validResponse": true,
+          "verdict": "approve"
+        },
+        "before": {
+          "parsedHash": "669ff902182cf2939276982dab0ca50705669536848ae7fe651e633c8aa7f162",
+          "rawHash": "40bb8e3658f2924f3a666760481706c215166ff6d7d1498b01dcbf17343fe361",
+          "score": 86.77,
+          "verdict": "revise"
+        }
+      },
+      "B06": {
+        "after": {
+          "callStatus": "SUCCESS",
+          "caseId": "B06",
+          "evaluatorVersion": "validator-studio-existing-production-entrypoint",
+          "inputId": "artifacts/identity-restoration/phase7-candidate-v3/r1-p1-boundary-remediation-20260828/B06/inverse-composite-remediated.png",
+          "lane": "SCENARIO_GLOBAL",
+          "lineage": "VERIFIED",
+          "model": "gemini-flash-latest",
+          "parsedHash": "83cf5258c4c691313d760b78b5f4a6f636ffe7a460852061e56fa63a9069e3df",
+          "provider": "Gemini",
+          "qualityPass": true,
+          "rawHash": "02ff47ed64518eb2f411cb697c0155664a671e7ec83d4ac92f24d18792115c57",
+          "score": 91.54,
+          "validResponse": true,
+          "verdict": "approve"
+        },
+        "before": {
+          "parsedHash": "2891dca1872190a6e9311e9403e15a632be99a7af929c3c9341be401d41d5905",
+          "rawHash": "b4ee542815eb04ec53810b1e65517bc8297ef41ad12525ef2d7c44a0d576e48a",
+          "score": 84.92,
+          "verdict": "revise"
+        }
+      },
+      "B09": {
+        "after": {
+          "callStatus": "SUCCESS",
+          "caseId": "B09",
+          "evaluatorVersion": "validator-studio-existing-production-entrypoint",
+          "inputId": "artifacts/identity-restoration/phase7-candidate-v3/r1-p1-boundary-remediation-20260828/B09/inverse-composite-remediated.png",
+          "lane": "SCENARIO_GLOBAL",
+          "lineage": "VERIFIED",
+          "model": "gemini-flash-latest",
+          "parsedHash": "23983aa210b6ef1e7b2b0f14ecb7ef7a7da41a8d7f72c891799db90a1362efb3",
+          "provider": "Gemini",
+          "qualityPass": true,
+          "rawHash": "f28a6cbfc117a3c89b5b7d19ff9b90578860f57f3a65b934019699529d1c19e2",
+          "score": 92.4,
+          "validResponse": true,
+          "verdict": "approve"
+        },
+        "before": {
+          "parsedHash": "8ab667f18da951cb9569b4f1db2f0cdb6633d959c66119863abdb6898d07329c",
+          "rawHash": "f76de2a9cbae26531cac1ca582e342251dd04e3ec50e1fd7b0d44f8605ce1994",
+          "score": 89.02,
+          "verdict": "revise"
+        }
+      }
+    }
+  },
+  "source": "artifacts/identity-restoration/phase7-candidate-v3/r1-p6-authoritative-evaluation-resume-20260902T024012Z",
+  "targetedOnly": true
+}

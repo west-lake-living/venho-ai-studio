@@ -1,0 +1,47 @@
+{
+  "authorization": {
+    "name": "TARGETED_RECHECK_AUTHORIZED",
+    "receivedValue": "TRUE",
+    "requiredValue": "TRUE"
+  },
+  "r1P7Evidence": {
+    "commit": "e7d81a8",
+    "path": "artifacts/identity-restoration/phase7-candidate-v3/r1-p7-targeted-quality-remediation-20260902T030000Z",
+    "qualityDisposition": "FAIL_PENDING_RECHECK",
+    "status": "CLOSED / REMEDIATION_READY",
+    "summarySha256": "7cb1cd0410d1af75f298332a8f037c51e383ac84fff4f74e39ff82e5a1668ecf"
+  },
+  "recoveryEvidence": {
+    "hashManifestSha256": "60fa8096015f165c7c47942025dedb491e60ccab1cca8741c6ffc9876701108a",
+    "model": "gemini-flash-latest",
+    "path": "artifacts/identity-restoration/phase7-candidate-v3/r1-p5-r4-provider-recovery-recheck-20260902T010010Z",
+    "provider": "Gemini",
+    "providerHold": "RECOVERED",
+    "status": "PASS",
+    "summarySha256": "477b01593e44f0dc83faee3db4926e116b8652835432e9f04b7e35c34a0cf700"
+  },
+  "scope": {
+    "faceLocal": [
+      "B05",
+      "B07"
+    ],
+    "maxProviderCalls": 5,
+    "retries": 0,
+    "scenarioGlobal": [
+      "B05",
+      "B06",
+      "B09"
+    ]
+  },
+  "startState": {
+    "architectureChanged": false,
+    "boundary": "9/9 PASS",
+    "faceLocal": "7 PASS / 2 FAIL (B05, B07)",
+    "featureFlag": "OFF",
+    "productionPromotion": "NO",
+    "qualityDisposition": "FAIL_PENDING_RECHECK",
+    "r1P7": "CLOSED / REMEDIATION_READY",
+    "scenarioGlobal": "6 PASS / 3 FAIL (B05, B06, B09)"
+  },
+  "taskId": "R1-P7-R1-TARGETED-AUTHORITATIVE-RECHECK"
+}
