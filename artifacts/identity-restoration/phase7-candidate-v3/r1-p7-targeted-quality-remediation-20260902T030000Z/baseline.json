@@ -1,0 +1,47 @@
+{
+  "authorization": {
+    "alternativeProviderCalls": 0,
+    "gpuJobs": 0,
+    "nanoCalls": 0,
+    "providerCalls": 0,
+    "targetedQualityRemediationAuthorized": true,
+    "targetedRecheckAuthorized": false
+  },
+  "providerActivity": {
+    "alternativeProviderCalls": 0,
+    "gpuJobs": 0,
+    "nanoCalls": 0,
+    "providerCalls": 0
+  },
+  "r1P6": {
+    "architectureChanged": false,
+    "boundary": "9/9 PASS",
+    "faceLocal": {
+      "fail": 2,
+      "failedCases": [
+        "B05",
+        "B07"
+      ],
+      "pass": 7,
+      "valid": 9
+    },
+    "featureFlag": "OFF",
+    "pendingAuthoritativeEvaluations": 0,
+    "productionPromotion": "NO",
+    "providerHold": "RECOVERED",
+    "qualityDisposition": "FAIL",
+    "scenarioGlobal": {
+      "fail": 3,
+      "failedCases": [
+        "B05",
+        "B06",
+        "B09"
+      ],
+      "pass": 6,
+      "valid": 9
+    },
+    "status": "CLOSED / PASS"
+  },
+  "sourceEvidence": "artifacts/identity-restoration/phase7-candidate-v3/r1-p6-authoritative-evaluation-resume-20260902T024012Z",
+  "taskId": "R1-P7-TARGETED-QUALITY-REMEDIATION"
+}

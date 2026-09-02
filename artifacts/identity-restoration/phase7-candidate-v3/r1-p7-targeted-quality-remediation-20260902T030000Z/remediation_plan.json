@@ -1,0 +1,39 @@
+{
+  "forbiddenChanges": [
+    "thresholds",
+    "rubric",
+    "validator",
+    "provider",
+    "architecture",
+    "feature flag",
+    "promotion",
+    "frozen historical artifacts"
+  ],
+  "nextTask": "R1-P7-R1 TARGETED AUTHORITATIVE RECHECK",
+  "orderedScope": [
+    {
+      "change": "case-scoped action_full_body@1.0 authority mapping",
+      "expectedEffect": "exclude shot_distance and hairstyle only",
+      "liveRecheckRequired": false,
+      "scope": "B05/B06 SCENARIO_GLOBAL"
+    },
+    {
+      "change": "prepare targeted restore variant using existing workflow/reference/geometry/mask",
+      "expectedEffect": "improve local face detail without global tuning",
+      "liveRecheckRequired": true,
+      "scope": "B05 FACE_LOCAL"
+    },
+    {
+      "change": "prepare targeted restore variant using existing workflow/reference/geometry/mask",
+      "expectedEffect": "improve local face detail without global tuning",
+      "liveRecheckRequired": true,
+      "scope": "B07 FACE_LOCAL"
+    },
+    {
+      "change": "prepare new source variant with explicit prompt conditioning",
+      "expectedEffect": "head-and-shoulders, elegant low bun, small pearl drop",
+      "liveRecheckRequired": true,
+      "scope": "B09 SCENARIO_GLOBAL"
+    }
+  ]
+}

@@ -1,5 +1,31 @@
 # VENHO AI STUDIO — Task Status
 
+### Candidate v3 Quality Remediation R1 — R1-P7 Targeted Quality Remediation (2026-09-02)
+
+- `R1-P7-TARGETED-QUALITY-REMEDIATION = CLOSED / REMEDIATION_READY` under
+  explicit `TARGETED_QUALITY_REMEDIATION_AUTHORIZED=TRUE`; no targeted
+  recheck was authorized.
+- R1-P6 failures were reconstructed exactly: FACE_LOCAL `B05, B07` and
+  SCENARIO_GLOBAL `B05, B06, B09`; all five responses were valid Gemini
+  responses with preserved raw/parsed hashes. Root causes are localized face
+  quality for B05/B07, action authority-profile mismatch for B05/B06, and
+  prompt conditioning for B09. No provider/evaluator validity defect was
+  found.
+- Implemented only the case-scoped `action_full_body@1.0` mapping for B05/B06
+  and an implementation-ready targeted plan for B05/B07 face restoration and
+  B09 source rerender. Offline authority replay is `B05=97.74 approve` and
+  `B06=91.47 approve`; historical R1-P6 quality FAIL remains unchanged.
+- Passing paths are protected: Boundary `9/9`, FACE_LOCAL passing `7`, and
+  SCENARIO_GLOBAL passing `6`; no threshold, rubric, validator, provider,
+  architecture, feature flag, or promotion change occurred.
+- Offline validation: `13 passed`, compileall PASS, `git diff --check` PASS.
+  Provider calls `0`, GPU jobs `0`, Nano calls `0`, alternative-provider calls
+  `0`. Candidate v3 remains `OFF`; production promotion remains `NO`.
+- Final state: `QUALITY_DISPOSITION = FAIL_PENDING_RECHECK`.
+  Next action: `R1-P7-R1 TARGETED AUTHORITATIVE RECHECK` with separate
+  authorization required. Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p7-targeted-quality-remediation-20260902T030000Z/`.
+
 ### Candidate v3 Quality Remediation R1 — R1-P6 Authoritative Evaluation Resume (2026-09-02)
 
 - `R1-P6-AUTHORITATIVE-EVALUATION-RESUME = CLOSED / PASS`; explicit

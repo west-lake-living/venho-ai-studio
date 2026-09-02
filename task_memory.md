@@ -1,5 +1,38 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-09-02 — Candidate v3 R1-P7 targeted quality remediation ready
+
+`Candidate v3 Quality Remediation R1 / R1-P7-TARGETED-QUALITY-REMEDIATION =
+CLOSED / REMEDIATION_READY`; explicit
+`TARGETED_QUALITY_REMEDIATION_AUTHORIZED=TRUE` was used and
+`TARGETED_RECHECK_AUTHORIZED=FALSE` remained enforced.
+
+- R1-P6 authoritative baseline is preserved: Boundary `9/9 PASS`, FACE_LOCAL
+  `7 PASS / 2 FAIL` (`B05`, `B07`), SCENARIO_GLOBAL `6 PASS / 3 FAIL`
+  (`B05`, `B06`, `B09`), pending `0`, quality `FAIL`, provider hold
+  `RECOVERED`, feature `OFF`, promotion `NO`.
+- Root cause classification: B05/B07 FACE_LOCAL are valid true image/local
+  face-detail failures; B05/B06 SCENARIO_GLOBAL were evaluated under the
+  wrong `canonical_default` authority for action cases; B09 has a proven
+  prompt-conditioning mismatch (medium/half-body and hair down instead of
+  head-and-shoulders and elegant low bun). B05/B07 exact workflow parameter
+  mechanism remains unresolved and was not guessed.
+- Targeted implementation adds `action_full_body@1.0` authority mapping only
+  to B05/B06. It prepares, but does not execute, targeted variants for B05,
+  B07, and B09. Frozen historical artifacts and the R1-P6 evidence remain
+  immutable.
+- Existing authority replay passes without provider calls: B05 `97.74 approve`,
+  B06 `91.47 approve`, while the historical quality result is not rewritten.
+  Passing-case protection covers all 13 previously passing evaluator cases.
+- Offline validation recorded `13 passed`, compileall PASS, and
+  `git diff --check` PASS. Provider/GPU/Nano/alternative-provider calls are
+  all `0`.
+- Final state is `R1-P7 = CLOSED / REMEDIATION_READY`,
+  `QUALITY_DISPOSITION = FAIL_PENDING_RECHECK`; next action is
+  `R1-P7-R1 TARGETED AUTHORITATIVE RECHECK` under separate authorization.
+- Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p7-targeted-quality-remediation-20260902T030000Z/`.
+
 ## 2026-09-02 — Candidate v3 R1-P6 authoritative evaluation completed with quality FAIL
 
 `Candidate v3 Quality Remediation R1 / R1-P6-AUTHORITATIVE-EVALUATION-RESUME =

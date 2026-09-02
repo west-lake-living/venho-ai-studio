@@ -1,0 +1,31 @@
+{
+  "authorityReplay": {
+    "B05": {
+      "providerCalls": 0,
+      "score": 97.74,
+      "verdict": "approve"
+    },
+    "B06": {
+      "providerCalls": 0,
+      "score": 91.47,
+      "verdict": "approve"
+    }
+  },
+  "boundaryUnchanged": true,
+  "expectedReplay": {
+    "B05": {
+      "score": 97.74,
+      "verdict": "approve"
+    },
+    "B06": {
+      "score": 91.47,
+      "verdict": "approve"
+    }
+  },
+  "featureFlag": "OFF",
+  "passingCaseProtection": true,
+  "productionPromotion": "NO",
+  "providerCalls": 0,
+  "rubricChanged": false,
+  "thresholdsChanged": false
+}

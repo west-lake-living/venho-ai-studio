@@ -27,12 +27,12 @@ def _match(key: str, state: MatchState = MatchState.MATCH) -> DnaMatchObservatio
     return DnaMatchObservation(key=key, expected=key, observed=key, match_state=state)
 
 
-def test_b03_b04_resolve_explicit_action_full_body_authority():
+def test_action_cases_resolve_explicit_action_full_body_authority():
     contract = yaml.safe_load((ROOT / "contracts/identity_restoration/benchmark_set.yaml").read_text())
     cases = {case["id"]: case for case in contract["cases"]}
 
-    assert _scenario_profile_id(cases["B03"]) == "action_full_body"
-    assert _scenario_profile_id(cases["B04"]) == "action_full_body"
+    for case_id in ("B03", "B04", "B05", "B06"):
+        assert _scenario_profile_id(cases[case_id]) == "action_full_body"
     authority = yaml.safe_load((ROOT / "config/projects/venho_hotel/subjects/linh_an.action_full_body.authority.yaml").read_text())
     assert authority["profile_version"] == cases["B03"]["identityRestorationAuthority"]["profileVersion"] == "1.0"
     assert authority["profile_version"] == cases["B04"]["identityRestorationAuthority"]["profileVersion"]
@@ -93,9 +93,10 @@ def test_unknown_explicit_scenario_fails_closed():
 def test_authority_precedence_is_explicit_and_default_is_intact():
     contract = yaml.safe_load((ROOT / "contracts/identity_restoration/benchmark_set.yaml").read_text())
     cases = {case["id"]: case for case in contract["cases"]}
-    assert _scenario_profile_id(cases["B03"]) == "action_full_body"
-    assert _scenario_profile_id(cases["B01"]) is None
-    assert _scenario_profile_id(cases["B05"]) is None
+    for case_id in ("B03", "B04", "B05", "B06"):
+        assert _scenario_profile_id(cases[case_id]) == "action_full_body"
+    for case_id in ("B01", "B02", "B07", "B08", "B09", "B10"):
+        assert _scenario_profile_id(cases[case_id]) is None
 
     dna_path = ROOT / "data/projects/venho_hotel/knowledge/VENHO_HOTEL_LINH_AN_DNA.json"
     assert hashlib.sha256(dna_path.read_bytes()).hexdigest() == "71f839dff776ec6d6d085c5a1ab928295af8c32a9699f7929d78b04807ec0075"

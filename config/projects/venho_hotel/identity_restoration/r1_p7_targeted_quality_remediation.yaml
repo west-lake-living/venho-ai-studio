@@ -1,0 +1,142 @@
+task_id: R1-P7-TARGETED-QUALITY-REMEDIATION
+version: "1.0"
+authorization:
+  targetedQualityRemediationAuthorized: true
+  targetedRecheckAuthorized: false
+  providerCalls: 0
+  gpuJobs: 0
+  nanoCalls: 0
+  alternativeProviderCalls: 0
+startState:
+  r1P6: CLOSED_PASS
+  boundary: 9/9_PASS
+  faceLocal: 7_PASS_2_FAIL
+  scenarioGlobal: 6_PASS_3_FAIL
+  pendingAuthoritativeEvaluations: 0
+  qualityDisposition: FAIL
+  providerHold: RECOVERED
+  featureFlag: "OFF"
+  productionPromotion: "NO"
+  architectureChanged: false
+sharedControls:
+  thresholdsChanged: false
+  rubricChanged: false
+  validatorChanged: false
+  architectureChanged: false
+  featureFlag: "OFF"
+  productionPromotion: "NO"
+  frozenArtifactsModified: false
+cases:
+  - caseId: B05
+    lanes: [FACE_LOCAL, SCENARIO_GLOBAL]
+    rootCauses:
+      - class: TRUE_IMAGE_QUALITY_FAILURE
+        confidence: HIGH
+        evidence: "R1-P6 returned valid Gemini output with FACE_LOCAL score 86.35 and below-threshold category scores across facial shape, eyes/brows, nose, mouth/chin, and technical quality."
+      - class: LOCAL_FACE_DETAIL_FAILURE
+        confidence: HIGH
+        evidence: "The failure is localized to the accepted B05 restored artifact; geometry is difficult (small face, yaw -49.077 degrees), while provider, parser, DTO, and lineage validity all passed."
+    baseline:
+      faceLocalScore: 86.35
+      faceLocalVerdict: revise
+      failedDimensions:
+        facial_shape: {measured: 88.0, threshold: 90.0, deltaToPass: -2.0}
+        eyes_and_brows: {measured: 86.0, threshold: 90.0, deltaToPass: -4.0}
+        nose: {measured: 85.0, threshold: 90.0, deltaToPass: -5.0}
+        mouth_and_chin: {measured: 87.0, threshold: 90.0, deltaToPass: -3.0}
+        technical_quality: {measured: 84.0, threshold: 90.0, deltaToPass: -6.0}
+    remediation:
+      scope: TARGETED_RESTORE_VARIANT
+      workflow: face_restore_win_sd15_ipadapter_v3
+      preserve: [A2_reference, B05_geometry, B05_face_mask, frozen_source_artifact]
+      liveRecheckRequired: true
+      nextTask: R1-P7-R1
+      note: "Observed quality failure is proven; exact parameter mechanism is unresolved, so no speculative global tuning is authorized."
+  - caseId: B07
+    lanes: [FACE_LOCAL]
+    rootCauses:
+      - class: TRUE_IMAGE_QUALITY_FAILURE
+        confidence: HIGH
+        evidence: "R1-P6 returned valid Gemini output with FACE_LOCAL score 89.25 and below-threshold eyes/brows, mouth/chin, and technical quality scores."
+      - class: LOCAL_FACE_DETAIL_FAILURE
+        confidence: HIGH
+        evidence: "The failure is localized to the accepted B07 restored artifact; provider, parser, DTO, and lineage validity all passed."
+    baseline:
+      faceLocalScore: 89.25
+      faceLocalVerdict: revise
+      failedDimensions:
+        eyes_and_brows: {measured: 88.0, threshold: 90.0, deltaToPass: -2.0}
+        mouth_and_chin: {measured: 87.0, threshold: 90.0, deltaToPass: -3.0}
+        technical_quality: {measured: 88.0, threshold: 90.0, deltaToPass: -2.0}
+    remediation:
+      scope: TARGETED_RESTORE_VARIANT
+      workflow: face_restore_win_sd15_ipadapter_v3
+      preserve: [A2_reference, B07_geometry, B07_face_mask, frozen_source_artifact]
+      liveRecheckRequired: true
+      nextTask: R1-P7-R1
+      note: "Observed quality failure is proven; exact parameter mechanism is unresolved, so no speculative global tuning is authorized."
+  - caseId: B05
+    lanes: [SCENARIO_GLOBAL]
+    rootCauses:
+      - class: AUTHORITY_PROFILE_MISMATCH
+        confidence: HIGH
+        evidence: "B05 is Running Side action taxonomy, but R1-P6 used canonical_default and scored upstream shot_distance and outside-mask hairstyle as failures. Existing action_full_body authority explicitly excludes those keys."
+    baseline:
+      scenarioGlobalScore: 86.77
+      scenarioGlobalVerdict: revise
+      failedDimensions: [shot_distance, hairstyle]
+      retainedPartialDimension: earring_type
+    remediation:
+      scope: ACTION_FULL_BODY_AUTHORITY_MAPPING
+      profile: action_full_body@1.0
+      expectedEffect: "Exclude only shot_distance and hairstyle; retain earring and face-DNA observations."
+      offlineReplayScore: 97.74
+      liveRecheckRequired: false
+      nextTask: R1-P7-R1
+  - caseId: B06
+    lanes: [SCENARIO_GLOBAL]
+    rootCauses:
+      - class: AUTHORITY_PROFILE_MISMATCH
+        confidence: HIGH
+        evidence: "B06 is Walking action taxonomy, but R1-P6 used canonical_default and scored upstream shot_distance and outside-mask hairstyle as failures. Existing action_full_body authority explicitly excludes those keys."
+    baseline:
+      scenarioGlobalScore: 84.92
+      scenarioGlobalVerdict: revise
+      failedDimensions: [shot_distance, hairstyle]
+      retainedFailedDimensions: [earring_type, hair_length]
+    remediation:
+      scope: ACTION_FULL_BODY_AUTHORITY_MAPPING
+      profile: action_full_body@1.0
+      expectedEffect: "Exclude only shot_distance and hairstyle; retain earring, hair length, and face-DNA observations."
+      offlineReplayScore: 91.47
+      liveRecheckRequired: false
+      nextTask: R1-P7-R1
+  - caseId: B09
+    lanes: [SCENARIO_GLOBAL]
+    rootCauses:
+      - class: PROMPT_CONDITIONING_FAILURE
+        confidence: HIGH
+        evidence: "The source manifest requests three-quarter portrait framing but does not explicitly condition portrait_head_shoulders or elegant_low_bun; R1-P6 observed medium/half-body framing and long hair down."
+      - class: TRUE_IMAGE_QUALITY_FAILURE
+        confidence: HIGH
+        evidence: "R1-P6 returned a valid image-quality response with score 89.02 and mismatches for shot_distance and hairstyle; this is not a provider or evaluator validity failure."
+    baseline:
+      scenarioGlobalScore: 89.02
+      scenarioGlobalVerdict: revise
+      failedDimensions: [shot_distance, hairstyle]
+    remediation:
+      scope: TARGETED_SOURCE_RERENDER_VARIANT
+      explicitConstraints: [portrait_head_shoulders, elegant_low_bun, small_pearl_drop]
+      preserve: [West_Lake_cafe, current_outfit, A2_face_reference, frozen_source_artifact, source_manifest]
+      liveRecheckRequired: true
+      nextTask: R1-P7-R1
+      note: "Create a new source variant; do not mutate the frozen B09 artifact or historical manifest."
+passingCaseProtection:
+  boundaryCases: 9
+  faceLocalPassingCases: [B01, B02, B03, B04, B06, B08, B09]
+  scenarioGlobalPassingCases: [B01, B02, B03, B04, B07, B08]
+  policy: "No passing case is exempted, deleted, reclassified, or weakened by this remediation."
+finalState:
+  r1P7: CLOSED_REMEDIATION_READY
+  qualityDisposition: FAIL_PENDING_RECHECK
+  nextAction: R1-P7-R1_TARGETED_AUTHORITATIVE_RECHECK

@@ -1,0 +1,90 @@
+{
+  "findings": [
+    {
+      "caseId": "B05",
+      "lanes": [
+        "FACE_LOCAL",
+        "SCENARIO_GLOBAL"
+      ],
+      "rootCauses": [
+        {
+          "class": "TRUE_IMAGE_QUALITY_FAILURE",
+          "confidence": "HIGH",
+          "evidence": "R1-P6 returned valid Gemini output with FACE_LOCAL score 86.35 and below-threshold category scores across facial shape, eyes/brows, nose, mouth/chin, and technical quality."
+        },
+        {
+          "class": "LOCAL_FACE_DETAIL_FAILURE",
+          "confidence": "HIGH",
+          "evidence": "The failure is localized to the accepted B05 restored artifact; geometry is difficult (small face, yaw -49.077 degrees), while provider, parser, DTO, and lineage validity all passed."
+        }
+      ]
+    },
+    {
+      "caseId": "B07",
+      "lanes": [
+        "FACE_LOCAL"
+      ],
+      "rootCauses": [
+        {
+          "class": "TRUE_IMAGE_QUALITY_FAILURE",
+          "confidence": "HIGH",
+          "evidence": "R1-P6 returned valid Gemini output with FACE_LOCAL score 89.25 and below-threshold eyes/brows, mouth/chin, and technical quality scores."
+        },
+        {
+          "class": "LOCAL_FACE_DETAIL_FAILURE",
+          "confidence": "HIGH",
+          "evidence": "The failure is localized to the accepted B07 restored artifact; provider, parser, DTO, and lineage validity all passed."
+        }
+      ]
+    },
+    {
+      "caseId": "B05",
+      "lanes": [
+        "SCENARIO_GLOBAL"
+      ],
+      "rootCauses": [
+        {
+          "class": "AUTHORITY_PROFILE_MISMATCH",
+          "confidence": "HIGH",
+          "evidence": "B05 is Running Side action taxonomy, but R1-P6 used canonical_default and scored upstream shot_distance and outside-mask hairstyle as failures. Existing action_full_body authority explicitly excludes those keys."
+        }
+      ]
+    },
+    {
+      "caseId": "B06",
+      "lanes": [
+        "SCENARIO_GLOBAL"
+      ],
+      "rootCauses": [
+        {
+          "class": "AUTHORITY_PROFILE_MISMATCH",
+          "confidence": "HIGH",
+          "evidence": "B06 is Walking action taxonomy, but R1-P6 used canonical_default and scored upstream shot_distance and outside-mask hairstyle as failures. Existing action_full_body authority explicitly excludes those keys."
+        }
+      ]
+    },
+    {
+      "caseId": "B09",
+      "lanes": [
+        "SCENARIO_GLOBAL"
+      ],
+      "rootCauses": [
+        {
+          "class": "PROMPT_CONDITIONING_FAILURE",
+          "confidence": "HIGH",
+          "evidence": "The source manifest requests three-quarter portrait framing but does not explicitly condition portrait_head_shoulders or elegant_low_bun; R1-P6 observed medium/half-body framing and long hair down."
+        },
+        {
+          "class": "TRUE_IMAGE_QUALITY_FAILURE",
+          "confidence": "HIGH",
+          "evidence": "R1-P6 returned a valid image-quality response with score 89.02 and mismatches for shot_distance and hairstyle; this is not a provider or evaluator validity failure."
+        }
+      ]
+    }
+  ],
+  "providerAndEvaluatorValidity": "R1-P6 had 18/18 valid responses; no provider/evaluator defect is a remediation target.",
+  "unresolvedMechanism": [
+    "B05 FACE_LOCAL exact workflow parameter mechanism",
+    "B07 FACE_LOCAL exact workflow parameter mechanism"
+  ]
+}

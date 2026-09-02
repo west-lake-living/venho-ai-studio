@@ -1,0 +1,316 @@
+{
+  "exactFailedCaseCount": 5,
+  "rows": [
+    {
+      "artifactHash": "a9552ddda2726d66623246c654982c60cdef41269d6952c1ffc33a47bfa650f3",
+      "baseline": {
+        "faceLocalScore": 86.35,
+        "faceLocalVerdict": "revise",
+        "failedDimensions": {
+          "eyes_and_brows": {
+            "deltaToPass": -4.0,
+            "measured": 86.0,
+            "threshold": 90.0
+          },
+          "facial_shape": {
+            "deltaToPass": -2.0,
+            "measured": 88.0,
+            "threshold": 90.0
+          },
+          "mouth_and_chin": {
+            "deltaToPass": -3.0,
+            "measured": 87.0,
+            "threshold": 90.0
+          },
+          "nose": {
+            "deltaToPass": -5.0,
+            "measured": 85.0,
+            "threshold": 90.0
+          },
+          "technical_quality": {
+            "deltaToPass": -6.0,
+            "measured": 84.0,
+            "threshold": 90.0
+          }
+        }
+      },
+      "caseId": "B05",
+      "evaluator": "Gemini",
+      "evaluatorVersion": "validator-studio-existing-production-entrypoint",
+      "failedDimensions": {
+        "eyes_and_brows": {
+          "deltaToPass": -4.0,
+          "measured": 86.0,
+          "threshold": 90.0
+        },
+        "facial_shape": {
+          "deltaToPass": -2.0,
+          "measured": 88.0,
+          "threshold": 90.0
+        },
+        "mouth_and_chin": {
+          "deltaToPass": -3.0,
+          "measured": 87.0,
+          "threshold": 90.0
+        },
+        "nose": {
+          "deltaToPass": -5.0,
+          "measured": 85.0,
+          "threshold": 90.0
+        },
+        "technical_quality": {
+          "deltaToPass": -6.0,
+          "measured": 84.0,
+          "threshold": 90.0
+        }
+      },
+      "inputId": "artifacts/identity-restoration/phase7-candidate-v3/phase7-diagnostic-20260828/B05-attempt-1/restored-canonical.png",
+      "lane": "FACE_LOCAL",
+      "lineage": "VERIFIED",
+      "model": "gemini-flash-latest",
+      "parsedResultHash": "de067890e1d18d67cbafa82bfd4a3ddf26ce580f84990e3c5922352fb63c240e",
+      "provider": "Gemini",
+      "rawResponseHash": "92191a20e46f7943efb77d9600e6875ba8b11c54e2a60cc2170e836286c40a6f",
+      "remediationScope": "TARGETED_RESTORE_VARIANT",
+      "reportHash": "7ba76dfc041dde29cf8ab301e32bfc841d55021bbf8c85deaac7856011500b63",
+      "rootCauseClasses": [
+        "TRUE_IMAGE_QUALITY_FAILURE",
+        "LOCAL_FACE_DETAIL_FAILURE"
+      ],
+      "rootCauseConfidence": [
+        "HIGH",
+        "HIGH"
+      ],
+      "score": 86.35,
+      "validResponse": true,
+      "verdict": "revise"
+    },
+    {
+      "artifactHash": "ddc3253bde488bbd7f5f709a1c5b61c83bc208e1b775b6d5d53f3952e2338470",
+      "baseline": {
+        "faceLocalScore": 89.25,
+        "faceLocalVerdict": "revise",
+        "failedDimensions": {
+          "eyes_and_brows": {
+            "deltaToPass": -2.0,
+            "measured": 88.0,
+            "threshold": 90.0
+          },
+          "mouth_and_chin": {
+            "deltaToPass": -3.0,
+            "measured": 87.0,
+            "threshold": 90.0
+          },
+          "technical_quality": {
+            "deltaToPass": -2.0,
+            "measured": 88.0,
+            "threshold": 90.0
+          }
+        }
+      },
+      "caseId": "B07",
+      "evaluator": "Gemini",
+      "evaluatorVersion": "validator-studio-existing-production-entrypoint",
+      "failedDimensions": {
+        "eyes_and_brows": {
+          "deltaToPass": -2.0,
+          "measured": 88.0,
+          "threshold": 90.0
+        },
+        "mouth_and_chin": {
+          "deltaToPass": -3.0,
+          "measured": 87.0,
+          "threshold": 90.0
+        },
+        "technical_quality": {
+          "deltaToPass": -2.0,
+          "measured": 88.0,
+          "threshold": 90.0
+        }
+      },
+      "inputId": "artifacts/identity-restoration/phase7-candidate-v3/phase7-benchmark-20260828/B07-attempt-1/restored-canonical.png",
+      "lane": "FACE_LOCAL",
+      "lineage": "VERIFIED",
+      "model": "gemini-flash-latest",
+      "parsedResultHash": "6a83aa1b70346698f179481868cff675e530ea1b31a85c9696d69659779264e5",
+      "provider": "Gemini",
+      "rawResponseHash": "1326bc9f7c7d34f4b5300c37b7a94dc48d49c574cd8ae4a11a5cc89b93f0192d",
+      "remediationScope": "TARGETED_RESTORE_VARIANT",
+      "reportHash": "01ed49e39e5524ae7c11ee2ac862d1a32b2e9b7af53bd76d1e4db0acdc8ba359",
+      "rootCauseClasses": [
+        "TRUE_IMAGE_QUALITY_FAILURE",
+        "LOCAL_FACE_DETAIL_FAILURE"
+      ],
+      "rootCauseConfidence": [
+        "HIGH",
+        "HIGH"
+      ],
+      "score": 89.25,
+      "validResponse": true,
+      "verdict": "revise"
+    },
+    {
+      "artifactHash": "8d124b09a4400bcf76b84671d30fe540faefeac6b396ce2fbac9727bda5308f0",
+      "baseline": {
+        "faceLocalScore": 86.35,
+        "faceLocalVerdict": "revise",
+        "failedDimensions": {
+          "eyes_and_brows": {
+            "deltaToPass": -4.0,
+            "measured": 86.0,
+            "threshold": 90.0
+          },
+          "facial_shape": {
+            "deltaToPass": -2.0,
+            "measured": 88.0,
+            "threshold": 90.0
+          },
+          "mouth_and_chin": {
+            "deltaToPass": -3.0,
+            "measured": 87.0,
+            "threshold": 90.0
+          },
+          "nose": {
+            "deltaToPass": -5.0,
+            "measured": 85.0,
+            "threshold": 90.0
+          },
+          "technical_quality": {
+            "deltaToPass": -6.0,
+            "measured": 84.0,
+            "threshold": 90.0
+          }
+        }
+      },
+      "caseId": "B05",
+      "evaluator": "Gemini",
+      "evaluatorVersion": "validator-studio-existing-production-entrypoint",
+      "failedDimensions": {
+        "eyes_and_brows": {
+          "deltaToPass": -4.0,
+          "measured": 86.0,
+          "threshold": 90.0
+        },
+        "facial_shape": {
+          "deltaToPass": -2.0,
+          "measured": 88.0,
+          "threshold": 90.0
+        },
+        "mouth_and_chin": {
+          "deltaToPass": -3.0,
+          "measured": 87.0,
+          "threshold": 90.0
+        },
+        "nose": {
+          "deltaToPass": -5.0,
+          "measured": 85.0,
+          "threshold": 90.0
+        },
+        "technical_quality": {
+          "deltaToPass": -6.0,
+          "measured": 84.0,
+          "threshold": 90.0
+        }
+      },
+      "inputId": "artifacts/identity-restoration/phase7-candidate-v3/r1-p1-boundary-remediation-20260828/B05/inverse-composite-remediated.png",
+      "lane": "SCENARIO_GLOBAL",
+      "lineage": "VERIFIED",
+      "model": "gemini-flash-latest",
+      "parsedResultHash": "669ff902182cf2939276982dab0ca50705669536848ae7fe651e633c8aa7f162",
+      "provider": "Gemini",
+      "rawResponseHash": "40bb8e3658f2924f3a666760481706c215166ff6d7d1498b01dcbf17343fe361",
+      "remediationScope": "TARGETED_RESTORE_VARIANT",
+      "reportHash": "fa087193758352ceab3ca4d9e3c26acf17886364f32846e6bf6307aa21d7ddf5",
+      "rootCauseClasses": [
+        "TRUE_IMAGE_QUALITY_FAILURE",
+        "LOCAL_FACE_DETAIL_FAILURE"
+      ],
+      "rootCauseConfidence": [
+        "HIGH",
+        "HIGH"
+      ],
+      "score": 86.77,
+      "validResponse": true,
+      "verdict": "revise"
+    },
+    {
+      "artifactHash": "dcea8aaf17269c1b73ceb09ff38db6a9ee711e2ccdcef38f2110c2314ea7236a",
+      "baseline": {
+        "failedDimensions": [
+          "shot_distance",
+          "hairstyle"
+        ],
+        "retainedFailedDimensions": [
+          "earring_type",
+          "hair_length"
+        ],
+        "scenarioGlobalScore": 84.92,
+        "scenarioGlobalVerdict": "revise"
+      },
+      "caseId": "B06",
+      "evaluator": "Gemini",
+      "evaluatorVersion": "validator-studio-existing-production-entrypoint",
+      "failedDimensions": [
+        "shot_distance",
+        "hairstyle"
+      ],
+      "inputId": "artifacts/identity-restoration/phase7-candidate-v3/r1-p1-boundary-remediation-20260828/B06/inverse-composite-remediated.png",
+      "lane": "SCENARIO_GLOBAL",
+      "lineage": "VERIFIED",
+      "model": "gemini-flash-latest",
+      "parsedResultHash": "2891dca1872190a6e9311e9403e15a632be99a7af929c3c9341be401d41d5905",
+      "provider": "Gemini",
+      "rawResponseHash": "b4ee542815eb04ec53810b1e65517bc8297ef41ad12525ef2d7c44a0d576e48a",
+      "remediationScope": "ACTION_FULL_BODY_AUTHORITY_MAPPING",
+      "reportHash": "bac681275fc09078fdfc5fbeab9a31f703dcd8dbc26cc479d698378de4a9fe19",
+      "rootCauseClasses": [
+        "AUTHORITY_PROFILE_MISMATCH"
+      ],
+      "rootCauseConfidence": [
+        "HIGH"
+      ],
+      "score": 84.92,
+      "validResponse": true,
+      "verdict": "revise"
+    },
+    {
+      "artifactHash": "ee141a898d56cee1038a42a004712829fe37d393b56fe79bcdc95d3694f05891",
+      "baseline": {
+        "failedDimensions": [
+          "shot_distance",
+          "hairstyle"
+        ],
+        "scenarioGlobalScore": 89.02,
+        "scenarioGlobalVerdict": "revise"
+      },
+      "caseId": "B09",
+      "evaluator": "Gemini",
+      "evaluatorVersion": "validator-studio-existing-production-entrypoint",
+      "failedDimensions": [
+        "shot_distance",
+        "hairstyle"
+      ],
+      "inputId": "artifacts/identity-restoration/phase7-candidate-v3/r1-p1-boundary-remediation-20260828/B09/inverse-composite-remediated.png",
+      "lane": "SCENARIO_GLOBAL",
+      "lineage": "VERIFIED",
+      "model": "gemini-flash-latest",
+      "parsedResultHash": "8ab667f18da951cb9569b4f1db2f0cdb6633d959c66119863abdb6898d07329c",
+      "provider": "Gemini",
+      "rawResponseHash": "f76de2a9cbae26531cac1ca582e342251dd04e3ec50e1fd7b0d44f8605ce1994",
+      "remediationScope": "TARGETED_SOURCE_RERENDER_VARIANT",
+      "reportHash": "eed79fa448f9ea3fe39b82c813e374a22ffbb1c45b2bdff920925dadc6a9e165",
+      "rootCauseClasses": [
+        "PROMPT_CONDITIONING_FAILURE",
+        "TRUE_IMAGE_QUALITY_FAILURE"
+      ],
+      "rootCauseConfidence": [
+        "HIGH",
+        "HIGH"
+      ],
+      "score": 89.02,
+      "validResponse": true,
+      "verdict": "revise"
+    }
+  ],
+  "source": "artifacts/identity-restoration/phase7-candidate-v3/r1-p6-authoritative-evaluation-resume-20260902T024012Z"
+}

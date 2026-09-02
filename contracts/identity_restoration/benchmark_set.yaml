@@ -105,6 +105,9 @@ cases:
   - id: "B05"
     taxonomy: "Running Side"
     status: "FROZEN"
+    identityRestorationAuthority:
+      scenarioProfileId: "action_full_body"
+      profileVersion: "1.0"
     baseFrame:
       path: "/Users/hanhpham/Developer/Claude-Workspace/projects/venho-social-content-agent/photos-ai/2026/gw-p4-t0-4-b05-running-side/run-001/image.png"
       sha256: "06f4b6b0b6ea47dee71a240065411899cb3fa2b84633dacddba4d232afce5492"
@@ -134,6 +137,9 @@ cases:
   - id: "B06"
     taxonomy: "Walking"
     status: "FROZEN"
+    identityRestorationAuthority:
+      scenarioProfileId: "action_full_body"
+      profileVersion: "1.0"
     baseFrame:
       path: "/Users/hanhpham/Developer/Claude-Workspace/projects/venho-social-content-agent/photos-ai/2026/gw-p4-t0-4-b06-walking/run-001/image.png"
       sha256: "526190e3632d189d588dcdfda32f1d7930c449c8a6b2188961d7907ef7746d8e"

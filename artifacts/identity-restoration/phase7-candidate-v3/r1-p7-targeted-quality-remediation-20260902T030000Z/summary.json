@@ -1,0 +1,28 @@
+{
+  "alternativeProviderCalls": 0,
+  "architectureChanged": false,
+  "boundary": "9/9 PASS",
+  "faceLocalBaseline": "7 PASS / 2 FAIL",
+  "failedCases": {
+    "FACE_LOCAL": [
+      "B05",
+      "B07"
+    ],
+    "SCENARIO_GLOBAL": [
+      "B05",
+      "B06",
+      "B09"
+    ]
+  },
+  "featureFlag": "OFF",
+  "gpuJobs": 0,
+  "nanoCalls": 0,
+  "nextAction": "R1-P7-R1 TARGETED AUTHORITATIVE RECHECK",
+  "productionPromotion": "NO",
+  "providerCalls": 0,
+  "qualityDisposition": "FAIL_PENDING_RECHECK",
+  "scenarioGlobalBaseline": "6 PASS / 3 FAIL",
+  "status": "CLOSED / REMEDIATION_READY",
+  "taskId": "R1-P7-TARGETED-QUALITY-REMEDIATION",
+  "totalFailedCases": 5
+}
