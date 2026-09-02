@@ -10979,13 +10979,13 @@
       "content_package_id": "d7fc837a-57dc-49b4-bf8d-873eeb77312c",
       "idempotency_key": "a737e7acacd676a3d9a46222f75554023082f6f1de4c30bd4ef77600cc9205e6",
       "platform": "facebook",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
-      "platform_post_id": null,
-      "permalink": null,
+      "status": "PUBLISHED",
+      "gateway_status": "PUBLISHED",
+      "platform_post_id": "1124616474074140_122134421451351048",
+      "permalink": "https://www.facebook.com/1124616474074140_122134421451351048",
       "reconciliation_proof": null,
       "created_at": "2026-08-27T08:11:12.719437+00:00",
-      "updated_at": "2026-08-27T08:41:36.194791+00:00",
+      "updated_at": "2026-09-02T06:31:18.542300+00:00",
       "content": {
         "title": "Chùa Kim Liên — một buổi trưa chậm ở Nghi Tàm",
         "text": "Không phải chuyến đi nào ở Hà Nội cũng cần lịch trình dày. Có hôm chỉ cần một buổi trưa nắng, một con đường nhiều cây, và một nơi để bước vào cho yên.\n\nChùa Kim Liên nằm ở Nghi Tàm, phường Quảng An, Tây Hồ — một trong những điểm tham quan để hiểu thêm phần văn hóa, lịch sử của vùng ven hồ này.\n\nĐường sang Nghi Tàm giữa trưa khá dễ chịu. Trời trong, hàng cây lâu năm đổ bóng kín vỉa hè, phía sau tán lá là những mái nhà cao thấp xen nhau của Hà Nội. Không gian quanh khu vực được giữ gìn sạch sẽ, đi bộ thong thả cũng không thấy vội.\n\nNếu bạn thích kiểu khám phá không cần vé xếp hàng, không cần chen chỗ chụp ảnh, thì đây là dạng điểm đến hợp: đến, đi chậm, nhìn, rồi ra về. Nắng ban ngày là lúc dễ quan sát nhất, và cũng là lúc ánh sáng đẹp nếu bạn muốn giữ lại vài tấm hình.\n\nTừ khu Nguyễn Đình Thi, nơi Ven Hồ Hotel nằm, Nghi Tàm cũng thuộc cùng vòng quanh Hồ Tây — tiện để ghép vào một buổi sáng hoặc trưa rảnh trong lịch trình, rồi quay về nghỉ trước khi trời chiều.\n\nNếu bạn đang xếp lịch cho mấy ngày ở Hà Nội, nhắn cho tụi mình để hỏi phòng trống ở Ven Hồ Hotel nhé — tụi mình gợi ý thêm vài hướng đi quanh hồ cho bạn.\n\n#VenHoHotelHanoi #ChuaKimLien #HoTay #KhachSanViewHoTay #HaNoi #KhamPhaHoTay\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-2c7d1670",
@@ -11123,20 +11123,22 @@
         "revoked_reason": null,
         "package_versions_checksum": "aa5208cb148e57f1ecbb7f5d7691f1f294679c96ac9ece0d489c4824b4c9a498",
         "checksum": "ad302fc02b391f47302473ac13c0692cffbfe128520b4da2c6051fe82d6b0d46"
-      }
+      },
+      "gateway_error": null,
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-wednesday-instagram-5ea563f3",
       "content_package_id": "395fa9bf-7f76-4a3c-86ca-502a5d23c196",
       "idempotency_key": "1c028c0ae5df7bd174f763d4298319367a7258f9e37599ccb5efdb073766fb14",
       "platform": "instagram",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
-      "platform_post_id": null,
-      "permalink": null,
+      "status": "PUBLISHED",
+      "gateway_status": "PUBLISHED",
+      "platform_post_id": "17982910569079081",
+      "permalink": "https://www.instagram.com/17982910569079081",
       "reconciliation_proof": null,
       "created_at": "2026-08-27T08:11:34.462448+00:00",
-      "updated_at": "2026-08-27T08:41:36.194791+00:00",
+      "updated_at": "2026-09-02T06:31:31.057557+00:00",
       "content": {
         "title": "Chùa Kim Liên — một khoảng lặng ở Nghi Tàm",
         "text": "Trời trong, hàng cây già hai bên đường, và một lối rẽ dẫn vào Chùa Kim Liên ở Nghi Tàm.\n\nCó những chỗ ở Tây Hồ không cần chuẩn bị gì nhiều. Chỉ cần một buổi trời xanh, đi bộ dưới tán cây lớn dọc đường, rồi bước vào khoảng sân yên tĩnh của chùa.\n\nChùa Kim Liên nằm ở Nghi Tàm, phường Quảng An — một điểm tham quan để tìm hiểu văn hóa và lịch sử của vùng ven hồ này. Không gian được giữ gìn sạch sẽ, ánh sáng tự nhiên đổ xuống, phía xa vẫn thấy những mái nhà và nhịp phố quen thuộc của Hà Nội.\n\nĐiều thú vị là chỉ cần bước ra khỏi cổng, bạn lại về với nhịp sống thường ngày quanh hồ: xe cộ, hàng quán, người đi bộ buổi chiều. Hai nhịp ấy nằm cạnh nhau, rất gần.\n\nNếu đang lên lịch trình Hà Nội, có thể xếp Chùa Kim Liên vào buổi sáng hoặc đầu giờ chiều, rồi thong thả đi bộ tiếp một đoạn ven hồ. Từ Nguyễn Đình Thi, quãng đường này vừa đủ để đi chậm mà không thấy mệt.\n\nVen Hồ Hotel ở ngay Nguyễn Đình Thi, tiện làm điểm dừng chân cho những ngày khám phá Tây Hồ. Nhắn tin cho page nếu bạn muốn hỏi phòng trống cho lịch trình sắp tới nhé.\n\n#VenHoHotelHanoi #ChuaKimLien #HoTay #WestLakeHanoi #KhamPhaHoTay #KhachSanHoTay #HanoiTravel",
@@ -11275,7 +11277,9 @@
         "revoked_reason": null,
         "package_versions_checksum": "eb3b6426580bfc83da448ab9100c74550d802e83c55069c2c1025856eaf15718",
         "checksum": "58472eb5028d20cf213555bab8fe08978ebce5dbcba71371ee1e4fb03608ec69"
-      }
+      },
+      "gateway_error": null,
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-friday-facebook-e0b0bbf2",
