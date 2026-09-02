@@ -1,0 +1,20 @@
+{
+  "algorithm": "SHA-256",
+  "count": 14,
+  "files": {
+    "attempt-history.jsonl": "be904b852a47cd08e10b3478e273cab0bf09932e95c16d7d7eea63ef1bfd461a",
+    "baseline.json": "4a2f7bc0aed31a70f84155dd68456294e9113f24365bbeb74f6fbfd41bde6b04",
+    "compileall.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "git_diff_check.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "offline_preflight.json": "9249e92dd6cf71da9d776e5200474f8858499c1d611b94176179c13f7b634fd5",
+    "probe_completion.json": "3f30908a42d205b4338d86a66272b443140b2bf4830d1f13de82131588458aa5",
+    "probe_request_metadata.json": "b081ec33b199f35fc320263d9e08da07380325776e253d3e3ba3431a9819ab05",
+    "provider-paid-call-ledger.jsonl": "b8e55c18f96410192871502347b1d3268a68f7e42bce82bc564193dabf8674b9",
+    "r1_p5_r1_runner_stdout_stderr.txt": "53f9f3dce7fcdc671adc0773567f89083eabc6afce2ee4f1809dd2397426f05b",
+    "r1_p5_r2_runner_stdout_stderr.txt": "3b7a612f24af72d5534c12b1d9e28441d22a42feaa8bbb6138fb41590d01f4a2",
+    "r2_authorization_and_start_state.json": "fce2f35617627d722e2d69ecd2974940e65708d74e64e9f8ea5c46d6d5c71813",
+    "r3_authorization_and_start_state.json": "87a0b6d42beaf74877dcb353e68fc9b2365eac476e14ad328675b51893b14712",
+    "summary.json": "920c3082b25df0e3121d2f858ac3d1c35ad5252326a4aceb8c78e698389d8317",
+    "test_results.txt": "aeffd615a846c1f9610054e7bccaf95b287a44a1b0656e08efe2103aba0954f5"
+  }
+}

@@ -1,5 +1,34 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-09-02 — Candidate v3 R1-P5-R3 provider recovery recheck timed out
+
+`Candidate v3 Quality Remediation R1 / R1-P5-R3-PROVIDER-RECOVERY-RECHECK =
+CLOSED / PROVIDER_BLOCKED`.
+
+- Explicit human authorization `PROVIDER_RECOVERY_RECHECK_AUTHORIZED=TRUE`
+  was used. The start state was R1-P5 PASS, R1-P5-R1 and R1-P5-R2 provider
+  blocked, provider hold ACTIVE, boundary 9/9 PASS, and 18 pending
+  authoritative evaluations.
+- Offline preflight passed before execution: focused gate/authorization,
+  one-call-limit, Gemini adapter, schema/DTO, failure classification,
+  truncation/malformed-output, and evidence-lineage tests recorded `40 passed`;
+  compileall and `git diff --check` also passed.
+- Exactly one live Gemini `gemini-flash-latest` probe used the authoritative
+  `FACE_LOCAL/B01/sample-1` fixture with one transport attempt and zero retry.
+  The provider response did not return before the runner ended, so the
+  fail-closed classification is `PROVIDER_TIMEOUT`; no raw or parsed response
+  was captured.
+- The hold remains ACTIVE. No second probe, bulk evaluation, fallback,
+  provider/model switch, GPU, Nano, generation, or promotion occurred.
+  Final state remains FACE_LOCAL `0/9`, SCENARIO_GLOBAL `0/9`, pending `18`,
+  quality `UNVALIDATED`, feature flag `OFF`, promotion `NO`, architecture
+  unchanged.
+- Evidence hashes verify `12/12` files:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p5-r3-provider-recovery-recheck-20260902T005205Z/`.
+
+Keep the provider hold active; require new explicit authorization before any
+future recovery probe.
+
 ## 2026-09-01 — Candidate v3 R1-P5-R2 provider recovery recheck blocked
 
 `Candidate v3 Quality Remediation R1 / R1-P5-R2-PROVIDER-RECOVERY-RECHECK =

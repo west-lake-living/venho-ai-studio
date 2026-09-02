@@ -1,0 +1,11 @@
+{
+  "classification": "PROVIDER_TIMEOUT",
+  "observation": "The single authorized runner process ended while waiting for the provider response; no response or retry was recorded.",
+  "parsedResponseCaptured": false,
+  "providerCalls": 1,
+  "rawResponseCaptured": false,
+  "responseReturned": false,
+  "retries": 0,
+  "status": "PROVIDER_BLOCKED",
+  "taskId": "R1-P5-R3-PROVIDER-RECOVERY-RECHECK"
+}
