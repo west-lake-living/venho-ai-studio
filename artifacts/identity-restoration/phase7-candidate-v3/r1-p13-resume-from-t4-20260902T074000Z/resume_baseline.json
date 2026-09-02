@@ -1,0 +1,25 @@
+{
+  "architectureChanged": false,
+  "artifactSha256": "ce58f0ac97a74bc07eccfba9d8c96584ff38eafd5a0a53e14fb84d363a873e40",
+  "authorization": {
+    "R1_P13_RESUME_FROM_T4_AUTHORIZED": true
+  },
+  "boundary": "9/9 PASS",
+  "faceLocal": "8/9 PASS",
+  "featureFlag": "OFF",
+  "lockedContract": {
+    "caseId": "B05",
+    "cfg": 6.0,
+    "denoise": 0.35,
+    "referenceBinding": "A2",
+    "steps": 21
+  },
+  "pendingAuthoritativeEvaluations": 1,
+  "previousBlocker": "GEMINI_API_KEY (or GOOGLE_API_KEY) not set in environment",
+  "previousEvidence": "artifacts/identity-restoration/phase7-candidate-v3/r1-p13-resume-from-t2-20260902T072500Z",
+  "previousStatus": "PROVIDER_BLOCKED",
+  "productionPromotion": "NO",
+  "qualityDisposition": "FAIL",
+  "resumePoint": "T4",
+  "scenarioGlobal": "9/9 PASS"
+}

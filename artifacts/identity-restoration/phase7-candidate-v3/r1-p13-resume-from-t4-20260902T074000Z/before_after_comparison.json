@@ -1,0 +1,34 @@
+{
+  "deltas": {
+    "eyesBrowsVsOriginal": 2.0,
+    "facialShapeVsOriginal": 0.0,
+    "mouthChinVsOriginal": -2.0,
+    "vsDenoise040": 1.45,
+    "vsOriginal": 0.4
+  },
+  "denoise040": {
+    "eyesBrows": 86,
+    "facialShape": 88,
+    "mouthChin": 87,
+    "score": 87.45
+  },
+  "finalExperiment": {
+    "eyesBrows": 89.0,
+    "facialShape": 88.0,
+    "lineageStatus": "VERIFIED",
+    "model": "gemini-flash-latest",
+    "mouthChin": 87.0,
+    "parsedHash": "a0dab13859104ab00eadcfb54ed26b404b7a0e82411accf2497528cee20200f0",
+    "provider": "Gemini",
+    "rawHash": "af00d83a9bef59cbf16ac05cfcb73310bb908290bb8e039426d9363a1df1324f",
+    "score": 88.9,
+    "valid": true,
+    "verdict": "revise"
+  },
+  "original": {
+    "eyesBrows": 87,
+    "facialShape": 88,
+    "mouthChin": 89,
+    "score": 88.5
+  }
+}

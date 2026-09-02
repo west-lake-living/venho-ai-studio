@@ -1,0 +1,14 @@
+{
+  "adapterImports": true,
+  "artifactHashValid": true,
+  "compileall": true,
+  "credentialAvailable": true,
+  "faceLocalSchemaValid": true,
+  "gitDiffCheck": true,
+  "lineageValid": true,
+  "model": "gemini-flash-latest",
+  "provider": "Gemini",
+  "providerReadinessProbe": "NOT_PERFORMED_NO_PROVIDER_CALL_CONSUMED",
+  "status": "PASS",
+  "tests": true
+}

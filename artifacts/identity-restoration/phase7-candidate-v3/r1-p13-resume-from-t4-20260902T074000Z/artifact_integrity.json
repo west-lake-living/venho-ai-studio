@@ -1,0 +1,18 @@
+{
+  "artifactExists": true,
+  "artifactHash": "ce58f0ac97a74bc07eccfba9d8c96584ff38eafd5a0a53e14fb84d363a873e40",
+  "artifactHashValid": true,
+  "artifactPath": "artifacts/identity-restoration/phase7-candidate-v3/r1-p13-resume-from-t2-20260902T072500Z/artifact/restored-canonical.png",
+  "artifactsCreated": 0,
+  "contractMatch": true,
+  "gpuJobs": 0,
+  "lineageStatus": "PASS",
+  "lineageValid": true,
+  "manifestHash": "b2f064146271eb44435c8b5795157af359a5a7b6953ae456ba93346c9605f8f2",
+  "manifestValid": true,
+  "parameterChanges": 0,
+  "parametersMatch": true,
+  "previousProviderHold": "ACTIVE",
+  "previousStatus": "PROVIDER_BLOCKED",
+  "status": "PASS"
+}

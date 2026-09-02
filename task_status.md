@@ -1,5 +1,24 @@
 # VENHO AI STUDIO — Task Status
 
+### Candidate v3 Quality Remediation R1 — R1-P13 Resume From T4 After Provider Credential Recovery (2026-09-02)
+
+- `R1-P13-RESUME-FROM-T4 = CLOSED / QUALITY_FAIL` under explicit
+  `R1_P13_RESUME_FROM_T4_AUTHORIZED=TRUE`.
+- Existing dotenv credential loader recovered the approved Gemini path without
+  exposing a secret. Credential and adapter readiness PASS for
+  `gemini-flash-latest`.
+- Preflight PASS: immutable B05 artifact hash `ce58f0ac…a873e40`, manifest,
+  locked `denoise=0.35` / `CFG=6.0` / `steps=21` contract, and lineage all
+  matched. `16 passed`, compileall PASS, diff-check PASS.
+- Exactly one valid Gemini FACE_LOCAL call returned `88.90`, `revise`:
+  eyes/brows `89`, facial shape `88`, mouth/chin `87`. This improves original
+  B05 by `+0.40` and denoise `.40` by `+1.45`, but does not meet the PASS
+  threshold. Provider calls `1`, retries `0`, GPU jobs `0`, artifacts `0`.
+- Final state: Boundary `9/9 PASS`, FACE_LOCAL `8/9 PASS`, SCENARIO_GLOBAL
+  `9/9 PASS`, pending `0`, quality `FAIL`, provider hold `RECOVERED`, feature
+  `OFF`, promotion `NO`, architecture unchanged. Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p13-resume-from-t4-20260902T074000Z/`.
+
 ### Candidate v3 Quality Remediation R1 — R1-P13 Resume From T2 After GPU Recovery (2026-09-02)
 
 - `R1-P13-RESUME-FROM-T2 = PROVIDER_BLOCKED` under explicit

@@ -1,0 +1,169 @@
+{
+  "allowed_imperfections_check": [],
+  "artifact_ref": {
+    "file": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/phase7-candidate-v3/r1-p13-resume-from-t2-20260902T072500Z/artifact/restored-canonical.png",
+    "hash": "sha256:ce58f0ac97a74bc07eccfba9d8c96584ff38eafd5a0a53e14fb84d363a873e40",
+    "type": "face"
+  },
+  "category_scores": {
+    "eyes_and_brows": 89.0,
+    "facial_shape": 88.0,
+    "mouth_and_chin": 87.0,
+    "nose": 90.0,
+    "technical_quality": 92.0
+  },
+  "contract_refs": null,
+  "contract_version": "1.0",
+  "dna_match_score": 88.9,
+  "forbidden_violations": [],
+  "generated_at": "2026-09-02T14:57:38.005380",
+  "issues": [],
+  "kill_switch": {
+    "reason": "",
+    "triggered": false
+  },
+  "module": "validator_studio",
+  "observer": {
+    "model": "configured",
+    "provider": "gemini",
+    "samples": 1
+  },
+  "overall_score": 88.9,
+  "project": "venho_hotel",
+  "prompt_ref": null,
+  "raw_observation": {
+    "gates": [
+      {
+        "evidence": "Smooth jawline, pointed chin, and soft cheek contours visible in 3/4 profile matching the reference identity.",
+        "gate": "identity_structure",
+        "passed": true,
+        "reason": "The candidate's bone structure, jawline, chin, cheek fullness, and facial proportions align closely with the reference character."
+      },
+      {
+        "evidence": "Almond-shaped eyes with appropriate eyelid crease and natural warm brown iris tone.",
+        "gate": "eye_ratio",
+        "passed": true,
+        "reason": "Eye shape and proportions match the approved almond eye specifications with horizontal emphasis."
+      },
+      {
+        "evidence": "Natural skin texture, subtle makeup, realistic proportions, and absence of heavy contouring or unnatural modifications.",
+        "gate": "forbidden_traits",
+        "passed": true,
+        "reason": "No forbidden traits are present."
+      }
+    ],
+    "notes": [
+      "Candidate image provides a clean 3/4 profile perspective consistent with the reference front portrait.",
+      "gemini face observation; grounding/web search disabled by prompt contract",
+      "no real-person or celebrity matching requested",
+      "compared against 1 approved reference image(s)"
+    ],
+    "weighted_scores": {
+      "eyes_and_brows": 89.0,
+      "facial_shape": 88.0,
+      "mouth_and_chin": 87.0,
+      "nose": 90.0,
+      "technical_quality": 92.0
+    }
+  },
+  "recommendation": "revise",
+  "section_scores": [
+    {
+      "category": "face_gate",
+      "evidence": "Smooth jawline, pointed chin, and soft cheek contours visible in 3/4 profile matching the reference identity.",
+      "key": "identity_structure",
+      "match_state": null,
+      "reason": "The candidate's bone structure, jawline, chin, cheek fullness, and facial proportions align closely with the reference character.",
+      "score": 100.0,
+      "section": "face_gate",
+      "status": "ok"
+    },
+    {
+      "category": "face_gate",
+      "evidence": "Almond-shaped eyes with appropriate eyelid crease and natural warm brown iris tone.",
+      "key": "eye_ratio",
+      "match_state": null,
+      "reason": "Eye shape and proportions match the approved almond eye specifications with horizontal emphasis.",
+      "score": 100.0,
+      "section": "face_gate",
+      "status": "ok"
+    },
+    {
+      "category": "face_gate",
+      "evidence": "Natural skin texture, subtle makeup, realistic proportions, and absence of heavy contouring or unnatural modifications.",
+      "key": "forbidden_traits",
+      "match_state": null,
+      "reason": "No forbidden traits are present.",
+      "score": 100.0,
+      "section": "face_gate",
+      "status": "ok"
+    },
+    {
+      "category": "facial_shape",
+      "evidence": "",
+      "key": "facial_shape",
+      "match_state": null,
+      "reason": "Weighted face rubric score.",
+      "score": 88.0,
+      "section": "face_weighted",
+      "status": "warning"
+    },
+    {
+      "category": "eyes_and_brows",
+      "evidence": "",
+      "key": "eyes_and_brows",
+      "match_state": null,
+      "reason": "Weighted face rubric score.",
+      "score": 89.0,
+      "section": "face_weighted",
+      "status": "warning"
+    },
+    {
+      "category": "nose",
+      "evidence": "",
+      "key": "nose",
+      "match_state": null,
+      "reason": "Weighted face rubric score.",
+      "score": 90.0,
+      "section": "face_weighted",
+      "status": "ok"
+    },
+    {
+      "category": "mouth_and_chin",
+      "evidence": "",
+      "key": "mouth_and_chin",
+      "match_state": null,
+      "reason": "Weighted face rubric score.",
+      "score": 87.0,
+      "section": "face_weighted",
+      "status": "warning"
+    },
+    {
+      "category": "technical_quality",
+      "evidence": "",
+      "key": "technical_quality",
+      "match_state": null,
+      "reason": "Weighted face rubric score.",
+      "score": 92.0,
+      "section": "face_weighted",
+      "status": "ok"
+    }
+  ],
+  "source_knowledge": [
+    {
+      "dna_contract_version": "1.1",
+      "dna_version": "1.1",
+      "file": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/data/projects/venho_hotel/knowledge/VENHO_HOTEL_LINH_AN_DNA.json",
+      "hash": "sha256:71f839dff776ec6d6d085c5a1ab928295af8c32a9699f7929d78b04807ec0075"
+    }
+  ],
+  "subject": "linh_an",
+  "validation_notes": [
+    "Candidate image provides a clean 3/4 profile perspective consistent with the reference front portrait.",
+    "gemini face observation; grounding/web search disabled by prompt contract",
+    "no real-person or celebrity matching requested",
+    "compared against 1 approved reference image(s)"
+  ],
+  "validation_type": "face",
+  "verdict": "revise"
+}

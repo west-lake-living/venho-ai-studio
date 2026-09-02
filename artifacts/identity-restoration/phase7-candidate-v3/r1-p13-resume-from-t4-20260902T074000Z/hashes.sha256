@@ -1,0 +1,20 @@
+{
+  "algorithm": "SHA-256",
+  "count": 14,
+  "files": {
+    "artifact_integrity.json": "6a19a44c959f711cb0e3609f60394f689ec7df1ac50eb142ac78c54db07b23d9",
+    "b05_parsed.json": "a0dab13859104ab00eadcfb54ed26b404b7a0e82411accf2497528cee20200f0",
+    "b05_raw.txt": "af00d83a9bef59cbf16ac05cfcb73310bb908290bb8e039426d9363a1df1324f",
+    "before_after_comparison.json": "f85e3f9086c51c9629de4c461b788f7ba9b44dc8bb4bf830dee57be3cbca1dd7",
+    "compileall.txt": "973ed2a2950562422f7b020a70220236f32bef40caaa997dd698e42dbbc6c2a5",
+    "credential_readiness.json": "aa1ed410e13e9f78ac3df23d4b0110f6c0872bfb4b5a71de295af2b78c73047a",
+    "git_diff_check.txt": "531a62067629ec38e912d348148c7183f3fefa118a984525fe78804a85755a4d",
+    "offline_preflight.json": "c6a6d7c42af3dc9a2b1faee57c0cda4408405b0d5c7e76b718addc4ba2f79e61",
+    "provider-paid-call-ledger.jsonl": "79b8b9aa0e0f65aaa985a279cbe49b416d4fc57171444910f5c8b345683af037",
+    "provider_call_accounting.json": "ee7c44f01b369e8e9946886c73892fdf915b035b5b97d1b81d7c1d7546b39168",
+    "quality_disposition.json": "ac813a21a8001008e222ebe1f758df5f7e5aa5cc43e9bf9f51d2aeb2474915b1",
+    "resume_baseline.json": "a80e51e163968cf9277ee4249fe7aaf46bae80df6885696d94c0874da8674dc8",
+    "summary.json": "3285f7ed87a55dec2f48b93bb6b73d585f992fa7654f5b677b2009d45dc06663",
+    "test_results.txt": "be135ec6b2d4fa6b99038fbed587fdbbc2a28cdadb64870aa57ce7cea4ccc48c"
+  }
+}

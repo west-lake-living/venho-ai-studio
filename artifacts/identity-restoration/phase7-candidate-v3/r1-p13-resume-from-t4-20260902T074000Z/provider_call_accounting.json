@@ -1,0 +1,15 @@
+{
+  "alternativeProviderCalls": 0,
+  "artifactsCreated": 0,
+  "failure": null,
+  "gpuJobs": 0,
+  "maxProviderCalls": 1,
+  "maxProviderRetries": 0,
+  "model": "gemini-flash-latest",
+  "nanoCalls": 0,
+  "parameterChanges": 0,
+  "provider": "Gemini",
+  "providerCalls": 1,
+  "providerHold": "RECOVERED",
+  "retries": 0
+}
