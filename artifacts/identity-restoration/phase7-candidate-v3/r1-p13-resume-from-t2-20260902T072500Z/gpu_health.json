@@ -1,0 +1,31 @@
+{
+  "approvedTransport": "PASS",
+  "comfyuiHealth": "PASS",
+  "endpoint": "https://harry-rog.taila40de0.ts.net",
+  "endpointSource": "docs/identity-restoration/WINDOWS_WORKER_RUNBOOK.md",
+  "gpu": "NVIDIA GTX 1660 SUPER 6GB",
+  "gpuAvailable": true,
+  "os": "Windows 11",
+  "probe": {
+    "gpuName": "cuda:0 NVIDIA GeForce GTX 1660 SUPER : cudaMallocAsync",
+    "latencyMs": 25.970999999999968,
+    "status": "HEALTHY",
+    "torchVramFreeMb": 0,
+    "torchVramTotalMb": 0,
+    "vramFreeMb": 5132,
+    "vramTotalMb": 6143
+  },
+  "probeExitCode": 0,
+  "recoveryAttempt": {
+    "comfyuiRequest": "PASS",
+    "reason": null,
+    "restart": "NOT_EXECUTED",
+    "tailscaleReachability": "PASS"
+  },
+  "restartAttempted": false,
+  "resumePrecheckOnly": true,
+  "transport": "Tailscale HTTPS existing approved remote ComfyUI transport",
+  "workerHost": "HARRY-ROG",
+  "workerReachable": true,
+  "workflowRuntimeAvailable": true
+}

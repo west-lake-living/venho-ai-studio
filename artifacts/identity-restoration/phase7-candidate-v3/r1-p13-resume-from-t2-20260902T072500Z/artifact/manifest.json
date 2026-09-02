@@ -1,0 +1,84 @@
+{
+  "adapterEvidence": {
+    "boundConfig": {
+      "canonicalSize": {
+        "height": 512,
+        "width": 512
+      },
+      "cfg": 6.0,
+      "denoise": 0.35,
+      "effectiveConfigSha256": "e9d1f36cbcefb5f4ea7f38dd16266544c304de547061facf69e279cafad0c613",
+      "sampler": "euler",
+      "scheduler": "normal",
+      "seed": 42,
+      "steps": 21
+    },
+    "candidateProfileId": "candidate_v3",
+    "gpuEvidence": {
+      "gpu": "NVIDIA GTX 1660 SUPER 6GB",
+      "os": "Windows 11",
+      "transport": "approved remote ComfyUI path",
+      "worker": "HARRY-ROG"
+    },
+    "inputGeometry": {
+      "height": 512,
+      "width": 512
+    },
+    "modelIdentifiers": [
+      "v1-5-pruned-emaonly.safetensors",
+      "ip-adapter-faceid-plusv2_sd15.bin",
+      "ip-adapter-faceid-plusv2_sd15_lora.safetensors",
+      "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors",
+      "buffalo_l"
+    ],
+    "outputGeometry": {
+      "height": 512,
+      "width": 512
+    },
+    "promptId": "0d444772-88b3-4a92-b8bf-7ff926f0542c",
+    "selectedReferenceHashes": [
+      "1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d"
+    ],
+    "timingMs": 46763,
+    "workflowHash": "53dc090691b8feac2a8b8a4309d43af737e304b09330e072b4ab5632ed5aad91",
+    "workflowId": "face_restore_win_sd15_ipadapter_v3",
+    "workflowSha256": "53dc090691b8feac2a8b8a4309d43af737e304b09330e072b4ab5632ed5aad91"
+  },
+  "artifactId": "candidate-v3-r1-p12-B05-face-detail-steps-021-v1",
+  "caseId": "B05",
+  "contractId": "candidate-v3-r1-p12-B05-steps-021-v1",
+  "evaluationOnly": true,
+  "featureFlag": "OFF",
+  "lane": "FACE_LOCAL",
+  "manifestVersion": "1.0",
+  "output": {
+    "height": 512,
+    "path": "artifacts/identity-restoration/phase7-candidate-v3/r1-p13-resume-from-t2-20260902T072500Z/artifact/restored-canonical.png",
+    "sha256": "ce58f0ac97a74bc07eccfba9d8c96584ff38eafd5a0a53e14fb84d363a873e40",
+    "width": 512
+  },
+  "parameters": {
+    "cfg": 6.0,
+    "denoise": 0.35,
+    "sampler": "euler",
+    "scheduler": "normal",
+    "seed": 42,
+    "steps": 21
+  },
+  "productionEligible": false,
+  "referenceBinding": {
+    "path": "/Users/hanhpham/Developer/Claude-Workspace/projects/venho-social-content-agent/assets/face-plates/A2_Front_plate.png",
+    "sha256": "1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d",
+    "type": "A2"
+  },
+  "sourceArtifactId": "phase7-diagnostic-20260828-B05",
+  "sourceEditableMaskSha256": "f8b6b5ab50509e7c5a5aee70293d7fa3dce077751f4dd492d9f890a5f1e7954e",
+  "sourceFeatherMaskSha256": "994a4443a8383b1687d21ca2d661d30bd5b315cc4eee8f8daaec3a3afd0b7792",
+  "sourceInputSha256": "90bff2deb7dcac5fe6fb69c59d6ff4943ef424ba97dfd8c49e3236907bc51e69",
+  "taskId": "R1-P13-RESUME-FROM-T2",
+  "workflow": {
+    "id": "face_restore_win_sd15_ipadapter_v3",
+    "sha256": "53dc090691b8feac2a8b8a4309d43af737e304b09330e072b4ab5632ed5aad91",
+    "version": "workflow-pins-v1"
+  }
+}

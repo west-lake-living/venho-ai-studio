@@ -1,0 +1,20 @@
+{
+  "algorithm": "SHA-256",
+  "count": 14,
+  "files": {
+    "artifact/manifest.json": "b2f064146271eb44435c8b5795157af359a5a7b6953ae456ba93346c9605f8f2",
+    "artifact/restored-canonical.png": "ce58f0ac97a74bc07eccfba9d8c96584ff38eafd5a0a53e14fb84d363a873e40",
+    "artifact_materialization.json": "7b06b876965325f4c07bdc966746d4d28d2c7fef54b1413283ea603788d327a2",
+    "before_after_comparison.json": "95f266d8a5b706f393041ebf1d223e9377914767bb3f18ddeb97042af3c0b58d",
+    "compileall.txt": "973ed2a2950562422f7b020a70220236f32bef40caaa997dd698e42dbbc6c2a5",
+    "git_diff_check.txt": "531a62067629ec38e912d348148c7183f3fefa118a984525fe78804a85755a4d",
+    "gpu_health.json": "fe946e26f80af1e356a512674fe411dc07f22dbe45ae1cd37d1787a7d148a979",
+    "gpu_job_accounting.json": "2b870aee40d7d883a7643ad7812585cb19187441ee42aeb449873d7e72636eb7",
+    "lineage_validation.json": "b96ae64e245b2f049fdea9a48cbfe6cbbb9a0dee21eb886638e9eaf7bf192fc0",
+    "provider_call_accounting.json": "eb204fb99d9f58c865e69e04cbeb2c40109fdc58dd47211368a08ca16dfda810",
+    "quality_disposition.json": "c15649c6b83398c0f48c645cc616d7da64a0064086dacf368b0de0d411045f10",
+    "resume_baseline.json": "e86cbb811f8801fe80d82f0cb791381d1ab747cec6cfd406440f9be9c4011fb6",
+    "summary.json": "8be588fb55a95a863c1a030ec8bdc31d2f2ee8157b4fb52fef783c390a2790ad",
+    "test_results.txt": "ef0631201b0665680a41ea773cf4785ad0b980d4a4b118c1e56a17d5270b7751"
+  }
+}

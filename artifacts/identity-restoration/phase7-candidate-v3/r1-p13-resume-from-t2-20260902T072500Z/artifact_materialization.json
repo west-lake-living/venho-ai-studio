@@ -1,0 +1,14 @@
+{
+  "artifactsCreated": 1,
+  "error": null,
+  "gpuJobId": "0d444772-88b3-4a92-b8bf-7ff926f0542c",
+  "gpuJobs": 1,
+  "manifestHash": "b2f064146271eb44435c8b5795157af359a5a7b6953ae456ba93346c9605f8f2",
+  "maxArtifacts": 1,
+  "maxGpuJobs": 1,
+  "outputArtifactId": "candidate-v3-r1-p12-B05-face-detail-steps-021-v1",
+  "outputHash": "ce58f0ac97a74bc07eccfba9d8c96584ff38eafd5a0a53e14fb84d363a873e40",
+  "parameterChanges": 0,
+  "status": "PASS",
+  "workflowHash": "53dc090691b8feac2a8b8a4309d43af737e304b09330e072b4ab5632ed5aad91"
+}

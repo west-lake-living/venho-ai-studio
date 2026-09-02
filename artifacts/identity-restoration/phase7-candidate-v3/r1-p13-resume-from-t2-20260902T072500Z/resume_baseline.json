@@ -1,0 +1,25 @@
+{
+  "authorization": {
+    "R1_P13_RESUME_FROM_T2_AUTHORIZED": true
+  },
+  "lockedContract": {
+    "caseId": "B05",
+    "cfg": 6.0,
+    "contractId": "candidate-v3-r1-p12-B05-steps-021-v1",
+    "denoise": 0.35,
+    "outputArtifactId": "candidate-v3-r1-p12-B05-face-detail-steps-021-v1",
+    "referenceBinding": "A2",
+    "steps": 21
+  },
+  "parameterChanges": 0,
+  "previousP13Status": "GPU_BLOCKED",
+  "previousP13Summary": "artifacts/identity-restoration/phase7-candidate-v3/r1-p13-gpu-recovery-p12-final-resume-20260902T071500Z/summary.json",
+  "previousP13SummarySha256": "fa590edb3fe1af7720ea672af3afd06b95487bc48d0721c405c473ba80367cac",
+  "resumeAuthorityValid": true,
+  "resumePoint": "T2",
+  "sourceArtifactHash": "90bff2deb7dcac5fe6fb69c59d6ff4943ef424ba97dfd8c49e3236907bc51e69",
+  "sourceArtifactId": "phase7-diagnostic-20260828-B05",
+  "sourceJobSha256": "1639afc13b3c6b40515ab7b877398c5723604cbdd45af551cf3e9f0b54318a51",
+  "workflowHash": "53dc090691b8feac2a8b8a4309d43af737e304b09330e072b4ab5632ed5aad91",
+  "workflowId": "face_restore_win_sd15_ipadapter_v3"
+}

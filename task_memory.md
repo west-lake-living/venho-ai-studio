@@ -1,5 +1,29 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-09-02 — R1-P13 resume from T2 provider blocked
+
+`R1-P13-RESUME-FROM-T2 = PROVIDER_BLOCKED` under explicit
+`R1_P13_RESUME_FROM_T2_AUTHORIZED=TRUE`.
+
+- Resumed at T2 after the human-reported HARRY-ROG recovery. Minimal approved
+  health check passed: Tailscale/ComfyUI/GPU/workflow all PASS; 5132 MiB VRAM
+  free. T0 was not rerun and no restart was attempted.
+- Exactly one B05 artifact was materialized under the unchanged P12 contract:
+  denoise `0.35`, CFG `6.0`, steps `21`, A2, Candidate v3 workflow hash
+  `53dc090691b8feac2a8b8a4309d43af737e304b09330e072b4ab5632ed5aad91`.
+  Artifact hash: `ce58f0ac97a74bc07eccfba9d8c96584ff38eafd5a0a53e14fb84d363a873e40`.
+- T3 lineage/regression PASS: artifact, manifest, contract, source,
+  workflow, A2, parameters, and protected quality state all matched. Offline
+  validation recorded `15 passed`, compileall PASS, and diff check PASS.
+- Exactly one Gemini FACE_LOCAL call was attempted and returned invalid before
+  provider response because `GEMINI_API_KEY`/`GOOGLE_API_KEY` was absent.
+  `PROVIDER_HOLD=ACTIVE`; provider calls `1`, retries `0`. No second call,
+  retry, alternate provider, Nano call, or follow-up was created.
+- Protected quality remains Boundary `9/9 PASS`, FACE_LOCAL `8/9 PASS`,
+  SCENARIO_GLOBAL `9/9 PASS`, pending `0`, quality `FAIL`; feature `OFF`,
+  promotion `NO`, architecture unchanged. Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p13-resume-from-t2-20260902T072500Z/`.
+
 ## 2026-09-02 — R1-P13 GPU recovery and frozen P12 resume blocked
 
 `R1-P13-GPU-RECOVERY-RESUME-P12-FINAL-CLOSURE = GPU_BLOCKED` under explicit

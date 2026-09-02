@@ -1,0 +1,36 @@
+{
+  "deltas": {
+    "eyesBrowsVsOriginal": null,
+    "facialShapeVsOriginal": null,
+    "mouthChinVsOriginal": null,
+    "vsDenoise040": null,
+    "vsOriginal": null
+  },
+  "denoise040": {
+    "eyesBrows": 86,
+    "facialShape": 88,
+    "mouthChin": 87,
+    "score": 87.45
+  },
+  "finalExperiment": {
+    "error": "GEMINI_API_KEY (or GOOGLE_API_KEY) not set in environment",
+    "eyesBrows": null,
+    "facialShape": null,
+    "invalidReason": "RuntimeError",
+    "lineageStatus": "VERIFIED",
+    "model": "gemini-flash-latest",
+    "mouthChin": null,
+    "parsedHash": null,
+    "provider": "Gemini",
+    "rawHash": null,
+    "score": null,
+    "valid": false,
+    "verdict": null
+  },
+  "original": {
+    "eyesBrows": 87,
+    "facialShape": 88,
+    "mouthChin": 89,
+    "score": 88.5
+  }
+}

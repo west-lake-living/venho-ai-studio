@@ -1,0 +1,16 @@
+{
+  "artifactExists": true,
+  "artifactHashValid": true,
+  "caseId": "B05",
+  "cfgMatch": true,
+  "contractMatch": true,
+  "denoiseMatch": true,
+  "manifestValid": true,
+  "parameterChanges": 0,
+  "passingCasesProtected": true,
+  "referenceBindingValid": true,
+  "sourceLineageValid": true,
+  "status": "PASS",
+  "stepsMatch": true,
+  "workflowLineageValid": true
+}
