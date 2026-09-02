@@ -1,0 +1,13 @@
+{
+  "architectureChanged": false,
+  "boundary": "9/9 PASS",
+  "faceLocal": "8/9 PASS",
+  "featureFlag": "OFF",
+  "nextAction": "HUMAN_DECISION_REQUIRED",
+  "pendingAuthoritativeEvaluations": 0,
+  "productionPromotion": "NO",
+  "qualityDisposition": "FAIL",
+  "scenarioGlobal": "9/9 PASS",
+  "status": "GPU_BLOCKED",
+  "taskId": "R1-P12-ONE-SHOT-FINAL-B05-REMEDIATION-AND-CLOSURE"
+}

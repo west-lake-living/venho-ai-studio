@@ -1,0 +1,22 @@
+{
+  "algorithm": "SHA-256",
+  "count": 16,
+  "files": {
+    "artifact_contract.json": "8937e8f896d0b73059847806515504717503d9b07b966962fb09fa8c26e4a70d",
+    "artifact_materialization.json": "960bcf0e460a23ddc2768da492ed0aadb11ae9e019fbd7d389b46d109aaa512d",
+    "baseline.json": "e349903ea9ed5a7ccd085e9f296f743abff869d610b4dbc5fa8cca50913d07de",
+    "before_after_comparison.json": "159dc28c284a676d8c132d9794dbf14bafc19095f82571cf9aa6e4adcb580eb7",
+    "compileall.txt": "973ed2a2950562422f7b020a70220236f32bef40caaa997dd698e42dbbc6c2a5",
+    "git_diff_check.txt": "531a62067629ec38e912d348148c7183f3fefa118a984525fe78804a85755a4d",
+    "gpu_health.json": "e6b5d57e4e07ae983816a4ce4248d88decaf63e24e98807ceb977a86e543239a",
+    "gpu_job_accounting.json": "426fa22f795973f613e49fd08012d272a97ec652017ccac7b2da981c678e6010",
+    "lineage_validation.json": "be162ffe0986c5341f9e156806182b740814fcda9b8dd5be4c6b047a637213d9",
+    "offline_validation.json": "e8225759b0b5b775cf5d951ea748e978bdfe6c803d5068fd4fc6451cfe28443b",
+    "parameter_authority.json": "72931c672618b2203b6c7d96697a63f04649b4983b9acb37cb6c2d7220a64f2f",
+    "provider_call_accounting.json": "34e8ed088476d10e8b71897aa00be3eee63da5a80f9ef8d1f056f342a0142fd0",
+    "quality_disposition.json": "01f2fa1de93a440a646788f4354e5b60fef97b505cd9d19e74570c1d805b26ce",
+    "selected_parameter.json": "d2a6d0ee85325565f71e30c89c3401ddacad518e28cb1fe1b24293aa1251a1bd",
+    "summary.json": "d4607428c2f985a47b95ade5bac1e5f7b1e4899a60dbce1977ad2f1a2e6b9412",
+    "test_results.txt": "edea1fe2e925f38d64cba1ee0f8ba3f25b2723ff28e7e65063c9b7b3e2414e63"
+  }
+}

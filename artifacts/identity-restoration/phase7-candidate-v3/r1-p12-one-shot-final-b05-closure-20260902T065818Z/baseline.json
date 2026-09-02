@@ -1,0 +1,35 @@
+{
+  "authorization": {
+    "R1_P12_ONE_SHOT_FINAL_B05_REMEDIATION_AUTHORIZED": true
+  },
+  "previousExperiment": {
+    "cfg": 6.0,
+    "denoise": {
+      "after": 0.4,
+      "before": 0.35
+    },
+    "score": 87.45,
+    "scoreDelta": -1.05,
+    "steps": 20,
+    "verdict": "revise"
+  },
+  "sourceJob": {
+    "id": "phase7-diagnostic-20260828-B05",
+    "path": "artifacts/identity-restoration/phase7-candidate-v3/jobs/phase7-diagnostic-20260828-B05.json",
+    "sha256": "1639afc13b3c6b40515ab7b877398c5723604cbdd45af551cf3e9f0b54318a51"
+  },
+  "startState": {
+    "architectureChanged": false,
+    "boundary": "9/9 PASS",
+    "faceLocal": "8/9 PASS",
+    "featureFlag": "OFF",
+    "model": "gemini-flash-latest",
+    "pending": 0,
+    "productionPromotion": "NO",
+    "provider": "Gemini",
+    "qualityDisposition": "FAIL",
+    "r1P11R1": "CLOSED / QUALITY_FAIL",
+    "scenarioGlobal": "9/9 PASS"
+  },
+  "taskId": "R1-P12-ONE-SHOT-FINAL-B05-REMEDIATION-AND-CLOSURE"
+}

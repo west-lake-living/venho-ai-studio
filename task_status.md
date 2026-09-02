@@ -1,5 +1,24 @@
 # VENHO AI STUDIO — Task Status
 
+### Candidate v3 Quality Remediation R1 — R1-P12 One-Shot Final B05 Remediation & Closure (2026-09-02)
+
+- `R1-P12-ONE-SHOT-FINAL-B05-REMEDIATION-AND-CLOSURE = GPU_BLOCKED` under
+  explicit `R1_P12_ONE_SHOT_FINAL_B05_REMEDIATION_AUTHORIZED=TRUE`.
+- Rollback baseline was fixed at denoise `0.35`, CFG `6.0`, steps `20`.
+  Exactly one final parameter decision was selected: `steps 20 -> 21`, the
+  smallest higher value in the approved `[8,60]` range; denoise and CFG were
+  unchanged.
+- T2 contract/offline gate PASS: B05-only deterministic contract, A2 and
+  workflow lineage authority, 9 focused tests, compileall, and diff check.
+- T3 health gate found the approved HARRY-ROG Tailscale-ComfyUI worker
+  offline. GPU jobs `0`, artifacts `0`, provider calls `0`; T4/T5 did not run.
+  No retry, sweep, CFG experiment, provider switch, Nano call, or automatic
+  follow-up phase was created.
+- Protected quality remains Boundary `9/9 PASS`, FACE_LOCAL `8/9 PASS`,
+  SCENARIO_GLOBAL `9/9 PASS`, pending `0`, quality `FAIL`, feature `OFF`,
+  promotion `NO`, architecture unchanged. Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p12-one-shot-final-b05-closure-20260902T065818Z/`.
+
 ### Candidate v3 Quality Remediation R1 — R1-P11-R1 GPU Worker Recovery & Final Resume (2026-09-02)
 
 - `R1-P11-R1-GPU-WORKER-RECOVERY-AND-FINAL-RESUME = CLOSED / QUALITY_FAIL`

@@ -1,0 +1,11 @@
+{
+  "caseScope": "B05_ONLY",
+  "compileall": true,
+  "contractComplete": true,
+  "gitDiffCheck": true,
+  "outputDeterministic": true,
+  "passingCasesProtected": true,
+  "schemaValid": true,
+  "status": "PASS",
+  "tests": true
+}

@@ -1,0 +1,12 @@
+{
+  "artifactExists": false,
+  "caseId": "B05",
+  "contractMatch": false,
+  "denoiseRolledBack": false,
+  "onlyOneParameterChanged": false,
+  "passingCasesProtected": true,
+  "referenceBindingValid": false,
+  "sourceLineageValid": false,
+  "status": "NOT_EXECUTED",
+  "workflowLineageValid": false
+}

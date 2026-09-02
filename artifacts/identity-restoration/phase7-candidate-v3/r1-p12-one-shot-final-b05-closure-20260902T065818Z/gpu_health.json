@@ -1,0 +1,20 @@
+{
+  "approvedTransport": "FAIL",
+  "comfyuiHealth": "FAIL",
+  "endpoint": "https://harry-rog.taila40de0.ts.net",
+  "gpuAvailable": false,
+  "probe": {
+    "gpuName": null,
+    "latencyMs": null,
+    "status": "OFFLINE",
+    "torchVramFreeMb": null,
+    "torchVramTotalMb": null,
+    "vramFreeMb": null,
+    "vramTotalMb": null
+  },
+  "probeExitCode": 1,
+  "transport": "Tailscale HTTPS existing approved remote ComfyUI transport",
+  "workerHost": "HARRY-ROG",
+  "workerReachable": false,
+  "workflowRuntimeAvailable": true
+}

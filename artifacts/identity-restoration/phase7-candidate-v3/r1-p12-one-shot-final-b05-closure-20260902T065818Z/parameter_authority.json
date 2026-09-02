@@ -1,0 +1,38 @@
+{
+  "approvedRanges": {
+    "cfg": [
+      1.0,
+      12.0
+    ],
+    "denoise": [
+      0.05,
+      0.75
+    ],
+    "steps": [
+      8,
+      60
+    ]
+  },
+  "baseline": {
+    "cfg": 6.0,
+    "steps": 20
+  },
+  "comparablePassingFaceLocalCases": {
+    "authority": "Candidate v3 frozen B01-B09 job lineage",
+    "observedParameters": {
+      "cfg": 6.0,
+      "denoise": 0.35,
+      "steps": 20
+    },
+    "result": "no passing-peer higher-steps or higher-CFG preset exists"
+  },
+  "rollback": {
+    "denoise": 0.35,
+    "reason": "R1-P11-R1 denoise 0.40 degraded B05 from 88.50 to 87.45"
+  },
+  "sources": [
+    "identity_restoration/domain/value_objects.py:RestorationParams",
+    "config/projects/venho_hotel/identity_restoration/workflow_pins.yaml",
+    "artifacts/identity-restoration/phase7-candidate-v3/r1-p11-r1-gpu-recovery-final-resume-20260902T050517Z"
+  ]
+}

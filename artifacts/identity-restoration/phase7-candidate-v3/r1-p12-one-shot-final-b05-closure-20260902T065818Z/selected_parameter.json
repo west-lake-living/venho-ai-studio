@@ -1,0 +1,18 @@
+{
+  "approvedRange": [
+    8,
+    60
+  ],
+  "authoritySource": "R1-P12 task contract + RestorationParams approved range + Candidate v3 workflow default",
+  "currentValue": 20,
+  "delta": 1,
+  "newValue": 21,
+  "parameterChanges": 1,
+  "selectedParameter": "steps",
+  "selectionRule": "STEPS first per R1-P12 priority; smallest approved higher value; one parameter only",
+  "status": "PASS",
+  "unchangedParameter": {
+    "cfg": 6.0,
+    "denoise": 0.35
+  }
+}
