@@ -1,0 +1,11 @@
+{
+  "alternativeProviderCalls": 0,
+  "compileallExitCode": 0,
+  "gitDiffCheckExitCode": 0,
+  "gpuJobs": 0,
+  "nanoCalls": 0,
+  "nonB05BehaviorPreserved": true,
+  "pytestExitCode": 0,
+  "qualityProviderCalls": 0,
+  "status": "PASS"
+}

@@ -28,3 +28,5 @@ class RestoreCommand:
     geometry_backend: str | None = None
     geometry_model: str | None = None
     geometry_model_sha256: str | None = None
+    # Optional authoritative Candidate v3 benchmark case binding.
+    case_id: str | None = None

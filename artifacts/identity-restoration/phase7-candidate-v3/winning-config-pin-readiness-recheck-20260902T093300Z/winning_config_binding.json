@@ -1,0 +1,15 @@
+{
+  "authoritySource": "R2_WINNING_CONFIG",
+  "caseId": "B05",
+  "configId": "candidate-v3-r2-b05-winning-config-v1",
+  "configSha256": "9c069cef2df166fd46532cc7e01f96de8bd49d179b7ca001fcaefc46f7e15108",
+  "globalDefaultsChanged": false,
+  "parameters": {
+    "cfg": 6.1,
+    "denoise": 0.35,
+    "steps": 21
+  },
+  "runtimeConsumedBy": "ComfyUiCandidateV3Adapter.resolve_candidate_v3_params before bind_candidate_v3_by_title",
+  "sourceEvidence": "artifacts/identity-restoration/phase7-candidate-v3/r2-b05-face-local-focused-recovery-20260902T080000Z/winner_selection.json",
+  "status": "PASS"
+}

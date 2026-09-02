@@ -1,0 +1,11 @@
+{
+  "currentParameterPrecedence": [
+    "RestoreCommand.case_id / RestorationRequest.case_id",
+    "candidate_v3_winning_config.resolve_candidate_v3_params",
+    "ComfyUiCandidateV3Adapter graph runtime_values",
+    "workflow defaults (non-B05 only)"
+  ],
+  "finalEffectiveValueSource": "R2_WINNING_CONFIG for B05; caller request for case_id=None or authorized non-B05 cases.",
+  "rootCause": "Candidate adapter previously bound request.params directly with no case authority.",
+  "status": "PASS"
+}

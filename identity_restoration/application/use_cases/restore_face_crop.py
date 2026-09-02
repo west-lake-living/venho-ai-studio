@@ -96,6 +96,7 @@ class RestoreFaceCropUseCase:
                         workflow_id=cmd.workflow_id,
                         seed=cmd.seed,
                         params=cmd.params,
+                        case_id=cmd.case_id,
                     )
                 )
             except RestorationError as err:
@@ -158,12 +159,13 @@ class RestoreFaceCropUseCase:
         runtime_ms = int((self._clock.monotonic() - started) * 1000)
         status = self._decide_status(qc_result, pixel)
         descriptor = restorer.describe()
+        bound_config = provider_evidence.get("boundConfig", {}) if isinstance(provider_evidence, dict) else {}
         restoration_params = {
-            "denoise": cmd.params.denoise,
-            "steps": cmd.params.steps,
-            "cfg": cmd.params.cfg,
-            "sampler": cmd.params.sampler,
-            "scheduler": cmd.params.scheduler,
+            "denoise": bound_config.get("denoise", cmd.params.denoise),
+            "steps": bound_config.get("steps", cmd.params.steps),
+            "cfg": bound_config.get("cfg", cmd.params.cfg),
+            "sampler": bound_config.get("sampler", cmd.params.sampler),
+            "scheduler": bound_config.get("scheduler", cmd.params.scheduler),
         }
         lineage = {
             "restorerId": descriptor.restorer_id,

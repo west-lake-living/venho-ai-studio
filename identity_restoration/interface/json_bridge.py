@@ -176,6 +176,7 @@ def parse_restore_command(payload: dict[str, Any]) -> RestoreCommand:
         seed=int(payload["seed"]),
         params=RestorationParams(**params),
         timeout_seconds=int(payload.get("timeoutSeconds", 600)),
+        case_id=payload.get("caseId"),
     )
 
 

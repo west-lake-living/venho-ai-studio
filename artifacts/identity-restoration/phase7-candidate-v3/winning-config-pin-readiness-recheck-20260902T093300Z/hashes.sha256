@@ -1,0 +1,18 @@
+{
+  "algorithm": "SHA-256",
+  "count": 12,
+  "files": {
+    "baseline.json": "420d80f891425f24b32cf564b931bc5de41ed87465cecc85cfc56c7cd4b0f6c1",
+    "compileall.txt": "973ed2a2950562422f7b020a70220236f32bef40caaa997dd698e42dbbc6c2a5",
+    "git_diff_check.txt": "531a62067629ec38e912d348148c7183f3fefa118a984525fe78804a85755a4d",
+    "override_protection.json": "3598c6c3b36dcb8fcca1c8828fdc506606527183bfc6beefe5f2bddfb4b319b3",
+    "promotion_readiness_recheck.json": "84d9981199b871a0779440de1a7586ace4f6971134b50d00258c5074a4a1a50c",
+    "r2_winner_linkage.json": "f89f2d6060f4585c0fa2d4813a200c62a48b9e46a4b16124b944836baae5f7fb",
+    "regression_validation.json": "3e3e3242e23f9865fc82e055675ab00502305bf9a0fbce33f01f9ab7598c79d8",
+    "runtime_consumption_proof.json": "acac2bc14a9b16cac1756651c24b8897678edf9a3e4f667f6fdaca51bfb15898",
+    "runtime_parameter_audit.json": "0be4f4eaf8075dde119a7447e16fb5d25d85af77fdb0599e8600744596220214",
+    "summary.json": "17cd474bafe498e311db090cabebcb0a200a16aff77d7502cbd99a74178e81dc",
+    "test_results.txt": "9c64737885aac9ccee1df0a065cea8052496ee4c3abf384c9aea7d232f2688b3",
+    "winning_config_binding.json": "ccf95822e339fd6f3373ac624f5472dc5617d9ba50b508232a86dcd98448f925"
+  }
+}

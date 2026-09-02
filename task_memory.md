@@ -1,5 +1,24 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-09-02 — Candidate v3 winning-config pin and promotion readiness recheck
+
+`CANDIDATE-V3-WINNING-CONFIG-PIN-AND-PROMOTION-READINESS-RECHECK = READY_FOR_PROMOTION`
+under `CANDIDATE_V3_WINNING_CONFIG_PIN_AND_RECHECK_AUTHORIZED=TRUE`.
+
+- Candidate v3 now resolves B05 through the authoritative R2 pin before graph
+  binding: `0.35 / 6.1 / 21`, config ID
+  `candidate-v3-r2-b05-winning-config-v1`, hash `9c069cef…e15108`.
+  Caller values cannot override or create a hybrid B05 configuration; unknown
+  Candidate v3 case authority fails closed. Non-B05 caller behavior and global
+  defaults remain `0.35 / 6.0 / 20`.
+- R2 linkage and integrity remain valid (`47/47`); winner PASS is `90.15` and
+  reproducibility PASS is `91.75`. Regression recorded `106 passed`,
+  compileall PASS, diff-check PASS, with zero GPU/provider/Nano calls.
+- Feature remains `OFF`, production promotion `NO`, auto-promotion false,
+  rollback/fallback ready, and architecture unchanged. Next action requires
+  separate human production-promotion authorization. Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/winning-config-pin-readiness-recheck-20260902T093300Z/`.
+
 ## 2026-09-02 — Candidate v3 Promotion Readiness Review
 
 `CANDIDATE-V3-PROMOTION-READINESS-REVIEW = NOT_READY_FOR_PROMOTION` under

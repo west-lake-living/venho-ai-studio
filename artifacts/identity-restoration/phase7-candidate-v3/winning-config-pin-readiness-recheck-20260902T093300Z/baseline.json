@@ -1,0 +1,9 @@
+{
+  "architectureChanged": false,
+  "authorization": "CANDIDATE_V3_WINNING_CONFIG_PIN_AND_RECHECK_AUTHORIZED",
+  "featureFlag": "OFF",
+  "productionPromotion": "NO",
+  "quality": "PASS",
+  "startBlocker": "WINNING_CONFIG_NOT_PINNED",
+  "startDisposition": "NOT_READY_FOR_PROMOTION"
+}

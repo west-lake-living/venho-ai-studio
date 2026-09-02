@@ -1,0 +1,23 @@
+{
+  "authorityResolved": {
+    "cfg": 6.1,
+    "denoise": 0.35,
+    "steps": 21
+  },
+  "proof": "Focused adapter tests inspect the submitted KSampler workflow and adapter execution_evidence after resolution; no GPU call is used.",
+  "request": {
+    "caseId": "B05",
+    "requested": {
+      "cfg": 5.0,
+      "denoise": 0.4,
+      "steps": 20
+    }
+  },
+  "status": "PASS",
+  "test": "tests/identity_restoration/infrastructure/test_comfyui_candidate_v3_adapter.py",
+  "workflowEffective": {
+    "cfg": 6.1,
+    "denoise": 0.35,
+    "steps": 21
+  }
+}

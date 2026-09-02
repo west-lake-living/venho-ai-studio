@@ -12,7 +12,7 @@
     "contractVersion": { "const": "1.0" },
     "runId": { "type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{2,63}$" },
     "attemptId": { "type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{2,63}$" },
-    "restorerId": { "enum": ["comfyui-local", "comfyui-remote", "nano-banana-edit", "mock"] },
+    "restorerId": { "enum": ["comfyui-local", "comfyui-remote", "comfyui-candidate-v3", "nano-banana-edit", "mock"] },
     "basePath": { "type": "string" },
     "cropPath": { "type": "string" },
     "maskEditablePath": { "type": "string" },
@@ -37,6 +37,7 @@
     "a2Path": { "type": "string" },
     "a2Sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
     "workflowId": { "type": "string" },
+    "caseId": { "type": "string", "pattern": "^B[0-9]{2}$" },
     "seed": { "type": "integer", "minimum": 0, "maximum": 4294967295 },
     "params": {
       "type": "object",

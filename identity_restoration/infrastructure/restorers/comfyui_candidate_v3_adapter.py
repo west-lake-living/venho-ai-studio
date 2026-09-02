@@ -12,6 +12,7 @@ from PIL import Image
 from ...application.ports.identity_restorer import RestorerDescriptor
 from ...domain.entities import RestorationRequest, RestoredCrop
 from ...domain.errors import RestorationError
+from ...domain.policies.candidate_v3_winning_config import resolve_candidate_v3_params
 from ...domain.value_objects import RestorerId
 from ..comfyui.graph_binder import bind_candidate_v3_by_title, validate_candidate_v3_graph
 from ..comfyui.http_client import ComfyUIHttpClient
@@ -70,6 +71,9 @@ class ComfyUiCandidateV3Adapter:
                 retryable=False,
             )
 
+        resolution = resolve_candidate_v3_params(case_id=request.case_id, requested=request.params)
+        effective_params = resolution.params
+
         validate_candidate_v3_graph(self.workflow)
         crop_size, mask_size = self._validate_canonical_inputs(request)
         if hashlib.sha256(request.a2.image_bytes).hexdigest() != request.a2.sha256:
@@ -108,17 +112,17 @@ class ComfyUiCandidateV3Adapter:
                 },
                 runtime_values={
                     "seed": request.seed,
-                    "denoise": request.params.denoise,
-                    "steps": request.params.steps,
-                    "cfg": request.params.cfg,
-                    "sampler_name": request.params.sampler,
-                    "scheduler": request.params.scheduler,
+                    "denoise": effective_params.denoise,
+                    "steps": effective_params.steps,
+                    "cfg": effective_params.cfg,
+                    "sampler_name": effective_params.sampler,
+                    "scheduler": effective_params.scheduler,
                 },
             )
             prompt_id = self.client.submit_prompt(bound)
             image_info = self.client.poll_until_complete(
                 prompt_id,
-                timeout_seconds=min(self.timeout_seconds, request.params.steps * 60 + 60),
+                timeout_seconds=min(self.timeout_seconds, effective_params.steps * 60 + 60),
             )
             png_bytes = self.client.download(image_info)
         except RestorationError:
@@ -143,12 +147,16 @@ class ComfyUiCandidateV3Adapter:
             "workflowHash": self.workflow_sha256,
             "boundConfig": {
                 "seed": request.seed,
-                "denoise": request.params.denoise,
-                "steps": request.params.steps,
-                "cfg": request.params.cfg,
-                "sampler": request.params.sampler,
-                "scheduler": request.params.scheduler,
-                "effectiveConfigSha256": _effective_config_sha256(request, self.workflow_sha256),
+                "denoise": effective_params.denoise,
+                "steps": effective_params.steps,
+                "cfg": effective_params.cfg,
+                "sampler": effective_params.sampler,
+                "scheduler": effective_params.scheduler,
+                "effectiveConfigSha256": _effective_config_sha256(request, effective_params, self.workflow_sha256),
+                "caseId": request.case_id,
+                "authoritySource": resolution.source,
+                "authorityConfigId": resolution.config_id,
+                "authorityConfigSha256": resolution.config_sha256,
                 "canonicalSize": {"width": crop_size[0], "height": crop_size[1]},
             },
             "selectedReferenceHashes": [request.a2.sha256],
@@ -202,12 +210,15 @@ class ComfyUiCandidateV3Adapter:
         return crop_size, mask_size
 
 
-def _effective_config_sha256(request: RestorationRequest, workflow_sha256: str) -> str:
+def _effective_config_sha256(
+    request: RestorationRequest, params: Any, workflow_sha256: str
+) -> str:
     payload = {
         "workflowId": request.workflow_id,
         "workflowSha256": workflow_sha256,
         "seed": request.seed,
-        "params": asdict(request.params),
+        "caseId": request.case_id,
+        "params": asdict(params),
     }
     return hashlib.sha256(
         json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=True).encode("utf-8")

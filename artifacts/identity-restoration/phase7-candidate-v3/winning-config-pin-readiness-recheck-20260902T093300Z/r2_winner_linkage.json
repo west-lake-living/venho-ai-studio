@@ -1,0 +1,23 @@
+{
+  "r2EvidenceHashes": {
+    "total": 47,
+    "valid": 47
+  },
+  "reproducibility": {
+    "result": "91.75 / approve",
+    "source": "artifacts/identity-restoration/phase7-candidate-v3/r2-b05-face-local-focused-recovery-20260902T080000Z/reproducibility_confirmation.json"
+  },
+  "reproducibilityMatchesPin": true,
+  "status": "PASS",
+  "winner": {
+    "caseId": "B05",
+    "firstPass": "90.15 / approve",
+    "parameters": {
+      "cfg": 6.1,
+      "denoise": 0.35,
+      "steps": 21
+    },
+    "source": "artifacts/identity-restoration/phase7-candidate-v3/r2-b05-face-local-focused-recovery-20260902T080000Z/winner_selection.json"
+  },
+  "winnerMatchesPin": true
+}

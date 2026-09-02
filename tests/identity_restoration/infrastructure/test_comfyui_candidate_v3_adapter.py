@@ -52,7 +52,8 @@ class FakeBackend:
         return self.output
 
 
-def _request(*, crop: bytes | None = None, mask: bytes | None = None) -> RestorationRequest:
+def _request(*, crop: bytes | None = None, mask: bytes | None = None, case_id: str | None = None,
+             params: RestorationParams | None = None) -> RestorationRequest:
     return RestorationRequest(
         run_id="run-1",
         attempt_id="attempt-1",
@@ -65,7 +66,8 @@ def _request(*, crop: bytes | None = None, mask: bytes | None = None) -> Restora
         a2=A2Authority.from_bytes(_png((512, 512), "RGB", (1, 2, 3))),
         workflow_id=CANDIDATE_V3_WORKFLOW_ID,
         seed=42,
-        params=RestorationParams(denoise=0.35, steps=20, cfg=6.0, sampler="euler", scheduler="normal"),
+        params=params or RestorationParams(denoise=0.35, steps=20, cfg=6.0, sampler="euler", scheduler="normal"),
+        case_id=case_id,
     )
 
 
@@ -109,6 +111,41 @@ def test_candidate_v3_binds_declared_graph_and_returns_lineage() -> None:
     assert evidence["modelIdentifiers"] == ["checkpoint", "faceid"]
     assert evidence["gpuEvidence"]["gpuName"] == "fixture-gpu"
     assert evidence["outputGeometry"] == {"width": 512, "height": 512}
+
+
+@pytest.mark.parametrize("params", [
+    RestorationParams(denoise=0.40, steps=20, cfg=5.0, sampler="euler", scheduler="normal"),
+    RestorationParams(denoise=0.35, steps=20, cfg=7.0, sampler="euler", scheduler="normal"),
+    RestorationParams(denoise=0.40, steps=21, cfg=6.1, sampler="euler", scheduler="normal"),
+])
+def test_candidate_v3_b05_runtime_pin_blocks_caller_and_hybrid_overrides(params: RestorationParams) -> None:
+    backend = FakeBackend(_png((512, 512), "RGB", (40, 50, 60)))
+    adapter = _adapter(backend, gpu_execution_authorized=True)
+
+    adapter.restore(_request(case_id="B05", params=params))
+
+    bound = adapter.execution_evidence()["boundConfig"]
+    assert {key: bound[key] for key in ("denoise", "cfg", "steps")} == {
+        "denoise": 0.35, "cfg": 6.1, "steps": 21,
+    }
+    assert bound["authoritySource"] == "R2_WINNING_CONFIG"
+    assert bound["authorityConfigId"] == "candidate-v3-r2-b05-winning-config-v1"
+    sampler = next(node["inputs"] for node in backend.submitted[0].values() if node["class_type"] == "KSampler")
+    assert {key: sampler[key] for key in ("denoise", "cfg", "steps")} == {
+        "denoise": 0.35, "cfg": 6.1, "steps": 21,
+    }
+
+
+def test_candidate_v3_non_b05_caller_params_and_unknown_authority_handling() -> None:
+    backend = FakeBackend(_png((512, 512), "RGB", (40, 50, 60)))
+    adapter = _adapter(backend, gpu_execution_authorized=True)
+    requested = RestorationParams(denoise=0.40, steps=22, cfg=7.0, sampler="euler", scheduler="normal")
+
+    adapter.restore(_request(case_id="B01", params=requested))
+    assert adapter.execution_evidence()["boundConfig"]["authoritySource"] == "CALLER_REQUEST"
+    assert adapter.execution_evidence()["boundConfig"]["cfg"] == 7.0
+    with pytest.raises(RestorationError, match="CASE_AUTHORITY_INVALID"):
+        adapter.restore(_request(case_id="B99", params=requested))
 
 
 def test_candidate_v3_rejects_noncanonical_geometry_before_upload() -> None:

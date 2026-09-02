@@ -86,6 +86,8 @@ class RestorationRequest:
     workflow_id: str
     seed: int
     params: RestorationParams
+    # Optional benchmark/case authority. None preserves established caller semantics.
+    case_id: str | None = None
 
 
 @dataclass(frozen=True)

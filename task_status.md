@@ -1,5 +1,20 @@
 # VENHO AI STUDIO — Task Status
 
+### Candidate v3 Winning Config Pin & Promotion Readiness Recheck (2026-09-02)
+
+- `CANDIDATE-V3-WINNING-CONFIG-PIN-AND-PROMOTION-READINESS-RECHECK = READY_FOR_PROMOTION`
+  under `CANDIDATE_V3_WINNING_CONFIG_PIN_AND_RECHECK_AUTHORIZED=TRUE`.
+- B05 authoritative runtime binding now resolves `denoise=0.35`, `CFG=6.1`,
+  `steps=21` from R2 config `candidate-v3-r2-b05-winning-config-v1`
+  (`9c069cef…e15108`) before KSampler binding. Caller overrides/hybrids are
+  blocked; unknown Candidate v3 case authority fails closed; global defaults
+  and non-B05 behavior are unchanged.
+- Final checks: R2 evidence `47/47`, quality `9/9` in all lanes, `106 passed`,
+  compileall/diff-check PASS, zero GPU/provider/Nano calls. Feature `OFF`,
+  promotion `NO`, auto-promotion false, rollback/fallback ready, architecture
+  unchanged. Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/winning-config-pin-readiness-recheck-20260902T093300Z/`.
+
 ### Candidate v3 Promotion Readiness Review (2026-09-02)
 
 - `CANDIDATE-V3-PROMOTION-READINESS-REVIEW = NOT_READY_FOR_PROMOTION` under
