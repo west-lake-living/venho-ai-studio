@@ -1,0 +1,19 @@
+{
+  "algorithm": "SHA-256",
+  "count": 13,
+  "files": {
+    "artifact_materialization.json": "3e7f1b4e491cab4899c99e6d065d6d491f4ecf0b36cd4269d5bcc4bc99999915",
+    "baseline.json": "c00a4b2f2791d9f7e15e0ea703f8084cd05fae6bc6fe27d8918af1000df238c6",
+    "before_after_comparison.json": "0fc43918cf5532f5623dec91dfb6b5a55921c79d0ddd3ddcdcf7d72799247873",
+    "compileall.txt": "973ed2a2950562422f7b020a70220236f32bef40caaa997dd698e42dbbc6c2a5",
+    "git_diff_check.txt": "531a62067629ec38e912d348148c7183f3fefa118a984525fe78804a85755a4d",
+    "gpu_health.json": "d5736a7688543bb142174c46aae517d1f3bd55a7f27706230e8f2de8180d1843",
+    "gpu_job_accounting.json": "7f4c2d84411699e5b4fd93774408506ddacc912b4c9e5e748216c9a37a3fc071",
+    "lineage_validation.json": "be6774cfdc9bcb07a9f9b9bee0ce315c468a876998dd135c0e7101cfcc5cf9ee",
+    "p12_resume_authority.json": "b51b90225456213e59786622b3f10a209babae1c6a7ec8ae3dccc1d412b080de",
+    "provider_call_accounting.json": "34e8ed088476d10e8b71897aa00be3eee63da5a80f9ef8d1f056f342a0142fd0",
+    "quality_disposition.json": "f5ba6999c99796c8e404823e2c351bb96858293e8f0894bbec57868368a0ac31",
+    "summary.json": "fa590edb3fe1af7720ea672af3afd06b95487bc48d0721c405c473ba80367cac",
+    "test_results.txt": "ba56007400fa5292f01fa84ee89753d8713c5eaf824f5bc044e66f837f4f6d17"
+  }
+}

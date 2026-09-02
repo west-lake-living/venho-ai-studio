@@ -1,0 +1,14 @@
+{
+  "artifactsCreated": 0,
+  "error": "approved GPU worker recovery/health gate failed",
+  "gpuJobId": null,
+  "gpuJobs": 0,
+  "manifestHash": null,
+  "maxArtifacts": 1,
+  "maxGpuJobs": 1,
+  "outputArtifactId": "candidate-v3-r1-p12-B05-face-detail-steps-021-v1",
+  "outputHash": null,
+  "parameterChanges": 0,
+  "status": "GPU_BLOCKED",
+  "workflowHash": "53dc090691b8feac2a8b8a4309d43af737e304b09330e072b4ab5632ed5aad91"
+}

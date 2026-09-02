@@ -1,5 +1,31 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-09-02 — R1-P13 GPU recovery and frozen P12 resume blocked
+
+`R1-P13-GPU-RECOVERY-RESUME-P12-FINAL-CLOSURE = GPU_BLOCKED` under explicit
+`R1_P13_GPU_RECOVERY_AND_P12_RESUME_AUTHORIZED=TRUE`.
+
+- P13-T0 reconstructed P12 deterministically: `B05`, contract
+  `candidate-v3-r1-p12-B05-steps-021-v1`, output ID
+  `candidate-v3-r1-p12-B05-face-detail-steps-021-v1`, A2 binding, source
+  manifest, and Candidate v3 workflow hash
+  `53dc090691b8feac2a8b8a4309d43af737e304b09330e072b4ab5632ed5aad91`.
+  Resume authority is PASS; no parameter change was required (`0`).
+- P13-T1 reached HARRY-ROG over Tailscale (`PASS`), but the approved
+  ComfyUI endpoint returned HTTP `502`; Tailscale SSH authentication was
+  denied, so no Windows restart was attempted. ComfyUI/GPU/workflow health
+  therefore failed closed.
+- P13-T2/T3/T4 did not execute: GPU jobs `0`, artifacts `0`, provider calls
+  `0`, retries `0`. No retry, second artifact, parameter change, Nano call,
+  alternative provider, or automatic follow-up was created.
+- Protected quality remains Boundary `9/9 PASS`, FACE_LOCAL `8/9 PASS`,
+  SCENARIO_GLOBAL `9/9 PASS`, pending `0`, quality `FAIL`; feature `OFF`,
+  promotion `NO`, architecture unchanged. Next action is to recover the
+  approved worker and resume the frozen P12 contract.
+- Offline validation recorded `12 passed`, compileall PASS, and diff check
+  PASS. Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p13-gpu-recovery-p12-final-resume-20260902T071500Z/`.
+
 ## 2026-09-02 — R1-P12 one-shot final B05 remediation blocked by GPU worker
 
 `R1-P12-ONE-SHOT-FINAL-B05-REMEDIATION-AND-CLOSURE = GPU_BLOCKED` under

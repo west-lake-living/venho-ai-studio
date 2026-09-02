@@ -1,0 +1,28 @@
+{
+  "deltas": {
+    "eyesBrowsVsOriginal": null,
+    "facialShapeVsOriginal": null,
+    "mouthChinVsOriginal": null,
+    "vsDenoise040": null,
+    "vsOriginal": null
+  },
+  "denoise040": {
+    "eyesBrows": 86,
+    "facialShape": 88,
+    "mouthChin": 87,
+    "score": 87.45
+  },
+  "finalExperiment": {
+    "eyesBrows": null,
+    "facialShape": null,
+    "mouthChin": null,
+    "score": null,
+    "verdict": null
+  },
+  "original": {
+    "eyesBrows": 87,
+    "facialShape": 88,
+    "mouthChin": 89,
+    "score": 88.5
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "authorization": {
+    "R1_P13_GPU_RECOVERY_AND_P12_RESUME_AUTHORIZED": true
+  },
+  "p12Evidence": "artifacts/identity-restoration/phase7-candidate-v3/r1-p12-one-shot-final-b05-closure-20260902T065818Z",
+  "startState": {
+    "architectureChanged": false,
+    "boundary": "9/9 PASS",
+    "faceLocal": "8/9 PASS",
+    "featureFlag": "OFF",
+    "pending": 0,
+    "productionPromotion": "NO",
+    "qualityDisposition": "FAIL",
+    "r1P12": "GPU_BLOCKED",
+    "scenarioGlobal": "9/9 PASS"
+  }
+}

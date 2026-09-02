@@ -1,5 +1,29 @@
 # VENHO AI STUDIO — Task Status
 
+### Candidate v3 Quality Remediation R1 — R1-P13 GPU Recovery + Resume P12 Final Closure (2026-09-02)
+
+- `R1-P13-GPU-RECOVERY-RESUME-P12-FINAL-CLOSURE = GPU_BLOCKED` under
+  explicit `R1_P13_GPU_RECOVERY_AND_P12_RESUME_AUTHORIZED=TRUE`.
+- P13-T0 reconstructed the exact frozen P12 authority: B05,
+  `denoise=0.35`, `CFG=6.0`, `steps=21`, contract
+  `candidate-v3-r1-p12-B05-steps-021-v1`, output ID
+  `candidate-v3-r1-p12-B05-face-detail-steps-021-v1`, A2 binding, source
+  manifest, and workflow hash `53dc0906…5aad91`. Parameter changes required:
+  `0`.
+- Tailscale reachability to HARRY-ROG passed, but the approved ComfyUI
+  endpoint returned HTTP `502`; Tailscale SSH authentication was denied, so
+  no Windows restart was attempted. The worker health gate failed closed.
+- T2/T3/T4 did not execute: GPU jobs `0`, artifacts `0`, provider calls `0`,
+  retries `0`. No retry, second artifact, parameter change, Nano call,
+  alternative provider, or automatic follow-up was created.
+- Protected quality remains Boundary `9/9 PASS`, FACE_LOCAL `8/9 PASS`,
+  SCENARIO_GLOBAL `9/9 PASS`, pending `0`, quality `FAIL`; feature `OFF`,
+  promotion `NO`, architecture unchanged. Next action: recover the approved
+  worker and resume frozen P12.
+- Offline validation: `12 passed`, compileall PASS, `git diff --check` PASS.
+  Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p13-gpu-recovery-p12-final-resume-20260902T071500Z/`.
+
 ### Candidate v3 Quality Remediation R1 — R1-P12 One-Shot Final B05 Remediation & Closure (2026-09-02)
 
 - `R1-P12-ONE-SHOT-FINAL-B05-REMEDIATION-AND-CLOSURE = GPU_BLOCKED` under
