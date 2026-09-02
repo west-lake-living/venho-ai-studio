@@ -1,5 +1,29 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-09-02 — R1-P11 materialization blocked by unavailable GPU worker
+
+`R1-P11-HUMAN-PARAMETER-DECISION-ONE-SHOT-FINAL-CLOSURE = BLOCKED /
+ARTIFACT_MATERIALIZATION_FAILED` under explicit
+`R1_P11_HUMAN_PARAMETER_DECISION_AUTHORIZED=TRUE`.
+
+- Human authority was applied exactly: B05-only `denoise +0.05`, current
+  `0.35` to final `0.40`, approved range `[0.05, 0.75]`, no clamp; CFG `6.0`
+  and steps `20` unchanged.
+- T1 deterministic contract and T2 offline safety gate passed. One artifact
+  identity/path was defined, but T3 could not reach the existing approved
+  ComfyUI worker at `127.0.0.1:8188` (`Connection refused`). No artifact or
+  GPU job was created; T4/T5 were skipped and provider calls stayed `0`.
+- No retry, alternate parameter, second artifact, provider switch, or passing
+  case rerun occurred. Boundary `9/9`, FACE_LOCAL `8/9`, SCENARIO_GLOBAL
+  `9/9`, pending `1`, feature `OFF`, promotion `NO`, and architecture are
+  unchanged.
+- Offline validation recorded `114 passed`, compileall PASS, and diff check
+  PASS. Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p11-human-parameter-final-closure-20260902T040000Z/`.
+
+Next action: rerun P11 after the approved GPU worker is available; this phase
+does not authorize a second parameter or evaluator call.
+
 ## 2026-09-02 — R1-P10 B05 remediation parameter unresolved
 
 `R1-P10-B05-PARAMETER-RESOLUTION-AND-FINAL-CLOSURE = BLOCKED /

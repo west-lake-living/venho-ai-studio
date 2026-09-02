@@ -1,0 +1,31 @@
+{
+  "approvedDenoiseRange": {
+    "max": 0.75,
+    "min": 0.05
+  },
+  "authority": {
+    "current": "B05 immutable job/workflow state",
+    "range": "RestorationParams approved domain [0.05, 0.75]"
+  },
+  "cfg": 6.0,
+  "clamped": false,
+  "currentDenoise": 0.35,
+  "denoise": 0.35,
+  "finalDenoise": 0.4,
+  "rangeAuthority": "identity_restoration/domain/value_objects.py:RestorationParams",
+  "requestedDenoise": 0.4,
+  "sampler": "euler",
+  "scheduler": "normal",
+  "seed": 42,
+  "status": "PASS",
+  "steps": 20,
+  "workflowInputDenoise": 0.35,
+  "workflowPinDefaults": {
+    "cfg": 6.0,
+    "denoise": 0.35,
+    "sampler": "euler",
+    "scheduler": "normal",
+    "steps": 20
+  },
+  "workflowPinSha256": "53dc090691b8feac2a8b8a4309d43af737e304b09330e072b4ab5632ed5aad91"
+}

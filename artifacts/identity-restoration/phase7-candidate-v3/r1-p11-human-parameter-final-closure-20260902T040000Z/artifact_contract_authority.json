@@ -1,0 +1,7 @@
+{
+  "humanDecisionSha256": "97386278f8cfd74985eec778e8c3adad8ffde2aa195a7be4f0670b91fb6ac05b",
+  "p10Evidence": "artifacts/identity-restoration/phase7-candidate-v3/r1-p10-b05-parameter-resolution-final-closure-20260902T035200Z",
+  "p10SummarySha256": "5ae470f5b3af0f4a2aae6dcfd27b180088e0ceba7e1e578cce01ace1bdc271e6",
+  "sourceManifestSha256": "8e64a3020ee8848c7d6bfcfcfae8dc7ab41c328b9955af062e46060f2c4ad3a2",
+  "workflowSha256": "53dc090691b8feac2a8b8a4309d43af737e304b09330e072b4ab5632ed5aad91"
+}

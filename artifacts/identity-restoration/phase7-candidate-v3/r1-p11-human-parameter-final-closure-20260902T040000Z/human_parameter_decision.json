@@ -1,0 +1,8 @@
+{
+  "authority": "explicit human R1-P11 authorization",
+  "authorizedDelta": 0.05,
+  "cfgChange": 0,
+  "parameter": "denoise",
+  "scope": "B05_ONLY",
+  "stepsChange": 0
+}

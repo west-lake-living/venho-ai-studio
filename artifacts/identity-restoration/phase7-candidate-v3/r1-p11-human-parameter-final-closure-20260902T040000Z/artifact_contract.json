@@ -1,0 +1,73 @@
+{
+  "authorityProfile": "action_full_body",
+  "caseId": "B05",
+  "contractComplete": true,
+  "contractId": "candidate-v3-r1-p11-B05-denoise-040-v1",
+  "currentParameters": {
+    "cfg": 6.0,
+    "denoise": 0.35,
+    "sampler": "euler",
+    "scheduler": "normal",
+    "seed": 42,
+    "steps": 20
+  },
+  "finalParameters": {
+    "cfg": 6.0,
+    "denoise": 0.4,
+    "sampler": "euler",
+    "scheduler": "normal",
+    "seed": 42,
+    "steps": 20
+  },
+  "inputPath": "artifacts/identity-restoration/phase7-candidate-v3/phase7-diagnostic-20260828/B05-attempt-1/canonical-input.png",
+  "outputArtifactId": "candidate-v3-r1-p11-B05-face-detail-denoise-040-v1",
+  "outputBinding": {
+    "artifactId": "candidate-v3-r1-p11-B05-face-detail-denoise-040-v1",
+    "manifestPath": "artifacts/identity-restoration/phase7-candidate-v3/r1-p11-human-parameter-final-closure-20260902T040000Z/artifact/manifest.json",
+    "path": "artifacts/identity-restoration/phase7-candidate-v3/r1-p11-human-parameter-final-closure-20260902T040000Z/artifact/restored-canonical.png"
+  },
+  "outputDeterministic": true,
+  "outputManifest": "artifacts/identity-restoration/phase7-candidate-v3/r1-p11-human-parameter-final-closure-20260902T040000Z/artifact/manifest.json",
+  "outputPath": "artifacts/identity-restoration/phase7-candidate-v3/r1-p11-human-parameter-final-closure-20260902T040000Z/artifact/restored-canonical.png",
+  "preservationRules": [
+    "B05_frozen_source_artifact",
+    "B05_geometry_manifest",
+    "B05_crop_and_masks",
+    "A2_reference",
+    "existing_validator_rubric",
+    "existing_quality_thresholds"
+  ],
+  "referenceBinding": {
+    "path": "/Users/hanhpham/Developer/Claude-Workspace/projects/venho-social-content-agent/assets/face-plates/A2_Front_plate.png",
+    "sha256": "1e0c9720087d4bab4b1ab5d65d31827aba99cf4c696c1a72570ed4114dca2c5d",
+    "type": "A2"
+  },
+  "referencePackId": "linh-an-production-v3-2026-08",
+  "restoreVariantId": "r1-p7-r2-b05-face-detail-v1",
+  "schemaValid": true,
+  "scope": "B05_ONLY",
+  "selectedRemediationDelta": {
+    "after": 0.4,
+    "authorizedDelta": 0.05,
+    "before": 0.35,
+    "clamped": false,
+    "delta": 0.05,
+    "parameter": "denoise",
+    "selectionRule": "explicit human decision R1-P11"
+  },
+  "sourceArtifactHash": "90bff2deb7dcac5fe6fb69c59d6ff4943ef424ba97dfd8c49e3236907bc51e69",
+  "sourceArtifactId": "phase7-diagnostic-20260828-B05",
+  "sourceLineage": {
+    "geometryPath": "artifacts/identity-restoration/phase7-candidate-v3/../benchmark-geometry/v2.1/B05/geometry_manifest.json",
+    "geometrySha256": "92aafb5e4b153567808c34148762690a91a26378497d44e34cb2a0ac7dce15e6",
+    "inputPath": "artifacts/identity-restoration/phase7-candidate-v3/phase7-diagnostic-20260828/B05-attempt-1/canonical-input.png",
+    "inputSha256": "90bff2deb7dcac5fe6fb69c59d6ff4943ef424ba97dfd8c49e3236907bc51e69"
+  },
+  "sourceManifest": {
+    "path": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/phase7-candidate-v3/phase7-diagnostic-20260828/B05-attempt-1/qc/manifest-1-4.json",
+    "sha256": "8e64a3020ee8848c7d6bfcfcfae8dc7ab41c328b9955af062e46060f2c4ad3a2"
+  },
+  "workflowHash": "53dc090691b8feac2a8b8a4309d43af737e304b09330e072b4ab5632ed5aad91",
+  "workflowId": "face_restore_win_sd15_ipadapter_v3",
+  "workflowVersion": "workflow-pins-v1"
+}

@@ -1,0 +1,23 @@
+{
+  "artifactCount": 0,
+  "artifactCreated": false,
+  "gpuJobs": 0,
+  "health": {
+    "endpoint": "http://127.0.0.1:8188",
+    "error": "<urlopen error [Errno 61] Connection refused>",
+    "status": "UNAVAILABLE"
+  },
+  "outputArtifactId": "candidate-v3-r1-p11-B05-face-detail-denoise-040-v1",
+  "outputManifest": "artifacts/identity-restoration/phase7-candidate-v3/r1-p11-human-parameter-final-closure-20260902T040000Z/artifact/manifest.json",
+  "outputPath": "artifacts/identity-restoration/phase7-candidate-v3/r1-p11-human-parameter-final-closure-20260902T040000Z/artifact/restored-canonical.png",
+  "reason": "Approved Candidate v3 GPU worker is unavailable from this host.",
+  "requestedParameters": {
+    "cfg": 6.0,
+    "denoise": 0.4,
+    "sampler": "euler",
+    "scheduler": "normal",
+    "seed": 42,
+    "steps": 20
+  },
+  "status": "BLOCKED / ARTIFACT_MATERIALIZATION_FAILED"
+}

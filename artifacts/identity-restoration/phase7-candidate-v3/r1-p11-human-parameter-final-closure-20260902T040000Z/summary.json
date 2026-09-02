@@ -1,0 +1,32 @@
+{
+  "alternativeProviderCalls": 0,
+  "architectureChanged": false,
+  "blockers": [
+    "Approved Candidate v3 GPU worker is unavailable from this host."
+  ],
+  "boundary": "9/9 PASS",
+  "clamped": false,
+  "currentDenoise": 0.35,
+  "faceLocal": "8/9 PASS",
+  "featureFlag": "OFF",
+  "finalDenoise": 0.4,
+  "gpuJobs": 0,
+  "humanDecisionApplied": true,
+  "nanoCalls": 0,
+  "nextAction": "RERUN_P11_AFTER_APPROVED_GPU_WORKER_AVAILABLE",
+  "pendingAuthoritativeEvaluations": 1,
+  "productionPromotion": "NO",
+  "providerCalls": 0,
+  "qualityDisposition": "FAIL_PENDING_B05_RECHECK",
+  "retries": 0,
+  "scenarioGlobal": "9/9 PASS",
+  "status": "BLOCKED / ARTIFACT_MATERIALIZATION_FAILED",
+  "t0": "PASS",
+  "t1": "PASS",
+  "t2": "PASS",
+  "t3": "BLOCKED / ARTIFACT_MATERIALIZATION_FAILED",
+  "t4": "NOT_EXECUTED",
+  "t5": "NOT_EXECUTED",
+  "t6": "NOT_EXECUTED",
+  "taskId": "R1-P11-HUMAN-PARAMETER-DECISION-ONE-SHOT-FINAL-CLOSURE"
+}

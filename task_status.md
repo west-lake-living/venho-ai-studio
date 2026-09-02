@@ -1,5 +1,27 @@
 # VENHO AI STUDIO — Task Status
 
+### Candidate v3 Quality Remediation R1 — R1-P11 Human Parameter Decision & One-Shot Final Closure (2026-09-02)
+
+- `R1-P11-HUMAN-PARAMETER-DECISION-ONE-SHOT-FINAL-CLOSURE = BLOCKED / ARTIFACT_MATERIALIZATION_FAILED`
+  under explicit `R1_P11_HUMAN_PARAMETER_DECISION_AUTHORIZED=TRUE`.
+- T0 resolved the human decision from authoritative state: `denoise=0.35`,
+  approved range `[0.05, 0.75]`, requested/final `denoise=0.40`, no clamp;
+  CFG `6.0` and steps `20` unchanged.
+- T1 contract and T2 offline gate passed. Exactly one deterministic B05-only
+  output contract was prepared. T3 attempted the existing approved ComfyUI
+  boundary, but `127.0.0.1:8188/system_stats` was unavailable; no GPU job or
+  artifact was created. T4/T5 did not execute, so no Gemini call occurred.
+- Provider calls `0`, retries `0`, GPU jobs `0`, artifact count `0`,
+  Nano/alternative-provider calls `0`. Protected state remains Boundary
+  `9/9 PASS`, FACE_LOCAL `8/9 PASS`, SCENARIO_GLOBAL `9/9 PASS`, pending `1`,
+  quality `FAIL_PENDING_B05_RECHECK`, feature `OFF`, promotion `NO`,
+  architecture unchanged.
+- Offline validation: `114 passed`, compileall PASS, `git diff --check` PASS.
+  Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p11-human-parameter-final-closure-20260902T040000Z/`.
+- Next action: rerun the one-shot P11 flow when the approved GPU worker is
+  available; no second parameter change or provider retry was made.
+
 ### Candidate v3 Quality Remediation R1 — R1-P10 B05 Parameter Resolution & Final Closure (2026-09-02)
 
 - `R1-P10-B05-PARAMETER-RESOLUTION-AND-FINAL-CLOSURE = BLOCKED / HUMAN_PARAMETER_DECISION_REQUIRED`

@@ -1,0 +1,18 @@
+{
+  "startReasons": [],
+  "startState": {
+    "architectureChanged": false,
+    "boundary": "9/9 PASS",
+    "faceLocal": "8/9 PASS",
+    "featureFlag": "OFF",
+    "model": "gemini-flash-latest",
+    "pending": 1,
+    "productionPromotion": "NO",
+    "provider": "Gemini",
+    "providerHold": "RECOVERED",
+    "qualityDisposition": "FAIL_PENDING_B05_RECHECK",
+    "r1P10": "BLOCKED / HUMAN_PARAMETER_DECISION_REQUIRED",
+    "scenarioGlobal": "9/9 PASS"
+  },
+  "taskId": "R1-P11-HUMAN-PARAMETER-DECISION-ONE-SHOT-FINAL-CLOSURE"
+}
