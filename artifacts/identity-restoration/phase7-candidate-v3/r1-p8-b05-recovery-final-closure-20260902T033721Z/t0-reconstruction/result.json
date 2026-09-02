@@ -1,0 +1,19 @@
+{
+  "contractComplete": false,
+  "evidence": "R1-P7-R2 defines a variant ID and preservation rules but no deterministic artifact/manifest/output binding or concrete restoration change.",
+  "expectedArtifactId": null,
+  "expectedInputLineage": null,
+  "expectedManifest": null,
+  "expectedOutputPath": null,
+  "expectedSourceCase": "B05",
+  "expectedVariant": "r1-p7-r2-b05-face-detail-v1",
+  "expectedWorkflow": "face_restore_win_sd15_ipadapter_v3",
+  "missingFields": [
+    "expectedArtifactId",
+    "expectedManifest",
+    "expectedOutputPath",
+    "sourceLineage",
+    "outputBinding"
+  ],
+  "status": "BLOCKED / REMEDIATION_CONTRACT_INCOMPLETE"
+}

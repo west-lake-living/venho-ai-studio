@@ -1,5 +1,25 @@
 # VENHO AI STUDIO — Task Status
 
+### Candidate v3 Quality Remediation R1 — R1-P8 B05 Recovery & Final Quality Closure (2026-09-02)
+
+- `R1-P8-B05-RECOVERY-AND-FINAL-QUALITY-CLOSURE = BLOCKED / REMEDIATION_CONTRACT_INCOMPLETE`
+  under explicit `R1_P8_B05_RECOVERY_AND_FINAL_CLOSURE_AUTHORIZED=TRUE`.
+- T0 reconstructed R1-P6 through R1-P7-R2-R1 and confirmed the blocker:
+  R1-P7-R2 provides only a B05 variant ID, workflow, and preservation rules;
+  it does not define a deterministic artifact ID, manifest, source lineage,
+  output path, output binding, or concrete restore change.
+- Per task rule, no artifact shape was invented. T1–T6 did not execute:
+  provider calls `0`, retries `0`, GPU/Nano/alternative-provider calls `0`.
+- Protected state remains Boundary `9/9 PASS`, FACE_LOCAL `8/9 PASS`,
+  SCENARIO_GLOBAL `9/9 PASS`, `QUALITY_DISPOSITION=FAIL_PENDING_B05_RECHECK`,
+  pending authoritative evaluations `1`, feature `OFF`, promotion `NO`,
+  architecture unchanged.
+- Offline validation: `64 passed`, compileall PASS, `git diff --check` PASS.
+  Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p8-b05-recovery-final-closure-20260902T033721Z/`.
+- Next action: complete the R2 B05 artifact contract before any recovery,
+  generation, or authoritative recheck.
+
 ### Candidate v3 Quality Remediation R1 — R1-P7-R2-R1 B05 FACE_LOCAL Authoritative Recheck (2026-09-02)
 
 - `R1-P7-R2-R1-B05-FACE-LOCAL-AUTHORITATIVE-RECHECK = BLOCKED_LOCAL_REGRESSION`.

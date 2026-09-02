@@ -1,0 +1,16 @@
+{
+  "baseline": {
+    "eyesBrows": 87,
+    "facialShape": 88,
+    "mouthChin": 89,
+    "score": 88.5,
+    "verdict": "revise"
+  },
+  "caseId": "B05",
+  "deltas": null,
+  "r1P8": {
+    "score": null,
+    "status": "NOT_EVALUATED",
+    "verdict": null
+  }
+}

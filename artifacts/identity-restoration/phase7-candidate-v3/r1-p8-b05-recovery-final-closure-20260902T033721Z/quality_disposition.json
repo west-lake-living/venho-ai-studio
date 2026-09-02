@@ -1,0 +1,13 @@
+{
+  "architectureChanged": false,
+  "boundary": "9/9 PASS",
+  "faceLocal": "8/9 PASS",
+  "featureFlag": "OFF",
+  "nextAction": "COMPLETE_R2_B05_ARTIFACT_CONTRACT_BEFORE_RECOVERY",
+  "pendingAuthoritativeEvaluations": 1,
+  "productionPromotion": "NO",
+  "qualityDisposition": "FAIL_PENDING_B05_RECHECK",
+  "scenarioGlobal": "9/9 PASS",
+  "status": "BLOCKED / REMEDIATION_CONTRACT_INCOMPLETE",
+  "taskId": "R1-P8-B05-RECOVERY-AND-FINAL-QUALITY-CLOSURE"
+}

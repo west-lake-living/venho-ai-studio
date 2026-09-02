@@ -1,0 +1,50 @@
+{
+  "authoritativeStartState": {
+    "architectureChanged": false,
+    "blocker": "R2_REMEDIATED_ARTIFACT_MISSING",
+    "boundary": "9/9 PASS",
+    "faceLocal": "8/9 PASS",
+    "featureFlag": "OFF",
+    "model": "gemini-flash-latest",
+    "pending": 1,
+    "productionPromotion": "NO",
+    "provider": "Gemini",
+    "providerHold": "RECOVERED",
+    "qualityDisposition": "FAIL_PENDING_B05_RECHECK",
+    "r1P7R2": "CLOSED / REMEDIATION_READY",
+    "r1P7R2R1": "BLOCKED_LOCAL_REGRESSION",
+    "scenarioGlobal": "9/9 PASS"
+  },
+  "authorization": {
+    "name": "R1_P8_B05_RECOVERY_AND_FINAL_CLOSURE_AUTHORIZED",
+    "receivedValue": "TRUE",
+    "requiredValue": "TRUE"
+  },
+  "reasons": [
+    "REMEDIATION_CONTRACT_INCOMPLETE"
+  ],
+  "reconstruction": {
+    "expectedArtifactId": null,
+    "expectedInputLineage": null,
+    "expectedManifest": null,
+    "expectedOutputPath": null,
+    "expectedSourceCase": "B05",
+    "expectedVariant": "r1-p7-r2-b05-face-detail-v1",
+    "expectedWorkflow": "face_restore_win_sd15_ipadapter_v3",
+    "missingContractFields": [
+      "expectedArtifactId",
+      "expectedManifest",
+      "expectedOutputPath",
+      "sourceLineage",
+      "outputBinding"
+    ]
+  },
+  "sourceEvidence": {
+    "p6": "artifacts/identity-restoration/phase7-candidate-v3/r1-p6-authoritative-evaluation-resume-20260902T024012Z",
+    "p7": "artifacts/identity-restoration/phase7-candidate-v3/r1-p7-targeted-quality-remediation-20260902T030000Z",
+    "r2": "artifacts/identity-restoration/phase7-candidate-v3/r1-p7-r2-b05-face-local-remediation-20260902T033100Z",
+    "r2R1": "artifacts/identity-restoration/phase7-candidate-v3/r1-p7-r2-r1-b05-face-local-recheck-20260902T033242Z"
+  },
+  "status": "BLOCKED / REMEDIATION_CONTRACT_INCOMPLETE",
+  "taskId": "R1-P8-B05-RECOVERY-AND-FINAL-QUALITY-CLOSURE"
+}

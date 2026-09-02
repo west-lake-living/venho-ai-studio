@@ -1,5 +1,30 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-09-02 — R1-P8 B05 recovery blocked by incomplete R2 contract
+
+`R1-P8-B05-RECOVERY-AND-FINAL-QUALITY-CLOSURE = BLOCKED /
+REMEDIATION_CONTRACT_INCOMPLETE` under explicit
+`R1_P8_B05_RECOVERY_AND_FINAL_CLOSURE_AUTHORIZED=TRUE`.
+
+- T0 verified the authoritative start state: R1-P7-R2 ready, R1-P7-R2-R1
+  blocked on `R2_REMEDIATED_ARTIFACT_MISSING`, Boundary `9/9 PASS`, FACE_LOCAL
+  `8/9 PASS`, SCENARIO_GLOBAL `9/9 PASS`, pending `1`, and quality
+  `FAIL_PENDING_B05_RECHECK`.
+- The R2 config contains `r1-p7-r2-b05-face-detail-v1`, the existing v3
+  workflow, and preservation/forbidden-change rules, but no deterministic
+  artifact ID, manifest path, output path, source-lineage binding,
+  output-binding data, or concrete restoration change. T0 therefore cannot
+  create/recover an artifact without inventing contract details.
+- T1–T6 were not executed. Provider calls `0`, retries `0`, GPU/Nano/
+  alternative-provider `0`; feature remains `OFF`, promotion `NO`, and
+  architecture unchanged. No passing case was rerun or modified.
+- Offline validation recorded `64 passed`, compileall PASS, and diff check
+  PASS. Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p8-b05-recovery-final-closure-20260902T033721Z/`.
+
+Next action: complete the R2 B05 artifact contract, then resume the bounded
+P8 flow with at most two B05 authoritative calls.
+
 ## 2026-09-02 — R1-P7-R2-R1 B05 FACE_LOCAL recheck blocked at preflight
 
 `R1-P7-R2-R1-B05-FACE-LOCAL-AUTHORITATIVE-RECHECK = BLOCKED_LOCAL_REGRESSION`
