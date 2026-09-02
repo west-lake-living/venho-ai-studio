@@ -1,0 +1,16 @@
+{
+  "autoPromotion": false,
+  "b05Pin": true,
+  "blockers": [
+    "CANDIDATE_V3_GPU_EXECUTION_NOT_AUTHORIZED",
+    "PERSISTENT_PRODUCTION_ROUTE_BINDING_UNAVAILABLE"
+  ],
+  "callerOverrideProtection": true,
+  "candidateAdapterGpuExecutionAuthorized": false,
+  "candidateAdapterRegistersWhenFlagEnabled": true,
+  "fallbackReady": true,
+  "persistentProductionRouteBinding": false,
+  "promotionGuard": true,
+  "rollbackReady": true,
+  "status": "BLOCKED"
+}

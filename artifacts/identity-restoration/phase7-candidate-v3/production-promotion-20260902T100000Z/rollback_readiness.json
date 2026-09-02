@@ -1,0 +1,8 @@
+{
+  "fallbackAvailable": true,
+  "rollbackExecuted": false,
+  "rollbackMechanismAvailable": true,
+  "rollbackTargetValid": true,
+  "status": "PASS",
+  "target": "comfyui-local"
+}

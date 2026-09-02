@@ -1,0 +1,16 @@
+{
+  "activationExecuted": false,
+  "alternativeProviderCalls": 0,
+  "blockers": [
+    "CANDIDATE_V3_GPU_EXECUTION_NOT_AUTHORIZED",
+    "PERSISTENT_PRODUCTION_ROUTE_BINDING_UNAVAILABLE"
+  ],
+  "evidenceRoot": "artifacts/identity-restoration/phase7-candidate-v3/production-promotion-20260902T100000Z",
+  "featureFlag": "OFF",
+  "gpuJobs": 0,
+  "nanoCalls": 0,
+  "productionPromotion": "NO",
+  "qualityProviderCalls": 0,
+  "taskId": "CANDIDATE-V3-PRODUCTION-PROMOTION",
+  "terminalState": "BLOCKED"
+}

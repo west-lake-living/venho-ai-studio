@@ -1,0 +1,7 @@
+{
+  "promotionAuthority": "HUMAN",
+  "reason": "Pre-cutover gate failed before activation",
+  "releaseId": null,
+  "rollbackTarget": "comfyui-local",
+  "status": "NOT_CREATED"
+}

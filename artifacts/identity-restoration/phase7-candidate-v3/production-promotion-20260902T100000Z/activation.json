@@ -1,0 +1,10 @@
+{
+  "blockers": [
+    "CANDIDATE_V3_GPU_EXECUTION_NOT_AUTHORIZED",
+    "PERSISTENT_PRODUCTION_ROUTE_BINDING_UNAVAILABLE"
+  ],
+  "featureFlag": "OFF",
+  "productionRoute": "mock",
+  "reason": "Fail-closed pre-cutover gate",
+  "status": "NOT_EXECUTED"
+}

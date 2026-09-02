@@ -1,0 +1,20 @@
+{
+  "algorithm": "SHA-256",
+  "count": 14,
+  "files": {
+    "activation.json": "12836f1d7dd63f10aa5a6eaf5192b3065062721645c17cefa282a30fc7201819",
+    "baseline.json": "b12976b7b4a9152c85acc0004d17f9d18fc906df00accc30d06b743c5f04e917",
+    "compileall.txt": "973ed2a2950562422f7b020a70220236f32bef40caaa997dd698e42dbbc6c2a5",
+    "git_diff_check.txt": "531a62067629ec38e912d348148c7183f3fefa118a984525fe78804a85755a4d",
+    "gpu_job_accounting.json": "df91c8aacdd04585d3e094e968910ecedaaf3aa508bdac51306a8ca6e7706858",
+    "pre_cutover_gate.json": "f8573ebdd5b1492059ad45b5042af60dbc7932ffb2b4f86233f2f50fd63e332f",
+    "production_routing_proof.json": "1578f5b4ba2115ef31ff468310e5b163e89b0efebd2541026d4c74cf5f285933",
+    "production_smoke.json": "949563cea191f4a622a3ecb4fc3af978ab2f1514f787f17a761420a4b5e8fa45",
+    "promotion_decision.json": "1d1f6f335be4a7d66123bae30c5c54d037332ad48fdc0e2cbd7ee044ee8044d0",
+    "provider_call_accounting.json": "24aa5f61e61b365f6776b824efdbba4e02ba13adc132930e367e13aac034e4c8",
+    "release_manifest.json": "ada694d15176a73e7cb680f1983b3f7a1165f2173081e1e55e3190ac5ac8873a",
+    "rollback_readiness.json": "36a9a86eba9773007334a1f6a6561a675d9fbf9694c7687cf55255954b88f4b5",
+    "summary.json": "d86a0afaafb91c058bd864db000c887b49ce24a35aa2f79bc388b4c449849b52",
+    "test_results.txt": "f5cf750b8c23c70a3a20a99944239a504d11f3d4d877117f0cb3cf2552abeba0"
+  }
+}

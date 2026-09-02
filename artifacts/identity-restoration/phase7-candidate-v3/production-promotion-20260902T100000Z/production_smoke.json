@@ -1,0 +1,10 @@
+{
+  "candidateRouteUsed": false,
+  "gpuJobs": 0,
+  "lineageValid": false,
+  "outputCreated": false,
+  "qualityProviderCalls": 0,
+  "reason": "A smoke would fail because the registered adapter is intentionally GPU execution unauthorized.",
+  "requestAccepted": false,
+  "status": "NOT_EXECUTED"
+}

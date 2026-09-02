@@ -1,0 +1,14 @@
+{
+  "authorization": "CANDIDATE_V3_PRODUCTION_PROMOTION_AUTHORIZED",
+  "boundary": "9/9 PASS",
+  "currentActiveVersion": "mock",
+  "currentProductionRoute": "mock",
+  "faceLocal": "9/9 PASS",
+  "fallback": "comfyui-local",
+  "featureFlag": "OFF",
+  "productionPromotion": "NO",
+  "promotionReadiness": "READY_FOR_PROMOTION",
+  "quality": "PASS",
+  "rollbackTarget": "comfyui-local",
+  "scenarioGlobal": "9/9 PASS"
+}

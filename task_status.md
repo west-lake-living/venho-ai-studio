@@ -1,5 +1,20 @@
 # VENHO AI STUDIO — Task Status
 
+### Candidate v3 Production Promotion (2026-09-02)
+
+- `CANDIDATE-V3-PRODUCTION-PROMOTION = BLOCKED` under
+  `CANDIDATE_V3_PRODUCTION_PROMOTION_AUTHORIZED=TRUE` before PP-T2 activation.
+- The existing flag registers Candidate v3 but the adapter is deliberately
+  `gpu_execution_authorized=False`; no persistent production route/release
+  binding exists and the active default route is `mock`. Blockers:
+  `CANDIDATE_V3_GPU_EXECUTION_NOT_AUTHORIZED`,
+  `PERSISTENT_PRODUCTION_ROUTE_BINDING_UNAVAILABLE`.
+- No activation, GPU smoke, quality provider, Nano, or alternative-provider
+  call occurred. Guard suite `28 passed`, compileall/diff-check PASS. Feature
+  `OFF`, promotion `NO`, quality PASS, and rollback target `comfyui-local`
+  remain intact. Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/production-promotion-20260902T100000Z/`.
+
 ### Candidate v3 Winning Config Pin & Promotion Readiness Recheck (2026-09-02)
 
 - `CANDIDATE-V3-WINNING-CONFIG-PIN-AND-PROMOTION-READINESS-RECHECK = READY_FOR_PROMOTION`

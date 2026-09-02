@@ -1,0 +1,5 @@
+{
+  "gpuJobs": 0,
+  "maxGpuSmokeJobs": 1,
+  "reason": "No post-activation smoke after blocked pre-cutover gate"
+}

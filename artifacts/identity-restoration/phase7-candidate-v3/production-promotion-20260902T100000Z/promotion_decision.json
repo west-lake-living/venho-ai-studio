@@ -1,0 +1,16 @@
+{
+  "architectureChanged": false,
+  "autoPromotion": false,
+  "blockers": [
+    "CANDIDATE_V3_GPU_EXECUTION_NOT_AUTHORIZED",
+    "PERSISTENT_PRODUCTION_ROUTE_BINDING_UNAVAILABLE"
+  ],
+  "candidateV3ProductionPromotion": "BLOCKED",
+  "featureFlag": "OFF",
+  "nextAction": "SEPARATE_AUTHORIZATION_TO_PROVISION_PERSISTENT_PRODUCTION_ROUTE_AND_GPU_EXECUTION_CONTROL",
+  "productionPromotion": "NO",
+  "productionRoute": "mock",
+  "qualityDisposition": "PASS",
+  "rollbackReady": true,
+  "terminalState": "BLOCKED"
+}

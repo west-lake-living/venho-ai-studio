@@ -1,0 +1,18 @@
+{
+  "b05Effective": {
+    "cfg": 6.1,
+    "denoise": 0.35,
+    "steps": 21
+  },
+  "callerOverrideBlocked": true,
+  "candidateAdapterGpuExecutionAuthorized": false,
+  "candidateAdapterRegisteredUnderEphemeralFlag": true,
+  "nonB05Defaults": {
+    "cfg": 6.0,
+    "denoise": 0.35,
+    "steps": 20
+  },
+  "persistentProductionRouteBinding": false,
+  "reason": "No production activation attempted after fail-closed pre-cutover result.",
+  "status": "NOT_EXECUTED"
+}

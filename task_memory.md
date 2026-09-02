@@ -1,5 +1,22 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-09-02 — Candidate v3 production promotion blocked pre-cutover
+
+`CANDIDATE-V3-PRODUCTION-PROMOTION = BLOCKED` under
+`CANDIDATE_V3_PRODUCTION_PROMOTION_AUTHORIZED=TRUE`.
+
+- PP-T1 failed closed before activation. The existing feature flag can register
+  Candidate v3, but its adapter remains `gpu_execution_authorized=False`, and
+  the repository has no persistent production route/release binding; default
+  production route remains `mock`.
+- Blockers: `CANDIDATE_V3_GPU_EXECUTION_NOT_AUTHORIZED` and
+  `PERSISTENT_PRODUCTION_ROUTE_BINDING_UNAVAILABLE`. No new switch was
+  invented, no cutover or rollback occurred, and no GPU/provider/Nano call was
+  made. Focused guard suite `28 passed`, compileall and diff-check PASS.
+- Feature remains `OFF`, production promotion `NO`, quality remains PASS,
+  rollback target `comfyui-local` remains ready. Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/production-promotion-20260902T100000Z/`.
+
 ## 2026-09-02 — Candidate v3 winning-config pin and promotion readiness recheck
 
 `CANDIDATE-V3-WINNING-CONFIG-PIN-AND-PROMOTION-READINESS-RECHECK = READY_FOR_PROMOTION`
