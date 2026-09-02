@@ -3999,3 +3999,32 @@ Classification: **T1**. The smallest fix changed `max_output_tokens` 2048 →
 unchanged. Offline fixtures pass (`29 passed`, paid tests `0`). One recovery
 request is bounded to C1/B03 sample 1; B04 and all downstream stages remain
 untouched.
+
+### Lobby DNA marble-floor rule — FIXED (2026-09-01)
+
+Stale `"no marble floor"` forbidden rule removed from
+`config/projects/venho_hotel/subjects/lobby.overrides.yaml` (curated) and
+`lobby.yaml` (`forbidden_defaults`) after Harry confirmed real lobby photos
+show marble flooring. Already committed (`0e3d4e6`), synced with
+`origin/main`. Room-subject marble rules (deluxe_double, lake_view_room_1/2)
+intentionally untouched — separate confirmation needed if those also turn
+out to be wrong.
+
+### Growth Publish Scheduler — Make.com webhook mapping — FIXED (2026-09-02)
+
+`Growth Agent Publish Scheduler` was failing on every scheduled run since
+2026-08-15 (`gateway_error: Make.com reported PUBLISHED without a valid
+platform_post_id`). Cause: Make.com scenario's Webhook response modules
+(Facebook + Instagram branches) had `platform_post_id`/`permalink` as
+hand-typed placeholder text instead of real output chips. Harry corrected
+both branches in Make.com directly (no repo code change). Verified fixed via
+a manual webhook POST that reached the real Facebook Pages module and
+returned a valid `platform_post_id` + `permalink` — confirms
+`_is_real_platform_post_id()` will now accept real scheduled dispatches.
+Known residual: Instagram branch's manually-constructed permalink
+(`instagram.com/{media_id}`) won't resolve as a clickable link (Instagram
+needs `/p/{shortcode}/`, not the raw media ID) — cosmetic only, does not
+block dispatch since only `platform_post_id` is validated. Next scheduled
+run (or next `gh workflow run "Growth Agent Publish Scheduler"`) is the real
+confirmation; Harry opted to let it run naturally and report if it fails
+again rather than force a run now.

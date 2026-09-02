@@ -1,0 +1,39 @@
+{
+  "authorization": {
+    "name": "PROVIDER_RECOVERY_RECHECK_AUTHORIZED",
+    "receivedValue": "TRUE",
+    "requiredValue": "TRUE"
+  },
+  "limits": {
+    "bulkEvaluationsAuthorized": false,
+    "maxProviderCalls": 1,
+    "maxRetries": 0
+  },
+  "startState": {
+    "architectureChanged": false,
+    "boundary": {
+      "fail": 0,
+      "pass": 9
+    },
+    "faceLocal": {
+      "expected": 9,
+      "valid": 0
+    },
+    "featureFlag": "OFF",
+    "model": "gemini-flash-latest",
+    "pendingAuthoritativeEvaluations": 18,
+    "productionPromotion": "NO",
+    "provider": "Gemini",
+    "providerHold": "ACTIVE",
+    "qualityDisposition": "UNVALIDATED",
+    "r1P5": "CLOSED / PASS",
+    "r1P5R1": "CLOSED / PROVIDER_BLOCKED",
+    "r1P5R2": "CLOSED / PROVIDER_BLOCKED",
+    "r1P5R3": "CLOSED / PROVIDER_BLOCKED",
+    "scenarioGlobal": {
+      "expected": 9,
+      "valid": 0
+    }
+  },
+  "taskId": "R1-P5-R4-PROVIDER-RECOVERY-RECHECK"
+}

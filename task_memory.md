@@ -4551,3 +4551,67 @@ Nano 0, paid tests 0. Focused health/remote/regional tests: 24 passed;
 identity-restoration plus Action Composite/regional: 180 passed; compileall
 and diff-check passed. GW-P4-T2 remains blocked; GW-P4 quality failure and
 GW-P5 NOT STARTED are unchanged.
+
+## 2026-09-01 — Lobby DNA: removed stale "no marble floor" forbidden rule
+
+Harry confirmed the 6 real `assets/raw/lobby/` photos (screened/curated same
+session) are accurate — the lobby floor genuinely is marble/marble-look. The
+DNA was wrong, not the photos. Removed `"no marble floor..."` from both
+`config/projects/venho_hotel/subjects/lobby.overrides.yaml` (curated
+`forbidden:` list — the one the validator kill-switch actually reads) and
+`config/projects/venho_hotel/subjects/lobby.yaml` (`forbidden_defaults:`
+fallback). `floor_material` aggregation key already listed `marble` as a
+valid enum value, so no schema change needed there. Added a dated provenance
+note in `lobby.overrides.yaml` per its own "curated by humans, do not
+auto-overwrite" convention. Left untouched, deliberately out of scope: room
+subjects (`deluxe_double`, `lake_view_room_1/2`) still forbid marble floor —
+Harry only confirmed lobby; a legacy unused `config/subjects/lobby.yaml`
+(confirmed via `subject_resolver.py` trace to be dead code, never resolved);
+and two prompt-template files (`observe_room.md`, `consolidate_lobby.md`)
+whose "no marble floor" text is illustrative/conditional, not a hardcoded
+rule. Confirmed via `grep -rl` that no test pins the old rule string. Already
+committed as `0e3d4e6` before this session's `git status` check — nothing to
+push.
+
+## 2026-09-01/02 — Growth Publish Scheduler: Make.com webhook response mapping fixed
+
+`Growth Agent Publish Scheduler` GitHub Actions had failed on every run from
+2026-08-15 through 2026-08-31 (11 consecutive failures) with `gateway_error:
+"Make.com reported PUBLISHED without a valid platform_post_id; check Webhook
+response mapping."` from `publishing_gateway/adapters/make_gateway.py`'s
+`_is_real_platform_post_id()` guard (rejects values containing `"post id"` /
+`"permalink"` text or `{{...}}` placeholder syntax — added precisely to catch
+this failure mode). Root cause confirmed against Harry's own screenshots: the
+`VenHo Growth Agent-FB/IG` Make.com scenario's two `Webhooks > Webhook
+response` modules (Instagram branch, Facebook branch) had `platform_post_id`
+and `permalink` as hand-typed literal text (e.g. `"3. Post ID"`) instead of
+real bound chips from the platform-post module's output.
+
+Harry fixed both branches in Make: dragged real chips for `platform_post_id`
+on both branches; Facebook Pages module has no `permalink` output field, so
+permalink is manually constructed as `https://www.facebook.com/` +
+Post-ID-chip (works because Facebook resolves `pageid_postid` paths); the
+Instagram branch's constructed `instagram.com/{media_id}` permalink is known
+to NOT resolve (Instagram needs a `/p/{shortcode}/` link, not the raw media
+ID) — left as-is since permalink correctness isn't validated by
+`interpret_make_response()`, only `platform_post_id` is.
+
+Verified via manual webhook POST (using `MAKE_GROWTH_WEBHOOK_URL` from
+`.env.local`, sent while Harry had the scenario armed via "Run once"): first
+attempt used `publication_id: "test-manual-..."` and was silently filtered by
+the Router's `Publish_facebook`/`Publish Instagram` filter condition
+`2.publication_id Does not contain "test"` — this is the documented
+intentional test-post safety guard (see `venho-ai-studio/CLAUDE.md`'s Growth
+Agent section), working as designed, not a bug. Second attempt used
+`publication_id: "manual-check-..."` (no "test" substring) and correctly
+passed the filter, reached the real Facebook Pages module, and **published a
+real test post** to Ven Hồ Hotel's actual Facebook page — confirmed the fix
+works (`{"status":"PUBLISHED","platform_post_id":"1124616474074140_122134378119351048",...}`
+with a real, valid post ID and permalink) but also required Harry to manually
+delete that live test post from Facebook afterward, which he did. Lesson
+recorded: any manual webhook test that avoids the "test" filter guard *will*
+publish for real — there is no dry-run path once past that filter.
+
+No code changes were needed for this fix; it was entirely a Make.com scenario
+configuration correction. Nothing to commit in this repo for the webhook
+mapping itself.
