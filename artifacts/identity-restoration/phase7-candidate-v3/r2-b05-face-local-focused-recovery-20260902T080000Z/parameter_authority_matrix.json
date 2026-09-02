@@ -1,0 +1,40 @@
+{
+  "cfg": {
+    "approvedRange": [
+      1.0,
+      12.0
+    ],
+    "baseline": 6.0,
+    "evidence": "RestorationParams range; R2 authorizes a smallest declared 0.1 adjustment",
+    "r2Allowed": true,
+    "testedValues": [
+      6.0
+    ]
+  },
+  "denoise": {
+    "approvedRange": [
+      0.05,
+      0.75
+    ],
+    "baseline": 0.35,
+    "evidence": "R1 0.40 regressed; keep baseline",
+    "r2Allowed": false,
+    "testedValues": [
+      0.35,
+      0.4
+    ]
+  },
+  "steps": {
+    "approvedRange": [
+      8,
+      60
+    ],
+    "baseline": 20,
+    "evidence": "R1 steps=21 improved score 88.50 -> 88.90",
+    "r2Allowed": true,
+    "testedValues": [
+      20,
+      21
+    ]
+  }
+}

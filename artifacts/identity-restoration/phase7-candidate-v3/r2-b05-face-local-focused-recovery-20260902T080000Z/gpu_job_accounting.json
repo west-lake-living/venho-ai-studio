@@ -1,0 +1,11 @@
+{
+  "alternativeProviderCalls": 0,
+  "artifactsCreated": 3,
+  "candidateConfigurations": 4,
+  "executedCandidateConfigurations": 2,
+  "gpuJobs": 3,
+  "maxArtifacts": 4,
+  "maxGpuJobs": 4,
+  "nanoCalls": 0,
+  "parameterChanges": "candidate-scoped only"
+}

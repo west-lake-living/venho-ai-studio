@@ -1,5 +1,30 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-09-02 — Candidate v3 Quality Remediation R2 B05 FACE_LOCAL closed pass
+
+`CANDIDATE-V3-QUALITY-REMEDIATION-R2-B05-FACE-LOCAL = CLOSED / QUALITY_PASS`
+under explicit `CANDIDATE_V3_QUALITY_REMEDIATION_R2_AUTHORIZED=TRUE`.
+
+- R2 froze four unique B05-only candidates before execution within the
+  approved ranges. It did not repeat R1's baseline, denoise `0.40`, or
+  steps `21` / CFG `6.0` configuration. Denoise stayed `0.35`; the set
+  explored steps `22/23` and the smallest declared CFG adjustment `6.1`.
+- Offline contract gate passed: workflow/A2 pin, threshold/rubric/provider/
+  architecture invariants, and passing-case protection. Focused validation
+  recorded `13 passed`, compileall PASS, and diff check PASS.
+- Candidate A (`0.35 / 6.0 / 22`) was valid but failed (`89.30`, `revise`).
+  Candidate B (`0.35 / 6.1 / 21`) was the first valid PASS (`90.15`,
+  `approve`) and triggered early-stop; C and D did not execute.
+- The exact B contract reproduced PASS (`91.75`, `approve`; eyes/brows `90`,
+  facial shape `92`, mouth/chin `89`). Total activity was `3` GPU jobs, `3`
+  artifacts, `3` Gemini calls, and `0` retries; Nano/alternative providers
+  stayed `0`.
+- Final state: Boundary `9/9 PASS`, FACE_LOCAL `9/9 PASS`, SCENARIO_GLOBAL
+  `9/9 PASS`, pending `0`, quality `PASS`, provider hold `RECOVERED`.
+  Feature remains `OFF`, production promotion `NO`, architecture unchanged.
+  Next action is a separate promotion-readiness authorization. Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/r2-b05-face-local-focused-recovery-20260902T080000Z/`.
+
 ## 2026-09-02 — R1-P13 resume from T4 closed quality fail
 
 `R1-P13-RESUME-FROM-T4 = CLOSED / QUALITY_FAIL` under explicit

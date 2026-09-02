@@ -1,0 +1,14 @@
+{
+  "architectureChanged": false,
+  "boundary": "9/9 PASS",
+  "faceLocal": "9/9 PASS",
+  "featureFlag": "OFF",
+  "nextAction": "PROMOTION_READINESS_REVIEW_REQUIRES_SEPARATE_AUTHORIZATION",
+  "pendingAuthoritativeEvaluations": 0,
+  "productionPromotion": "NO",
+  "providerHold": "RECOVERED",
+  "qualityDisposition": "PASS",
+  "scenarioGlobal": "9/9 PASS",
+  "status": "CLOSED / QUALITY_PASS",
+  "taskId": "CANDIDATE-V3-QUALITY-REMEDIATION-R2-B05-FACE-LOCAL"
+}

@@ -1,0 +1,13 @@
+{
+  "bestObservedConfig": {
+    "cfg": 6.1,
+    "denoise": 0.35,
+    "id": "B",
+    "rationale": "minimal 0.1 CFG adjustment while retaining R1's improving steps=21",
+    "score": 90.15,
+    "steps": 21
+  },
+  "earlyStopTriggered": true,
+  "ranking": "PASS > score > minimum dimension > smallest baseline deviation",
+  "winner": "B"
+}

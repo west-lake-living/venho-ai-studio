@@ -1,0 +1,18 @@
+{
+  "gates": [
+    {"gate": "identity_structure", "passed": true, "reason": "Candidate features, bone structure, nose bridge, jawline, and facial proportions closely match the approved Face DNA reference.", "evidence": "Soft oval face shape, delicate chin, slim nose bridge, and distinctive soft feminine jawline accurately reproduced in three-quarter profile."},
+    {"gate": "eye_ratio", "passed": true, "reason": "Eyes maintain the character's long almond shape and proportion relative to the face.", "evidence": "Horizontal eye emphasis, thin upper eyelid, and warm brown iris color consistent with reference."},
+    {"gate": "forbidden_traits", "passed": true, "reason": "No forbidden traits or styling artifacts detected.", "evidence": "Natural skin texture, subtle makeup, and realistic lighting without doll-like or exaggerated features."}
+  ],
+  "weighted_scores": {
+    "facial_shape": 92,
+    "eyes_and_brows": 90,
+    "nose": 94,
+    "mouth_and_chin": 89,
+    "technical_quality": 95
+  },
+  "notes": [
+    "Profile perspective provides clear structural fidelity to the frontal reference identity.",
+    "Skin texture and lighting match the character design requirements well."
+  ]
+}

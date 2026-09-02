@@ -1,0 +1,14 @@
+{
+  "architectureUnchanged": true,
+  "b05Only": true,
+  "compileall": true,
+  "gitDiffCheck": true,
+  "passingCasesProtected": true,
+  "providerUnchanged": true,
+  "referenceBinding": "A2",
+  "rubricUnchanged": true,
+  "status": "PASS",
+  "tests": true,
+  "thresholdsUnchanged": true,
+  "workflowPinValid": true
+}

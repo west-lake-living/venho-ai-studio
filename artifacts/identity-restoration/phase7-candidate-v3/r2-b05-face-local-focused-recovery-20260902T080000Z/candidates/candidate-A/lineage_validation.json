@@ -1,0 +1,12 @@
+{
+  "artifactExists": true,
+  "artifactHashValid": true,
+  "contractMatch": true,
+  "manifestValid": true,
+  "parametersMatch": true,
+  "passingCasesProtected": true,
+  "referenceBindingValid": true,
+  "sourceLineageValid": true,
+  "status": "PASS",
+  "workflowLineageValid": true
+}

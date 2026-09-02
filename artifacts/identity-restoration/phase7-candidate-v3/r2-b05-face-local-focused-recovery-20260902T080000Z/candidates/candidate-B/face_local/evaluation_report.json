@@ -1,0 +1,169 @@
+{
+  "allowed_imperfections_check": [],
+  "artifact_ref": {
+    "file": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/phase7-candidate-v3/r2-b05-face-local-focused-recovery-20260902T080000Z/candidates/candidate-B/artifact/restored-canonical.png",
+    "hash": "sha256:d4aece86fc362427e6fd19436b7891b6380c972320113d6206f081656590b8e4",
+    "type": "face"
+  },
+  "category_scores": {
+    "eyes_and_brows": 88.0,
+    "facial_shape": 90.0,
+    "mouth_and_chin": 89.0,
+    "nose": 92.0,
+    "technical_quality": 94.0
+  },
+  "contract_refs": null,
+  "contract_version": "1.0",
+  "dna_match_score": 90.15,
+  "forbidden_violations": [],
+  "generated_at": "2026-09-02T15:08:15.710884",
+  "issues": [],
+  "kill_switch": {
+    "reason": "",
+    "triggered": false
+  },
+  "module": "validator_studio",
+  "observer": {
+    "model": "configured",
+    "provider": "gemini",
+    "samples": 1
+  },
+  "overall_score": 90.15,
+  "project": "venho_hotel",
+  "prompt_ref": null,
+  "raw_observation": {
+    "gates": [
+      {
+        "evidence": "Nose bridge structure, delicate chin contour, lip thickness ratio, and eye shape align with reference A2.",
+        "gate": "identity_structure",
+        "passed": true,
+        "reason": "Candidate displays consistent structural features including jawline, nose profile, lip shape, and cheekbone contours corresponding well to the reference identity at a three-quarter angle."
+      },
+      {
+        "evidence": "Almond horizontal shape, thin upper lid crease, and brown iris tone match reference specifications.",
+        "gate": "eye_ratio",
+        "passed": true,
+        "reason": "Eye shape and proportion match the almond horizontal emphasis and narrow opening defined in the character DNA and reference image."
+      },
+      {
+        "evidence": "Natural realistic texture, no excessive doll-like filtering, no visible tattoos or glasses.",
+        "gate": "forbidden_traits",
+        "passed": true,
+        "reason": "No forbidden traits detected; natural skin texture with visible pores, no heavy contouring or western facial bone structure."
+      }
+    ],
+    "notes": [
+      "Candidate is captured in a 3/4 side profile angle with consistent geometric identity compared to front-facing reference A2.",
+      "gemini face observation; grounding/web search disabled by prompt contract",
+      "no real-person or celebrity matching requested",
+      "compared against 1 approved reference image(s)"
+    ],
+    "weighted_scores": {
+      "eyes_and_brows": 88.0,
+      "facial_shape": 90.0,
+      "mouth_and_chin": 89.0,
+      "nose": 92.0,
+      "technical_quality": 94.0
+    }
+  },
+  "recommendation": "approve",
+  "section_scores": [
+    {
+      "category": "face_gate",
+      "evidence": "Nose bridge structure, delicate chin contour, lip thickness ratio, and eye shape align with reference A2.",
+      "key": "identity_structure",
+      "match_state": null,
+      "reason": "Candidate displays consistent structural features including jawline, nose profile, lip shape, and cheekbone contours corresponding well to the reference identity at a three-quarter angle.",
+      "score": 100.0,
+      "section": "face_gate",
+      "status": "ok"
+    },
+    {
+      "category": "face_gate",
+      "evidence": "Almond horizontal shape, thin upper lid crease, and brown iris tone match reference specifications.",
+      "key": "eye_ratio",
+      "match_state": null,
+      "reason": "Eye shape and proportion match the almond horizontal emphasis and narrow opening defined in the character DNA and reference image.",
+      "score": 100.0,
+      "section": "face_gate",
+      "status": "ok"
+    },
+    {
+      "category": "face_gate",
+      "evidence": "Natural realistic texture, no excessive doll-like filtering, no visible tattoos or glasses.",
+      "key": "forbidden_traits",
+      "match_state": null,
+      "reason": "No forbidden traits detected; natural skin texture with visible pores, no heavy contouring or western facial bone structure.",
+      "score": 100.0,
+      "section": "face_gate",
+      "status": "ok"
+    },
+    {
+      "category": "facial_shape",
+      "evidence": "",
+      "key": "facial_shape",
+      "match_state": null,
+      "reason": "Weighted face rubric score.",
+      "score": 90.0,
+      "section": "face_weighted",
+      "status": "ok"
+    },
+    {
+      "category": "eyes_and_brows",
+      "evidence": "",
+      "key": "eyes_and_brows",
+      "match_state": null,
+      "reason": "Weighted face rubric score.",
+      "score": 88.0,
+      "section": "face_weighted",
+      "status": "warning"
+    },
+    {
+      "category": "nose",
+      "evidence": "",
+      "key": "nose",
+      "match_state": null,
+      "reason": "Weighted face rubric score.",
+      "score": 92.0,
+      "section": "face_weighted",
+      "status": "ok"
+    },
+    {
+      "category": "mouth_and_chin",
+      "evidence": "",
+      "key": "mouth_and_chin",
+      "match_state": null,
+      "reason": "Weighted face rubric score.",
+      "score": 89.0,
+      "section": "face_weighted",
+      "status": "warning"
+    },
+    {
+      "category": "technical_quality",
+      "evidence": "",
+      "key": "technical_quality",
+      "match_state": null,
+      "reason": "Weighted face rubric score.",
+      "score": 94.0,
+      "section": "face_weighted",
+      "status": "ok"
+    }
+  ],
+  "source_knowledge": [
+    {
+      "dna_contract_version": "1.1",
+      "dna_version": "1.1",
+      "file": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/data/projects/venho_hotel/knowledge/VENHO_HOTEL_LINH_AN_DNA.json",
+      "hash": "sha256:71f839dff776ec6d6d085c5a1ab928295af8c32a9699f7929d78b04807ec0075"
+    }
+  ],
+  "subject": "linh_an",
+  "validation_notes": [
+    "Candidate is captured in a 3/4 side profile angle with consistent geometric identity compared to front-facing reference A2.",
+    "gemini face observation; grounding/web search disabled by prompt contract",
+    "no real-person or celebrity matching requested",
+    "compared against 1 approved reference image(s)"
+  ],
+  "validation_type": "face",
+  "verdict": "approve"
+}

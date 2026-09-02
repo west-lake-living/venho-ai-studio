@@ -1,0 +1,32 @@
+{
+  "gates": [
+    {
+      "gate": "identity_structure",
+      "passed": true,
+      "reason": "Facial features, jawline, cheek structure, and nose profile align closely with the authoritative reference design.",
+      "evidence": "Candidate exhibits the same almond eye contour, slim nose bridge profile, delicate chin shape, and lip geometry seen in Reference Image 2."
+    },
+    {
+      "gate": "eye_ratio",
+      "passed": true,
+      "reason": "Eye size, opening width, and spacing remain proportional and consistent with character specifications.",
+      "evidence": "Horizontal almond eye opening with subtle upper lid fold matches approved character proportions."
+    },
+    {
+      "gate": "forbidden_traits",
+      "passed": true,
+      "reason": "No forbidden traits or style deviations are present.",
+      "evidence": "Natural skin texture, realistic makeup, correctly shaped eyes, and appropriate ethnic aesthetic observed."
+    }
+  ],
+  "weighted_scores": {
+    "facial_shape": 88,
+    "eyes_and_brows": 90,
+    "nose": 90,
+    "mouth_and_chin": 88,
+    "technical_quality": 92
+  },
+  "notes": [
+    "Three-quarter angle provides a clear representation of facial landmarks matching Reference 2."
+  ]
+}

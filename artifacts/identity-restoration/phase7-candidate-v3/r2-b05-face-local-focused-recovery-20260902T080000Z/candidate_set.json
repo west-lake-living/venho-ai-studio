@@ -1,0 +1,47 @@
+{
+  "candidateChecks": {
+    "countWithinBudget": true,
+    "notPreviouslyTested": true,
+    "oneOrTwoBaselineDeltas": true,
+    "ranges": true,
+    "unique": true
+  },
+  "candidates": [
+    {
+      "cfg": 6.0,
+      "denoise": 0.35,
+      "id": "A",
+      "rationale": "next integer step after R1's improving steps=21 result",
+      "steps": 22
+    },
+    {
+      "cfg": 6.1,
+      "denoise": 0.35,
+      "id": "B",
+      "rationale": "minimal 0.1 CFG adjustment while retaining R1's improving steps=21",
+      "steps": 21
+    },
+    {
+      "cfg": 6.1,
+      "denoise": 0.35,
+      "id": "C",
+      "rationale": "combine the bounded CFG adjustment with next untested step",
+      "steps": 22
+    },
+    {
+      "cfg": 6.0,
+      "denoise": 0.35,
+      "id": "D",
+      "rationale": "final steps-only continuation, preserving CFG baseline",
+      "steps": 23
+    }
+  ],
+  "executionOrder": [
+    "A",
+    "B",
+    "C",
+    "D"
+  ],
+  "frozenBeforeExecution": true,
+  "status": "FROZEN"
+}

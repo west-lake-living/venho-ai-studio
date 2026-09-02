@@ -1,0 +1,14 @@
+{
+  "eyesBrows": 90.0,
+  "facialShape": 88.0,
+  "lineageStatus": "VERIFIED",
+  "model": "gemini-flash-latest",
+  "mouthChin": 88.0,
+  "parsedHash": "7cebd9d0a7f126dc55c578c92f93a3dbecba6541fb926f217966eeb601ced4e7",
+  "pass": false,
+  "provider": "Gemini",
+  "rawHash": "82d9345942d95917d2e10c527d606d0bf06535cb5213f9ac4947cea0e6b224ad",
+  "score": 89.3,
+  "valid": true,
+  "verdict": "revise"
+}

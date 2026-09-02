@@ -1,0 +1,59 @@
+{
+  "architectureChanged": false,
+  "artifactsCreated": 3,
+  "authorization": true,
+  "b05FinalScore": 91.75,
+  "b05FinalVerdict": "approve",
+  "bestObservedConfig": "B",
+  "boundary": "9/9 PASS",
+  "candidateSet": [
+    {
+      "cfg": 6.0,
+      "denoise": 0.35,
+      "id": "A",
+      "rationale": "next integer step after R1's improving steps=21 result",
+      "steps": 22
+    },
+    {
+      "cfg": 6.1,
+      "denoise": 0.35,
+      "id": "B",
+      "rationale": "minimal 0.1 CFG adjustment while retaining R1's improving steps=21",
+      "steps": 21
+    },
+    {
+      "cfg": 6.1,
+      "denoise": 0.35,
+      "id": "C",
+      "rationale": "combine the bounded CFG adjustment with next untested step",
+      "steps": 22
+    },
+    {
+      "cfg": 6.0,
+      "denoise": 0.35,
+      "id": "D",
+      "rationale": "final steps-only continuation, preserving CFG baseline",
+      "steps": 23
+    }
+  ],
+  "confirmation": "PASS",
+  "earlyStopTriggered": true,
+  "executedCandidates": [
+    "A",
+    "B"
+  ],
+  "faceLocal": "9/9 PASS",
+  "featureFlag": "OFF",
+  "gpuJobs": 3,
+  "nextAction": "PROMOTION_READINESS_REVIEW_REQUIRES_SEPARATE_AUTHORIZATION",
+  "pendingAuthoritativeEvaluations": 0,
+  "productionPromotion": "NO",
+  "providerCalls": 3,
+  "providerHold": "RECOVERED",
+  "qualityDisposition": "PASS",
+  "retries": 0,
+  "scenarioGlobal": "9/9 PASS",
+  "status": "CLOSED / QUALITY_PASS",
+  "taskId": "CANDIDATE-V3-QUALITY-REMEDIATION-R2-B05-FACE-LOCAL",
+  "winner": "B"
+}

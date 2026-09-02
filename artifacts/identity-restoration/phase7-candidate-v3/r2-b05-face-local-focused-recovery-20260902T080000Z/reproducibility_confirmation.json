@@ -1,0 +1,34 @@
+{
+  "executed": true,
+  "result": {
+    "artifact": {
+      "hash": "261107983584c9af369cb67cdcfb0a06a0beb2229cb1c8a68a8b65571157745b",
+      "manifestHash": "18f1ede55b044bebd9f7db1decee94c94edb4ab12cd5e9ca2f52166ea0756ba6"
+    },
+    "candidate": {
+      "cfg": 6.1,
+      "denoise": 0.35,
+      "id": "confirmation",
+      "rationale": "minimal 0.1 CFG adjustment while retaining R1's improving steps=21",
+      "steps": 21
+    },
+    "gpuJobId": "f5b60c94-0dc7-47df-b9cf-0d65cec28b8c",
+    "id": "confirmation",
+    "provider": {
+      "eyesBrows": 90.0,
+      "facialShape": 92.0,
+      "lineageStatus": "VERIFIED",
+      "model": "gemini-flash-latest",
+      "mouthChin": 89.0,
+      "parsedHash": "34582d065b44c3e7d0c7fef77e9c8ed9bb0ebd5f08c95f00125614099a77ab22",
+      "pass": true,
+      "provider": "Gemini",
+      "rawHash": "5f7c8988c52789d2a7027bf6ab90d163bb5e38d0a16ae987673361e10dcf2150",
+      "score": 91.75,
+      "valid": true,
+      "verdict": "approve"
+    },
+    "status": "PASS"
+  },
+  "status": "PASS"
+}

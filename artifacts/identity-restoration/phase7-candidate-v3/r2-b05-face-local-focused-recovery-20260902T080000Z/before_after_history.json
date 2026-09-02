@@ -1,0 +1,121 @@
+{
+  "baseline": [
+    {
+      "cfg": 6.0,
+      "denoise": 0.35,
+      "label": "baseline",
+      "score": 88.5,
+      "steps": 20
+    },
+    {
+      "cfg": 6.0,
+      "denoise": 0.4,
+      "label": "R1 denoise 0.40",
+      "score": 87.45,
+      "steps": 20
+    },
+    {
+      "cfg": 6.0,
+      "denoise": 0.35,
+      "label": "R1 steps 21",
+      "score": 88.9,
+      "steps": 21
+    }
+  ],
+  "confirmation": {
+    "executed": true,
+    "result": {
+      "artifact": {
+        "hash": "261107983584c9af369cb67cdcfb0a06a0beb2229cb1c8a68a8b65571157745b",
+        "manifestHash": "18f1ede55b044bebd9f7db1decee94c94edb4ab12cd5e9ca2f52166ea0756ba6"
+      },
+      "candidate": {
+        "cfg": 6.1,
+        "denoise": 0.35,
+        "id": "confirmation",
+        "rationale": "minimal 0.1 CFG adjustment while retaining R1's improving steps=21",
+        "steps": 21
+      },
+      "gpuJobId": "f5b60c94-0dc7-47df-b9cf-0d65cec28b8c",
+      "id": "confirmation",
+      "provider": {
+        "eyesBrows": 90.0,
+        "facialShape": 92.0,
+        "lineageStatus": "VERIFIED",
+        "model": "gemini-flash-latest",
+        "mouthChin": 89.0,
+        "parsedHash": "34582d065b44c3e7d0c7fef77e9c8ed9bb0ebd5f08c95f00125614099a77ab22",
+        "pass": true,
+        "provider": "Gemini",
+        "rawHash": "5f7c8988c52789d2a7027bf6ab90d163bb5e38d0a16ae987673361e10dcf2150",
+        "score": 91.75,
+        "valid": true,
+        "verdict": "approve"
+      },
+      "status": "PASS"
+    },
+    "status": "PASS"
+  },
+  "r2Results": [
+    {
+      "artifact": {
+        "hash": "b41dc7e123e8fc13c20dd6b42b57af458ef1e3677def3fadcabc0781579160a5",
+        "manifestHash": "791c17ca5e71350bcc0dbdbf71c0a92d2fd26a8fc2ea49451ccc51df29de6543"
+      },
+      "candidate": {
+        "cfg": 6.0,
+        "denoise": 0.35,
+        "id": "A",
+        "rationale": "next integer step after R1's improving steps=21 result",
+        "steps": 22
+      },
+      "gpuJobId": "2a8299a0-1001-43e1-8a0e-becabff1e74d",
+      "id": "A",
+      "provider": {
+        "eyesBrows": 90.0,
+        "facialShape": 88.0,
+        "lineageStatus": "VERIFIED",
+        "model": "gemini-flash-latest",
+        "mouthChin": 88.0,
+        "parsedHash": "7cebd9d0a7f126dc55c578c92f93a3dbecba6541fb926f217966eeb601ced4e7",
+        "pass": false,
+        "provider": "Gemini",
+        "rawHash": "82d9345942d95917d2e10c527d606d0bf06535cb5213f9ac4947cea0e6b224ad",
+        "score": 89.3,
+        "valid": true,
+        "verdict": "revise"
+      },
+      "status": "PASS"
+    },
+    {
+      "artifact": {
+        "hash": "d4aece86fc362427e6fd19436b7891b6380c972320113d6206f081656590b8e4",
+        "manifestHash": "1fc0b6f86537ea31ed8a8df70ef118b3c0e968f895c95fe006e1a32d0a1438a4"
+      },
+      "candidate": {
+        "cfg": 6.1,
+        "denoise": 0.35,
+        "id": "B",
+        "rationale": "minimal 0.1 CFG adjustment while retaining R1's improving steps=21",
+        "steps": 21
+      },
+      "gpuJobId": "36674247-259c-4faa-bcb7-f2df36e38ffe",
+      "id": "B",
+      "provider": {
+        "eyesBrows": 88.0,
+        "facialShape": 90.0,
+        "lineageStatus": "VERIFIED",
+        "model": "gemini-flash-latest",
+        "mouthChin": 89.0,
+        "parsedHash": "4c2fe55569596260355e1639501024f65c5c788c318f721e2deedcc173d7f78d",
+        "pass": true,
+        "provider": "Gemini",
+        "rawHash": "3e83d3d55cec5f8bef7217f879efe8ba36af4538abcde8b050bb79a9c2eef7a4",
+        "score": 90.15,
+        "valid": true,
+        "verdict": "approve"
+      },
+      "status": "PASS"
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "authorization": {
+    "CANDIDATE_V3_QUALITY_REMEDIATION_R2_AUTHORIZED": true
+  },
+  "knownGeometry": {
+    "faceScale": 0.0723,
+    "referenceBinding": "A2",
+    "yaw": -49.08
+  },
+  "r1Final": {
+    "boundary": "9/9 PASS",
+    "faceLocal": "8/9 PASS",
+    "providerHold": "RECOVERED",
+    "qualityDisposition": "FAIL",
+    "scenarioGlobal": "9/9 PASS",
+    "status": "CLOSED / QUALITY_FAIL"
+  },
+  "sourceJob": {
+    "id": "phase7-diagnostic-20260828-B05",
+    "sha256": "1639afc13b3c6b40515ab7b877398c5723604cbdd45af551cf3e9f0b54318a51"
+  },
+  "testedConfigurations": [
+    {
+      "cfg": 6.0,
+      "denoise": 0.35,
+      "label": "baseline",
+      "score": 88.5,
+      "steps": 20
+    },
+    {
+      "cfg": 6.0,
+      "denoise": 0.4,
+      "label": "R1 denoise 0.40",
+      "score": 87.45,
+      "steps": 20
+    },
+    {
+      "cfg": 6.0,
+      "denoise": 0.35,
+      "label": "R1 steps 21",
+      "score": 88.9,
+      "steps": 21
+    }
+  ]
+}

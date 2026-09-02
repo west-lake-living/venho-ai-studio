@@ -1,0 +1,11 @@
+{
+  "alternativeProviderCalls": 0,
+  "maxProviderCalls": 4,
+  "maxProviderRetries": 0,
+  "model": "gemini-flash-latest",
+  "nanoCalls": 0,
+  "provider": "Gemini",
+  "providerCalls": 3,
+  "providerHold": "RECOVERED",
+  "retries": 0
+}

@@ -1,5 +1,24 @@
 # VENHO AI STUDIO — Task Status
 
+### Candidate v3 Quality Remediation R2 — B05 FACE_LOCAL Focused Recovery (2026-09-02)
+
+- `CANDIDATE-V3-QUALITY-REMEDIATION-R2-B05-FACE-LOCAL = CLOSED / QUALITY_PASS`
+  under explicit `CANDIDATE_V3_QUALITY_REMEDIATION_R2_AUTHORIZED=TRUE`.
+- R2 froze four unique B05-only candidates inside the approved ranges before
+  execution. R1-tested configurations were excluded; denoise stayed `0.35`.
+  Offline gate PASS: workflow/A2 pin, invariants, passing-case protection,
+  `13 passed`, compileall PASS, and diff-check PASS.
+- A (`0.35 / 6.0 / 22`) returned valid `89.30 revise`. B
+  (`0.35 / 6.1 / 21`) returned the first valid PASS, `90.15 approve`, and
+  triggered early-stop; C/D were not run.
+- B reproducibility confirmation was also PASS: `91.75 approve`, eyes/brows
+  `90`, facial shape `92`, mouth/chin `89`. Totals: GPU jobs `3`, artifacts
+  `3`, Gemini calls `3`, retries `0`, Nano/alternative-provider calls `0`.
+- Final state: Boundary `9/9 PASS`, FACE_LOCAL `9/9 PASS`, SCENARIO_GLOBAL
+  `9/9 PASS`, pending `0`, quality `PASS`, provider hold `RECOVERED`;
+  feature `OFF`, promotion `NO`, architecture unchanged. Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/r2-b05-face-local-focused-recovery-20260902T080000Z/`.
+
 ### Candidate v3 Quality Remediation R1 — R1-P13 Resume From T4 After Provider Credential Recovery (2026-09-02)
 
 - `R1-P13-RESUME-FROM-T4 = CLOSED / QUALITY_FAIL` under explicit
