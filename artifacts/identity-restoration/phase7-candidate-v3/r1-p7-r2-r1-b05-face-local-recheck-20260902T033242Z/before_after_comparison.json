@@ -1,0 +1,24 @@
+{
+  "after": {
+    "dimensions": null,
+    "parsedHash": null,
+    "rawHash": null,
+    "score": null,
+    "status": "NOT_EVALUATED",
+    "verdict": null
+  },
+  "before": {
+    "dimensions": {
+      "eyes_and_brows": 87,
+      "facial_shape": 88,
+      "mouth_and_chin": 89
+    },
+    "parsedHash": "1d4f04201109e3dfdfcc78f7d172685109cfb3b6a640485f83ce9606c32b4c64",
+    "rawHash": "f0f226969769567af07af8e27463537bc58efac3650a4cfe3e39c70f76cb36b9",
+    "score": 88.5,
+    "verdict": "revise"
+  },
+  "caseId": "B05",
+  "deltas": null,
+  "evaluator": "FACE_LOCAL"
+}

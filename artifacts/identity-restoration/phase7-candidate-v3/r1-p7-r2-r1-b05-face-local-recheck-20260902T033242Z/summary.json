@@ -1,0 +1,28 @@
+{
+  "architectureChanged": false,
+  "authorization": true,
+  "b05FaceLocal": {
+    "attempted": 0,
+    "expected": 1,
+    "invalid": 0,
+    "lineageStatus": "BLOCKED_LOCAL_REGRESSION",
+    "score": null,
+    "valid": 0,
+    "verdict": null
+  },
+  "boundary": "9/9 PASS",
+  "faceLocal": "8/9 PASS",
+  "featureFlag": "OFF",
+  "nextAction": "R2_REMEDIATED_ARTIFACT_REQUIRED_BEFORE_B05_FACE_LOCAL_RECHECK",
+  "pendingAuthoritativeEvaluations": 1,
+  "preflightReasons": [
+    "R2_REMEDIATED_ARTIFACT_MISSING"
+  ],
+  "productionPromotion": "NO",
+  "providerCalls": 0,
+  "qualityDisposition": "FAIL_PENDING_B05_RECHECK",
+  "retries": 0,
+  "scenarioGlobal": "9/9 PASS",
+  "status": "BLOCKED_LOCAL_REGRESSION",
+  "taskId": "R1-P7-R2-R1-B05-FACE-LOCAL-AUTHORITATIVE-RECHECK"
+}

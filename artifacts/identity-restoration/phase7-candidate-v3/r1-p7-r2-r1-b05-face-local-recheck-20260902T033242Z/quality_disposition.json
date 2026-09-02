@@ -1,0 +1,14 @@
+{
+  "architectureChanged": false,
+  "b05FaceLocal": "NOT_EVALUATED",
+  "boundary": "9/9 PASS",
+  "faceLocal": "8/9 PASS",
+  "featureFlag": "OFF",
+  "nextAction": "R2_REMEDIATED_ARTIFACT_REQUIRED_BEFORE_B05_FACE_LOCAL_RECHECK",
+  "pendingAuthoritativeEvaluations": 1,
+  "productionPromotion": "NO",
+  "qualityDisposition": "FAIL_PENDING_B05_RECHECK",
+  "scenarioGlobal": "9/9 PASS",
+  "status": "BLOCKED_LOCAL_REGRESSION",
+  "taskId": "R1-P7-R2-R1-B05-FACE-LOCAL-AUTHORITATIVE-RECHECK"
+}

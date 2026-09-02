@@ -1,0 +1,13 @@
+{
+  "alternativeProviderCalls": 0,
+  "attempted": 0,
+  "expected": 1,
+  "gpuJobs": 0,
+  "invalid": 0,
+  "model": "gemini-flash-latest",
+  "nanoCalls": 0,
+  "provider": "Gemini",
+  "providerCalls": 0,
+  "retries": 0,
+  "valid": 0
+}

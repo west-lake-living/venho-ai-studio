@@ -1,0 +1,15 @@
+{
+  "attempted": false,
+  "callStatus": "NOT_EXECUTED",
+  "caseId": "B05",
+  "evaluator": "FACE_LOCAL",
+  "lineageStatus": "BLOCKED_LOCAL_REGRESSION",
+  "model": "gemini-flash-latest",
+  "provider": "Gemini",
+  "reason": "No new R2 restored artifact exists; validation-only scope forbids creating one or evaluating the frozen prior artifact as remediated.",
+  "remediationManifest": "config/projects/venho_hotel/identity_restoration/r1_p7_r2_b05_face_local.yaml",
+  "remediationVariantId": "r1-p7-r2-b05-face-detail-v1",
+  "requested": true,
+  "taskId": "R1-P7-R2-R1-B05-FACE-LOCAL-AUTHORITATIVE-RECHECK",
+  "validResponse": false
+}

@@ -1,0 +1,18 @@
+{
+  "algorithm": "SHA-256",
+  "count": 12,
+  "files": {
+    "b05_parsed.json": "d0379818767c6177f66b93a7efc26f7ff564e02d21061156925ed0d208dce04f",
+    "b05_raw.blocked.json": "024580ff9bb94965cdce7773eacadebbbb997a9bd87915e564d587d7e0e2c4a9",
+    "baseline.json": "bf4773b54d4528c8c6e22c14726bc1da06f22eccb979f21e61923fa5677af5e5",
+    "before_after_comparison.json": "55dd9eb5df6ac7efb47e976647ae4aadc0d9d84f28003de68f06005300a88d26",
+    "compileall.txt": "973ed2a2950562422f7b020a70220236f32bef40caaa997dd698e42dbbc6c2a5",
+    "git_diff_check.txt": "531a62067629ec38e912d348148c7183f3fefa118a984525fe78804a85755a4d",
+    "offline_preflight.json": "aad137d8743c66f316888d8acddabe85e71e4f2d8edd35f69c39298859f08100",
+    "probe_request_metadata.json": "f523522649920d846f4c21642cfe5265a0dce3fe520c87562e450771b9a06469",
+    "provider_call_accounting.json": "525bbc6cf3d18cbaf41ad43099eca9ff6519e983e69ef9d2ce84a324879e4eb6",
+    "quality_disposition.json": "cd473b6bb3b00aafbec28f7f72df753828e65682b04ba0293fe10971fca06d1f",
+    "summary.json": "70e77a3e648483e86c3de431137adcb93a46bae32a9d73adb5cad75b1be728c3",
+    "test_results.txt": "19a8041b46df85990ea637403e2d87461163c3f2cbae03fcecf8cda15f229ead"
+  }
+}

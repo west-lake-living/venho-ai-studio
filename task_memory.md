@@ -1,5 +1,30 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-09-02 — R1-P7-R2-R1 B05 FACE_LOCAL recheck blocked at preflight
+
+`R1-P7-R2-R1-B05-FACE-LOCAL-AUTHORITATIVE-RECHECK = BLOCKED_LOCAL_REGRESSION`
+under `B05_FACE_LOCAL_RECHECK_AUTHORIZED=TRUE`.
+
+- Start state was preserved: R1-P7-R2 `CLOSED / REMEDIATION_READY`, Boundary
+  `9/9 PASS`, FACE_LOCAL `8/9 PASS`, SCENARIO_GLOBAL `9/9 PASS`, and quality
+  `FAIL_PENDING_B05_RECHECK`.
+- Preflight verified the provider hold, Gemini/model lock, baseline totals,
+  separate B05-only authority, schema/DTO/parser path, and safety state.
+  Focused tests passed, compileall passed, and `git diff --check` passed.
+- R1-P7-R2 has no new restored B05 artifact: its config remains a plan with
+  `READY_FOR_TARGETED_RERENDER`. Because this task is validation-only and
+  forbids generation/GPU, the frozen R1-P7-R1 image cannot be relabeled as a
+  remediated artifact. The required lineage precondition therefore failed
+  closed as `R2_REMEDIATED_ARTIFACT_MISSING`.
+- No live call occurred: provider `0`, retries `0`, GPU/Nano/alternative
+  provider `0`. B05 score remains unmeasured after remediation; prior valid
+  baseline remains `88.50 / revise` with pending authoritative evaluation `1`.
+- Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p7-r2-r1-b05-face-local-recheck-20260902T033242Z/`.
+
+Next action: create/attach the B05 remediated artifact, then execute exactly
+one authoritative FACE_LOCAL recheck.
+
 ## 2026-09-02 — Candidate v3 R1-P7-R2 B05 FACE_LOCAL remediation ready
 
 `Candidate v3 Quality Remediation R1 / R1-P7-R2-TARGETED-REMEDIATION-B05-FACE-LOCAL =

@@ -1,5 +1,26 @@
 # VENHO AI STUDIO — Task Status
 
+### Candidate v3 Quality Remediation R1 — R1-P7-R2-R1 B05 FACE_LOCAL Authoritative Recheck (2026-09-02)
+
+- `R1-P7-R2-R1-B05-FACE-LOCAL-AUTHORITATIVE-RECHECK = BLOCKED_LOCAL_REGRESSION`.
+  `B05_FACE_LOCAL_RECHECK_AUTHORIZED=TRUE` was received, but preflight found
+  no new B05 restored artifact produced by R1-P7-R2. R1-P7-R2 contains only a
+  B05-only restore-variant plan/config marked `READY_FOR_TARGETED_RERENDER`.
+- The task is validation-only and forbids GPU/generation. Evaluating the frozen
+  R1-P7-R1 artifact as the remediated artifact would violate lineage, so the
+  live call was not attempted.
+- Offline preflight passed focused tests, compileall, and `git diff --check`;
+  the only blocker is `R2_REMEDIATED_ARTIFACT_MISSING`. Provider calls `0`,
+  retries `0`, GPU/Nano/alternative-provider calls `0`.
+- Baseline remains protected: Boundary `9/9 PASS`, FACE_LOCAL `8/9 PASS`,
+  SCENARIO_GLOBAL `9/9 PASS`, quality `FAIL_PENDING_B05_RECHECK`, feature
+  `OFF`, promotion `NO`, architecture unchanged. Pending authoritative
+  evaluations remains `1`.
+- Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p7-r2-r1-b05-face-local-recheck-20260902T033242Z/`.
+  Next action: produce the authorized B05 remediated artifact, then rerun this
+  single-case recheck under the existing one-call limit.
+
 ### Candidate v3 Quality Remediation R1 — R1-P7-R2 B05 FACE_LOCAL Remediation (2026-09-02)
 
 - `R1-P7-R2-TARGETED-REMEDIATION-B05-FACE-LOCAL = CLOSED / REMEDIATION_READY`

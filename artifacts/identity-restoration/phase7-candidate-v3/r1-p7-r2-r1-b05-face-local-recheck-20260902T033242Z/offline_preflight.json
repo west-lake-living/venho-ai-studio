@@ -1,0 +1,24 @@
+{
+  "architectureChanged": false,
+  "boundary": "9/9 PASS",
+  "compileallExitCode": 0,
+  "faceLocal": "8/9 PASS",
+  "featureFlag": "OFF",
+  "gitDiffCheckExitCode": 0,
+  "maxProviderCalls": 1,
+  "passingBindingsChanged": false,
+  "productionPromotion": "NO",
+  "providerCalls": 0,
+  "providerHold": "RECOVERED",
+  "providerModelChanged": false,
+  "reasons": [
+    "R2_REMEDIATED_ARTIFACT_MISSING"
+  ],
+  "retries": 0,
+  "rubricChanged": false,
+  "scenarioGlobal": "9/9 PASS",
+  "schemaDtoParser": "VALIDATED",
+  "status": "BLOCKED_LOCAL_REGRESSION",
+  "testsExitCode": 0,
+  "thresholdsChanged": false
+}

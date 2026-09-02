@@ -1,0 +1,48 @@
+{
+  "authorization": {
+    "name": "B05_FACE_LOCAL_RECHECK_AUTHORIZED",
+    "receivedValue": "TRUE",
+    "requiredValue": "TRUE"
+  },
+  "preflight": {
+    "reasons": [
+      "R2_REMEDIATED_ARTIFACT_MISSING"
+    ],
+    "status": "BLOCKED_LOCAL_REGRESSION"
+  },
+  "previousB05": {
+    "dimensions": {
+      "eyes_and_brows": 87.0,
+      "facial_shape": 88.0,
+      "mouth_and_chin": 89.0,
+      "nose": 90.0,
+      "technical_quality": 90.0
+    },
+    "parsedHash": "1d4f04201109e3dfdfcc78f7d172685109cfb3b6a640485f83ce9606c32b4c64",
+    "rawHash": "f0f226969769567af07af8e27463537bc58efac3650a4cfe3e39c70f76cb36b9",
+    "score": 88.5,
+    "verdict": "revise"
+  },
+  "provider": {
+    "hold": "RECOVERED",
+    "model": "gemini-flash-latest",
+    "provider": "Gemini"
+  },
+  "r1P7R2": {
+    "path": "artifacts/identity-restoration/phase7-candidate-v3/r1-p7-r2-b05-face-local-remediation-20260902T033100Z",
+    "qualityDisposition": "FAIL_PENDING_B05_RECHECK",
+    "status": "CLOSED / REMEDIATION_READY",
+    "summarySha256": "b3af8c3471aef831586e8540bdd9d76f82e0f07af9df8c45c63b833155e7ddea"
+  },
+  "startState": {
+    "architectureChanged": false,
+    "boundary": "9/9 PASS",
+    "faceLocal": "8/9 PASS",
+    "featureFlag": "OFF",
+    "productionPromotion": "NO",
+    "qualityDisposition": "FAIL_PENDING_B05_RECHECK",
+    "r1P7R2": "CLOSED / REMEDIATION_READY",
+    "scenarioGlobal": "9/9 PASS"
+  },
+  "taskId": "R1-P7-R2-R1-B05-FACE-LOCAL-AUTHORITATIVE-RECHECK"
+}
