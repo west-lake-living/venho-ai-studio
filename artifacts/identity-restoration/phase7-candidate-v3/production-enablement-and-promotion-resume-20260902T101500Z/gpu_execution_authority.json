@@ -1,0 +1,7 @@
+{
+  "authority": "production_release.json: HUMAN / candidate-v3 / ON",
+  "candidateV3GpuExecutionAuthorized": true,
+  "featureOffDeniesGpu": true,
+  "status": "PASS",
+  "unapprovedWorkflowFailsClosed": true
+}

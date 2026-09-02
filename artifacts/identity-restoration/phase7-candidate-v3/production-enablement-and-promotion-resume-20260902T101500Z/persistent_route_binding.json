@@ -1,0 +1,16 @@
+{
+  "invalidStateFailsClosed": true,
+  "path": "config/projects/venho_hotel/identity_restoration/production_release.json",
+  "persistenceImplemented": true,
+  "release": {
+    "authority": "HUMAN",
+    "featureFlag": "ON",
+    "releaseId": "candidate-v3-production-20260902T101500Z",
+    "rollbackTarget": "comfyui-local",
+    "route": "candidate-v3",
+    "version": "candidate-v3"
+  },
+  "restartSafe": true,
+  "rollbackStatePersisted": true,
+  "status": "PASS"
+}

@@ -1,0 +1,12 @@
+{
+  "candidateV3RouteUsed": true,
+  "executed": true,
+  "gpuDispatchAuthorized": true,
+  "gpuJobs": 0,
+  "kind": "ZERO_GPU_PRODUCTION_COMPOSITION_SMOKE",
+  "lineageValid": true,
+  "noProductionRuntimeError": true,
+  "outputCreated": "NOT_REQUIRED_FOR_ZERO_GPU_SMOKE",
+  "requestAccepted": true,
+  "status": "PASS"
+}

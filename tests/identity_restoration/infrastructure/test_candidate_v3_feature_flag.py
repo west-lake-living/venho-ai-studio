@@ -10,6 +10,10 @@ from identity_restoration.infrastructure.composition.identity_restoration_module
 from identity_restoration.infrastructure.restorers.comfyui_candidate_v3_adapter import (
     ComfyUiCandidateV3Adapter,
 )
+from identity_restoration.infrastructure.persistence.production_release_state import (
+    ProductionReleaseState,
+    write_production_release_state,
+)
 from pathlib import Path
 
 
@@ -47,12 +51,29 @@ def test_unknown_value_fails_closed_to_disabled(monkeypatch: pytest.MonkeyPatch)
     assert read_restoration_env().candidate_v3_enabled is False
 
 
-def test_explicit_candidate_v3_flag_registers_pinned_adapter_without_execution() -> None:
+def test_explicit_candidate_v3_flag_registers_pinned_adapter_without_execution(tmp_path: Path) -> None:
     module = build_identity_restoration_module(
-        RestorationEnv(candidate_v3_enabled=True),
+        RestorationEnv(candidate_v3_enabled=True, production_release_path=str(tmp_path / "missing-release.json")),
         repo_root=ROOT,
     )
 
     adapter = module.registry.resolve("comfyui-candidate-v3")
     assert isinstance(adapter, ComfyUiCandidateV3Adapter)
     assert adapter.gpu_execution_authorized is False
+
+
+def test_human_active_release_selects_candidate_and_authorizes_only_its_gpu_path(tmp_path: Path) -> None:
+    release = tmp_path / "production_release.json"
+    write_production_release_state(release, ProductionReleaseState(
+        active_production_version="candidate-v3", active_production_route="candidate-v3",
+        feature_flag_state="ON", release_id="candidate-v3-test", promotion_authority="HUMAN",
+        promotion_timestamp="2026-09-02T10:15:00Z", rollback_target="comfyui-local",
+    ))
+    module = build_identity_restoration_module(
+        RestorationEnv(production_release_path=str(release)), repo_root=ROOT,
+    )
+
+    adapter = module.registry.resolve("comfyui-candidate-v3")
+    assert isinstance(adapter, ComfyUiCandidateV3Adapter)
+    assert adapter.gpu_execution_authorized is True
+    assert module.registry.default_id == "comfyui-candidate-v3"

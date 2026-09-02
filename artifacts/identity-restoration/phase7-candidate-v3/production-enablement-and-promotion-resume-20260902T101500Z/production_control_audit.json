@@ -1,0 +1,10 @@
+{
+  "blockerARootCause": "adapter GPU authorization was hard-coded false",
+  "blockerBRootCause": "no persisted route/release state existed",
+  "defaultRouteBeforePromotion": "mock",
+  "featureFlagAuthority": "production_release.json.feature_flag_state",
+  "gpuExecutionAuthority": "human active production release",
+  "persistenceMechanism": "atomic JSON release state",
+  "routeResolver": "build_identity_restoration_module -> ProductionReleaseState",
+  "status": "PASS"
+}

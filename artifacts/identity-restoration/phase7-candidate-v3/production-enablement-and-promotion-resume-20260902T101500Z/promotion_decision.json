@@ -1,0 +1,15 @@
+{
+  "architectureChanged": false,
+  "autoPromotion": false,
+  "candidateV3ProductionEnablement": "CLOSED / PASS",
+  "candidateV3ProductionPromotion": "CLOSED / PASS",
+  "featureFlag": "ON",
+  "gpuExecutionAuthorized": true,
+  "nextAction": "POST_PROMOTION_OPERATIONAL_MONITORING",
+  "persistentRouteBinding": "ACTIVE",
+  "productionPromotion": "YES",
+  "productionRoute": "candidate-v3",
+  "qualityDisposition": "PASS",
+  "rollbackReady": true,
+  "terminalState": "CLOSED / PASS"
+}

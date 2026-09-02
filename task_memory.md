@@ -1,5 +1,23 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-09-02 — Candidate v3 production enablement and promotion resume closed pass
+
+`CANDIDATE-V3-PRODUCTION-ENABLEMENT-AND-AUTOMATIC-PROMOTION-RESUME = CLOSED / PASS`
+under `CANDIDATE_V3_PRODUCTION_ENABLEMENT_AND_PROMOTION_RESUME_AUTHORIZED=TRUE`.
+
+- Added atomic, fail-closed persisted release state. The active human release
+  `candidate-v3-production-20260902T101500Z` makes Candidate v3 the restored
+  production route and grants GPU dispatch only to that human-authorized,
+  feature-ON release. Missing, corrupt, or unapproved state resolves to mock.
+- Route reload and zero-GPU production composition smoke passed: Candidate v3
+  adapter active, B05 resolves `0.35 / 6.1 / 21`, caller/hybrid overrides stay
+  blocked, and non-B05 defaults remain `0.35 / 6.0 / 20`.
+- Final state: feature `ON`, route `candidate-v3`, promotion `YES`, quality
+  PASS, auto-promotion false, rollback target `comfyui-local` ready. Tests
+  `59 passed`, compileall/diff-check PASS; GPU/provider/Nano calls all `0`.
+  Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/production-enablement-and-promotion-resume-20260902T101500Z/`.
+
 ## 2026-09-02 — Candidate v3 production promotion blocked pre-cutover
 
 `CANDIDATE-V3-PRODUCTION-PROMOTION = BLOCKED` under

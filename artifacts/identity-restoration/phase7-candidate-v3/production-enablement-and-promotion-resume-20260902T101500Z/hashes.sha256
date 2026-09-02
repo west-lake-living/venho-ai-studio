@@ -1,0 +1,24 @@
+{
+  "algorithm": "SHA-256",
+  "count": 18,
+  "files": {
+    "activation.json": "1ad2df39baeeec2b05717b7516f636fffadd39cafc8c91e668f2cc656ba043ce",
+    "baseline.json": "6f70281b4007cd25d713fe9393c25b8c337e4ba59935f39ebc217e7349cd5d46",
+    "compileall.txt": "973ed2a2950562422f7b020a70220236f32bef40caaa997dd698e42dbbc6c2a5",
+    "git_diff_check.txt": "531a62067629ec38e912d348148c7183f3fefa118a984525fe78804a85755a4d",
+    "gpu_execution_authority.json": "8004885f3e76a7a7b77fc500e318e63e7cccddb7b5e716f747502241f8be44d7",
+    "gpu_job_accounting.json": "4dc1ccd3fcabfbd629fbb4d6b38c8dae26cbe8e6e098132bc023e93a967a74f6",
+    "persistent_route_binding.json": "6f14c7a02240a942628e3d53f44d0ca376bf95897eafde8af5949428d3d2ae52",
+    "pre_cutover_validation.json": "8e3de95667259f6b3803d300cbc143a9ea0fc367412cac83826c3718d6c2a55d",
+    "production_control_audit.json": "82fcf6c663e95521b6f2093251314856379766fc8537c21204b7d6f0827e13ac",
+    "production_smoke.json": "235ea31fbd8535f85eca4ea400824a9f09edba6712373e1fb693ff32a9ecd1c5",
+    "promotion_decision.json": "017fbd42d30c489e1c48c81b54dbf2d6fc3c631445ea157d8aaf4dc161f2f7b2",
+    "provider_call_accounting.json": "24aa5f61e61b365f6776b824efdbba4e02ba13adc132930e367e13aac034e4c8",
+    "release_manifest.json": "358f9750568dc47ee719776f1d0acd546b9368bff9b7a5b5a5264e577973e3b9",
+    "rollback_readiness.json": "3a713a038beb0fee9cd020173f51e092011409a1534821fbca447a903f3b1355",
+    "routing_persistence_proof.json": "2d99df71e6eaa0270dd99390646534bbcb67e853d02810269413a08b345f244c",
+    "runtime_consumption_proof.json": "e23fd737e5912fe2e678a3a54be1cfe830a7e45bdf70b67abbca74e26cb8633e",
+    "summary.json": "e2d0cd2e38d046456c125d0a56a318b320f0ee1a0d095c9ace2d645311a9213b",
+    "test_results.txt": "3f46a4d1170154bb33aafff4e8f5b90bfca44a18a24fd3779d80b89da5774580"
+  }
+}

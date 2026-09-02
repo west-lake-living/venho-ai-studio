@@ -1,0 +1,21 @@
+{
+  "autoPromotion": false,
+  "b05Pin": {
+    "cfg": 6.1,
+    "denoise": 0.35,
+    "steps": 21
+  },
+  "featureFlagBefore": "OFF",
+  "gpuExecutionAuthorizationReady": true,
+  "nonB05Defaults": {
+    "cfg": 6.0,
+    "denoise": 0.35,
+    "steps": 20
+  },
+  "persistentRouteBindingReady": true,
+  "promotionReadiness": "READY_FOR_PROMOTION",
+  "quality": "PASS",
+  "rollbackReady": true,
+  "routeBefore": "mock",
+  "status": "PASS"
+}

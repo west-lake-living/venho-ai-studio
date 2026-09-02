@@ -1,0 +1,9 @@
+{
+  "authorization": "CANDIDATE_V3_PRODUCTION_ENABLEMENT_AND_PROMOTION_RESUME_AUTHORIZED",
+  "featureFlag": "OFF",
+  "previousPromotion": "BLOCKED",
+  "productionRoute": "mock",
+  "promotionReadiness": "READY_FOR_PROMOTION",
+  "quality": "PASS",
+  "rollbackTarget": "comfyui-local"
+}

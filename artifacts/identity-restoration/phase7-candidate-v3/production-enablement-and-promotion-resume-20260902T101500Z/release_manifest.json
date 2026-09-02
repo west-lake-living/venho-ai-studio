@@ -1,0 +1,8 @@
+{
+  "candidateVersion": "candidate-v3",
+  "promotionAuthority": "HUMAN",
+  "promotionTimestamp": "2026-09-02T10:15:00Z",
+  "releaseId": "candidate-v3-production-20260902T101500Z",
+  "rollbackTarget": "comfyui-local",
+  "status": "ACTIVE"
+}

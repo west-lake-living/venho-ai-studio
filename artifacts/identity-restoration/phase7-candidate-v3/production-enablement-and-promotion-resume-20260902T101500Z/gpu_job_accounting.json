@@ -1,0 +1,5 @@
+{
+  "gpuJobs": 0,
+  "maxGpuSmokeJobs": 1,
+  "reason": "Existing zero-GPU composition smoke proved production routing."
+}

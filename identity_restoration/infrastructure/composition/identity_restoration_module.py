@@ -23,6 +23,7 @@ from ..persistence.atomic_file_artifact_sink import AtomicFileArtifactSink
 from ..persistence.file_a2_authority_repository import FileA2AuthorityRepository
 from ..persistence.file_concurrency_lease import FileConcurrencyLease
 from ..persistence.jsonl_restoration_ledger import JsonlRestorationLedger
+from ..persistence.production_release_state import load_production_release_state
 from ..qc.validator_studio_qc_gateway import ValidatorStudioQcGateway
 from ..restorers.comfyui_local_restorer import ComfyUILocalRestorer
 from ..restorers.comfyui_remote_restorer import ComfyUIRemoteRestorer
@@ -150,7 +151,7 @@ def _try_load_remote_restorer(env: RestorationEnv, root: Path) -> Optional[Comfy
 
 
 def _try_load_candidate_v3_restorer(
-    env: RestorationEnv, root: Path
+    env: RestorationEnv, root: Path, *, gpu_execution_authorized: bool
 ) -> Optional[ComfyUiCandidateV3Adapter]:
     """Register Candidate v3 only behind its explicit feature flag.
 
@@ -158,7 +159,7 @@ def _try_load_candidate_v3_restorer(
     separate GPU authorization remains false by default, so enabling the
     feature flag alone cannot submit a job.
     """
-    if not env.candidate_v3_enabled:
+    if not gpu_execution_authorized and not env.candidate_v3_enabled:
         return None
     workflow_repo = FileWorkflowRepository(
         workflow_root=root / env.workflow_root,
@@ -175,6 +176,7 @@ def _try_load_candidate_v3_restorer(
         workflow_sha256=descriptor.sha256,
         model_identifiers=descriptor.models,
         timeout_seconds=env.comfyui_remote_timeout_seconds,
+        gpu_execution_authorized=gpu_execution_authorized,
     )
 
 
@@ -223,6 +225,7 @@ def build_identity_restoration_module(
 ) -> IdentityRestorationModule:
     env = env or read_restoration_env()
     root = repo_root or Path.cwd()
+    release = load_production_release_state(root / env.production_release_path)
     clock = SystemClock()
 
     health = build_worker_health(env, clock=clock)
@@ -247,11 +250,14 @@ def build_identity_restoration_module(
     if remote_restorer is not None:
         restorers["comfyui-remote"] = remote_restorer
 
-    candidate_v3_restorer = _try_load_candidate_v3_restorer(env, root)
+    candidate_v3_restorer = _try_load_candidate_v3_restorer(
+        env, root, gpu_execution_authorized=release.candidate_v3_active
+    )
     if candidate_v3_restorer is not None:
         restorers["comfyui-candidate-v3"] = candidate_v3_restorer
 
-    registry = RestorerRegistry(restorers=restorers, default_id=env.default_restorer)  # type: ignore[arg-type]
+    default_restorer = "comfyui-candidate-v3" if release.candidate_v3_active else env.default_restorer
+    registry = RestorerRegistry(restorers=restorers, default_id=default_restorer)  # type: ignore[arg-type]
 
     use_case = RestoreFaceCropUseCase(
         registry=registry,

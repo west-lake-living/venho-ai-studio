@@ -34,6 +34,7 @@ class RestorationEnv:
     # Candidate v3 is a Phase 0 contract only; execution remains disabled
     # until a later candidate runtime has been implemented and authorized.
     candidate_v3_enabled: bool = False
+    production_release_path: str = "config/projects/venho_hotel/identity_restoration/production_release.json"
     face_qc_min: float = 90.0
     # Explicit geometry backend selection.  The default preserves the existing
     # InsightFace production behavior; YuNet is opt-in and never a fallback.
@@ -72,6 +73,7 @@ def read_restoration_env() -> RestorationEnv:
             "http://127.0.0.1:3000/api/v1/identity-restoration/nano-banana-smoke",
         ),
         candidate_v3_enabled=_as_bool(os.environ.get("IDR_CANDIDATE_V3_ENABLED", "false")),
+        production_release_path=os.environ.get("IDR_PRODUCTION_RELEASE_PATH", "config/projects/venho_hotel/identity_restoration/production_release.json"),
         face_qc_min=float(os.environ.get("IDR_FACE_QC_MIN", "90.0")),
         geometry_backend=os.environ.get("IDR_GEOMETRY_BACKEND", "insightface"),
         qc_enabled=_as_bool(os.environ.get("IDR_QC_ENABLED", "false")),

@@ -1,0 +1,7 @@
+{
+  "candidateV3AdapterActive": true,
+  "gpuExecutionAuthorityEffective": true,
+  "persistedRouteEffective": "candidate-v3",
+  "reloadPreservesRoute": true,
+  "status": "PASS"
+}

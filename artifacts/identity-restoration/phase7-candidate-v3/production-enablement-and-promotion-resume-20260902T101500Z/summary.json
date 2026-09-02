@@ -1,0 +1,12 @@
+{
+  "alternativeProviderCalls": 0,
+  "evidenceRoot": "artifacts/identity-restoration/phase7-candidate-v3/production-enablement-and-promotion-resume-20260902T101500Z",
+  "featureFlag": "ON",
+  "gpuJobs": 0,
+  "nanoCalls": 0,
+  "productionPromotion": "YES",
+  "productionRoute": "candidate-v3",
+  "qualityProviderCalls": 0,
+  "taskId": "CANDIDATE-V3-PRODUCTION-ENABLEMENT-AND-AUTOMATIC-PROMOTION-RESUME",
+  "terminalState": "CLOSED / PASS"
+}

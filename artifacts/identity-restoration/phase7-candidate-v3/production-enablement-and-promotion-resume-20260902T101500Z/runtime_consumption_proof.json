@@ -1,0 +1,21 @@
+{
+  "b05Effective": {
+    "cfg": 6.1,
+    "denoise": 0.35,
+    "steps": 21
+  },
+  "b05Requested": {
+    "cfg": 5.0,
+    "denoise": 0.4,
+    "steps": 20
+  },
+  "callerOverrideBlocked": true,
+  "hybridConfigBlocked": true,
+  "nonB05Defaults": {
+    "cfg": 6.0,
+    "denoise": 0.35,
+    "steps": 20
+  },
+  "status": "PASS",
+  "unknownAuthorityFailClosed": true
+}

@@ -1,5 +1,21 @@
 # VENHO AI STUDIO — Task Status
 
+### Candidate v3 Production Enablement + Automatic Promotion Resume (2026-09-02)
+
+- `CANDIDATE-V3-PRODUCTION-ENABLEMENT-AND-AUTOMATIC-PROMOTION-RESUME = CLOSED / PASS`
+  under `CANDIDATE_V3_PRODUCTION_ENABLEMENT_AND_PROMOTION_RESUME_AUTHORIZED=TRUE`.
+- Active persisted human release `candidate-v3-production-20260902T101500Z`
+  sets feature `ON`, route/version `candidate-v3`, and Candidate v3-only GPU
+  execution authorization. Missing/corrupt/unapproved release state fails
+  closed to `mock`; rollback target and previous stable route are
+  `comfyui-local`.
+- Routing reload and zero-GPU composition smoke PASS. B05 is still enforced at
+  `0.35 / 6.1 / 21`; caller/hybrid override protection and non-B05 defaults
+  remain intact. Final: promotion `YES`, quality PASS, auto-promotion false,
+  rollback ready, architecture unchanged. `59 passed`, compileall/diff-check
+  PASS; GPU/provider/Nano calls all `0`. Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/production-enablement-and-promotion-resume-20260902T101500Z/`.
+
 ### Candidate v3 Production Promotion (2026-09-02)
 
 - `CANDIDATE-V3-PRODUCTION-PROMOTION = BLOCKED` under
