@@ -1,0 +1,38 @@
+{
+  "authorization": {
+    "R1_P11_R1_GPU_RECOVERY_AND_RESUME_AUTHORIZED": true
+  },
+  "lockedContract": {
+    "caseId": "B05",
+    "cfg": 6.0,
+    "contractId": "candidate-v3-r1-p11-B05-denoise-040-v1",
+    "denoise": 0.4,
+    "outputArtifactId": "candidate-v3-r1-p11-B05-face-detail-denoise-040-v1",
+    "referenceBinding": "A2",
+    "steps": 20
+  },
+  "source": {
+    "jobId": "phase7-diagnostic-20260828-B05",
+    "jobPath": "artifacts/identity-restoration/phase7-candidate-v3/jobs/phase7-diagnostic-20260828-B05.json",
+    "jobSha256": "1639afc13b3c6b40515ab7b877398c5723604cbdd45af551cf3e9f0b54318a51",
+    "p11Evidence": "artifacts/identity-restoration/phase7-candidate-v3/r1-p11-human-parameter-final-closure-20260902T040000Z",
+    "r2Evidence": "artifacts/identity-restoration/phase7-candidate-v3/r1-p7-r2-b05-face-local-remediation-20260902T033100Z",
+    "sourceInputSha256": "90bff2deb7dcac5fe6fb69c59d6ff4943ef424ba97dfd8c49e3236907bc51e69"
+  },
+  "startState": {
+    "architectureChanged": false,
+    "blocker": "approved GPU worker unavailable at 127.0.0.1:8188",
+    "boundary": "9/9 PASS",
+    "faceLocal": "8/9 PASS",
+    "featureFlag": "OFF",
+    "model": "gemini-flash-latest",
+    "pending": 1,
+    "productionPromotion": "NO",
+    "provider": "Gemini",
+    "providerHold": "RECOVERED",
+    "qualityDisposition": "FAIL_PENDING_B05_RECHECK",
+    "r1P11": "BLOCKED / ARTIFACT_MATERIALIZATION_FAILED",
+    "scenarioGlobal": "9/9 PASS"
+  },
+  "taskId": "R1-P11-R1-GPU-WORKER-RECOVERY-AND-FINAL-RESUME"
+}

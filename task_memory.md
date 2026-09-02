@@ -1,5 +1,30 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-09-02 — R1-P11-R1 GPU recovery and final B05 closure
+
+`R1-P11-R1-GPU-WORKER-RECOVERY-AND-FINAL-RESUME = CLOSED / QUALITY_FAIL`
+under explicit `R1_P11_R1_GPU_RECOVERY_AND_RESUME_AUTHORIZED=TRUE`.
+
+- T0/T1 recovered the existing approved HARRY-ROG Windows 11 / NVIDIA GTX
+  1660 SUPER path through the documented Tailscale HTTPS ComfyUI endpoint;
+  worker health was PASS with 5132 MiB free VRAM and the Candidate v3 pin
+  matched workflow hash `53dc0906…5aad91`.
+- Exactly one B05 artifact was materialized with the locked contract:
+  denoise `0.40`, CFG `6.0`, steps `20`, seed `42`, A2 binding. Artifact and
+  manifest lineage passed; artifact hash is
+  `f9b9034a6d78a9c887acaa7c2ba78ea636b2605025a40ab4e83b54e6bc6f3e4e`.
+- Exactly one valid Gemini `gemini-flash-latest` FACE_LOCAL recheck ran. B05
+  scored `87.45` (`revise`), with eyes/brows `86`, facial shape `88`, and
+  mouth/chin `87`; score delta is `-1.05` from `88.50`. No retry, parameter
+  change, alternate provider, Nano call, or passing-case rerun occurred.
+- Final protected state: Boundary `9/9 PASS`, FACE_LOCAL `8/9 PASS`,
+  SCENARIO_GLOBAL `9/9 PASS`, pending `0`, quality `FAIL`, feature `OFF`,
+  promotion `NO`, architecture unchanged. Next action is
+  `HUMAN_DECISION_REQUIRED`; this phase does not tune parameters again.
+- Offline validation recorded `9 passed`, compileall PASS, and diff check
+  PASS. Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p11-r1-gpu-recovery-final-resume-20260902T050517Z/`.
+
 ## 2026-09-02 — R1-P11 materialization blocked by unavailable GPU worker
 
 `R1-P11-HUMAN-PARAMETER-DECISION-ONE-SHOT-FINAL-CLOSURE = BLOCKED /

@@ -1,0 +1,18 @@
+{
+  "adapter": "identity_restoration.infrastructure.restorers.comfyui_candidate_v3_adapter.ComfyUiCandidateV3Adapter",
+  "architectureChanged": false,
+  "comfyuiEndpoint": "https://harry-rog.taila40de0.ts.net",
+  "endpointAuthority": "docs/identity-restoration/WINDOWS_WORKER_RUNBOOK.md",
+  "gpu": "NVIDIA GTX 1660 SUPER 6GB",
+  "status": "PASS",
+  "transport": "Tailscale HTTPS existing approved remote ComfyUI transport",
+  "workerHost": "HARRY-ROG",
+  "workerLocalBinding": "127.0.0.1:8188",
+  "workerOS": "Windows 11",
+  "workerRuntime": "ComfyUI",
+  "workflowHash": "53dc090691b8feac2a8b8a4309d43af737e304b09330e072b4ab5632ed5aad91",
+  "workflowHashPinned": "53dc090691b8feac2a8b8a4309d43af737e304b09330e072b4ab5632ed5aad91",
+  "workflowId": "face_restore_win_sd15_ipadapter_v3",
+  "workflowPinMatch": true,
+  "workflowVersion": "workflow-pins-v1"
+}

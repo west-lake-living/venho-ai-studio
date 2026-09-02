@@ -1,5 +1,27 @@
 # VENHO AI STUDIO — Task Status
 
+### Candidate v3 Quality Remediation R1 — R1-P11-R1 GPU Worker Recovery & Final Resume (2026-09-02)
+
+- `R1-P11-R1-GPU-WORKER-RECOVERY-AND-FINAL-RESUME = CLOSED / QUALITY_FAIL`
+  under explicit `R1_P11_R1_GPU_RECOVERY_AND_RESUME_AUTHORIZED=TRUE`.
+- Existing HARRY-ROG Windows 11 / GTX 1660 SUPER ComfyUI was recovered via
+  the documented Tailscale HTTPS transport. Health PASS: 5132 MiB free VRAM;
+  Candidate v3 workflow pin and hash matched.
+- Exactly one GPU job created one B05 artifact under the locked
+  `denoise=0.40`, `cfg=6.0`, `steps=20` contract. Artifact/manifest/source/A2
+  lineage all PASS. Artifact SHA-256:
+  `f9b9034a6d78a9c887acaa7c2ba78ea636b2605025a40ab4e83b54e6bc6f3e4e`.
+- Exactly one valid Gemini `gemini-flash-latest` FACE_LOCAL call returned
+  score `87.45`, verdict `revise`; eyes/brows `86`, facial shape `88`,
+  mouth/chin `87`. Final quality is FAIL; pending is `0`.
+- Provider calls `1`, retries `0`, GPU jobs `1`, artifact count `1`,
+  Nano/alternative-provider calls `0`. Boundary `9/9 PASS`, FACE_LOCAL
+  `8/9 PASS`, SCENARIO_GLOBAL `9/9 PASS`; feature `OFF`, promotion `NO`,
+  architecture unchanged. Next action: `HUMAN_DECISION_REQUIRED`.
+- Offline validation: `9 passed`, compileall PASS, `git diff --check` PASS.
+  Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p11-r1-gpu-recovery-final-resume-20260902T050517Z/`.
+
 ### Candidate v3 Quality Remediation R1 — R1-P11 Human Parameter Decision & One-Shot Final Closure (2026-09-02)
 
 - `R1-P11-HUMAN-PARAMETER-DECISION-ONE-SHOT-FINAL-CLOSURE = BLOCKED / ARTIFACT_MATERIALIZATION_FAILED`

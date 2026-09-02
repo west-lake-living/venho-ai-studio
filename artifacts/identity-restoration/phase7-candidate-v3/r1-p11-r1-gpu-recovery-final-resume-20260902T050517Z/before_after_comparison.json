@@ -1,0 +1,29 @@
+{
+  "after": {
+    "eyesBrows": 86.0,
+    "facialShape": 88.0,
+    "lineageStatus": "VERIFIED",
+    "model": "gemini-flash-latest",
+    "mouthChin": 87.0,
+    "parsedHash": "45ddb5b2422375cdb6367ae97c1ba590b4fbb1914b20d30eb6c13f90639d2325",
+    "provider": "Gemini",
+    "rawHash": "f8d28dbfaf839a20d7e198c386c8f7f4bafc2837095dc5d6002f2497a82a9acb",
+    "reportHash": "bcf3a1f0d530af0cc03525dd14d7cbca97b8a45096952aa9522090e77c533f7d",
+    "score": 87.45,
+    "valid": true,
+    "verdict": "revise"
+  },
+  "before": {
+    "eyesBrows": 87.0,
+    "facialShape": 88.0,
+    "mouthChin": 89.0,
+    "score": 88.5
+  },
+  "caseId": "B05",
+  "deltas": {
+    "eyesBrows": -1.0,
+    "facialShape": 0.0,
+    "mouthChin": -2.0,
+    "score": -1.0499999999999972
+  }
+}

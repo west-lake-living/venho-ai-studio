@@ -1,0 +1,20 @@
+{
+  "approvedTransport": "PASS",
+  "comfyuiHealth": "PASS",
+  "endpoint": "https://harry-rog.taila40de0.ts.net",
+  "gpuAvailable": true,
+  "probe": {
+    "gpuName": "cuda:0 NVIDIA GeForce GTX 1660 SUPER : cudaMallocAsync",
+    "latencyMs": 24.167500000000008,
+    "status": "DEGRADED",
+    "torchVramFreeMb": 12,
+    "torchVramTotalMb": 320,
+    "vramFreeMb": 1068,
+    "vramTotalMb": 6143
+  },
+  "probeExitCode": 0,
+  "transport": "Tailscale HTTPS existing approved remote ComfyUI transport",
+  "workerHost": "HARRY-ROG",
+  "workerReachable": true,
+  "workflowRuntimeAvailable": true
+}

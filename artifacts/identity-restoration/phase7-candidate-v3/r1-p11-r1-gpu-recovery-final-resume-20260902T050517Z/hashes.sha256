@@ -1,0 +1,25 @@
+{
+  "algorithm": "SHA-256",
+  "count": 19,
+  "files": {
+    "artifact/manifest.json": "28a3f776c45b612897fe344aeac80d8b240490687ee5ba7d7b2ed736811b3268",
+    "artifact/restored-canonical.png": "f9b9034a6d78a9c887acaa7c2ba78ea636b2605025a40ab4e83b54e6bc6f3e4e",
+    "artifact_materialization.json": "b9ff86dfc57f2f9a0240f46b9ca82af41440528bac3d4ef6ce204f24c638db28",
+    "baseline.json": "0a8d4f6aa0f60a5443f0bb20414ae03dbbaf8bcb3cdcbcb6a0c13bc4ae60d40a",
+    "before_after_comparison.json": "ab6473f4d3dade9c356387661a36b00e4227f1a97ac0a7bc0ed9cfe14ebb5a07",
+    "compileall.txt": "973ed2a2950562422f7b020a70220236f32bef40caaa997dd698e42dbbc6c2a5",
+    "face_local/B05/evaluation_report.json": "d05d184b41613cdd2cafda0950d9d22be55f038f8447bf381d4813a114b16e6f",
+    "face_local/B05/parsed_result.json": "45ddb5b2422375cdb6367ae97c1ba590b4fbb1914b20d30eb6c13f90639d2325",
+    "face_local/B05/raw_provider_response.txt": "f8d28dbfaf839a20d7e198c386c8f7f4bafc2837095dc5d6002f2497a82a9acb",
+    "git_diff_check.txt": "531a62067629ec38e912d348148c7183f3fefa118a984525fe78804a85755a4d",
+    "gpu_authority_reconstruction.json": "f35bf21d96a871e1d5b9fe87b572da8100e360cc2be4dd90e548b637f7b00c03",
+    "gpu_health.json": "c8f63480d8776205f3b438e15da0b617e647ac08a6b962b58b221521a006a333",
+    "gpu_job_accounting.json": "b1997616b325e79dd58eb58dbf28719c60733550ad0332608ae1da96f1d98cec",
+    "lineage_validation.json": "810a41c9849d2bf1456cc1281fa996bfa293eaa2cc40e7bb70f95499a6690fb7",
+    "provider-paid-call-ledger.jsonl": "126ad231e30f917dde96f3945e904f363b4724458194a05493a4679577f66979",
+    "provider_call_accounting.json": "715e2d38fcff16f348031eab65eeb1a76bd3f272a36f322a8d3cf3c91c24346b",
+    "quality_disposition.json": "230574e5de50a60a80615f4f8ef422ae28460f2a8e32b28176ea34af4e5d03cc",
+    "summary.json": "bfef3b1f38da19758e4d7bb1bdf01ea562fc8e77018895cee2b23336a7bac760",
+    "test_results.txt": "edea1fe2e925f38d64cba1ee0f8ba3f25b2723ff28e7e65063c9b7b3e2414e63"
+  }
+}

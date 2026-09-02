@@ -1,0 +1,23 @@
+{
+  "artifactCount": 1,
+  "artifactCreated": true,
+  "error": null,
+  "gpuJobId": "4687fa4d-f26f-4719-9dcd-76523fae353d",
+  "gpuJobs": 1,
+  "manifestHash": "28a3f776c45b612897fe344aeac80d8b240490687ee5ba7d7b2ed736811b3268",
+  "manifestPath": "artifacts/identity-restoration/phase7-candidate-v3/r1-p11-r1-gpu-recovery-final-resume-20260902T050517Z/artifact/manifest.json",
+  "maxArtifacts": 1,
+  "maxGpuJobs": 1,
+  "outputArtifactId": "candidate-v3-r1-p11-B05-face-detail-denoise-040-v1",
+  "outputHash": "f9b9034a6d78a9c887acaa7c2ba78ea636b2605025a40ab4e83b54e6bc6f3e4e",
+  "outputPath": "artifacts/identity-restoration/phase7-candidate-v3/r1-p11-r1-gpu-recovery-final-resume-20260902T050517Z/artifact/restored-canonical.png",
+  "requestedParameters": {
+    "cfg": 6.0,
+    "denoise": 0.4,
+    "steps": 20
+  },
+  "status": "PASS",
+  "worker": "HARRY-ROG",
+  "workflowHash": "53dc090691b8feac2a8b8a4309d43af737e304b09330e072b4ab5632ed5aad91",
+  "workflowId": "face_restore_win_sd15_ipadapter_v3"
+}

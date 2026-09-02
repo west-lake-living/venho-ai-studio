@@ -1,0 +1,169 @@
+{
+  "allowed_imperfections_check": [],
+  "artifact_ref": {
+    "file": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/artifacts/identity-restoration/phase7-candidate-v3/r1-p11-r1-gpu-recovery-final-resume-20260902T050517Z/artifact/restored-canonical.png",
+    "hash": "sha256:f9b9034a6d78a9c887acaa7c2ba78ea636b2605025a40ab4e83b54e6bc6f3e4e",
+    "type": "face"
+  },
+  "category_scores": {
+    "eyes_and_brows": 86.0,
+    "facial_shape": 88.0,
+    "mouth_and_chin": 87.0,
+    "nose": 90.0,
+    "technical_quality": 85.0
+  },
+  "contract_refs": null,
+  "contract_version": "1.0",
+  "dna_match_score": 87.45,
+  "forbidden_violations": [],
+  "generated_at": "2026-09-02T12:07:09.379143",
+  "issues": [],
+  "kill_switch": {
+    "reason": "",
+    "triggered": false
+  },
+  "module": "validator_studio",
+  "observer": {
+    "model": "configured",
+    "provider": "gemini",
+    "samples": 1
+  },
+  "overall_score": 87.45,
+  "project": "venho_hotel",
+  "prompt_ref": null,
+  "raw_observation": {
+    "gates": [
+      {
+        "evidence": "Matching slim natural nose bridge, soft feminine jawline, delicate chin, and characteristic almond eye shape.",
+        "gate": "identity_structure",
+        "passed": true,
+        "reason": "The candidate's facial structure, jawline, nose profile, and lip contours match the reference face DNA accurately in three-quarter view."
+      },
+      {
+        "evidence": "Long almond shape with warm brown iris and horizontal emphasis.",
+        "gate": "eye_ratio",
+        "passed": true,
+        "reason": "Eye shape and proportion align with the approved character design."
+      },
+      {
+        "evidence": "Natural realistic skin texture, no exaggerated makeup, no glasses, no tattoos.",
+        "gate": "forbidden_traits",
+        "passed": true,
+        "reason": "No forbidden traits detected."
+      }
+    ],
+    "notes": [
+      "Angle is a sharp three-quarter profile, well-aligned with character proportions.",
+      "gemini face observation; grounding/web search disabled by prompt contract",
+      "no real-person or celebrity matching requested",
+      "compared against 1 approved reference image(s)"
+    ],
+    "weighted_scores": {
+      "eyes_and_brows": 86.0,
+      "facial_shape": 88.0,
+      "mouth_and_chin": 87.0,
+      "nose": 90.0,
+      "technical_quality": 85.0
+    }
+  },
+  "recommendation": "revise",
+  "section_scores": [
+    {
+      "category": "face_gate",
+      "evidence": "Matching slim natural nose bridge, soft feminine jawline, delicate chin, and characteristic almond eye shape.",
+      "key": "identity_structure",
+      "match_state": null,
+      "reason": "The candidate's facial structure, jawline, nose profile, and lip contours match the reference face DNA accurately in three-quarter view.",
+      "score": 100.0,
+      "section": "face_gate",
+      "status": "ok"
+    },
+    {
+      "category": "face_gate",
+      "evidence": "Long almond shape with warm brown iris and horizontal emphasis.",
+      "key": "eye_ratio",
+      "match_state": null,
+      "reason": "Eye shape and proportion align with the approved character design.",
+      "score": 100.0,
+      "section": "face_gate",
+      "status": "ok"
+    },
+    {
+      "category": "face_gate",
+      "evidence": "Natural realistic skin texture, no exaggerated makeup, no glasses, no tattoos.",
+      "key": "forbidden_traits",
+      "match_state": null,
+      "reason": "No forbidden traits detected.",
+      "score": 100.0,
+      "section": "face_gate",
+      "status": "ok"
+    },
+    {
+      "category": "facial_shape",
+      "evidence": "",
+      "key": "facial_shape",
+      "match_state": null,
+      "reason": "Weighted face rubric score.",
+      "score": 88.0,
+      "section": "face_weighted",
+      "status": "warning"
+    },
+    {
+      "category": "eyes_and_brows",
+      "evidence": "",
+      "key": "eyes_and_brows",
+      "match_state": null,
+      "reason": "Weighted face rubric score.",
+      "score": 86.0,
+      "section": "face_weighted",
+      "status": "warning"
+    },
+    {
+      "category": "nose",
+      "evidence": "",
+      "key": "nose",
+      "match_state": null,
+      "reason": "Weighted face rubric score.",
+      "score": 90.0,
+      "section": "face_weighted",
+      "status": "ok"
+    },
+    {
+      "category": "mouth_and_chin",
+      "evidence": "",
+      "key": "mouth_and_chin",
+      "match_state": null,
+      "reason": "Weighted face rubric score.",
+      "score": 87.0,
+      "section": "face_weighted",
+      "status": "warning"
+    },
+    {
+      "category": "technical_quality",
+      "evidence": "",
+      "key": "technical_quality",
+      "match_state": null,
+      "reason": "Weighted face rubric score.",
+      "score": 85.0,
+      "section": "face_weighted",
+      "status": "warning"
+    }
+  ],
+  "source_knowledge": [
+    {
+      "dna_contract_version": "1.1",
+      "dna_version": "1.1",
+      "file": "/Users/hanhpham/Developer/Claude-Workspace/projects/03_AI_STUDIO/venho-ai-studio/data/projects/venho_hotel/knowledge/VENHO_HOTEL_LINH_AN_DNA.json",
+      "hash": "sha256:71f839dff776ec6d6d085c5a1ab928295af8c32a9699f7929d78b04807ec0075"
+    }
+  ],
+  "subject": "linh_an",
+  "validation_notes": [
+    "Angle is a sharp three-quarter profile, well-aligned with character proportions.",
+    "gemini face observation; grounding/web search disabled by prompt contract",
+    "no real-person or celebrity matching requested",
+    "compared against 1 approved reference image(s)"
+  ],
+  "validation_type": "face",
+  "verdict": "revise"
+}
