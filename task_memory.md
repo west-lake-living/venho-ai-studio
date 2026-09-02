@@ -1,5 +1,36 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-09-02 — Candidate v3 R1-P5-R4 provider recovery recheck passed
+
+`Candidate v3 Quality Remediation R1 / R1-P5-R4-PROVIDER-RECOVERY-RECHECK =
+CLOSED / PASS`.
+
+- Explicit human authorization `PROVIDER_RECOVERY_RECHECK_AUTHORIZED=TRUE`
+  was used. The start state was R1-P5 PASS, R1-P5-R1 through R1-P5-R3
+  provider blocked, provider hold ACTIVE, boundary 9/9 PASS, and 18 pending
+  authoritative evaluations.
+- Offline preflight passed before execution: focused hold/authorization,
+  one-call-limit, Gemini adapter, failure classification,
+  truncation/malformed-output, schema/DTO, and evidence-lineage tests
+  recorded `44 passed`; compileall and `git diff --check` also passed.
+- Exactly one live Gemini `gemini-flash-latest` probe used the authoritative
+  `FACE_LOCAL/B01/sample-1` fixture with one transport attempt and zero retry.
+  Gemini returned a complete schema-valid and DTO-valid response without
+  repair. The evaluator quality recommendation was `REVISE`; this is still a
+  valid provider recovery response. Raw and parsed hashes were recorded.
+- Recovery is proven: `RECOVERY_PROBE = PASS`,
+  `PROVIDER_RECOVERY_STATUS = PASS`, and the provider hold is `RECOVERED`.
+  No second probe, bulk evaluation, fallback, provider/model switch, GPU,
+  Nano, generation, or promotion occurred.
+- State integrity remains: `BOUNDARY = 9/9 PASS`, FACE_LOCAL `0/9`,
+  SCENARIO_GLOBAL `0/9`, pending `18`, quality `UNVALIDATED`, feature flag
+  `OFF`, promotion `NO`, architecture unchanged.
+- Evidence hashes verify `24/24` files:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p5-r4-provider-recovery-recheck-20260902T010010Z/`.
+
+Resume of the 18 authoritative evaluations requires separate explicit
+authorization.
+
 ## 2026-09-02 — Candidate v3 R1-P5-R3 provider recovery recheck timed out
 
 `Candidate v3 Quality Remediation R1 / R1-P5-R3-PROVIDER-RECOVERY-RECHECK =

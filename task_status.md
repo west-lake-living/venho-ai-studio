@@ -1,5 +1,34 @@
 # VENHO AI STUDIO — Task Status
 
+### Candidate v3 Quality Remediation R1 — R1-P5-R4 Provider Recovery Recheck (2026-09-02)
+
+- `R1-P5-R4-PROVIDER-RECOVERY-RECHECK = CLOSED / PASS`; explicit
+  `PROVIDER_RECOVERY_RECHECK_AUTHORIZED=TRUE` was recorded. Start state was
+  `R1-P5-R3 = CLOSED / PROVIDER_BLOCKED` with `PROVIDER_HOLD = ACTIVE`.
+- Offline preflight passed before the live call: focused hold,
+  authorization, one-call, Gemini adapter, failure-classification,
+  schema/DTO, truncation/malformed-output, and lineage tests recorded
+  `44 passed`; compileall PASS and `git diff --check` PASS.
+- Exactly one live Gemini `gemini-flash-latest` probe ran on the existing
+  authoritative `FACE_LOCAL/B01/sample-1` fixture with one transport attempt
+  and no retry. Gemini returned a complete schema-valid, DTO-valid response
+  without repair; the quality recommendation was `REVISE`, which is valid for
+  recovery. Raw and parsed response hashes are recorded.
+- Recovery was proven: `RECOVERY_PROBE = PASS`,
+  `PROVIDER_RECOVERY_STATUS = PASS`, and `PROVIDER_HOLD = RECOVERED`. No
+  FACE_LOCAL or SCENARIO_GLOBAL batch ran; `FACE_LOCAL = 0/9`,
+  `SCENARIO_GLOBAL = 0/9`, `PENDING = 18`, `BOUNDARY = 9/9 PASS`, and quality
+  remains `UNVALIDATED`.
+- GPU jobs `0`, Nano calls `0`, alternative-provider calls `0`; no retry,
+  provider/model switch, fallback, generation, architecture, feature-flag,
+  or promotion change occurred. Candidate v3 remains `OFF`; promotion remains
+  `NO`.
+- Evidence hashes verify `24/24` files:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p5-r4-provider-recovery-recheck-20260902T010010Z/`.
+
+Resume of the 18 authoritative evaluations requires separate explicit
+authorization.
+
 ### Candidate v3 Quality Remediation R1 — R1-P5-R3 Provider Recovery Recheck (2026-09-02)
 
 - `R1-P5-R3-PROVIDER-RECOVERY-RECHECK = CLOSED / PROVIDER_BLOCKED`; explicit

@@ -1,0 +1,98 @@
+{
+  "alternativeProviderCalls": 0,
+  "architectureChanged": false,
+  "authorization": {
+    "name": "PROVIDER_RECOVERY_RECHECK_AUTHORIZED",
+    "receivedValue": "TRUE",
+    "requiredValue": "TRUE"
+  },
+  "boundary": {
+    "fail": 0,
+    "pass": 9
+  },
+  "faceLocal": {
+    "expected": 9,
+    "valid": 0
+  },
+  "failedResponses": 0,
+  "featureFlag": "OFF",
+  "finalizedFrom": null,
+  "gate": {
+    "authorization": {
+      "accepted": true,
+      "name": "PROVIDER_RECOVERY_RECHECK_AUTHORIZED",
+      "rawValuePresent": true
+    },
+    "bulkEvaluation": "BLOCKED_IN_R1_P5",
+    "maxRecoveryProbes": 1,
+    "model": "gemini-flash-latest",
+    "pendingAuthoritativeEvaluations": 18,
+    "probeCount": 1,
+    "provider": "Gemini",
+    "state": "RECOVERED",
+    "transitions": [
+      {
+        "from": "ACTIVE",
+        "reason": "explicit_human_authorization",
+        "to": "RECOVERY_CHECK_AUTHORIZED"
+      },
+      {
+        "from": "RECOVERY_CHECK_AUTHORIZED",
+        "reason": "single_minimal_probe_started",
+        "to": "RECOVERY_PROBE_IN_PROGRESS"
+      },
+      {
+        "from": "RECOVERY_PROBE_IN_PROGRESS",
+        "reason": "all_recovery_criteria_passed",
+        "to": "RECOVERED"
+      }
+    ]
+  },
+  "gpuJobs": 0,
+  "isProviderRecovered": true,
+  "nanoCalls": 0,
+  "nextAction": "AUTHORITATIVE_EVALUATION_RESUME_REQUIRES_SEPARATE_AUTHORIZATION",
+  "pendingAuthoritativeEvaluations": 18,
+  "productionPromotion": "NO",
+  "providerCalls": 1,
+  "providerHold": "RECOVERED",
+  "providerRecoveryStatus": "PASS",
+  "qualityDisposition": "UNVALIDATED",
+  "recoveryProbe": "PASS",
+  "retries": 0,
+  "scenarioGlobal": {
+    "expected": 9,
+    "valid": 0
+  },
+  "startState": {
+    "architectureChanged": false,
+    "boundary": {
+      "fail": 0,
+      "pass": 9
+    },
+    "faceLocal": {
+      "expected": 9,
+      "valid": 0
+    },
+    "featureFlag": "OFF",
+    "model": "gemini-flash-latest",
+    "pendingAuthoritativeEvaluations": 18,
+    "productionPromotion": "NO",
+    "provider": "Gemini",
+    "providerHold": "ACTIVE",
+    "qualityDisposition": "UNVALIDATED",
+    "r1P5": "CLOSED / PASS",
+    "r1P5R1": "CLOSED / PROVIDER_BLOCKED",
+    "r1P5R2": "CLOSED / PROVIDER_BLOCKED",
+    "r1P5R3": "CLOSED / PROVIDER_BLOCKED",
+    "scenarioGlobal": {
+      "expected": 9,
+      "valid": 0
+    }
+  },
+  "status": "PASS",
+  "successfulResponses": 1,
+  "taskId": "R1-P5-R4-PROVIDER-RECOVERY-RECHECK",
+  "taskStatus": "CLOSED / PASS",
+  "transportAttempts": 1
+}

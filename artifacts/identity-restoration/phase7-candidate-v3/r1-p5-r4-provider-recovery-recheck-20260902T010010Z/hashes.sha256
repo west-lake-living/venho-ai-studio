@@ -1,0 +1,30 @@
+{
+  "algorithm": "SHA-256",
+  "count": 24,
+  "files": {
+    "attempt-history.jsonl": "6f2589fc65773e8094e95ba47f1482ace5c455d569a356b949acbe9aeebbd793",
+    "baseline.json": "5a630133aeea575eb6132835f7f002b669c77f3343dfc8e988ee79168106e2f3",
+    "compileall.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "execution-manifest.jsonl": "e518f3eeb1928dd838335f8290b175009621850218bc708e9c32b5324dcf13cf",
+    "git_diff_check.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "offline_preflight.json": "9249e92dd6cf71da9d776e5200474f8858499c1d611b94176179c13f7b634fd5",
+    "parsed-provider/FACE_LOCAL/B01/sample-1.json": "f6e4ab86a835f95eccc7f6f7fe8f4c0db5a6c63fe463ddba4523df4550b214a6",
+    "probe_parsed.json": "f6e4ab86a835f95eccc7f6f7fe8f4c0db5a6c63fe463ddba4523df4550b214a6",
+    "probe_raw.txt": "0dad8cbfa07609b466f7699973fa251b40c09181bed8bcefc4b7b07069dfbd4e",
+    "probe_request_metadata.json": "801a6f141adf508ae55ee8e8b9f4083e4a8b14f566f0ca6ad609d86b55f55bac",
+    "provider-paid-call-ledger.jsonl": "45fa32d03319bbd8572596f03fe612663c07f207ec8921eff3ece459021e3ad0",
+    "r1_p5_r1_runner_stdout_stderr.txt": "49a85eb0db1479fd5c2aae8a0aab56fd38e9ba7583ca6e2024b8272ebdfbd751",
+    "r1_p5_r2_runner_stdout_stderr.txt": "a0ab9236600a210c3ad6b619ef0ae38a42954ece2216837873e038d612521103",
+    "r1_p5_r3_runner_stdout_stderr.txt": "a0ab9236600a210c3ad6b619ef0ae38a42954ece2216837873e038d612521103",
+    "r2_authorization_and_start_state.json": "fce2f35617627d722e2d69ecd2974940e65708d74e64e9f8ea5c46d6d5c71813",
+    "r3_authorization_and_start_state.json": "87a0b6d42beaf74877dcb353e68fc9b2365eac476e14ad328675b51893b14712",
+    "r4_authorization_and_start_state.json": "ca5e9f9fd68919f2c3c2c839b024b035b7183b7ffd262b0e992d7e468a1f423b",
+    "r4_compileall.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "r4_git_diff_check.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "r4_offline_preflight.json": "9249e92dd6cf71da9d776e5200474f8858499c1d611b94176179c13f7b634fd5",
+    "r4_test_results.txt": "515af061c695c35789b40dd95161a63094068fcd1d2a4e81e62ac5bb0fb6bde2",
+    "raw-provider/FACE_LOCAL/B01/sample-1.txt": "0dad8cbfa07609b466f7699973fa251b40c09181bed8bcefc4b7b07069dfbd4e",
+    "summary.json": "477b01593e44f0dc83faee3db4926e116b8652835432e9f04b7e35c34a0cf700",
+    "test_results.txt": "515af061c695c35789b40dd95161a63094068fcd1d2a4e81e62ac5bb0fb6bde2"
+  }
+}

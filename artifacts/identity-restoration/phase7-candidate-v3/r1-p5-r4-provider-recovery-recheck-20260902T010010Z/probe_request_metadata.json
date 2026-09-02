@@ -1,0 +1,41 @@
+{
+  "attemptId": "r1-p5-r4-b01-face-1",
+  "authorization": {
+    "name": "PROVIDER_RECOVERY_RECHECK_AUTHORIZED",
+    "receivedValue": "TRUE",
+    "requiredValue": "TRUE"
+  },
+  "classification": null,
+  "failedResponses": 0,
+  "fixture": {
+    "authority": "canonical_default",
+    "path": "artifacts/identity-restoration/phase7-candidate-v3/phase7-benchmark-20260828/B01-attempt-1/restored-canonical.png",
+    "sha256": "d542bef4f5017db175948f2e532414bbad1a6e4d2384a4d43439713bf7d39450"
+  },
+  "gateAssessment": {
+    "failedCriteria": [],
+    "passed": true,
+    "qualityVerdict": "Recommendation.REVISE"
+  },
+  "lineage": "VERIFIED",
+  "model": "gemini-flash-latest",
+  "outputCap": 8192,
+  "parsedSha256": "f6e4ab86a835f95eccc7f6f7fe8f4c0db5a6c63fe463ddba4523df4550b214a6",
+  "probe": {
+    "lane": "FACE_LOCAL",
+    "sample": 1,
+    "sampleId": "B01"
+  },
+  "provider": "Gemini",
+  "providerCalls": 1,
+  "rawSha256": "0dad8cbfa07609b466f7699973fa251b40c09181bed8bcefc4b7b07069dfbd4e",
+  "retries": 0,
+  "schema": {
+    "id": "FaceValidationObservation",
+    "sha256": "7ed87aad43c4db1dd3853a642ee36eaec0df63cbba372dbb3a14aef7f43bd142"
+  },
+  "status": "PASS",
+  "successfulResponses": 1,
+  "taskId": "R1-P5-R4-PROVIDER-RECOVERY-RECHECK",
+  "transportAttempts": 1
+}
