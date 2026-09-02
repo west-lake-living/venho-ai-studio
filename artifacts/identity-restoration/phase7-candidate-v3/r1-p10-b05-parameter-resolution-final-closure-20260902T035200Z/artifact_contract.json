@@ -1,0 +1,24 @@
+{
+  "caseId": "B05",
+  "contractComplete": false,
+  "currentParameters": {
+    "cfg": 6.0,
+    "denoise": 0.35,
+    "sampler": "euler",
+    "scheduler": "normal",
+    "seed": 42,
+    "steps": 20
+  },
+  "outputArtifactId": null,
+  "outputPath": null,
+  "restoreVariantId": "r1-p7-r2-b05-face-detail-v1",
+  "selectedRemediationDelta": null,
+  "status": "NOT_COMPLETABLE",
+  "unresolvedParameters": [
+    "No repository-approved B05 geometry-keyed preset exists.",
+    "No deterministic extreme-yaw/small-face rule selects a new restore value.",
+    "Passing peers use the same denoise=0.35/cfg=6.0/steps=20 baseline; they do not authorize a delta.",
+    "R1-P7-R2 proves face-detail intent but no concrete restore delta."
+  ],
+  "workflowId": "face_restore_win_sd15_ipadapter_v3"
+}

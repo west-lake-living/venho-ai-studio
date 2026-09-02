@@ -1,0 +1,33 @@
+{
+  "alternativeProviderCalls": 0,
+  "architectureChanged": false,
+  "boundary": "9/9 PASS",
+  "faceLocal": "8/9 PASS",
+  "featureFlag": "OFF",
+  "gpuJobs": 0,
+  "nanoCalls": 0,
+  "nextAction": "HUMAN_PARAMETER_DECISION_REQUIRED",
+  "parameterAuthority": "UNRESOLVED",
+  "pendingAuthoritativeEvaluations": 1,
+  "productionPromotion": "NO",
+  "providerCalls": 0,
+  "qualityDisposition": "FAIL_PENDING_B05_RECHECK",
+  "retries": 0,
+  "scenarioGlobal": "9/9 PASS",
+  "selectedDelta": null,
+  "status": "BLOCKED / HUMAN_PARAMETER_DECISION_REQUIRED",
+  "t0": "PASS",
+  "t1": "BLOCKED / HUMAN_PARAMETER_DECISION_REQUIRED",
+  "t2": "NOT_EXECUTED",
+  "t3": "NOT_EXECUTED",
+  "t4": "NOT_EXECUTED",
+  "t5": "NOT_EXECUTED",
+  "t6": "NOT_EXECUTED",
+  "taskId": "R1-P10-B05-PARAMETER-RESOLUTION-AND-FINAL-CLOSURE",
+  "unresolved": [
+    "No repository-approved B05 geometry-keyed preset exists.",
+    "No deterministic extreme-yaw/small-face rule selects a new restore value.",
+    "Passing peers use the same denoise=0.35/cfg=6.0/steps=20 baseline; they do not authorize a delta.",
+    "R1-P7-R2 proves face-detail intent but no concrete restore delta."
+  ]
+}

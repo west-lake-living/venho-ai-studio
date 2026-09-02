@@ -1,5 +1,31 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-09-02 — R1-P10 B05 remediation parameter unresolved
+
+`R1-P10-B05-PARAMETER-RESOLUTION-AND-FINAL-CLOSURE = BLOCKED /
+HUMAN_PARAMETER_DECISION_REQUIRED` under explicit
+`R1_P10_B05_PARAMETER_RESOLUTION_AND_CLOSURE_AUTHORIZED=TRUE`.
+
+- T0 verified P9's unresolved-contract start state and reconstructed known
+  authority: B05 face-detail failure, R2 variant/workflow, A2 reference,
+  geometry (`faceScale=0.0723`, `yaw=-49.08°`), current restore parameters,
+  workflow schema, and approved parameter ranges.
+- Candidate parameters were denoise, CFG, and steps. The repo has only the
+  baseline/preset values (`0.35`, `6.0`, `20`) and generic valid domains; no
+  B05 geometry-keyed preset or deterministic selection rule produces a new
+  concrete delta. Passing peers use the same baseline and do not authorize a
+  change.
+- T1 selected no delta. No artifact, GPU job, provider call, retry, Nano, or
+  alternative-provider activity occurred; T2–T6 were not executed. Boundary,
+  passing FACE_LOCAL cases, SCENARIO_GLOBAL, and production safety remain
+  protected.
+- Offline validation recorded `98 passed`, compileall PASS, and diff check
+  PASS. Evidence:
+  `artifacts/identity-restoration/phase7-candidate-v3/r1-p10-b05-parameter-resolution-final-closure-20260902T035200Z/`.
+
+Next action: human decision must supply one evidence-backed remediation delta
+before any B05 artifact materialization or authoritative recheck.
+
 ## 2026-09-02 — R1-P9 B05 artifact contract remains unresolved
 
 `R1-P9-B05-ARTIFACT-CONTRACT-AND-FINAL-CLOSURE = BLOCKED /

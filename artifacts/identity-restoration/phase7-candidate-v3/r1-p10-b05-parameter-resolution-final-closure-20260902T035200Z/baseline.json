@@ -1,0 +1,29 @@
+{
+  "authorization": {
+    "name": "R1_P10_B05_PARAMETER_RESOLUTION_AND_CLOSURE_AUTHORIZED",
+    "receivedValue": "TRUE",
+    "requiredValue": "TRUE"
+  },
+  "sourceEvidence": {
+    "p9": "artifacts/identity-restoration/phase7-candidate-v3/r1-p9-b05-artifact-contract-final-closure-20260902T034520Z",
+    "r2": "artifacts/identity-restoration/phase7-candidate-v3/r1-p7-r2-b05-face-local-remediation-20260902T033100Z"
+  },
+  "startReasons": [],
+  "startState": {
+    "architectureChanged": false,
+    "blocker": "Concrete R2 restore delta is not evidence-backed",
+    "boundary": "9/9 PASS",
+    "faceLocal": "8/9 PASS",
+    "featureFlag": "OFF",
+    "model": "gemini-flash-latest",
+    "pending": 1,
+    "productionPromotion": "NO",
+    "provider": "Gemini",
+    "providerHold": "RECOVERED",
+    "qualityDisposition": "FAIL_PENDING_B05_RECHECK",
+    "r1P9": "BLOCKED / REMEDIATION_PARAMETER_UNRESOLVED",
+    "r2": "CLOSED / REMEDIATION_READY",
+    "scenarioGlobal": "9/9 PASS"
+  },
+  "taskId": "R1-P10-B05-PARAMETER-RESOLUTION-AND-FINAL-CLOSURE"
+}

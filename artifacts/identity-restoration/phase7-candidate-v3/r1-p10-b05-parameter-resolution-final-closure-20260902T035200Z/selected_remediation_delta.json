@@ -1,0 +1,10 @@
+{
+  "after": null,
+  "authoritySource": null,
+  "before": null,
+  "delta": null,
+  "parameter": null,
+  "selectionRule": null,
+  "status": "BLOCKED / HUMAN_PARAMETER_DECISION_REQUIRED",
+  "whyThisIsNotTuning": "No evidence-backed rule selects one concrete B05 value; selecting one would be exploratory tuning."
+}
