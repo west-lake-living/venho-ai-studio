@@ -15,6 +15,7 @@ from growth_orchestrator.application.approve_and_dispatch import (
     expire_stale_approvals,
     list_pending,
     reject_publication,
+    retire_expired_gateway_incidents,
     retry_dispatch,
 )
 from growth_orchestrator.application.scheduled_dispatch import dispatch_due, scheduled_at_for
@@ -112,6 +113,25 @@ def test_expire_stale_approvals_uses_ict_date_by_default(tmp_path: Path) -> None
     expired = expire_stale_approvals(project="venho_hotel", data_root=tmp_path, registry=registry)
 
     assert [item["publication_id"] for item in expired] == [overdue]
+
+
+def test_retire_expired_gateway_incidents_preserves_audit_without_retrying(tmp_path: Path) -> None:
+    registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
+    expired = _reserve_pending(registry, platform="facebook", slot_id="slot-2026-08-17-monday")
+    current = _reserve_pending(registry, platform="instagram", slot_id="slot-2026-08-31-monday")
+    registry.update(expired, status="GATEWAY_ERROR", gateway_error="missing platform post id")
+    registry.update(current, status="GATEWAY_ERROR", gateway_error="missing platform post id")
+
+    retired = retire_expired_gateway_incidents(
+        project="venho_hotel", data_root=tmp_path, registry=registry, today=date(2026, 8, 31)
+    )
+
+    assert [row["publication_id"] for row in retired] == [expired]
+    closed = registry.find(expired)
+    assert closed["status"] == "FAILED"
+    assert closed["gateway_status"] == "HISTORICAL_UNRECONCILED"
+    assert "not retried" in closed["incident_retired_reason"]
+    assert registry.find(current)["status"] == "GATEWAY_ERROR"
 
 
 def test_approve_and_dispatch_calls_bridge_and_updates_status(tmp_path: Path) -> None:

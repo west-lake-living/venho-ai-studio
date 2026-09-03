@@ -5118,13 +5118,13 @@
       "content_package_id": "3fe5f1ff-86d9-4a83-8947-48ef5ddaa022",
       "idempotency_key": "e686e9c0f9bf0a00e0d1e8948557c83ebec3202a52df4a68ac52540e860a3169",
       "platform": "facebook",
-      "status": "GATEWAY_ERROR",
-      "gateway_status": "GATEWAY_ERROR",
+      "status": "FAILED",
+      "gateway_status": "HISTORICAL_UNRECONCILED",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-10T11:37:59.854172+00:00",
-      "updated_at": "2026-08-15T02:46:24.891173+00:00",
+      "updated_at": "2026-09-03T05:13:23.329390+00:00",
       "content": {
         "title": "Một sáng cuối tuần thật chậm bên Hồ Tây",
         "text": "Sáng cuối tuần, ra Hồ Tây thôi!\n\nKhông cần lịch trình dày đặc, một buổi sáng đi bộ quanh Hồ Tây cũng đủ làm cuối tuần trở nên đáng nhớ.\n\nHãy bắt đầu khi mặt hồ còn dịu, gió nhẹ lướt qua những hàng cây và phố xá Tây Hồ vừa tỉnh giấc. Đây là lúc lý tưởng để đi chậm, ngắm người dân chạy bộ, các cô chú đạp xe, vài nhóm bạn dừng lại bên quán cà phê nhỏ ven đường. Mọi thứ rất Hà Nội: đời thường, thư thái và có chút thơ.\n\nNếu bạn thích chụp ảnh, ánh sáng buổi sáng quanh hồ luôn mềm và trong. Nếu bạn đi cùng người thân, đây là khoảng thời gian dễ trò chuyện nhất. Còn nếu bạn đang công tác tại Hà Nội, một vòng dạo bộ trước giờ làm cũng là cách cân bằng lại nhịp ngày.\n\nTừ Ven Hồ Hotel, hành trình khám phá Tây Hồ có thể bắt đầu thật tự nhiên. Sau khi trở về, bạn có thể nghỉ lại trong không gian sạch sẽ, gọn gàng, với sảnh đón có cửa kính, biển hiệu dễ nhận ra, quầy gỗ nâu trầm, ánh sáng trung tính và những chi tiết trang trí tạo cảm giác ấm áp. Một điểm dừng vừa đủ gần hồ, vừa đủ yên để cuối tuần được thảnh thơi.\n\nNếu bạn đang lên kế hoạch cho một cuối tuần gần Hồ Tây, hãy nhắn Ven Hồ Hotel hoặc kiểm tra tình trạng phòng để chọn thời điểm phù hợp nhé.\n\n#VenHoHotel #CuoiTuanOTayHo #HoTayHaNoi #WestLakeHanoi #DiBoHoTay #HaNoiCuoiTuan #StayNearWestLake\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-saturday-facebook-ecb509da",
@@ -5241,7 +5241,9 @@
       },
       "approval_revoked_reason": "Fallback image replaced to prevent duplicate publication; human re-approval required.",
       "gateway_error": "Make.com reported PUBLISHED without a valid platform_post_id; check Webhook response mapping.",
-      "shadow_override_by": "hpham1504@gmail.com"
+      "shadow_override_by": "hpham1504@gmail.com",
+      "incident_retired_at": "2026-09-03T05:13:23.326920+00:00",
+      "incident_retired_reason": "Publishing slot expired on 2026-08-15; not retried to prevent an outdated duplicate post."
     },
     {
       "publication_id": "pub-saturday-instagram-1d45489d",
@@ -5378,13 +5380,13 @@
       "content_package_id": "b0d0f27c-d8d7-4264-b8a9-23dab9857143",
       "idempotency_key": "b9eeb8d4a6b6915859fbeaae6da6998d1c2229b86baf8ad2b4eed32ada7417a4",
       "platform": "facebook",
-      "status": "GATEWAY_ERROR",
-      "gateway_status": "GATEWAY_ERROR",
+      "status": "FAILED",
+      "gateway_status": "HISTORICAL_UNRECONCILED",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-11T13:44:54.921957+00:00",
-      "updated_at": "2026-08-17T02:50:42.879687+00:00",
+      "updated_at": "2026-09-03T05:13:23.329390+00:00",
       "content": {
         "title": "Hồ Tây buổi chiều — nơi Hà Nội thở chậm lại",
         "text": "Có những buổi chiều Hà Nội chỉ cần một mặt hồ là đủ.\n\nHồ Tây chiều nay trải rộng đến tận đường chân trời, mặt nước phẳng và tĩnh, mang sắc xanh ngọc pha lam dịu — không rực rỡ, chỉ trầm và sâu như chính thành phố này. Trời hôm nay mây thưa, nắng nhẹ, không một chút mù, nên nhìn thật xa vẫn thấy những khối nhà cao tầng in lên nền trời phía bên kia hồ.\n\nHàng cây ven hồ vừa đủ để có bóng mát, vừa đủ để lọt nắng xuống lối đi. Gió từ mặt nước thổi lên đều đều, mát và nhẹ. Vài người đạp xe chậm qua, rồi lại chỉ còn tiếng gió. Đó là nhịp sống mà Hồ Tây giữ được giữa một Hà Nội luôn tất bật: một vòng đi dạo không cần đích đến, một ly cà phê ngồi lâu hơn dự định, một buổi hẹn không ai nhìn đồng hồ.\n\nVen Hồ Hotel nằm cạnh nhịp sống ấy — một điểm dừng chân nhỏ, ấm và vừa vặn để bạn bắt đầu ngày mới bằng gió hồ, và kết thúc bằng ánh đèn thành phố phản chiếu trên mặt nước lặng.\n\nNếu bạn đang tìm một chốn nghỉ yên tĩnh bên Hồ Tây, cứ nhắn cho Ven Hồ Hotel một lời nhé — chúng tôi sẽ xem lịch phòng cùng bạn.\n\n#VenHoHotel #HoTay #KhamPhaHoTay #HaNoiBinhYen #WestLakeHanoi #ChieuHoTay #LuuTruHaNoi #WhereWestLakeMeetsElegance\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-monday-facebook-403fbe09",
@@ -5493,7 +5495,9 @@
         "checksum": "2dd564b8b6185b7f4c5a1f4d49879ce36e984caae2b8fe3e3201c1a3ae242808"
       },
       "gateway_error": "Make.com reported PUBLISHED without a valid platform_post_id; check Webhook response mapping.",
-      "shadow_override_by": "hpham1504@gmail.com"
+      "shadow_override_by": "hpham1504@gmail.com",
+      "incident_retired_at": "2026-09-03T05:13:23.326920+00:00",
+      "incident_retired_reason": "Publishing slot expired on 2026-08-17; not retried to prevent an outdated duplicate post."
     },
     {
       "publication_id": "pub-wednesday-facebook-582e1b20",
@@ -6383,13 +6387,13 @@
       "content_package_id": "fd9c942a-b722-486c-b764-049bb915bf1c",
       "idempotency_key": "09a88b7348e743e7009ca5d6873399d624a5c61da34231ab1a56991c768f9028",
       "platform": "facebook",
-      "status": "GATEWAY_ERROR",
-      "gateway_status": "GATEWAY_ERROR",
+      "status": "FAILED",
+      "gateway_status": "HISTORICAL_UNRECONCILED",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T04:10:31.232934+00:00",
-      "updated_at": "2026-08-17T02:50:46.714613+00:00",
+      "updated_at": "2026-09-03T05:13:23.329390+00:00",
       "content": {
         "title": "6 giờ sáng ở Hồ Tây: giờ tập của người Hà Nội",
         "text": "6 giờ sáng, quanh Hồ Tây đông hơn nhiều người tưởng.\n\nKhông phải khách du lịch. Là người Hà Nội.\n\nTrên vỉa hè ven hồ, mấy đôi vợt cầu lông đã kịp qua vài lượt trước khi trời sáng hẳn. Một nhóm tập dưỡng sinh mở loa nhỏ, động tác chậm và đều. Người chạy bộ đi vòng ngoài, người đi bộ đi vòng trong, xe đạp len giữa hai làn đó mà chẳng ai vướng ai. Có người chỉ ra ngồi trên bậc đá, nhìn mặt nước, thế là xong buổi sáng.\n\nĐến khoảng 7 giờ, nhịp ấy tan dần. Vợt xếp vào túi, loa tắt, mọi người tản về nhà, đổi sang một ngày làm việc bình thường. Hồ Tây trả lại sự yên tĩnh cho những ai đến muộn hơn.\n\nĐầu tuần ở Hà Nội, nếu muốn bắt đầu nhẹ nhàng, đây là khung giờ đáng thử. Không cần lịch trình, không cần chuẩn bị gì, chỉ cần ra khỏi cửa sớm hơn thói quen một chút.\n\nVen Hồ Hotel nằm trên phố Nguyễn Đình Thi, nên khoảng cách từ phòng ra mặt hồ chỉ là một đoạn đi bộ ngắn. Lúc quay về, cửa kính mở ra một sảnh nhỏ gọn gàng: sàn gạch nâu với hoa văn tròn, quầy lễ tân gỗ nâu đỏ, vài bức tranh trên tường và ánh đèn dịu vừa đủ cho buổi sáng.\n\nNếu bạn đang xếp lịch cho những ngày ở Hà Nội, nhắn Ven Hồ Hotel để kiểm tra phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhamPhaHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-monday-facebook-7a434f47",
@@ -6512,7 +6516,9 @@
         "checksum": "34c739bd8da3a8aeb93d9f75217e37af0df241d8149fd561c33311b5c691f22c"
       },
       "gateway_error": "Make.com reported PUBLISHED without a valid platform_post_id; check Webhook response mapping.",
-      "shadow_override_by": "hpham1504@gmail.com"
+      "shadow_override_by": "hpham1504@gmail.com",
+      "incident_retired_at": "2026-09-03T05:13:23.326920+00:00",
+      "incident_retired_reason": "Publishing slot expired on 2026-08-17; not retried to prevent an outdated duplicate post."
     },
     {
       "publication_id": "pub-monday-instagram-1d1b5bab",
@@ -8100,13 +8106,13 @@
       "content_package_id": "4663c293-0e07-4dde-b952-5bde737d14c8",
       "idempotency_key": "235e93d214aedb2b5162215f441b57618dfc9f9577991a732832181425a4bb91",
       "platform": "facebook",
-      "status": "GATEWAY_ERROR",
-      "gateway_status": "GATEWAY_ERROR",
+      "status": "FAILED",
+      "gateway_status": "HISTORICAL_UNRECONCILED",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T11:06:45.501693+00:00",
-      "updated_at": "2026-08-19T02:48:00.145138+00:00",
+      "updated_at": "2026-09-03T05:13:23.329390+00:00",
       "content": {
         "title": "Một buổi chiều trên ban công nhìn ra Hồ Tây",
         "text": "Ở Tây Hồ, chỗ ngồi đẹp nhất đôi khi không nằm sát mặt nước, mà ở trên cao một chút.\n\nĐi bộ quanh hồ, bạn nhìn mặt nước ngang tầm mắt. Nhưng khi ngồi trên một ban công, tầm nhìn mở ra rộng hơn: đường viền của hồ, những mái nhà thấp, xe cộ đi lại chậm dần khi trời ngả chiều.\n\nABC Coffee Roasters là một trong những quán cà phê ở khu vực này có ban công nhìn trọn Hồ Tây, phù hợp cho những ai muốn ngồi lâu một chút thay vì ghé qua rồi đi. Không cần lịch trình dày, chỉ cần một chỗ ngồi, một ly cà phê và đủ thời gian để nhìn ánh sáng đổi màu trên mặt hồ.\n\nSau đó, đường về cũng là một phần của buổi chiều. Từ phía Nguyễn Đình Thi, gió từ hồ theo bạn suốt quãng đi bộ. Ven Hồ Hotel nằm ngay khu vực này, một khách sạn nhỏ với sảnh lát gạch nâu hoa văn tròn, quầy lễ tân gỗ sẫm và cửa kính nhìn ra phố. Không cầu kỳ, chỉ đủ gọn gàng và yên tĩnh để bạn cất máy ảnh xuống, nghỉ một lát rồi tính tiếp bữa tối ở đâu.\n\nHồ Tây không cần được khám phá vội. Một ban công, một buổi chiều, thế là đủ cho ngày hôm đó.\n\nNếu bạn đang tìm một khách sạn view Hồ Tây để làm điểm dừng chân ở Hà Nội, nhắn tin cho Ven Hồ Hotel để kiểm tra phòng trống cho những ngày bạn dự định đến nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhamPhaHoTay #KhachSanHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-dfbd408e",
@@ -8245,7 +8251,9 @@
         "checksum": "341c71fa09d83ee8bb6e80a397bdf2b63e0090ac8d113092e2828091b26087bc"
       },
       "gateway_error": "Make.com reported PUBLISHED without a valid platform_post_id; check Webhook response mapping.",
-      "shadow_override_by": "hpham1504@gmail.com"
+      "shadow_override_by": "hpham1504@gmail.com",
+      "incident_retired_at": "2026-09-03T05:13:23.326920+00:00",
+      "incident_retired_reason": "Publishing slot expired on 2026-08-19; not retried to prevent an outdated duplicate post."
     },
     {
       "publication_id": "pub-wednesday-facebook-5fe8cd02",
@@ -8379,13 +8387,13 @@
       "content_package_id": "cf34cd70-b45e-46bc-a25c-5f5a42c0b35e",
       "idempotency_key": "c33845b18ffcdae6bf13303b4c4e4a76dcbe7a48b6f2eae9f917aa42894f4dc0",
       "platform": "facebook",
-      "status": "GATEWAY_ERROR",
-      "gateway_status": "GATEWAY_ERROR",
+      "status": "FAILED",
+      "gateway_status": "HISTORICAL_UNRECONCILED",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T11:10:02.509908+00:00",
-      "updated_at": "2026-08-26T02:55:27.510747+00:00",
+      "updated_at": "2026-09-03T05:13:23.329390+00:00",
       "content": {
         "title": "Treebee Coffee ở 171 Vệ Hồ — một buổi chiều chậm bên Hồ Tây",
         "text": "Có những con đường ở Tây Hồ mà bạn chỉ tìm ra khi đi bộ, không phải khi mở bản đồ. Vệ Hồ là một trong số đó.\n\nĐường men theo mép nước, hẹp, nhiều đoạn có cây rủ xuống. Xe cộ ít hơn, tiếng phố cũng lùi lại phía sau. Đi một lúc thì tới số 171 — Treebee Coffee, một quán cà phê nhìn ra Hồ Tây với phần thiết kế được làm khá riêng, kiểu không gian mà người ta muốn ngồi lâu hơn là ghé rồi đi.\n\nHồ Tây có cái hay là cùng một mặt nước nhưng mỗi giờ lại khác. Buổi trưa nước sáng và phẳng. Về chiều, khi nắng hạ xuống thấp, cả mặt hồ đổi màu rất nhanh — chỉ mười lăm phút là khung cảnh trước mắt đã thành một bức khác. Ngồi trong một quán hướng ra hồ vào lúc đó, bạn gần như không cần làm gì thêm.\n\nĐây cũng là kiểu buổi chiều mà chúng tôi hay gợi ý cho khách: không lịch trình, không phải chạy đâu cả. Chỉ đi bộ men hồ, tìm một chỗ ngồi, rồi quay về.\n\nVen Hồ Hotel nằm trên Nguyễn Đình Thi, cùng khu Tây Hồ, nên những chỗ như vậy đều nằm trong tầm đi bộ hoặc một cuốc xe ngắn. Về đến sảnh, sàn gạch nâu, quầy lễ tân gỗ sẫm và mấy bức tranh trên tường — đủ yên để kết lại một ngày.\n\nNếu bạn đang tính vài ngày ở Hà Nội và muốn lấy Hồ Tây làm điểm xuất phát, nhắn tin cho Ven Hồ Hotel để xem còn phòng những ngày đó nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhamPhaHoTay #CafeHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-7dcf68c0",
@@ -8524,7 +8532,9 @@
         "checksum": "91d30203f4cbe9a8e2688153e38c7dd3b16ee81713ab14d6ffd1a844747f612f"
       },
       "gateway_error": "Make.com reported PUBLISHED without a valid platform_post_id; check Webhook response mapping.",
-      "shadow_override_by": "hpham1504@gmail.com"
+      "shadow_override_by": "hpham1504@gmail.com",
+      "incident_retired_at": "2026-09-03T05:13:23.326920+00:00",
+      "incident_retired_reason": "Publishing slot expired on 2026-08-26; not retried to prevent an outdated duplicate post."
     },
     {
       "publication_id": "pub-monday-facebook-a2fd842d",
@@ -9309,13 +9319,13 @@
       "content_package_id": "52ef1491-ff4e-49e9-8bf0-3e910ee68d99",
       "idempotency_key": "e2bbfe2087bd6f0e2d4dd0f388ecc80bc2779531748d53b27298ae4f80cf126e",
       "platform": "facebook",
-      "status": "GATEWAY_ERROR",
-      "gateway_status": "GATEWAY_ERROR",
+      "status": "FAILED",
+      "gateway_status": "HISTORICAL_UNRECONCILED",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T11:38:28.123466+00:00",
-      "updated_at": "2026-08-22T02:44:11.491489+00:00",
+      "updated_at": "2026-09-03T05:13:23.329390+00:00",
       "content": {
         "title": "Cuối tuần ở Tây Hồ bắt đầu bằng một bữa ăn muộn",
         "text": "Cuối tuần ở Tây Hồ thường bắt đầu muộn hơn một chút. Khoảng mười giờ, khi nắng đã lên đủ cao và mặt hồ chỉ còn lại màu xanh phẳng.\n\nGiờ đó, đường Nguyễn Đình Thi có nhịp riêng. Người đạp xe không còn vội, vài nhóm bạn ngồi lại lâu hơn với ly cà phê, có người chỉ đi bộ dọc hàng cây rồi dừng ở một quán nào đó ven đường.\n\nBữa ăn của ngày cuối tuần cũng vì thế mà lệch đi. Không hẳn là bữa sáng, cũng chưa tới bữa trưa. Một đĩa ăn no, một ly cà phê hoặc nước ép, ngồi quay mặt ra phía hồ và không nhìn đồng hồ. Ở Tây Hồ, kiểu ăn muộn này không phải trào lưu, chỉ là cách nhiều người ở đây giữ lại một buổi sáng cho riêng mình.\n\nĂn xong thì đi bộ. Vòng hồ đủ dài để bạn không phải nghĩ gì nhiều, và đủ gần để quay về khi nắng bắt đầu gắt.\n\nCửa kính của Ven Hồ Hotel mở ra một khoảng mát. Sàn gạch nâu với hoa văn tròn, quầy lễ tân gỗ nâu sẫm, mấy bức tranh treo trên tường và ánh đèn dịu vừa đủ. Một chỗ nghỉ nhỏ, gọn gàng, để buổi chiều còn lại vẫn thuộc về bạn.\n\nNếu bạn đang tính một cuối tuần chậm ở Hà Nội, nhắn tin cho Ven Hồ Hotel để kiểm tra phòng trống cho những ngày bạn muốn ở lại Tây Hồ.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhamPhaHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-saturday-facebook-3f838f77",
@@ -9438,7 +9448,9 @@
         "checksum": "b8a9a2e766a707cec135297284b2aeb4ab7f334437369f1ab377ead7f2fb0b62"
       },
       "gateway_error": "Make.com reported PUBLISHED without a valid platform_post_id; check Webhook response mapping.",
-      "shadow_override_by": "hpham1504@gmail.com"
+      "shadow_override_by": "hpham1504@gmail.com",
+      "incident_retired_at": "2026-09-03T05:13:23.326920+00:00",
+      "incident_retired_reason": "Publishing slot expired on 2026-08-22; not retried to prevent an outdated duplicate post."
     },
     {
       "publication_id": "pub-saturday-instagram-23152520",
@@ -9584,13 +9596,13 @@
       "content_package_id": "8e56c09f-280b-42bb-8aa2-c148914ba745",
       "idempotency_key": "dd850a85c41d4b2a267963c46f9ad0339fc1f497dec0849096e98de039ccb0e5",
       "platform": "facebook",
-      "status": "GATEWAY_ERROR",
-      "gateway_status": "GATEWAY_ERROR",
+      "status": "FAILED",
+      "gateway_status": "HISTORICAL_UNRECONCILED",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T11:41:16.162725+00:00",
-      "updated_at": "2026-08-24T02:53:34.246224+00:00",
+      "updated_at": "2026-09-03T05:13:23.329390+00:00",
       "content": {
         "title": "Chiếc xe đạp chở rau trên đường Nguyễn Đình Thi",
         "text": "Trên đường Nguyễn Đình Thi, thứ đi qua trước cả xe máy thường là một chiếc xe đạp chở rau.\n\nRau muống, mướp, mấy bó hành xếp chồng lên nhau, buộc lại bằng dây cao su. Người đạp xe đi chậm, sát mép đường, bên tay phải là mặt Hồ Tây còn phẳng.\n\nĐầu tuần ở khu này không ồn. Có người đi bộ vòng hồ, có người dừng lại mua nửa mớ rau ngay bên lề đường, nói vài câu rồi ai lại việc người ấy. Không ai vội, kể cả sáng thứ Hai.\n\nĐó là phần Hà Nội mà bạn khó gặp nếu chỉ di chuyển bằng xe hơi từ điểm này sang điểm khác. Nó nằm ở tốc độ đi bộ, ở khoảng thời gian mười lăm phút bạn chưa biết làm gì sau khi ăn sáng.\n\nVen Hồ Hotel nằm ngay trên tuyến đường ấy. Sảnh nhỏ, sàn gạch nâu, quầy lễ tân gỗ tối màu, vài bức tranh trên tường — vừa đủ để bước ra cửa kính là đã ở giữa nhịp sống Hồ Tây, và bước vào là được yên tĩnh trở lại. Chiều muộn, cũng con đường đó, ánh sáng đổi màu và hoàng hôn Hồ Tây trở thành thứ quen thuộc chứ không còn là điểm phải đi xem.\n\nNếu bạn đang tính vài ngày ở Hà Nội và muốn ở gần Hồ Tây, nhắn tin cho Ven Hồ Hotel để xem lịch phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #NguyenDinhThi #WestLakeHanoi #KhachSanViewHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-monday-facebook-133488ff",
@@ -9714,7 +9726,9 @@
         "checksum": "dc81c758e3571bdcf9941dde4e8da293ed5198b49659d8e4a1b0f0ecfcf9a8d1"
       },
       "gateway_error": "Make.com reported PUBLISHED without a valid platform_post_id; check Webhook response mapping.",
-      "shadow_override_by": "hpham1504@gmail.com"
+      "shadow_override_by": "hpham1504@gmail.com",
+      "incident_retired_at": "2026-09-03T05:13:23.326920+00:00",
+      "incident_retired_reason": "Publishing slot expired on 2026-08-24; not retried to prevent an outdated duplicate post."
     },
     {
       "publication_id": "pub-monday-instagram-1617565e",
@@ -9859,13 +9873,13 @@
       "content_package_id": "cceb942d-40c1-4f45-9d7b-2c22149ca718",
       "idempotency_key": "f8802fd815e74c94ce194cd528b2cf0b706ce516db2f492c8a58fa765ba767a4",
       "platform": "facebook",
-      "status": "GATEWAY_ERROR",
-      "gateway_status": "GATEWAY_ERROR",
+      "status": "FAILED",
+      "gateway_status": "HISTORICAL_UNRECONCILED",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T11:42:20.609556+00:00",
-      "updated_at": "2026-08-26T02:55:34.113286+00:00",
+      "updated_at": "2026-09-03T05:13:23.329390+00:00",
       "content": {
         "title": "Chợ Hoa Quảng Bá: một buổi sáng nhiều hoa ở Tây Hồ",
         "text": "Ở Tây Hồ có một chỗ mà bạn nhận ra mình đang đứng giữa rất nhiều hoa, trước khi kịp nghĩ đến việc chụp một tấm ảnh.\n\nĐó là Chợ Hoa Quảng Bá, 236 Đường Âu Cơ — một trong những chợ hoa lớn của khu Tây Hồ.\n\nHoa ở đây không bày lẻ từng cành. Chúng được bó lại, dựng trong thùng nước, xếp lên xe, chuyển tay từ người bán sang người mua rất nhanh. Nền chợ lúc nào cũng ẩm, không khí có mùi lá tươi và nước. Người ta gọi nhau, cân, đếm, buộc lại, rồi lại chở đi.\n\nNhiều người tìm đến Quảng Bá để chụp ảnh, và chợ đủ rộng, đủ nhiều màu để làm việc đó. Nhưng nếu được, hãy đi chậm một vòng trước khi giơ máy lên. Hỏi một câu trước khi chụp vào sạp của ai đó. Mua một bó nhỏ mang về, dù chỉ để cắm trong phòng vài ngày. Chợ hoa dễ chịu nhất khi bạn là một người khách, chứ không chỉ là một người đứng ngắm.\n\nTừ Nguyễn Đình Thi, đường ra Âu Cơ vẫn men theo mặt nước, nên chuyến đi buổi sớm thường kết thúc bằng một vòng ven hồ khi trời đã sáng hẳn.\n\nVen Hồ Hotel nằm ở đoạn đó. Khách về thường đẩy cửa kính vào sảnh, sàn gạch nâu với những vòng hoa văn tròn, quầy lễ tân gỗ nâu đỏ, tranh trên tường — chỗ để gửi tạm bó hoa và xin thêm chiếc bình trước khi lên phòng.\n\nNếu bạn đang tính vài ngày ở Hà Nội quanh Hồ Tây, nhắn tin cho Ven Hồ Hotel để xem lịch phòng những ngày đó nhé.\n\n#VenHoHotelHanoi #ChoHoaQuangBa #HoTay #KhachSanHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-33c453fb",
@@ -9998,7 +10012,9 @@
         "checksum": "21f48422e8d23be418ac90e3b679a7a02fde43e12a3524289014578dd357db22"
       },
       "gateway_error": "Make.com reported PUBLISHED without a valid platform_post_id; check Webhook response mapping.",
-      "shadow_override_by": "hpham1504@gmail.com"
+      "shadow_override_by": "hpham1504@gmail.com",
+      "incident_retired_at": "2026-09-03T05:13:23.326920+00:00",
+      "incident_retired_reason": "Publishing slot expired on 2026-08-26; not retried to prevent an outdated duplicate post."
     },
     {
       "publication_id": "pub-wednesday-instagram-f4eac814",
@@ -10154,13 +10170,13 @@
       "content_package_id": "9e46dc0e-cdc0-43bb-9f03-5e937208cbdc",
       "idempotency_key": "66baed2d95ab119b7d61ba7d55aae423e544a0ac451d8b58bd23fbf9dd902542",
       "platform": "facebook",
-      "status": "GATEWAY_ERROR",
-      "gateway_status": "GATEWAY_ERROR",
+      "status": "FAILED",
+      "gateway_status": "HISTORICAL_UNRECONCILED",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T11:43:27.526924+00:00",
-      "updated_at": "2026-08-28T13:26:57.599586+00:00",
+      "updated_at": "2026-09-03T05:13:23.329390+00:00",
       "content": {
         "title": "Chiều cuối tuần ở phía Hồ Tây",
         "text": "Chiều thứ Bảy ở Hồ Tây thường bắt đầu đổi màu trước khi đèn đường kịp sáng.\n\nĐoạn Nguyễn Đình Thi giờ đó đi bộ rất dễ chịu. Người tan làm về muộn, người dắt con ra hồ, vài chiếc xe đạp thong thả bên lề. Ánh sáng hạ dần, mặt nước chuyển từ xám bạc sang cam nhạt, rồi tím.\n\nĐẩy cánh cửa kính bước vào Ven Hồ Hotel, cái ồn nhẹ của con đường ở lại phía sau. Sàn gạch nâu với những vòng tròn lặp lại dưới chân, quầy lễ tân gỗ nâu đỏ trầm, tủ chìa khóa gọn gàng phía sau, vài bức tranh trên tường và ánh đèn dịu vừa đủ. Không gian không lớn, sạch sẽ, đúng kiểu một khách sạn boutique tầm trung: mọi thứ ở đúng chỗ của nó, không cố gây ấn tượng.\n\nCuối tuần, phần đáng chờ nhất lại nằm ở tầng trên cùng. Lên đến đó, khoảng trời mở ra, và Hồ Tây trải rộng theo cách mà từ mặt đường bạn không nhìn thấy được. Hoàng hôn Hồ Tây không diễn ra nhanh. Nó kéo dài đủ lâu để bạn kịp gọi tên vài màu, kịp nhận ra gió tháng này mát hơn tuần trước, kịp thấy đèn của những mái nhà quanh hồ bật lên lần lượt.\n\nCó những khung cảnh không cần phải làm gì nhiều. Chỉ đứng yên, và để buổi chiều tự đi hết phần của nó.\n\nVới nhiều người, một chuyến đi Hà Nội đẹp nhất khi có cả hai nhịp: buổi sáng đi khám phá phố, và buổi chiều trở về phía Tây Hồ để mọi thứ chậm lại.\n\nNếu cuối tuần này bạn định ở lại phía Hồ Tây, nhắn cho Ven Hồ Hotel để xem còn phòng trống những ngày bạn cần nhé.\n\n#VenHoHotelHanoi #HoangHonHoTay #KhachSanViewHoTay #NguyenDinhThi #HoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-friday-facebook-21f4533d",
@@ -10284,7 +10300,9 @@
         "checksum": "24a58efc1524ca2e4b25be21d51890dcc89a16554653f0d00c405a8cec59d0a2"
       },
       "gateway_error": "Make.com reported PUBLISHED without a valid platform_post_id; check Webhook response mapping.",
-      "shadow_override_by": "hpham1504@gmail.com"
+      "shadow_override_by": "hpham1504@gmail.com",
+      "incident_retired_at": "2026-09-03T05:13:23.326920+00:00",
+      "incident_retired_reason": "Publishing slot expired on 2026-08-28; not retried to prevent an outdated duplicate post."
     },
     {
       "publication_id": "pub-friday-instagram-8e860d5e",
@@ -10430,13 +10448,13 @@
       "content_package_id": "7364333d-e732-40eb-963f-1f941feffffd",
       "idempotency_key": "9c0fa3936f28dd1882e811e06db6c933b8ee6aadd57c286718b42c05594eca26",
       "platform": "facebook",
-      "status": "GATEWAY_ERROR",
-      "gateway_status": "GATEWAY_ERROR",
+      "status": "FAILED",
+      "gateway_status": "HISTORICAL_UNRECONCILED",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T11:46:48.352110+00:00",
-      "updated_at": "2026-08-29T08:21:27.902157+00:00",
+      "updated_at": "2026-09-03T05:13:23.329390+00:00",
       "content": {
         "title": "Cuối tuần ở Hồ Tây, phần lớn kế hoạch được viết bằng đôi chân",
         "text": "Cuối tuần ở Hồ Tây thường không cần một kế hoạch dài. Chỉ cần bước ra khỏi cửa và chọn hướng đi dọc mặt nước.\n\nMặt hồ cuối tuần rộng và chậm hơn ngày thường. Trên đường Nguyễn Đình Thi, người ta đi bộ thành từng nhóm nhỏ, có người dắt theo con, có người chỉ đứng tựa vào lan can nhìn nước một lúc rồi đi tiếp. Vài chiếc thuyền neo im, mấy hàng cây rủ xuống sát bờ.\n\nBuổi chiều là quãng đẹp nhất để đi chậm. Ánh sáng hạ dần xuống mặt nước, đổi màu từng chút một, và hoàng hôn Hồ Tây thường kéo dài hơn cảm giác của mình. Không cần chụp gì nhiều, cứ đi hết một đoạn bờ rồi quay lại là vừa đủ cho một buổi cuối tuần.\n\nĐiều thoải mái nhất khi ở gần đây là bạn có thể về giữa chừng. Đẩy cánh cửa kính, bước vào sảnh, sàn gạch nâu với những vòng tròn nhạt dưới chân, quầy lễ tân gỗ sẫm bên tay phải, mấy khung tranh treo trên tường và thứ ánh sáng dịu vừa phải. Không gian không lớn, gọn gàng, đủ để dừng lại vài phút, gửi chìa khoá hoặc hỏi đường tới một quán ăn gần đó, rồi lại đi ra hồ khi trời tối hẳn.\n\nVen Hồ Hotel nằm ở khoảng cách như vậy với Hồ Tây: gần đủ để bạn đi bộ, và cũng gần đủ để bạn không phải nghĩ nhiều về đường về.\n\nNếu bạn đang tính một cuối tuần chậm bên Hồ Tây, nhắn Ven Hồ Hotel để hỏi lịch phòng cho những ngày bạn dự định ở Hà Nội.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanViewHoTay #NguyenDinhThi #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-saturday-facebook-4b118a9c",
@@ -10560,7 +10578,9 @@
         "checksum": "9f5898e29d061e14c462bd4bb9c54d2b4b4257493881a4e47f39e0ef2407e618"
       },
       "gateway_error": "Make.com reported PUBLISHED without a valid platform_post_id; check Webhook response mapping.",
-      "shadow_override_by": "hpham1504@gmail.com"
+      "shadow_override_by": "hpham1504@gmail.com",
+      "incident_retired_at": "2026-09-03T05:13:23.326920+00:00",
+      "incident_retired_reason": "Publishing slot expired on 2026-08-29; not retried to prevent an outdated duplicate post."
     },
     {
       "publication_id": "pub-saturday-instagram-8a17cc46",
@@ -10705,13 +10725,13 @@
       "content_package_id": "5b392fea-bf83-48e7-966b-6036828be85c",
       "idempotency_key": "7c304282e4387e282e1f2bb6f95e367bcb8a182ca35a6d919117231053c7cddd",
       "platform": "facebook",
-      "status": "GATEWAY_ERROR",
-      "gateway_status": "GATEWAY_ERROR",
+      "status": "FAILED",
+      "gateway_status": "HISTORICAL_UNRECONCILED",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-27T08:09:10.228918+00:00",
-      "updated_at": "2026-08-31T07:46:35.429142+00:00",
+      "updated_at": "2026-09-03T05:13:23.329390+00:00",
       "content": {
         "title": "Góc phố quen trên đường Nguyễn Đình Thi và những buổi sáng đầu tuần",
         "text": "Có những góc phố người Hà Nội đi qua mỗi ngày mà vẫn không thấy chán. Nguyễn Đình Thi là một trong số đó.\n\nSáng đầu tuần, con đường ven hồ thức dậy theo một trật tự rất riêng. Vài chiếc xe chở hàng đi chậm sát lề. Người tập thể dục vòng nốt đoạn cuối. Hàng cây đổ bóng loang lổ xuống mặt đường, và bên kia là mặt nước Hồ Tây, sáng dần lên theo từng phút.\n\nGóc phố này không có gì để \"check-in\". Không cổng chào, không điểm nhấn nào để chỉ tay vào. Nhưng đó lại là lý do nó dễ chịu: bạn đi qua mà không cần phải làm gì cả.\n\nBước qua cánh cửa kính của Ven Hồ Hotel, tiếng phố lùi lại một nhịp. Sàn gạch nâu với những vòng tròn lặp đi lặp lại dưới chân. Quầy lễ tân gỗ màu nâu đỏ đậm, một bức tranh treo trên tường, ánh sáng vừa đủ, không gắt. Sảnh không rộng, và có lẽ chính vì thế mà nó ấm.\n\nMột góc phố quen, một chỗ để đặt hành lý xuống rồi bắt đầu hoặc kết thúc một ngày ở Hà Nội. Đôi khi chuyến đi chỉ cần đúng chừng đó.\n\nNếu bạn đang tính một chuyến Hà Nội và muốn ở gần Hồ Tây, nhắn cho Ven Hồ Hotel để xem phòng trống những ngày đó nhé.\n\n#VenHoHotelHanoi #HoTay #NguyenDinhThi #WestLakeHanoi #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-monday-facebook-77635f18",
@@ -10834,7 +10854,9 @@
         "checksum": "f2a91a2dfa9a042def6883b183c72d6a3e5eac75a67faf8161da45bd24389b0d"
       },
       "gateway_error": "Make.com reported PUBLISHED without a valid platform_post_id; check Webhook response mapping.",
-      "shadow_override_by": "hpham1504@gmail.com"
+      "shadow_override_by": "hpham1504@gmail.com",
+      "incident_retired_at": "2026-09-03T05:13:23.326920+00:00",
+      "incident_retired_reason": "Publishing slot expired on 2026-08-31; not retried to prevent an outdated duplicate post."
     },
     {
       "publication_id": "pub-monday-instagram-756194ea",

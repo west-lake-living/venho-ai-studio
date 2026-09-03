@@ -16,6 +16,7 @@ from growth_orchestrator.application.approve_and_dispatch import (
     expire_stale_approvals,
     list_pending,
     reject_publication,
+    retire_expired_gateway_incidents,
     retry_dispatch,
 )
 from growth_orchestrator.application.scheduled_dispatch import dispatch_due
@@ -38,6 +39,15 @@ def expire_stale_approvals_cmd(
     """Retire PENDING_APPROVAL drafts whose publishing date has passed."""
     publications = expire_stale_approvals(project=project)
     typer.echo(json.dumps({"ok": True, "expired": publications}, ensure_ascii=False, indent=2))
+
+
+@app.command("retire-stale-incidents")
+def retire_stale_incidents_cmd(
+    project: str = typer.Option("venho_hotel"),
+) -> None:
+    """Archive past-due GATEWAY_ERROR rows; never re-send an old post."""
+    publications = retire_expired_gateway_incidents(project=project)
+    typer.echo(json.dumps({"ok": True, "retired": publications}, ensure_ascii=False, indent=2))
 
 
 @app.command("run")

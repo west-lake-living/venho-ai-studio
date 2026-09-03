@@ -134,6 +134,47 @@ def expire_stale_approvals(
     )
 
 
+def retire_expired_gateway_incidents(
+    *,
+    project: str = "venho_hotel",
+    data_root: Path = Path("data/projects"),
+    registry: Optional[PublicationRegistry] = None,
+    today: Optional[date] = None,
+) -> list[dict]:
+    """Archive past-due gateway errors without deleting the audit record.
+
+    Once a slot is in the past, retrying it risks a duplicate, outdated post.
+    The row remains in Registry history but leaves the live incident queue.
+    """
+    registry = registry or PublicationRegistry(project, data_root=data_root)
+    cutoff = today or datetime.now(ZoneInfo("Asia/Ho_Chi_Minh")).date()
+    expired = [
+        item for item in registry.load()["publications"]
+        if item.get("status") == GATEWAY_ERROR_STATUS
+        and (slot_date := _slot_date(item)) is not None
+        and slot_date < cutoff
+    ]
+    retired_at = datetime.now(timezone.utc).isoformat()
+    return registry.update_many_if_status(
+        [
+            (
+                item["publication_id"],
+                GATEWAY_ERROR_STATUS,
+                {
+                    "status": "FAILED",
+                    "gateway_status": "HISTORICAL_UNRECONCILED",
+                    "incident_retired_at": retired_at,
+                    "incident_retired_reason": (
+                        f"Publishing slot expired on {_slot_date(item).isoformat()}; "
+                        "not retried to prevent an outdated duplicate post."
+                    ),
+                },
+            )
+            for item in expired
+        ]
+    )
+
+
 def approve_publications(
     *,
     publication_ids: list[str],
