@@ -1,5 +1,5 @@
 ---
-rs_id: RS-weather-2026-09-04
+rs_id: RS-weather-2026-09-08
 type: trend
 domain: weather_signal
 evidence_level: R2-T
@@ -16,7 +16,7 @@ tags:
 - rain
 ---
 
-# 2026-09-04 — rain
+# 2026-09-08 — rain
 
 - Mưa ngoài cửa kính — không gian ấm trong sảnh
 - Scenario: venho_lobby_cozy
