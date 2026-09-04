@@ -11308,13 +11308,13 @@
       "content_package_id": "8f0a2442-ed5d-4573-ba55-6c47509a23f2",
       "idempotency_key": "64ba58d83acbf7140d81e34a80918befff2d2103b8803d1b026389deed7ce40f",
       "platform": "facebook",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
-      "platform_post_id": null,
-      "permalink": null,
+      "status": "PUBLISHED",
+      "gateway_status": "PUBLISHED",
+      "platform_post_id": "1124616474074140_122134927713351048",
+      "permalink": "https://www.facebook.com/1124616474074140_122134927713351048",
       "reconciliation_proof": null,
       "created_at": "2026-08-27T08:12:08.044120+00:00",
-      "updated_at": "2026-08-27T08:45:27.203872+00:00",
+      "updated_at": "2026-09-04T06:37:23.723563+00:00",
       "content": {
         "title": "Những chi tiết nhỏ thường ở lại lâu hơn ta tưởng",
         "text": "Sau một chuyến đi, thứ còn lại trong trí nhớ hiếm khi là những gì to tát.\n\nThường là một chi tiết rất nhỏ. Cách cánh cửa kính khép lại sau lưng khi bạn vừa đi bộ về từ đường Nguyễn Đình Thi. Những vòng tròn lặp đi lặp lại trên nền gạch nâu dưới chân, thứ hoa văn mà đến ngày thứ hai bạn đã quen mắt. Mặt quầy lễ tân bằng gỗ tông nâu đỏ sẫm, hơi trầm, đủ để căn phòng bớt lạnh.\n\nPhía sau quầy là chiếc tủ đựng chìa khóa, mỗi ô một số phòng. Trên tường có một bức tranh. Ánh sáng trung tính, không gắt, không tối, kiểu ánh sáng khiến người ta hạ giọng xuống một chút khi bước vào.\n\nVen Hồ Hotel không phải một khách sạn lớn. Không gian vừa phải, mọi thứ được giữ sạch sẽ và ở đúng chỗ của nó. Có lẽ chính vì vừa vặn nên những chi tiết nhỏ mới dễ nhớ đến vậy: bạn nhận ra mình đã quen với chúng, trước cả khi kịp để ý.\n\nMột chuyến đi Hà Nội thường được nhớ bằng Hồ Tây, bằng vài quán ăn, vài buổi chiều đi bộ. Nhưng chỗ để quay về sau tất cả những điều đó cũng góp phần vào cảm giác chung của cả chuyến đi.\n\nNếu bạn đang sắp xếp lịch cho những ngày ở Hà Nội, nhắn tin cho Ven Hồ Hotel để xem còn phòng trống vào thời gian bạn dự định nhé.\n\n#VenHoHotelHanoi #HoTay #KhachSanHoTay #HaNoi #WestLakeHanoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-friday-facebook-e0b0bbf2",
@@ -11435,20 +11435,22 @@
         "revoked_reason": null,
         "package_versions_checksum": "fd4117dea5f8ccf761cbbf22d84e9f57dcdf27b1284f0cee139e592eabd06221",
         "checksum": "99eef93b47c06d706398994d489aa02462ad377991a4e6fefeba730b330030a5"
-      }
+      },
+      "gateway_error": null,
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-friday-instagram-583dfd2a",
       "content_package_id": "fa51268e-c04f-4514-af9a-89c5f8e73355",
       "idempotency_key": "f810152611595871859f5c330959092f5b4be14b728bfda3fb4e19910582e5a4",
       "platform": "instagram",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
-      "platform_post_id": null,
-      "permalink": null,
+      "status": "PUBLISHED",
+      "gateway_status": "PUBLISHED",
+      "platform_post_id": "18206924005366464",
+      "permalink": "https://www.instagram.com/18206924005366464",
       "reconciliation_proof": null,
       "created_at": "2026-08-27T08:12:40.157176+00:00",
-      "updated_at": "2026-08-27T08:45:27.203872+00:00",
+      "updated_at": "2026-09-04T06:37:35.196144+00:00",
       "content": {
         "title": "Những chi tiết nhỏ ở Ven Hồ Hotel",
         "text": "Thứ ở lại lâu nhất sau một chuyến đi thường không phải căn phòng, mà là vài chi tiết rất nhỏ.\n\nCửa kính mở ra một khoảng sáng dịu, không gắt, không tối.\n\nDưới chân là sàn gạch nâu với những vòng tròn nhỏ lặp lại, kiểu hoa văn quen thuộc của nhiều ngôi nhà Hà Nội.\n\nQuầy lễ tân bằng gỗ nâu đỏ sẫm. Phía sau là tủ chìa khóa chia ô theo số phòng, thứ mà bây giờ không còn nhiều nơi giữ lại.\n\nTrên tường có một bức tranh treo vừa tầm mắt, đủ để người đứng chờ nhận phòng có cái để nhìn.\n\nKhông có gì phô trương. Một khách sạn nhỏ, gọn gàng, sạch sẽ, nằm trên Nguyễn Đình Thi, cách mặt nước Hồ Tây một quãng đi bộ ngắn.\n\nĐôi khi một nơi ở được nhớ lại chỉ vì những thứ giản dị như vậy.\n\nNếu bạn đang lên lịch vài ngày ở Hà Nội, nhắn tin cho Ven Hồ Hotel để xem phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanHoTay #NguyenDinhThi #TayHo #HaNoi #HanoiHotel",
@@ -11572,7 +11574,9 @@
         "revoked_reason": null,
         "package_versions_checksum": "7952efe49ab67204603e9e0de93e9acaedbf4e171b22e4471aa2960176af1689",
         "checksum": "f3e9ae45074c11e8c8588c3b9f97ac2caa15fb65a54153dd44aff5acdcd471ef"
-      }
+      },
+      "gateway_error": null,
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-saturday-facebook-aa9dd1c8",
