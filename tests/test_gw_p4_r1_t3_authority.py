@@ -83,11 +83,16 @@ def test_non_action_case_keeps_default_dna_scope():
     assert scoped == original
 
 
-def test_unknown_explicit_scenario_fails_closed():
-    with pytest.raises(ValueError, match="unknown Identity Restoration authority profile"):
-        _apply_scenario_authority(
-            "venho_hotel", "linh_an", "unmapped_scenario", _observation(_match("eye_shape")),
-        )
+def test_scenario_without_authority_file_scores_all_fields():
+    # An authority profile is optional (like the scenario overrides.yaml). A
+    # scenario id with no <subject>.<id>.authority.yaml means "score every
+    # observed field", not a hard failure — otherwise overrides-only scenarios
+    # such as venho_rooftop_terrace_2026 could never pass Image-QC.
+    original = _observation(_match("eye_shape"))
+    scoped = _apply_scenario_authority(
+        "venho_hotel", "linh_an", "unmapped_scenario", original,
+    )
+    assert scoped == original
 
 
 def test_authority_precedence_is_explicit_and_default_is_intact():

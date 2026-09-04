@@ -28,7 +28,11 @@ def _apply_scenario_authority(
         return observation
     path = _scenario_authority_path(project, subject, scenario_profile_id)
     if not path.is_file():
-        raise ValueError(f"unknown Identity Restoration authority profile: {scenario_profile_id}")
+        # An authority profile narrows which observed fields the Image-QC gate
+        # scores; it is optional in the same way the scenario overrides.yaml is.
+        # A scenario that only ships an overrides.yaml (e.g. venho_rooftop_terrace_2026)
+        # must still validate — absence means "score every field", not an error.
+        return observation
     authority = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
     if authority.get("profile_id") != scenario_profile_id:
         raise ValueError(f"authority profile id does not match requested scenario: {path}")
