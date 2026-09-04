@@ -958,5 +958,241 @@
     "scanned_at": "2026-08-07T03:46:05.336638+00:00",
     "rejected_by": "hpham1504@gmail.com",
     "rejected_at": "2026-08-10T08:48:12.346346+00:00"
+  },
+  {
+    "id": "tavily-https://www.facebook.com/ThungLungHoaHoTayandRestaurants/posts/n%C6%A1i-m%C3%B9a-sen-h%C3%A0-n%E1%BB%99i-%C4%91%E1%BA%B9p-nh%E1%BA%A5t-n%C4%83m-%C4%91ang-ch%E1%BB%9D-%C4%91%C3%B3n-b%E1%BA%A1nba-ng%C3%A0y-%C4%91%E1%BB%83-s%E1%BB%91ng-tr%E1%BB%8Dn-m%C3%B9a-senba-n/1403486911828465",
+    "title": "NƠI MÙA SEN HÀ NỘI ĐẸP NHẤT NĂM ĐANG CHỜ ĐÓN ... - Facebook",
+    "source_uri": "https://www.facebook.com/ThungLungHoaHoTayandRestaurants/posts/n%C6%A1i-m%C3%B9a-sen-h%C3%A0-n%E1%BB%99i-%C4%91%E1%BA%B9p-nh%E1%BA%A5t-n%C4%83m-%C4%91ang-ch%E1%BB%9D-%C4%91%C3%B3n-b%E1%BA%A1nba-ng%C3%A0y-%C4%91%E1%BB%83-s%E1%BB%91ng-tr%E1%BB%8Dn-m%C3%B9a-senba-n/1403486911828465",
+    "snippet": "Sen Hà Nội 2026 cuối tuần. Sự kiện quy mô chỉ diễn ra duy nhất trong 3 ngày từ 26-28/06! Hà Nội! Thời gian: 26/6 - 28/6/2026. Tây Hồ, khu vực H",
+    "relevance_hint": 0.6757865,
+    "geographic": "westlake",
+    "thematic": "lifestyle_culture",
+    "actionability": "direct",
+    "type": "cultural_event",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "culture_festival_positive",
+      "seasonal_weather_nature"
+    ],
+    "relevance_score": 0.6,
+    "status": "rejected",
+    "rejection_reason": "stale_dated",
+    "verified_by_human": false,
+    "scanned_at": "2026-09-04T05:21:38.117531+00:00"
+  },
+  {
+    "id": "tavily-https://www.facebook.com/vtv4go/videos/t%E1%BB%AB-ng%C3%A0y-26-2862026-s%E1%BB%9F-du-l%E1%BB%8Bch-h%C3%A0-n%E1%BB%99i-ph%E1%BB%91i-h%E1%BB%A3p-c%C3%B9ng-ubnd-ph%C6%B0%E1%BB%9Dng-t%C3%A2y-h%E1%BB%93-t%E1%BB%95-ch%E1%BB%A9c-l%E1%BB%85/1369271712005646",
+    "title": "Từ ngày 26-28/6/2026, Sở Du lịch Hà Nội phối hợp cùng UBND phường ...",
+    "source_uri": "https://www.facebook.com/vtv4go/videos/t%E1%BB%AB-ng%C3%A0y-26-2862026-s%E1%BB%9F-du-l%E1%BB%8Bch-h%C3%A0-n%E1%BB%99i-ph%E1%BB%91i-h%E1%BB%A3p-c%C3%B9ng-ubnd-ph%C6%B0%E1%BB%9Dng-t%C3%A2y-h%E1%BB%93-t%E1%BB%95-ch%E1%BB%A9c-l%E1%BB%85/1369271712005646",
+    "snippet": "Từ ngày 26-28/6/2026, Sở Du lịch Hà Nội phối hợp cùng UBND phường Tây Hồ tổ chức Lễ hội Sen Hà Nội năm 2026. Đây là sự kiện văn hóa, du lịch",
+    "relevance_hint": 0.585789,
+    "geographic": "westlake",
+    "thematic": "lifestyle_culture",
+    "actionability": "direct",
+    "type": "cultural_event",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "culture_festival_positive"
+    ],
+    "relevance_score": 0.6,
+    "status": "rejected",
+    "rejection_reason": "stale_dated",
+    "verified_by_human": false,
+    "scanned_at": "2026-09-04T05:21:38.117531+00:00"
+  },
+  {
+    "id": "tavily-https://pbgdpl.hanoi.gov.vn/chi-tiet-tim-kiem/-/asset_publisher/kyB8zPQFRdzV/content/le-hoi-sen-ha-noi-2026-ton-vinh-huong-sac-sen-tay-ho",
+    "title": "Lễ hội Sen Hà Nội 2026: Tôn vinh hương sắc sen Tây Hồ - Chi tiết tìm ...",
+    "source_uri": "https://pbgdpl.hanoi.gov.vn/chi-tiet-tim-kiem/-/asset_publisher/kyB8zPQFRdzV/content/le-hoi-sen-ha-noi-2026-ton-vinh-huong-sac-sen-tay-ho",
+    "snippet": "Từ ngày 26 đến 28-6, Lễ hội Sen Hà Nội năm 2026 sẽ diễn ra tại nhiều không gian quanh hồ Tây với chuỗi hoạt động văn hóa, nghệ thuật,",
+    "relevance_hint": 0.47738418,
+    "geographic": "westlake",
+    "thematic": "lifestyle_culture",
+    "actionability": "direct",
+    "type": "cultural_event",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "culture_festival_positive",
+      "seasonal_weather_nature"
+    ],
+    "relevance_score": 0.6,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "verified_by_human": false,
+    "scanned_at": "2026-09-04T05:21:38.117531+00:00"
+  },
+  {
+    "id": "tavily-https://www.facebook.com/qpvnthoisu/videos/%E1%BA%A5n-t%C6%B0%E1%BB%A3ng-l%E1%BB%85-h%E1%BB%99i-sen-h%C3%A0-n%E1%BB%99i-2026l%E1%BB%85-h%E1%BB%99i-sen-h%C3%A0-n%E1%BB%99i-n%C4%83m-2026-di%E1%BB%85n-ra-t%E1%BB%AB-ng%C3%A0y-266-%C4%91%E1%BA%BF/1019558827109001",
+    "title": "ẤN TƯỢNG LỄ HỘI SEN HÀ NỘI 2026 Lễ hội Sen Hà Nội ... - Facebook",
+    "source_uri": "https://www.facebook.com/qpvnthoisu/videos/%E1%BA%A5n-t%C6%B0%E1%BB%A3ng-l%E1%BB%85-h%E1%BB%99i-sen-h%C3%A0-n%E1%BB%99i-2026l%E1%BB%85-h%E1%BB%99i-sen-h%C3%A0-n%E1%BB%99i-n%C4%83m-2026-di%E1%BB%85n-ra-t%E1%BB%AB-ng%C3%A0y-266-%C4%91%E1%BA%BF/1019558827109001",
+    "snippet": "ẤN TƯỢNG LỄ HỘI SEN HÀ NỘI 2026 Lễ hội Sen Hà Nội năm 2026 diễn ra từ ngày 26/6 đến 28/6 tại khu vực Hồ Tây và các không gian văn hóa trên",
+    "relevance_hint": 0.43799233,
+    "geographic": "westlake",
+    "thematic": "lifestyle_culture",
+    "actionability": "direct",
+    "type": "cultural_event",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "culture_festival_positive",
+      "seasonal_weather_nature"
+    ],
+    "relevance_score": 0.6,
+    "status": "rejected",
+    "rejection_reason": "stale_dated",
+    "verified_by_human": false,
+    "scanned_at": "2026-09-04T05:21:38.117531+00:00"
+  },
+  {
+    "id": "tavily-https://vnexpress.net/du-khach-do-ve-chiem-nguong-hoa-sen-ha-noi-5090420.html",
+    "title": "Du khách đổ về chiêm ngưỡng hoa sen Hà Nội - VnExpress",
+    "source_uri": "https://vnexpress.net/du-khach-do-ve-chiem-nguong-hoa-sen-ha-noi-5090420.html",
+    "snippet": "Lễ hội Sen Hà Nội 2026 với chủ đề \"Sắc Sen Hà Nội\" diễn ra từ ngày 26 đến 28/6 tại vườn hoa Lý Tự Trọng, số 2 Thụy Khuê, quận Tây Hồ. Sự kiện do",
+    "relevance_hint": 0.3375097,
+    "geographic": "westlake",
+    "thematic": "lifestyle_culture",
+    "actionability": "direct",
+    "type": "cultural_event",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "culture_festival_positive",
+      "seasonal_weather_nature"
+    ],
+    "relevance_score": 0.6,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "verified_by_human": false,
+    "scanned_at": "2026-09-04T05:21:38.117531+00:00"
+  },
+  {
+    "id": "tavily-https://laodong.vn/du-lich/kham-pha/ruc-ro-mua-sen-ho-tay-ha-noi-nhung-ngay-thang-6-1720482.html",
+    "title": "Rực rỡ mùa sen Hồ Tây Hà Nội những ngày tháng 6",
+    "source_uri": "https://laodong.vn/du-lich/kham-pha/ruc-ro-mua-sen-ho-tay-ha-noi-nhung-ngay-thang-6-1720482.html",
+    "snippet": "Khi Hà Nội đón những cái nắng hạ đầy rực rỡ, cũng là lúc mùa hoa sen ở Hồ Tây bước vào độ đẹp nhất. v Hàng năm, cứ vào khoảng giữa tháng 6,",
+    "relevance_hint": 0.82048416,
+    "geographic": "westlake",
+    "thematic": "seasonal_weather",
+    "actionability": "direct",
+    "type": "seasonal_nature",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "seasonal_weather_nature"
+    ],
+    "relevance_score": 0.5,
+    "status": "rejected",
+    "rejection_reason": "passed",
+    "verified_by_human": false,
+    "scanned_at": "2026-09-04T05:21:38.117531+00:00"
+  },
+  {
+    "id": "tavily-https://www.vietnamairlines.com/de/vi/plan-book/travel/travel-guide/hanoi-west-lake",
+    "title": "Vietnam Airlines | Khám phá vẻ đẹp của Hồ Tây Hà Nội qua những điểm tham quan không thể bỏ lỡ",
+    "source_uri": "https://www.vietnamairlines.com/de/vi/plan-book/travel/travel-guide/hanoi-west-lake",
+    "snippet": "Đừng bỏ lỡ cảnh hoa sen nở vào mùa hè, tạo nên một phông nền thiên nhiên hoàn hảo.\n Sử dụng sự phản chiếu của nước để có những bức ảnh độc đáo, đặc biệt là gần ao sen hoặc cầu [...] Hồ sen Ty Hồ là một khu vực thanh bình và đẹp như tranh vẽ nằm gần Hồ Ty của Hà Nội. Nổi tiếng với vẻ đẹp ngoạn mục, hồ được bao quanh bởi cy xanh tươi tốt và những bông hoa sen rực rỡ nở vào mùa hè, tạo nên bầu không khí yên bình và tĩnh lặng. Cảnh tượng những bông sen hồng lớn trên nền mặt nước tĩnh lặng thu hút cả người dn địa phương và khách du lịch tìm kiếm nơi ẩn náu yên tĩnh hoặc một địa điểm hoàn hảo để chụp ảnh. Hồ đặc biệt quyến rũ vào lúc bình minh khi những bông hoa sen nở rộ dưới [...] Thung lũng hoa Ty Hồ là một khu vườn xinh đẹp nằm gần Hồ Ty, nổi tiếng với nhiều loại hoa đầy màu sắc và đa dạng nở quanh năm. Thung lũng trưng bày nhiều loại hoa, tạo nên một cảnh quan sống động và đẹp như tranh vẽ thu hút du khách quanh năm. Khu vườn là nơi lý tưởng cho những người yêu thiên nhiên và nhiếp ảnh gia, mang đến tầm nhìn tuyệt đẹp và cơ hội thư giãn giữa vẻ đẹp của thiên nhiên. Cho dù bạn đến đy để chiêm ngưỡng những bông hoa hay chỉ đơn giản là tận hưởng một chuyến đi bộ yên",
+    "relevance_hint": 0.6889923,
+    "geographic": "westlake",
+    "thematic": "travel_stay",
+    "actionability": "direct",
+    "type": "feature_story",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "travel_accommodation",
+      "hanoi_westlake_local",
+      "seasonal_weather_nature"
+    ],
+    "relevance_score": 1.0,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "verified_by_human": false,
+    "scanned_at": "2026-09-04T05:21:38.117531+00:00"
+  },
+  {
+    "id": "tavily-https://vinwonders.com/vi/wonderpedia/news/thung-lung-hoa-ho-tay",
+    "title": "[REVIEW] Thung lũng hoa Hồ Tây: Địa chỉ, giá vé, giờ mở ...",
+    "source_uri": "https://vinwonders.com/vi/wonderpedia/news/thung-lung-hoa-ho-tay",
+    "snippet": "Địa chỉ: Thung lũng hoa tại Hồ Tây nằm ở ngã 3 Nhật Chiêu, thành phố Hà Nội. Số điện thoại liên hệ: 083 996 8968 – 0163 936 6648. Bên cạnh làng hoa Nhật Tân,",
+    "relevance_hint": 0.45900398,
+    "geographic": "westlake",
+    "thematic": "travel_stay",
+    "actionability": "direct",
+    "type": "feature_story",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "travel_accommodation",
+      "hanoi_westlake_local"
+    ],
+    "relevance_score": 1.0,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "verified_by_human": false,
+    "scanned_at": "2026-09-04T05:21:38.117531+00:00"
+  },
+  {
+    "id": "tavily-https://www.facebook.com/ThungLungHoaHoTayandRestaurants/posts/-nh%E1%BA%AFc-%C4%91%E1%BA%BFn-thung-l%C5%A9ng-hoa-h%E1%BB%93-t%C3%A2y-nhi%E1%BB%81u-ng%C6%B0%E1%BB%9Di-s%E1%BA%BD-ngh%C4%A9-ngay-%C4%91%E1%BA%BFn-nh%E1%BB%AFng-m%C3%B9a-hoa-r%E1%BB%B1c-r/1445451124298710",
+    "title": "Nhắc đến Thung Lũng Hoa Hồ Tây, ...",
+    "source_uri": "https://www.facebook.com/ThungLungHoaHoTayandRestaurants/posts/-nh%E1%BA%AFc-%C4%91%E1%BA%BFn-thung-l%C5%A9ng-hoa-h%E1%BB%93-t%C3%A2y-nhi%E1%BB%81u-ng%C6%B0%E1%BB%9Di-s%E1%BA%BD-ngh%C4%A9-ngay-%C4%91%E1%BA%BFn-nh%E1%BB%AFng-m%C3%B9a-hoa-r%E1%BB%B1c-r/1445451124298710",
+    "snippet": "Do thời tiết mưa, không đảm bảo điều kiện phục vụ khách xem bóng đá, Thung Lũng Hoa Hồ Tây xin phép đóng cửa tối nay (22/08/2026) Rất mong Quý",
+    "relevance_hint": 0.29969972,
+    "geographic": "westlake",
+    "thematic": "seasonal_weather",
+    "actionability": "stretch",
+    "type": "feature_story",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local"
+    ],
+    "relevance_score": 0.1,
+    "status": "rejected",
+    "rejection_reason": "stale_dated",
+    "verified_by_human": false,
+    "scanned_at": "2026-09-04T05:21:38.117531+00:00"
+  },
+  {
+    "id": "tavily-https://digiticket.vn/blog/thung-lung-hoa-ho-tay",
+    "title": "Bạn muốn sống ảo cỡ nào? Thung lũng hoa Hồ Tây chấp hết!",
+    "source_uri": "https://digiticket.vn/blog/thung-lung-hoa-ho-tay",
+    "snippet": "Thung lũng hoa Hồ Tây luôn là điểm check in nổi tiếng được giới trẻ săn đón. Với vô số các loài hoa, bạn sẽ có ngay góc sống ảo cực đỉnh.",
+    "relevance_hint": 0.2836107,
+    "geographic": "westlake",
+    "thematic": "travel_stay",
+    "actionability": "direct",
+    "type": "feature_story",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "travel_accommodation",
+      "hanoi_westlake_local",
+      "seasonal_weather_nature"
+    ],
+    "relevance_score": 1.0,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "verified_by_human": false,
+    "scanned_at": "2026-09-04T05:21:38.117531+00:00"
+  },
+  {
+    "id": "tavily-https://mia.vn/cam-nang-du-lich/cafe-ho-tay-12717",
+    "title": "TOP 10 Quán cafe Hồ Tây view sống ảo cực xịn sò",
+    "source_uri": "https://mia.vn/cam-nang-du-lich/cafe-ho-tay-12717",
+    "snippet": "1 UpTown Terrace · Số 11 Đường Nguyễn Đình Thi, Quận Tây Hồ, Thủ đô Hà Nội. · 07:00 - 22:00. ; Hồ Tây - Mộc Miên Coffee · Số 13 Đường Nguyễn Đình",
+    "relevance_hint": 0.79022324,
+    "geographic": "westlake",
+    "thematic": "food_local",
+    "actionability": "direct",
+    "type": "lifestyle_trend",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "food_culinary"
+    ],
+    "relevance_score": 0.8,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "verified_by_human": false,
+    "scanned_at": "2026-09-04T05:21:38.117531+00:00"
   }
 ]
