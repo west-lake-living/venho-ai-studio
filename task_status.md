@@ -1,5 +1,21 @@
 # VENHO AI STUDIO — Task Status
 
+### Validator: missing scenario authority.yaml is now optional (2026-09-04) — `7b1f121`
+
+- `_apply_scenario_authority` (`validator_studio/image_validator.py`) raised
+  `unknown Identity Restoration authority profile` whenever a `scenario_profile_id`
+  was passed but no `config/projects/<project>/subjects/<subject>.<id>.authority.yaml`
+  existed. Scenarios that ship only an `.overrides.yaml`
+  (`venho_rooftop_terrace_2026`, `nguyen_dinh_thi_street_2026`) therefore could
+  **never** pass Image-QC — on the Mac either.
+- Now: file absent → score every observed field (optional, same as the scenario
+  `.overrides.yaml` already is). Test `test_unknown_explicit_scenario_fails_closed`
+  → `test_scenario_without_authority_file_scores_all_fields`.
+- Surfaced when venho-os Studio image-gen first ran real validation on the Ubuntu
+  server (Pha 2). Also: `data/projects/venho_hotel/knowledge/` is gitignored — only
+  the 3 room subjects are `git add -f`'d, so `VENHO_HOTEL_LINH_AN_DNA.json` (+ the
+  lobby/outside/westlake compacts) had to be scp'd to the server for the face gate.
+
 ### Candidate v3 Production Enablement + Automatic Promotion Resume (2026-09-02)
 
 - `CANDIDATE-V3-PRODUCTION-ENABLEMENT-AND-AUTOMATIC-PROMOTION-RESUME = CLOSED / PASS`
