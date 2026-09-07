@@ -472,6 +472,7 @@ def _content_payload(
     image_run_path: Optional[str] = None,
     image_public_url: Optional[str] = None,
     image_is_fallback: bool = False,
+    image_fallback_reason: Optional[str] = None,
     publication_id: Optional[str] = None,
     platform: Optional[str] = None,
 ) -> dict[str, Any]:
@@ -515,6 +516,14 @@ def _content_payload(
         # two apart on the dashboard.
         "image_public_url": image_public_url,
         "image_is_fallback": image_is_fallback,
+        # Why the fallback (added 2026-09-07): `image_is_fallback` alone is
+        # just `image_public_url is None`, which collapses three unrelated
+        # causes -- generation switched off, the image failing DNA QC, and a
+        # Drive upload error -- into one indistinguishable signal. That is
+        # why an 87% fallback rate could run for a month reading as normal:
+        # some fallbacks ARE normal, and nothing on the row said which kind
+        # these were. See _image_qc_failure_reason for the QC tags.
+        "image_fallback_reason": image_fallback_reason,
         "tracking_url": tracking_url,
     }
 
@@ -613,6 +622,24 @@ def _upload_image_to_drive(
         return None
 
 
+def _image_qc_failure_reason(report: Any) -> str:
+    """Name which QC gate the generated image lost on.
+
+    "kill_switch" and "below the approve bar" are different problems with
+    different fixes -- a forbidden rule that no longer matches reality (the
+    2026-09-07 West Lake skyline case) versus a genuinely mediocre photo --
+    and the run log recorded neither, only the absence of an image.
+    """
+    kill_switch = getattr(report, "kill_switch", None)
+    if getattr(kill_switch, "triggered", False):
+        detail = str(getattr(kill_switch, "reason", "") or "").strip()
+        return f"qc_kill_switch: {detail}" if detail else "qc_kill_switch"
+    score = getattr(report, "overall_score", None)
+    if isinstance(score, (int, float)):
+        return f"qc_below_approve: {float(score):.1f}"
+    return "qc_below_approve"
+
+
 def _generate_topic_image(
     topic: dict[str, str],
     day: str,
@@ -626,10 +653,15 @@ def _generate_topic_image(
     budget_gate: Optional[BudgetGate] = None,
     rotation_key: Optional[str] = None,
     scenario_key: Optional[str] = None,
-) -> Optional[Path]:
+) -> tuple[Optional[Path], Optional[str]]:
     """Generate one real image for the day's topic, shared across platforms.
 
-    Returns None (not an exception) on any failure -- image generation is
+    Returns `(run_folder, failure_reason)`. `failure_reason` is None on
+    success and otherwise a short machine-readable tag saying WHY there is
+    no image -- see the `image_fallback_reason` note in `_content_payload`
+    for why the bare "no image" signal was not enough.
+
+    Returns (None, reason) rather than raising on any failure -- image generation is
     best-effort on top of the text pipeline: a disabled/misconfigured
     provider or a missing reference asset must not block queuing the text
     drafts for approval, since those are still independently useful.
@@ -667,15 +699,6 @@ def _generate_topic_image(
         )
         dna = read_dna(dna_path)
         image_contract = build_image_prompt(dna, f"A real photo for: {topic['topic']}", brief_slug=slugify(topic["topic"]))
-        # rotation_key (this run's slot_date) also drives which photo a
-        # folder-backed reference asset picks -- see
-        # ReferenceAssetResolver._pick_from_folder. Without it every run
-        # would deterministically pick the same first file forever, no
-        # matter how many photos Harry adds to the folder.
-        reference_images = (
-            reference_resolver.resolve(list(scenario.reference_asset_ids), rotation_key=rotation_key)
-            if scenario.reference_asset_ids else None
-        )
         prompt_contract = {
             "creative_brief_id": f"daily-cycle-{day}",
             "scenario_key": scenario_key,
@@ -683,7 +706,31 @@ def _generate_topic_image(
             "size": "1024x1280",
             "quality": "medium",
         }
+        last_reason: Optional[str] = "image_generation_failed"
         for attempt in range(MAX_IMAGE_ATTEMPTS):
+            # rotation_key (this run's slot_date) drives which photo a
+            # folder-backed reference asset picks -- see
+            # ReferenceAssetResolver._pick_from_folder. Without it every run
+            # would deterministically pick the same first file forever, no
+            # matter how many photos Harry adds to the folder.
+            #
+            # Resolved per attempt (moved inside this loop 2026-09-07), with
+            # `rotation_offset=attempt` stepping to the next photo in the
+            # pool. Previously it sat outside the loop, so a retry re-sent
+            # the byte-identical reference and prompt: when attempt #1 lost
+            # because the reference photo itself carried something the DNA
+            # forbids -- which is exactly what the August westlake runs hit,
+            # 5 of 6 pool photos showing the far-shore skyline -- the retry
+            # was a coin flip with the same loaded coin, paying a second
+            # gpt-image-2 call for it.
+            reference_images = (
+                reference_resolver.resolve(
+                    list(scenario.reference_asset_ids),
+                    rotation_key=rotation_key,
+                    rotation_offset=attempt,
+                )
+                if scenario.reference_asset_ids else None
+            )
             image_reservation_id = f"image-{day}-{slugify(topic['topic'])}-{uuid.uuid4().hex[:8]}"
             image_reserved, image_evaluation = budget_gate.try_reserve("image_generation_minor", image_reservation_id)
             _alert_on_budget_threshold(image_evaluation)
@@ -729,15 +776,23 @@ def _generate_topic_image(
                 report.model_dump_json(indent=2), encoding="utf-8"
             )
             if not report.kill_switch.triggered and report.verdict == Recommendation.APPROVE:
-                return run_folder
-        return None
-    except (RuntimeError, KeyError, FileNotFoundError):
-        # RuntimeError: provider disabled (no OPENAI_API_KEY) or transient
-        # provider failure. KeyError: no reference_assets.yaml mapping for
-        # this scenario's asset id. FileNotFoundError: DNA or reference
-        # image file missing on disk. All three are expected, recoverable
-        # conditions during rollout -- anything else should still raise.
-        return None
+                return run_folder, None
+            last_reason = _image_qc_failure_reason(report)
+        return None, last_reason
+    except (RuntimeError, KeyError, FileNotFoundError) as exc:
+        # RuntimeError: provider disabled (no OPENAI_API_KEY), a budget cap
+        # reservation refused, or a transient provider failure. KeyError: no
+        # reference_assets.yaml mapping for this scenario's asset id.
+        # FileNotFoundError: DNA or reference image file missing on disk. All
+        # three are expected, recoverable conditions during rollout --
+        # anything else should still raise.
+        if isinstance(exc, RuntimeError) and "budget cap reached" in str(exc):
+            return None, "budget_cap_reached"
+        if isinstance(exc, KeyError):
+            return None, "reference_asset_unmapped"
+        if isinstance(exc, FileNotFoundError):
+            return None, "reference_or_dna_file_missing"
+        return None, f"provider_error: {type(exc).__name__}"
 
 
 def _alert_on_budget_threshold(evaluation: dict[str, Any]) -> None:
@@ -1013,10 +1068,11 @@ def run_daily_cycle(
     image_run_path: Optional[str] = None
     image_public_url: Optional[str] = None
     asset_version_ids: list[str] = []
+    image_fallback_reason: Optional[str] = "image_generation_disabled"
     if generate_image:
         image_provider = image_provider or gpt_image_provider_from_env(os.environ)
         reference_resolver = reference_resolver or ReferenceAssetResolver.from_file()
-        run_folder = _generate_topic_image(
+        run_folder, image_fallback_reason = _generate_topic_image(
             topic, day, project, data_root, scenario_registry,
             image_provider=image_provider, reference_resolver=reference_resolver,
             image_validation_provider=image_validation_provider,
@@ -1035,6 +1091,11 @@ def run_daily_cycle(
             image_public_url = _upload_image_to_drive(
                 run_folder, day=day, content_package_id=f"daily-{day}-{slugify(topic['topic'])}", uploader=drive_uploader
             )
+            # A generated-and-approved image that never reached Drive is a
+            # transport problem, not a creative one: same empty image_url,
+            # entirely different fix.
+            if image_public_url is None:
+                image_fallback_reason = "drive_upload_failed"
 
     # No generated image (image generation off/failed, or Drive upload failed)
     # still has to reach Make.com with a fetchable photo URL -- FB/IG's photo
@@ -1046,6 +1107,8 @@ def run_daily_cycle(
         image_public_url = fallback_image_url(
             topic.get("dna_subject"), rotation_key=slot_date or f"{day}:{topic.get('topic', '')}"
         )
+    else:
+        image_fallback_reason = None
 
     prompt_rules = lane_config.get("prompt_rules") if lane_config else None
     recent_topics = _recent_topics(project, data_root)
@@ -1136,6 +1199,7 @@ def run_daily_cycle(
                 content=_content_payload(
                     selected, image_run_path=image_run_path, image_public_url=image_public_url,
                     image_is_fallback=image_is_fallback,
+                    image_fallback_reason=image_fallback_reason,
                     publication_id=publication_id, platform=platform,
                 ),
                 creative_brief_id=brief["id"],

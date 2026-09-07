@@ -736,3 +736,119 @@ def test_recent_topics_reach_the_generator_as_an_anti_repeat_hint(tmp_path: Path
 
     assert seen_requests[0].recent_topics == []  # nothing posted yet on the first call
     assert first.topic["topic"] in seen_requests[1].recent_topics  # second call sees the first's topic
+
+
+def test_image_retry_draws_a_different_reference_photo(tmp_path: Path, monkeypatch) -> None:
+    """Attempt #2 must not re-send the reference photo attempt #1 lost with.
+
+    Until 2026-09-07 `reference_images` and `prompt_contract` were both
+    resolved outside the retry loop, so the second gpt-image-2 call was a
+    byte-identical re-roll. When attempt #1 fails because the reference
+    photo itself carries what the DNA forbids -- the August westlake case,
+    5 of 6 pool photos showing the far-shore skyline -- that retry could
+    only ever repeat the failure at double the cost.
+    """
+    import growth_orchestrator.application.daily_cycle as daily_cycle_module
+    from PIL import Image
+
+    class _FakeKillSwitch:
+        triggered = True
+        reason = "high-severity forbidden violated"
+
+    class _FakeReport:
+        kill_switch = _FakeKillSwitch()
+        overall_score = 40.0
+
+        def model_dump_json(self, indent=2):
+            return "{}"
+
+    monkeypatch.setattr(daily_cycle_module, "validate_image", lambda *a, **k: _FakeReport())
+
+    class _RecordingProvider(MockImageProvider):
+        def __init__(self) -> None:
+            super().__init__()
+            self.seen_refs: list[bytes | None] = []
+
+        def generate(self, prompt, *, size, quality, reference_images=None):
+            self.seen_refs.append(reference_images[0] if reference_images else None)
+            return super().generate(prompt, size=size, quality=quality, reference_images=reference_images)
+
+    pool = tmp_path / "refs"
+    pool.mkdir()
+    Image.new("RGB", (4, 4), (200, 0, 0)).save(pool / "a.png")
+    Image.new("RGB", (4, 4), (0, 200, 0)).save(pool / "b.png")
+    resolver = ReferenceAssetResolver(
+        {
+            "venho_lake_landscape_approved": "refs",
+            "venho_street_railing_approved": "refs",
+            "venho_rooftop_railing_approved": "refs",
+        },
+        assets_root=tmp_path,
+    )
+
+    data_root = _tmp_data_root(tmp_path)
+    provider = _RecordingProvider()
+
+    result = run_daily_cycle(
+        "monday", platforms=["facebook"], data_root=data_root,
+        image_provider=provider, reference_resolver=resolver, slot_date="2026-09-07",
+        content_bridge=_mock_content_bridge(data_root), validator_bridge=_AlwaysApproveValidatorBridge(),
+    )
+
+    assert provider.calls == daily_cycle_module.MAX_IMAGE_ATTEMPTS
+    assert len(set(provider.seen_refs)) == daily_cycle_module.MAX_IMAGE_ATTEMPTS
+
+    # ...and the row says WHY there is no image, not just that there isn't one.
+    content = result.publications[0]["content"]
+    assert content["image_is_fallback"] is True
+    assert content["image_fallback_reason"].startswith("qc_kill_switch")
+
+
+def test_image_fallback_reason_distinguishes_generation_disabled(tmp_path: Path) -> None:
+    data_root = _tmp_data_root(tmp_path)
+    result = run_daily_cycle(
+        "monday", platforms=["facebook"], data_root=data_root, generate_image=False,
+        content_bridge=_mock_content_bridge(data_root), validator_bridge=_AlwaysApproveValidatorBridge(),
+    )
+    assert result.publications[0]["content"]["image_fallback_reason"] == "image_generation_disabled"
+
+
+def test_image_fallback_reason_is_none_when_a_real_image_was_used(tmp_path: Path, monkeypatch) -> None:
+    import growth_orchestrator.application.daily_cycle as daily_cycle_module
+    from shared.storage.google_drive import MockDriveUploader
+    from PIL import Image
+
+    class _FakeKillSwitch:
+        triggered = False
+
+    class _FakeReport:
+        kill_switch = _FakeKillSwitch()
+        verdict = daily_cycle_module.Recommendation.APPROVE
+
+        def model_dump_json(self, indent=2):
+            return "{}"
+
+    monkeypatch.setattr(daily_cycle_module, "validate_image", lambda *a, **k: _FakeReport())
+
+    fake_ref = tmp_path / "fake_ref.jpg"
+    Image.new("RGB", (4, 4)).save(fake_ref)
+    resolver = ReferenceAssetResolver(
+        {
+            "venho_lake_landscape_approved": "fake_ref.jpg",
+            "venho_street_railing_approved": "fake_ref.jpg",
+            "venho_rooftop_railing_approved": "fake_ref.jpg",
+        },
+        assets_root=tmp_path,
+    )
+
+    data_root = _tmp_data_root(tmp_path)
+    result = run_daily_cycle(
+        "monday", platforms=["facebook"], data_root=data_root,
+        image_provider=MockImageProvider(), reference_resolver=resolver,
+        drive_uploader=MockDriveUploader(),
+        content_bridge=_mock_content_bridge(data_root), validator_bridge=_AlwaysApproveValidatorBridge(),
+    )
+
+    content = result.publications[0]["content"]
+    assert content["image_is_fallback"] is False
+    assert content["image_fallback_reason"] is None

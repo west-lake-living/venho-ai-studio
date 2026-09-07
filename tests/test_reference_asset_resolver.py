@@ -120,3 +120,27 @@ def test_reference_assets_yaml_folders_exist_and_are_not_empty() -> None:
     for asset_id in resolver.mapping:
         images = resolver.resolve([asset_id], rotation_key="2026-09-01")
         assert len(images) == 1 and len(images[0]) > 0, asset_id
+
+
+def test_rotation_offset_steps_to_the_next_photo_in_the_pool() -> None:
+    """The image retry loop passes the attempt number as rotation_offset so
+    attempt #2 does not re-send the reference photo attempt #1 just lost
+    with (see daily_cycle._generate_topic_image)."""
+    base = _rotation_index("2026-09-01", 6)
+    assert _rotation_index("2026-09-01", 6, 1) == (base + 1) % 6
+    assert _rotation_index("2026-09-01", 6, 2) == (base + 2) % 6
+
+
+def test_rotation_offset_wraps_within_the_pool(tmp_path: Path) -> None:
+    folder = tmp_path / "westlake"
+    folder.mkdir()
+    _make_photo(folder / "a.png", (10, 0, 0))
+    _make_photo(folder / "b.png", (0, 10, 0))
+    resolver = ReferenceAssetResolver({"westlake": "westlake"}, assets_root=tmp_path)
+
+    first = resolver.resolve(["westlake"], rotation_key="2026-09-01")
+    second = resolver.resolve(["westlake"], rotation_key="2026-09-01", rotation_offset=1)
+    wrapped = resolver.resolve(["westlake"], rotation_key="2026-09-01", rotation_offset=2)
+
+    assert first != second  # the retry genuinely gets a different photo
+    assert wrapped == first  # and offset stays inside the pool

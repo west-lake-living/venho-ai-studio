@@ -299,9 +299,18 @@ def _alert_on_image_fallback_rate(results: list[DailyCycleResult]) -> None:
     if not fallback:
         return
     by_day = sorted({f"{pub.get('day')}/{pub.get('platform')}" for pub in fallback})
+    # The cause, not just the count (2026-09-07). The previous text told
+    # Harry to go "check budget cap, DNA/reference mismatch, or Drive upload
+    # errors in the run log" -- three places, by hand, for a signal that had
+    # already been computed and thrown away. daily_cycle now records
+    # `image_fallback_reason` on the row; report the tally.
+    reasons: dict[str, int] = {}
+    for pub in fallback:
+        reason = str(pub["content"].get("image_fallback_reason") or "unrecorded")
+        reasons[reason] = reasons.get(reason, 0) + 1
+    why = ", ".join(f"{reason} x{count}" for reason, count in sorted(reasons.items(), key=lambda kv: (-kv[1], kv[0])))
     _send_alert_best_effort(
         "weekly_image_fallback_rate",
         f"VENHO Growth: {len(fallback)}/{len(publications)} posts this run used a rotated "
-        f"hotel photo instead of a new AI image ({', '.join(by_day)}). Check budget cap, "
-        "DNA/reference mismatch, or Drive upload errors in the run log.",
+        f"hotel photo instead of a new AI image ({', '.join(by_day)}). Reasons: {why}.",
     )
