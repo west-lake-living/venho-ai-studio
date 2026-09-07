@@ -11867,13 +11867,13 @@
       "content_package_id": "69f94790-5051-4b43-8744-2775a3dcb6fc",
       "idempotency_key": "1ab652094904d0fec90db390dfa8d37dacbab2e2ea11336603ea03e5837eaa82",
       "platform": "facebook",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
-      "platform_post_id": null,
-      "permalink": null,
+      "status": "PUBLISHED",
+      "gateway_status": "PUBLISHED",
+      "platform_post_id": "1124616474074140_122135658951351048",
+      "permalink": "https://www.facebook.com/1124616474074140_122135658951351048",
       "reconciliation_proof": null,
       "created_at": "2026-08-27T08:17:28.561386+00:00",
-      "updated_at": "2026-09-02T03:37:36.819864+00:00",
+      "updated_at": "2026-09-07T06:42:21.913500+00:00",
       "content": {
         "title": "Một vòng xe quanh Hồ Tây để bắt đầu tuần mới",
         "text": "Có những tuần mới không bắt đầu bằng danh sách việc cần làm, mà bằng một vòng xe quanh hồ.\n\nĐường ven Hồ Tây buổi sáng đầu tuần thường rộng hơn bình thường. Mặt nước còn phẳng, gió từ hồ thổi ngang qua hàng cây, và người ta đi chậm hơn một chút so với những con phố phía trong.\n\nBạn sẽ gặp vài nhóm tập thể dục, mấy chiếc xe đạp lướt qua, tiếng chổi quét trên vỉa hè, một quán cà phê vừa mở cửa và kéo bàn ghế ra hiên. Đoạn Nguyễn Đình Thi là một trong những khúc dễ đi nhất: một bên là hồ, một bên là dãy nhà nhỏ, đủ để đi hết một vòng mà không cần nhìn đồng hồ.\n\nĐạp xe, đi bộ hay chỉ chạy xe thật chậm rồi dừng lại ở một góc nào đó ngắm hồ, cách nào cũng được. Điều thú vị là sau vòng ấy, đầu tuần bỗng nhẹ hơn.\n\nVà rồi quay về, bước qua cánh cửa kính vào sảnh Ven Hồ Hotel: sàn gạch nâu với những vòng tròn quen mắt, quầy lễ tân gỗ nâu đỏ, mấy bức tranh trên tường và thứ ánh sáng vừa đủ dịu để ngồi nghỉ một lát trước khi lên phòng.\n\nMột buổi sáng như vậy không cần lịch trình. Chỉ cần bạn ở gần hồ.\n\nNếu bạn đang tính vài ngày ở Hà Nội và muốn bắt đầu buổi sáng bằng một vòng ven hồ, nhắn Ven Hồ Hotel để xem lịch phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #NguyenDinhThi #HanoiTravel\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-monday-facebook-7aa92307",
@@ -11994,20 +11994,22 @@
         "revoked_reason": null,
         "package_versions_checksum": "1825d8805b255e4e2a38216b4cdc36fa03cbdd8910ca2edca7252e8993928639",
         "checksum": "65deafd107e18893e7c86affef8ab45ebf72311561e0e2964df9eacefde1c12a"
-      }
+      },
+      "gateway_error": null,
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-monday-instagram-720fb316",
       "content_package_id": "bebff026-0c5d-4632-a65f-a615d9eb72dc",
       "idempotency_key": "914d58a682a3e674a8b93e744d4e526ba5c59fe04a21290d6512dd7a9d93e282",
       "platform": "instagram",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
-      "platform_post_id": null,
-      "permalink": null,
+      "status": "PUBLISHED",
+      "gateway_status": "PUBLISHED",
+      "platform_post_id": "18219757375338855",
+      "permalink": "https://www.instagram.com/18219757375338855",
       "reconciliation_proof": null,
       "created_at": "2026-08-27T08:17:55.484877+00:00",
-      "updated_at": "2026-09-02T03:37:36.819864+00:00",
+      "updated_at": "2026-09-07T06:42:33.236177+00:00",
       "content": {
         "title": "Một vòng xe quanh Hồ Tây để mở đầu tuần mới",
         "text": "Đầu tuần, thay vì tắt báo thức lần thứ ba, thử đạp một vòng quanh Hồ Tây.\n\nBuổi sáng ven hồ có nhịp riêng. Mặt nước còn phẳng, gió mát và mùi nước hồ rất đặc trưng. Người đi bộ, người tập thể dục, vài chiếc xe đạp lướt qua nhau mà chẳng ai vội.\n\nĐoạn Nguyễn Đình Thi khá dễ đi cho một vòng nhẹ: đường men theo hồ, cây hai bên, thi thoảng có quán mở sớm bán cà phê và đồ ăn sáng. Không cần lịch trình, không cần đích đến. Chỉ cần đi hết một cạnh hồ rồi quay lại.\n\nVề đến Ven Hồ Hotel, đẩy cửa kính vào sảnh, sàn gạch nâu với những vòng tròn quen mắt, ánh sáng dịu, quầy lễ tân gỗ nâu đỏ và mấy bức tranh trên tường. Một khoảng lặng vừa đủ trước khi bắt đầu ngày làm việc.\n\nTuần mới không nhất thiết phải bắt đầu bằng việc chạy thật nhanh.\n\nNếu bạn đang tính vài ngày ở Hà Nội và muốn ở gần hồ, nhắn tin cho Ven Hồ Hotel để xem lịch phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhamPhaHoTay #KhachSanHoTay #HaNoi #HanoiTravel",
@@ -12130,7 +12132,9 @@
         "revoked_reason": null,
         "package_versions_checksum": "59fab5ebd1365520d9b692821a3218865d5ef72953efbe7a5d1aeb24b9145139",
         "checksum": "79c2780c835de13e8e69dd46f7e7e923df339bd3922c1c1b1fe504b50724d0b6"
-      }
+      },
+      "gateway_error": null,
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-wednesday-facebook-0ca7593b",
