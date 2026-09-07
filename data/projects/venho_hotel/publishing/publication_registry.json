@@ -13351,13 +13351,13 @@
       "idempotency_key": "a990cc277202229d7f0d0059a99dd4550c3d8f676c57bef1b99e565cf0e46cd4",
       "platform": "zalo",
       "slot_id": "slot-2026-09-19-saturday",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-28T00:23:21.641963+00:00",
-      "updated_at": "2026-08-28T00:23:21.681737+00:00",
+      "updated_at": "2026-09-07T11:27:54.976808+00:00",
       "content": {
         "title": "Cuối tuần chậm ở Ven Hồ Hotel",
         "text": "Có những cuối tuần không cần lịch trình. Chỉ cần một chỗ ở gần hồ và vài giờ trống trong ngày.\n\nVen Hồ Hotel nằm trên phố Nguyễn Đình Thi, Tây Hồ. Khách bước qua cánh cửa kính là vào ngay sảnh: nền gạch nâu với hoa văn tròn, quầy lễ tân gỗ tông nâu đỏ trầm, vài bức tranh treo tường và ánh đèn dịu, không chói.\n\nKhách sạn quy mô nhỏ, tầm trung, nên mọi thứ khá gọn. Nhận phòng nhanh, không phải chờ lâu, rồi có thể ra hồ ngay.\n\nMột cuối tuần ở đây thường trôi theo nhịp: sáng đi bộ vòng ven hồ khi mặt nước còn lặng, trưa về phòng nghỉ, chiều muộn quay lại hồ đúng lúc trời chuyển màu. Hoàng hôn Hồ Tây là phần đáng chờ nhất trong ngày, và bạn chỉ mất vài phút đi bộ để kịp.\n\nNếu bạn đang tìm một khách sạn view Hồ Tây cho hai ngày cuối tuần, không cần đi xa, không cần sắp xếp nhiều, Ven Hồ Hotel là một lựa chọn vừa vặn.\n\nLiên hệ Hotline/Zalo 0936871234 để đặt phòng view Hồ Tây ngay hôm nay.\n\n#VenHoHotelHanoi #HoTay #KhachSanHoTay #WestLakeHanoi #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=zalo&utm_medium=social&utm_content=pub-saturday-zalo-1d8be4a8",
@@ -13458,7 +13458,27 @@
         "content_brand_fit": 95,
         "content_overall_score": 93.7
       },
-      "replaces_publication_id": "pub-friday-zalo-4dd82a70"
+      "replaces_publication_id": "pub-friday-zalo-4dd82a70",
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-09-07T11:27:54.973999+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-561a97c4-ad8a-4c62-b468-67ec51a88f97",
+        "content_package_id": "561a97c4-ad8a-4c62-b468-67ec51a88f97",
+        "copy_version_ids": [
+          "brief-saturday-zalo-6f59c28e-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "c8089b5d2d476fca0a32a0e28dbaa715e33a1e954e87197c64708dffa93f6e41",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-saturday-zalo-6f59c28e@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-09-07T11:27:54.974150+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "24d75fdb22312d72d3c96125628a3ca1784af70bcc1db7d4dbb3a8d56c72e626",
+        "checksum": "66e337299e19704fdb8a24d7e4ca754f5c55d0a65e0fa47a6dd6ba06a43092b1"
+      }
     },
     {
       "publication_id": "pub-monday-facebook-b2899ba8",
