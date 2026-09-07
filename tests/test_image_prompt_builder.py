@@ -3,7 +3,7 @@ from pathlib import Path
 from prompt_studio.builders.image_prompt_builder import build_image_prompt
 from prompt_studio.knowledge_reader import read_dna
 
-REAL_DNA = Path("data/projects/venho_hotel/knowledge/VENHO_HOTEL_LAKE_VIEW_ROOM_DNA.json")
+REAL_DNA = Path("data/projects/venho_hotel/knowledge/VENHO_HOTEL_LAKE_VIEW_ROOM_1_DNA.json")
 BRIEF = "Create a realistic booking-style image of the lake view room."
 
 
@@ -15,7 +15,7 @@ def _build():
 def test_build_image_prompt_produces_valid_contract_from_real_dna():
     contract = _build()
     assert contract.prompt_type == "image"
-    assert contract.prompt_id == "lake_view_room__image__booking-style"
+    assert contract.prompt_id == "lake_view_room_1__image__booking-style"
     assert contract.project == "venho_hotel"
     assert contract.target_language == "en"
     assert contract.optimizer.used is False

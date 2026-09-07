@@ -852,3 +852,81 @@ def test_image_fallback_reason_is_none_when_a_real_image_was_used(tmp_path: Path
     content = result.publications[0]["content"]
     assert content["image_is_fallback"] is False
     assert content["image_fallback_reason"] is None
+
+
+def test_image_is_validated_against_the_room_it_was_generated_from(tmp_path: Path, monkeypatch) -> None:
+    """`lake_view_room` is one content subject over two physically different
+    rooms since the 2026-08-12 DNA split, and the generator rotates between
+    them by date. The validator used to resolve the logical name by globbing
+    and always score against room 1, so on room-2 days the photo was marked
+    down for depicting the room it was asked to depict."""
+    import growth_orchestrator.application.daily_cycle as daily_cycle_module
+    from shared.storage.google_drive import MockDriveUploader
+    from PIL import Image
+
+    class _FakeKillSwitch:
+        triggered = False
+
+    class _FakeReport:
+        kill_switch = _FakeKillSwitch()
+        verdict = daily_cycle_module.Recommendation.APPROVE
+
+        def model_dump_json(self, indent=2):
+            return "{}"
+
+    seen_subjects: list[str] = []
+
+    def _recording_validate(project, subject, path, provider="mock"):
+        seen_subjects.append(subject)
+        return _FakeReport()
+
+    monkeypatch.setattr(daily_cycle_module, "validate_image", _recording_validate)
+
+    fake_ref = tmp_path / "fake_ref.jpg"
+    Image.new("RGB", (4, 4)).save(fake_ref)
+    resolver = ReferenceAssetResolver(
+        {"venho_room_lake_view_approved": "fake_ref.jpg"}, assets_root=tmp_path
+    )
+    # Friday is the cadence day whose scenario resolves to the room subject.
+    # Consecutive Fridays are 7 days apart, so _room_dna_path's parity flips
+    # and the pair covers both rooms. Each date gets a fresh data_root so the
+    # scenario-rotation counter starts from the same place both times and
+    # slot_date is the only variable that differs.
+    used = {}
+    for index, slot_date in enumerate(("2026-09-11", "2026-09-18")):
+        data_root = _tmp_data_root(tmp_path / f"run-{index}")
+        seen_subjects.clear()
+        run_daily_cycle(
+            "friday", platforms=["facebook"], data_root=data_root,
+            image_provider=MockImageProvider(), reference_resolver=resolver,
+            drive_uploader=MockDriveUploader(), slot_date=slot_date,
+            content_bridge=_mock_content_bridge(data_root),
+            validator_bridge=_AlwaysApproveValidatorBridge(),
+        )
+        if seen_subjects:
+            room = daily_cycle_module._room_dna_path(
+                data_root, "venho_hotel", rotation_key=slot_date
+            )
+            used[slot_date] = (seen_subjects[0], room.stem)
+
+    # Guard against a vacuous pass: if the Wednesday lane ever stops routing to
+    # the room subject, this test must fail loudly rather than assert nothing.
+    assert len(used) == 2, f"validator was not reached on both dates: {used}"
+    assert {stem for _, stem in used.values()} == {
+        "VENHO_HOTEL_LAKE_VIEW_ROOM_1_DNA",
+        "VENHO_HOTEL_LAKE_VIEW_ROOM_2_DNA",
+    }, f"rotation did not cover both rooms: {used}"
+
+    # The crux: two runs that generated from different rooms must not both be
+    # validated as the same subject. The old code passed the logical name
+    # "lake_view_room" every time, and find_dna_path glob-resolved that to
+    # room 1 on both -- so room 2's photo was scored against room 1's spec.
+    assert len({subject for subject, _ in used.values()}) == 2, (
+        f"both runs validated as the same subject despite different room DNA: {used}"
+    )
+
+    for slot_date, (subject, dna_stem) in used.items():
+        # ...and the subject must name the exact room file used, not merely differ.
+        assert subject == dna_stem[len("VENHO_HOTEL_"):-len("_DNA")].lower(), (
+            f"{slot_date}: validated as {subject!r} but generated from {dna_stem}"
+        )

@@ -68,12 +68,12 @@ class TestManifestOverlayApplied:
 
 class TestNewSubjectResolution:
     def test_lake_view_room_resolves(self):
-        sd = resolve("venho_hotel", "lake_view_room")
-        assert sd.name == "lake_view_room"
-        assert sd.schema_id == "venho_hotel.lake_view_room"
+        sd = resolve("venho_hotel", "lake_view_room_1")
+        assert sd.name == "lake_view_room_1"
+        assert sd.schema_id == "venho_hotel.lake_view_room_1"
 
     def test_lake_view_room_has_aggregation_keys(self):
-        sd = resolve("venho_hotel", "lake_view_room")
+        sd = resolve("venho_hotel", "lake_view_room_1")
         keys = [k["key"] for k in sd.aggregation_keys]
         assert "window_frame" in keys
         assert "lake_view_visible" in keys
@@ -91,7 +91,7 @@ class TestNewSubjectResolution:
 
     def test_lake_view_room_has_overlay(self):
         """lake_view_room overlay file should exist and load."""
-        overlay = load_overlay("venho_hotel", "lake_view_room")
+        overlay = load_overlay("venho_hotel", "lake_view_room_1")
         assert overlay is not None
         assert "forbidden" in overlay
         assert len(overlay["forbidden"]) > 0
@@ -156,15 +156,15 @@ class TestOverlayMergeNewSubjects:
         )
 
     def test_lake_view_room_overlay_adds_curated_forbidden(self):
-        dna = self._make_dna("lake_view_room")
-        overlay = load_overlay("venho_hotel", "lake_view_room")
+        dna = self._make_dna("lake_view_room_1")
+        overlay = load_overlay("venho_hotel", "lake_view_room_1")
         merged = apply_overlay(dna, overlay)
         curated = [f for f in merged.forbidden if f.source == "curated"]
         assert len(curated) > 0
 
     def test_lake_view_room_overlay_wording_override_applied(self):
-        dna = self._make_dna("lake_view_room")
-        overlay = load_overlay("venho_hotel", "lake_view_room")
+        dna = self._make_dna("lake_view_room_1")
+        overlay = load_overlay("venho_hotel", "lake_view_room_1")
         merged = apply_overlay(dna, overlay)
         wf = next((f for f in merged.invariant if f.key == "window_frame"), None)
         assert wf is not None

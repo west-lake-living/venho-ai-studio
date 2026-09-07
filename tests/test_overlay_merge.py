@@ -199,7 +199,7 @@ class TestCuratorNotes:
 
 class TestLoadOverlay:
     def test_load_overlay_returns_dict_for_existing_subject(self):
-        overlay = load_overlay("venho_hotel", "lake_view_room")
+        overlay = load_overlay("venho_hotel", "lake_view_room_1")
         assert overlay is not None
         assert isinstance(overlay, dict)
 

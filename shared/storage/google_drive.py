@@ -60,7 +60,19 @@ class GoogleDriveUploader:
         from google.oauth2.credentials import Credentials
         from googleapiclient.discovery import build
 
-        info = json.loads(token_json)
+        try:
+            info = json.loads(token_json)
+        except json.JSONDecodeError as exc:
+            # GOOGLE_DRIVE_TOKEN_JSON must be the OAuth *authorized user*
+            # document, not a client secret. Harry's .env.local held a bare
+            # "GOCSPX-..." client secret here, and the raw JSONDecodeError it
+            # produced ("Expecting value: line 1 column 1") named neither the
+            # variable nor what was wrong with it (2026-09-07).
+            hint = "a client secret (GOCSPX-...)" if str(token_json).startswith("GOCSPX-") else "not JSON"
+            raise ValueError(
+                f"GOOGLE_DRIVE_TOKEN_JSON is {hint}; it must be the OAuth authorized-user "
+                'JSON document, e.g. {"refresh_token": ..., "client_id": ..., "type": "authorized_user"}'
+            ) from exc
         # Credentials exposes client_id/client_secret as read-only properties.
         # Put the GitHub secret values in the authorized-user payload before
         # constructing credentials, so an expired token can be refreshed.

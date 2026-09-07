@@ -33,7 +33,7 @@ class TestDnaFilename:
         assert _dna_filename("venho_hotel", "room") == "VENHO_HOTEL_ROOM_DNA"
 
     def test_venho_hotel_lake_view_room(self):
-        assert _dna_filename("venho_hotel", "lake_view_room") == "VENHO_HOTEL_LAKE_VIEW_ROOM_DNA"
+        assert _dna_filename("venho_hotel", "lake_view_room_1") == "VENHO_HOTEL_LAKE_VIEW_ROOM_1_DNA"
 
     def test_uppercase_project_and_subject(self):
         result = _dna_filename("my_project", "my_subject")
@@ -69,10 +69,10 @@ class TestObservePromptPath:
 
 class TestResolveSchemaPath:
     def test_venho_hotel_lake_view_room_resolves_project_specific(self):
-        path, source = _resolve_schema_path("venho_hotel", "lake_view_room")
+        path, source = _resolve_schema_path("venho_hotel", "lake_view_room_1")
         assert path.exists()
         assert "venho_hotel" in source
-        assert "lake_view_room" in source
+        assert "lake_view_room_1" in source
 
     def test_venho_hotel_lobby_resolves_project_specific(self):
         path, source = _resolve_schema_path("venho_hotel", "lobby")
@@ -94,8 +94,8 @@ class TestResolveSchemaPath:
         assert source == "config/projects/linh_an/subjects/outfit_e_sport.yaml"
 
     def test_source_description_contains_yaml_filename(self):
-        _, source = _resolve_schema_path("venho_hotel", "lake_view_room")
-        assert "lake_view_room.yaml" in source
+        _, source = _resolve_schema_path("venho_hotel", "lake_view_room_1")
+        assert "lake_view_room_1.yaml" in source
 
 
 # ---------------------------------------------------------------------------
@@ -104,9 +104,9 @@ class TestResolveSchemaPath:
 
 class TestResolve:
     def test_resolve_lake_view_room(self):
-        subj = resolve("venho_hotel", "lake_view_room")
-        assert subj.name == "lake_view_room"
-        assert subj.dna_filename == "VENHO_HOTEL_LAKE_VIEW_ROOM_DNA"
+        subj = resolve("venho_hotel", "lake_view_room_1")
+        assert subj.name == "lake_view_room_1"
+        assert subj.dna_filename == "VENHO_HOTEL_LAKE_VIEW_ROOM_1_DNA"
 
     def test_resolve_lobby(self):
         subj = resolve("venho_hotel", "lobby")
@@ -114,36 +114,36 @@ class TestResolve:
         assert "LOBBY" in subj.dna_filename
 
     def test_resolve_returns_correct_dna_filename_format(self):
-        subj = resolve("venho_hotel", "lake_view_room")
+        subj = resolve("venho_hotel", "lake_view_room_1")
         assert subj.dna_filename.startswith("VENHO_HOTEL_")
         assert subj.dna_filename.endswith("_DNA")
 
     def test_resolve_includes_observe_prompt(self):
-        subj = resolve("venho_hotel", "lake_view_room")
+        subj = resolve("venho_hotel", "lake_view_room_1")
         assert subj.observe_prompt.exists()
 
     def test_resolve_schema_source_not_empty(self):
-        subj = resolve("venho_hotel", "lake_view_room")
+        subj = resolve("venho_hotel", "lake_view_room_1")
         assert subj.schema_source
 
     def test_resolve_overlay_path_for_subject_with_overlay(self):
-        subj = resolve("venho_hotel", "lake_view_room")
+        subj = resolve("venho_hotel", "lake_view_room_1")
         # lake_view_room has an overlay file
         assert subj.overlay_path is not None
         assert subj.overlay_path.exists()
 
     def test_resolve_aggregation_keys_not_empty(self):
-        subj = resolve("venho_hotel", "lake_view_room")
+        subj = resolve("venho_hotel", "lake_view_room_1")
         assert len(subj.aggregation_keys) > 0
 
     def test_resolve_observation_cls_is_base_observation_subclass(self):
         from knowledge_studio.vision.schemas.base import BaseObservation
-        subj = resolve("venho_hotel", "lake_view_room")
+        subj = resolve("venho_hotel", "lake_view_room_1")
         assert issubclass(subj.observation_cls, BaseObservation)
 
     def test_resolve_dna_cls_is_base_dna_subclass(self):
         from knowledge_studio.vision.schemas.base import BaseDNA
-        subj = resolve("venho_hotel", "lake_view_room")
+        subj = resolve("venho_hotel", "lake_view_room_1")
         assert issubclass(subj.dna_cls, BaseDNA)
 
     def test_room_schema_class_does_not_hardcode_venho_schema_id(self):

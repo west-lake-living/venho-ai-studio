@@ -4,7 +4,7 @@ from prompt_studio.builders.image_prompt_builder import build_image_prompt
 from prompt_studio.knowledge_reader import read_dna
 from prompt_studio.validator import validate_faithfulness, validate_structural
 
-REAL_DNA = Path("data/projects/venho_hotel/knowledge/VENHO_HOTEL_LAKE_VIEW_ROOM_DNA.json")
+REAL_DNA = Path("data/projects/venho_hotel/knowledge/VENHO_HOTEL_LAKE_VIEW_ROOM_1_DNA.json")
 BRIEF = "Create a realistic booking-style image of the lake view room."
 
 

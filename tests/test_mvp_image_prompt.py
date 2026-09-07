@@ -8,11 +8,11 @@ from prompt_studio.prompt_store import save_prompt
 from prompt_studio.schemas.image_prompt import ImagePromptContract
 from prompt_studio.validator import validate_faithfulness, validate_structural
 
-REAL_DNA = Path("data/projects/venho_hotel/knowledge/VENHO_HOTEL_LAKE_VIEW_ROOM_DNA.json")
+REAL_DNA = Path("data/projects/venho_hotel/knowledge/VENHO_HOTEL_LAKE_VIEW_ROOM_1_DNA.json")
 BRIEF = "Create a realistic booking-style image of the lake view room."
 
 
-def test_mvp_lake_view_room_booking_style_image_prompt(tmp_path):
+def test_mvp_lake_view_room_1_booking_style_image_prompt(tmp_path):
     dna = read_dna(REAL_DNA)
 
     contract = build_image_prompt(dna, BRIEF, brief_slug="booking-style")
@@ -42,5 +42,5 @@ def test_mvp_lake_view_room_booking_style_image_prompt(tmp_path):
 
     paths = save_prompt(contract, root=tmp_path)
     reloaded = ImagePromptContract.model_validate_json(paths.json.read_text(encoding="utf-8"))
-    assert reloaded.prompt_id == "lake_view_room__image__booking-style"
+    assert reloaded.prompt_id == "lake_view_room_1__image__booking-style"
     assert reloaded.validation.faithfulness == "pass"

@@ -13,7 +13,7 @@ from prompt_studio.pipeline import run_content_pipeline, run_image_pipeline, run
 from prompt_studio.knowledge_reader import read_dna
 
 KNOWLEDGE_DIR = Path("data/projects/venho_hotel/knowledge")
-LAKE_VIEW_ROOM_DNA = KNOWLEDGE_DIR / "VENHO_HOTEL_LAKE_VIEW_ROOM_DNA.json"
+LAKE_VIEW_ROOM_DNA = KNOWLEDGE_DIR / "VENHO_HOTEL_LAKE_VIEW_ROOM_1_DNA.json"
 LINH_AN_DNA = KNOWLEDGE_DIR / "VENHO_HOTEL_LINH_AN_DNA.json"
 WESTLAKE_DNA = KNOWLEDGE_DIR / "VENHO_HOTEL_WESTLAKE_DNA.json"
 

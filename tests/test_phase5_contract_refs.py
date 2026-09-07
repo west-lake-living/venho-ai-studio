@@ -70,7 +70,7 @@ def test_m06_video_locks_outfit_id_across_scene_prompts_and_package(tmp_path: Pa
     data_root = tmp_path / "data" / "projects"
     knowledge_dir = data_root / "venho_hotel" / "knowledge"
     knowledge_dir.mkdir(parents=True)
-    for name in ["VENHO_HOTEL_LAKE_VIEW_ROOM_DNA.json", "VENHO_HOTEL_LINH_AN_DNA.json"]:
+    for name in ["VENHO_HOTEL_LAKE_VIEW_ROOM_1_DNA.json", "VENHO_HOTEL_LINH_AN_DNA.json"]:
         copyfile(Path("data/projects/venho_hotel/knowledge") / name, knowledge_dir / name)
 
     def source_ref(name: str) -> VideoSourceRef:
@@ -87,7 +87,7 @@ def test_m06_video_locks_outfit_id_across_scene_prompts_and_package(tmp_path: Pa
         include_character=True,
         target_audience="Vietnamese leisure guests",
         source_knowledge=[
-            source_ref("VENHO_HOTEL_LAKE_VIEW_ROOM_DNA.json"),
+            source_ref("VENHO_HOTEL_LAKE_VIEW_ROOM_1_DNA.json"),
             source_ref("VENHO_HOTEL_LINH_AN_DNA.json"),
         ],
         outfit_id="mint_green",

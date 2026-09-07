@@ -24,7 +24,7 @@ def _tmp_data_root(tmp_path: Path) -> Path:
     knowledge_dir = root / "venho_hotel" / "knowledge"
     knowledge_dir.mkdir(parents=True)
     for name in [
-        "VENHO_HOTEL_LAKE_VIEW_ROOM_DNA.json",
+        "VENHO_HOTEL_LAKE_VIEW_ROOM_1_DNA.json",
         "VENHO_HOTEL_WESTLAKE_DNA.json",
         "VENHO_HOTEL_LINH_AN_DNA.json",
     ]:
@@ -49,7 +49,7 @@ def _request(data_root: Path) -> VideoRequest:
         include_character=False,
         target_audience="Vietnamese leisure guests",
         source_knowledge=[
-            _source_ref("VENHO_HOTEL_LAKE_VIEW_ROOM_DNA.json", data_root),
+            _source_ref("VENHO_HOTEL_LAKE_VIEW_ROOM_1_DNA.json", data_root),
             _source_ref("VENHO_HOTEL_WESTLAKE_DNA.json", data_root),
         ],
         target_engine="veo",
@@ -64,7 +64,7 @@ def _character_request(data_root: Path) -> VideoRequest:
             "video_type": "character",
             "include_character": True,
             "source_knowledge": [
-                _source_ref("VENHO_HOTEL_LAKE_VIEW_ROOM_DNA.json", data_root),
+                _source_ref("VENHO_HOTEL_LAKE_VIEW_ROOM_1_DNA.json", data_root),
                 _source_ref("VENHO_HOTEL_LINH_AN_DNA.json", data_root),
             ],
         }
@@ -180,7 +180,7 @@ def test_video_cli_generate_command_matches_readme(tmp_path: Path) -> None:
             "--type",
             "social_reel",
             "--subjects",
-            "lake_view_room,westlake",
+            "lake_view_room_1,westlake",
             "--data-root",
             str(data_root),
             "--no-validate",

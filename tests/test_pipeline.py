@@ -10,7 +10,7 @@ from prompt_studio.pipeline import FaithfulnessValidationFailed, StructuralValid
 from shared.vision.errors import SchemaValidationError
 from validator_studio.module02_integration import score_module02_prompt_contract
 
-REAL_DNA = Path("data/projects/venho_hotel/knowledge/VENHO_HOTEL_LAKE_VIEW_ROOM_DNA.json")
+REAL_DNA = Path("data/projects/venho_hotel/knowledge/VENHO_HOTEL_LAKE_VIEW_ROOM_1_DNA.json")
 BRIEF = "Create a realistic booking-style image of the lake view room."
 
 

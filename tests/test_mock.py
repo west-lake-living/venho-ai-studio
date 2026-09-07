@@ -59,13 +59,21 @@ class TestMockClientImports:
 
 
 class TestSubjectResolver:
-    def test_resolves_venho_hotel_room(self, room_subject):
+    def test_resolves_room_via_the_shared_schema(self, room_subject):
+        """`room` has no venho_hotel-specific schema any more.
+
+        481bd24 deliberately deleted the orphaned `room`/`nike` project
+        subjects when the real rooms were split into lake_view_room_1/_2 and
+        deluxe_double. Falling through to config/projects/_shared_subjects/
+        room.yaml is the intended behaviour now, not a resolution failure --
+        the previous assertions here pinned the deleted file.
+        """
         assert room_subject.name == "room"
-        assert room_subject.schema_id == "venho_hotel.room"
+        assert room_subject.schema_id == "shared.room"
         assert len(room_subject.aggregation_keys) > 0
 
-    def test_schema_source_is_project_specific(self, room_subject):
-        assert "venho_hotel" in room_subject.schema_source
+    def test_schema_source_is_the_shared_subject_file(self, room_subject):
+        assert "_shared_subjects" in room_subject.schema_source
 
     def test_resolve_unknown_falls_back_to_universal(self):
         # Per §6: unknown subject falls back to universal_schema.yaml — not an error

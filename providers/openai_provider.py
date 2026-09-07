@@ -10,7 +10,23 @@ from providers.base_provider import BaseImageProvider
 from core.logger import log
 
 BASE_DIR = Path(__file__).parent.parent
-load_dotenv(BASE_DIR / ".env")
+
+_ENV_LOADED = False
+
+
+def _ensure_env() -> None:
+    """Load .env on first real use, not at import.
+
+    Importing this module used to read the developer's real .env into
+    os.environ for the whole process -- which, under pytest, leaked live API
+    keys into every test in the session and made unrelated tests fail
+    depending on import order (2026-09-07). Deferring the read means only
+    code that actually talks to the provider ever sees a key.
+    """
+    global _ENV_LOADED
+    if not _ENV_LOADED:
+        load_dotenv(BASE_DIR / ".env")
+        _ENV_LOADED = True
 
 
 def _encode_image(path: Path) -> str:
@@ -36,6 +52,7 @@ def _load_extraction_prompt() -> str:
 
 class OpenAIProvider(BaseImageProvider):
     def __init__(self, model: str = "gpt-4o"):
+        _ensure_env()
         api_key = os.environ.get("OPENAI_API_KEY")
         if not api_key:
             raise ValueError("OPENAI_API_KEY chưa được cấu hình trong .env")

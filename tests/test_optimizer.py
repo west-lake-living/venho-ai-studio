@@ -9,7 +9,7 @@ from prompt_studio.knowledge_reader import read_dna
 from prompt_studio.optimizer import OptimizerDisabled, optimize
 from shared.vision.errors import ProviderError, RetryExhausted
 
-REAL_DNA = Path("data/projects/venho_hotel/knowledge/VENHO_HOTEL_LAKE_VIEW_ROOM_DNA.json")
+REAL_DNA = Path("data/projects/venho_hotel/knowledge/VENHO_HOTEL_LAKE_VIEW_ROOM_1_DNA.json")
 BRIEF = "Create a realistic booking-style image of the lake view room."
 
 SETTINGS = {

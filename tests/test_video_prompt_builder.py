@@ -5,7 +5,7 @@ from prompt_studio.knowledge_reader import KnowledgeDna, read_dna
 from prompt_studio.schemas.base import ForbiddenItem, RequiredDnaItem
 
 LINH_AN_DNA = Path("data/projects/venho_hotel/knowledge/VENHO_HOTEL_LINH_AN_DNA.json")
-LAKE_VIEW_ROOM_DNA = Path("data/projects/venho_hotel/knowledge/VENHO_HOTEL_LAKE_VIEW_ROOM_DNA.json")
+LAKE_VIEW_ROOM_DNA = Path("data/projects/venho_hotel/knowledge/VENHO_HOTEL_LAKE_VIEW_ROOM_1_DNA.json")
 BRIEF = "A 15-second video of Linh An standing at the lake view room window at golden hour."
 
 
@@ -26,7 +26,7 @@ def test_build_video_prompt_merges_character_and_environment_dna():
     character, environment, contract = _build()
 
     assert contract.prompt_type == "video"
-    assert contract.prompt_id == "linh_an+lake_view_room__video__window-15s"
+    assert contract.prompt_id == "linh_an+lake_view_room_1__video__window-15s"
     assert len(contract.source_knowledge) == 2
     assert contract.source_knowledge[0].file == LINH_AN_DNA.name
     assert contract.source_knowledge[1].file == LAKE_VIEW_ROOM_DNA.name
@@ -71,7 +71,7 @@ def test_build_video_prompt_without_character_dna_is_environment_only():
         [environment], "An empty lake view room at sunrise.", brief_slug="empty-room", generated_at="2026-07-08T00:00:00+00:00"
     )
     assert contract.character_lock is None
-    assert contract.prompt_id == "lake_view_room__video__empty-room"
+    assert contract.prompt_id == "lake_view_room_1__video__empty-room"
     assert len(contract.source_knowledge) == 1
 
 

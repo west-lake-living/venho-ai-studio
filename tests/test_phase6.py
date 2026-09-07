@@ -22,7 +22,7 @@ class TestCacheKeyIncludesSchemaId:
         obs_dir = Path("/tmp/obs")
         img_hash = "a" * 64
         p1 = _cache_path(obs_dir, img_hash, "venho_hotel.room_2", "1.0", "1.0")
-        p2 = _cache_path(obs_dir, img_hash, "venho_hotel.lake_view_room", "1.0", "1.0")
+        p2 = _cache_path(obs_dir, img_hash, "venho_hotel.lake_view_room_1", "1.0", "1.0")
         assert p1 != p2, "Same image + different schema_id must produce different cache paths"
 
     def test_cache_key_same_for_same_schema_id(self):
@@ -35,8 +35,8 @@ class TestCacheKeyIncludesSchemaId:
     def test_cache_key_includes_schema_id_in_filename(self):
         obs_dir = Path("/tmp/obs")
         img_hash = "c" * 64
-        p = _cache_path(obs_dir, img_hash, "venho_hotel.lake_view_room", "1.0", "1.0")
-        assert "venho_hotel.lake_view_room" in p.name
+        p = _cache_path(obs_dir, img_hash, "venho_hotel.lake_view_room_1", "1.0", "1.0")
+        assert "venho_hotel.lake_view_room_1" in p.name
 
     def test_cache_key_changes_with_schema_version(self):
         obs_dir = Path("/tmp/obs")
@@ -61,9 +61,9 @@ class TestCacheKeyIncludesSchemaId:
 
 class TestNewSubjectsResolvable:
     def test_lake_view_room_resolves(self):
-        sd = resolve("venho_hotel", "lake_view_room")
-        assert sd.name == "lake_view_room"
-        assert sd.schema_id == "venho_hotel.lake_view_room"
+        sd = resolve("venho_hotel", "lake_view_room_1")
+        assert sd.name == "lake_view_room_1"
+        assert sd.schema_id == "venho_hotel.lake_view_room_1"
         assert sd.overlay_path is not None
 
     def test_deluxe_double_resolves(self):
@@ -73,10 +73,10 @@ class TestNewSubjectsResolvable:
         assert sd.overlay_path is not None
 
     def test_lake_view_room_schema_id_in_cache_path(self):
-        sd = resolve("venho_hotel", "lake_view_room")
+        sd = resolve("venho_hotel", "lake_view_room_1")
         obs_dir = Path("/tmp/obs")
         p = _cache_path(obs_dir, "a" * 64, sd.schema_id, "1.0", "1.0")
-        assert "lake_view_room" in p.name
+        assert "lake_view_room_1" in p.name
 
     def test_deluxe_double_schema_id_in_cache_path(self):
         sd = resolve("venho_hotel", "deluxe_double")
@@ -92,7 +92,7 @@ class TestNewSubjectsResolvable:
 class TestNoCrossSchemaContamination:
     def test_different_subjects_get_different_cache_files(self, tmp_path):
         """Running two subjects on the same image should write to different cache paths."""
-        sd_lake = resolve("venho_hotel", "lake_view_room")
+        sd_lake = resolve("venho_hotel", "lake_view_room_1")
         sd_deluxe = resolve("venho_hotel", "deluxe_double")
 
         fake_image = tmp_path / "test.jpg"
@@ -113,12 +113,12 @@ class TestNoCrossSchemaContamination:
             f"{[f.name for f in cache_files]}"
         )
         names = [f.name for f in cache_files]
-        assert any("lake_view_room" in n for n in names)
+        assert any("lake_view_room_1" in n for n in names)
         assert any("deluxe_double" in n for n in names)
 
     def test_same_subject_second_run_is_cache_hit(self, tmp_path):
         """Second run with same subject on same image → cache hit (0 API calls)."""
-        sd = resolve("venho_hotel", "lake_view_room")
+        sd = resolve("venho_hotel", "lake_view_room_1")
 
         fake_image = tmp_path / "test.jpg"
         from PIL import Image as PILImage
@@ -147,7 +147,7 @@ class TestRawAssetsExist:
         assert len(images) >= 6, f"Expected ≥6 images, found {len(images)}"
 
     def test_deluxe_double_images_exist(self):
-        folder = ASSETS_DIR / "room" / "VenHo-room-1"
+        folder = ASSETS_DIR / "room" / "ViewHo-room-1"
         assert folder.is_dir(), f"Missing: {folder}"
         images = list(folder.glob("*.jpg")) + list(folder.glob("*.jpeg")) + list(folder.glob("*.JPG"))
         assert len(images) >= 3, f"Expected ≥3 images, found {len(images)}"

@@ -27,7 +27,7 @@ def test_cli_missing_subject_and_brief_exits_nonzero():
 
 def test_cli_unknown_type_exits_nonzero():
     result = runner.invoke(
-        app, ["--type", "bogus", "--project", "venho_hotel", "--subject", "lake_view_room", "--brief", "x"]
+        app, ["--type", "bogus", "--project", "venho_hotel", "--subject", "lake_view_room_1", "--brief", "x"]
     )
     assert result.exit_code != 0
     assert "Unknown --type" in result.output
@@ -35,29 +35,29 @@ def test_cli_unknown_type_exits_nonzero():
 
 def test_run_one_image_generates_and_saves(tmp_path):
     result = _run_one(
-        "image", "venho_hotel", "lake_view_room",
+        "image", "venho_hotel", "lake_view_room_1",
         "Create a realistic booking-style image of the lake view room.",
         None, None, None, False, root=tmp_path, optimize_fn=optimize_mock,
     )
-    assert result.contract.prompt_id == "lake_view_room__image__create-a-realistic-booking-style"
+    assert result.contract.prompt_id == "lake_view_room_1__image__create-a-realistic-booking-style"
     assert result.regeneration_decision == RegenerationDecision.NEW
     assert result.paths is not None and result.paths.markdown.exists()
 
 
 def test_run_one_video_parses_character_then_environment_subjects(tmp_path):
     result = _run_one(
-        "video", "venho_hotel", "linh_an,lake_view_room",
+        "video", "venho_hotel", "linh_an,lake_view_room_1",
         "A 15-second video of Linh An at the window.", "window-15s",
         None, None, False, root=tmp_path, optimize_fn=optimize_mock,
     )
     assert result.contract.character_lock is not None
     assert result.contract.environment_dna is not None
-    assert result.contract.prompt_id.startswith("linh_an+lake_view_room__video__")
+    assert result.contract.prompt_id.startswith("linh_an+lake_view_room_1__video__")
 
 
 def test_run_one_video_single_subject_has_no_character(tmp_path):
     result = _run_one(
-        "video", "venho_hotel", "lake_view_room",
+        "video", "venho_hotel", "lake_view_room_1",
         "An empty lake view room at sunrise.", "empty-room",
         None, None, False, root=tmp_path, optimize_fn=optimize_mock,
     )

@@ -20,7 +20,16 @@ from prompt_studio.schemas.prompt_contract import PromptContractBase
 from prompt_studio.settings import load_settings
 from shared.vision.errors import ProviderError, RetryExhausted
 
-load_dotenv()
+_ENV_LOADED = False
+
+
+def _ensure_env() -> None:
+    """Load .env on first real use -- see providers/openai_provider.py."""
+    global _ENV_LOADED
+    if not _ENV_LOADED:
+        load_dotenv()
+        _ENV_LOADED = True
+
 
 SYSTEM_PROMPT = (
     "You polish the wording of an AI production prompt (image/video/content/SEO). "
@@ -48,6 +57,7 @@ def optimize(contract: PromptContractBase, settings: Optional[dict] = None) -> P
     temperature = opt_cfg.get("temperature", 0)
     max_attempts = opt_cfg.get("max_attempts", 2)
 
+    _ensure_env()
     api_key = os.environ.get("ANTHROPIC_API_KEY")
     if not api_key:
         raise ProviderError("ANTHROPIC_API_KEY not configured", provider=provider)

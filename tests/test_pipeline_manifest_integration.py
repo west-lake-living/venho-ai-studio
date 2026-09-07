@@ -13,7 +13,7 @@ from prompt_studio.pipeline import (
 )
 from prompt_studio.prompt_manifest import RegenerationDecision, load_manifest
 
-LAKE_VIEW_ROOM_DNA = Path("data/projects/venho_hotel/knowledge/VENHO_HOTEL_LAKE_VIEW_ROOM_DNA.json")
+LAKE_VIEW_ROOM_DNA = Path("data/projects/venho_hotel/knowledge/VENHO_HOTEL_LAKE_VIEW_ROOM_1_DNA.json")
 LINH_AN_DNA = Path("data/projects/venho_hotel/knowledge/VENHO_HOTEL_LINH_AN_DNA.json")
 WESTLAKE_DNA = Path("data/projects/venho_hotel/knowledge/VENHO_HOTEL_WESTLAKE_DNA.json")
 
@@ -41,7 +41,7 @@ def test_video_pipeline_saves_via_manifest(tmp_path):
     )
     assert result.regeneration_decision == RegenerationDecision.NEW
     assert result.paths is not None
-    assert result.paths.markdown.name.startswith("LINH_AN+LAKE_VIEW_ROOM__")
+    assert result.paths.markdown.name.startswith("LINH_AN+LAKE_VIEW_ROOM_1__")
 
     manifest = load_manifest("venho_hotel", root=tmp_path)
     assert manifest["prompts"][0]["prompt_type"] == "video"

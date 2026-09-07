@@ -63,7 +63,7 @@ def test_high_forbidden_triggers_kill_switch_cap():
 def test_image_validator_mock_writes_report(tmp_path):
     image = tmp_path / "good.png"
     image.write_bytes(b"fake-image-bytes")
-    report = validate_image("venho_hotel", "lake_view_room", image, provider="mock")
+    report = validate_image("venho_hotel", "lake_view_room_1", image, provider="mock")
     paths = write_report(report, tmp_path / "reports", "sample")
     md = paths["md"].read_text(encoding="utf-8")
     data = json.loads(paths["json"].read_text(encoding="utf-8"))
@@ -92,7 +92,11 @@ def test_image_validator_scenario_overlay_merges_in_memory_only():
     dna = load_json(dna_path)
 
     merged = _apply_scenario_overlay("venho_hotel", "westlake", "nguyen_dinh_thi_street_2026", dna)
-    assert any("ivory-white metal railing" in note for note in merged["curator_notes"])
+    # Assert the scenario's defining fact reached the notes, not one exact
+    # sentence: c33d38c reworded "ivory-white metal railing" to "ivory-white
+    # painted steel railing" while fixing the stale Ho Tay railing DNA, and
+    # this test went red for a wording change that was itself the fix.
+    assert any("ivory-white" in note and "railing" in note for note in merged["curator_notes"])
 
     unchanged = _apply_scenario_overlay("venho_hotel", "westlake", None, dna)
     assert unchanged == dna
@@ -181,7 +185,7 @@ def test_prompt_validator_reads_prompt_json(tmp_path):
         "forbidden": [{"rule": "no floor-to-ceiling glass wall", "source": "curated"}],
         "final_prompt": "Realistic hotel room photo with matte black aluminum window frame and double bed.",
     }), encoding="utf-8")
-    report = validate_prompt("venho_hotel", "lake_view_room", prompt_file)
+    report = validate_prompt("venho_hotel", "lake_view_room_1", prompt_file)
     assert report.validation_type == "prompt"
     assert report.category_scores["dna_coverage"] > 50
     assert "Module 02" in report.validation_notes[0]
@@ -199,7 +203,7 @@ def test_prompt_validator_scores_in_memory_contract_for_module_02():
         "forbidden": [{"rule": "no floor-to-ceiling glass wall", "source": "curated"}],
         "final_prompt": "Realistic hotel room photo with matte black aluminum window frame and double bed.",
     }
-    report = validate_prompt_contract("venho_hotel", "lake_view_room", contract)
+    report = validate_prompt_contract("venho_hotel", "lake_view_room_1", contract)
     assert report.artifact_ref.file == "(in-memory prompt contract)"
     assert report.validation_type == "prompt"
     assert report.category_scores["dna_coverage"] > 50
@@ -224,7 +228,7 @@ def test_cli_validate_prompt_command(tmp_path):
     result = runner.invoke(app, [
         "validate", "prompt",
         "--project", "venho_hotel",
-        "--subject", "lake_view_room",
+        "--subject", "lake_view_room_1",
         "--prompt-file", str(prompt_file),
         "--output-root", str(tmp_path / "validation"),
     ])

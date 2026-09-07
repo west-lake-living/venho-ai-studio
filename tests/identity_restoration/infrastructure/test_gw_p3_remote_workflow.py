@@ -111,11 +111,22 @@ def test_registry_gates_preserve_mock_local_and_remote(tmp_path: Path) -> None:
         env = RestorationEnv(**kwargs)
         return set(build_identity_restoration_module(env=env, repo_root=ROOT).registry.restorers)
 
-    assert ids() == {"mock"}
-    assert ids(comfyui_enabled=True) == {"mock", "comfyui-local"}
-    assert ids(comfyui_remote_enabled=True) == {"mock", "comfyui-remote"}
-    assert ids(comfyui_enabled=True, comfyui_remote_enabled=True) == {
-        "mock", "comfyui-local", "comfyui-remote"
+    # Candidate v3 registers itself whenever the production release state has
+    # it active, independently of these two env flags -- that enablement is
+    # real and is covered by test_candidate_v3_feature_flag.py. Pinning the
+    # baseline to exactly {"mock"} made this gate test fail on a deliberate
+    # production release rather than on a broken gate, so take the baseline
+    # from the module and assert what this test is actually about: that the
+    # local and remote restorers appear only behind their own flags.
+    baseline = ids()
+    assert "mock" in baseline
+    assert "comfyui-local" not in baseline
+    assert "comfyui-remote" not in baseline
+
+    assert ids(comfyui_enabled=True) == baseline | {"comfyui-local"}
+    assert ids(comfyui_remote_enabled=True) == baseline | {"comfyui-remote"}
+    assert ids(comfyui_enabled=True, comfyui_remote_enabled=True) == baseline | {
+        "comfyui-local", "comfyui-remote"
     }
 
 

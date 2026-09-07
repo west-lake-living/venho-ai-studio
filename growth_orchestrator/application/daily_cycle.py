@@ -583,6 +583,20 @@ def _room_dna_path(data_root: Path, project: str, *, rotation_key: str | None = 
         return available[0]
 
 
+def _validation_subject_for_dna(dna_path: Path, dna_subject: str) -> str:
+    """Name the subject whose DNA file was actually used.
+
+    `VENHO_HOTEL_LAKE_VIEW_ROOM_2_DNA.json` -> `lake_view_room_2`, so the
+    validator loads that exact spec instead of glob-picking room 1. Falls
+    back to the logical subject for any file that does not follow the
+    VENHO_HOTEL_<SUBJECT>_DNA convention.
+    """
+    stem = dna_path.stem
+    if stem.startswith("VENHO_HOTEL_") and stem.endswith("_DNA"):
+        return stem[len("VENHO_HOTEL_"):-len("_DNA")].lower()
+    return dna_subject
+
+
 def _upload_image_to_drive(
     run_folder: Path, *, day: str, content_package_id: str, uploader: Any
 ) -> Optional[str]:
@@ -698,6 +712,20 @@ def _generate_topic_image(
             else data_root / project / "knowledge" / f"VENHO_HOTEL_{topic['dna_subject'].upper()}_DNA.json"
         )
         dna = read_dna(dna_path)
+        # Validate against the SAME DNA the image was built from.
+        #
+        # `lake_view_room` is one content subject backed by two physically
+        # different rooms since the 2026-08-12 split, and _room_dna_path
+        # rotates between them by date. The validator, given the logical name
+        # "lake_view_room", resolves its DNA by globbing and always lands on
+        # room 1 (validator_studio.utils.find_dna_path). So on every run that
+        # generated from room 2 -- roughly half of them -- the photo was
+        # scored against the other room's DNA: room 2 has wooden chairs, a
+        # wooden headboard and dark gray curtains that room 1's spec does not
+        # list, and room 1 asserts `wall_artwork: none`. The image lost marks
+        # for faithfully depicting the room it was asked to depict, and a
+        # sub-APPROVE score discards it (2026-09-07).
+        validation_subject = _validation_subject_for_dna(dna_path, topic["dna_subject"])
         image_contract = build_image_prompt(dna, f"A real photo for: {topic['topic']}", brief_slug=slugify(topic["topic"]))
         prompt_contract = {
             "creative_brief_id": f"daily-cycle-{day}",
@@ -763,7 +791,7 @@ def _generate_topic_image(
                     raise RuntimeError(f"budget cap reached ({vision_evaluation['ratio']:.0%}) -- vision QC skipped")
             try:
                 report = validate_image(
-                    project, topic["dna_subject"], run_folder / artifact_name, provider=image_validation_provider
+                    project, validation_subject, run_folder / artifact_name, provider=image_validation_provider
                 )
             except Exception:
                 if image_validation_provider != "mock":

@@ -5,13 +5,13 @@ import pytest
 
 from prompt_studio.knowledge_reader import DnaReadError, read_dna
 
-REAL_DNA = Path("data/projects/venho_hotel/knowledge/VENHO_HOTEL_LAKE_VIEW_ROOM_DNA.json")
+REAL_DNA = Path("data/projects/venho_hotel/knowledge/VENHO_HOTEL_LAKE_VIEW_ROOM_1_DNA.json")
 
 
 def test_read_dna_maps_real_module01_dna_file():
     dna = read_dna(REAL_DNA)
     assert dna.project == "venho_hotel"
-    assert dna.subject == "lake_view_room"
+    assert dna.subject == "lake_view_room_1"
     assert dna.contract_version == "1.1"
     assert len(dna.required_dna) == len(json.loads(REAL_DNA.read_text())["invariant"])
     assert all(hasattr(item, "key") and hasattr(item, "value") for item in dna.required_dna)
@@ -34,7 +34,7 @@ def test_read_dna_missing_required_field_raises_clear_error(tmp_path):
     broken = {
         "contract_version": "1.1",
         "project": "venho_hotel",
-        "subject": "lake_view_room",
+        "subject": "lake_view_room_1",
         "dna_version": "1.0",
         "invariant": [],
         "variable": [],
@@ -50,7 +50,7 @@ def test_read_dna_contract_version_out_of_range_raises_clear_error(tmp_path):
     future = {
         "contract_version": "2.0",
         "project": "venho_hotel",
-        "subject": "lake_view_room",
+        "subject": "lake_view_room_1",
         "dna_version": "1.0",
         "invariant": [],
         "variable": [],
