@@ -13238,13 +13238,13 @@
       "idempotency_key": "8b8e1803ce492128076e6144fdf1a45cf624c35e48345c8e8f249757f1847267",
       "platform": "threads",
       "slot_id": "slot-2026-09-18-friday",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-28T00:22:59.693660+00:00",
-      "updated_at": "2026-08-28T00:22:59.732510+00:00",
+      "updated_at": "2026-09-07T11:28:10.129936+00:00",
       "content": {
         "title": "Đơn giản nhưng đủ",
         "text": "Có những không gian không cần thêm gì nữa, chỉ cần đủ.\n\nĐẩy cửa kính vào, thứ đầu tiên nhìn thấy là quầy lễ tân gỗ nâu đỏ sẫm, tủ chìa khóa gọn phía sau, một bức tranh treo trên tường. Sàn gạch nâu với những vòng tròn nhỏ, trần trắng phẳng, ánh sáng trung tính không quá gắt cũng không tối. Sạch, ngăn nắp, không có gì để phải để ý thêm.\n\nSau một ngày đi bộ ven hồ, hóa ra thứ mình cần không phải là nhiều tiện nghi, mà là một chỗ đơn giản đủ để đặt balo xuống và thấy nhẹ người. Ven Hồ Hotel trên Nguyễn Đình Thi là kiểu chỗ như vậy — vừa đủ, không dư.\n\nNếu bạn đang tính vài ngày ở Hà Nội, nhắn tin để mình xem còn phòng những hôm đó nhé.\n\n#VenHoHotelHanoi #HoTay #NguyenDinhThi\n\nhttps://venhohotel.com/lien-he?utm_source=threads&utm_medium=social&utm_content=pub-friday-threads-21ff805d",
@@ -13343,7 +13343,27 @@
         "content_brand_fit": 95,
         "content_overall_score": 93.7
       },
-      "replaces_publication_id": "pub-friday-threads-a4c20648"
+      "replaces_publication_id": "pub-friday-threads-a4c20648",
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-09-07T11:28:10.127088+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-fb0cb0e4-e2f0-4ab4-8d0d-2f6c772a9a1b",
+        "content_package_id": "fb0cb0e4-e2f0-4ab4-8d0d-2f6c772a9a1b",
+        "copy_version_ids": [
+          "brief-friday-threads-157320e1-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "ea7e17123faffd5dd2713b544d8085fd9bbccd89b2c8c6630f22ee3978056fee",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-friday-threads-157320e1@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-09-07T11:28:10.127235+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "f761adee460e358eb9c30aaada0e1c5a97c95b01bf5444219415d4d1539da1a7",
+        "checksum": "78a6b209836cad9a7c2d97b25961b23355fe20a0b3a11a99a47d5699c44da121"
+      }
     },
     {
       "publication_id": "pub-saturday-zalo-1d8be4a8",
