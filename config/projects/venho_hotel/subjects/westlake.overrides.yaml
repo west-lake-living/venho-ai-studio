@@ -10,7 +10,7 @@ forbidden:
   - "no resort waterfront design — this is public lakeside street, not hotel grounds"
   - "no dramatic staged lighting — soft Hanoi haze and natural glow only"
   - "no saturated or oversaturated water color — must be muted jade-teal, not tropical blue"
-  - "no modern glass high-rise backdrop — low-rise cityscape across the water"
+  - "no modern glass high-rise dominating the frame — a distant, hazy low/mid-rise skyline across the far shore is real West Lake and is fine"
 
 allowed_imperfections:
   - "slight Hanoi haze or atmospheric softness acceptable — authentic weather"
@@ -28,6 +28,19 @@ wording_overrides:
   lamp_post_presence: "no"
 
 notes:
+  - "2026-09-07: Harry's call — relaxed the old blanket 'no modern glass
+    high-rise backdrop / no city high-rise skyline' rule. West Lake really
+    does have a low/mid-rise skyline across the far shore; the blanket ban
+    was the lobby's 'no marble floor' mistake again — a curated rule that
+    contradicts the real place. It was tripping the validator kill-switch
+    (forbidden=0.0 caps the score at 40 and forces regenerate) on images
+    that otherwise scored DNA-match 100/100, and 5 of the 6 reference
+    photos in assets/raw/westlake/ contain that same skyline, so the retry
+    reused a violating reference and failed again. Net effect: 28 paid
+    gpt-image-2 calls yielded only 6 usable images and ~87% of posts fell
+    back to the 4 static hotel photos. What stays forbidden is a glass
+    tower DOMINATING the frame (the generic Dubai/Shanghai look); a
+    distant hazy skyline is now allowed."
   - "Identity Block (MUST USE as prefix in all AI prompts):"
   - "  West Lake (Ho Tay), Hanoi, Vietnam. Nguyen Dinh Thi lakeside street."
   - "  Muted blue-green calm lake water (jade-teal #4E8FA0), wide open lake view,"

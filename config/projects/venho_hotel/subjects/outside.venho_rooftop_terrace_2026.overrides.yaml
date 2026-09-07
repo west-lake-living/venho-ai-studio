@@ -27,7 +27,7 @@ forbidden:
   - "no infinity pool or resort-style pool deck — hotel has no pool"
   - "no rooftop bar with full commercial bar setup"
   - "no luxury resort terrace furniture (cabanas, daybeds)"
-  - "no city high-rise skyline — West Lake area is low-rise"
+  - "no modern glass high-rise dominating the frame — a distant, hazy skyline across the water is real West Lake and is fine"
   - "no generic rooftop lounge aesthetic — this is a simple urban terrace"
   - "no manicured hotel garden — space is compact and urban"
 
@@ -50,6 +50,19 @@ wording_overrides:
     sunset and blue hour — not restricted to midday daylight
 
 notes:
+  - "2026-09-07: Harry's call — relaxed the old blanket 'no modern glass
+    high-rise backdrop / no city high-rise skyline' rule. West Lake really
+    does have a low/mid-rise skyline across the far shore; the blanket ban
+    was the lobby's 'no marble floor' mistake again — a curated rule that
+    contradicts the real place. It was tripping the validator kill-switch
+    (forbidden=0.0 caps the score at 40 and forces regenerate) on images
+    that otherwise scored DNA-match 100/100, and 5 of the 6 reference
+    photos in assets/raw/westlake/ contain that same skyline, so the retry
+    reused a violating reference and failed again. Net effect: 28 paid
+    gpt-image-2 calls yielded only 6 usable images and ~87% of posts fell
+    back to the 4 static hotel photos. What stays forbidden is a glass
+    tower DOMINATING the frame (the generic Dubai/Shanghai look); a
+    distant hazy skyline is now allowed."
   - "Rooftop terrace of a 5-floor boutique hotel — terracotta floor tiles, black metal railing with simple circular details on the top bar."
   - "Elevation is the point: West Lake spread out below, modest low/mid-rise Hanoi skyline across the water, large open sky."
   - "Time of day is a VARIABLE driven by the brief, never an invariant — sunset over West Lake is a core brand scene."

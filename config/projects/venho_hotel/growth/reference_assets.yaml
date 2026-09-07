@@ -12,13 +12,21 @@
 #
 # NOT a curation/approval workflow -- pools are whatever's in the folder,
 # nothing here has been through a QC/approval gate the way Linh An's
-# B3/A2/C/D reference pack has (see projects/CLAUDE.md). One consequence:
-# assets/raw/westlake/ still has a few older night/skyline-heavy shots that
-# can occasionally trip the `no modern glass high-rise backdrop` forbidden
-# rule on the day rotation lands on them -- that now shows up as one day's
-# image_is_fallback instead of a silent repeat, not a hard failure (see
-# weekly_cycle's weekly_image_fallback_rate alert). Worth a pass to weed out
-# the worst offenders, not done here.
+# B3/A2/C/D reference pack has (see projects/CLAUDE.md).
+#
+# Resolved 2026-09-07: the note that used to sit here ("a few older
+# skyline-heavy shots can occasionally trip `no modern glass high-rise
+# backdrop`") understated the problem by an order of magnitude. Five of the
+# six photos in assets/raw/westlake/ contain that skyline -- it is simply
+# what the far shore of West Lake looks like -- so the rotation hit a
+# violating reference most days, the generated image inherited the towers,
+# the validator's forbidden kill-switch capped it at 40 (regenerate) even
+# with DNA-match 100/100, and the single retry reused the same reference
+# and failed the same way. Result: 28 paid gpt-image-2 calls produced 6
+# usable images and ~87% of posts shipped the static fallback photos.
+# Harry's call was to fix the rule, not the pool: westlake/outside now
+# forbid only a glass tower DOMINATING the frame, so a distant hazy
+# skyline passes. See those subjects' .overrides.yaml notes.
 assets:
   venho_rooftop_railing_approved: assets/raw/outside
   # Was pinned to data/projects/venho_hotel/media/lake_view_room_1/IMG_5584.jpeg
