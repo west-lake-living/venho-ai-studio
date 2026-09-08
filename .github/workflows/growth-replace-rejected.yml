@@ -22,12 +22,44 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Check for a rejected/stale publication to replace
+        id: check
+        # This cron fires every 15 min (GitHub throttles the *actual* rate
+        # further, ~7/day observed) and virtually every run finds nothing --
+        # replace_due_rejections only acts on REJECTED/STALE_APPROVAL rows,
+        # which are rare. Before this check, every one of those no-op runs
+        # still paid for `pip install -e ".[drive]"` (~18s, over half the
+        # job's ~30s wall time) just to end up calling a CLI that does
+        # nothing. `jq` ships on ubuntu-latest, so this reads the registry
+        # JSON directly, in the ~1s checkout already costs, and skips setup
+        # entirely when there is nothing to do (2026-09-08).
+        run: |
+          if [ -n "${{ inputs.publication_id }}" ]; then
+            # An explicit manual target always runs -- replace_rejected_publication
+            # itself still validates the row's status; skipping that here would
+            # just duplicate the check the CLI already does correctly.
+            echo "has_candidates=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          registry="data/projects/venho_hotel/publishing/publication_registry.json"
+          if [ -f "$registry" ] && jq -e '
+              .publications | any(
+                .status as $s | ($s == "REJECTED" or $s == "STALE_APPROVAL")
+                and (.replacement_publication_id == null or .replacement_publication_id == "")
+              )' "$registry" > /dev/null; then
+            echo "has_candidates=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_candidates=false" >> "$GITHUB_OUTPUT"
+          fi
+      - if: steps.check.outputs.has_candidates == 'true'
+        uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - run: pip install -e ".[drive]"
+      - if: steps.check.outputs.has_candidates == 'true'
+        run: pip install -e ".[drive]"
       - name: Generate replacement draft
         id: generate
+        if: steps.check.outputs.has_candidates == 'true'
         continue-on-error: true
         env:
           # Image generation and image QC remain on OpenAI.
@@ -44,7 +76,9 @@ jobs:
           fi
           venho-growth "${args[@]}"
       - name: Persist replacement
-        if: always()
+        # Only when Generate replacement draft actually ran (success or
+        # failure -- 'skipped' is neither) is there anything to commit.
+        if: ${{ always() && steps.check.outputs.has_candidates == 'true' }}
         run: |
           git config user.name "venho-growth-bot"
           git config user.email "venho-growth-bot@users.noreply.github.com"
