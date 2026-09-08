@@ -5103,3 +5103,178 @@ publish for real — there is no dry-run path once past that filter.
 No code changes were needed for this fix; it was entirely a Make.com scenario
 configuration correction. Nothing to commit in this repo for the webhook
 mapping itself.
+
+## 2026-09-07/08 — Growth Agent: retry design, photo pool, room-DNA mismatch, secret leak, CI waste
+
+Continuation of the same debugging session (Make.com fix above, plus the
+West Lake skyline forbidden-rule relaxation done earlier the same day).
+Harry: "các bài viết gần đây liên tục dùng ảnh giống nhau, không dùng ảnh
+khác trong kho, cũng không tự tạo ảnh mới" -- turned out to be four separate
+defects, not one.
+
+**1. Image retry was a byte-identical re-roll.** In `_generate_topic_image`
+(daily_cycle.py), `reference_images` and `prompt_contract` were both resolved
+*outside* `for attempt in range(MAX_IMAGE_ATTEMPTS)`, so attempt #2 sent
+gpt-image-2 the exact same reference photo and prompt as attempt #1 -- when
+attempt #1 lost because the reference photo itself carried what the DNA
+forbids (the August westlake case, 5/6 pool photos showing the far-shore
+skyline, see the earlier forbidden-rule-relaxation entry), the retry
+repeated the failure and doubled the bill for near-zero added chance.
+Fixed: reference resolution moved inside the loop, `ReferenceAssetResolver`
+gained `rotation_offset` (new param on `resolve()`/`_pick_from_folder()`, and
+`_rotation_index()`) so each attempt steps to the next photo in the folder
+pool instead of re-picking the same one.
+
+**2. `image_is_fallback` recorded no cause.** It was just `image_public_url
+is None`, collapsing three unrelated causes (generation disabled, QC
+kill-switch/below-approve, Drive upload failure) into one signal -- which is
+how an 87% fallback rate ran a month unnoticed, since some fallbacks are
+normal by design. Added `image_fallback_reason` on the content payload
+(`qc_kill_switch: <reason>` / `qc_below_approve: <score>` /
+`budget_cap_reached` / `drive_upload_failed` / `image_generation_disabled` /
+`reference_asset_unmapped` / `provider_error: <type>`), threaded through
+`_generate_topic_image`'s new `(run_folder, failure_reason)` return and
+`_content_payload`. `weekly_cycle._alert_on_image_fallback_rate` now reports
+the tally by reason instead of telling Harry to check three places by hand.
+
+**3. Fallback photo pool: not the library, and the library was 2/3
+unusable.** `publishing_gateway/fallback_images.py` was a hardcoded list of
+8 filenames while `Ven Ho Hotel/public/images/` held 41 -- adding a photo to
+the website changed nothing. `lobby` and `linh_an` pools held exactly ONE
+entry each (guaranteed repeat every time; `lobby.jpg` alone was on 16/64
+fallback rows in the registry). Separately, 25/41 website photos are 3:4
+portrait (0.75), under Instagram's 0.80 aspect floor -- unusable as posted,
+rejected in-scenario with `(36003)`. And two subject-mapping bugs: `westlake`
+pulled `lake-view-6/-7`, which are BEDROOM interiors (posts about the lake
+showed a bed), and `deluxe_double` held zero Deluxe photos, only lake shots.
+Fixed: `Ven Ho Hotel` repo commit 3832a0e added `public/images/Social-pad/`
+-- 23 of the portrait photos re-framed to 1200x1440 (0.83) on brand cream
+`#F7F4EF`, same treatment as the 2026-08-06 facade shot; originals untouched,
+website unaffected. `venho-ai-studio` commit 9441e6d rewrote the pools (8 ->
+38 distinct photos across `westlake`/`outside`/`lake_view_room`/
+`deluxe_double`/`facade`/`lobby`/`linh_an`), fixed the mis-mapping, and added
+`tests/test_fallback_images.py` (existence + aspect-ratio guards, skipped
+when the website repo isn't checked out; a no-single-photo-pool guard; a
+lake/room-don't-share guard; a rotation-coverage guard). All 38 pool URLs
+verified HTTP 200 on venhohotel.com before the code commit landed (website
+pushed first, deliberately, to avoid a window of dead URLs). `lobby`/
+`linh_an` stay at 2 entries -- only two common-area photographs exist; that
+needs a camera, not a commit.
+
+Distinguishing note for Harry, since he asked directly: `assets/raw/` (42
+photos) and `Ven Ho Hotel/public/images/` (41 photos) are two SEPARATE pools
+that never overlap. `assets/raw/` feeds INTO gpt-image-2 as a reference (read
+by `ReferenceAssetResolver`, never posted); the website pool is what actually
+gets posted (fetched by Make.com over a public URL, since Make runs in the
+cloud and cannot reach Harry's machine or a private repo). Fix #1 above is in
+the reference pool; fix #3 is in the posting pool.
+
+**4. Test suite: 79 failing -> 0 (`3dac266`).** Not noise -- traced each one
+back to what changed under it, and two hid live defects.
+  - *Real defect A -- wrong-room validation.* `lake_view_room` is one content
+    subject over two physically different rooms since the 2026-08-12 DNA
+    split (`_room_dna_path` rotates between `..._1_DNA.json`/`..._2_DNA.json`
+    by date), but `validate_image` was always called with the logical name
+    `"lake_view_room"`, and `validator_studio.utils.find_dna_path` glob-
+    resolves that to room 1 every time. So on room-2 generation days the
+    photo was scored against room 1's spec (room 2 has wooden chairs, a
+    wooden headboard, dark gray curtains that room 1 doesn't list; room 1
+    asserts `wall_artwork: none`) -- lost marks for correctly depicting the
+    room it was asked to depict, discarded, fell to fallback. Fixed: new
+    `_validation_subject_for_dna()` derives the subject name FROM the DNA
+    file actually used (`VENHO_HOTEL_LAKE_VIEW_ROOM_2_DNA.json` ->
+    `"lake_view_room_2"`), passed to `validate_image` instead of the logical
+    name. New regression test caught itself passing vacuously on the first
+    attempt (used Wednesday; the room scenario is actually Friday) and now
+    asserts non-vacuously (two runs must validate as two DIFFERENT subjects)
+    -- confirmed red against the pre-fix code with both runs validating as
+    the bare string `"lake_view_room"` regardless of which room's DNA
+    generated the image.
+  - *Real defect B -- real secrets leaking into every test run.*
+    `providers/openai_provider.py`, `providers/claude_provider.py`,
+    `prompt_studio/optimizer.py` each called `load_dotenv()` at MODULE IMPORT
+    time, so collecting the suite pushed `.env`/`.env.local` into
+    `os.environ` for the whole pytest process. This was already written down
+    in this file as a known, unfixed risk (see the earlier entry near line
+    ~3278) and worked around test-by-test; it had now actually broken 6
+    growth tests (pass alone, fail in company -- the signature of env
+    cross-contamination) because a leaked `GOOGLE_DRIVE_TOKEN_JSON` from
+    `.env.local` made `google_drive_uploader_from_env` build a real uploader
+    that then failed on `json.loads` mid-suite. Fixed at the root: all three
+    modules now load lazily via `_ensure_env()`, called at first real use
+    (inside `__init__`/the function that reads the key), not at import.
+    `tests/conftest.py` added as a belt-and-braces guard -- monkeypatches
+    `dotenv.load_dotenv` to a no-op for the whole session and strips a
+    fixed list of real-credential env keys, so a FUTURE module-level
+    `load_dotenv()` call can't reintroduce the leak.
+  - *Everything else was stale assertions*, verified against the specific
+    change that outdated each one before touching it: ~59 tests pinned the
+    deleted `VENHO_HOTEL_LAKE_VIEW_ROOM_DNA.json`/`"lake_view_room"` name
+    (bulk-fixed with a regex, careful not to touch the two tests that
+    correctly still read a real stored artifact under the pre-split name);
+    `test_mock` pinned `venho_hotel.room`, deliberately deleted in `481bd24`
+    (now asserts the shared-schema fallback, which is the intended
+    behaviour); `test_validator_studio` pinned the literal phrase
+    "ivory-white metal railing", reworded to "painted steel" by `c33d38c`
+    AS the fix for stale Ho Tay railing DNA (now asserts the fact, not the
+    sentence); `test_gw_p3_remote_workflow` pinned the restorer set to
+    `{"mock"}`, so the deliberate Candidate v3 production enablement read as
+    a broken registry gate (now takes the baseline from the module and
+    asserts only what local-flag/remote-flag gating is actually about);
+    `test_phase6` looked for `assets/raw/room/VenHo-room-1`, a typo -- the
+    real folder is `ViewHo-room-1`, as the very next assertion already knew.
+
+**5. Local Drive upload was dead: `.env.local` had TWO mismatched
+credentials.** `GOOGLE_DRIVE_TOKEN_JSON` held a bare `GOCSPX-...` client
+secret instead of the OAuth authorized-user JSON document -- raised a bare
+`json.JSONDecodeError` with no clue which variable or what was wrong
+(`shared/storage/google_drive.py` now raises a `ValueError` naming the
+variable and the expected shape, detecting the `GOCSPX-` case specifically).
+Once given the REAL token (copied verbatim from
+`venho-social-content-agent/token.json`, same Google Cloud project, no
+browser re-auth needed -- confirmed `GoogleDriveUploader.__init__` accepts
+it), a SECOND, non-obvious mismatch surfaced: `.env.local`'s
+`GOOGLE_OAUTH_CLIENT_ID`/`GOOGLE_OAUTH_CLIENT_SECRET` were for a DIFFERENT
+OAuth client (same project number `634739912354`, different client) than the
+one that issued that token -- `google_drive_uploader_from_env` always passes
+these as overrides, and Google refuses the refresh with `unauthorized_client`
+once the token's short-lived access token actually expires (the first smoke
+test looked fine only because the token hadn't expired yet and no refresh
+was attempted). Fixed by copying the matching client_id/secret pair from
+`venho-social-content-agent/.env.local` (the client that actually issued the
+token) over the mismatched pair. Verified end-to-end via the real
+`google_drive_uploader_from_env(dotenv_values(".env.local"))` call path,
+confirmed it returns a real `GoogleDriveUploader` (not `MockDriveUploader`)
+and refreshes successfully. `.env.local` is gitignored; nothing committed.
+
+**6. `growth-replace-rejected.yml` CI waste (`2fa2477`).** Declares `*/15`
+cron; GitHub throttles the real rate to ~6.8 runs/day (measured from the
+last 60 runs' timestamps). `replace_due_rejections` only acts on
+REJECTED/STALE_APPROVAL registry rows -- rare in steady state (0 currently).
+One recent run's own step timings: `pip install -e ".[drive]"` took 18s of
+the job's ~30s wall time, on a run that then did nothing. Added a `jq`
+pre-check step right after checkout (`jq` ships on ubuntu-latest, no added
+cost) that reads the registry JSON directly and gates `setup-python`,
+`pip install`, the generate step, and the persist step behind
+`has_candidates == 'true'`. An explicit manual `workflow_dispatch` with
+`publication_id` always runs regardless (rare, deliberate; the CLI already
+re-validates that row's status). Verified the jq filter against the real
+registry (agrees with the Python `REPLACEABLE_STATUSES` computation: 0
+candidates) and three synthetic cases.
+
+All commits this session: `9d7b294` (skyline forbidden-rule relax),
+`d1f358b` (retry fix + fallback_reason), `3832a0e` (Ven Ho Hotel repo:
+Social-pad/ photos), `9441e6d` (fallback pool rewrite), `3dac266` (79->0
+test fixes + secret leak + wrong-room validation), `2fa2477` (CI perf). Full
+suite green: 1598 passed, 0 failed, at session end.
+
+**Still open, not actioned (Harry's call, flagged not blocking):**
+- Agoda: no booking email since 2026-08-29 (longest gap on record) --
+  needs a manual YCS check, magic-link auth blocks automation.
+- Instagram permalink constructed as `instagram.com/{media_id}` won't
+  resolve (needs `/p/{shortcode}/`); not validated by
+  `interpret_make_response()` so it doesn't block dispatch.
+- `lobby`/`linh_an` fallback pools capped at 2 photos each -- genuinely only
+  two common-area photographs exist; needs new photography, not code.
+- `Ven Ho Hotel/CLAUDE.md` still documents the retired T2/T4/T6 legacy
+  social cron.

@@ -4457,3 +4457,62 @@ block dispatch since only `platform_post_id` is validated. Next scheduled
 run (or next `gh workflow run "Growth Agent Publish Scheduler"`) is the real
 confirmation; Harry opted to let it run naturally and report if it fails
 again rather than force a run now.
+
+### Growth Agent — retry design, photo pool, room-DNA mismatch, test suite, CI waste — FIXED (2026-09-08)
+
+Continuation of the Growth Agent debugging session (Make.com webhook mapping
+above). Harry: posts kept reusing the same images and never generating new
+ones. Traced to four independent defects, all fixed and pushed:
+
+1. **Image retry re-sent the identical reference photo + prompt** (byte-for-
+   byte) on attempt #2, so a reference-photo-caused kill-switch failure was
+   guaranteed to repeat at double cost. Fixed: reference resolution moved
+   inside the retry loop with a `rotation_offset` so each attempt draws a
+   different pool photo. (`d1f358b`)
+2. **No record of WHY an image fell back** to a stock photo -- one boolean
+   collapsed three unrelated causes. Added `image_fallback_reason` on every
+   content row; the weekly alert now reports the tally by cause instead of
+   telling Harry to check three places by hand. (`d1f358b`)
+3. **Fallback photo pool was 8 hardcoded filenames** while the website hosts
+   41 -- and two subjects (`westlake`, `deluxe_double`) were mis-mapped to
+   the wrong room type. Widened to 38 usable photos across all 7 subjects
+   (padding 23 portrait photos to Instagram's aspect window in a new
+   `Social-pad/` folder on the website repo, `Ven Ho Hotel` commit `3832a0e`;
+   pool rewrite + new guard tests in `venho-ai-studio` commit `9441e6d`).
+   `lobby`/`linh_an` stay thin (2 photos) -- only two exist; needs a camera.
+4. **Real production bug found while investigating the test suite: images
+   validated against the wrong room's DNA.** `lake_view_room` rotates
+   between two physically different rooms since the 2026-08-12 split, but
+   validation always used the logical subject name, which glob-resolves to
+   room 1 regardless. Room-2-generated photos lost marks for room-1-only
+   details and got discarded. Fixed by deriving the validation subject from
+   the actual DNA file used. New regression test caught its own first
+   version passing vacuously (wrong cadence day) before being fixed to
+   assert non-vacuously.
+5. **Full test suite: 79 failing -> 0.** Root causes: the 2026-08-12 DNA
+   room split left ~59 tests pointing at a deleted filename/subject name;
+   three provider modules leaked real API keys into every test process via
+   module-level `load_dotenv()` (a risk already logged as known-and-unfixed
+   in task_memory.md, now fixed at the root + guarded by `tests/conftest.py`);
+   a handful of assertions were pinned to exact strings/sets that later,
+   deliberate commits had correctly changed. All fixed with the underlying
+   change verified first, not just made green. (`3dac266`)
+6. **Local Google Drive upload was dead.** `.env.local` had a client secret
+   in the token slot, AND (once fixed) a client_id/secret pair for a
+   different OAuth client than the one that issued the real token. Both
+   corrected using the matching credentials already present in the sibling
+   `venho-social-content-agent` repo; no browser re-auth needed. Verified via
+   the real `google_drive_uploader_from_env()` call path. `.env.local` is
+   gitignored, nothing committed.
+7. **`growth-replace-rejected.yml` CI waste.** ~6.8 real runs/day, nearly
+   all no-ops, each paying an 18s `pip install` regardless. Added a `jq`
+   pre-check gating setup/install/generate/persist behind an actual
+   candidate existing. (`2fa2477`)
+
+Full suite: 1598 passed, 0 failed at session end.
+
+**Still open, Harry's call:**
+- Agoda: no booking email since 2026-08-29 -- needs manual YCS check.
+- Instagram permalink format won't resolve (cosmetic, not dispatch-blocking).
+- `lobby`/`linh_an` need new common-area photography.
+- `Ven Ho Hotel/CLAUDE.md` documents a retired legacy social cron.
