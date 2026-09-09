@@ -5420,3 +5420,25 @@ guest types. Still surfaces in the report for the rewrite prompt.
 Process note: merging several interview bullets into one paragraph smooths the
 rhythm and trips `RH-01` (low sentence-length variance). Keep the operator's
 short sentences short when ghép.
+
+## 2026-09-09 — (a): local_discovery lane now renders `outside`, not `westlake`
+
+Harry chose (a): let gpt-image-2 generate a real image for the Wednesday
+local_discovery ("go visit this café/market/temple") lane instead of always
+falling back.
+
+Root cause of the fallback: 2 of the 3 scenarios in the Wednesday pool
+(`venho_nguyen_dinh_thi_street`, `venho_west_lake_landscape`) were classified
+`dna_subject: westlake`. A café/venue scene generated + QC'd against West Lake
+*landscape* DNA scored < 90 and was discarded -> fallback.
+
+Fix (config only):
+- `venho_nguyen_dinh_thi_street` re-classified westlake -> outside (a street-
+  level lakeside scene is `outside` per that schema, not `westlake`).
+- Wednesday `scenario_pool` -> all-`outside` (dropped `venho_west_lake_landscape`).
+- test_local_discovery_lane_only_renders_outside_scenes.
+
+Longer term: a dedicated "café balcony / venue" scenario + reference photo would
+fit better than reusing rooftop, but all-outside is the right subject and lets
+QC pass. If it still fails after retries the fallback is now an outside/lake
+photo (never a room) via the re-resolve fix.

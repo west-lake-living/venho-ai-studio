@@ -930,3 +930,22 @@ def test_image_is_validated_against_the_room_it_was_generated_from(tmp_path: Pat
         assert subject == dna_stem[len("VENHO_HOTEL_"):-len("_DNA")].lower(), (
             f"{slot_date}: validated as {subject!r} but generated from {dna_stem}"
         )
+
+
+def test_local_discovery_lane_only_renders_outside_scenes() -> None:
+    """Regression (2026-09-09): Wednesday's "go visit this café / market /
+    temple" lane had two `westlake` scenarios in its pool. Generating a venue
+    scene against West Lake *landscape* DNA failed image QC, so the post went
+    out with a fallback hotel photo -- once, a bedroom -- under a café caption.
+    The whole lane must render `outside` scenes."""
+    import yaml
+    from agent_studio.growth.scenario_registry import ScenarioRegistry
+
+    registry = ScenarioRegistry.from_file()
+    pillars = yaml.safe_load(
+        Path("config/projects/venho_hotel/content/content_pillars.yaml").read_text(encoding="utf-8")
+    )
+    pool = pillars["lanes"]["wednesday"]["scenario_pool"]
+    assert pool, "local_discovery lane lost its scenario_pool"
+    subjects = {registry.resolve(key).dna_subject for key in pool}
+    assert subjects == {"outside"}, f"local_discovery pool renders {subjects}, expected only 'outside'"

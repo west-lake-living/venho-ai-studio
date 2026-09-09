@@ -4674,3 +4674,28 @@ gate flag 0/24. Vẫn thiếu ~6 mẫu để đủ 30 — làm nốt ở buổi 
   loại khách mà không có tên phố. Giữ làm tín hiệu cho prompt rewrite, không chặn.
 - Ghi chú khi ghép đoạn phỏng vấn: ghép nhiều bullet thành 1 đoạn dễ làm mất nhịp
   → dính `RH-01` (phương sai độ dài câu thấp). Phải giữ câu cụt của Harry cụt.
+
+### (a) Growth `local_discovery` lane sinh ảnh thật thay vì fallback (2026-09-09)
+
+Quyết định của Harry: cho gpt-image-2 tạo ảnh cho lane này.
+
+Nguyên nhân bài café dùng fallback: pool Thứ Tư `[venho_nguyen_dinh_thi_street,
+venho_west_lake_landscape, venho_rooftop_shade]` — 2/3 scenario map
+`dna_subject: westlake`. Ảnh café/chợ hoa/chùa sinh + QC theo DNA "West Lake
+landscape" → điểm < 90 → loại → fallback.
+
+Sửa (config-only):
+- `scenario_registry.yaml`: `venho_nguyen_dinh_thi_street` `westlake` → `outside`
+  (cảnh đường phố ven hồ đúng schema `outside` = street/balcony/rooftop, không
+  phải `westlake` vốn đòi mặt hồ chiếm khung hình). Ảnh hưởng tích cực cả pool
+  Thứ Hai/Bảy (cảnh phố validate theo `outside` chuẩn hơn).
+- `content_pillars.yaml` lane `wednesday`: pool → `[venho_nguyen_dinh_thi_street,
+  venho_rooftop_shade, venho_rooftop_sunrise]` — toàn `outside`. Bỏ
+  `venho_west_lake_landscape` (cảnh hồ thuần sai cho nội dung "đi thăm chỗ này").
+- Test `test_local_discovery_lane_only_renders_outside_scenes`.
+
+Giờ mọi bài Thứ Tư sinh + QC theo `outside` DNA (permissive, hợp cảnh café/chợ/
+chùa) → khả năng đậu 90 cao hơn. Nếu vẫn trượt sau retry → fallback, nhưng pool
+`outside` không có ảnh phòng, và commit `27a2fc3` re-resolve theo dna_subject.
+
+Full suite 1616 passed (1 fail có sẵn không liên quan).

@@ -58,7 +58,12 @@ scenarios:
     linh_an_allowed_actions: [sitting, standing, portrait]
   venho_nguyen_dinh_thi_street:
     display_name: Nguyen Dinh Thi street
-    dna_subject: westlake
+    # A street-level lakeside scene, validated against the `outside` DNA
+    # (street/balcony/rooftop schema) -- not `westlake`, whose DNA demands
+    # the open lake dominate the frame. Re-classified 2026-09-09: a Wednesday
+    # "go visit this café" post rendered against West Lake landscape DNA
+    # failed QC and dropped to a fallback hotel photo.
+    dna_subject: outside
     environment_reference: null
     dna_version: "2.7"
     # Was [] -- text-only generation kept inventing a high-rise skyline and

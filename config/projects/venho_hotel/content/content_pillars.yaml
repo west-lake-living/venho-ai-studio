@@ -39,7 +39,11 @@ lanes:
     id: local_discovery
     name: Diem den & su kien quanh Ho Tay
     prompt_rules: local_discovery
-    scenario_pool: [venho_nguyen_dinh_thi_street, venho_west_lake_landscape, venho_rooftop_shade]
+    # All `outside` scenarios (2026-09-09): this lane is "go visit this
+    # place" -- a café, a market, a temple. A West Lake *landscape* concept
+    # is the wrong picture for it, and generating one against westlake DNA
+    # failed image QC and dropped the post to a fallback hotel photo.
+    scenario_pool: [venho_nguyen_dinh_thi_street, venho_rooftop_shade, venho_rooftop_sunrise]
     research_domains: [local_events, local_intel]
     topics:
       - quan ca phe view ho dang duoc nhac den nhieu
