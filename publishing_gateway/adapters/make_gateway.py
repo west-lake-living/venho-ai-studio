@@ -221,6 +221,18 @@ class MakeGatewayAdapter:
                 "message": "accepted by Make adapter; awaiting callback or reconciliation",
             }
         content = command.get("content") or {}
+        rotation_key = str(publication_id or command.get("idempotency_key") or "")
+        # A fallback URL is re-resolved from the CURRENT pool manifest at
+        # dispatch, never trusted from the row: a row queued weeks earlier
+        # froze its fallback against a pool that has since been corrected
+        # (2026-09-09: a café post carried a bedroom photo queued on 08-27,
+        # before the Lake-view/ room shots were split out of the `westlake`
+        # pool). A real generated+uploaded image (image_is_fallback False) is
+        # kept as-is.
+        if content.get("image_is_fallback") or not content.get("image_public_url"):
+            image_url = fallback_image_url(command.get("dna_subject"), rotation_key=rotation_key)
+        else:
+            image_url = content["image_public_url"]
         payload = {
             "publication_id": publication_id,
             "idempotency_key": command.get("idempotency_key"),
@@ -230,12 +242,8 @@ class MakeGatewayAdapter:
             # Make.com's "HTTP: Download a file" module maps a flat field more
             # easily than a nested path, and its `url` is a required parameter:
             # sending null fails the whole bundle with BundleValidationError
-            # (2026-08-06 incident). daily_cycle already substitutes an
-            # on-brand hotel photo at queue time; this second layer covers rows
-            # queued before that existed, and any other caller of this adapter.
-            "image_url": content.get("image_public_url") or fallback_image_url(
-                rotation_key=str(publication_id or command.get("idempotency_key") or "")
-            ),
+            # (2026-08-06 incident).
+            "image_url": image_url,
         }
         headers = None
         if self.webhook_secret and payload.get("idempotency_key"):

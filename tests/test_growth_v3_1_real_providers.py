@@ -10,7 +10,7 @@ from growth_orchestrator.bridges.m07_publishing_bridge import (
     m07_publishing_bridge_from_env,
 )
 from publishing_gateway.adapters.make_gateway import MakeGatewayAdapter, build_make_webhook_signature
-from publishing_gateway.fallback_images import fallback_image_url
+from publishing_gateway.fallback_images import fallback_image_url, fallback_images_by_dna_subject
 from publishing_gateway.adapters.zalo_oa import ZaloOAAdapter, build_zalo_webhook_signature, refresh_zalo_access_token
 from research_engine.trend_radar.collectors.tavily_search import collect_tavily_search
 from shared.http import HttpError, urllib_post
@@ -190,6 +190,34 @@ def test_make_adapter_never_sends_null_image_url() -> None:
     image_url = fake.calls[0]["json"]["image_url"]
     assert image_url == fallback_image_url(rotation_key="pub-1")
     assert image_url.startswith("https://venhohotel.com/images/")
+
+
+def test_make_adapter_reresolves_a_stale_fallback_url_from_the_current_pool() -> None:
+    """Regression (2026-09-09): a Wednesday café post queued 2026-08-27 froze
+    image_public_url = Lake-view/lake-view-6.JPG (a bedroom) -- correct for
+    the pool THEN, wrong after the room shots were split out of `westlake`.
+    Dispatch two weeks later sent the bedroom to Facebook and Instagram. A
+    fallback URL is now re-resolved from the current manifest at dispatch."""
+    fake = FakeHttpPost({"received": True})
+    adapter = MakeGatewayAdapter(enabled=True, webhook_url="https://hook.us1.make.com/fb-test", http_post=fake)
+    adapter.send(
+        {
+            "publication_id": "pub-wednesday-facebook-0ca7593b",
+            "idempotency_key": "idem-cafe",
+            "platform": "facebook",
+            "dna_subject": "westlake",
+            "content": {
+                "text": "Có quán cà phê bạn nhớ vì một khoảng ban công.",
+                "image_public_url": "https://venhohotel.com/images/Lake-view/lake-view-6.JPG",
+                "image_is_fallback": True,
+            },
+        }
+    )
+    image_url = fake.calls[0]["json"]["image_url"]
+    assert image_url == fallback_image_url("westlake", rotation_key="pub-wednesday-facebook-0ca7593b")
+    assert "lake-view-6" not in image_url.lower()
+    lake_pool = {f"https://venhohotel.com/images/{p}" for p in fallback_images_by_dna_subject()["westlake"]}
+    assert image_url in lake_pool
 
 
 def test_fallback_rotation_does_not_repeat_the_same_image_across_two_week_batch() -> None:

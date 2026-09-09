@@ -412,6 +412,11 @@ def _dispatch_claimed(
         "content_package_id": publication["content_package_id"],
         "platform": publication["platform"],
         "content": publication.get("content"),
+        # Carried so the gateway can re-resolve a fallback photo from the
+        # CURRENT pool at dispatch time. A row queued weeks earlier froze its
+        # fallback URL against a pool that has since been corrected
+        # (2026-09-09: a café post dispatched a bedroom photo).
+        "dna_subject": publication.get("dna_subject"),
     }
     try:
         response = bridge.dispatch(command)
