@@ -37,44 +37,45 @@ gpt-image-2's portrait size is 1024x1536 (0.67) and would fail identically.
 from __future__ import annotations
 
 from datetime import date, timedelta
+from functools import lru_cache
+from pathlib import Path
 import hashlib
+import json
 
 FALLBACK_IMAGE_BASE_URL = "https://venhohotel.com/images"
 
-# --- The pools -------------------------------------------------------------
+# --- The pool manifest -------------------------------------------------------
 #
-# Widened 2026-09-07 from 8 filenames to 38. The old list was a hand-picked
-# handful, so a fallback post could only ever show one of eight photos no
-# matter how many the hotel actually had -- `Social-fallback/lobby.jpg` alone
-# accounted for 16 of the 64 fallback rows in the registry, and the `lobby`
-# and `linh_an` pools held exactly ONE entry each, i.e. a guaranteed repeat
-# every single time. Harry saw it as "the posts keep using the same images".
+# Widened 2026-09-07 from 8 hand-typed filenames to 38, then (2026-09-09)
+# switched from a hardcoded dict to this JSON manifest, built by
+# `scripts/refresh_fallback_pool.py` scanning the real website photo library
+# (`Ven Ho Hotel/public/images/`). That script is the source of truth for
+# what's in the pool; run it after adding photos, then commit the manifest.
+# This module never touches the filesystem beyond reading it -- it cannot
+# scan the website repo itself, because `publishing_gateway` runs in
+# venho-ai-studio's GitHub Actions, which never checks that (private) repo
+# out.
 #
-# Three things were wrong and all three are fixed here:
-#
-# 1. The pool was not the photo library. Adding a photo to public/images/
-#    changed nothing, because this list is the library as far as posting is
-#    concerned. It now covers everything usable there.
-# 2. Two thirds of the library was locked out by aspect ratio. 25 of 41
-#    photos are 3:4 portrait (0.75), just under Instagram's 0.80 floor, so
-#    they would have been rejected in-scenario with `(36003)`. They are
-#    served from Social-pad/, padded to 1200x1440 (0.83) on brand cream
-#    #F7F4EF -- the same treatment the facade shot already got in 2026-08-06.
-#    Originals under public/images/ are untouched; the website still uses them.
-# 3. Subjects were mis-mapped. `westlake` was pulling lake-view-6/-7, which
-#    are BEDROOM interiors -- posts about the lake were showing a bed -- and
-#    `deluxe_double` contained no Deluxe room photo at all, only lake shots.
-#    Meanwhile the seven Activity/ frames (bicycle at the lakeshore railing,
-#    Nguyen Dinh Thi under the flame trees) -- the most on-DNA West Lake
-#    material in the library -- had never been used once.
-#
-# Adding a photo here: check the 0.80-1.91 window first (see the module
-# docstring); if it is portrait, pad it into Social-pad/ rather than adding
-# the raw file.
+# The original 2026-09-07 fix is still true and is why the manifest looks
+# the way it does:
+# 1. Adding a photo to public/images/ used to change nothing -- the dict was
+#    the library as far as posting was concerned. Now the manifest is
+#    regenerated from the actual folder contents.
+# 2. Portrait photos (3:4 = 0.75) are just under Instagram's 0.80 aspect
+#    ratio floor and get rejected in-scenario with `(36003)`. The refresh
+#    script auto-pads them into Social-pad/ (1200x1440 on brand cream
+#    #F7F4EF) instead of skipping them.
+# 3. Subject mapping is still curated by hand inside the refresh script
+#    (`FOLDER_TO_SUBJECT` / `FILE_OVERRIDES`), because a folder's contents
+#    don't map 1:1 to a DNA subject (e.g. Lake-view/ holds both room-interior
+#    shots and one lake-only shot).
+_MANIFEST_PATH = Path(__file__).parent / "fallback_pool_manifest.json"
 
 _PAD = "Social-pad"  # portrait originals re-framed to 0.83 on brand cream
 
-# Brand/exterior shot: the safe default for any subject not mapped below.
+# Last-resort safety net if the manifest is missing or fails to parse --
+# fallback_image_url() must never return None, so this small hand-picked set
+# stays embedded rather than depending on a file read succeeding.
 DEFAULT_FALLBACK_IMAGES = (
     "Exterior/exterior-2.jpg",
     "Social-fallback/hotel-front-view.jpg",
@@ -84,80 +85,28 @@ DEFAULT_FALLBACK_IMAGES = (
     f"{_PAD}/Activity/activity-2.jpg",
 )
 
-# Keyed by DNA subject (config/projects/venho_hotel/content/content_pillars.yaml
-# -> dna_subject), not by pillar id: the subject *is* what the photo shows, and
-# it survives pillars being renamed or added.
-FALLBACK_IMAGES_BY_DNA_SUBJECT = {
-    # The lake itself and the lakeside street -- never a room interior.
-    "westlake": (
-        "Hero-lake/hero-lake.jpg",
-        "Lake-sunset/lake-sunset-1.jpg",
-        f"{_PAD}/Lake-sunset/lake-sunset-2.jpg",
-        f"{_PAD}/Activity/activity-1.jpg",
-        f"{_PAD}/Activity/activity-2.jpg",
-        f"{_PAD}/Activity/activity-3.jpg",
-        f"{_PAD}/Activity/activity-4.jpg",
-        f"{_PAD}/Activity/activity-6.jpg",
-        f"{_PAD}/Activity/activity-7.jpg",
-        f"{_PAD}/Lake-night/lake-night.jpg",
-        "Lake-view/lake-view-1.jpg",
-    ),
-    # Street level / balcony / rooftop -- the hotel's surroundings.
-    "outside": (
-        f"{_PAD}/Activity/activity-5.jpg",
-        f"{_PAD}/Activity/activity-4.jpg",
-        f"{_PAD}/Activity/activity-7.jpg",
-        "Lake-view/lake-view-1.jpg",
-        "Exterior/exterior-2.jpg",
-        f"{_PAD}/Activity/activity-3.jpg",
-        f"{_PAD}/Activity/activity-1.jpg",
-        "Lake-sunset/lake-sunset-1.jpg",
-    ),
-    # Rooms whose window actually looks over the lake.
-    "lake_view_room": (
-        "Lake-view/lake-view-6.JPG",
-        "Lake-view/lake-view-7.JPG",
-        f"{_PAD}/Lake-view/lake-view-2.jpg",
-        f"{_PAD}/Lake-view/lake-view-3.jpg",
-        f"{_PAD}/Lake-view/lake-view-4.jpg",
-        f"{_PAD}/Lake-view/lake-view-8.jpg",
-        f"{_PAD}/Lake-view/lake-view-9.jpg",
-        "Social-fallback/lake-view-room.jpg",
-        f"{_PAD}/Lake-view/lake-view-5.jpg",
-    ),
-    # Deluxe / standard room interiors (previously: no room photo at all).
-    "deluxe_double": (
-        f"{_PAD}/Deluxe-double/deluxe-double-1.jpg",
-        f"{_PAD}/Deluxe-double/deluxe-double-3.jpg",
-        "Standard-triple/standard-triple-1.jpg",
-        "Standard-triple/standard-triple-3.JPG",
-        f"{_PAD}/Deluxe-double/deluxe-double-2.jpg",
-        "Standard-triple/standard-triple-2.jpg",
-        f"{_PAD}/Standard-triple/standard-triple-4.jpg",
-        "Bathroom/bathroom-1.JPG",
-        "Bathroom/bathroom-3.jpg",
-    ),
-    "facade": (
-        "Exterior/exterior-2.jpg",
-        "Social-fallback/hotel-front-view.jpg",
-        f"{_PAD}/Exterior/exterior-4.jpg",
-        f"{_PAD}/Exterior/exterior-3.jpg",
-        f"{_PAD}/Exterior/exterior-6.jpg",
-        f"{_PAD}/Exterior/exterior-5.jpg",
-    ),
-    # Only two real interior-common-area photos exist. Genuinely thin --
-    # this is the one pool that needs new photography, not a code change.
-    "lobby": (
-        "Social-fallback/lobby.jpg",
-        "Social-fallback/reception.jpg",
-    ),
-    # Linh An is an AI character with no real photograph; the reception and
-    # lobby frames stand in for a "someone is here" post.
-    "linh_an": (
-        "Social-fallback/reception.jpg",
-        "Social-fallback/lobby.jpg",
-    ),
-}
+
+@lru_cache(maxsize=1)
+def _load_manifest() -> dict[str, object]:
+    try:
+        raw = json.loads(_MANIFEST_PATH.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {"default": list(DEFAULT_FALLBACK_IMAGES), "by_dna_subject": {}}
+    if not raw.get("default"):
+        raw["default"] = list(DEFAULT_FALLBACK_IMAGES)
+    return raw
+
+
+def default_fallback_images() -> tuple[str, ...]:
+    """The safe-default pool, as actually loaded (manifest, or the embedded
+    fallback if it's missing/corrupt). Exposed for tests and tooling that
+    need the real pool, not just the last-resort constant above."""
+    return tuple(_load_manifest().get("default") or DEFAULT_FALLBACK_IMAGES)
+
+
+def fallback_images_by_dna_subject() -> dict[str, tuple[str, ...]]:
+    """The per-subject pools, as actually loaded from the manifest."""
+    return {subject: tuple(pool) for subject, pool in _load_manifest().get("by_dna_subject", {}).items()}
 
 
 def _rotation_index(rotation_key: str | None, pool_size: int) -> int:
@@ -180,6 +129,8 @@ def fallback_image_url(dna_subject: str | None = None, *, rotation_key: str | No
     Never returns None -- an unknown/missing subject falls back to the exterior
     shot, because the caller's whole purpose is to guarantee Make gets a `url`.
     """
-    pool = FALLBACK_IMAGES_BY_DNA_SUBJECT.get(dna_subject or "", DEFAULT_FALLBACK_IMAGES)
+    manifest = _load_manifest()
+    by_subject = manifest.get("by_dna_subject", {})
+    pool = by_subject.get(dna_subject or "") or manifest.get("default") or DEFAULT_FALLBACK_IMAGES
     filename = pool[_rotation_index(rotation_key, len(pool))]
     return f"{FALLBACK_IMAGE_BASE_URL}/{filename}"

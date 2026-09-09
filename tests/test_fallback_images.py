@@ -7,8 +7,8 @@ import pytest
 from PIL import Image
 
 from publishing_gateway.fallback_images import (
-    DEFAULT_FALLBACK_IMAGES,
-    FALLBACK_IMAGES_BY_DNA_SUBJECT,
+    default_fallback_images,
+    fallback_images_by_dna_subject,
     fallback_image_url,
 )
 
@@ -28,8 +28,8 @@ INSTAGRAM_MIN_RATIO, INSTAGRAM_MAX_RATIO = 0.80, 1.91
 
 
 def _all_pool_entries() -> set[str]:
-    entries = set(DEFAULT_FALLBACK_IMAGES)
-    for pool in FALLBACK_IMAGES_BY_DNA_SUBJECT.values():
+    entries = set(default_fallback_images())
+    for pool in fallback_images_by_dna_subject().values():
         entries |= set(pool)
     return entries
 
@@ -66,17 +66,16 @@ def test_no_subject_pool_is_a_single_photo_except_the_documented_thin_ones() -> 
     exist -- that needs a camera, not a code change -- but nothing else may
     silently shrink back to one.
     """
-    thin = {name: pool for name, pool in FALLBACK_IMAGES_BY_DNA_SUBJECT.items() if len(set(pool)) < 2}
+    thin = {name: pool for name, pool in fallback_images_by_dna_subject().items() if len(set(pool)) < 2}
     assert not thin, f"subject pools that can only ever show one photo: {sorted(thin)}"
 
 
 def test_lake_and_room_subjects_do_not_share_photos() -> None:
     """`westlake` pulled lake-view-6/-7 until 2026-09-07 -- both bedroom
     interiors -- so posts about the lake showed a bed. Keep the two apart."""
-    lake = set(FALLBACK_IMAGES_BY_DNA_SUBJECT["westlake"]) | set(FALLBACK_IMAGES_BY_DNA_SUBJECT["outside"])
-    rooms = set(FALLBACK_IMAGES_BY_DNA_SUBJECT["lake_view_room"]) | set(
-        FALLBACK_IMAGES_BY_DNA_SUBJECT["deluxe_double"]
-    )
+    pools = fallback_images_by_dna_subject()
+    lake = set(pools["westlake"]) | set(pools["outside"])
+    rooms = set(pools["lake_view_room"]) | set(pools["deluxe_double"])
     assert not (lake & rooms), f"outdoor subjects sharing room interiors: {sorted(lake & rooms)}"
 
 

@@ -1,0 +1,77 @@
+{
+  "default": [
+    "Exterior/exterior-2.jpg",
+    "Social-fallback/hotel-front-view.jpg",
+    "Social-pad/Exterior/exterior-4.jpg",
+    "Hero-lake/hero-lake.jpg",
+    "Lake-sunset/lake-sunset-1.jpg",
+    "Social-pad/Activity/activity-2.jpg"
+  ],
+  "by_dna_subject": {
+    "lobby": [
+      "Social-fallback/lobby.jpg",
+      "Social-fallback/reception.jpg"
+    ],
+    "linh_an": [
+      "Social-fallback/lobby.jpg",
+      "Social-fallback/reception.jpg"
+    ],
+    "westlake": [
+      "Hero-lake/hero-lake.jpg",
+      "Lake-sunset/lake-sunset-1.jpg",
+      "Lake-view/lake-view-1.jpg",
+      "Social-pad/Activity/activity-1.jpg",
+      "Social-pad/Activity/activity-2.jpg",
+      "Social-pad/Activity/activity-3.jpg",
+      "Social-pad/Activity/activity-4.jpg",
+      "Social-pad/Activity/activity-5.jpg",
+      "Social-pad/Activity/activity-6.jpg",
+      "Social-pad/Activity/activity-7.jpg",
+      "Social-pad/Lake-night/lake-night.jpg",
+      "Social-pad/Lake-sunset/lake-sunset-2.jpg"
+    ],
+    "lake_view_room": [
+      "Lake-view/lake-view-6.JPG",
+      "Lake-view/lake-view-7.JPG",
+      "Social-pad/Lake-view/lake-view-2.JPG",
+      "Social-pad/Lake-view/lake-view-3.JPG",
+      "Social-pad/Lake-view/lake-view-4.JPG",
+      "Social-pad/Lake-view/lake-view-5.JPG",
+      "Social-pad/Lake-view/lake-view-8.JPG",
+      "Social-pad/Lake-view/lake-view-9.JPG"
+    ],
+    "deluxe_double": [
+      "Bathroom/bathroom-1.JPG",
+      "Bathroom/bathroom-3.jpg",
+      "Social-pad/Bathroom/bathroom-2.JPG",
+      "Social-pad/Deluxe-double/deluxe-double-1.JPG",
+      "Social-pad/Deluxe-double/deluxe-double-2.JPG",
+      "Social-pad/Deluxe-double/deluxe-double-3.JPG",
+      "Social-pad/Standard-triple/standard-triple-4.JPG",
+      "Standard-triple/standard-triple-1.jpg",
+      "Standard-triple/standard-triple-2.jpg",
+      "Standard-triple/standard-triple-3.JPG"
+    ],
+    "facade": [
+      "Exterior/exterior-2.jpg",
+      "Social-pad/Exterior/exterior-3.jpg",
+      "Social-pad/Exterior/exterior-4.jpg",
+      "Social-pad/Exterior/exterior-5.jpg",
+      "Social-pad/Exterior/exterior-6.jpg"
+    ],
+    "outside": [
+      "Hero-lake/hero-lake.jpg",
+      "Lake-sunset/lake-sunset-1.jpg",
+      "Lake-view/lake-view-1.jpg",
+      "Social-pad/Activity/activity-1.jpg",
+      "Social-pad/Activity/activity-2.jpg",
+      "Social-pad/Activity/activity-3.jpg",
+      "Social-pad/Activity/activity-4.jpg",
+      "Social-pad/Activity/activity-5.jpg",
+      "Social-pad/Activity/activity-6.jpg",
+      "Social-pad/Activity/activity-7.jpg",
+      "Social-pad/Lake-night/lake-night.jpg",
+      "Social-pad/Lake-sunset/lake-sunset-2.jpg"
+    ]
+  }
+}
