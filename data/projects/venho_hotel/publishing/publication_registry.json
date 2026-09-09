@@ -12141,13 +12141,13 @@
       "content_package_id": "bc5bb2a6-eb76-4a18-aab4-033f4e789593",
       "idempotency_key": "22e62b94a91e0ea308f4d166d55fe2bacd651cc98d865abda9cfa78246881d7d",
       "platform": "facebook",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
-      "platform_post_id": null,
-      "permalink": null,
+      "status": "PUBLISHED",
+      "gateway_status": "PUBLISHED",
+      "platform_post_id": "1124616474074140_122136134913351048",
+      "permalink": "https://www.facebook.com/1124616474074140_122136134913351048",
       "reconciliation_proof": null,
       "created_at": "2026-08-27T08:20:25.957109+00:00",
-      "updated_at": "2026-09-02T03:37:57.066657+00:00",
+      "updated_at": "2026-09-09T06:48:42.505268+00:00",
       "content": {
         "title": "ABC Coffee Roasters: khoảng ban công nhìn trọn Hồ Tây",
         "text": "Có quán cà phê bạn nhớ vì đồ uống. Cũng có quán bạn nhớ vì một khoảng ban công.\n\nABC Coffee Roasters là kiểu quán thứ hai. Từ ban công, Hồ Tây hiện ra gần như trọn vẹn, không bị cắt ngang bởi thứ gì. Vào một buổi trưa trời trong, mặt nước sáng lên một màu xanh xám dịu, xa hơn là những mái nhà cao thấp xen nhau của Tây Hồ.\n\nHàng cây lâu năm dọc phố che bớt nắng, để lại những mảng sáng loang trên nền ban công. Không gian được giữ gọn gàng, sạch sẽ. Ban công không kê bàn ghế, nên đây là chỗ để đứng tựa lan can một lát, nhìn ra hồ, rồi quay vào bàn trong quán với ly cà phê vẫn còn ấm. Đôi khi vài phút như vậy đủ làm chậm lại cả buổi trưa.\n\nNếu bạn đang xếp lịch cho một ngày quanh Hồ Tây, đây là điểm dừng dễ chịu để bắt đầu, trước khi đi bộ tiếp ven hồ hoặc ghé những góc phố quanh đó.\n\nVen Hồ Hotel nằm trên đường Nguyễn Đình Thi, cũng bên hồ. Với khách chọn khách sạn view Hồ Tây, cả ngày có thể bắt đầu và kết thúc trong cùng một khung cảnh: sáng ra hồ, trưa cà phê, chiều về phòng nghỉ.\n\nNếu bạn đang tính vài ngày ở Hà Nội, nhắn tin cho Ven Hồ Hotel để hỏi phòng trống cho lịch của mình nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhamPhaHoTay #CafeHaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-0ca7593b",
@@ -12280,20 +12280,22 @@
         "revoked_reason": null,
         "package_versions_checksum": "cd5c447a34ea06e6ba1ee2823eeab7c5d56caedcbee0e3e215be143fba7e68aa",
         "checksum": "266718f40424a5211c574ee6ecee8b7927a6eb71c75c35570a6fe76958fed8cb"
-      }
+      },
+      "gateway_error": null,
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-wednesday-instagram-6cd053fe",
       "content_package_id": "87e73d98-e24c-43ec-bde9-859e6318c538",
       "idempotency_key": "1f21f047228e7395dc8da7280e67ba6c38c40b73488c51c9432369861949bf70",
       "platform": "instagram",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
-      "platform_post_id": null,
-      "permalink": null,
+      "status": "PUBLISHED",
+      "gateway_status": "PUBLISHED",
+      "platform_post_id": "18118020886938079",
+      "permalink": "https://www.instagram.com/18118020886938079",
       "reconciliation_proof": null,
       "created_at": "2026-08-27T08:20:47.639940+00:00",
-      "updated_at": "2026-09-02T03:37:57.066657+00:00",
+      "updated_at": "2026-09-09T06:48:54.160328+00:00",
       "content": {
         "title": "Một ban công nhìn trọn Hồ Tây",
         "text": "Có những quán cà phê phải leo lên một tầng mới thấy hết lý do người ta yêu Hồ Tây.\n\nABC Coffee Roasters là một gợi ý như vậy: ban công mở thẳng ra mặt hồ, không vướng gì ở phía trước.\n\nBuổi chiều trời trong, mặt nước ánh lên màu xanh xám. Phía dưới là hàng cây lâu năm ven đường, xa hơn một chút là những mái nhà cao thấp của Tây Hồ chen nhau trong nắng.\n\nBan công không bày biện nhiều. Chỉ có nền gạch sạch, lan can và khoảng trống đủ để đứng tựa vào đó một lúc lâu. Đôi khi một chỗ ngồi gọn gàng và một tầm nhìn rộng là đủ cho cả buổi chiều.\n\nTừ Ven Hồ Hotel trên phố Nguyễn Đình Thi, những quán cà phê nhìn ra hồ như thế nằm trong tầm đi bộ hoặc một quãng xe ngắn — tiện cho những ngày bạn muốn đi chậm quanh Hồ Tây.\n\nNếu bạn đang lên lịch cho một chuyến Hà Nội thong thả, nhắn tin cho Ven Hồ Hotel để xem phòng trống những ngày đó nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhamPhaHoTay #KhachSanHoTay #CafeHoTay #HaNoi #HanoiTravel",
@@ -12429,7 +12431,9 @@
         "revoked_reason": null,
         "package_versions_checksum": "c606cc1f28408137769fcee6d207a4f7492763c4accdc7ac359447219edd18e3",
         "checksum": "66e94921189a4b2bad3ecdf0a07575e285a757c7c1d87439e11efbe6338243f9"
-      }
+      },
+      "gateway_error": null,
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-friday-facebook-39893b4b",
