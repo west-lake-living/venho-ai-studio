@@ -10,7 +10,16 @@
   "by_dna_subject": {
     "lobby": [
       "Social-fallback/lobby.jpg",
-      "Social-fallback/reception.jpg"
+      "Social-fallback/reception.jpg",
+      "Social-pad/Lobby/IMG_4914.JPG",
+      "Social-pad/Lobby/IMG_5175.jpeg",
+      "Social-pad/Lobby/IMG_5177.jpeg",
+      "Social-pad/Lobby/IMG_5208.jpeg",
+      "Social-pad/Lobby/IMG_5731.JPG",
+      "Social-pad/Lobby/IMG_5732.JPG",
+      "Social-pad/Lobby/IMG_5745.jpg",
+      "Social-pad/Lobby/IMG_5746.jpg",
+      "Social-pad/Lobby/IMG_7308.jpg"
     ],
     "linh_an": [
       "Social-fallback/lobby.jpg",
@@ -31,26 +40,26 @@
       "Social-pad/Lake-sunset/lake-sunset-2.jpg"
     ],
     "lake_view_room": [
-      "Lake-view/lake-view-6.JPG",
-      "Lake-view/lake-view-7.JPG",
       "Social-pad/Lake-view/lake-view-2.JPG",
       "Social-pad/Lake-view/lake-view-3.JPG",
       "Social-pad/Lake-view/lake-view-4.JPG",
       "Social-pad/Lake-view/lake-view-5.JPG",
+      "Social-pad/Lake-view/lake-view-6.JPG",
+      "Social-pad/Lake-view/lake-view-7.JPG",
       "Social-pad/Lake-view/lake-view-8.JPG",
       "Social-pad/Lake-view/lake-view-9.JPG"
     ],
     "deluxe_double": [
-      "Bathroom/bathroom-1.JPG",
       "Bathroom/bathroom-3.jpg",
+      "Social-pad/Bathroom/bathroom-1.JPG",
       "Social-pad/Bathroom/bathroom-2.JPG",
       "Social-pad/Deluxe-double/deluxe-double-1.JPG",
       "Social-pad/Deluxe-double/deluxe-double-2.JPG",
       "Social-pad/Deluxe-double/deluxe-double-3.JPG",
+      "Social-pad/Standard-triple/standard-triple-3.JPG",
       "Social-pad/Standard-triple/standard-triple-4.JPG",
       "Standard-triple/standard-triple-1.jpg",
-      "Standard-triple/standard-triple-2.jpg",
-      "Standard-triple/standard-triple-3.JPG"
+      "Standard-triple/standard-triple-2.jpg"
     ],
     "facade": [
       "Exterior/exterior-2.jpg",

@@ -41,7 +41,7 @@ import json
 import sys
 from pathlib import Path
 
-from PIL import Image
+from PIL import Image, ImageOps
 
 MIN_RATIO = 0.80
 MAX_RATIO = 1.91
@@ -61,6 +61,7 @@ FOLDER_TO_SUBJECT = {
     "Standard-triple": "deluxe_double",
     "Bathroom": "deluxe_double",
     "Exterior": "facade",
+    "Lobby": "lobby",  # real common-area photos, added 2026-09-09
 }
 
 # Individual files whose subject differs from their folder's default --
@@ -79,9 +80,10 @@ EXCLUDE_FILES = {
     "Bathroom/bathroom-4.jpg",  # door-handle close-up, not a room shot
 }
 
-# Folders that are curated entirely by hand and never auto-scanned: Harry
-# names the file (e.g. Social-fallback/lobby.jpg) or the subject has no real
-# photo (linh_an). Their manifest entries are seeded here, not discovered.
+# Seeded manifest entries. `lobby` also has a real scanned folder now
+# (FOLDER_TO_SUBJECT), so these two hand-named files are just added to that
+# pool. `linh_an` has no real photo of its own and stays an alias of the
+# common-area shots.
 MANUAL_POOLS = {
     "lobby": ["Social-fallback/lobby.jpg", "Social-fallback/reception.jpg"],
     "linh_an": ["Social-fallback/reception.jpg", "Social-fallback/lobby.jpg"],
@@ -98,6 +100,12 @@ DEFAULT_POOL = [
 
 IMAGE_SUFFIXES = {".jpg", ".jpeg"}
 
+# Make.com fetches the fallback photo on every post and Facebook/Instagram
+# reject an upload over ~8 MB. Straight-from-the-phone shots are 5-7 MB, so
+# anything past this gets a web-sized copy written next to the pads.
+MAX_BYTES = 2_000_000
+WEB_MAX_EDGE = 2048
+
 
 def _pad_into_social_pad(src: Path, images_root: Path, rel_folder: str) -> str:
     """Pad a portrait photo onto brand cream, reusing an existing pad if present."""
@@ -109,7 +117,9 @@ def _pad_into_social_pad(src: Path, images_root: Path, rel_folder: str) -> str:
 
     dest_dir.mkdir(parents=True, exist_ok=True)
     with Image.open(src) as im:
-        im = im.convert("RGB")
+        # Phone photos carry their orientation in EXIF, not the pixels --
+        # without this a portrait shot pads sideways.
+        im = ImageOps.exif_transpose(im).convert("RGB")
         canvas = Image.new("RGB", PAD_SIZE, PAD_COLOR)
         scale = min(PAD_SIZE[0] / im.width, PAD_SIZE[1] / im.height)
         new_size = (round(im.width * scale), round(im.height * scale))
@@ -117,6 +127,24 @@ def _pad_into_social_pad(src: Path, images_root: Path, rel_folder: str) -> str:
         offset = ((PAD_SIZE[0] - new_size[0]) // 2, (PAD_SIZE[1] - new_size[1]) // 2)
         canvas.paste(resized, offset)
         canvas.save(dest, "JPEG", quality=92)
+    return rel_dest
+
+
+def _websize_into_social_pad(src: Path, images_root: Path, rel_folder: str) -> str:
+    """Shrink an oversized in-ratio photo, keeping its aspect (no cream bars)."""
+    dest_dir = images_root / PAD_FOLDER / rel_folder
+    dest = dest_dir / src.name
+    rel_dest = f"{PAD_FOLDER}/{rel_folder}/{src.name}"
+    if dest.exists():
+        return rel_dest
+
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    with Image.open(src) as im:
+        im = ImageOps.exif_transpose(im).convert("RGB")
+        scale = min(1.0, WEB_MAX_EDGE / max(im.width, im.height))
+        if scale < 1.0:
+            im = im.resize((round(im.width * scale), round(im.height * scale)), Image.LANCZOS)
+        im.save(dest, "JPEG", quality=88)
     return rel_dest
 
 
@@ -141,13 +169,18 @@ def build_manifest(website_root: Path) -> dict[str, list[str]]:
             subject = FILE_OVERRIDES.get(rel, default_subject)
 
             with Image.open(src) as im:
-                ratio = im.width / im.height
+                # Respect EXIF orientation so a landscape phone photo stored
+                # with rotated pixels is not mistaken for a portrait.
+                oriented = ImageOps.exif_transpose(im)
+                ratio = oriented.width / oriented.height
 
             if ratio < MIN_RATIO:
                 rel_out = _pad_into_social_pad(src, images_root, folder)
             elif ratio > MAX_RATIO:
                 warnings.append(f"skipped (ratio {ratio:.2f} > {MAX_RATIO}): {rel}")
                 continue
+            elif src.stat().st_size > MAX_BYTES:
+                rel_out = _websize_into_social_pad(src, images_root, folder)
             else:
                 rel_out = rel
 

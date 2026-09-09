@@ -417,6 +417,11 @@ def _dispatch_claimed(
         # fallback URL against a pool that has since been corrected
         # (2026-09-09: a café post dispatched a bedroom photo).
         "dna_subject": publication.get("dna_subject"),
+        # `slot-YYYY-MM-DD-<day>`. The gateway keys fallback rotation off the
+        # slot date so the photo it re-resolves matches the one previewed for
+        # approval, and Facebook and Instagram of the same slot (different
+        # publication_ids) land on the same photo.
+        "slot_id": publication.get("slot_id"),
     }
     try:
         response = bridge.dispatch(command)

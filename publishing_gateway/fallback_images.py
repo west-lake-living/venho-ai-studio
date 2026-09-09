@@ -36,7 +36,7 @@ gpt-image-2's portrait size is 1024x1536 (0.67) and would fail identically.
 
 from __future__ import annotations
 
-from datetime import date, timedelta
+from datetime import date
 from functools import lru_cache
 from pathlib import Path
 import hashlib
@@ -110,17 +110,28 @@ def fallback_images_by_dna_subject() -> dict[str, tuple[str, ...]]:
 
 
 def _rotation_index(rotation_key: str | None, pool_size: int) -> int:
+    """Deterministic pick within a pool, stable for a slot but varied over time.
+
+    Same convention as agent_studio.growth.reference_asset_resolver._rotation_index:
+    a calendar key advances by the raw ordinal day, anything else falls back
+    to a stable hash.
+
+    The raw ordinal matters. Each cadence lane posts on ONE fixed weekday, so
+    the earlier `(week * 4 + cadence_offset)` scheme stepped a given lane's
+    index by exactly 4 between its consecutive posts -- it could only ever
+    reach `pool_size / gcd(pool_size, 4)` photos: 3 of 12 for the lake lanes,
+    1 of 2 for `lobby`. Adding more photos to the pool changed nothing.
+    Stepping by the ordinal day advances a fixed-weekday lane by 7 each week,
+    and gcd(7, N) == 1 for every current pool, so the whole pool is used.
+    """
     if pool_size <= 1 or not rotation_key:
         return 0
     try:
-        slot_date = date.fromisoformat(rotation_key)
+        base = date.fromisoformat(rotation_key).toordinal()
     except ValueError:
         digest = hashlib.sha256(rotation_key.encode("utf-8")).digest()
-        return int.from_bytes(digest[:4], "big") % pool_size
-
-    monday = slot_date - timedelta(days=slot_date.weekday())
-    cadence_offset = {0: 0, 2: 1, 4: 2, 5: 3}.get(slot_date.weekday(), slot_date.weekday())
-    return ((monday.toordinal() // 7) * 4 + cadence_offset) % pool_size
+        base = int.from_bytes(digest[:4], "big")
+    return base % pool_size
 
 
 def fallback_image_url(dna_subject: str | None = None, *, rotation_key: str | None = None) -> str:

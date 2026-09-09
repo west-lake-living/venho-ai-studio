@@ -220,6 +220,27 @@ def test_make_adapter_reresolves_a_stale_fallback_url_from_the_current_pool() ->
     assert image_url in lake_pool
 
 
+def test_make_adapter_keys_fallback_off_the_slot_date_so_fb_and_ig_match() -> None:
+    """Facebook and Instagram of one slot have different publication_ids. Keyed
+    off those, they drew different fallback photos and neither matched the
+    date-keyed preview the reviewer approved. Both carry the same slot_id."""
+    fake = FakeHttpPost({"received": True})
+    adapter = MakeGatewayAdapter(enabled=True, webhook_url="https://hook.us1.make.com/t", http_post=fake)
+    sent = []
+    for platform, pub_id in [("facebook", "pub-wednesday-facebook-0ca7593b"),
+                             ("instagram", "pub-wednesday-instagram-6cd053fe")]:
+        adapter.send({
+            "publication_id": pub_id,
+            "idempotency_key": f"idem-{platform}",
+            "platform": platform,
+            "dna_subject": "westlake",
+            "slot_id": "slot-2026-09-16-wednesday",
+            "content": {"text": "x", "image_is_fallback": True},
+        })
+        sent.append(fake.calls[-1]["json"]["image_url"])
+    assert sent[0] == sent[1] == fallback_image_url("westlake", rotation_key="2026-09-16")
+
+
 def test_fallback_rotation_does_not_repeat_the_same_image_across_two_week_batch() -> None:
     slot_dates = [
         "2026-08-17",

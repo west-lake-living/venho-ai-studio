@@ -17,6 +17,25 @@ def build_make_webhook_signature(secret: str, publication_id: str, idempotency_k
     return hmac.new(secret.encode("utf-8"), message, hashlib.sha256).hexdigest()
 
 
+_SLOT_DATE = re.compile(r"(\d{4}-\d{2}-\d{2})")
+
+
+def _fallback_rotation_key(command: dict[str, Any]) -> str:
+    """Key for re-resolving a fallback photo at dispatch.
+
+    Prefer the slot date (`slot-2026-09-26-saturday` -> `2026-09-26`): the
+    queue-time preview keyed rotation off that same date, so the reviewer
+    approves the photo that actually posts, and Facebook + Instagram of one
+    slot -- which have different publication_ids -- land on the same photo.
+    Fall back to publication_id / idempotency_key for older rows that carry
+    no slot_id (still stable, just not aligned with the preview).
+    """
+    match = _SLOT_DATE.search(str(command.get("slot_id") or ""))
+    if match:
+        return match.group(1)
+    return str(command.get("publication_id") or command.get("idempotency_key") or "")
+
+
 def _is_real_platform_post_id(value: Any) -> bool:
     """Reject Make mapping labels/placeholders presented as a real post ID."""
     if value is None:
@@ -221,7 +240,7 @@ class MakeGatewayAdapter:
                 "message": "accepted by Make adapter; awaiting callback or reconciliation",
             }
         content = command.get("content") or {}
-        rotation_key = str(publication_id or command.get("idempotency_key") or "")
+        rotation_key = _fallback_rotation_key(command)
         # A fallback URL is re-resolved from the CURRENT pool manifest at
         # dispatch, never trusted from the row: a row queued weeks earlier
         # froze its fallback against a pool that has since been corrected

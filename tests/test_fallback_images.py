@@ -85,3 +85,22 @@ def test_rotation_walks_the_whole_westlake_pool_over_a_season() -> None:
     dates = [f"2026-{month:02d}-{day:02d}" for month in (9, 10, 11) for day in (1, 8, 15, 22)]
     seen = {fallback_image_url("westlake", rotation_key=d) for d in dates}
     assert len(seen) >= 6, f"only {len(seen)} distinct photos across 12 slots"
+
+
+@pytest.mark.parametrize("weekday_of_first_post", range(7))
+def test_a_fixed_weekday_lane_still_reaches_every_photo(weekday_of_first_post: int) -> None:
+    """Each cadence lane posts on ONE weekday. The old `week*4 + offset` index
+    stepped such a lane by 4 every week, so it only ever showed
+    pool_size/gcd(pool_size,4) photos -- 3 of 12 here, 1 of 2 for `lobby`,
+    and adding photos did nothing. A weekly (7-day) step must now cover the
+    whole pool."""
+    from datetime import date, timedelta
+
+    for subject, pool in fallback_images_by_dna_subject().items():
+        start = date(2026, 9, 7) + timedelta(days=weekday_of_first_post)
+        weekly_keys = [(start + timedelta(weeks=w)).isoformat() for w in range(len(set(pool)) * 2)]
+        seen = {fallback_image_url(subject, rotation_key=k) for k in weekly_keys}
+        assert len(seen) == len(set(pool)), (
+            f"{subject}: a weekday-{weekday_of_first_post} lane reached "
+            f"{len(seen)}/{len(set(pool))} photos"
+        )
