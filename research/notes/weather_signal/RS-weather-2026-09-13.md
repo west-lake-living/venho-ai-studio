@@ -4,19 +4,19 @@ type: trend
 domain: weather_signal
 evidence_level: R2-T
 status: draft
-collected_at: '2026-09-08'
+collected_at: '2026-09-09'
 source_uri: https://api.open-meteo.com/v1/forecast
 confidence: 0.6
-expires_at: '2026-09-10'
+expires_at: '2026-09-11'
 promoted_fact_keys: []
 related_briefs: []
 verified_by_human: false
 tags:
 - weather
-- golden_sunset
+- rain
 ---
 
-# 2026-09-13 — golden_sunset
+# 2026-09-13 — rain
 
-- Hoàng hôn vàng trên Hồ Tây — rooftop cuối ngày
-- Scenario: venho_rooftop_sunset
+- Mưa ngoài cửa kính — không gian ấm trong sảnh
+- Scenario: venho_lobby_cozy
