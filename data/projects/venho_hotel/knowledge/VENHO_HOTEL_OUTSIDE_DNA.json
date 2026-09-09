@@ -3,7 +3,7 @@
   "mode": "B",
   "project": "venho_hotel",
   "subject": "outside",
-  "dna_version": "1.1",
+  "dna_version": "1.2",
   "schema_id": "venho_hotel.outside",
   "schema_version": "1.0",
   "prompt_version": "1.1",
@@ -226,7 +226,7 @@
       "source": "curated"
     },
     {
-      "rule": "no city high-rise skyline — West Lake area is low-rise",
+      "rule": "no modern glass high-rise dominating the frame — a distant, hazy skyline across the water is real West Lake and is fine",
       "source": "curated"
     },
     {
@@ -304,6 +304,10 @@
     "Street: Nguyễn Đình Thi — tree-lined, green lamp posts, low traffic",
     "Outdoor spaces are modest — not resort, not bar venue, just genuine hotel terrace",
     "Authenticity principle: real Hanoi sky + real lake color over staged perfection",
-    "Reference: ho-tay-image-dna.md for lake color standards"
+    "Reference: ho-tay-image-dna.md for lake color standards",
+    "2026-09-09 dna_version 1.1->1.2: softened the 'no city high-rise skyline' forbidden rule to",
+    "  match config/.../subjects/outside.overrides.yaml (2026-09-07). A distant hazy skyline",
+    "  across the water is real West Lake; the blanket ban was capping growth image-QC scores",
+    "  at 40 on correct photos (growth QC reads this JSON, not the overlay)."
   ]
 }

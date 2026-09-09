@@ -3,7 +3,7 @@
   "mode": "B",
   "project": "venho_hotel",
   "subject": "westlake",
-  "dna_version": "1.1",
+  "dna_version": "1.2",
   "schema_id": "venho_hotel.westlake",
   "schema_version": "1.0",
   "prompt_version": "1.1",
@@ -243,7 +243,7 @@
       "source": "curated"
     },
     {
-      "rule": "no modern glass high-rise backdrop — low-rise cityscape across the water",
+      "rule": "no modern glass high-rise dominating the frame — a distant, hazy low/mid-rise skyline across the far shore is real West Lake and is fine",
       "source": "curated"
     },
     {
@@ -290,6 +290,10 @@
     "  street was renovated; current railing is ivory-white and there are no lamp posts.",
     "  Kept as historical note here since this file states notes must never be silently dropped.",
     "Water color reference: #4E8FA0 (day) · #B8C4C8 (haze) · #C07840 (sunset)",
-    "Golden Rule: show what it is like to LIVE beside West Lake today — not visit"
+    "Golden Rule: show what it is like to LIVE beside West Lake today — not visit",
+    "2026-09-09 dna_version 1.1->1.2: softened the 'no modern glass high-rise backdrop' forbidden",
+    "  rule to match config/.../subjects/westlake.overrides.yaml (2026-09-07). A distant hazy",
+    "  low/mid-rise skyline across the far shore is real West Lake; the blanket ban was capping",
+    "  growth image-QC scores at 40 on correct photos (growth QC reads this JSON, not the overlay)."
   ]
 }
