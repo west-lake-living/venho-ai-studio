@@ -46,7 +46,9 @@ venho-analytics = "analytics_feedback.cli:app"
 venho-agent = "agent_studio.cli:app"
 venho-research = "research_engine.cli:app"
 venho-trend = "research_engine.trend_radar.cli:app"
+venho-beat = "research_engine.local_beat.cli:app"
 venho-growth = "growth_orchestrator.cli:app"
+venho-theme = "growth_orchestrator.weekly_theme.cli:app"
 venho-strategy = "strategy_memory.cli:app"
 venho-rollout = "controlled_rollout.cli:app"
 venho-restore = "identity_restoration.interface.cli:main"
@@ -58,3 +60,7 @@ include = ["agent_studio*", "analytics_feedback*", "app*", "automation_studio*",
 [tool.setuptools.package-data]
 "knowledge_studio.vision.prompts" = ["*.md"]
 "validator_studio.prompts" = ["*.md"]
+"validator_studio.naturalness" = ["*.yaml"]
+"research_engine.local_beat" = ["*.yaml"]
+"growth_orchestrator.weekly_theme" = ["*.yaml"]
+"content_studio.generators.prompts" = ["*.md"]

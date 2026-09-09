@@ -5,6 +5,7 @@ from pathlib import Path
 from validator_studio.alignment_validator import validate_alignment
 from validator_studio.claim_validator import ClaimValidator
 from validator_studio.content_validator import validate_content
+from validator_studio.naturalness import evaluate_naturalness
 from validator_studio.schemas.validation_base import Recommendation
 
 
@@ -37,6 +38,7 @@ class M03ValidatorBridge:
         alignment_report = validate_alignment(brief, copy_candidate.get("scene_summary", {}))
         verdict = "READY_FOR_REVIEW"
         content_report = None
+        naturalness_report = None
 
         markdown_path = copy_candidate.get("content_package_paths", {}).get("markdown")
         dna_subject = copy_candidate.get("dna_subject")
@@ -55,6 +57,13 @@ class M03ValidatorBridge:
                     # not the social caption itself.
                     content_text=_publishable_text(copy_candidate),
                 )
+                naturalness_report = evaluate_naturalness(
+                    _publishable_text(copy_candidate) or "",
+                    recent_posts=brief.get("recent_post_texts", brief.get("recent_posts", [])),
+                    concrete_details=(brief.get("theme_angle") or {}).get("concrete_details", []),
+                    voice_corpus_root=Path("data/voice_corpus/samples"),
+                    rewrite_round=int(brief.get("rewrite_round", 0)),
+                )
             except Exception:  # noqa: BLE001 - Part 2.1 invariant #8: validator crash/malformed input must fail-closed to UNVALIDATED, never silently pass as APPROVED
                 content_report_failed = True
 
@@ -64,8 +73,27 @@ class M03ValidatorBridge:
             verdict = "NEEDS_REVISION"
         elif content_report is not None and content_report.verdict != Recommendation.APPROVE:
             verdict = "NEEDS_REVISION"
+        # Warn-mode by default (spec §12 risk #1): the naturalness report is
+        # always attached so it is logged and reviewable, but it only changes
+        # the verdict once the operator flips `naturalness_enforce` on, after
+        # a shadow week comparing it against their own eye.
+        naturalness_enforce = bool(brief.get("naturalness_enforce", False))
+        if (
+            naturalness_enforce
+            and naturalness_report is not None
+            and naturalness_report.verdict != "PASS"
+            and verdict not in {"UNVALIDATED"}
+        ):
+            verdict = "ESCALATE_HUMAN" if naturalness_report.verdict == "ESCALATE_HUMAN" else "NEEDS_REVISION"
 
         reports = [claim_report, alignment_report]
         if content_report is not None:
             reports.append(content_report.model_dump(mode="json"))
+        if naturalness_report is not None:
+            reports.append({
+                "validator": "naturalness_gate",
+                "validation_type": "naturalness",
+                "enforced": naturalness_enforce,
+                **naturalness_report.to_dict(),
+            })
         return {"verdict": verdict, "reports": reports}

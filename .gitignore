@@ -16,7 +16,10 @@ build/
 venv/
 
 # Data — media, observations, knowledge (không đẩy lên GitHub)
-data/
+/data/*
+# Exception: Voice Corpus is hand-written operator prose (v3.2 U5), small and
+# needed by M03/M05 in CI — it must be version-controlled.
+!/data/voice_corpus/
 
 # Knowledge Vault — symlinks tới data/, chỉ dùng local trong Obsidian
 Knowledge Vault/

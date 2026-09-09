@@ -20,6 +20,7 @@ from growth_orchestrator.application.manage_slots import ensure_slot_horizon
 from growth_orchestrator.bridges.m03_validator_bridge import M03ValidatorBridge
 from growth_orchestrator.bridges.m05_content_bridge import M05ContentBridge
 from growth_orchestrator.domain.publishing_slot import PublishingSlot
+from growth_orchestrator.weekly_theme.models import WeeklyThemePlan
 from publishing_gateway.publication_registry import PublicationRegistry
 from shared.jobs.job_store import JobStore
 from shared.jobs.slot_store import SlotStore
@@ -98,6 +99,7 @@ def run_weekly_cycle(
     slot_store: Optional[SlotStore] = None,
     job_store: Optional[JobStore] = None,
     start_date: Optional[date] = None,
+    theme_plan: Optional[WeeklyThemePlan] = None,
 ) -> WeeklyCycleResult:
     """Generate eight cadence slots covering two weeks in one run.
 
@@ -222,6 +224,9 @@ def run_weekly_cycle(
                         drive_uploader=drive_uploader,
                         slot_store=slot_store,
                         slot_date=slot_date.isoformat(),
+                        theme_angle=(theme_plan.angles.get(day).to_dict() if theme_plan and day in theme_plan.angles else None),
+                        banned_openers=(theme_plan.banned_openers if theme_plan else None),
+                        banned_phrases=(theme_plan.banned_phrases if theme_plan else None),
                     )
                 )
             except Exception as exc:  # noqa: BLE001 - one day's uncaught failure (e.g. topic config error) must not drop the rest of the week's batch

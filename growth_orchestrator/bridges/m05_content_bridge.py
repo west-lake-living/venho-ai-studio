@@ -9,6 +9,7 @@ from agent_studio.growth.scenario_registry import ScenarioRegistry
 from content_studio.content_context import DEFAULT_CONFIG_ROOT, DEFAULT_DATA_ROOT, load_content_config
 from content_studio.content_engine import generate_content
 from content_studio.generators.claude_social_generator import claude_social_generator
+from content_studio.generators.voice_corpus import load_voice_exemplars
 from content_studio.schemas.content_request import ContentRequest, SourceKnowledgeRef
 from growth_orchestrator.weekend_events import load_verified_weekend_events
 
@@ -97,6 +98,14 @@ class M05ContentBridge:
             research_facts=brief.get("proof_points", []),
             recent_topics=brief.get("recent_topics", []),
             prompt_rules=brief.get("prompt_rules", "default"),
+            theme_angle=brief.get("theme_angle"),
+            rewrite_feedback=brief.get("rewrite_feedback", []),
+            rewrite_round=int(brief.get("rewrite_round", 0)),
+            banned_openers=brief.get("banned_openers", []),
+            banned_phrases=brief.get("banned_phrases", []),
+            voice_exemplars=brief.get("voice_exemplars") or load_voice_exemplars(
+                angle_type=(brief.get("theme_angle") or {}).get("angle_type")
+            ),
         )
         result = generate_content(
             request,
@@ -114,7 +123,7 @@ class M05ContentBridge:
                 "platform": platform,
                 "dna_subject": scenario.dna_subject,
                 "language": output.target_language,
-                "angle_type": "content_studio",
+                "angle_type": (brief.get("theme_angle") or {}).get("angle_type", "content_studio"),
                 "hook": output.hook,
                 "title": output.title,
                 "body": output.body,

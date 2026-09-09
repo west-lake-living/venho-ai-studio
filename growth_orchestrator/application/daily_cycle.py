@@ -103,7 +103,19 @@ def _validation_failure_reason(validation: dict[str, Any]) -> str:
             parts.append(
                 f"content_validator: verdict={report.get('verdict')} score={report.get('overall_score')} issues={issues[:3]}"
             )
+        elif report.get("validation_type") == "naturalness" and report.get("verdict") != "PASS":
+            violations = [item.get("rule_id") for item in report.get("violations", [])]
+            parts.append(f"naturalness_gate: verdict={report.get('verdict')} rules={violations[:5]}")
     return "; ".join(parts) if parts else f"verdict={validation.get('verdict')} (no report detail)"
+
+
+def _naturalness_feedback(validation: dict[str, Any]) -> list[dict[str, Any]]:
+    """Return deterministic M03 violations as M05 rewrite instructions."""
+    for report in validation.get("reports", []):
+        if report.get("validation_type") != "naturalness":
+            continue
+        return list(report.get("violations") or [])
+    return []
 
 
 def _next_cadence_date(day: str, on_or_after: date) -> date:
@@ -309,6 +321,23 @@ def _recent_topics(project: str, data_root: Path, *, limit: int = 6) -> list[str
     return seen
 
 
+def _recent_post_texts(project: str, data_root: Path, *, limit: int = 12) -> list[str]:
+    """Recent publishable copy for M03 Repetition Guard; best-effort only."""
+    try:
+        publications = PublicationRegistry(project, data_root=data_root).load().get("publications", [])
+    except Exception:  # noqa: BLE001
+        return []
+    ordered = sorted(publications, key=lambda pub: pub.get("created_at") or "", reverse=True)
+    texts: list[str] = []
+    for publication in ordered:
+        text = str((publication.get("content") or {}).get("text") or "").strip()
+        if text and text not in texts:
+            texts.append(text)
+        if len(texts) >= limit:
+            break
+    return texts
+
+
 def _build_creative_brief(
     topic: dict[str, str],
     platform: str,
@@ -319,6 +348,9 @@ def _build_creative_brief(
     scenario_key: Optional[str] = None,
     prompt_rules: Optional[str] = None,
     recent_topics: Optional[list[str]] = None,
+    theme_angle: Optional[dict[str, Any]] = None,
+    banned_openers: Optional[list[str]] = None,
+    banned_phrases: Optional[list[str]] = None,
 ) -> dict[str, Any]:
     # `scenario_key` lets a caller (run_daily_cycle, via _pick_scenario) hand
     # in a scenario picked from a lane's whole scenario_pool -- multiple
@@ -339,7 +371,7 @@ def _build_creative_brief(
         "platforms": [platform],
         "audience_segment": "Vietnamese leisure guests",
         "funnel_stage": "consideration",
-        "single_minded_message": topic["topic"],
+        "single_minded_message": (theme_angle or {}).get("title") or topic["topic"],
         "proof_points": [],
         "content_angle": topic["pillar"],
         "cta": {"type": "booking_link", "destination_key": "hotel.website", "strength": "soft"},
@@ -363,6 +395,13 @@ def _build_creative_brief(
         brief["prompt_rules"] = prompt_rules
     if recent_topics:
         brief["recent_topics"] = recent_topics
+    if theme_angle:
+        brief["theme_angle"] = theme_angle
+        brief["content_angle"] = theme_angle.get("angle_type", brief["content_angle"])
+    if banned_openers:
+        brief["banned_openers"] = banned_openers
+    if banned_phrases:
+        brief["banned_phrases"] = banned_phrases
 
     # Approved local facts (Wednesday's local_discovery lane, 2026-08-13):
     # local_intel_topic_entries already shapes these as {"text", "fact_key"}
@@ -1000,6 +1039,9 @@ def run_daily_cycle(
     slot_store: Optional[SlotStore] = None,
     slot_date: Optional[str] = None,
     budget_gate: Optional[BudgetGate] = None,
+    theme_angle: Optional[dict[str, Any]] = None,
+    banned_openers: Optional[list[str]] = None,
+    banned_phrases: Optional[list[str]] = None,
 ) -> DailyCycleResult:
     """Generate this cadence day's content drafts and queue them for approval.
 
@@ -1140,6 +1182,7 @@ def run_daily_cycle(
 
     prompt_rules = lane_config.get("prompt_rules") if lane_config else None
     recent_topics = _recent_topics(project, data_root)
+    recent_post_texts = _recent_post_texts(project, data_root)
 
     publications: list[dict[str, Any]] = []
     packages: list[dict[str, Any]] = []
@@ -1157,7 +1200,9 @@ def run_daily_cycle(
             brief = _build_creative_brief(
                 topic, platform, day, project, scenario_registry,
                 scenario_key=scenario_key, prompt_rules=prompt_rules, recent_topics=recent_topics,
+                theme_angle=theme_angle, banned_openers=banned_openers, banned_phrases=banned_phrases,
             )
+            brief["recent_post_texts"] = recent_post_texts
             package = _run_content_pipeline_budgeted(
                 brief, budget_gate=budget_gate, day=day, platform=platform,
                 content_bridge=content_bridge, validator_bridge=validator_bridge,
@@ -1165,6 +1210,15 @@ def run_daily_cycle(
             for _attempt in range(MAX_TEXT_ATTEMPTS - 1):
                 if package["state"] == "READY_FOR_REVIEW":
                     break
+                feedback = _naturalness_feedback(package.get("validation", {}))
+                if feedback:
+                    # The next M05 call receives exact rule IDs/excerpts.  A
+                    # failed gate never silently becomes a looser threshold.
+                    brief = {
+                        **brief,
+                        "rewrite_feedback": feedback,
+                        "rewrite_round": _attempt + 1,
+                    }
                 package = _run_content_pipeline_budgeted(
                     brief, budget_gate=budget_gate, day=day, platform=platform,
                     content_bridge=content_bridge, validator_bridge=validator_bridge,

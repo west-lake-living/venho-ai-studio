@@ -59,6 +59,15 @@ class ContentRequest(BaseModel):
     # the base SYSTEM_PROMPT/WEST_LAKE_SYSTEM_PROMPT selection logic that
     # existed before this field (dna_subject/lane based).
     prompt_rules: str = "default"
+    # v3.2 weekly planner output.  Kept as plain JSON-compatible fields so
+    # older callers remain valid and M05 can receive a ThemeAngle without
+    # coupling Content Studio to the orchestrator package.
+    theme_angle: Optional[Dict[str, Any]] = None
+    rewrite_feedback: List[Dict[str, Any]] = Field(default_factory=list)
+    rewrite_round: int = 0
+    banned_openers: List[str] = Field(default_factory=list)
+    banned_phrases: List[str] = Field(default_factory=list)
+    voice_exemplars: List[str] = Field(default_factory=list)
 
     @property
     def platform(self) -> str:

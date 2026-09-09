@@ -10,6 +10,7 @@ from content_studio.schemas.content_request import ContentRequest
 SATURDAY_LANE = "saturday_trend"
 WEST_LAKE_DNA_SUBJECT = "westlake"
 _MASTER_PROMPT_PATH = Path(__file__).with_name("prompts") / "venho_content_generator_master_prompt.md"
+_REWRITE_PROMPT_PATH = Path(__file__).with_name("prompts") / "rewrite_vi.md"
 
 
 def _load_master_prompt() -> str:
@@ -97,6 +98,79 @@ sentence (never force all of them into one post): "Ven Hồ Hotel", "khách sạ
 view Hồ Tây", "Nguyễn Đình Thi", "hoàng hôn Hồ Tây".
 """.strip()
 
+# These blocks are assembled with plain string concatenation (see the
+# _theme_angle_block / _rewrite_block / ... helpers below), never str.format,
+# so operator-editable Vietnamese copy and the external rewrite_vi.md file are
+# free to contain "{" / "}" without breaking prompt assembly.
+_THEME_ANGLE_HEADER = """
+# WEEKLY THEME ANGLE — chất liệu bắt buộc
+
+Đây là góc của bài trong mạch tuần. Dùng ít nhất 3 chi tiết trong
+`concrete_details` nếu chúng phù hợp với câu chuyện. Không biến BeatItem thành
+factual claim: chỉ khẳng định số liệu/mốc tiến độ khi có fact R3 active.
+""".strip()
+
+
+def _load_rewrite_prompt() -> str:
+    """Load the versioned rewrite instruction block once, like the master prompt."""
+    return _REWRITE_PROMPT_PATH.read_text(encoding="utf-8").strip()
+
+
+_REWRITE_PROMPT_TEXT = _load_rewrite_prompt()
+
+_DIVERSITY_HEADER = """
+# CHỐNG LẶP TRONG TUẦN
+
+Không dùng lại câu mở hoặc cụm đặc trưng dưới đây:
+""".strip()
+
+_VOICE_EXEMPLARS_HEADER = """
+# VOICE CORPUS — tham khảo nhịp người thật
+
+Các đoạn dưới đây do người vận hành cung cấp. Học nhịp câu và mức độ cụ thể,
+không sao chép câu chữ hay đưa thêm factual claim từ các mẫu:
+""".strip()
+
+
+def _theme_angle_block(angle: Dict[str, Any]) -> str:
+    details = ", ".join(str(item) for item in angle.get("concrete_details", []))
+    cannot = "; ".join(str(item) for item in angle.get("what_we_cannot_claim", []))
+    return "\n".join([
+        _THEME_ANGLE_HEADER,
+        "",
+        f"angle_type: {angle.get('angle_type', '')}",
+        f"spine: {angle.get('premise', '')}",
+        f"concrete_details: {details}",
+        f"guest_question: {angle.get('guest_question', '')}",
+        f"what_we_can_say: {angle.get('what_we_can_say', '')}",
+        f"what_we_cannot_claim: {cannot}",
+    ])
+
+
+def _rewrite_block(rewrite_round: int, feedback: List[Dict[str, Any]]) -> str:
+    violations = "; ".join(
+        f"{item.get('rule_id', '')}: {item.get('message', '')} — {item.get('suggestion', '')}"
+        for item in feedback
+    )
+    return "\n".join([
+        _REWRITE_PROMPT_TEXT,
+        "",
+        f"rewrite_round: {rewrite_round}",
+        f"violations: {violations}",
+    ])
+
+
+def _diversity_block(banned_openers: List[str], banned_phrases: List[str]) -> str:
+    return "\n".join([
+        _DIVERSITY_HEADER,
+        f"- Câu mở đã dùng: {'; '.join(banned_openers)}",
+        f"- Cụm đã dùng: {'; '.join(banned_phrases)}",
+    ])
+
+
+def _voice_exemplars_block(exemplars: List[str]) -> str:
+    return _VOICE_EXEMPLARS_HEADER + "\n" + "\n\n---\n\n".join(exemplars)
+
 SYSTEM_PROMPT = f"{MASTER_SYSTEM_PROMPT}\n\n{_SEO_KEYWORDS_BLOCK}\n\n{_AUTOMATION_OUTPUT_CONTRACT}"
 WEEKEND_EVENTS_SYSTEM_PROMPT = f"{MASTER_SYSTEM_PROMPT}\n\n{_WEEKEND_EVENTS_RULES}\n\n{_SEO_KEYWORDS_BLOCK}\n\n{_AUTOMATION_OUTPUT_CONTRACT}"
 WEST_LAKE_SYSTEM_PROMPT = f"{MASTER_SYSTEM_PROMPT}\n\n{_WEST_LAKE_PILLAR_RULES}\n\n{_SEO_KEYWORDS_BLOCK}\n\n{_AUTOMATION_OUTPUT_CONTRACT}"
@@ -153,6 +227,14 @@ def select_system_prompt(request: ContentRequest) -> str:
 
 def build_user_message(request: ContentRequest, final_prompt: str) -> str:
     parts = [final_prompt]
+    if request.theme_angle:
+        parts.append(_theme_angle_block(request.theme_angle))
+    if request.rewrite_feedback:
+        parts.append(_rewrite_block(request.rewrite_round, request.rewrite_feedback))
+    if request.banned_openers or request.banned_phrases:
+        parts.append(_diversity_block(request.banned_openers, request.banned_phrases))
+    if request.voice_exemplars:
+        parts.append(_voice_exemplars_block(request.voice_exemplars))
     if request.lane == SATURDAY_LANE:
         parts.append(format_verified_events(request.verified_events))
     if request.prompt_rules == "local_discovery":

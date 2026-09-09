@@ -5278,3 +5278,145 @@ suite green: 1598 passed, 0 failed, at session end.
   two common-area photographs exist; needs new photography, not code.
 - `Ven Ho Hotel/CLAUDE.md` still documents the retired T2/T4/T6 legacy
   social cron.
+
+## 2026-09-09 — Growth Agent v3.2 Content Quality Upgrade: QA/optimization pass on Codex build
+
+Plan `docs/Content agent/VENHO_GROWTH_AGENT_v3_2_CONTENT_QUALITY_UPGRADE.md`. Codex
+implemented U1–U5; this pass reviewed/fixed/optimized + added regression tests.
+
+**Highest-value finding — feature silently dead:** `content_studio/generators/social_prompts.py`
+built `_THEME_ANGLE_RULES` as a `{{ jinja }}` template but rendered it with `str.format()`.
+`str.format` turns `{{` into a literal `{` and ignores the kwargs, so every ThemeAngle value
+(`concrete_details`, `guest_question`, `what_we_cannot_claim`, spine, angle_type) never reached
+the M05 prompt. U2's entire purpose — feeding a planned weekly angle with concrete local
+detail into generation — was a no-op. No test caught it because nothing exercised
+`build_user_message` with a `theme_angle`.
+Fix: replaced the 4 `.format()` template blocks with plain string-concatenation helpers
+(`_theme_angle_block` / `_rewrite_block` / `_diversity_block` / `_voice_exemplars_block`).
+Bonus: operator-editable Vietnamese copy and the external `rewrite_vi.md` file can now
+contain `{`/`}` without crashing prompt assembly (was a latent `KeyError`/`ValueError`).
+
+**Other fixes:** `scan_week` read+validated `watchlist.yaml` 3× per run → 1×; `_previous_week`
+now raises on malformed input and computes the prior ISO year's last week correctly
+(52 vs 53); removed dead `recent_plans` param from `choose_angle_types`; merged a duplicate
+import in `local_beat/cli.py`.
+
+**Tests:** +`tests/test_growth_social_prompts_v32.py` (3 cases). Full suite 1612 passed;
+the lone failure (`test_growth_google_drive_uploader::test_expired_token_...`) is pre-existing
+and unrelated — `googleapiclient` isn't installed in `.venv` (confirmed by stashing the diff).
+
+**Calibration caveat:** `tests/fixtures/ai_sounding_vi.md` + `human_written_vi.md` were both
+written by Codex, and the gate separates them 30/0 perfectly. That proves the rules match
+the fixtures, not that they match real writing. Spec §6.4/§11 require calibrating the
+`specificity_score` threshold (4.0) on real drafts during P6 — still outstanding.
+
+**Not done (needs Harry / real runtime, not code):** P1 Voice Corpus hand-written samples;
+real ≥15-entity watchlist + hotel↔Quảng An distance; Evidence Ladder R0–R4 definition;
+P6 4-week live calibration; wiring `venho-theme plan` output into the real weekly workflow
+(`--theme-plan` flag + WeeklyThemePlan plumbing already exist and are tested).
+
+Nothing committed — working tree left staged for Harry's review.
+
+## 2026-09-09 — Growth Agent v3.2 P1 Voice Corpus + gate calibration
+
+- P1 done: 9 hand-written operator paragraphs in `data/voice_corpus/samples/` via
+  interview (Harry answered in bullet points, ghép theo lời, zero added adjectives).
+  Frontmatter `angle_type` covers observation/context/service/guide/story.
+- `.gitignore` had `data/` ignoring the whole tree → Codex's corpus README + samples
+  were never committable (CI would have an empty corpus). Changed to `/data/*` +
+  `!/data/voice_corpus/`.
+- Ran the Naturalness Gate against Harry's *raw* answers: 5/10 flagged REWRITE — the
+  spec's risk #1 (gate too strict on real writing) is real. Two false-positive rules
+  fixed in `validator_studio/naturalness/structural_check.py`:
+  - ST-03: shared topic nouns in a short single-subject paragraph is not "closing =
+    rephrase of opening". Now needs >=3 sentences AND SequenceMatcher(first,last) >= 0.5.
+  - ST-05: "cuối cùng/đầu tiên/tiếp theo" only counts as list scaffolding when it
+    *opens* a sentence, not mid-clause ("cuối cùng vẫn trả tiền" = "in the end").
+  After: Codex fixture still AI 30/30 & human 0/30; all 9 corpus samples PASS.
+- Dropped the airport/lost-property paragraph from the corpus: real specificity_score
+  1.54 — `specificity_check` doesn't recognise brand names or "sân bay"/"bưu điện" as
+  anchors. Vocab expansion is P2 work on a 30-sample set, not a one-off patch.
+- New regression test `test_operator_voice_corpus_passes_its_own_gate`.
+- KEY LESSON: the calibration fixtures (`tests/fixtures/*_vi.md`) were BOTH authored by
+  Codex and separate 30/0 perfectly — that only proves the rules match those fixtures.
+  Real human prose (Harry's) exposed 2 broken rules the fixture never would. P2 needs
+  ~20 more human samples + an AI-draft set that Codex did NOT write.
+
+## 2026-09-09 — Growth Agent v3.2 P2: Naturalness Gate calibrated on real captions
+
+Harry labelled 48 of 168 real M05 captions (registry) in
+`tests/fixtures/calibration/captions_to_classify.md`: 34 "AI/generic", 14 "fine".
+
+Baseline gate on real data: caught 50% of bad, false-flagged 21% of good
+(target 90%/10%). Codex's self-authored fixtures separated 30/0 — meaningless.
+
+**Core finding:** on this corpus there is no clean deterministic A/B boundary.
+The "fine" captions repeat the same scenes/structure nearly as much as the bad
+ones; the difference is voice. Deterministic rules can't close that gap — the
+material layer (U1 Local Beat, U2 Weekly Theme) + prompt fixes are the lever
+(exactly plan §0.4).
+
+**Shipped:**
+- `DNA-LEAK` (new, `validator_studio/naturalness/dna_leak_check.py`): hex colour
+  codes + English scene words (calm/moderate/muted/jade-teal/urban lakeside...)
+  leaking from the scene prompt into published VI copy. 14/34 bad, 0/14 good.
+  The one clean signal, and a real defect. severity=error.
+- `ST-04` threshold 2→3 em-dashes (1 appositive dash is normal Vietnamese).
+- Repetition Guard: **must** strip hashtags/URL/brand/CTA before n-gram compare
+  (`_body_tokens`), else RP-01 fires on 100% of real captions -> every post
+  escalates in prod. RP-01 now 6-gram body. RP-03 downgraded to warning
+  (4-post/week house style legitimately repeats structure; fired 6/14 good).
+- Fixtures replaced with real data. 2 operator-"fine" captions with rhetorical
+  question openers excluded from the "must not flag" set — gate is deliberately
+  stricter there per spec §6.3.
+- `m03_validator_bridge`: naturalness is **warn-only** unless
+  `brief["naturalness_enforce"]=True` (spec §12 risk #1 shadow week). Report
+  always attached for logging.
+- Calibration tests rewritten with honest, documented ceilings.
+
+**specificity_score does NOT discriminate on this data** (bad median 8.2, good
+7.9) — the anchor regex counts repeated "Hồ Tây"/"Hà Nội" as specificity. Stays
+a warning only. Broadening/redefining it is future work on 30+ real samples.
+
+Nothing committed.
+
+## 2026-09-09 — INCIDENT: café caption + bedroom photo posted to FB/IG
+
+Growth `pub-wednesday-{facebook,instagram}` (ABC Coffee Roasters, `local_discovery`
+lane) went live with `image_public_url = .../Lake-view/lake-view-6.JPG` (a room).
+
+Root cause: **a fallback image URL frozen into the registry row at generation
+time (2026-08-27) and dispatched verbatim two weeks later** (2026-09-09), after
+the pool had been corrected (fe251ce split room shots out of `westlake`).
+`make_gateway.send()` trusted `content.image_public_url` as-is for fallback rows.
+
+Fix: `make_gateway.send()` now re-resolves `fallback_image_url(dna_subject,
+rotation_key=publication_id)` from the current manifest whenever
+`image_is_fallback` is set (or the URL is missing) — the row's frozen fallback
+URL is never trusted. `_dispatch_claimed` passes `dna_subject` into the command
+(covers both `dispatch-due` scheduler and manual dispatch — shared function).
+
+Lesson: **a fallback/derived value written into a durable record and consumed
+later must be re-derived at consumption time, not trusted from the record** — the
+generating context (pool contents, config) drifts. Same shape as
+[[project-provider-compare-two-bugs]] frozen assumptions. Also: Content Studio
+still generates NO image for the `local_discovery` lane, so these posts ALWAYS
+fall back to a generic hotel photo for a caption about a specific external venue
+— a design gap, not just this bug.
+
+Harry must manually pull down the 2 live posts (FB post id
+1124616474074140_122136134913351048, IG 18118020886938079).
+
+## 2026-09-09 — P1 Voice Corpus khép ở 13 đoạn; SP-01 -> warning
+
+13 hand-written paragraphs, `human_written_vi.md` = 25 (12 captions + 13 corpus),
+0 flagged. Stopped at 25, not 30 (Codex's arbitrary number).
+
+`SP-01` (specificity density) downgraded error -> warning. P2 data proved it
+doesn't separate AI from acceptable captions (medians 8.2 vs 7.9; the anchor
+regex counts repeated "Hồ Tây"), and it hard-flagged genuine ops prose about
+guest types. Still surfaces in the report for the rewrite prompt.
+
+Process note: merging several interview bullets into one paragraph smooths the
+rhythm and trips `RH-01` (low sentence-length variance). Keep the operator's
+short sentences short when ghép.

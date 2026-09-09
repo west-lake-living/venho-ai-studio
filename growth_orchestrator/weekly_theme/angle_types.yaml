@@ -1,0 +1,20 @@
+version: 1
+types:
+  practical:
+    label: Thông tin dùng được ngay
+    prompt: đường đi, giờ đi, lối vào hoặc điều khách cần biết trước khi ra ngoài
+  observation:
+    label: Quan sát trực tiếp
+    prompt: một cảnh nhìn thấy từ khách sạn hoặc trên tuyến phố, có thời điểm cụ thể
+  guide:
+    label: Hướng dẫn địa phương
+    prompt: đi đâu, ăn gì, ghé điểm nào và sắp xếp hành trình ra sao
+  story:
+    label: Câu chuyện người thật
+    prompt: chuyện của khách, nhân viên hoặc một việc đã xảy ra, không dựng lời chứng thực
+  context:
+    label: Bối cảnh khu vực
+    prompt: khu vực đang thay đổi thế nào và điều đó có ý nghĩa gì với khách
+  service:
+    label: Thông tin dịch vụ
+    prompt: một thông tin cụ thể về lưu trú hoặc cách Ven Hồ hỗ trợ khách

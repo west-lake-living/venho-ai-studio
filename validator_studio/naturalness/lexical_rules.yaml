@@ -1,0 +1,43 @@
+version: 1
+
+# Khởi điểm có thể mở rộng bằng dữ liệu vận hành.  Các luật được đọc từ YAML,
+# không hard-code trong Python.
+banned_openers:
+  - "Trong nhịp sống hối hả"
+  - "Giữa lòng Hà Nội"
+  - "Giữa lòng thủ đô"
+  - "Bạn đã bao giờ"
+  - "Hãy cùng"
+  - "Nếu bạn đang tìm kiếm"
+  - "Có một nơi"
+  - "Không đâu xa"
+
+banned_phrases:
+  - "nép mình"
+  - "chốn bình yên"
+  - "điểm đến lý tưởng"
+  - "đắm chìm"
+  - "hòa quyện"
+  - "trọn vẹn từng khoảnh khắc"
+  - "trải nghiệm đích thực"
+  - "không gian ấm cúng"
+  - "hương vị khó quên"
+  - "tinh tế đến từng chi tiết"
+  - "níu chân du khách"
+  - "dấu ấn khó phai"
+  - "thổi hồn"
+  - "bức tranh thiên nhiên"
+
+banned_connectors:
+  - "không chỉ ... mà còn"
+  - "không những ... mà còn"
+  - "chính vì vậy"
+  - "hơn thế nữa"
+  - "đặc biệt hơn cả"
+
+banned_closers:
+  - "hãy đến và cảm nhận"
+  - "chúng tôi luôn sẵn sàng"
+  - "đừng bỏ lỡ"
+  - "còn chần chừ gì nữa"
+  - "hãy để chúng tôi"

@@ -1,0 +1,105 @@
+version: 1
+scan_cadence: weekly
+locale: vi-VN
+region: "Tây Hồ, Hà Nội"
+
+# Watchlist is operator-editable configuration.  It is deliberately bounded;
+# Local Beat is a state-change sensor, not a second general news crawler.
+entities:
+  - id: ho-tay-project
+    name: "Dự án cải tạo Hồ Tây"
+    queries: ["cải tạo Hồ Tây", "đường ven Hồ Tây mở rộng", "cầu cạn Hồ Tây"]
+    category: infrastructure
+    guest_relevance: high
+    tracked_since: "2026-01"
+  - id: quang-an-road
+    name: "Đường Quảng An"
+    queries: ["đường Quảng An", "Phủ Tây Hồ Từ Hoa mở rộng"]
+    category: infrastructure
+    guest_relevance: high
+    tracked_since: "2026-01"
+    operator_note: "Xác nhận khoảng cách thực tế tới khách sạn trước khi gán critical."
+  - id: west-lake-marina
+    name: "Bến thuyền Hồ Tây"
+    queries: ["bến thuyền Hồ Tây", "quy hoạch bến thuyền Tây Hồ"]
+    category: infrastructure
+    guest_relevance: high
+    tracked_since: "2026-01"
+  - id: west-lake-observation-deck
+    name: "Sàn ngắm cảnh Hồ Tây"
+    queries: ["sàn ngắm cảnh Hồ Tây", "điểm ngắm cảnh ven Hồ Tây"]
+    category: infrastructure
+    guest_relevance: medium
+    tracked_since: "2026-01"
+  - id: west-lake-underground-parking
+    name: "Bãi đỗ xe ngầm quanh Hồ Tây"
+    queries: ["bãi đỗ xe ngầm Hồ Tây", "bãi đỗ xe ngầm Tây Hồ"]
+    category: infrastructure
+    guest_relevance: medium
+    tracked_since: "2026-01"
+  - id: hanoi-opera-house-project
+    name: "Nhà hát Opera Hà Nội"
+    queries: ["Nhà hát Opera Hà Nội tiến độ", "Opera Hà Nội quy hoạch"]
+    category: infrastructure
+    guest_relevance: medium
+    tracked_since: "2026-01"
+  - id: west-lake-land-recovery
+    name: "Thu hồi đất quanh Hồ Tây"
+    queries: ["thu hồi đất quanh Hồ Tây", "giải phóng mặt bằng Tây Hồ"]
+    category: policy
+    guest_relevance: high
+    tracked_since: "2026-01"
+  - id: nhat-chieu
+    name: "Đường Nhật Chiêu"
+    queries: ["đường Nhật Chiêu", "Nhật Chiêu Hồ Tây"]
+    category: streets
+    guest_relevance: high
+    tracked_since: "2026-01"
+  - id: trich-sai
+    name: "Đường Trích Sài"
+    queries: ["đường Trích Sài", "Trích Sài Hồ Tây"]
+    category: streets
+    guest_relevance: high
+    tracked_since: "2026-01"
+  - id: ve-ho
+    name: "Đường Vệ Hồ"
+    queries: ["đường Vệ Hồ", "Vệ Hồ Tây Hồ"]
+    category: streets
+    guest_relevance: high
+    tracked_since: "2026-01"
+  - id: nguyen-dinh-thi
+    name: "Đường Nguyễn Đình Thi"
+    queries: ["đường Nguyễn Đình Thi", "Nguyễn Đình Thi Hồ Tây"]
+    category: streets
+    guest_relevance: critical
+    tracked_since: "2026-01"
+  - id: tu-hoa
+    name: "Đường Từ Hoa"
+    queries: ["đường Từ Hoa", "Từ Hoa Tây Hồ"]
+    category: streets
+    guest_relevance: high
+    tracked_since: "2026-01"
+  - id: phu-tay-ho
+    name: "Phủ Tây Hồ"
+    queries: ["Phủ Tây Hồ", "lễ hội Phủ Tây Hồ"]
+    category: culture
+    guest_relevance: high
+    tracked_since: "2026-01"
+  - id: sen-ho-tay
+    name: "Sen Hồ Tây"
+    queries: ["sen Hồ Tây", "mùa sen Hồ Tây"]
+    category: seasonal
+    guest_relevance: high
+    tracked_since: "2026-01"
+  - id: west-lake-food-scene
+    name: "Quán mới quanh Hồ Tây"
+    queries: ["quán mới quanh Hồ Tây", "quán ăn mới Tây Hồ"]
+    category: food_scene
+    guest_relevance: medium
+    tracked_since: "2026-01"
+  - id: hanoi-low-emission-zone
+    name: "Vùng phát thải thấp Hà Nội"
+    queries: ["vùng phát thải thấp Hà Nội", "quy định giao thông Tây Hồ"]
+    category: policy
+    guest_relevance: high
+    tracked_since: "2026-01"

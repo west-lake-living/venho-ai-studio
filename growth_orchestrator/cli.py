@@ -100,6 +100,7 @@ def weekly_cycle(
     project: str = typer.Option("venho_hotel"),
     generate_image: bool = typer.Option(True, "--image/--no-image", help="Set --no-image to skip photo generation (e.g. OPENAI_API_KEY unavailable/invalid)."),
     platforms: list[str] = typer.Option(["facebook", "instagram"], "--platform", help="Required platform(s) for every cadence slot."),
+    theme_plan_file: Optional[Path] = typer.Option(None, "--theme-plan", help="Precomputed WeeklyThemePlan JSON; no API call."),
 ) -> None:
     """Generate eight cadence slots across two weeks and queue
     all of it PENDING_APPROVAL, so Harry can review/approve both weeks in
@@ -111,8 +112,14 @@ def weekly_cycle(
     a failed draft is regenerated automatically (see daily_cycle's
     MAX_TEXT_ATTEMPTS/MAX_IMAGE_ATTEMPTS).
     """
+    theme_plan = None
+    if theme_plan_file:
+        from growth_orchestrator.weekly_theme.models import WeeklyThemePlan
+
+        theme_plan = WeeklyThemePlan.from_dict(json.loads(theme_plan_file.read_text(encoding="utf-8")))
     result = run_weekly_cycle(
-        project=project, platforms=platforms, generate_image=generate_image, image_validation_provider="openai"
+        project=project, platforms=platforms, generate_image=generate_image, image_validation_provider="openai",
+        theme_plan=theme_plan,
     )
     typer.echo(
         json.dumps(
