@@ -4699,3 +4699,26 @@ chùa) → khả năng đậu 90 cao hơn. Nếu vẫn trượt sau retry → fa
 `outside` không có ảnh phòng, và commit `27a2fc3` re-resolve theo dna_subject.
 
 Full suite 1616 passed (1 fail có sẵn không liên quan).
+
+### Fallback ảnh — luân phiên toàn bộ pool + Lobby/Lake-rain + skyline DNA (2026-09-09)
+
+Commit `8b147cf` / `9a0abef` / `d25498e` (venho-ai-studio) · `ca481ca` /
+`8f61316` (website). Chi tiết đầy đủ: `task_memory.md` cùng ngày.
+
+- **Rotation aliasing đã sửa** — `_rotation_index` cũ `(week*4 + offset)` chỉ
+  chạm `pool_size/gcd(pool_size,4)` ảnh (3/12, 1/2) vì mỗi lane đăng cố định 1
+  thứ. Đổi sang ordinal thô → bước +7/tuần → dùng hết pool.
+- **FB/IG cùng slot giờ cùng ảnh + khớp preview** — `make_gateway` key theo
+  `slot_id` (ngày slot) thay vì `publication_id`.
+- **Lobby** wired vào `refresh_fallback_pool.py` (pool 2 → 11). **Lake-rain** →
+  `westlake` (12 → 15).
+- **Loop system: 49 ảnh** — westlake 15 · outside 15 · lobby 11 · deluxe 10 ·
+  lake_view_room 8 · facade 5 · linh_an 2.
+- **Ảnh Linh An KHÔNG thêm vào rotation** — không lane nào dùng
+  `dna_subject: linh_an`; ref của cô ấy là plate đầu vào cho gpt-image-2.
+- **QC test 3/6 (50%), toàn bộ fail = rule skyline cao ốc** — growth image-QC
+  (`daily_cycle` → `validate_image` không có `scenario_profile_id`) đọc thẳng
+  DNA JSON, không đọc `<subject>.overrides.yaml`, nên bản nới skyline 07/09 chưa
+  tới. **Cách A (`d25498e`):** nới `rule` forbidden trong `WESTLAKE_DNA.json` +
+  `OUTSIDE_DNA.json` cho khớp overrides; `dna_version` 1.1 → 1.2. Không cần đổi
+  ảnh. Rule rác `observed`: xác nhận đã sạch (0/6 fail).

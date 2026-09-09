@@ -5442,3 +5442,69 @@ Longer term: a dedicated "café balcony / venue" scenario + reference photo woul
 fit better than reusing rooftop, but all-outside is the right subject and lets
 QC pass. If it still fails after retries the fallback is now an outside/lake
 photo (never a room) via the re-resolve fix.
+
+## 2026-09-09 — Fallback rotation aliasing + FB/IG mismatch + Lobby/Lake-rain + skyline DNA
+
+Harry: "Tại sao AI chỉ dùng vài ảnh lặp đi lặp lại?" Growth is the only live
+social system (`venho-social-content-agent` retired). Root causes + fixes,
+committed `8b147cf` / `9a0abef` / `d25498e` (venho-ai-studio) + `ca481ca` /
+`8f61316` (website):
+
+1. **Rotation aliasing** — `publishing_gateway/fallback_images._rotation_index`
+   used `(week*4 + cadence_offset) % pool_size`. Each cadence lane posts on ONE
+   fixed weekday → offset fixed → index steps by exactly 4/week → only
+   `pool_size / gcd(pool_size, 4)` photos ever reached (3 of 12, 1 of 2).
+   Adding photos did nothing. Fix: raw ordinal
+   `date.fromisoformat(rotation_key).toordinal() % pool_size` — steps +7/week,
+   `gcd(7, N)=1` for every pool → whole pool used. Matches
+   `agent_studio/growth/reference_asset_resolver._rotation_index`.
+   Test `test_a_fixed_weekday_lane_still_reaches_every_photo` (7 weekdays).
+
+2. **FB/IG of one slot drew different photos, neither matching the preview** —
+   `make_gateway.send()` keyed rotation off `publication_id` (a per-platform
+   hash). Fix: pass `slot_id` on the dispatch command
+   (`approve_and_dispatch._dispatch_claimed`), key off its date via
+   `_fallback_rotation_key` (`slot-2026-09-16-wednesday` → `2026-09-16`).
+   Falls back to publication_id for old rows with no slot_id.
+
+3. **Lobby folder wired in** — `scripts/refresh_fallback_pool.py`
+   `FOLDER_TO_SUBJECT["Lobby"] = "lobby"` + EXIF-transpose + web-size copies
+   (`_websize_into_social_pad`, `MAX_BYTES=2_000_000`, `WEB_MAX_EDGE=2048`).
+   lobby pool 2 → 11.
+
+4. **Lake-rain folder wired in** — `FOLDER_TO_SUBJECT["Lake-rain"] = "westlake"`.
+   westlake 12 → 15.
+
+5. **Disk cleanup** (Harry authorised) — removed full-res Lobby + Lake-rain
+   phone originals from the website repo, kept the Social-pad/ web copies.
+   `public/images/` 155MB → 83MB.
+
+6. **Loop system size: 49 distinct photos** — westlake 15 · outside 15 ·
+   lobby 11 · deluxe_double 10 · lake_view_room 8 · facade 5 · linh_an 2.
+
+7. **Linh An photos: not added to rotation** — no growth lane uses
+   `dna_subject: linh_an`; her reference images are AI *input plates* for
+   gpt-image-2, not publishable photos; the `linh_an` fallback pool is inert.
+
+8. **Junk forbidden rules: confirmed gone** — 08-27 run log + a fresh 6-image
+   QC test both show ZERO `observed`-rule failures. The 2026-08-07
+   `clean-forbidden` fix holds.
+
+9. **QC test = 3/6 (50%), every failure = the high-rise skyline rule** —
+   `daily_cycle` → `validate_image` is called with NO `scenario_profile_id`, so
+   `_apply_scenario_overlay` never runs and growth image-QC reads the DNA JSON
+   directly, never `<subject>.overrides.yaml`. The 2026-09-07 skyline
+   relaxation lived only in the overrides. Every rejected photo scored
+   `dna_match=100` but was capped at 40 by the blanket `[curated]` rule.
+   **Fix (Cách A, `d25498e`):** softened the forbidden `rule` string in
+   `VENHO_HOTEL_WESTLAKE_DNA.json` + `VENHO_HOTEL_OUTSIDE_DNA.json` to match the
+   overrides wording ("a distant hazy low/mid-rise skyline across the far shore
+   is real West Lake and is fine"); `dna_version` 1.1 → 1.2; reason in
+   `curator_notes` on both. No photo change needed — the photos were correct.
+   Downstream: next `venho prompt` run for westlake/outside will archive +
+   bump the prompt version (regeneration policy working as intended).
+
+Tests: `test_fallback_images` 12/12, plus forbidden_policy / regeneration_policy
+/ mode_b_contract / knowledge_reader / growth_phase3_image_runtime 69/69.
+Pre-existing unrelated fail: `test_growth_google_drive_uploader` (googleapiclient
+not in local venv; installed in CI).
