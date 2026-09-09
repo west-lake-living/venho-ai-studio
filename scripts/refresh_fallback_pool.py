@@ -55,6 +55,7 @@ FOLDER_TO_SUBJECT = {
     "Hero-lake": "westlake",
     "Lake-sunset": "westlake",
     "Lake-night": "westlake",
+    "Lake-rain": "westlake",
     "Activity": "westlake",
     "Lake-view": "lake_view_room",  # see FILE_OVERRIDES for the exceptions
     "Deluxe-double": "deluxe_double",
