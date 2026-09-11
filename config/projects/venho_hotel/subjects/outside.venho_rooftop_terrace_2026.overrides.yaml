@@ -44,10 +44,14 @@ wording_overrides:
     along the far shore, or across the lake — their absence is correct and expected
   sky_condition: >-
     large open sky whose condition follows the requested time of day — clear blue,
-    soft Hanoi haze, golden hour, and sunset are all authentic and equally valid
+    soft Hanoi haze, golden hour, sunset, and a dark night sky (with or without
+    fireworks/festival lights for an evening-event brief) are all authentic and
+    equally valid
   lighting_condition: >-
     natural outdoor light matching the requested time of day, including golden hour,
-    sunset and blue hour — not restricted to midday daylight
+    sunset, blue hour, and after-dark lighting — city glow, ambient night light, and
+    fireworks illumination for a night/festival brief — not restricted to midday
+    daylight
 
 notes:
   - "2026-09-07: Harry's call — relaxed the old blanket 'no modern glass
@@ -67,3 +71,12 @@ notes:
   - "Elevation is the point: West Lake spread out below, modest low/mid-rise Hanoi skyline across the water, large open sky."
   - "Time of day is a VARIABLE driven by the brief, never an invariant — sunset over West Lake is a core brand scene."
   - "Reference photo: venho-social-content-agent/assets/Rooftop-railing.png"
+  - "2026-09-11: sky_condition/lighting_condition still only listed daytime-through-sunset
+    states, so a correct night+fireworks brief (Lễ Quốc Khánh 2/9) scored 0/100 on both
+    keys — 'dark sky with fireworks' and 'lighting from fireworks' matched nothing in the
+    list, dragging a 100/100-intent image down to dna_match 66.67/regenerate. Two
+    generations (gpt-image-2 87.09/usable — same gap, milder AI-judge severity; nano-banana-2
+    66.67/needs_review — harsher severity) hit this identically; the difference was scoring
+    noise, not image quality. Added night/fireworks as an explicit valid state — the
+    same class of fix as the golden-hour/sunset addition above: the invariant list was
+    incomplete, not the image wrong."
