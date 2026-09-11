@@ -1204,5 +1204,151 @@
     "rejection_reason": null,
     "verified_by_human": false,
     "scanned_at": "2026-09-04T05:21:38.117531+00:00"
+  },
+  {
+    "id": "tavily-https://hanoimoi.vn/2-000-nguoi-dieu-hanh-sac-sen-tay-ho-ha-noi-huong-toi-xac-lap-ky-luc-1209525.html",
+    "title": "2.000 người diễu hành “Sắc sen Tây Hồ - Hà Nội”, hướng ...",
+    "source_uri": "https://hanoimoi.vn/2-000-nguoi-dieu-hanh-sac-sen-tay-ho-ha-noi-huong-toi-xac-lap-ky-luc-1209525.html",
+    "snippet": ", chương trình Diễu hành nghệ thuật “Sắc Sen Tây Hồ – Hà Nội” sẽ diễn ra vào tối ngày 27-6 tại không gian văn hóa Hồ Tây,",
+    "relevance_hint": 0.679923,
+    "geographic": "westlake",
+    "thematic": "lifestyle_culture",
+    "actionability": "direct",
+    "type": "cultural_event",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "culture_festival_positive"
+    ],
+    "relevance_score": 0.6,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "verified_by_human": false,
+    "scanned_at": "2026-09-11T05:32:24.196109+00:00"
+  },
+  {
+    "id": "tavily-https://www.youtube.com/watch?v=hmZZK2m6oZY",
+    "title": "Ghé Thung Lũng Hoa Hồ Tây cắm trại, chụp ảnh giữa muôn ...",
+    "source_uri": "https://www.youtube.com/watch?v=hmZZK2m6oZY",
+    "snippet": "Vườn hoa thung lũng Hồ Tây là một trong ・ lịch Hà Nội ・ mùa giữa lòng thủ đô Địa danh này được mệnh danh là “vương quốc hoa” ở hữu đa dạng lo",
+    "relevance_hint": 0.89312315,
+    "geographic": "westlake",
+    "thematic": "lifestyle_culture",
+    "actionability": "direct",
+    "type": "seasonal_nature",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "seasonal_weather_nature"
+    ],
+    "relevance_score": 0.6,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "verified_by_human": false,
+    "scanned_at": "2026-09-11T05:32:24.196109+00:00"
+  },
+  {
+    "id": "tavily-https://www.facebook.com/tapchitiepthivagiadinh/videos/n%E1%BA%BFu-b%E1%BA%A1n-kh%C3%B4ng-%C4%91i-%C4%91%C3%A2u-xa-c%C3%A1c-ng%C3%A0y-ngh%E1%BB%89-t%E1%BA%BFt-d%C6%B0%C6%A1ng-l%E1%BB%8Bch-th%C3%AC-thung-l%C5%A9ng-hoa-h%E1%BB%93-t%C3%A2y-l/2295162120964996",
+    "title": "Nếu bạn không đi đâu xa các ngày nghỉ Tết dương lịch thì ...",
+    "source_uri": "https://www.facebook.com/tapchitiepthivagiadinh/videos/n%E1%BA%BFu-b%E1%BA%A1n-kh%C3%B4ng-%C4%91i-%C4%91%C3%A2u-xa-c%C3%A1c-ng%C3%A0y-ngh%E1%BB%89-t%E1%BA%BFt-d%C6%B0%C6%A1ng-l%E1%BB%8Bch-th%C3%AC-thung-l%C5%A9ng-hoa-h%E1%BB%93-t%C3%A2y-l/2295162120964996",
+    "snippet": "Thung lũng hoa Hồ Tây, nằm trên đường Nhật Chiêu, phường Tây Hồ, thành phố Hà Nội, trở nên rộn ràng hơn thường lệ khi đông đảo người dân tìm đế",
+    "relevance_hint": 0.80084777,
+    "geographic": "westlake",
+    "thematic": "travel_stay",
+    "actionability": "direct",
+    "type": "seasonal_nature",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "seasonal_weather_nature"
+    ],
+    "relevance_score": 1.0,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "verified_by_human": false,
+    "scanned_at": "2026-09-11T05:32:24.196109+00:00"
+  },
+  {
+    "id": "tavily-https://luhanhvietnam.com.vn/du-lich/nhung-mua-hoa-dep-o-ho-tay.html",
+    "title": "Tuổi trẻ này hãy cùng nhau trải qua những mùa hoa đẹp ở ...",
+    "source_uri": "https://luhanhvietnam.com.vn/du-lich/nhung-mua-hoa-dep-o-ho-tay.html",
+    "snippet": "Nắm tay nhau đi qua hết những mùa hoa đẹp ở hồ Tây. Tháng 3 - mùa hoa ban · Tháng 5 - mùa hoa Muồng Hoàng Yến. Tháng 6 - mùa hoa phượng, hoa sen",
+    "relevance_hint": 0.7399865,
+    "geographic": "westlake",
+    "thematic": "seasonal_weather",
+    "actionability": "direct",
+    "type": "seasonal_nature",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "seasonal_weather_nature"
+    ],
+    "relevance_score": 0.5,
+    "status": "rejected",
+    "rejection_reason": "passed",
+    "verified_by_human": false,
+    "scanned_at": "2026-09-11T05:32:24.196109+00:00"
+  },
+  {
+    "id": "tavily-https://www.youtube.com/watch?v=F67K0aq1H_E",
+    "title": "Hồ Tây",
+    "source_uri": "https://www.youtube.com/watch?v=F67K0aq1H_E",
+    "snippet": "Share your videos with friends, family, and the world.",
+    "relevance_hint": 0.53649503,
+    "geographic": "westlake",
+    "thematic": "unrelated",
+    "actionability": "stretch",
+    "type": "feature_story",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local"
+    ],
+    "relevance_score": 0.0,
+    "status": "rejected",
+    "rejection_reason": "passed",
+    "verified_by_human": false,
+    "scanned_at": "2026-09-11T05:32:24.196109+00:00"
+  },
+  {
+    "id": "tavily-https://www.instagram.com/popular/cafe-view-h%E1%BB%93-t%C3%A2y",
+    "title": "Cafe View Hồ Tây",
+    "source_uri": "https://www.instagram.com/popular/cafe-view-h%E1%BB%93-t%C3%A2y",
+    "snippet": "| p24 | Quán cafe này ai ở Hà Nội thì chắc chắn phải biết rồi 5,740 · Quán cafe mới mở có bánh crepe kiểu Nhật Bản ngon, không gian mát mẻ",
+    "relevance_hint": 0.96210754,
+    "geographic": "westlake",
+    "thematic": "food_local",
+    "actionability": "direct",
+    "type": "lifestyle_trend",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "food_culinary"
+    ],
+    "relevance_score": 0.8,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "verified_by_human": false,
+    "scanned_at": "2026-09-11T05:32:24.196109+00:00"
+  },
+  {
+    "id": "tavily-https://www.tiktok.com/@dichoicunghuy/video/7448496117299416328",
+    "title": "Khám Phá Quán Cafe Mới Ở Hồ Tây Hà Nội",
+    "source_uri": "https://www.tiktok.com/@dichoicunghuy/video/7448496117299416328",
+    "snippet": "Quán cafe mới toanh nằm ngay mặt \"hồ Tây\" Hà Nội. #cafe #reviewcafe #cafehanoi Cafe Chòi Tri TônQuán Cafe Hồ Trúc BạchCafe De La PressOrganic",
+    "relevance_hint": 0.91655886,
+    "geographic": "westlake",
+    "thematic": "food_local",
+    "actionability": "direct",
+    "type": "lifestyle_trend",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "food_culinary"
+    ],
+    "relevance_score": 0.8,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "verified_by_human": false,
+    "scanned_at": "2026-09-11T05:32:24.196109+00:00"
   }
 ]
