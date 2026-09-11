@@ -1,5 +1,14 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-09-11 — Rooftop overlay: đêm/pháo hoa thiếu trong danh sách sky/lighting hợp lệ
+
+- **Bối cảnh:** Harry so sánh 3 ảnh (gpt-image-2 + 2 lần nano-banana-2) cùng brief "Linh An đứng rooftop Ven Hồ ngắm pháo hoa Lễ Quốc Khánh 2/9". Cả 2 lần đầu đều dính vấn đề (gpt-image-2 vẫn `usable` nhưng mất điểm oan; nano-banana-2 lần 1 sai địa điểm — bug khác, không liên quan; nano-banana-2 lần 2 đúng địa điểm 100% intent nhưng rớt hẳn xuống `needs_review`).
+- **Root cause:** `outside.venho_rooftop_terrace_2026.overrides.yaml` → `wording_overrides.sky_condition`/`lighting_condition` chỉ liệt kê "clear blue, soft Hanoi haze, golden hour, sunset" — không có trạng thái ban đêm nào. AI judge (OpenAI observer) chấm `sky_condition`/`lighting_condition` = 0/100 vì "dark sky with fireworks"/"lighting from fireworks" không khớp bất kỳ mục nào trong danh sách — dù ảnh đúng 100% ý đồ brief (đêm+pháo hoa là **bắt buộc** của chủ đề Quốc Khánh, không phải lỗi). 2 field × severity cao kéo `dna_match` từ ~100 xuống 66.67 → verdict `regenerate`.
+- Đây là **cùng một loại lỗ hổng cấu hình** đã sửa 2026-09-07 cho golden-hour/sunset (xem note trong chính file overrides) — danh sách invariant liệt kê thiếu, không phải model/ảnh tệ. Điểm Image/DNA của gpt-image-2 (87.09, "medium" severity) và nano-banana-2 (66.67, "high" severity) cho CÙNG lỗi chỉ khác nhau vì AI judge chấm độ nghiêm trọng không ổn định giữa 2 lần chạy — không phải khác biệt chất lượng ảnh thật.
+- **Fix:** thêm "a dark night sky (with or without fireworks/festival lights for an evening-event brief)" vào `sky_condition`, "after-dark lighting — city glow, ambient night light, and fireworks illumination for a night/festival brief" vào `lighting_condition`. Commit `2cc3163`, chỉ sửa YAML, không đụng code/test, không cần regenerate DNA.
+- **Verify thật (không phải fixture):** chạy lại đúng brief đó bằng nano-banana-2 sau khi vá → Image/DNA 66.67→**100**, status `needs_review`→**`usable`**. Ảnh backup lên Drive ngay (venho-os cùng phiên thêm trigger tức thời — xem `venho-os/task_memory.md` 2026-09-11).
+- Liên quan: [[project-forbidden-is-curated-policy]] · [[feedback-score-only-what-was-asked]] — cùng họ lỗi "validator chấm sai thứ vì rule/danh sách curated không đủ rộng, không phải ảnh sai".
+
 ## 2026-09-02 — Candidate v3 production enablement and promotion resume closed pass
 
 `CANDIDATE-V3-PRODUCTION-ENABLEMENT-AND-AUTOMATIC-PROMOTION-RESUME = CLOSED / PASS`

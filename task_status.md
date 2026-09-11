@@ -1,5 +1,27 @@
 # VENHO AI STUDIO — Task Status
 
+### Rooftop overlay: night/fireworks now a valid sky+lighting state (2026-09-11) — `2cc3163`
+
+- `config/projects/venho_hotel/subjects/outside.venho_rooftop_terrace_2026.overrides.yaml`'s
+  `wording_overrides` for `sky_condition`/`lighting_condition` listed only
+  clear blue / Hanoi haze / golden hour / sunset — no night state at all.
+- A correctly-composed rooftop image (intent gate 100/100 — right location,
+  right expression) for the Lễ Quốc Khánh 2/9 fireworks brief still scored
+  0/100 on both keys ("dark sky with fireworks" / "lighting from fireworks"
+  matched nothing in the list), dragging `dna_match` from what should have
+  been ~100 down to 66.67/`regenerate`. Same gap tripped a gpt-image-2 run
+  too (87.09/`usable` — milder AI-judge severity, stayed over the 80 floor by
+  luck) and a first nano-banana-2 attempt (which also had a real location
+  miss, unrelated to this bug). Root cause confirmed by re-running with the
+  same brief after the fix: 66.67→100, `needs_review`→`usable`.
+- Fix: added "a dark night sky (with or without fireworks/festival lights for
+  an evening-event brief)" / "after-dark lighting — city glow, ambient night
+  light, and fireworks illumination for a night/festival brief" to the two
+  `wording_overrides`. Same class of fix as the 2026-09-07 golden-hour/sunset
+  addition documented lower in this file — the invariant list was incomplete,
+  not the image wrong. Config-only change, no code/tests touched, no DNA
+  regeneration. Verified live via a real (paid) generation, not a fixture.
+
 ### Validator: missing scenario authority.yaml is now optional (2026-09-04) — `7b1f121`
 
 - `_apply_scenario_authority` (`validator_studio/image_validator.py`) raised
