@@ -12719,13 +12719,13 @@
       "content_package_id": "07264fb3-457f-4097-b770-1459a9a3bfe3",
       "idempotency_key": "abd40e83c10e6996e754649184cd29a05a140ffe23afafd2fee35e65d7164faf",
       "platform": "facebook",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
+      "status": "GATEWAY_ERROR",
+      "gateway_status": "GATEWAY_ERROR",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-27T08:23:53.273819+00:00",
-      "updated_at": "2026-09-02T03:38:26.975729+00:00",
+      "updated_at": "2026-09-12T06:36:22.350570+00:00",
       "content": {
         "title": "4 kiểu quán cà phê quanh Hồ Tây, mỗi kiểu hợp một khung giờ",
         "text": "Ở Hồ Tây, chọn quán cà phê theo khung giờ thường hợp lý hơn là chọn theo ảnh trên mạng.\n\nCùng một mặt hồ, nhưng mỗi kiểu quán lại hợp với một thời điểm trong ngày.\n\nSáng sớm, những quán rang xay nhỏ với quầy pha máy là nơi dễ ngồi nhất. Phin hoặc espresso, một chỗ cạnh ổ điện, và phố còn chưa đông.\n\nGiữa buổi, các quán sân vườn nằm sâu trong ngõ khu Nghi Tàm, Quảng An lại dễ chịu hơn. Ít tiếng xe, nhiều cây, thích hợp cho một cuộc trò chuyện dài.\n\nCuối chiều là lúc những quán có ban công hoặc tầng cao hướng ra mặt nước phát huy giá trị. Không cần làm gì nhiều, chỉ ngồi nhìn hoàng hôn Hồ Tây đổi màu trên mặt hồ là đủ hết một buổi.\n\nTối muộn, quay lại vỉa hè. Ghế thấp, trà đá hoặc cà phê nâu, người đi bộ và người chạy bộ qua lại. Đây là phần Hà Nội mà ảnh chụp thường không giữ được.\n\nĐiều hay của khu này là bốn kiểu quán ấy nằm không quá xa nhau, đủ để đi bộ hoặc vài phút xe trong ngày.\n\nVen Hồ Hotel nằm trên phố Nguyễn Đình Thi, ngay sát vòng hồ, nên khá tiện để bắt đầu buổi sáng và quay về khi trời tối. Sảnh nhỏ, cửa kính, quầy lễ tân gỗ nâu trầm và vài bức tranh treo tường, vừa đủ ấm cho lúc trở về.\n\nNếu bạn đang tính một cuối tuần chậm rãi ở Hồ Tây, nhắn cho Ven Hồ Hotel để xem phòng trống những ngày bạn định ở Hà Nội nhé.\n\n#VenHoHotelHanoi #HoTay #KhachSanHoTay #CaPheHaNoi #HaNoi #WestLakeHanoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-saturday-facebook-1a437815",
@@ -12851,20 +12851,22 @@
         "revoked_reason": null,
         "package_versions_checksum": "0731b111310b29f37443d1e0642853a8faacbe08ebeb00c8fffa1d1d8c53cb39",
         "checksum": "cfb67005d501d3fbce0c610a180590e4aa0ac8a49e1d671064f92761c476652b"
-      }
+      },
+      "gateway_error": "HTTP 500: Scenario failed to complete.",
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-saturday-instagram-d17676c1",
       "content_package_id": "5b685d6f-1b38-4927-9b0b-5c87d03766a1",
       "idempotency_key": "65de1b6da3f5f0c9688e9665bc7e861032d947be15489f0e0d7041e5bbde046e",
       "platform": "instagram",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
+      "status": "GATEWAY_ERROR",
+      "gateway_status": "GATEWAY_ERROR",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-27T08:24:33.756653+00:00",
-      "updated_at": "2026-09-02T03:38:26.975729+00:00",
+      "updated_at": "2026-09-12T06:36:22.889927+00:00",
       "content": {
         "title": "4 kiểu quán cà phê ở Hồ Tây, tùy vào buổi bạn muốn có",
         "text": "Cà phê ở Hồ Tây không nằm ở một cái tên. Nó nằm ở giờ bạn ngồi.\n\nKiểu thứ nhất: quán mở sớm sát mặt đường, cốc nâu đá uống nhanh khi mấy vòng đi bộ quanh hồ còn chưa kết thúc. Ghế nhựa, vỉa hè, gió còn mát.\n\nKiểu thứ hai: quán nằm sâu trong ngõ khu Quảng An. Phải rẽ vài khúc mới tới, đổi lại là một buổi sáng gần như không có tiếng còi xe.\n\nKiểu thứ ba: quán có sân, có cây, có mấy cái bàn kê dưới tán lá. Hợp với những hôm bạn mang theo sách rồi đọc được đúng ba trang.\n\nKiểu thứ tư: quán mở tới chiều muộn. Ngồi đủ lâu để thấy mặt nước chuyển màu — hoàng hôn Hồ Tây thường đến chậm hơn bạn nghĩ một chút.\n\nĐoạn Nguyễn Đình Thi và các ngõ quanh Quảng An đủ chỗ cho cả bốn kiểu ấy trong một ngày. Ven Hồ Hotel nằm ngay trên tuyến đường này, nên từ cánh cửa kính ở sảnh bước ra là đã ở ven hồ, không cần tính đường đi.\n\nCuối tuần này bạn chọn kiểu nào? Nếu cần một chỗ nghỉ ngay ven hồ để đi bộ là tới quán, nhắn tin cho Ven Hồ Hotel để xem phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #CaPheHaNoi #KhachSanHoTay #KhamPhaHoTay #HanoiTravel",
@@ -12991,7 +12993,9 @@
         "revoked_reason": null,
         "package_versions_checksum": "8fa8ea865da4d10a6ae32e37bae960605b78644af7b83b6d6f8fbe82944c3b7b",
         "checksum": "fbaad8e5f0a76bbd66df965689a368f76b7a8e455a320cdee778978aa4df132c"
-      }
+      },
+      "gateway_error": "HTTP 500: Scenario failed to complete.",
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-monday-facebook-e9f37649",
