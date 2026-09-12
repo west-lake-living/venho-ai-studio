@@ -12440,13 +12440,13 @@
       "content_package_id": "47d1fb7f-b8f2-4c9e-a2e8-6a1ee2d78871",
       "idempotency_key": "ba44415202b3eb2a2fa7cea2f9d559db4a1698c4f64e5dc1b9b946f3691cfbcf",
       "platform": "facebook",
-      "status": "GATEWAY_ERROR",
-      "gateway_status": "GATEWAY_ERROR",
+      "status": "FAILED",
+      "gateway_status": "HISTORICAL_UNRECONCILED",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-27T08:21:25.579409+00:00",
-      "updated_at": "2026-09-11T06:43:21.674431+00:00",
+      "updated_at": "2026-09-12T04:38:05.253686+00:00",
       "content": {
         "title": "Chỗ ngồi tránh nắng và nhịp một ngày bên Hồ Tây",
         "text": "Ở Hà Nội, ngồi ngoài trời đúng giờ quan trọng không kém việc chọn chỗ ngồi.\n\nKhoảng giữa trưa, mặt hồ hắt nắng lên rất mạnh. Đó là lúc chiếc ghế trên cao đẹp nhất trong ảnh lại là chỗ khó ngồi lâu nhất. Người quen với Hồ Tây thường để dành khoảng đó cho buổi chiều muộn, khi nắng đã xiên và gió từ mặt nước bắt đầu mát trở lại.\n\nTrong lúc chờ, tầng dưới của Ven Hồ Hotel là chỗ dừng chân vừa vặn. Cửa kính khép lại tiếng xe ngoài đường, nền gạch nâu với những vòng hoa văn tròn giữ được cảm giác mát chân, ánh sáng trong nhà dịu và không chói. Quầy lễ tân gỗ tối màu, vài bức tranh treo tường, một khoảng lặng đủ để ngồi xem lại lịch trình hoặc chỉ đơn giản là nghỉ chân sau buổi sáng đi bộ.\n\nRồi khi nắng bớt gắt, mọi thứ đổi nhịp. Đường Nguyễn Đình Thi đông dần lên, người đạp xe, người đi bộ, hàng quán mở cửa đón chiều. Lúc đó mới là thời điểm hợp lý để lên chỗ ngồi cao, gọi một cốc nước và nhìn hoàng hôn Hồ Tây chuyển màu chậm rãi.\n\nMột ngày ở đây không cần chạy theo lịch trình dày. Chỉ cần đi đúng nhịp của nắng.\n\nNếu bạn đang tìm một khách sạn view Hồ Tây cho chuyến đi sắp tới, nhắn tin cho Ven Hồ Hotel để xem phòng trống trong những ngày bạn dự định ở Hà Nội nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-friday-facebook-39893b4b",
@@ -12569,20 +12569,22 @@
         "checksum": "5736602f4c913b5021e78beb7b598e57c19c4af791c058d7eb34bb1618667f85"
       },
       "gateway_error": "HTTP 500: Scenario failed to complete.",
-      "shadow_override_by": "hpham1504@gmail.com"
+      "shadow_override_by": "hpham1504@gmail.com",
+      "incident_retired_at": "2026-09-12T04:38:05.248485+00:00",
+      "incident_retired_reason": "Publishing slot expired on 2026-09-11; not retried to prevent an outdated duplicate post."
     },
     {
       "publication_id": "pub-friday-instagram-729069c8",
       "content_package_id": "03387371-3a4a-49dc-857f-27ac7af351ba",
       "idempotency_key": "9a12652c73dda9f21697ca4295c2881f2bafcc81a2bba74e014f851222b54a9e",
       "platform": "instagram",
-      "status": "GATEWAY_ERROR",
-      "gateway_status": "GATEWAY_ERROR",
+      "status": "FAILED",
+      "gateway_status": "HISTORICAL_UNRECONCILED",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-27T08:21:53.513179+00:00",
-      "updated_at": "2026-09-11T06:43:21.937942+00:00",
+      "updated_at": "2026-09-12T04:38:05.253686+00:00",
       "content": {
         "title": "Góc râm trên tầng thượng, dành cho những ngày nắng Hồ Tây",
         "text": "Nắng Hồ Tây buổi trưa thì gắt. Nhưng trên tầng thượng luôn có một mảng râm để ngồi.\n\nĐi bộ hay đạp xe quanh hồ vào giữa trưa là kiểu trải nghiệm mà ai thử một lần cũng nhớ, theo nghĩa đen.\n\nCách dễ chịu hơn: quay về, đẩy cánh cửa kính bước vào sảnh. Sàn gạch nâu với những vòng hoa văn tròn, quầy lễ tân gỗ nâu đỏ, vài bức tranh treo trên tường, ánh sáng dịu vừa đủ. Nhiệt độ hạ xuống ngay từ bước chân đầu tiên.\n\nRồi lên tầng thượng, chọn phía có bóng râm. Mặt hồ vẫn ở đó, sáng loá dưới nắng, gió từ mặt nước thổi lên mát hơn hẳn dưới đường.\n\nNgồi đó chờ khoảng ba, bốn giờ chiều. Nắng nhạt dần, mặt nước đổi màu, và đó là lúc hợp nhất để bắt đầu lại vòng đi bộ dọc Nguyễn Đình Thi.\n\nMùa hè ở Hồ Tây không cần đi cả ngày. Chỉ cần biết lúc nào nên nghỉ.\n\nNếu bạn đang tìm một khách sạn view Hồ Tây cho chuyến Hà Nội sắp tới, nhắn Ven Hồ Hotel để xem lịch phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanHoTay #NguyenDinhThi #HoangHonHoTay #HaNoi #HanoiTravel",
@@ -12708,7 +12710,9 @@
         "checksum": "fdaab02086702b006b16d6cc4487ba941044fb0d9e3f11afa734258a77f562be"
       },
       "gateway_error": "HTTP 500: Scenario failed to complete.",
-      "shadow_override_by": "hpham1504@gmail.com"
+      "shadow_override_by": "hpham1504@gmail.com",
+      "incident_retired_at": "2026-09-12T04:38:05.248485+00:00",
+      "incident_retired_reason": "Publishing slot expired on 2026-09-11; not retried to prevent an outdated duplicate post."
     },
     {
       "publication_id": "pub-saturday-facebook-1a437815",
