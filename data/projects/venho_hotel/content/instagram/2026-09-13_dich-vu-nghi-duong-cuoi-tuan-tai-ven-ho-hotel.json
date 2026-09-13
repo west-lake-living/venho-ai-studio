@@ -1,0 +1,48 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "project": "venho_hotel",
+  "content_type": "instagram_post",
+  "target_language": "vi",
+  "generated_at": "2026-09-13T16:59:29.556018+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_LOBBY_DNA.json",
+      "dna_version": "1.1",
+      "hash": "sha256:e01fc1fa26c2318ce93d3a670067bac2ccbf9dc329a141ea906e80fb108c673f"
+    }
+  ],
+  "source_prompt": {
+    "file": "data/projects/venho_hotel/prompts/content/LOBBY__instagram-dich-vu-nghi-duong-cuoi-tuan-tai-ven-ho-hotel__CONTENT_PROMPT_v1.0.json",
+    "prompt_id": "lobby__content__instagram-dich-vu-nghi-duong-cuoi-tuan-tai-ven-ho-hotel",
+    "prompt_version": "1.0"
+  },
+  "generator": {
+    "provider": "mock",
+    "model": "deterministic-social-builder",
+    "temperature": 0.6
+  },
+  "title": "Cuối tuần chậm lại ở phía Hồ Tây",
+  "hook": "Cuối tuần ở Hà Nội không nhất thiết phải đi xa. Nhiều khi chỉ cần đổi chỗ ngủ sang phía Hồ Tây là đủ để nhịp hai ngày khác hẳn.",
+  "body": "Ven Hồ Hotel nằm trên Nguyễn Đình Thi, ngay đoạn đường mà cuối tuần người ta hay đi bộ và đạp xe.\n\nSảnh khách sạn không lớn. Một cánh cửa kính, sàn gạch nâu với những vòng hoa văn tròn, quầy lễ tân gỗ tông nâu đỏ sẫm, vài bức tranh trên tường và ánh sáng dịu, không chói. Mọi thứ gọn gàng, vừa đủ, không cố gây ấn tượng bằng sự hoành tráng.\n\nCái hay của một không gian nhỏ là bạn đi qua nó nhiều lần trong ngày. Sáng cầm chìa khóa ra hồ khi trời còn mát. Trưa về nghỉ một lúc. Chiều lại ra ngoài, rồi quay về khi hoàng hôn Hồ Tây đã tắt sau hàng cây. Mỗi lần bước qua cửa kính là một lần hạ nhịp xuống một chút.\n\nNghỉ dưỡng cuối tuần đôi khi chỉ đơn giản vậy: một chỗ ở đủ yên để về, và một mặt hồ ngay gần để bước ra.",
+  "cta": "Nếu bạn đang tính hai ngày cuối tuần ở phía Hồ Tây, nhắn cho Ven Hồ Hotel để xem phòng trống những ngày bạn muốn nhé.",
+  "hashtags": [
+    "#VenHoHotelHanoi",
+    "#HoTay",
+    "#WestLakeHanoi",
+    "#KhachSanHoTay",
+    "#NguyenDinhThi",
+    "#HaNoi",
+    "#HanoiTravel"
+  ],
+  "visual_note": null,
+  "contract_refs": null,
+  "payload": {},
+  "status": "draft",
+  "validation": {
+    "required": true,
+    "status": "pending",
+    "report_file": null,
+    "notes": []
+  }
+}

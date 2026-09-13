@@ -1,0 +1,47 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "project": "venho_hotel",
+  "content_type": "facebook_post",
+  "target_language": "vi",
+  "generated_at": "2026-09-13T17:00:03.782832+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_LOBBY_DNA.json",
+      "dna_version": "1.1",
+      "hash": "sha256:e01fc1fa26c2318ce93d3a670067bac2ccbf9dc329a141ea906e80fb108c673f"
+    }
+  ],
+  "source_prompt": {
+    "file": "data/projects/venho_hotel/prompts/content/LOBBY__facebook-review-qu-n-cafe-t-y-h__CONTENT_PROMPT_v1.0.json",
+    "prompt_id": "lobby__content__facebook-review-qu-n-cafe-t-y-h",
+    "prompt_version": "1.0"
+  },
+  "generator": {
+    "provider": "mock",
+    "model": "deterministic-social-builder",
+    "temperature": 0.6
+  },
+  "title": "Cà phê ven Hồ Tây: chọn giờ quan trọng hơn chọn quán",
+  "hook": "Cà phê ở Tây Hồ có một điều thú vị: cùng một chỗ ngồi, sáng và chiều cho hai cảm giác hoàn toàn khác nhau.",
+  "body": "Buổi sáng sớm, mặt hồ còn phẳng, sương mỏng. Các quán mở cửa sớm quanh Trích Sài hay Nguyễn Đình Thi thường vắng, gió lạnh, và ly cà phê nóng uống chậm được. Đây là lúc hợp nhất nếu bạn muốn ngồi một mình, đọc vài trang sách hoặc lên lịch trình cho cả ngày.\n\nGiữa trưa và đầu giờ chiều, các quán có tầng cao hoặc ban công hướng hồ thường đông hơn. Nếu đi nhóm, nên chọn quán có không gian trong nhà, tránh nắng hắt từ mặt nước.\n\nĐẹp nhất vẫn là khoảng một tiếng trước khi trời tối. Hoàng hôn Hồ Tây đổi màu khá nhanh, nên nếu muốn có chỗ ngồi hướng hồ, bạn nên đến sớm hơn dự tính chừng 30 phút. Sau đó thì không cần làm gì nhiều, chỉ ngồi nhìn ánh sáng rút dần khỏi mặt nước.\n\nMột mẹo nhỏ cho lần đầu đến Tây Hồ: thay vì cố tìm quán nổi tiếng nhất, hãy chọn quán gần nơi bạn ở, để có thể quay lại vào một khung giờ khác trong ngày.\n\nVen Hồ Hotel nằm ngay trên phố Nguyễn Đình Thi, đoạn có thể đi bộ tới nhiều quán ven hồ. Sau một buổi chiều ngoài trời, đẩy cửa kính bước vào sảnh nhỏ, ánh đèn dịu, sàn gạch nâu, quầy lễ tân gỗ sẫm màu, là đủ để nghỉ chân trước khi ra ngoài lần nữa.",
+  "cta": "Nếu bạn đang lên kế hoạch cho vài ngày ở Hà Nội, nhắn tin cho Ven Hồ Hotel để kiểm tra phòng trống cho những ngày bạn dự định nhé.",
+  "hashtags": [
+    "#VenHoHotelHanoi",
+    "#HoTay",
+    "#WestLakeHanoi",
+    "#KhamPhaHoTay",
+    "#CafeHoTay",
+    "#HaNoi"
+  ],
+  "visual_note": null,
+  "contract_refs": null,
+  "payload": {},
+  "status": "draft",
+  "validation": {
+    "required": true,
+    "status": "pending",
+    "report_file": null,
+    "notes": []
+  }
+}
