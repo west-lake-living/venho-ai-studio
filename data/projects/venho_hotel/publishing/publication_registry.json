@@ -14310,13 +14310,13 @@
       "idempotency_key": "83ed69c3153c323d9760d341a2384e1262f1a286aa0cfb3127fa0095b5f86cd5",
       "platform": "facebook",
       "slot_id": "slot-2026-09-16-wednesday",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-09-13T16:55:16.899278+00:00",
-      "updated_at": "2026-09-13T16:55:16.914374+00:00",
+      "updated_at": "2026-09-14T08:02:53.094009+00:00",
       "content": {
         "title": "Santorini Vibes: một góc xanh trắng nhìn ra Hồ Tây",
         "text": "Xanh và trắng, hai gam màu nghe có vẻ xa Hà Nội, lại đang nằm ngay bên mặt nước Hồ Tây.\n\nSantorini Vibes là một quán cà phê hướng ra hồ, được nhận ra khá nhanh nhờ cách phối màu xanh trắng của mình. Giữa những mảng tường sáng và khoảng nước rộng phía trước, không gian có nhịp riêng: ánh sáng đổi theo giờ, gió từ hồ thổi vào đều đặn, và câu chuyện của người ngồi cạnh thường nhỏ dần đi sau ly cà phê thứ hai.\n\nĐây là kiểu quán hợp với một buổi chiều không có lịch trình. Bạn đi bộ một đoạn ven hồ, ghé vào, chọn chỗ nào nhìn được ra mặt nước, rồi để mấy tiếng trôi qua mà không thấy phí.\n\nTừ Ven Hồ Hotel trên phố Nguyễn Đình Thi, những buổi chiều như vậy thường bắt đầu bằng việc đẩy cánh cửa kính bước ra đường. Và khi quay về, sảnh khách sạn vẫn ở đó chờ: sàn gạch nâu với hoa văn tròn, quầy lễ tân gỗ sẫm, ánh đèn dịu, vài bức tranh trên tường. Một không gian gọn gàng, vừa đủ ấm để kết thúc một ngày đi loanh quanh Hồ Tây.\n\nNếu bạn đang tính vài ngày ở Hà Nội và muốn ở gần hồ, nhắn tin cho Ven Hồ Hotel để xem phòng trống những ngày đó nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhamPhaHoTay #CafeHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-1640cecf",
@@ -14442,6 +14442,26 @@
         "claim_kill_switch_triggered": false,
         "content_brand_fit": 95,
         "content_overall_score": 92.99
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-09-14T08:02:53.078720+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-c478e6aa-89ae-4a3e-be67-d79eba364bc7",
+        "content_package_id": "c478e6aa-89ae-4a3e-be67-d79eba364bc7",
+        "copy_version_ids": [
+          "brief-wednesday-facebook-d464978c-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "72e27120399260cf510030ef3af0546196c7e9c246d80afbf2e62b634969b2fa",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-wednesday-facebook-d464978c@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-09-14T08:02:53.078753+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "0b2cb5adde27d51ba5d10841dc385fa973c52d946d7616cf94279eec4077cd87",
+        "checksum": "f1b1af3a7fb93220f9f65153e8439b3fe29aa48c7469168690c53c2b1e7ef285"
       }
     },
     {
@@ -14450,13 +14470,13 @@
       "idempotency_key": "8e427df211da1a678f5cf33d2ff3de232ac581a2bee7c55cfdd1c5a09e155142",
       "platform": "instagram",
       "slot_id": "slot-2026-09-16-wednesday",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-09-13T16:55:37.106594+00:00",
-      "updated_at": "2026-09-13T16:55:37.121593+00:00",
+      "updated_at": "2026-09-14T08:02:53.094009+00:00",
       "content": {
         "title": "Một góc xanh trắng bên Hồ Tây",
         "text": "Có những quán cà phê bạn nhớ vì ly cà phê. Cũng có quán bạn nhớ vì cái cách ánh sáng đổ lên bức tường trắng lúc gần chiều.\n\nSantorini Vibes là một trong số đó. Tông xanh và trắng chạy dọc không gian, mở ra hướng mặt nước, nên chỉ cần ngồi xuống là mắt đã có chỗ để nghỉ.\n\nHồ Tây buổi chiều không vội. Gió từ hồ thổi vào, vài người đạp xe ngang qua, mặt nước chuyển dần sang màu ấm hơn. Bạn có thể ở lại cho đến khi hoàng hôn Hồ Tây tắt hẳn, rồi mới nghĩ đến chuyện đi đâu tiếp.\n\nTừ khu Nguyễn Đình Thi, phần lớn những góc như thế này đều nằm trong tầm đi bộ hoặc một chặng xe ngắn. Buổi tối quay về, đẩy cửa kính bước vào sảnh Ven Hồ Hotel, ánh đèn dịu, quầy lễ tân gỗ nâu trầm, sàn gạch mát chân — vừa đủ để kết thúc một ngày mà không cần thêm gì cầu kỳ.\n\nNếu bạn đang lên lịch cho vài ngày ở Hà Nội, nhắn cho Ven Hồ Hotel để xem lịch phòng những ngày đó nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhamPhaHoTay #CafeHoTay #KhachSanHoTay #HanoiTravel",
@@ -14583,6 +14603,26 @@
         "claim_kill_switch_triggered": false,
         "content_brand_fit": 95,
         "content_overall_score": 93.7
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-09-14T08:02:53.078720+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-4d85788d-0756-45e3-911a-8723d22ab9de",
+        "content_package_id": "4d85788d-0756-45e3-911a-8723d22ab9de",
+        "copy_version_ids": [
+          "brief-wednesday-instagram-59ce0eb7-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "0e92e3f0ab6653b0a2afbc568ae178c0e13373c69fef812c1cc6bffbbc00e3de",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-wednesday-instagram-59ce0eb7@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-09-14T08:02:53.078868+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "1bb86e66fddfbe852bc61850cde28bbae277289e991f6b4fddcd0c5b9310956d",
+        "checksum": "d1f51dd7dae092eb7918d8283b3ee7faed1fe08b4884b0a1333157eb8b2f101d"
       }
     },
     {
