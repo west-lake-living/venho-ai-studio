@@ -14010,13 +14010,13 @@
       "idempotency_key": "9ea56a429c3f957357b3b21d0f351ff5118592ec86dcc7af376381173423c2c3",
       "platform": "facebook",
       "slot_id": "slot-2026-09-14-monday",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-09-13T16:54:21.124878+00:00",
-      "updated_at": "2026-09-13T16:54:21.142767+00:00",
+      "updated_at": "2026-09-14T08:02:07.542589+00:00",
       "content": {
         "title": "Tiếng chuông chùa vọng qua mặt nước sáng đầu tuần",
         "text": "Sáng đầu tuần ở Hồ Tây thường bắt đầu bằng âm thanh, trước khi bắt đầu bằng hình ảnh.\n\nMột hồi chuông chùa từ phía bên kia hồ, đi qua mặt nước rồi mới tới tai người đi bộ ven bờ. Tiếng chuông trên mặt nước nghe khác trên phố: tròn hơn, chậm hơn, và tan đi lâu hơn.\n\nQuanh đó là những nhịp rất đời thường. Vài người đi bộ vòng hồ trước giờ làm. Một chiếc xe đạp lăn qua. Hàng quán dọn ra, ai đó dừng lại mua đồ ăn sáng rồi đi tiếp. Thứ Hai vẫn là thứ Hai, chỉ là ở đây nó không bắt đầu bằng tiếng còi xe.\n\nTừ phía đường Nguyễn Đình Thi, chỉ vài bước là về đến sảnh Ven Hồ Hotel. Cửa kính mở ra một không gian gọn gàng: sàn gạch nâu với những vòng hoa văn tròn, quầy lễ tân gỗ sẫm màu, vài bức tranh trên tường, ánh sáng dịu và trung tính, không chói. Một chỗ để đứng lại vài phút trước khi bắt đầu ngày mới, hoặc để quay về sau khi đã đi hết một vòng hồ.\n\nĐầu tuần không nhất thiết phải vội ngay từ phút đầu tiên. Đôi khi chỉ cần một hồi chuông vọng qua mặt nước là đủ để ngày hôm đó nhẹ hơn một chút.\n\nNếu bạn đang xếp lịch cho vài ngày ở Hà Nội và muốn một chỗ nghỉ gần Hồ Tây, nhắn cho Ven Hồ Hotel để xem phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-monday-facebook-c6c8b7d3",
@@ -14129,8 +14129,28 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 92.43
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-09-14T08:02:07.527977+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-d80c5a2e-df2c-457e-a280-7dc1357285f4",
+        "content_package_id": "d80c5a2e-df2c-457e-a280-7dc1357285f4",
+        "copy_version_ids": [
+          "brief-monday-facebook-45531e47-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "9b1955e25b03c691509fa5a1781428bf6f2b06d24cf6076ad607723be1c795be",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-monday-facebook-45531e47@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-09-14T08:02:07.528005+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "9e4fa6255a814e4f19e25777c9f8a6f3a9793b7b32bcab03277840c4b0b2b17f",
+        "checksum": "7caaac4aa02e08424fea2c4ab106b74b627f6b93b3ff2bb9e9b871457e4346b4"
       }
     },
     {
@@ -14139,13 +14159,13 @@
       "idempotency_key": "1fc91f9be5126ce0cfd779714e9d7932991363c7ee6513f1444a94cbdafc10e3",
       "platform": "instagram",
       "slot_id": "slot-2026-09-14-monday",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-09-13T16:54:45.487231+00:00",
-      "updated_at": "2026-09-13T16:54:45.501979+00:00",
+      "updated_at": "2026-09-14T08:02:07.542589+00:00",
       "content": {
         "title": "Tiếng chuông đầu tuần bên Hồ Tây",
         "text": "Sáng thứ Hai ven Hồ Tây, có lúc nghe được tiếng chuông vọng ra từ phía chùa bên hồ.\n\nMặt nước còn mờ hơi sương. Vài người đi bộ vòng quanh, vài chiếc xe đạp chạy chậm, tiếng còi xe từ đường lớn vọng lại rất xa. Rồi một tiếng chuông ngân qua mặt hồ, loang ra rồi tắt dần.\n\nKhông ai dừng lại. Nhưng nhịp chân như chậm hơn một chút.\n\nỞ Ven Hồ Hotel trên phố Nguyễn Đình Thi, buổi sáng đầu tuần cũng bắt đầu nhẹ như vậy. Cửa kính mở ra hướng phố, ánh sáng đổ lên sàn gạch nâu với những vòng hoa văn tròn. Quầy lễ tân gỗ nâu đỏ, bức tranh trên tường, ánh đèn dịu vừa đủ cho một sáng chưa vội.\n\nCó những tuần mới không cần bắt đầu bằng chuông báo thức. Chỉ cần một mặt hồ và vài phút đi bộ trước khi ngày thật sự bắt đầu.\n\nNếu bạn đang tính một chuyến Hà Nội, nhắn Ven Hồ Hotel để xem phòng trống cho những ngày bạn định ở lại bên Hồ Tây.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanHoTay #NguyenDinhThi #HaNoi #HanoiTravel",
@@ -14260,8 +14280,28 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.7
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-09-14T08:02:07.527977+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-4b7521ef-82cf-411f-b0e9-d093f839d179",
+        "content_package_id": "4b7521ef-82cf-411f-b0e9-d093f839d179",
+        "copy_version_ids": [
+          "brief-monday-instagram-60f51caf-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "fbbdbce827edfc2d2b2a83e96c260ada0aaff53c6964ccba188b13e2d8fa2c93",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-monday-instagram-60f51caf@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-09-14T08:02:07.528128+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "f1ee6cfcf9f8640c18e43ed9c13197769ab95800e57453d9b32b6e048d945b6e",
+        "checksum": "a16a51a185e5ef99d7eb4b3e15f5494d46b721871ba2ca1c222b7f295341013c"
       }
     },
     {
@@ -14400,7 +14440,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 92.99
       }
     },
@@ -14541,7 +14581,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.7
       }
     },
@@ -14670,7 +14710,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 91.94
       }
     },
@@ -14802,7 +14842,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.01
       }
     },
@@ -14931,7 +14971,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 92.86
       }
     },
@@ -15063,7 +15103,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.7
       }
     },
@@ -15203,7 +15243,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 92.71
       }
     },
@@ -15344,7 +15384,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.7
       }
     },
@@ -15474,7 +15514,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 92.53
       }
     },
@@ -15605,7 +15645,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.37
       }
     },
@@ -15735,7 +15775,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 91.38
       }
     }
