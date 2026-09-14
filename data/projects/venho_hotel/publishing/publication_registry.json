@@ -15815,13 +15815,13 @@
       "idempotency_key": "df750e838c73ddbdb3e7667025fa86945895497b1f08e4b1b1a247dad8ee3a83",
       "platform": "facebook",
       "slot_id": "slot-2026-09-26-saturday",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-09-13T17:00:03.875760+00:00",
-      "updated_at": "2026-09-13T17:00:03.893109+00:00",
+      "updated_at": "2026-09-14T08:05:11.033057+00:00",
       "content": {
         "title": "Cà phê ven Hồ Tây: chọn giờ quan trọng hơn chọn quán",
         "text": "Cà phê ở Tây Hồ có một điều thú vị: cùng một chỗ ngồi, sáng và chiều cho hai cảm giác hoàn toàn khác nhau.\n\nBuổi sáng sớm, mặt hồ còn phẳng, sương mỏng. Các quán mở cửa sớm quanh Trích Sài hay Nguyễn Đình Thi thường vắng, gió lạnh, và ly cà phê nóng uống chậm được. Đây là lúc hợp nhất nếu bạn muốn ngồi một mình, đọc vài trang sách hoặc lên lịch trình cho cả ngày.\n\nGiữa trưa và đầu giờ chiều, các quán có tầng cao hoặc ban công hướng hồ thường đông hơn. Nếu đi nhóm, nên chọn quán có không gian trong nhà, tránh nắng hắt từ mặt nước.\n\nĐẹp nhất vẫn là khoảng một tiếng trước khi trời tối. Hoàng hôn Hồ Tây đổi màu khá nhanh, nên nếu muốn có chỗ ngồi hướng hồ, bạn nên đến sớm hơn dự tính chừng 30 phút. Sau đó thì không cần làm gì nhiều, chỉ ngồi nhìn ánh sáng rút dần khỏi mặt nước.\n\nMột mẹo nhỏ cho lần đầu đến Tây Hồ: thay vì cố tìm quán nổi tiếng nhất, hãy chọn quán gần nơi bạn ở, để có thể quay lại vào một khung giờ khác trong ngày.\n\nVen Hồ Hotel nằm ngay trên phố Nguyễn Đình Thi, đoạn có thể đi bộ tới nhiều quán ven hồ. Sau một buổi chiều ngoài trời, đẩy cửa kính bước vào sảnh nhỏ, ánh đèn dịu, sàn gạch nâu, quầy lễ tân gỗ sẫm màu, là đủ để nghỉ chân trước khi ra ngoài lần nữa.\n\nNếu bạn đang lên kế hoạch cho vài ngày ở Hà Nội, nhắn tin cho Ven Hồ Hotel để kiểm tra phòng trống cho những ngày bạn dự định nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhamPhaHoTay #CafeHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-saturday-facebook-ced97eef",
@@ -15937,6 +15937,26 @@
         "claim_kill_switch_triggered": false,
         "content_brand_fit": 95,
         "content_overall_score": 91.38
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-09-14T08:05:11.018581+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-61c90e47-2f13-438c-b82a-1e195126a53c",
+        "content_package_id": "61c90e47-2f13-438c-b82a-1e195126a53c",
+        "copy_version_ids": [
+          "brief-saturday-facebook-7447e3a6-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "6b5419ddf1f51da18d25f0a4de242d8e26e72929d2a272d329a6a2b70f756338",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-saturday-facebook-7447e3a6@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-09-14T08:05:11.018609+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "bf6f545450b4380d29dff56e832d1c02a221a0ff40f3569f9a9f994b3648a8c7",
+        "checksum": "8e84fe74137a40aef2aebfbb0c371b71356883d531ab468250d625adb6ba43ae"
       }
     }
   ]
