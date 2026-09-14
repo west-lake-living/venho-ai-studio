@@ -476,6 +476,21 @@ def _pick_scenario(
     and this function writes the result back onto `topic["dna_subject"]` so
     every downstream reader (_generate_topic_image, _build_creative_brief,
     the registry row) sees a normal, always-populated field.
+
+    The weather override's search space intentionally does NOT stay inside
+    the lane's own `scenario_pool` when the topic has no dna_subject of its
+    own -- `_build_creative_brief` runs its own, registry-wide weather match
+    right after this (by design: "a rooftop sunset brief on a rainy weekend
+    produces an image the weather contradicts" applies to every lane, not
+    just ones that happen to curate a rain scenario into their pool). Before
+    2026-09-14 this function's override stayed pool-restricted while
+    `_build_creative_brief`'s did not, so on a rainy Monday this could pick
+    an outdoor westlake scenario for the image/fallback photo while the text
+    brief independently swapped to `venho_lobby_cozy` -- a post whose copy
+    describes the lobby with a photo of a rainy street. Matching the two
+    searches means both land on the same scenario, so the image (and the
+    fallback pool, which keys off `topic["dna_subject"]`) always agrees with
+    what the copy was actually written to depict.
     """
     pool = list((lane_config or {}).get("scenario_pool") or [])
     if not pool:
@@ -494,7 +509,13 @@ def _pick_scenario(
         candidates = pool
 
     if weather and weather.get("matching_scenario_keys"):
-        override = next((key for key in weather["matching_scenario_keys"] if key in candidates), None)
+        # A topic with its own dna_subject stays restricted to `candidates`
+        # (that subject's scenarios only, per the docstring above); a topic
+        # with none searches every registered scenario, exactly like
+        # `_build_creative_brief`'s own weather match below -- so the two
+        # can never disagree.
+        search_space = candidates if wanted_subject else list(scenario_registry.scenarios)
+        override = next((key for key in weather["matching_scenario_keys"] if key in search_space), None)
         if override:
             topic.setdefault("dna_subject", scenario_registry.resolve(override).dna_subject)
             return override
