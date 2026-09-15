@@ -14334,7 +14334,7 @@
         ],
         "source_prompt_file": "data/projects/venho_hotel/prompts/content/LOBBY__facebook-ngu-n-0-xu-t-santorini-vibes-l-qu-n-c-ph-view-h-t-y-n-i-b-t-v-i-t-ng-m-__CONTENT_PROMPT_v1.0.json",
         "image_run_path": null,
-        "image_public_url": "https://venhohotel.com/images/Hero-lake/hero-lake.jpg",
+        "image_public_url": "https://venhohotel.com/images/Social-pad/Lobby/IMG_5177.jpeg",
         "image_is_fallback": true,
         "image_fallback_reason": "reference_or_dna_file_missing",
         "tracking_url": "https://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-1640cecf"
@@ -14353,7 +14353,7 @@
       "day": "wednesday",
       "pillar": "Diem den & su kien quanh Ho Tay",
       "topic": "Nguồn 0 đề xuất Santorini Vibes là quán cà phê view Hồ Tây nổi bật với tông màu xanh trắng.",
-      "dna_subject": "outside",
+      "dna_subject": "lobby",
       "creative_brief": {
         "schema_version": "1.0",
         "id": "brief-wednesday-facebook-d464978c",
@@ -14495,7 +14495,7 @@
         ],
         "source_prompt_file": "data/projects/venho_hotel/prompts/content/LOBBY__instagram-ngu-n-0-xu-t-santorini-vibes-l-qu-n-c-ph-view-h-t-y-n-i-b-t-v-i-t-ng-m__CONTENT_PROMPT_v1.0.json",
         "image_run_path": null,
-        "image_public_url": "https://venhohotel.com/images/Hero-lake/hero-lake.jpg",
+        "image_public_url": "https://venhohotel.com/images/Social-pad/Lobby/IMG_5177.jpeg",
         "image_is_fallback": true,
         "image_fallback_reason": "reference_or_dna_file_missing",
         "tracking_url": "https://venhohotel.com/lien-he?utm_source=instagram&utm_medium=social&utm_content=pub-wednesday-instagram-06045da6"
@@ -14514,7 +14514,7 @@
       "day": "wednesday",
       "pillar": "Diem den & su kien quanh Ho Tay",
       "topic": "Nguồn 0 đề xuất Santorini Vibes là quán cà phê view Hồ Tây nổi bật với tông màu xanh trắng.",
-      "dna_subject": "outside",
+      "dna_subject": "lobby",
       "creative_brief": {
         "schema_version": "1.0",
         "id": "brief-wednesday-instagram-59ce0eb7",
