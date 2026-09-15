@@ -15067,13 +15067,13 @@
       "idempotency_key": "4194c4b9460618ac2f1047d55fb505949e2bf8de63d64fa6cd10e3fa608c41eb",
       "platform": "instagram",
       "slot_id": "slot-2026-09-19-saturday",
-      "status": "PENDING_APPROVAL",
+      "status": "REJECTED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-09-13T16:57:22.632621+00:00",
-      "updated_at": "2026-09-13T16:57:22.648419+00:00",
+      "updated_at": "2026-09-15T12:57:41.981545+00:00",
       "content": {
         "title": "Cuối tuần ở Hồ Tây, đi chậm một chút",
         "text": "Cuối tuần ở Hồ Tây thường bắt đầu bằng một vòng đi bộ không có lịch trình.\n\nĐường Nguyễn Đình Thi vào cuối tuần đông hơn ngày thường một chút. Người chạy bộ, người đạp xe, vài nhóm bạn ngồi nhìn ra mặt nước và chẳng vội đi đâu.\n\nCứ thế đến lúc nắng hạ xuống thấp, mặt hồ đổi màu. Hoàng hôn Hồ Tây là phần mà nhiều người đi bộ chậm lại để xem cho hết.\n\nSau vòng dạo đó, quay về cũng gần. Đẩy cánh cửa kính là tới sảnh Ven Hồ Hotel: sàn gạch nâu với những vòng hoa văn tròn, quầy lễ tân gỗ màu nâu đỏ sẫm, vài bức tranh treo tường và ánh đèn dịu, không gắt.\n\nMột khách sạn view Hồ Tây quy mô nhỏ, gọn gàng, đủ để đặt hành lý xuống rồi tính tiếp xem tối nay ăn gì.\n\nNếu bạn đang xếp lịch cho một cuối tuần ở Hà Nội, nhắn Ven Hồ Hotel để xem phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanHoTay #NguyenDinhThi #HanoiWeekend #HaNoi #HanoiTravel",
@@ -15191,7 +15191,9 @@
         "claim_kill_switch_triggered": false,
         "content_brand_fit": 95,
         "content_overall_score": 93.7
-      }
+      },
+      "rejected_by": "hpham1504@gmail.com",
+      "rejected_reason": "Lễ hội đã kết thúc"
     },
     {
       "publication_id": "pub-wednesday-facebook-5cf36528",
