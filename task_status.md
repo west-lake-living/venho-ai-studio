@@ -1,5 +1,32 @@
 # VENHO AI STUDIO — Task Status
 
+### Wednesday 16/9 FB+IG: fallback photo swapped from lake to lobby — pre-fix stale package caught before dispatch (2026-09-15) — `2b68612`
+
+- Harry hỏi trước lịch đăng Thứ Tư (16/9): còn lỗi ảnh hưởng lịch đăng không /
+  ảnh có khớp nội dung không / nội dung có khớp cập nhật gần đây không.
+- `pub-wednesday-facebook-1640cecf` + `pub-wednesday-instagram-06045da6`
+  (APPROVED_SCHEDULED, slot `2026-09-16`): caption "Santorini Vibes" kết ở
+  sảnh khách sạn, nhưng `dna_subject: "outside"` → fallback ra
+  `Hero-lake/hero-lake.jpg` (ảnh hồ, không phải sảnh, không phải quán café).
+- **Root cause xác nhận:** đúng bug mà commit `e75abed` (2026-09-14 16:25,
+  `daily_cycle.py::_pick_scenario`) đã sửa — weather override cho ẢNH chỉ tìm
+  trong `scenario_pool` của lane, còn override cho VĂN BẢN tìm toàn registry,
+  nên 2 bên lệch nhau khi có match thời tiết. 2 package Thứ Tư này được tạo
+  13/9 23:55 và duyệt 14/9 15:02 — **trước** giờ fix landed, nên vẫn mang bug
+  dù code đã vá cho các lần sinh sau.
+- **Fix áp dụng:** publication đã `APPROVED_SCHEDULED` nên lệnh `edit` chuẩn
+  không dùng được (chỉ nhận PENDING_APPROVAL/GATEWAY_ERROR). Harry chọn vá
+  trực tiếp: patch tay `dna_subject` → `"lobby"` + `content.image_public_url`
+  → `fallback_image_url("lobby", rotation_key="2026-09-16")` =
+  `Social-pad/Lobby/IMG_5177.jpeg` (ảnh Lobby thật, mới thêm 9/9). Không đụng
+  văn bản/checksum đã duyệt (checksum không cover trường ảnh) → không cần
+  duyệt lại.
+- Tiện thể phát hiện: 2 bài Thứ 7 (`259cb7e1`/`2541f9d9`) Harry tự
+  REJECTED lúc trưa 15/9 ("Lễ hội đã kết thúc") — không liên quan đến fix
+  trên, ghi nhận để không nhầm là do mình.
+- Test suite không chạy lại (patch dữ liệu, không đụng code). Xem chi tiết đầy
+  đủ trong `task_memory.md` cùng ngày.
+
 ### Rooftop overlay: night/fireworks now a valid sky+lighting state (2026-09-11) — `2cc3163`
 
 - `config/projects/venho_hotel/subjects/outside.venho_rooftop_terrace_2026.overrides.yaml`'s

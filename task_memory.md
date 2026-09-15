@@ -1,5 +1,64 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-09-15 — Bài Thứ Tư 16/9 (FB+IG) dùng nhầm ảnh hồ thay vì ảnh sảnh, vá trước giờ đăng
+
+- **Bối cảnh:** Harry hỏi trước lịch đăng Make.com ngày mai (Thứ Tư 16/9): còn
+  lỗi gì ảnh hưởng lịch đăng, còn lệch ảnh/nội dung không, nội dung có khớp
+  cập nhật gần đây không.
+- **Kiểm tra lịch:** `growth-publish-scheduler.yml` chạy 9:00 sáng (Mon/Wed/Fri/Sat),
+  luôn gọi `dispatch-due --allow-shadow` nên rollout stage `shadow` (xác nhận
+  qua `venho-rollout rollout-status`) không chặn — đăng thật bình thường.
+- **Phát hiện lệch ảnh/nội dung:** `pub-wednesday-facebook-1640cecf` +
+  `pub-wednesday-instagram-06045da6` — caption "Santorini Vibes" (quán café
+  view hồ) kết đoạn bằng mô tả sảnh khách sạn ("sàn gạch nâu, quầy lễ tân gỗ
+  sẫm..."), nhưng ảnh gắn là `Hero-lake/hero-lake.jpg` (ảnh hồ chung chung).
+  `creative_brief.visual` của chính package này ghi rõ
+  `required_entities: [lobby]`, `forbidden_entities: [outdoor_scene]` — ảnh
+  đang dùng vi phạm thẳng brief của chính nó.
+- **Root cause:** đây là đúng bug Harry từng bắt "live" hôm 14/9 trên bài Thứ
+  Hai (`pub-monday-facebook-c6c8b7d3`), đã có fix commit
+  `e75abed` (2026-09-14 16:25, `daily_cycle.py::_pick_scenario` +
+  `_build_creative_brief`): khi có match thời tiết, phần chọn scenario cho
+  **ảnh** trước đây chỉ tìm trong `scenario_pool` riêng của lane (Thứ Tư =
+  toàn outdoor), còn phần chọn scenario cho **văn bản** (`_build_creative_brief`)
+  tìm toàn bộ scenario registry — nên khi trời mưa, văn bản đổi hướng sang
+  "sảnh ấm" (`venho_lobby_cozy`) trong khi ảnh/fallback vẫn giữ subject ngoài
+  trời của lane. Fix đồng bộ 2 vùng tìm kiếm lại với nhau.
+  2 content package Thứ Tư này được **tạo lúc 13/9 23:55 (giờ VN) và duyệt
+  lúc 14/9 15:02** — cả hai đều **trước** 16:25 14/9 khi fix landed, nên vẫn
+  mang bug dù code sinh mới sau đó đã sạch.
+- **Fix áp dụng (Harry chọn "vá trực tiếp registry"):** publication đã ở
+  `APPROVED_SCHEDULED` nên lệnh `venho-growth edit` chuẩn từ chối (chỉ nhận
+  `PENDING_APPROVAL`/`GATEWAY_ERROR`). Không dùng đường tái tạo/duyệt lại vì
+  quá sát giờ đăng (9h sáng hôm sau) và sẽ sinh caption mới hoàn toàn khác
+  bản đã duyệt. Thay vào đó patch tay 2 trường trong
+  `data/projects/venho_hotel/publishing/publication_registry.json`:
+  `dna_subject: "outside"` → `"lobby"`, `content.image_public_url` →
+  kết quả thật của `fallback_image_url("lobby", rotation_key="2026-09-16")`
+  = `https://venhohotel.com/images/Social-pad/Lobby/IMG_5177.jpeg` (ảnh
+  Lobby thật, mới wired vào pool 9/9 — xem entry cùng ngày ở dưới). Đã xác
+  nhận: (1) file ảnh tồn tại thật trên website repo, (2) `approval_snapshot`
+  checksum chỉ cover `copy_version_ids`/`asset_version_ids`/
+  `validation_snapshot_id`/`fact_version_ids`/`brief_version_id` — không
+  cover trường ảnh delivery — nên patch không làm sai lệch chữ ký đã duyệt,
+  không cần duyệt lại. Commit `2b68612`.
+- **Phát hiện phụ (không đụng vào):** khi kiểm tra thấy Harry vừa tự
+  `REJECTED` 2 bài Thứ 7 (`pub-saturday-facebook-259cb7e1` /
+  `pub-saturday-instagram-2541f9d9`) lúc trưa 15/9, lý do "Lễ hội đã kết
+  thúc" — việc này độc lập, chỉ ghi nhận lại khi rebase/push để không nhầm
+  lẫn nguồn gốc thay đổi.
+- **Việc còn để ngỏ:** đây là patch dữ liệu một-lần cho 2 record cụ thể, không
+  phải fix code — mọi content package được tạo/duyệt sau 14/9 16:25 đã dùng
+  code đã vá nên không cần rà lại. Nếu sau này còn phát hiện package nào
+  tạo/duyệt trong khung 13/9–14/9 16:25 chưa đăng, nên kiểm tra tương tự.
+- Liên quan: [[project-growth-fallback-rotation-skyline]] (cùng hệ thống
+  fallback pool, cùng ngày 9/9 bài Lobby được wired vào) ·
+  [[feedback-re-derive-fallback-at-consumption]] (cùng họ lỗi: giá trị
+  fallback lưu vào record bị đóng băng từ lúc sinh, không tính lại theo
+  trạng thái mới nhất — ở đây là do tạo trước fix, không phải do đóng băng,
+  nhưng hệ quả giống nhau: ảnh/nội dung không khớp thực tế tại thời điểm
+  đăng).
+
 ## 2026-09-11 — Rooftop overlay: đêm/pháo hoa thiếu trong danh sách sky/lighting hợp lệ
 
 - **Bối cảnh:** Harry so sánh 3 ảnh (gpt-image-2 + 2 lần nano-banana-2) cùng brief "Linh An đứng rooftop Ven Hồ ngắm pháo hoa Lễ Quốc Khánh 2/9". Cả 2 lần đầu đều dính vấn đề (gpt-image-2 vẫn `usable` nhưng mất điểm oan; nano-banana-2 lần 1 sai địa điểm — bug khác, không liên quan; nano-banana-2 lần 2 đúng địa điểm 100% intent nhưng rớt hẳn xuống `needs_review`).
