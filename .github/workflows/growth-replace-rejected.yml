@@ -9,7 +9,7 @@ name: Growth Agent Replace Rejected Content
 # alone is 65,000/500,000 VND, well under cap.
 on:
   schedule:
-    - cron: "*/15 * * * *"
+    - cron: "0 * * * *" # every 60 min (was */15, changed 2026-09-16)
   workflow_dispatch:
     inputs:
       publication_id:
@@ -31,8 +31,9 @@ jobs:
       - uses: actions/checkout@v4
       - name: Check for a rejected/stale publication to replace
         id: check
-        # This cron fires every 15 min (GitHub throttles the *actual* rate
-        # further, ~7/day observed) and virtually every run finds nothing --
+        # This cron fires every 60 min (was every 15 min until 2026-09-16;
+        # GitHub throttles the *actual* rate further too) and virtually
+        # every run finds nothing --
         # replace_due_rejections only acts on REJECTED/STALE_APPROVAL rows,
         # which are rare. Before this check, every one of those no-op runs
         # still paid for `pip install -e ".[drive]"` (~18s, over half the
