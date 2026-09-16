@@ -1,5 +1,28 @@
 # VENHO AI STUDIO — Task Status
 
+### Growth budget ledger: real monthly reset implemented — cron re-enabled (2026-09-16)
+
+- Fix cho gap ghi nhận ở entry ngay dưới (cron paused cùng ngày): `Harry`
+  yêu cầu "Sửa cơ chế monthly cap reset".
+- `shared/budget/ledger.py`: `BudgetLedger.totals()`/`spend_minor()` giờ
+  nhận `period` (`YYYY-MM`, mặc định tháng hiện tại qua `current_period()`
+  mới) và lọc `WHERE substr(created_at,1,7)=period` — không còn cộng dồn
+  vĩnh viễn từ lúc tạo ledger. `totals_all_time()` mới thêm giữ hành vi cũ
+  (lifetime, không lọc) cho việc đối soát/audit sau này.
+  `BudgetPolicy.evaluate()`/`reserve_paid_call()` nhận thêm `period`, mặc
+  định cùng tháng hiện tại, trả về `period` trong kết quả evaluate.
+- Xác nhận với dữ liệu thật: tháng 8 COMMIT 429.800đ (đã hết), tháng 9 riêng
+  chỉ COMMIT 65.000đ / cap 500.000đ — không cần nâng cap, không mất tiền
+  thêm để sửa.
+- Test mới: `test_budget_ledger_totals_ignore_a_prior_calendar_month`,
+  `test_budget_policy_evaluates_against_the_given_period_only`
+  (`tests/test_growth_budget_gate.py`). Full suite 1626 passed, 1 fail có
+  sẵn không liên quan (`test_growth_google_drive_uploader`, thiếu
+  `googleapiclient` trong venv local).
+- Bật lại `schedule` cron của `growth-replace-rejected.yml` (Harry chọn
+  "Bật lại" sau khi được hỏi lại, biết rõ lần chạy tiếp theo sẽ sinh bài
+  thay thế thật — tốn thêm tiền — cho 2 bài Thứ 7 đã reject).
+
 ### Growth budget cap exhausted, never resets — Replace Rejected Content cron paused (2026-09-16)
 
 - 3 email báo lỗi liên tiếp từ `Growth Agent Replace Rejected Content`

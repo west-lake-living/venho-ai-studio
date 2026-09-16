@@ -1,5 +1,59 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-09-16 — Sửa cơ chế reset theo tháng cho budget ledger
+
+- **Bối cảnh:** tiếp nối entry ngay dưới (cùng ngày) — sau khi tắt cron để
+  chặn spam email, Harry yêu cầu thẳng "Sửa cơ chế monthly cap reset" thay
+  vì chỉ né tránh triệu chứng.
+- **Thiết kế:** thêm `current_period(now=None) -> "YYYY-MM"` (module-level,
+  `shared/budget/ledger.py`) làm nguồn sự thật cho "tháng hiện tại", dùng
+  `strftime("%Y-%m")` khớp định dạng prefix của `created_at` (ISO,
+  `datetime.now().isoformat()` — không đổi cách ghi, chỉ đổi cách đọc).
+  `totals()`/`spend_minor()` nhận `period: Optional[str] = None`, mặc định
+  `current_period()`, lọc SQL bằng `substr(created_at,1,7)=?`. Giữ nguyên
+  hành vi cũ dưới tên mới `totals_all_time()` (không filter) — comment ghi
+  rõ đây là view cho đối soát hoá đơn thật sau này, không dùng để chặn cap.
+  `BudgetPolicy.evaluate()`/`reserve_paid_call()` nhận thêm `period` cùng
+  default, truyền xuống `ledger.spend_minor()`, và trả `period` trong dict
+  kết quả (giúp debug sau này biết evaluate đang tính cho tháng nào).
+- **Vì sao dùng string-prefix thay vì so sánh datetime thật:** `created_at`
+  luôn là `datetime.now().isoformat()` — không timezone-aware, độ dài cố
+  định phần `YYYY-MM-DD`, nên `substr(...,1,7)` an toàn và tránh phải parse
+  lại ISO string trong SQL. Không đổi timezone của việc ghi (vẫn naive local
+  time của host ghi — GitHub Actions chạy UTC, máy Harry UTC+7); lệch vài
+  giờ quanh nửa đêm 1 tuần/năm không đáng kể cho một cái trần theo tháng.
+- **Xác nhận bằng dữ liệu thật, không phải fixture:** đọc thẳng
+  `data/projects/venho_hotel/growth/growth.db` trước khi sửa —
+  `2026-08: COMMIT 429800`, `2026-09: COMMIT 65000`. Sau fix,
+  `spend_minor(period="2026-09")` = 65000/500000 (13%) — dưới cap rất xa,
+  xác nhận bug ledger-không-reset chính là lý do cap "kẹt" hôm 15/9, không
+  phải vì tháng 9 thật sự chi tiêu nhiều.
+- **Test mới** (`tests/test_growth_budget_gate.py`, thêm helper
+  `_insert_event` ghi thẳng sqlite vì `reserve`/`commit`/`release` luôn
+  dùng `datetime.now()` nên fixture "tháng trước" phải bypass chúng):
+  - `test_budget_ledger_totals_ignore_a_prior_calendar_month` — spend tháng
+    8 (490.000đ, gần cap) không được tính vào `totals(period="2026-09")`;
+    `totals_all_time()` vẫn cộng dồn đúng cả hai tháng.
+  - `test_budget_policy_evaluates_against_the_given_period_only` — cùng 1
+    ledger, `evaluate(period="2026-09")` không bị block dù
+    `evaluate(period="2026-08")` (spend cũ gần cap) vẫn block.
+  Full suite: 1626 passed, 1 fail có sẵn không liên quan
+  (`test_growth_google_drive_uploader`, thiếu `googleapiclient` local).
+- **Không đổi:** không sửa `budget_policy.yaml` (`monthly_cap_minor` vẫn
+  500.000đ) — Harry không cần nâng cap vì lỗi là ở chỗ tính sai kỳ, không
+  phải cap quá thấp. Không thêm cơ chế xoá dữ liệu cũ khỏi `budget_events`
+  — lifetime vẫn còn nguyên trong DB qua `totals_all_time()`, chỉ có
+  đường tính cap là lọc theo tháng.
+- **Hỏi lại Harry** (AskUserQuestion) trước khi bật lại
+  `growth-replace-rejected.yml`'s `schedule` — vì bật lại đồng nghĩa lần
+  cron tiếp theo sẽ thật sự sinh (tốn tiền) bài thay thế cho 2 bài Thứ 7 mà
+  hôm qua Harry chủ động chọn "không thay". Harry chọn **Bật lại**, biết rõ
+  hệ quả. Đã bật lại `schedule: cron: "*/15 * * * *"`, cập nhật comment đầu
+  file giải thích cả 2 lần đổi (tắt hôm 15/9 rồi bật lại hôm 16/9 sau khi
+  vá xong).
+- **Việc còn để ngỏ:** không có — cả nguyên nhân gốc lẫn triệu chứng (spam
+  email) đều đã xử lý xong trong cùng ngày.
+
 ## 2026-09-16 — Growth budget cap kẹt vĩnh viễn (không tự reset theo tháng), spam 3 email lỗi
 
 - **Bối cảnh:** Harry forward 3 email GitHub Actions báo `Growth Agent

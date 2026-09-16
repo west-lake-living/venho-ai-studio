@@ -1,16 +1,15 @@
 name: Growth Agent Replace Rejected Content
 
-# Schedule trigger paused 2026-09-16: the growth budget ledger has no
-# monthly reset (shared.budget.BudgetLedger.totals sums every event since
-# 2026-08-06 with no date window, despite the "monthly_cap_minor" name), and
-# spend crossed the 500,000 VND cap on 2026-09-15. Every 15-minute run since
-# then found the two rejected Saturday posts still unreplaced, failed
-# text_generation's budget reserve, and errored out -- three failure emails
-# to Harry before this was caught. Harry's call: skip replacing those two
-# Saturday posts (already rejected -- "Lễ hội đã kết thúc") rather than raise
-# the cap. Re-enable the schedule (or `workflow_dispatch` it once) after the
-# cap is raised or the ledger-reset gap is fixed.
+# Schedule trigger paused 2026-09-16, re-enabled same day once the actual
+# bug was fixed: shared.budget.BudgetLedger.totals() summed every event
+# since 2026-08-06 with no date window, despite the "monthly_cap_minor"
+# name, so August's spend never rolled off and blocked every September call.
+# Fixed in shared/budget/ledger.py -- totals()/spend_minor() now filter to
+# the current calendar month by default. Confirmed September's real spend
+# alone is 65,000/500,000 VND, well under cap.
 on:
+  schedule:
+    - cron: "*/15 * * * *"
   workflow_dispatch:
     inputs:
       publication_id:

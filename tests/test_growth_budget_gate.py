@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import sqlite3
 from pathlib import Path
 from shutil import copyfile
 
@@ -8,6 +9,18 @@ from growth_orchestrator.application.daily_cycle import DEFAULT_PLATFORMS, run_d
 from growth_orchestrator.bridges.m05_content_bridge import M05ContentBridge
 from content_studio.builders.social_builder import mock_social_generator
 from shared.budget.ledger import BudgetLedger, BudgetPolicy
+
+
+def _insert_event(db_path: Path, *, reservation_id: str, action: str, amount_minor: int, created_at: str) -> None:
+    """Back-date a budget event straight into the sqlite table -- `reserve`/
+    `commit`/`release` always stamp `datetime.now()`, so a real "spend
+    happened last month" fixture has to bypass them."""
+    with sqlite3.connect(db_path) as db:
+        db.execute(
+            "INSERT INTO budget_events (reservation_id, action, amount_minor, currency, created_at) "
+            "VALUES (?, ?, ?, 'VND', ?)",
+            (reservation_id, action, amount_minor, created_at),
+        )
 
 
 def _tmp_data_root(tmp_path: Path) -> Path:
@@ -72,6 +85,45 @@ def test_budget_gate_commit_keeps_the_spend_counted(tmp_path: Path) -> None:
     ok2, evaluation = gate.try_reserve("text_generation_minor", "r2")
     assert ok2 is False  # committed spend still counts against the cap (400 + 400 > 500)
     assert evaluation["blocked"] is True
+
+
+def test_budget_ledger_totals_ignore_a_prior_calendar_month(tmp_path: Path) -> None:
+    """Regression test: before this, `BudgetLedger.totals()` summed every
+    event since the ledger was first created, forever -- a `monthly_cap_minor`
+    that never actually reset by month. August spend must not still count
+    against September's cap."""
+    db_path = tmp_path / "growth.db"
+    ledger = BudgetLedger(db_path=db_path)
+    _insert_event(db_path, reservation_id="aug-1", action="COMMIT", amount_minor=490000, created_at="2026-08-20T10:00:00")
+
+    ledger.reserve("sep-1", 100, currency="VND")
+    ledger.commit("sep-1", 100, currency="VND")
+
+    totals_september = ledger.totals(period="2026-09")
+    assert totals_september == {"RESERVE": 100, "COMMIT": 100, "RELEASE": 0, "OUTSTANDING": 0}
+    assert ledger.spend_minor(period="2026-09") == 100
+
+    totals_august = ledger.totals(period="2026-08")
+    assert totals_august["COMMIT"] == 490000
+
+    lifetime = ledger.totals_all_time()
+    assert lifetime["COMMIT"] == 490100
+
+
+def test_budget_policy_evaluates_against_the_given_period_only(tmp_path: Path) -> None:
+    db_path = tmp_path / "growth.db"
+    ledger = BudgetLedger(db_path=db_path)
+    _insert_event(db_path, reservation_id="aug-1", action="COMMIT", amount_minor=499800, created_at="2026-08-20T10:00:00")
+    policy = BudgetPolicy(monthly_cap_minor=500000, alert_thresholds=[0.7, 0.85, 1.0])
+
+    # August's near-cap spend must not block a September reservation.
+    evaluation = policy.evaluate(ledger, pending_amount_minor=5000, period="2026-09")
+    assert evaluation["blocked"] is False
+    assert evaluation["period"] == "2026-09"
+
+    # The same ledger, asked about August itself, is still blocked.
+    evaluation_august = policy.evaluate(ledger, pending_amount_minor=5000, period="2026-08")
+    assert evaluation_august["blocked"] is True
 
 
 def test_run_daily_cycle_skips_a_platform_when_text_budget_is_exhausted(tmp_path: Path) -> None:

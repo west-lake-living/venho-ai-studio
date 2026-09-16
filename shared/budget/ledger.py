@@ -3,9 +3,17 @@ from __future__ import annotations
 import sqlite3
 from datetime import datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 import yaml
+
+
+def current_period(now: Optional[datetime] = None) -> str:
+    """Calendar-month key (`YYYY-MM`) a budget event belongs to, in the same
+    naive-local time `_record`/`record_override` already stamp `created_at`
+    with. Exposed so callers/tests can pin a period explicitly instead of
+    relying on wall-clock `now`."""
+    return (now or datetime.now()).strftime("%Y-%m")
 
 
 class BudgetLedger:
@@ -62,7 +70,30 @@ class BudgetLedger:
                 (reservation_id, action, amount_minor, currency, datetime.now().isoformat()),
             )
 
-    def totals(self, currency: str = "VND") -> dict[str, int]:
+    def totals(self, currency: str = "VND", *, period: Optional[str] = None) -> dict[str, int]:
+        """Sums for one calendar month (`period`, `YYYY-MM`; defaults to the
+        current month via `current_period()`) -- NOT lifetime totals. A cap
+        named `monthly_cap_minor` has to actually reset every month, so
+        events outside `period` are excluded rather than summed forever.
+        Pass an explicit `period` to inspect a past month (e.g. for a real
+        invoice reconciliation) or `totals_all_time()` for the unfiltered
+        lifetime view."""
+        period = period or current_period()
+        with self._connect() as db:
+            rows = db.execute(
+                "SELECT action, COALESCE(SUM(amount_minor), 0) FROM budget_events "
+                "WHERE currency=? AND substr(created_at, 1, 7)=? GROUP BY action",
+                (currency, period),
+            ).fetchall()
+        totals = {"RESERVE": 0, "COMMIT": 0, "RELEASE": 0}
+        totals.update({action: int(amount) for action, amount in rows})
+        totals["OUTSTANDING"] = totals["RESERVE"] - totals["COMMIT"] - totals["RELEASE"]
+        return totals
+
+    def totals_all_time(self, currency: str = "VND") -> dict[str, int]:
+        """Unfiltered lifetime sums, ignoring calendar month -- this is what
+        `totals()` used to return before the monthly reset was added
+        (2026-09-16). For audit/reconciliation, not for the cap check."""
         with self._connect() as db:
             rows = db.execute(
                 "SELECT action, COALESCE(SUM(amount_minor), 0) FROM budget_events WHERE currency=? GROUP BY action",
@@ -73,8 +104,8 @@ class BudgetLedger:
         totals["OUTSTANDING"] = totals["RESERVE"] - totals["COMMIT"] - totals["RELEASE"]
         return totals
 
-    def spend_minor(self, currency: str = "VND") -> int:
-        totals = self.totals(currency)
+    def spend_minor(self, currency: str = "VND", *, period: Optional[str] = None) -> int:
+        totals = self.totals(currency, period=period)
         return totals["COMMIT"] + max(totals["OUTSTANDING"], 0)
 
     def record_override(self, reservation_id: str, amount_minor: int, *, reason: str, approved_by: str, currency: str = "VND") -> None:
@@ -121,13 +152,17 @@ class BudgetPolicy:
             currency=payload.get("currency", "VND"),
         )
 
-    def evaluate(self, ledger: BudgetLedger, *, pending_amount_minor: int = 0) -> dict[str, Any]:
-        projected = ledger.spend_minor(self.currency) + pending_amount_minor
+    def evaluate(
+        self, ledger: BudgetLedger, *, pending_amount_minor: int = 0, period: Optional[str] = None
+    ) -> dict[str, Any]:
+        period = period or current_period()
+        projected = ledger.spend_minor(self.currency, period=period) + pending_amount_minor
         ratio = projected / self.monthly_cap_minor if self.monthly_cap_minor else 1.0
         crossed = [threshold for threshold in self.alert_thresholds if ratio >= threshold]
         return {
             "currency": self.currency,
             "monthly_cap_minor": self.monthly_cap_minor,
+            "period": period,
             "projected_spend_minor": projected,
             "ratio": ratio,
             "alerts": [f"BUDGET_{int(threshold * 100)}" for threshold in crossed],
@@ -141,8 +176,9 @@ class BudgetPolicy:
         amount_minor: int,
         *,
         override: dict[str, str] | None = None,
+        period: Optional[str] = None,
     ) -> dict[str, Any]:
-        evaluation = self.evaluate(ledger, pending_amount_minor=amount_minor)
+        evaluation = self.evaluate(ledger, pending_amount_minor=amount_minor, period=period)
         if evaluation["blocked"]:
             if not override:
                 raise ValueError("budget cap reached: paid call blocked")
