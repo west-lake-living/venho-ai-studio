@@ -1,5 +1,14 @@
 # VENHO AI STUDIO — Task Status
 
+### Replace Rejected Content cron slowed 15→60 min (2026-09-16) — `7f9c77a`
+
+- Sau khi bật lại cron (entry ngay dưới), Harry yêu cầu giãn tần suất quét
+  từ 15 phút xuống 60 phút — giảm số lần chạy no-op (đa số run không có gì
+  để thay), không đổi logic budget/replace.
+- `growth-replace-rejected.yml`: `cron: "*/15 * * * *"` → `cron: "0 * * * *"`
+  (mỗi giờ, phút 0). Cập nhật comment trong step "Check for a
+  rejected/stale publication to replace" cho khớp tần suất mới.
+
 ### Growth budget ledger: real monthly reset implemented — cron re-enabled (2026-09-16)
 
 - Fix cho gap ghi nhận ở entry ngay dưới (cron paused cùng ngày): `Harry`
