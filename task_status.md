@@ -1,5 +1,31 @@
 # VENHO AI STUDIO — Task Status
 
+### Growth budget cap exhausted, never resets — Replace Rejected Content cron paused (2026-09-16)
+
+- 3 email báo lỗi liên tiếp từ `Growth Agent Replace Rejected Content`
+  (chạy mỗi 15 phút). Nguyên nhân: 2 bài Thứ 7 Harry reject trưa 15/9
+  ("Lễ hội đã kết thúc") → workflow lặp lại thử sinh bài thay thế → chặn ở
+  `RuntimeError: budget cap reached (101%) -- text generation for
+  facebook/saturday skipped`.
+- **Ledger thật:** đã chi 499.800/500.000 VNĐ (`budget_policy.yaml`
+  `monthly_cap_minor: 500000`, đặt 2026-08-06).
+- **Bug lộ ra:** `shared/budget/ledger.py::BudgetLedger.totals()` cộng dồn
+  TOÀN BỘ event từ lúc tạo ledger (06/08), không lọc theo tháng — mác
+  "monthly cap" nhưng **không có cơ chế reset theo tháng nào trong code**.
+  Một khi chạm trần thì kẹt vĩnh viễn cho tới khi có người nâng
+  `monthly_cap_minor` hoặc ghi `record_override`. Chưa sửa code — mới ghi
+  nhận, chờ Harry quyết định hướng (nâng trần / thêm reset theo tháng /
+  giữ nguyên).
+- **Xác nhận phạm vi ảnh hưởng:** dispatch bài đã duyệt (Publish Scheduler)
+  KHÔNG gọi AI nên không bị chặn — lịch đăng Thứ 4 16/9 không ảnh hưởng.
+  Chỉ chặn sinh nội dung mới (replace-rejected, daily/weekly cycle sắp tới
+  sẽ đụng cap này nếu không xử lý).
+- **Hành động (Harry chọn "tắt tạm, không thay bài Thứ 7"):** bỏ `schedule`
+  trigger của `.github/workflows/growth-replace-rejected.yml`, giữ
+  `workflow_dispatch` để chạy tay khi cần. Chấp nhận khoảng trống bài Thứ 7
+  tuần này (đã reject, không cần thay). Cron ngừng chạy tự động → hết spam
+  email; re-enable sau khi budget được xử lý.
+
 ### Wednesday 16/9 FB+IG: fallback photo swapped from lake to lobby — pre-fix stale package caught before dispatch (2026-09-15) — `2b68612`
 
 - Harry hỏi trước lịch đăng Thứ Tư (16/9): còn lỗi ảnh hưởng lịch đăng không /

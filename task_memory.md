@@ -1,5 +1,68 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-09-16 — Growth budget cap kẹt vĩnh viễn (không tự reset theo tháng), spam 3 email lỗi
+
+- **Bối cảnh:** Harry forward 3 email GitHub Actions báo `Growth Agent
+  Replace Rejected Content` fail (commit `53e813c`/`6646cea`/`ae8ffb2` —
+  3 con số này chỉ là HEAD tại thời điểm mỗi lần cron 15-phút chạy, KHÔNG
+  phải nguyên nhân; `ae8ffb2` trùng ngẫu nhiên với commit doc-update của
+  task trước đó cùng session).
+- **Điều tra:** `gh run view --log-failed` trên cả 3 run cho cùng 1 lỗi:
+  ```
+  Replacement generation incomplete: [...] RuntimeError: budget cap reached
+  (101%) -- text generation for facebook/saturday skipped
+  ```
+  và tương tự cho instagram/saturday. Đây là workflow chạy mỗi 15 phút
+  (`growth-replace-rejected.yml`, GitHub tự throttle còn ~7 lần/ngày thực
+  tế), có nhiệm vụ tự sinh bài thay thế cho publication ở trạng thái
+  `REJECTED`/`STALE_APPROVAL` chưa có `replacement_publication_id`. Harry
+  vừa `REJECTED` 2 bài Thứ 7 (`pub-saturday-facebook-259cb7e1` /
+  `pub-saturday-instagram-2541f9d9`) trưa 15/9 ("Lễ hội đã kết thúc") — mỗi
+  lần cron chạy lại thấy 2 dòng này còn "cần thay" và thử lại, thất bại,
+  gửi email, lặp lại.
+- **Ledger thật (đọc trực tiếp `shared.budget.BudgetLedger` trên
+  `data/projects/venho_hotel/growth/growth.db`):**
+  `{'RESERVE': 624800, 'COMMIT': 494800, 'RELEASE': 125000, 'OUTSTANDING': 5000}`
+  → `spend_minor = 499800` / cap `500000` (`budget_policy.yaml`
+  `monthly_cap_minor: 500000`, đặt 2026-08-06 theo quyết định của Harry) =
+  99.96% → policy tính thêm pending amount ra 101% → block.
+- **Bug lộ ra khi điều tra (chưa sửa, mới ghi nhận):**
+  `shared/budget/ledger.py::BudgetLedger.totals()` `SELECT ... FROM
+  budget_events GROUP BY action` — KHÔNG có điều kiện lọc theo tháng/ngày
+  nào cả, cộng dồn toàn bộ lịch sử từ lúc ledger được tạo (2026-08-06, khi
+  `BudgetGate` mới được wire vào `daily_cycle.py` thật lần đầu). Tên
+  `monthly_cap_minor` ngụ ý reset hàng tháng nhưng **không có cơ chế reset
+  nào trong toàn bộ codebase** (đã grep `budget.*reset`/`reset.*budget`/
+  `monthly.*reset` — 0 kết quả). Hệ quả: một khi chạm trần thì kẹt **vĩnh
+  viễn**, không tự hết hạn mức "đầu tháng sau" như tên field gợi ý. Chặn
+  MỌI paid call của growth (text/image/vision), không riêng gì
+  replace-rejected — daily/weekly cycle tiếp theo cũng sẽ đụng cap này.
+- **Xác nhận không ảnh hưởng lịch đăng:** `Growth Agent Publish Scheduler`
+  (dispatch bài đã `APPROVED_SCHEDULED` qua Make.com) không gọi AI nên
+  không qua `BudgetGate` — bài Thứ Tư 16/9 (đã vá ảnh hôm 15/9, xem entry
+  dưới) không bị ảnh hưởng. Kiểm tra thời điểm: giờ điều tra là
+  2026-09-16T00:14 UTC, cron dispatch 02:00 UTC (9h VN) chưa chạy, patch
+  ảnh Lobby vẫn nguyên vẹn trong registry (replace-rejected chỉ đụng dòng
+  `REJECTED`/`STALE_APPROVAL`, không đụng 2 dòng Thứ Tư đang
+  `APPROVED_SCHEDULED`).
+- **Quyết định của Harry (hỏi qua AskUserQuestion, không tự ý nâng trần chi
+  tiêu):** "Tắt tạm workflow này, không thay bài Thứ 7" — chấp nhận khoảng
+  trống Thứ 7 tuần này (dù sao bài cũ cũng đã bị reject vì lễ hội hết hạn),
+  không nâng cap, không cần chi thêm tiền.
+- **Thực hiện:** bỏ `schedule: cron: "*/15 * * * *"` khỏi
+  `.github/workflows/growth-replace-rejected.yml`, giữ nguyên
+  `workflow_dispatch` (kèm input `publication_id`) để chạy tay khi cần. Ghi
+  chú dài trong chính file YAML giải thích lý do + điều kiện bật lại (nâng
+  cap hoặc vá gap reset-theo-tháng). Không sửa `shared/budget/ledger.py` —
+  đây là quyết định spend/reset-policy, để Harry chọn hướng sau.
+- **Việc còn để ngỏ (chưa làm, cần quyết định của Harry khi quay lại):**
+  (1) `BudgetLedger` cần một cơ chế reset thật theo kỳ (tháng dương lịch?
+  rolling 30 ngày?) nếu muốn tên `monthly_cap_minor` đúng nghĩa; (2) 2 bài
+  Thứ 7 rejected sẽ không có bài thay thế cho tới khi cron được bật lại
+  tay hoặc weekly-cycle tuần sau tự sinh slot mới; (3) nếu daily/weekly
+  cycle sắp tới (Sunday cron sinh batch 2 tuần) cũng chạm cap này, sẽ cần
+  xử lý sớm hơn dự kiến — nên kiểm tra ledger trước lần chạy Chủ Nhật tới.
+
 ## 2026-09-15 — Bài Thứ Tư 16/9 (FB+IG) dùng nhầm ảnh hồ thay vì ảnh sảnh, vá trước giờ đăng
 
 - **Bối cảnh:** Harry hỏi trước lịch đăng Make.com ngày mai (Thứ Tư 16/9): còn
