@@ -1,5 +1,5 @@
 ---
-rs_id: RS-weather-2026-09-21
+rs_id: RS-weather-2026-09-23
 type: trend
 domain: weather_signal
 evidence_level: R2-T
@@ -13,10 +13,10 @@ related_briefs: []
 verified_by_human: false
 tags:
 - weather
-- clear_sunrise
+- rain
 ---
 
-# 2026-09-21 — clear_sunrise
+# 2026-09-23 — rain
 
-- Trời quang lúc bình minh — mặt hồ phẳng, ánh sáng ấm
-- Scenario: venho_lake_view_room_sunrise, venho_rooftop_sunrise
+- Mưa ngoài cửa kính — không gian ấm trong sảnh
+- Scenario: venho_lobby_cozy
