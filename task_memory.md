@@ -1,5 +1,81 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-09-17 — local_discovery lane không còn được override sang ảnh sảnh khi trời mưa
+
+- **Bối cảnh:** Harry mở lại vấn đề bài Thứ Tư 16/9 ("Santorini Vibes") —
+  bài ĐÃ ĐĂNG thật (kiểm tra `publication_registry.json` sau khi
+  `git pull`: `status: PUBLISHED`, `platform_post_id`/`permalink` có thật
+  trên cả FB lẫn IG). Dù tôi đã vá `dna_subject`/ảnh hôm 15/9 để khớp đúng
+  `creative_brief.visual` (lobby), Harry vẫn thấy lệch — đúng, vì bài nói về
+  1 quán café cụ thể ngoài trời, ảnh sảnh khách sạn trong nhà xuất hiện đầu
+  feed vẫn gây cảm giác sai dù văn bản có neo lại cuối bài về sảnh.
+- **Câu hỏi của Harry:** AI có tự search ảnh quán café thật rồi vẽ ảnh
+  giống được không, nếu không có ảnh thật? **Trả lời: không nên** — (1)
+  pipeline hiện tại không có bước web-search nào, chỉ generate từ
+  `assets/raw/<subject>/` (ảnh thật do Harry cung cấp) hoặc fallback pool
+  website; (2) tự vẽ giống một cơ sở kinh doanh khác (Santorini Vibes,
+  không thuộc sở hữu Ven Hồ Hotel) để đăng dưới tên trang khách sạn là rủi
+  ro về tính xác thực/pháp lý, ngược nguyên tắc "Authenticity > Beauty" của
+  Brand DNA — không build tính năng này.
+- **Điều tra thêm để hiểu vì sao patch hôm 15/9 chưa đủ:** đọc lại
+  `creative_brief.visual` của bài này — `scenario_key: venho_lobby_cozy`,
+  `required_entities: [lobby]` — brief và ảnh ĐÃ đồng thuận với nhau chọn
+  lobby (không còn là bug lệch-đồng-bộ mà `e75abed` 14/9 đã sửa). Vấn đề là
+  bản thân lựa chọn "lobby" sai ngữ cảnh cho lane `local_discovery`
+  (Wednesday) — lane này theo thiết kế (`content_pillars.yaml`, sửa
+  09/09) luôn nói về 1 địa điểm NGOÀI khách sạn cụ thể (quán/chợ/chùa), nên
+  không bao giờ nên hiện ảnh sảnh trong nhà, kể cả khi khớp thời tiết mưa.
+  Truy ra nguồn: `_build_creative_brief`'s weather-override block (và
+  `_pick_scenario`'s tương ứng) tìm `matching_scenario_keys` trong TOÀN BỘ
+  `scenario_registry` khi topic không có `dna_subject` riêng (đúng theo
+  thiết kế `e75abed` — cố ý mở rộng để 2 bên luôn đồng ý với nhau) — không
+  phân biệt lane nào nên/không nên chạm tới `venho_lobby_cozy`.
+- **Quyết định của Harry** (hỏi qua AskUserQuestion, 3 lựa chọn: dùng ảnh
+  outside chung / Harry tự chụp ảnh thật từng quán / tắt hẳn dạng bài giới
+  thiệu địa điểm ngoài): chọn **"Dùng ảnh hồ/phố chung chung (outside) thay
+  vì sảnh"** cho mọi bài local-discovery về sau, không riêng 2 bài đã đăng.
+- **Fix (không revert `e75abed`, chỉ thu hẹp phạm vi cho đúng lane):**
+  - `daily_cycle.py`: hàm mới `_weather_override_search_space(lane_config,
+    scenario_registry)` — mặc định trả về toàn bộ registry (giữ nguyên hành
+    vi cho monday/friday/saturday, không có gì đổi ở đó); nếu
+    `lane_config.get("weather_override_scope") == "lane_pool"` thì trả về
+    đúng `lane_config["scenario_pool"]` của lane đó thay vì cả registry.
+  - `_pick_scenario` (chọn ảnh): dòng tính `search_space` cho nhánh
+    "topic không có dna_subject riêng" đổi từ `list(scenario_registry.scenarios)`
+    sang gọi helper trên.
+  - `_build_creative_brief` (chọn text/visual brief): thêm tham số
+    `lane_config: Optional[dict] = None` (mặc định `None` — giữ nguyên hành
+    vi mọi lời gọi trực tiếp cũ trong test không truyền lane_config), dùng
+    cùng helper thay vì `scenario_registry.scenarios` trần. Call site thật
+    (`run_daily_cycle`) truyền `lane_config=lane_config` (biến đã có sẵn ở
+    đó từ trước, chỉ thiếu forward vào hàm này).
+  - **Bất biến giữ nguyên:** cả 2 hàm PHẢI gọi cùng 1 helper với cùng
+    `lane_config` — đây chính là điều `e75abed` bảo vệ (ảnh và text không
+    bao giờ được lệch nhau); thu hẹp không gian tìm kiếm ở cả 2 phía đối
+    xứng nhau, không phá bất biến đó, chỉ thay đổi "không gian nào là hợp
+    lệ" cho riêng lane này.
+  - `content_pillars.yaml`: lane `wednesday` (`id: local_discovery`) thêm
+    `weather_override_scope: lane_pool` (pool đã sẵn toàn `outside`:
+    `venho_nguyen_dinh_thi_street/venho_rooftop_shade/venho_rooftop_sunrise`
+    từ fix 09/09) — lobby không còn là ứng viên khả dĩ cho lane này trong
+    MỌI trường hợp, kể cả mưa.
+- **Test mới** (`tests/test_research_weather_and_sources.py`):
+  `test_lane_pool_scope_keeps_a_named_venue_lane_out_of_the_lobby`,
+  `test_lane_pool_scope_still_lets_a_pool_scenario_win_on_weather_match`
+  (scope chỉ giới hạn không gian, không tắt hẳn override — scenario trong
+  pool vẫn thắng khi khớp thời tiết), và
+  `test_pick_scenario_and_build_creative_brief_agree_under_lane_pool_scope`
+  (tái xác nhận bất biến đồng thuận của `e75abed` vẫn đúng khi bị scoped).
+  Full suite: 1629 passed, 1 fail có sẵn không liên quan
+  (`test_growth_google_drive_uploader`).
+- **Việc KHÔNG làm:** không sửa lại ảnh của 2 bài đã `PUBLISHED`
+  (`pub-wednesday-facebook-1640cecf` / `-instagram-06045da6`) — hệ thống
+  này chỉ tạo/duyệt/dispatch, không có API "sửa ảnh bài đã đăng" trên
+  Facebook/Instagram; đã báo Harry 2 permalink thật, muốn đổi phải tự sửa
+  tay trên nền tảng đó. Không áp dụng `weather_override_scope: lane_pool`
+  cho `monday`/`saturday` — 2 lane này không nói về 1 địa điểm cụ thể theo
+  cùng kiểu, chưa có bằng chứng cần thu hẹp; chỉ sửa đúng lane bị báo lỗi.
+
 ## 2026-09-16 — Sửa cơ chế reset theo tháng cho budget ledger
 
 - **Bối cảnh:** tiếp nối entry ngay dưới (cùng ngày) — sau khi tắt cron để

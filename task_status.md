@@ -1,5 +1,38 @@
 # VENHO AI STUDIO — Task Status
 
+### local_discovery lane: weather override no longer allowed to swap to lobby (2026-09-17)
+
+- Harry: bài Thứ Tư 16/9 ("Santorini Vibes") vẫn lệch — dù đã vá đúng ảnh
+  theo brief (lobby), người đọc vẫn thấy lệch vì bài nói về 1 quán café cụ
+  thể, không phải khách sạn. Hỏi có nên cho AI tự search + vẽ ảnh giống quán
+  thật không → từ chối hướng đó (không có tool, rủi ro pháp lý/authenticity
+  dùng hình ảnh cơ sở kinh doanh khác). Harry chọn: bài "local discovery"
+  (địa điểm ngoài, chưa có ảnh thật) dùng ảnh hồ/phố chung (`outside`) thay
+  vì sảnh, vĩnh viễn — không riêng 2 bài đã đăng.
+- **Root cause thật:** không phải lỗi đồng bộ ảnh/text (đã hết từ fix
+  `e75abed` 14/9) — 2 bên ĐÃ đồng ý với nhau chọn `venho_lobby_cozy` (do
+  override thời tiết mưa tìm toàn bộ registry, không giới hạn theo lane),
+  chỉ là lựa chọn đó sai cho lane `local_discovery` vốn luôn nói về 1 địa
+  điểm ngoài trời cụ thể.
+- **Fix:** `daily_cycle.py` thêm `_weather_override_search_space(lane_config,
+  registry)` — mặc định vẫn toàn registry (không đổi hành vi Mon/Fri/Sat),
+  nhưng lane có thể tự giới hạn về đúng `scenario_pool` của mình qua cờ
+  `weather_override_scope: lane_pool`. Cả `_pick_scenario` (ảnh) lẫn
+  `_build_creative_brief` (text, thêm param `lane_config`) đều gọi chung 1
+  helper này → vẫn giữ bất biến "2 bên không bao giờ lệch nhau" của
+  `e75abed`, chỉ thu hẹp không gian tìm kiếm cho lane này.
+  `content_pillars.yaml` lane `wednesday` (`local_discovery`) được gắn cờ
+  này — lobby không còn là ứng viên khả dĩ cho lane này nữa, kể cả khi trời
+  mưa.
+- 3 test mới trong `test_research_weather_and_sources.py`: lane_pool scope
+  chặn lobby, vẫn cho phép scenario trong pool thắng khi khớp thời tiết,
+  và `_pick_scenario`/`_build_creative_brief` vẫn đồng thuận khi bị scoped.
+  Full suite 1629 passed, 1 fail có sẵn không liên quan.
+- **Không sửa được 2 bài đã đăng** (`pub-wednesday-facebook-1640cecf` +
+  `-instagram-06045da6`) — đã `PUBLISHED` thật lên Facebook/Instagram
+  (permalink có sẵn) trước khi Harry báo, hệ thống không có API sửa ảnh bài
+  đã đăng. Muốn đổi phải tự sửa tay trên Facebook/Instagram.
+
 ### Replace Rejected Content cron slowed 15→60 min (2026-09-16) — `7f9c77a`
 
 - Sau khi bật lại cron (entry ngay dưới), Harry yêu cầu giãn tần suất quét

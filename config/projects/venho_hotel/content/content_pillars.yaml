@@ -44,6 +44,15 @@ lanes:
     # is the wrong picture for it, and generating one against westlake DNA
     # failed image QC and dropped the post to a fallback hotel photo.
     scenario_pool: [venho_nguyen_dinh_thi_street, venho_rooftop_shade, venho_rooftop_sunrise]
+    # 2026-09-16: a rainy-day weather override was still free to swap BOTH
+    # the image and the copy to venho_lobby_cozy (registry-wide search,
+    # daily_cycle.py's _weather_override_search_space default) even though
+    # this lane's topics name one specific outdoor venue -- published a post
+    # about café "Santorini Vibes" next to a hotel-lobby photo
+    # (pub-wednesday-facebook-1640cecf/-instagram-06045da6, Harry caught it
+    # live). Pinning the override to this lane's own scenario_pool keeps a
+    # rainy day inside outside-only scenarios instead.
+    weather_override_scope: lane_pool
     research_domains: [local_events, local_intel]
     topics:
       - quan ca phe view ho dang duoc nhac den nhieu

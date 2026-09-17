@@ -8,6 +8,7 @@ from __future__ import annotations
 import json
 from datetime import date, datetime, timedelta
 from pathlib import Path
+from typing import Any
 
 import pytest
 import yaml
@@ -248,6 +249,93 @@ def test_an_unknown_weather_scenario_leaves_the_topics_own_visual_alone() -> Non
     )
 
     assert brief["visual"]["scenario_key"] == "venho_rooftop_sunrise"
+
+
+def test_lane_pool_scope_keeps_a_named_venue_lane_out_of_the_lobby() -> None:
+    """Regression test for 2026-09-16: local_discovery (Wednesday) describes
+    one named outdoor venue (a café, a market). A rainy-day weather override
+    used to be free to swap BOTH the image and the copy to
+    venho_lobby_cozy (registry-wide search) -- correctly in sync with each
+    other, but wrong for a post naming a specific café (published:
+    pub-wednesday-facebook-1640cecf/-instagram-06045da6). With
+    `weather_override_scope: lane_pool`, the override has no lobby scenario
+    to reach at all."""
+    from agent_studio.growth.scenario_registry import ScenarioRegistry
+    from growth_orchestrator.application.daily_cycle import _build_creative_brief
+
+    lane_config = {
+        "scenario_pool": ["venho_nguyen_dinh_thi_street", "venho_rooftop_shade", "venho_rooftop_sunrise"],
+        "weather_override_scope": "lane_pool",
+    }
+    brief = _build_creative_brief(
+        {
+            "dna_subject": "outside",
+            "topic": "Santorini Vibes",
+            "pillar": "Diem den & su kien quanh Ho Tay",
+            "weather_context": {
+                "rs_id": "RS-weather-2026-09-16",
+                "condition": "rain",
+                "matching_scenario_keys": ["venho_lobby_cozy"],
+            },
+        },
+        "facebook", "wednesday", "venho_hotel", ScenarioRegistry.from_file(),
+        lane_config=lane_config,
+    )
+
+    assert brief["visual"]["scenario_key"] != "venho_lobby_cozy"
+
+
+def test_lane_pool_scope_still_lets_a_pool_scenario_win_on_weather_match() -> None:
+    """The scope restricts *which* scenarios a weather override may reach,
+    not whether one can happen at all -- a lane-pool scenario that matches
+    the forecast still wins."""
+    from agent_studio.growth.scenario_registry import ScenarioRegistry
+    from growth_orchestrator.application.daily_cycle import _build_creative_brief
+
+    lane_config = {
+        "scenario_pool": ["venho_nguyen_dinh_thi_street", "venho_rooftop_shade", "venho_rooftop_sunrise"],
+        "weather_override_scope": "lane_pool",
+    }
+    brief = _build_creative_brief(
+        {
+            "dna_subject": "outside",
+            "topic": "Santorini Vibes",
+            "pillar": "Diem den & su kien quanh Ho Tay",
+            "weather_context": {
+                "rs_id": "RS-weather-2026-09-16",
+                "matching_scenario_keys": ["venho_rooftop_shade"],
+            },
+        },
+        "facebook", "wednesday", "venho_hotel", ScenarioRegistry.from_file(),
+        lane_config=lane_config,
+    )
+
+    assert brief["visual"]["scenario_key"] == "venho_rooftop_shade"
+
+
+def test_pick_scenario_and_build_creative_brief_agree_under_lane_pool_scope(tmp_path) -> None:
+    """The two callers that decide image vs. copy must still land on the
+    same scenario when scoped -- this is the sync invariant e75abed
+    established, now re-checked for the lane_pool branch."""
+    from agent_studio.growth.scenario_registry import ScenarioRegistry
+    from growth_orchestrator.application.daily_cycle import _build_creative_brief, _pick_scenario
+
+    registry = ScenarioRegistry.from_file()
+    lane_config = {
+        "scenario_pool": ["venho_nguyen_dinh_thi_street", "venho_rooftop_shade", "venho_rooftop_sunrise"],
+        "weather_override_scope": "lane_pool",
+    }
+    weather = {"rs_id": "RS-weather-2026-09-16", "matching_scenario_keys": ["venho_lobby_cozy"]}
+    topic: dict[str, Any] = {"topic": "Santorini Vibes", "pillar": "Diem den & su kien quanh Ho Tay"}
+
+    image_scenario_key = _pick_scenario("wednesday", topic, lane_config, weather, registry, "venho_hotel", tmp_path)
+    brief = _build_creative_brief(
+        topic, "facebook", "wednesday", "venho_hotel", registry,
+        scenario_key=image_scenario_key, lane_config=lane_config,
+    )
+
+    assert image_scenario_key != "venho_lobby_cozy"
+    assert brief["visual"]["scenario_key"] == image_scenario_key
 
 
 def test_a_brief_without_weather_is_unchanged() -> None:

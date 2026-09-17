@@ -68,6 +68,33 @@ SCENARIO_BY_DNA_SUBJECT = {
     "outside": "venho_rooftop_sunrise",
 }
 
+
+def _weather_override_search_space(
+    lane_config: Optional[dict[str, Any]], scenario_registry: ScenarioRegistry
+) -> list[str]:
+    """Which scenarios a weather override may swap a topic to, when the topic
+    has no `dna_subject` of its own (the common Mon/Wed/Fri case).
+
+    Defaults to every registered scenario. A lane can pin this to its own
+    curated `scenario_pool` via `weather_override_scope: lane_pool` in
+    content_pillars.yaml, for lanes where a swap outside that pool would
+    contradict the post's own subject -- e.g. `local_discovery` (Wednesday)
+    describes one named outdoor venue (a café, a market); a rainy-day swap to
+    `venho_lobby_cozy` produced a post naming a café next to a photo of the
+    hotel lobby (2026-09-16, Harry caught it live on
+    pub-wednesday-facebook-1640cecf/-instagram-06045da6, already published --
+    fixed by hand-patching those two rows, see task_memory.md 2026-09-16/17).
+
+    `_pick_scenario` (decides the image/fallback photo) and
+    `_build_creative_brief` (decides the copy's visual brief) MUST call this
+    with the same `lane_config` -- that's the invariant e75abed
+    (2026-09-14) established to keep the two from disagreeing; narrowing the
+    space for one and not the other reopens that exact bug.
+    """
+    if (lane_config or {}).get("weather_override_scope") == "lane_pool":
+        return list((lane_config or {}).get("scenario_pool") or [])
+    return list(scenario_registry.scenarios)
+
 _CREATIVE_BRIEF_SCHEMA = json.loads(Path("contracts/creative_brief.schema.json").read_text(encoding="utf-8"))
 
 
@@ -351,6 +378,7 @@ def _build_creative_brief(
     theme_angle: Optional[dict[str, Any]] = None,
     banned_openers: Optional[list[str]] = None,
     banned_phrases: Optional[list[str]] = None,
+    lane_config: Optional[dict[str, Any]] = None,
 ) -> dict[str, Any]:
     # `scenario_key` lets a caller (run_daily_cycle, via _pick_scenario) hand
     # in a scenario picked from a lane's whole scenario_pool -- multiple
@@ -427,9 +455,13 @@ def _build_creative_brief(
         scenario_keys = weather.get("matching_scenario_keys") or []
         if scenario_keys:
             # The forecast decides which of the hotel's scenarios is even
-            # shootable that Saturday -- a rooftop sunset brief on a rainy
-            # weekend produces an image the weather contradicts.
-            resolved = next((key for key in scenario_keys if key in scenario_registry.scenarios), None)
+            # shootable that day -- a rooftop sunset brief on a rainy
+            # weekend produces an image the weather contradicts. Search
+            # space must match `_pick_scenario`'s (see
+            # `_weather_override_search_space`) so image and copy can never
+            # disagree.
+            search_space = _weather_override_search_space(lane_config, scenario_registry)
+            resolved = next((key for key in scenario_keys if key in search_space), None)
             if resolved:
                 weather_scenario = scenario_registry.resolve(resolved)
                 brief["visual"] = {
@@ -477,20 +509,28 @@ def _pick_scenario(
     every downstream reader (_generate_topic_image, _build_creative_brief,
     the registry row) sees a normal, always-populated field.
 
-    The weather override's search space intentionally does NOT stay inside
-    the lane's own `scenario_pool` when the topic has no dna_subject of its
-    own -- `_build_creative_brief` runs its own, registry-wide weather match
-    right after this (by design: "a rooftop sunset brief on a rainy weekend
-    produces an image the weather contradicts" applies to every lane, not
-    just ones that happen to curate a rain scenario into their pool). Before
-    2026-09-14 this function's override stayed pool-restricted while
-    `_build_creative_brief`'s did not, so on a rainy Monday this could pick
-    an outdoor westlake scenario for the image/fallback photo while the text
-    brief independently swapped to `venho_lobby_cozy` -- a post whose copy
-    describes the lobby with a photo of a rainy street. Matching the two
-    searches means both land on the same scenario, so the image (and the
-    fallback pool, which keys off `topic["dna_subject"]`) always agrees with
-    what the copy was actually written to depict.
+    The weather override's search space, when the topic has no dna_subject
+    of its own, is `_weather_override_search_space(lane_config, ...)` --
+    by default every registered scenario (so "a rooftop sunset brief on a
+    rainy weekend produces an image the weather contradicts" applies to
+    every lane, not just ones that happen to curate a rain scenario into
+    their pool), but a lane can pin it down to its own `scenario_pool` via
+    `weather_override_scope: lane_pool`. `_build_creative_brief` runs its
+    own weather match right after this and MUST call the same helper with
+    the same `lane_config` -- before 2026-09-14 this function's override
+    stayed pool-restricted while `_build_creative_brief`'s did not, so on a
+    rainy Monday this could pick an outdoor westlake scenario for the
+    image/fallback photo while the text brief independently swapped to
+    `venho_lobby_cozy` -- a post whose copy describes the lobby with a
+    photo of a rainy street. Widening both to the whole registry fixed that
+    disagreement (e75abed), but then surfaced a second problem on
+    2026-09-16: `local_discovery` (Wednesday) describes one named outdoor
+    venue, and a rainy-day override still swapped BOTH sides to
+    `venho_lobby_cozy` in agreement -- correct sync, wrong scenario for a
+    post naming a specific café. `weather_override_scope: lane_pool` on
+    that lane keeps both sides restricted to its own outside-only pool
+    instead, so they still can't disagree, and lobby is no longer a
+    candidate at all for that lane.
     """
     pool = list((lane_config or {}).get("scenario_pool") or [])
     if not pool:
@@ -511,10 +551,10 @@ def _pick_scenario(
     if weather and weather.get("matching_scenario_keys"):
         # A topic with its own dna_subject stays restricted to `candidates`
         # (that subject's scenarios only, per the docstring above); a topic
-        # with none searches every registered scenario, exactly like
+        # with none uses `_weather_override_search_space`, exactly like
         # `_build_creative_brief`'s own weather match below -- so the two
         # can never disagree.
-        search_space = candidates if wanted_subject else list(scenario_registry.scenarios)
+        search_space = candidates if wanted_subject else _weather_override_search_space(lane_config, scenario_registry)
         override = next((key for key in weather["matching_scenario_keys"] if key in search_space), None)
         if override:
             topic.setdefault("dna_subject", scenario_registry.resolve(override).dna_subject)
@@ -1222,6 +1262,7 @@ def run_daily_cycle(
                 topic, platform, day, project, scenario_registry,
                 scenario_key=scenario_key, prompt_rules=prompt_rules, recent_topics=recent_topics,
                 theme_angle=theme_angle, banned_openers=banned_openers, banned_phrases=banned_phrases,
+                lane_config=lane_config,
             )
             brief["recent_post_texts"] = recent_post_texts
             package = _run_content_pipeline_budgeted(
