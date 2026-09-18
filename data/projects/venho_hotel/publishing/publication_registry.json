@@ -13258,13 +13258,13 @@
       "idempotency_key": "8b8e1803ce492128076e6144fdf1a45cf624c35e48345c8e8f249757f1847267",
       "platform": "threads",
       "slot_id": "slot-2026-09-18-friday",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
+      "status": "GATEWAY_ACCEPTED",
+      "gateway_status": "GATEWAY_ACCEPTED",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-28T00:22:59.693660+00:00",
-      "updated_at": "2026-09-07T11:28:10.129936+00:00",
+      "updated_at": "2026-09-18T06:46:34.771026+00:00",
       "content": {
         "title": "Đơn giản nhưng đủ",
         "text": "Có những không gian không cần thêm gì nữa, chỉ cần đủ.\n\nĐẩy cửa kính vào, thứ đầu tiên nhìn thấy là quầy lễ tân gỗ nâu đỏ sẫm, tủ chìa khóa gọn phía sau, một bức tranh treo trên tường. Sàn gạch nâu với những vòng tròn nhỏ, trần trắng phẳng, ánh sáng trung tính không quá gắt cũng không tối. Sạch, ngăn nắp, không có gì để phải để ý thêm.\n\nSau một ngày đi bộ ven hồ, hóa ra thứ mình cần không phải là nhiều tiện nghi, mà là một chỗ đơn giản đủ để đặt balo xuống và thấy nhẹ người. Ven Hồ Hotel trên Nguyễn Đình Thi là kiểu chỗ như vậy — vừa đủ, không dư.\n\nNếu bạn đang tính vài ngày ở Hà Nội, nhắn tin để mình xem còn phòng những hôm đó nhé.\n\n#VenHoHotelHanoi #HoTay #NguyenDinhThi\n\nhttps://venhohotel.com/lien-he?utm_source=threads&utm_medium=social&utm_content=pub-friday-threads-21ff805d",
@@ -13383,7 +13383,9 @@
         "revoked_reason": null,
         "package_versions_checksum": "f761adee460e358eb9c30aaada0e1c5a97c95b01bf5444219415d4d1539da1a7",
         "checksum": "78a6b209836cad9a7c2d97b25961b23355fe20a0b3a11a99a47d5699c44da121"
-      }
+      },
+      "gateway_error": null,
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-saturday-zalo-1d8be4a8",
@@ -14639,13 +14641,13 @@
       "idempotency_key": "3e6e70134fa224ac49e897524e6987b289279959f65ddd797f67fe8cb494f8ea",
       "platform": "facebook",
       "slot_id": "slot-2026-09-18-friday",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
-      "platform_post_id": null,
-      "permalink": null,
+      "status": "PUBLISHED",
+      "gateway_status": "PUBLISHED",
+      "platform_post_id": "1124616474074140_122138138157351048",
+      "permalink": "https://www.facebook.com/1124616474074140_122138138157351048",
       "reconciliation_proof": null,
       "created_at": "2026-09-13T16:56:08.740809+00:00",
-      "updated_at": "2026-09-14T08:03:46.128398+00:00",
+      "updated_at": "2026-09-18T06:46:40.629255+00:00",
       "content": {
         "title": "13h nhận phòng — việc đầu tiên nên làm không phải là lên phòng",
         "text": "Nhận phòng lúc 13h, phản xạ của hầu hết chúng ta là kéo vali thẳng lên phòng. Nhưng ba phút đứng lại ở sảnh có khi lại quyết định cả buổi chiều của bạn.\n\nCửa kính đẩy vào, tiếng vali lăn trên nền gạch nâu với những vòng tròn hoa văn. Sảnh Ven Hồ Hotel không rộng, chỉ vừa đủ để bạn kịp hạ nhịp sau quãng đường từ sân bay hay ga tàu. Ánh sáng dịu, trần trắng phẳng, vài bức tranh treo trên tường, quầy lễ tân bằng gỗ nâu đỏ sẫm và tủ chìa khóa phía sau — mọi thứ gọn gàng, không phô trương.\n\nViệc đầu tiên nên làm: hỏi lễ tân vài câu.\n\nHôm nay trời thế nào, chiều nay nên đi bộ hướng nào, quán cà phê gần đây mở đến mấy giờ, bữa tối nên ăn gì quanh Nguyễn Đình Thi. Đây là kiểu thông tin không có trên bản đồ, và cũng là lý do một khách sạn nhỏ đôi khi hữu ích hơn một nơi rất lớn.\n\nSau đó mới lên phòng, cất đồ, rửa mặt.\n\nRồi quay xuống, bước ra khỏi cửa kính ấy và rẽ về phía mặt nước. Từ đây đi bộ ra hồ chỉ mất vài phút, đủ để bạn có một vòng dạo trước khi trời ngả chiều. Nếu canh đúng giờ, bạn sẽ kịp thấy hoàng hôn Hồ Tây — phần đẹp nhất mà một ngày ở Tây Hồ dành cho người đến sớm.\n\nNếu bạn đang lên lịch cho chuyến Hà Nội sắp tới, nhắn cho Ven Hồ Hotel để xem phòng trống những ngày đó nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanHoTay #HanoiTravel\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-friday-facebook-b6230da3",
@@ -14780,7 +14782,9 @@
         "revoked_reason": null,
         "package_versions_checksum": "dd76b7d1d728057dcd858269bfc84095b87800e0299ee00bc630c1375c919334",
         "checksum": "fed80604b5c565160d8402d897f26a6d51ff61add1de724fc540cae8cdf88c2c"
-      }
+      },
+      "gateway_error": null,
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-friday-instagram-8e179631",
@@ -14788,13 +14792,13 @@
       "idempotency_key": "6b4481217590686dccb51312bbdc2fb110440da0ea94daf56ce3dc896d7faf47",
       "platform": "instagram",
       "slot_id": "slot-2026-09-18-friday",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
-      "platform_post_id": null,
-      "permalink": null,
+      "status": "PUBLISHED",
+      "gateway_status": "PUBLISHED",
+      "platform_post_id": "18125925082868488",
+      "permalink": "https://www.instagram.com/18125925082868488",
       "reconciliation_proof": null,
       "created_at": "2026-09-13T16:56:27.506564+00:00",
-      "updated_at": "2026-09-14T08:03:46.128398+00:00",
+      "updated_at": "2026-09-18T06:46:50.159577+00:00",
       "content": {
         "title": "13h nhận phòng, và việc đầu tiên nên làm ở Ven Hồ",
         "text": "13h. Cửa kính mở ra, tiếng đường Nguyễn Đình Thi ở lại phía sau lưng.\n\nSảnh Ven Hồ Hotel không rộng. Nền gạch nâu với những vòng tròn nhỏ, quầy lễ tân bằng gỗ nâu đỏ sẫm, vài bức tranh treo tường và ánh sáng dịu vừa đủ để mắt kịp nghỉ sau quãng đường dài.\n\nViệc đầu tiên nên làm, thật ra rất đơn giản: đặt vali xuống và đứng yên một lúc.\n\nNhiều người tới Hà Nội hay vội. Nhận phòng xong là mở bản đồ, gạch đầu dòng bảy tám điểm cho buổi chiều. Nhưng buổi chiều đầu tiên ở Hồ Tây thường đẹp hơn khi được để trống một chút.\n\nCầm chìa khóa, lên phòng, rửa mặt. Rồi đi bộ ra phía hồ, chỉ vài phút. Không cần đích đến. Ngồi xuống một quán ven đường, gọi cốc gì đó, nhìn mặt nước đổi màu dần cho tới lúc hoàng hôn Hồ Tây bắt đầu.\n\nHà Nội sẽ vẫn ở đó vào ngày mai. Phố cổ, bảo tàng, những quán ăn đã lưu sẵn trong điện thoại — tất cả đều nằm trong tầm tay từ Tây Hồ.\n\nChỉ là buổi chiều đầu tiên, hãy để nó thuộc về mặt hồ.\n\nNếu bạn đang tính lịch cho chuyến Hà Nội sắp tới, nhắn Ven Hồ Hotel để xem phòng trống những ngày đó nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanViewHoTay #NguyenDinhThi #HoangHonHoTay #HaNoi #HanoiTravel",
@@ -14932,7 +14936,9 @@
         "revoked_reason": null,
         "package_versions_checksum": "529459e7893c7dbcc680d2203eb4de4af1eea2192ffd6388190faf83c1ba2709",
         "checksum": "0e22fba62a161c8bf87653aaae33e8482dbefbbde45201577dae7ff0c723cfba"
-      }
+      },
+      "gateway_error": null,
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-saturday-facebook-259cb7e1",
