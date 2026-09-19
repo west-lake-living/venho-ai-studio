@@ -9,6 +9,8 @@ from zoneinfo import ZoneInfo
 import typer
 
 from growth_orchestrator.application.approve_and_dispatch import (
+    GATEWAY_ERROR_STATUS,
+    NEEDS_REVISION_STATUS,
     approve_and_dispatch,
     approve_publications,
     approve_week,
@@ -315,6 +317,37 @@ def approve_group_cmd(
     typer.echo(json.dumps({"ok": True, "publications": publications}, ensure_ascii=False, indent=2))
 
 
+def dispatch_due_outcome(
+    publications: list[dict], *, require_dispatch: bool
+) -> tuple[bool, list[dict]]:
+    """Decide the `dispatch-due` command's ok/exit-code outcome from the
+    dispatched rows' resulting statuses.
+
+    A real failure is a status that means something actually went wrong:
+    the Make.com call errored (GATEWAY_ERROR) or the preflight check
+    rejected the row (NEEDS_REVISION). GATEWAY_ACCEPTED and DISABLED are
+    NOT failures here -- GATEWAY_ACCEPTED is the documented optimistic
+    status for a platform whose Make scenario has no synchronous
+    Webhook-response module yet (see interpret_make_response: "a Threads
+    route that has not been built yet must not start reporting
+    failures"), and DISABLED means the platform's adapter has no webhook
+    secret configured (e.g. Zalo not rolled out yet) -- expected
+    configuration state, not a dispatch failure. Before this fix, both
+    statuses turned the scheduled GitHub Action red on every run that
+    happened to include a not-yet-fully-wired platform, even though the
+    rest of the batch (Facebook/Instagram) published fine (2026-09-18/19
+    incidents).
+
+    `require_dispatch=True` additionally requires at least one due
+    publication to exist (an empty batch is not "ok" for the scheduler,
+    which uses this to alert when nothing fired at all).
+    """
+    failure_statuses = {GATEWAY_ERROR_STATUS, NEEDS_REVISION_STATUS}
+    failed = [publication for publication in publications if publication.get("status") in failure_statuses]
+    ok = bool(publications) and not failed if require_dispatch else not failed
+    return ok, failed
+
+
 @app.command("dispatch-due")
 def dispatch_due_cmd(
     project: str = typer.Option("venho_hotel"),
@@ -324,7 +357,7 @@ def dispatch_due_cmd(
     require_dispatch: bool = typer.Option(
         False,
         "--require-dispatch",
-        help="Exit non-zero when no post is dispatched or any due post fails.",
+        help="Exit non-zero when no post is due, or when any due post hits a real failure.",
     ),
 ) -> None:
     """Scheduler entrypoint: dispatch only APPROVED_SCHEDULED rows now due."""
@@ -338,9 +371,7 @@ def dispatch_due_cmd(
     except (KeyError, ValueError) as exc:
         typer.echo(json.dumps({"ok": False, "error": str(exc)}), err=True)
         raise typer.Exit(code=1)
-    accepted_statuses = {"PUBLISHED"} if require_dispatch else {"GATEWAY_ACCEPTED", "PUBLISHED"}
-    failed = [publication for publication in publications if publication.get("status") not in accepted_statuses]
-    ok = bool(publications) and not failed if require_dispatch else not failed
+    ok, _failed = dispatch_due_outcome(publications, require_dispatch=require_dispatch)
     typer.echo(json.dumps({"ok": ok, "publications": publications}, ensure_ascii=False, indent=2))
     if not ok:
         raise typer.Exit(code=1)

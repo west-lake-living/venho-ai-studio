@@ -1074,3 +1074,48 @@ def test_scheduler_still_retries_a_row_that_never_reached_the_gateway(tmp_path: 
 
     assert [call["publication_id"] for call in calls] == ["pub-monday-facebook-dup2"]
     assert len(results) == 1
+
+
+def test_dispatch_due_outcome_is_ok_when_only_a_not_yet_wired_platform_falls_short() -> None:
+    """GATEWAY_ACCEPTED (Threads has no Webhook-response module yet) and
+    DISABLED (Zalo has no webhook secret configured yet) must not turn a
+    scheduled run red by themselves -- these are the exact statuses that
+    caused the 2026-09-18 and 2026-09-19 Growth Agent Publish Scheduler
+    failure emails even though the Facebook/Instagram posts in the same
+    batch published fine.
+    """
+    from growth_orchestrator.cli import dispatch_due_outcome
+
+    publications = [
+        {"publication_id": "pub-friday-facebook-1", "status": "PUBLISHED"},
+        {"publication_id": "pub-friday-threads-1", "status": "GATEWAY_ACCEPTED"},
+        {"publication_id": "pub-saturday-zalo-1", "status": "DISABLED"},
+    ]
+
+    ok, failed = dispatch_due_outcome(publications, require_dispatch=True)
+
+    assert ok is True
+    assert failed == []
+
+
+def test_dispatch_due_outcome_still_fails_on_a_real_gateway_error() -> None:
+    from growth_orchestrator.cli import dispatch_due_outcome
+
+    publications = [
+        {"publication_id": "pub-friday-facebook-1", "status": "PUBLISHED"},
+        {"publication_id": "pub-friday-instagram-1", "status": "GATEWAY_ERROR"},
+    ]
+
+    ok, failed = dispatch_due_outcome(publications, require_dispatch=True)
+
+    assert ok is False
+    assert [publication["publication_id"] for publication in failed] == ["pub-friday-instagram-1"]
+
+
+def test_dispatch_due_outcome_requires_at_least_one_due_publication_when_required() -> None:
+    from growth_orchestrator.cli import dispatch_due_outcome
+
+    ok, failed = dispatch_due_outcome([], require_dispatch=True)
+
+    assert ok is False
+    assert failed == []
