@@ -1,0 +1,46 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "project": "venho_hotel",
+  "content_type": "facebook_post",
+  "target_language": "vi",
+  "generated_at": "2026-09-20T16:44:02.765744+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_OUTSIDE_DNA.json",
+      "dna_version": "1.2",
+      "hash": "sha256:aaad1f90ca3a80fbefe9dc168823190c89ef923952e96bd2d902e73f0c5ec577"
+    }
+  ],
+  "source_prompt": {
+    "file": "data/projects/venho_hotel/prompts/content/OUTSIDE__facebook-ngu-n-0-xu-t-abc-coffee-roasters-l-qu-n-c-ph-ban-c-ng-view-tr-n-v-n-h-t__CONTENT_PROMPT_v1.0.json",
+    "prompt_id": "outside__content__facebook-ngu-n-0-xu-t-abc-coffee-roasters-l-qu-n-c-ph-ban-c-ng-view-tr-n-v-n-h-t",
+    "prompt_version": "1.0"
+  },
+  "generator": {
+    "provider": "mock",
+    "model": "deterministic-social-builder",
+    "temperature": 0.6
+  },
+  "title": "Một góc ban công nhìn trọn Hồ Tây",
+  "hook": "Phần lớn thời gian ở Tây Hồ, chúng ta nhìn mặt hồ ngang tầm mắt. Chỉ cần lên cao thêm một tầng, khung cảnh đã khác hẳn.",
+  "body": "ABC Coffee Roasters là một trong số ít quán quanh đây có ban công nhìn trọn được mặt hồ.\n\nTừ độ cao ấy, nước hồ trải ra rộng và liền mạch, mang sắc xanh xám dưới nền trời trong. Những hàng cây lâu năm ven đường viền lấy phía dưới, còn xa hơn là các khối nhà cao thấp không đều của Hà Nội — phần thành phố mà đứng dưới đường mình thường không để ý.\n\nBan công khá gọn, không bày nhiều đồ đạc, được giữ sạch sẽ. Có thể vì vậy mà cảm giác thoáng, ánh sáng ban ngày đổ đều, không cần chỉnh sửa gì thêm khi chụp ảnh. Buổi chiều trời quang là lúc khung cảnh rõ nhất, nhìn được cả một vòng hồ.\n\nNếu đang ở quanh Tây Hồ, đây là kiểu điểm dừng hợp với một buổi không có lịch trình cụ thể: ngồi lâu một chút, nhìn hồ, rồi đi tiếp.\n\nVen Hồ Hotel nằm trên đường Nguyễn Đình Thi, cùng phía ven hồ, nên những quán như thế này đều nằm trong bán kính một vòng đi bộ hoặc đạp xe thong thả. Với khách chọn phòng hướng hồ, buổi sáng và buổi chiều ở đây cũng là hai khung cảnh khác nhau.",
+  "cta": "Nếu bạn đang tính vài ngày chậm rãi ở Hà Nội, nhắn tin cho Ven Hồ Hotel để kiểm tra phòng trống cho lịch của bạn nhé.",
+  "hashtags": [
+    "#VenHoHotelHanoi",
+    "#HoTay",
+    "#WestLakeHanoi",
+    "#KhachSanViewHoTay",
+    "#HaNoi"
+  ],
+  "visual_note": null,
+  "contract_refs": null,
+  "payload": {},
+  "status": "draft",
+  "validation": {
+    "required": true,
+    "status": "pending",
+    "report_file": null,
+    "notes": []
+  }
+}

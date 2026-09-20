@@ -5,13 +5,13 @@
   "prompt_type": "content",
   "prompt_id": "outside__content__facebook-ngu-n-0-xu-t-abc-coffee-roasters-l-qu-n-c-ph-ban-c-ng-view-tr-n-v-n-h-t",
   "prompt_version": "1.0",
-  "generated_at": "2026-08-27T08:19:52.899545+00:00",
+  "generated_at": "2026-09-20T16:43:37.560815+00:00",
   "source_knowledge": [
     {
       "file": "VENHO_HOTEL_OUTSIDE_DNA.json",
-      "dna_version": "1.1",
+      "dna_version": "1.2",
       "dna_contract_version": "1.1",
-      "hash": "sha256:a690674cea4135c5b96163b3672a5571a1f5b9a999d9376fada2778aa09de882"
+      "hash": "sha256:aaad1f90ca3a80fbefe9dc168823190c89ef923952e96bd2d902e73f0c5ec577"
     }
   ],
   "template": {
@@ -190,7 +190,7 @@
       "source": "curated"
     },
     {
-      "rule": "no city high-rise skyline — West Lake area is low-rise",
+      "rule": "no modern glass high-rise dominating the frame — a distant, hazy skyline across the water is real West Lake and is fine",
       "source": "curated"
     },
     {
@@ -275,7 +275,7 @@
     "no infinity pool or resort-style pool deck — hotel has no pool",
     "no rooftop bar with full commercial bar setup",
     "no luxury resort terrace furniture (cabanas, daybeds)",
-    "no city high-rise skyline — West Lake area is low-rise",
+    "no modern glass high-rise dominating the frame — a distant, hazy skyline across the water is real West Lake and is fine",
     "no generic rooftop lounge aesthetic — this is a simple urban terrace",
     "no manicured hotel garden — space is compact and urban",
     "no infinity pool or resort-style pool deck",

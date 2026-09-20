@@ -1,0 +1,47 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "project": "venho_hotel",
+  "content_type": "facebook_post",
+  "target_language": "vi",
+  "generated_at": "2026-09-20T16:45:14.591645+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_LOBBY_DNA.json",
+      "dna_version": "1.1",
+      "hash": "sha256:e01fc1fa26c2318ce93d3a670067bac2ccbf9dc329a141ea906e80fb108c673f"
+    }
+  ],
+  "source_prompt": {
+    "file": "data/projects/venho_hotel/prompts/content/LOBBY__facebook-a-quiet-weekend-morning-walk-around-west-lake__CONTENT_PROMPT_v1.0.json",
+    "prompt_id": "lobby__content__facebook-a-quiet-weekend-morning-walk-around-west-lake",
+    "prompt_version": "1.0"
+  },
+  "generator": {
+    "provider": "mock",
+    "model": "deterministic-social-builder",
+    "temperature": 0.6
+  },
+  "title": "Sáng cuối tuần, đi bộ một vòng Hồ Tây",
+  "hook": "Sáng cuối tuần, Hồ Tây thức dậy theo nhịp của riêng nó: chậm, đều và không vội đi đâu cả.",
+  "body": "Khoảng bảy giờ, mặt nước còn phẳng, gió từ hồ thổi vào khá mát. Dọc Nguyễn Đình Thi, người đi bộ thành từng nhóm nhỏ, vài người chạy chậm sát mép hồ, mấy chiếc xe đạp lướt qua rồi mất hút sau hàng cây.\n\nQuán ăn sáng mở cửa sớm, mùi cà phê và tiếng bát đũa lẫn vào tiếng xe. Có người ngồi trên ghế nhựa quay mặt ra hồ, ăn xong vẫn nán lại thêm một lúc. Có người chỉ đi bộ, không mang theo gì ngoài chai nước.\n\nĐiều dễ chịu nhất của buổi sáng cuối tuần ở Tây Hồ là bạn không cần lịch trình. Đi hết một đoạn đường ven hồ, quay đầu lại, hoặc rẽ vào một ngõ nhỏ rồi vòng ra. Nắng lên dần, mặt nước đổi màu, và đó gần như là toàn bộ kế hoạch của buổi sáng.\n\nVen Hồ Hotel nằm ngay trên Nguyễn Đình Thi, nên quãng đi bộ này bắt đầu từ cửa khách sạn. Lúc quay về, đẩy cánh cửa kính bước vào sảnh, sàn gạch nâu với hoa văn tròn còn mát, quầy lễ tân gỗ tông nâu đỏ và vài bức tranh trên tường tạo cảm giác quen thuộc. Không gian không lớn, nhưng gọn gàng và đủ yên để nghỉ chân trước khi tiếp tục một ngày ở Hà Nội.",
+  "cta": "Nếu bạn đang tính một cuối tuần chậm bên Hồ Tây, nhắn tin cho Ven Hồ Hotel để xem phòng trống cho ngày bạn định đến nhé.",
+  "hashtags": [
+    "#VenHoHotelHanoi",
+    "#HoTay",
+    "#NguyenDinhThi",
+    "#KhachSanHoTay",
+    "#HaNoi",
+    "#CuoiTuanOTayHo"
+  ],
+  "visual_note": null,
+  "contract_refs": null,
+  "payload": {},
+  "status": "draft",
+  "validation": {
+    "required": true,
+    "status": "pending",
+    "report_file": null,
+    "notes": []
+  }
+}
