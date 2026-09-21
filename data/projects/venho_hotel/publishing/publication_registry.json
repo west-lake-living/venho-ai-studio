@@ -17771,13 +17771,13 @@
       "idempotency_key": "e78c5fbdfc04d4028d055671aeb0b17b79e0699e6113208e13e4eef084342deb",
       "platform": "instagram",
       "slot_id": "slot-2026-09-28-monday",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-09-21T09:26:39.552268+00:00",
-      "updated_at": "2026-09-21T09:26:39.582580+00:00",
+      "updated_at": "2026-09-21T09:30:54.526098+00:00",
       "content": {
         "title": "6 giờ sáng ở Hồ Tây: nhịp thứ Hai của người Hà Nội",
         "text": "6 giờ sáng thứ Hai, Hồ Tây thức dậy trước cả thành phố.\n\nTiếng vợt cầu lông vang lên đâu đó sau hàng cây. Một nhóm tập dưỡng sinh đếm nhịp chậm rãi bên lan can. Người chạy bộ đi qua, xe đạp lướt qua, hai người quen dừng lại nói vài câu rồi lại tiếp tục vòng của mình.\n\nKhông ai vội. Mọi thứ diễn ra như một thói quen đã có từ rất lâu, ngày này qua ngày khác.\n\nĐoạn Nguyễn Đình Thi sáng sớm rộng và mát, vừa đủ cho một vòng đi bộ trước khi phố bắt đầu đông xe.\n\nỞ Ven Hồ Hotel, buổi sáng đến qua ô cửa sổ khung nhôm đen mảnh chia thành bốn ô vuông, ánh sáng tự nhiên trải dần lên lớp chăn trắng. Chỉ cần dậy sớm hơn một chút, bạn đã đứng ngay trong nhịp sống ấy.\n\nNếu bạn đang nghĩ đến một sáng thứ Hai chậm hơn ở Hà Nội, nhắn cho Ven Hồ Hotel để xem phòng trống cho những ngày bạn định ghé nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhamPhaHoTay #HaNoiBuoiSang #NguyenDinhThi #HanoiTravel",
@@ -17895,6 +17895,26 @@
         "claim_kill_switch_triggered": false,
         "content_brand_fit": 95,
         "content_overall_score": 93.7
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-09-21T09:30:54.507532+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-01613d8f-f83a-4723-86e8-83b8b5257817",
+        "content_package_id": "01613d8f-f83a-4723-86e8-83b8b5257817",
+        "copy_version_ids": [
+          "brief-monday-instagram-67009713-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "f6a47765812a9b51e5fdc72bfe7527533003e1f77225a3ae1081c502f11256f0",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-monday-instagram-67009713@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-09-21T09:30:54.507558+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "d76e1a953c2680a4218cd93d2ce59900f12ea5977340773353cca011a7a09620",
+        "checksum": "8f5b2d8b66a5915658a1be68d06685211c8d08237f8891dbcec3a3626cc4c6fb"
       }
     },
     {
