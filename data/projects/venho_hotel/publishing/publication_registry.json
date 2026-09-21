@@ -16408,13 +16408,13 @@
       "idempotency_key": "dceb53efca0ff2b9cdb08cd4237fd820527308d021c72bb04c242c2dcee7dce7",
       "platform": "instagram",
       "slot_id": "slot-2026-09-30-wednesday",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-09-20T05:49:56.736452+00:00",
-      "updated_at": "2026-09-20T05:49:56.782830+00:00",
+      "updated_at": "2026-09-21T09:09:25.025005+00:00",
       "content": {
         "title": "Chùa Kim Liên — một khoảng lặng giữa Nghi Tàm",
         "text": "Trời trong, nắng rõ từng tán lá trên đường Nghi Tàm. Rẽ khỏi dòng xe một đoạn ngắn là tới Chùa Kim Liên.\n\nChùa Kim Liên nằm ở Nghi Tàm, phường Quảng An, Tây Hồ — một trong những điểm tham quan để tìm hiểu văn hóa, lịch sử của khu vực quanh hồ.\n\nThời điểm dễ chịu nhất là quãng đầu giờ chiều, khi nắng đã bớt gắt và bóng cây phủ dọc lối đi. Nên để dành một chút thời gian: đi chậm, quan sát mái ngói, từng chi tiết gỗ, rồi ngồi lại vài phút trong sân.\n\nMột buổi chiều như vậy không cần kín lịch. Đi bộ ra chùa, quay lại phía hồ, nhìn mặt nước xanh xám đổi màu dần khi trời ngả — vậy là đủ cho nửa ngày ở Tây Hồ.\n\nVen Hồ Hotel nằm trên đường Nguyễn Đình Thi, cùng phía hồ, thuận tiện để bắt đầu và kết thúc một buổi chiều như thế.\n\nNếu bạn đang lên lịch cho vài ngày ở Hà Nội, nhắn cho Ven Hồ Hotel để xem phòng trống nhé.\n\n#VenHoHotelHanoi #ChuaKimLien #HoTay #WestLakeHanoi #KhachSanViewHoTay #NguyenDinhThi #HanoiTravel",
@@ -16544,7 +16544,27 @@
         "content_brand_fit": 95,
         "content_overall_score": 93.7
       },
-      "replaces_publication_id": "pub-saturday-instagram-d8ff26f3"
+      "replaces_publication_id": "pub-saturday-instagram-d8ff26f3",
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-09-21T09:09:25.006927+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-71d7bb02-40fa-4809-87e7-fcb3abea427d",
+        "content_package_id": "71d7bb02-40fa-4809-87e7-fcb3abea427d",
+        "copy_version_ids": [
+          "brief-wednesday-instagram-5d656bb7-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "5ef7bc9afdba7866f71218f9498d74cc4b371ff822197cdb249ce58a3513ae93",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-wednesday-instagram-5d656bb7@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-09-21T09:09:25.006953+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "2c5423ce2f9d8b2df65257b87b16c092a1c89bc56fae7b1a469e866280cfa766",
+        "checksum": "fd44488b6aa50b6950606ae21801c1f4a2dea6274f51f46126c578cf3a68baaf"
+      }
     },
     {
       "publication_id": "pub-saturday-instagram-c7724d8c",
