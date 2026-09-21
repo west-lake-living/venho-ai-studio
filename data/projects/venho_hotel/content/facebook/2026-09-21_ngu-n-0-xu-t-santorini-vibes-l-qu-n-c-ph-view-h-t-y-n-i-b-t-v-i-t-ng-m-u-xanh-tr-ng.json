@@ -1,0 +1,47 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "project": "venho_hotel",
+  "content_type": "facebook_post",
+  "target_language": "vi",
+  "generated_at": "2026-09-21T09:43:42.966013+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_OUTSIDE_DNA.json",
+      "dna_version": "1.2",
+      "hash": "sha256:aaad1f90ca3a80fbefe9dc168823190c89ef923952e96bd2d902e73f0c5ec577"
+    }
+  ],
+  "source_prompt": {
+    "file": "data/projects/venho_hotel/prompts/content/OUTSIDE__facebook-ngu-n-0-xu-t-santorini-vibes-l-qu-n-c-ph-view-h-t-y-n-i-b-t-v-i-t-ng-m-__CONTENT_PROMPT_v1.0.json",
+    "prompt_id": "outside__content__facebook-ngu-n-0-xu-t-santorini-vibes-l-qu-n-c-ph-view-h-t-y-n-i-b-t-v-i-t-ng-m-",
+    "prompt_version": "1.0"
+  },
+  "generator": {
+    "provider": "mock",
+    "model": "deterministic-social-builder",
+    "temperature": 0.6
+  },
+  "title": "Một góc xanh trắng bên Hồ Tây",
+  "hook": "Hà Nội vốn quen với màu vàng tường cũ và mái ngói nâu. Rồi giữa dãy phố ven hồ, bỗng có một mảng trắng và xanh.",
+  "body": "Santorini Vibes là quán cà phê view Hồ Tây được nhiều người nhắc đến vì tông màu xanh trắng khá khác với phần còn lại của khu phố. Vào một buổi trưa trời trong, mảng tường trắng bắt nắng rất rõ, xanh thì đậm lên theo sắc trời.\n\nPhía sau lưng quán vẫn là Hà Nội quen thuộc: nhà cao thấp xen nhau, hàng cây lâu năm đổ bóng xuống vỉa hè, xe máy chạy đều một nhịp. Chính sự lệch tông đó lại thú vị. Bạn ngồi trong một không gian sáng và sạch sẽ, nhưng chỉ cần nhìn ra ngoài là thấy nhịp sống thật của Tây Hồ.\n\nNếu đi vào giữa trưa, ánh sáng tự nhiên là thứ đáng để tận dụng nhất, cả cho một tấm ảnh lẫn cho việc ngồi yên một lúc. Còn nếu bạn thong thả hơn, có thể nán lại tới cuối buổi chiều, khi mặt hồ đổi màu và hoàng hôn Hồ Tây bắt đầu.\n\nTừ Ven Hồ Hotel trên đường Nguyễn Đình Thi, những góc cà phê ven hồ như vậy đều nằm trong tầm đi bộ hoặc một quãng xe ngắn. Chúng tôi vẫn hay ghi lại vài địa chỉ để khách tiện chọn theo tâm trạng của từng ngày.",
+  "cta": "Nếu bạn đang tính vài ngày ở Hà Nội, nhắn cho Ven Hồ Hotel để xem phòng trống nhé, chúng tôi sẽ gợi ý thêm vài quán quanh hồ hợp với lịch trình của bạn.",
+  "hashtags": [
+    "#VenHoHotelHanoi",
+    "#HoTay",
+    "#WestLakeHanoi",
+    "#KhachSanViewHoTay",
+    "#CaPheHoTay",
+    "#HaNoi"
+  ],
+  "visual_note": null,
+  "contract_refs": null,
+  "payload": {},
+  "status": "draft",
+  "validation": {
+    "required": true,
+    "status": "pending",
+    "report_file": null,
+    "notes": []
+  }
+}
