@@ -1264,7 +1264,7 @@
       "hanoi_westlake_local",
       "seasonal_weather_nature"
     ],
-    "relevance_score": 1.0,
+    "relevance_score": 1,
     "status": "needs_human_approval",
     "rejection_reason": null,
     "verified_by_human": false,
@@ -1305,7 +1305,7 @@
     "intersections": [
       "hanoi_westlake_local"
     ],
-    "relevance_score": 0.0,
+    "relevance_score": 0,
     "status": "rejected",
     "rejection_reason": "passed",
     "verified_by_human": false,
@@ -1370,10 +1370,12 @@
       "culture_festival_positive"
     ],
     "relevance_score": 0.6,
-    "status": "needs_human_approval",
+    "status": "rejected",
     "rejection_reason": null,
     "verified_by_human": false,
-    "scanned_at": "2026-09-18T05:28:43.347719+00:00"
+    "scanned_at": "2026-09-18T05:28:43.347719+00:00",
+    "rejected_by": "hpham1504@gmail.com",
+    "rejected_at": "2026-09-21T09:09:49.805733+00:00"
   },
   {
     "id": "tavily-https://vienkyluc.vn/tin-tuc/ban-quyen-tai-san-so/le-hoi-sen-ha-noi-2026-ho-tay-ruc-sac-ao-dai-trong-man-trinh-dien-ton-vinh-hoa-sen-viet-xac-lap-ky-luc-viet-nam",
@@ -1560,7 +1562,7 @@
       "hanoi_westlake_local",
       "seasonal_weather_nature"
     ],
-    "relevance_score": 1.0,
+    "relevance_score": 1,
     "status": "needs_human_approval",
     "rejection_reason": null,
     "verified_by_human": false,
