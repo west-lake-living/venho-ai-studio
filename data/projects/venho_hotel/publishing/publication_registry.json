@@ -17146,13 +17146,13 @@
       "idempotency_key": "872a861020a52ac8ac48e23c1fa0a5af1b44bc80a0046ddba553280c9da0b697",
       "platform": "facebook",
       "slot_id": "slot-2026-10-03-saturday",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-09-20T16:45:14.622279+00:00",
-      "updated_at": "2026-09-20T16:45:14.649734+00:00",
+      "updated_at": "2026-09-21T09:09:01.842688+00:00",
       "content": {
         "title": "Sáng cuối tuần, đi bộ một vòng Hồ Tây",
         "text": "Sáng cuối tuần, Hồ Tây thức dậy theo nhịp của riêng nó: chậm, đều và không vội đi đâu cả.\n\nKhoảng bảy giờ, mặt nước còn phẳng, gió từ hồ thổi vào khá mát. Dọc Nguyễn Đình Thi, người đi bộ thành từng nhóm nhỏ, vài người chạy chậm sát mép hồ, mấy chiếc xe đạp lướt qua rồi mất hút sau hàng cây.\n\nQuán ăn sáng mở cửa sớm, mùi cà phê và tiếng bát đũa lẫn vào tiếng xe. Có người ngồi trên ghế nhựa quay mặt ra hồ, ăn xong vẫn nán lại thêm một lúc. Có người chỉ đi bộ, không mang theo gì ngoài chai nước.\n\nĐiều dễ chịu nhất của buổi sáng cuối tuần ở Tây Hồ là bạn không cần lịch trình. Đi hết một đoạn đường ven hồ, quay đầu lại, hoặc rẽ vào một ngõ nhỏ rồi vòng ra. Nắng lên dần, mặt nước đổi màu, và đó gần như là toàn bộ kế hoạch của buổi sáng.\n\nVen Hồ Hotel nằm ngay trên Nguyễn Đình Thi, nên quãng đi bộ này bắt đầu từ cửa khách sạn. Lúc quay về, đẩy cánh cửa kính bước vào sảnh, sàn gạch nâu với hoa văn tròn còn mát, quầy lễ tân gỗ tông nâu đỏ và vài bức tranh trên tường tạo cảm giác quen thuộc. Không gian không lớn, nhưng gọn gàng và đủ yên để nghỉ chân trước khi tiếp tục một ngày ở Hà Nội.\n\nNếu bạn đang tính một cuối tuần chậm bên Hồ Tây, nhắn tin cho Ven Hồ Hotel để xem phòng trống cho ngày bạn định đến nhé.\n\n#VenHoHotelHanoi #HoTay #NguyenDinhThi #KhachSanHoTay #HaNoi #CuoiTuanOTayHo\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-saturday-facebook-014598b4",
@@ -17268,6 +17268,26 @@
         "claim_kill_switch_triggered": false,
         "content_brand_fit": 95,
         "content_overall_score": 91.97
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-09-21T09:09:01.824497+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-1888253f-ef1f-4691-8595-614b0a39e7bf",
+        "content_package_id": "1888253f-ef1f-4691-8595-614b0a39e7bf",
+        "copy_version_ids": [
+          "brief-saturday-facebook-1453880a-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "24474e6a2aa32971574abd8c4540788f4ecd741f8654f988ce18e19a0742c694",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-saturday-facebook-1453880a@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-09-21T09:09:01.824523+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "b4dd7c4b9ff300635b500b8434387b84e1b9869cfd61640689decc9d29c6c084",
+        "checksum": "772897d43aad937149595cff85e7e8b54719320528991c65ceca1de3383faed5"
       }
     },
     {
@@ -17276,13 +17296,13 @@
       "idempotency_key": "32ee243db7ccf621109433b0fc0ad5f0986637692bd93bf9e776fd8047e4cac6",
       "platform": "instagram",
       "slot_id": "slot-2026-10-03-saturday",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-09-20T16:45:47.389363+00:00",
-      "updated_at": "2026-09-20T16:45:47.416864+00:00",
+      "updated_at": "2026-09-21T09:09:01.842688+00:00",
       "content": {
         "title": "Sáng cuối tuần, đi bộ một vòng Hồ Tây",
         "text": "Đi bộ ven Hồ Tây vào một sáng cuối tuần, việc duy nhất cần làm là đi chậm lại.\n\nMặt nước lúc sáng sớm thường phẳng, gió thổi vào mặt mát và hơi ẩm.\n\nTrên vỉa hè, có người đi bộ theo nhóm, có người vừa chạy vừa nghe nhạc. Đâu đó vang tiếng vợt cầu lông. Xe máy đi chậm hơn ngày thường, như thể ai cũng đồng ý rằng cuối tuần thì không cần vội.\n\nDọc Nguyễn Đình Thi, hàng cây che gần hết nắng. Cứ vài trăm mét lại có một hàng ăn sáng, một xe cà phê, vài chiếc ghế nhựa quay mặt ra hồ.\n\nKhông cần lịch trình, không cần điểm đến. Đi một đoạn, dừng lại, rồi đi tiếp.\n\nVen Hồ Hotel nằm ngay trên con đường đó. Đi hết vòng sáng, đẩy cửa kính bước vào sảnh, quầy lễ tân gỗ nâu sẫm và vài bức tranh trên tường là thứ đón bạn về. Một chỗ nghỉ vừa vặn để bắt đầu và kết thúc một buổi sáng như vậy.\n\nNếu bạn đang tính một cuối tuần ở Hà Nội, nhắn Ven Hồ Hotel để xem phòng trống cho những ngày đó nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhamPhaHoTay #KhachSanHoTay #NguyenDinhThi #CuoiTuanOTayHo #HaNoi",
@@ -17400,6 +17420,26 @@
         "claim_kill_switch_triggered": false,
         "content_brand_fit": 95,
         "content_overall_score": 93.7
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-09-21T09:09:01.824497+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-be545295-ddfd-452c-b873-e70d5f2aa8ab",
+        "content_package_id": "be545295-ddfd-452c-b873-e70d5f2aa8ab",
+        "copy_version_ids": [
+          "brief-saturday-instagram-50cb4ea9-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "e70cc1e3c897085bfd71e40bc1550ff1f39ccd72e030739fc5970637f8cfc585",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-saturday-instagram-50cb4ea9@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-09-21T09:09:01.824633+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "aa72d947cd46dc3999c4967b1265c8e6e0a3cb04e20bfa7b31249a51bcb55c03",
+        "checksum": "62bc67d38b6e8f226f30de42b658f8999aaa753f16af928ec2cd7ba9cd0c0020"
       }
     }
   ]
