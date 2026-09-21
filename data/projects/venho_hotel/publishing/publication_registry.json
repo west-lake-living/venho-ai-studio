@@ -17923,13 +17923,13 @@
       "idempotency_key": "9b70d9079c2fa4c0377cecd0f5c2eb5e47370f9fc153c8145846d3e89b5f07fd",
       "platform": "facebook",
       "slot_id": "slot-2026-09-30-wednesday",
-      "status": "PENDING_APPROVAL",
+      "status": "REJECTED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-09-21T09:27:06.833846+00:00",
-      "updated_at": "2026-09-21T09:27:06.865185+00:00",
+      "updated_at": "2026-09-21T09:31:25.217679+00:00",
       "content": {
         "title": "Treebee coffee trên đường Vệ Hồ: một buổi chiều chậm bên Hồ Tây",
         "text": "Có những quán cà phê đáng nhớ không phải vì đồ uống, mà vì chỗ ngồi của nó nhìn ra đâu.\n\nTreebee coffee nằm ở 171 Vệ Hồ, một trong những địa chỉ được nhắc đến khi nói về cà phê view Hồ Tây. Điểm khiến nơi này khác biệt là phần thiết kế: không gian được sắp xếp gọn gàng, sạch sẽ, và tận dụng khá tốt khoảng mở ra bên ngoài.\n\nBuổi chiều là lúc dễ chịu nhất. Trời trong, nắng tự nhiên đổ xuống nền gạch, ban công chỉ có lan can kim loại và vài chậu cây nhỏ, không bàn ghế bày ra ngoài. Nhìn ra là hàng cây lâu năm bên đường, sau đó mới tới những mái nhà, tường sơn và ban công của khu dân cư quanh hồ. Một góc Hồ Tây hiện ra từng phần chứ không trải hết trước mặt, và chính điều đó lại khiến người ta ngồi lâu hơn.\n\nĐường Vệ Hồ cũng là kiểu phố ven hồ rất Hà Nội: hẹp, nhiều cây, nhịp đi lại vừa phải. Nếu bạn đang có một buổi chiều trống ở Hà Nội, ghép Treebee coffee vào lịch trình đi dạo quanh Hồ Tây là một cách dùng thời gian hợp lý.\n\nVen Hồ Hotel nằm trên đường Nguyễn Đình Thi, cùng thuộc khu ven Hồ Tây, nên những buổi chiều như thế này thường bắt đầu và kết thúc chỉ bằng một vòng đi bộ.\n\nNếu bạn đang xếp lịch cho chuyến Hà Nội sắp tới, nhắn tin cho Ven Hồ Hotel để xem phòng trống cho những ngày bạn định ở lại nhé.\n\n#VenHoHotelHanoi #HoTay #KhamPhaHoTay #CaPheHoTay #HanoiTravel\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-ce6da610",
@@ -18057,7 +18057,9 @@
         "claim_kill_switch_triggered": false,
         "content_brand_fit": 95,
         "content_overall_score": 91.89
-      }
+      },
+      "rejected_by": "hpham1504@gmail.com",
+      "rejected_reason": "chủ đề không mới mẻ"
     }
   ]
 }
