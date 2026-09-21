@@ -4888,3 +4888,4 @@ Commit `8b147cf` / `9a0abef` / `d25498e` (venho-ai-studio) · `ca481ca` /
   tới. **Cách A (`d25498e`):** nới `rule` forbidden trong `WESTLAKE_DNA.json` +
   `OUTSIDE_DNA.json` cho khớp overrides; `dna_version` 1.1 → 1.2. Không cần đổi
   ảnh. Rule rác `observed`: xác nhận đã sạch (0/6 fail).
+# test sync Mon Sep 21 09:55:22 UTC 2026
