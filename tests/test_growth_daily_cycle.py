@@ -657,6 +657,42 @@ def test_wednesday_falls_back_to_curated_topics_with_no_approved_facts(tmp_path:
     assert result.topic["research_backed"] is False
 
 
+def test_pick_topic_rejects_non_string_topic_entry(tmp_path: Path) -> None:
+    """content_pillars.yaml's monday lane once had an unquoted ': ' inside a
+    topic line ("Ha Noi thang nay: khong khi, anh sang, nhip song"), which
+    PyYAML silently parsed as a single-key mapping instead of a string.
+    That reached slugify() deep inside image generation as an opaque
+    AttributeError ('dict' object has no attribute 'lower'), which killed
+    the whole day's batch across both weeks of a weekly-cycle run with no
+    clue which topic or file was at fault (2026-09-13 and 2026-09-20
+    outages). This must fail loud and specific at topic-selection time
+    instead.
+    """
+    data_root = _tmp_data_root(tmp_path)
+    config = {
+        "content_pillars": {
+            "lanes": {
+                "monday": {
+                    "id": "west_lake_life",
+                    "name": "Ho Tay & nhip song Ha Noi dau tuan",
+                    "research_domains": [],
+                    "topics": [
+                        "a normal string topic",
+                        {"Ha Noi thang nay": "khong khi, anh sang, nhip song"},
+                    ],
+                }
+            }
+        }
+    }
+
+    try:
+        _pick_topic(config, "monday", "venho_hotel", data_root)
+        assert False, "expected ValueError"
+    except ValueError as exc:
+        assert "non-string topic" in str(exc)
+        assert "monday" in str(exc)
+
+
 def test_creative_brief_carries_proof_points_from_approved_local_facts(tmp_path: Path) -> None:
     """Before this, every brief's proof_points was hardcoded to []."""
     data_root = _tmp_data_root(tmp_path)

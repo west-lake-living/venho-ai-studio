@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import traceback
 from dataclasses import dataclass, field
 from datetime import date, datetime, timedelta
 from pathlib import Path
@@ -230,12 +231,30 @@ def run_weekly_cycle(
                     )
                 )
             except Exception as exc:  # noqa: BLE001 - one day's uncaught failure (e.g. topic config error) must not drop the rest of the week's batch
+                # The bare f"{type(exc).__name__}: {exc}" that used to be the
+                # only record of this failure gave no file/line -- the
+                # 2026-09-13 and 2026-09-20 monday outages both surfaced only
+                # "AttributeError: 'dict' object has no attribute 'lower'"
+                # with no way to tell it was slugify() choking on a
+                # mis-parsed content_pillars.yaml topic, two weeks running.
+                # The GitHub Actions run log always has the full traceback
+                # (this same exception re-raised further down after
+                # job_store.fail()), but stashing it on the result too means
+                # it also reaches whatever reads DailyCycleResult directly
+                # (tests, a future dashboard surface) without an Actions log.
+                print(f"[weekly_cycle] {day} failed:\n{traceback.format_exc()}")
                 results.append(
                     DailyCycleResult(
                         day=day,
                         topic={},
                         publications=[],
-                        errors=[{"platform": "*", "error": f"{type(exc).__name__}: {exc}"}],
+                        errors=[
+                            {
+                                "platform": "*",
+                                "error": f"{type(exc).__name__}: {exc}",
+                                "traceback": traceback.format_exc(),
+                            }
+                        ],
                     )
                 )
             try:

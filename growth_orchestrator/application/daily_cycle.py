@@ -228,6 +228,22 @@ def _pick_regular_topic(lane_config: dict[str, Any], day: str, project: str, dat
             project, data_root, domains=research_domains, pillar=pillar_name, slot_date=date.today()
         )
 
+    # A YAML topic line containing an unescaped ": " (e.g. "Ha Noi thang
+    # nay: khong khi...") parses as a single-key mapping, not a string --
+    # PyYAML accepts it silently. That reached slugify() deep inside image
+    # generation as an AttributeError ('dict' object has no attribute
+    # 'lower'), which killed the whole day's batch (both weeks, since
+    # weekly_cycle runs each cadence day twice) with no clue which topic or
+    # file was at fault (2026-09-13/20 incidents, content_pillars.yaml
+    # monday lane). Fail loud and specific right here instead.
+    for topic_text in lane_config.get("topics", []):
+        if not isinstance(topic_text, str):
+            raise ValueError(
+                f"Lane '{day}' has a non-string topic entry in content_pillars.yaml: {topic_text!r} "
+                "-- likely an unquoted ': ' inside a topic line that PyYAML parsed as a mapping "
+                "instead of a string. Quote the whole line."
+            )
+
     curated_entries = [
         {"pillar": pillar_name, "topic": topic_text, "research_backed": False}
         for topic_text in lane_config.get("topics", [])
