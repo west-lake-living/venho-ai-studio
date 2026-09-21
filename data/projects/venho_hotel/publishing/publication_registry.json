@@ -17468,13 +17468,13 @@
       "idempotency_key": "709c71a22186a449a3df03f9a395edf24300e67bc609b4ed46e65a8d9fbccba0",
       "platform": "facebook",
       "slot_id": "slot-2026-09-21-monday",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
-      "platform_post_id": null,
-      "permalink": null,
+      "status": "PUBLISHED",
+      "gateway_status": "PUBLISHED",
+      "platform_post_id": "1124616474074140_122138916333351048",
+      "permalink": "https://www.facebook.com/1124616474074140_122138916333351048",
       "reconciliation_proof": null,
       "created_at": "2026-09-21T09:25:44.899897+00:00",
-      "updated_at": "2026-09-21T09:30:23.112414+00:00",
+      "updated_at": "2026-09-21T09:34:22.374565+00:00",
       "content": {
         "title": "Đầu tuần bên Hồ Tây: ánh sáng, không khí và một nhịp sống vừa đủ chậm",
         "text": "Đầu tuần ở Hà Nội thường bắt đầu sớm hơn người ta nghĩ. Nhưng ở phía Hồ Tây, nó bắt đầu chậm hơn một nhịp.\n\nĐường Nguyễn Đình Thi chạy sát mép nước, nên buổi sáng ở đây có hai thứ cùng lúc: tiếng xe của một thành phố đang vào tuần mới, và gió từ mặt hồ thổi ngược lại, làm mọi thứ dịu xuống.\n\nHà Nội tháng này có kiểu ánh sáng rất dễ chịu. Không gắt, không vội. Thứ ánh sáng đi qua ô cửa sổ chia thành bốn ô vuông, khung nhôm đen mảnh, rồi đổ xuống nền gỗ nâu sẫm trong phòng. Tường xám nhạt, ga giường trắng, không tranh treo, không chi tiết thừa. Chỉ có khung cửa và những gì bên ngoài nó.\n\nỞ Ven Hồ Hotel, chúng tôi hay nói vui rằng khung cửa sổ là bức tranh duy nhất trong phòng. Buổi sáng nó là ánh sáng ban ngày và nhịp người qua lại. Cuối ngày nó đổi màu theo hoàng hôn Hồ Tây, thứ mà ai từng ở gần hồ đều sẽ nhớ.\n\nCó những chuyến đi Hà Nội không cần kín lịch. Chỉ cần một buổi sáng đầu tuần đủ yên để bạn uống hết cốc cà phê trước khi bước ra đường.\n\nNếu bạn đang tính một chuyến Hà Nội trong tháng này, nhắn Ven Hồ Hotel để xem phòng còn trống những ngày bạn định đi nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-monday-facebook-ff68c6d5",
@@ -17610,7 +17610,9 @@
         "revoked_reason": null,
         "package_versions_checksum": "251b04e5f06c12f7d260ecfe05775b3512da57688f7689567c90f8a559db26f6",
         "checksum": "29ee562f74631506e13c01f00a16e6a4a0e67ab80a6efe8d95eb41dd811b08f1"
-      }
+      },
+      "gateway_error": null,
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-monday-instagram-f67ae2e5",
@@ -17618,13 +17620,13 @@
       "idempotency_key": "7cf52f8dc49f629e65fa11223c8f1cd26a12226e7d381941d64b279e8298fdd0",
       "platform": "instagram",
       "slot_id": "slot-2026-09-21-monday",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
-      "platform_post_id": null,
-      "permalink": null,
+      "status": "PUBLISHED",
+      "gateway_status": "PUBLISHED",
+      "platform_post_id": "18083104691704846",
+      "permalink": "https://www.instagram.com/18083104691704846",
       "reconciliation_proof": null,
       "created_at": "2026-09-21T09:26:09.901954+00:00",
-      "updated_at": "2026-09-21T09:30:23.112414+00:00",
+      "updated_at": "2026-09-21T09:34:32.495733+00:00",
       "content": {
         "title": "Thứ Hai ở Hồ Tây bắt đầu bằng ánh sáng",
         "text": "Đầu tuần ở Hồ Tây thường đến sớm hơn tiếng chuông báo thức: ánh sáng lọt qua ô cửa trước, rồi mới đến tiếng xe ngoài đường.\n\nHà Nội tháng này có thứ ánh sáng rất dễ chịu. Không gắt, không vội. Nó đi qua khung cửa sổ chia ô vuông, viền nhôm đen mảnh, đổ thành những mảng sáng nhạt trên bức tường xám và tấm chăn trắng.\n\nPhòng ở Ven Hồ Hotel vuông vức, không tranh treo, không nhiều chi tiết. Gỗ nâu trầm của đầu giường và mặt bàn giữ lại phần ấm, còn lại để dành cho ánh sáng tự nhiên.\n\nBên ngoài, Nguyễn Đình Thi bắt đầu một ngày thứ Hai theo cách riêng của khu Tây Hồ: vài người đi bộ nốt vòng cuối, xe đạp lăn chậm, hàng quán mở cửa, mùi cà phê và gió từ mặt hồ thổi vào.\n\nCó những buổi sáng chỉ cần mở rèm, pha một cốc nước, ngồi yên mười phút trước khi bước ra đường. Hà Nội vẫn chạy nhịp của nó, chỉ là ở đây bạn được bắt nhịp chậm hơn một chút.\n\nNếu bạn đang tính vài ngày ở Hà Nội tháng này, nhắn cho Ven Hồ Hotel để xem lịch phòng còn trống nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #NguyenDinhThi #KhamPhaHoTay #HaNoi #HanoiTravel #TayHo",
@@ -17763,7 +17765,9 @@
         "revoked_reason": null,
         "package_versions_checksum": "bca9ec53d1677259390757b6a80fc0d9b1ec871ac7082d538781153ab87b2217",
         "checksum": "c5df19f9689ca93b9216d9e104f68dbb4855b4993adfebe4932ea2ab81390907"
-      }
+      },
+      "gateway_error": null,
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-monday-instagram-649ee9af",
