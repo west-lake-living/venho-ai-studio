@@ -16107,7 +16107,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 91.92
       },
       "replaces_publication_id": "pub-saturday-facebook-259cb7e1",
@@ -16242,7 +16242,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.7
       },
       "replaces_publication_id": "pub-saturday-instagram-2541f9d9",
@@ -16377,7 +16377,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 91.3
       },
       "replaces_publication_id": "pub-saturday-facebook-571558de"
@@ -16521,7 +16521,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.7
       },
       "replaces_publication_id": "pub-saturday-instagram-d8ff26f3"
@@ -16653,7 +16653,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.5
       }
     },
@@ -16663,13 +16663,13 @@
       "idempotency_key": "ce4ff4dea904aac87ddef77a2bbd948cd8095d913db8556bf8497126cd4cd263",
       "platform": "facebook",
       "slot_id": "slot-2026-09-30-wednesday",
-      "status": "PENDING_APPROVAL",
+      "status": "REJECTED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-09-20T16:44:02.795512+00:00",
-      "updated_at": "2026-09-20T16:44:02.821941+00:00",
+      "updated_at": "2026-09-21T09:07:00.645226+00:00",
       "content": {
         "title": "Một góc ban công nhìn trọn Hồ Tây",
         "text": "Phần lớn thời gian ở Tây Hồ, chúng ta nhìn mặt hồ ngang tầm mắt. Chỉ cần lên cao thêm một tầng, khung cảnh đã khác hẳn.\n\nABC Coffee Roasters là một trong số ít quán quanh đây có ban công nhìn trọn được mặt hồ.\n\nTừ độ cao ấy, nước hồ trải ra rộng và liền mạch, mang sắc xanh xám dưới nền trời trong. Những hàng cây lâu năm ven đường viền lấy phía dưới, còn xa hơn là các khối nhà cao thấp không đều của Hà Nội — phần thành phố mà đứng dưới đường mình thường không để ý.\n\nBan công khá gọn, không bày nhiều đồ đạc, được giữ sạch sẽ. Có thể vì vậy mà cảm giác thoáng, ánh sáng ban ngày đổ đều, không cần chỉnh sửa gì thêm khi chụp ảnh. Buổi chiều trời quang là lúc khung cảnh rõ nhất, nhìn được cả một vòng hồ.\n\nNếu đang ở quanh Tây Hồ, đây là kiểu điểm dừng hợp với một buổi không có lịch trình cụ thể: ngồi lâu một chút, nhìn hồ, rồi đi tiếp.\n\nVen Hồ Hotel nằm trên đường Nguyễn Đình Thi, cùng phía ven hồ, nên những quán như thế này đều nằm trong bán kính một vòng đi bộ hoặc đạp xe thong thả. Với khách chọn phòng hướng hồ, buổi sáng và buổi chiều ở đây cũng là hai khung cảnh khác nhau.\n\nNếu bạn đang tính vài ngày chậm rãi ở Hà Nội, nhắn tin cho Ven Hồ Hotel để kiểm tra phòng trống cho lịch của bạn nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanViewHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-45fd9d39",
@@ -16794,9 +16794,11 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 92.22
-      }
+      },
+      "rejected_by": "hpham1504@gmail.com",
+      "rejected_reason": "Không có thông tin"
     },
     {
       "publication_id": "pub-friday-facebook-53810574",
@@ -16923,7 +16925,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 100.0,
+        "content_brand_fit": 100,
         "content_overall_score": 93.88
       }
     },
@@ -17054,7 +17056,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.7
       }
     },
@@ -17184,7 +17186,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 91.97
       }
     },
@@ -17316,7 +17318,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.7
       }
     }
