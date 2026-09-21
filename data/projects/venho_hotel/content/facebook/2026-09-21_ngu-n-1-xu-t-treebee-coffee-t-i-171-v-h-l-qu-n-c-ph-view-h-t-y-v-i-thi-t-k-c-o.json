@@ -1,0 +1,46 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "project": "venho_hotel",
+  "content_type": "facebook_post",
+  "target_language": "vi",
+  "generated_at": "2026-09-21T09:27:06.802605+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_OUTSIDE_DNA.json",
+      "dna_version": "1.2",
+      "hash": "sha256:aaad1f90ca3a80fbefe9dc168823190c89ef923952e96bd2d902e73f0c5ec577"
+    }
+  ],
+  "source_prompt": {
+    "file": "data/projects/venho_hotel/prompts/content/OUTSIDE__facebook-ngu-n-1-xu-t-treebee-coffee-t-i-171-v-h-l-qu-n-c-ph-view-h-t-y-v-i-thi-__CONTENT_PROMPT_v1.0.json",
+    "prompt_id": "outside__content__facebook-ngu-n-1-xu-t-treebee-coffee-t-i-171-v-h-l-qu-n-c-ph-view-h-t-y-v-i-thi-",
+    "prompt_version": "1.0"
+  },
+  "generator": {
+    "provider": "mock",
+    "model": "deterministic-social-builder",
+    "temperature": 0.6
+  },
+  "title": "Treebee coffee trên đường Vệ Hồ: một buổi chiều chậm bên Hồ Tây",
+  "hook": "Có những quán cà phê đáng nhớ không phải vì đồ uống, mà vì chỗ ngồi của nó nhìn ra đâu.",
+  "body": "Treebee coffee nằm ở 171 Vệ Hồ, một trong những địa chỉ được nhắc đến khi nói về cà phê view Hồ Tây. Điểm khiến nơi này khác biệt là phần thiết kế: không gian được sắp xếp gọn gàng, sạch sẽ, và tận dụng khá tốt khoảng mở ra bên ngoài.\n\nBuổi chiều là lúc dễ chịu nhất. Trời trong, nắng tự nhiên đổ xuống nền gạch, ban công chỉ có lan can kim loại và vài chậu cây nhỏ, không bàn ghế bày ra ngoài. Nhìn ra là hàng cây lâu năm bên đường, sau đó mới tới những mái nhà, tường sơn và ban công của khu dân cư quanh hồ. Một góc Hồ Tây hiện ra từng phần chứ không trải hết trước mặt, và chính điều đó lại khiến người ta ngồi lâu hơn.\n\nĐường Vệ Hồ cũng là kiểu phố ven hồ rất Hà Nội: hẹp, nhiều cây, nhịp đi lại vừa phải. Nếu bạn đang có một buổi chiều trống ở Hà Nội, ghép Treebee coffee vào lịch trình đi dạo quanh Hồ Tây là một cách dùng thời gian hợp lý.\n\nVen Hồ Hotel nằm trên đường Nguyễn Đình Thi, cùng thuộc khu ven Hồ Tây, nên những buổi chiều như thế này thường bắt đầu và kết thúc chỉ bằng một vòng đi bộ.",
+  "cta": "Nếu bạn đang xếp lịch cho chuyến Hà Nội sắp tới, nhắn tin cho Ven Hồ Hotel để xem phòng trống cho những ngày bạn định ở lại nhé.",
+  "hashtags": [
+    "#VenHoHotelHanoi",
+    "#HoTay",
+    "#KhamPhaHoTay",
+    "#CaPheHoTay",
+    "#HanoiTravel"
+  ],
+  "visual_note": null,
+  "contract_refs": null,
+  "payload": {},
+  "status": "draft",
+  "validation": {
+    "required": true,
+    "status": "pending",
+    "report_file": null,
+    "notes": []
+  }
+}

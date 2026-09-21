@@ -1,0 +1,401 @@
+{
+  "contract_version": "1.0",
+  "module": "prompt_studio",
+  "project": "venho_hotel",
+  "prompt_type": "content",
+  "prompt_id": "lake_view_room_1__content__facebook-ha-noi-thang-nay-khong-khi-anh-sang-nhip-song",
+  "prompt_version": "1.0",
+  "generated_at": "2026-09-21T09:25:14.906631+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_LAKE_VIEW_ROOM_1_DNA.json",
+      "dna_version": "1.2",
+      "dna_contract_version": "1.1",
+      "hash": "sha256:7c635dcdc575c74c8263cc1ade2f2b051b2359afc6ca2fc7b55067e64a2cc2f0"
+    }
+  ],
+  "template": {
+    "name": "content_prompt.yaml",
+    "template_version": "1.0"
+  },
+  "task_brief": "Create a facebook_post draft about 'Ha Noi thang nay: khong khi, anh sang, nhip song' for Vietnamese leisure guests. Content pillar: Ho Tay & nhip song Ha Noi dau tuan. Tone: warm, clear, trustworthy. Length: medium. CTA type: booking_soft.",
+  "target_language": "vi",
+  "required_dna": [
+    {
+      "key": "room_shape",
+      "value": "rectangular"
+    },
+    {
+      "key": "window_layout",
+      "value": "2x2 grid window layout"
+    },
+    {
+      "key": "lighting_condition",
+      "value": "natural daylight"
+    },
+    {
+      "key": "style_category",
+      "value": "boutique Vietnamese heritage hotel"
+    },
+    {
+      "key": "bedding_color",
+      "value": "white"
+    },
+    {
+      "key": "wall_artwork",
+      "value": "none"
+    },
+    {
+      "key": "hotel_tier",
+      "value": "boutique mid-range"
+    },
+    {
+      "key": "window_frame",
+      "value": "matte black aluminum window frame, thin profile, grid pattern"
+    },
+    {
+      "key": "wall_color",
+      "value": "light gray"
+    }
+  ],
+  "allowed_variations": [
+    {
+      "key": "bed_size",
+      "value_range": [
+        "double"
+      ]
+    },
+    {
+      "key": "wood_tone",
+      "value_range": [
+        "dark_reddish_brown",
+        "medium_brown"
+      ]
+    },
+    {
+      "key": "lake_view_visible",
+      "value_range": [
+        "false",
+        "partial",
+        "true"
+      ]
+    },
+    {
+      "key": "curtain_color",
+      "value_range": [
+        "dark",
+        "dark_blue",
+        "dark_gray",
+        "gray"
+      ]
+    },
+    {
+      "key": "ceiling",
+      "value_range": [
+        "decorative_molding",
+        "flat_white"
+      ]
+    },
+    {
+      "key": "floor",
+      "value_range": [
+        "hardwood",
+        "laminate",
+        "tile"
+      ]
+    },
+    {
+      "key": "chairs",
+      "value_range": [
+        "none",
+        "one_chair",
+        "two_wooden"
+      ]
+    },
+    {
+      "key": "desk",
+      "value_range": [
+        "present_with_mirror",
+        "present_without_mirror"
+      ]
+    },
+    {
+      "key": "bed_headboard",
+      "value_range": [
+        "wooden"
+      ]
+    }
+  ],
+  "allowed_imperfections": [
+    {
+      "value": "minor scuff marks on skirting boards acceptable",
+      "source": "curated"
+    },
+    {
+      "value": "slight curtain wrinkles acceptable",
+      "source": "curated"
+    },
+    {
+      "value": "small wear marks on wooden furniture edges acceptable",
+      "source": "curated"
+    },
+    {
+      "value": "natural aging of wooden headboard acceptable",
+      "source": "curated"
+    },
+    {
+      "value": "slight unevenness in curtain hang acceptable",
+      "source": "curated"
+    },
+    {
+      "value": "slightly uneven curtain",
+      "source": "observed"
+    },
+    {
+      "value": "slightly uneven floor",
+      "source": "observed"
+    },
+    {
+      "value": "slightly uneven bedding",
+      "source": "observed"
+    },
+    {
+      "value": "slightly wrinkled bedding",
+      "source": "observed"
+    },
+    {
+      "value": "slightly uneven paint on window frame",
+      "source": "observed"
+    },
+    {
+      "value": "slightly uneven wall paint",
+      "source": "observed"
+    }
+  ],
+  "forbidden": [
+    {
+      "rule": "no floor-to-ceiling glass wall — actual window is grid-pane black aluminum",
+      "source": "curated"
+    },
+    {
+      "rule": "no Dubai-style luxury interior",
+      "source": "curated"
+    },
+    {
+      "rule": "no generic resort look",
+      "source": "curated"
+    },
+    {
+      "rule": "no marble flooring",
+      "source": "curated"
+    },
+    {
+      "rule": "no cream and beige luxury palette",
+      "source": "curated"
+    },
+    {
+      "rule": "no Korean hotel style",
+      "source": "curated"
+    },
+    {
+      "rule": "no generic international hotel design",
+      "source": "curated"
+    },
+    {
+      "rule": "no rooftop or outdoor scene — this is an interior room",
+      "source": "curated"
+    },
+    {
+      "rule": "no floor-to-ceiling glass wall",
+      "source": "observed"
+    },
+    {
+      "rule": "no luxury apartment style",
+      "source": "observed"
+    },
+    {
+      "rule": "no marble interior",
+      "source": "observed"
+    },
+    {
+      "rule": "no resort aesthetic",
+      "source": "observed"
+    },
+    {
+      "rule": "no generic international hotel",
+      "source": "observed"
+    },
+    {
+      "rule": "no infinity pool",
+      "source": "observed"
+    },
+    {
+      "rule": "no visible wardrobe",
+      "source": "observed"
+    },
+    {
+      "rule": "no visible desk",
+      "source": "observed"
+    },
+    {
+      "rule": "no chairs present",
+      "source": "observed"
+    },
+    {
+      "rule": "no visible chairs",
+      "source": "observed"
+    },
+    {
+      "rule": "no visible ceiling details",
+      "source": "observed"
+    },
+    {
+      "rule": "no visible floor details",
+      "source": "observed"
+    },
+    {
+      "rule": "no wall artwork",
+      "source": "observed"
+    },
+    {
+      "rule": "no ceiling visible",
+      "source": "observed"
+    },
+    {
+      "rule": "no floor visible",
+      "source": "observed"
+    },
+    {
+      "rule": "no wall color visible",
+      "source": "observed"
+    },
+    {
+      "rule": "no room shape visible",
+      "source": "observed"
+    },
+    {
+      "rule": "no bed size visible",
+      "source": "observed"
+    },
+    {
+      "rule": "no bed headboard visible",
+      "source": "observed"
+    },
+    {
+      "rule": "no desk visible",
+      "source": "observed"
+    },
+    {
+      "rule": "no chairs visible",
+      "source": "observed"
+    },
+    {
+      "rule": "no wardrobe visible",
+      "source": "observed"
+    },
+    {
+      "rule": "no wood tone visible",
+      "source": "observed"
+    },
+    {
+      "rule": "no wall artwork visible",
+      "source": "observed"
+    },
+    {
+      "rule": "no window view",
+      "source": "observed"
+    },
+    {
+      "rule": "no visible bed",
+      "source": "observed"
+    },
+    {
+      "rule": "no visible curtains",
+      "source": "observed"
+    },
+    {
+      "rule": "no interior room features",
+      "source": "observed"
+    },
+    {
+      "rule": "no visible wood tone",
+      "source": "observed"
+    },
+    {
+      "rule": "no visible curtain",
+      "source": "observed"
+    },
+    {
+      "rule": "no visible style category",
+      "source": "observed"
+    },
+    {
+      "rule": "no visible hotel tier",
+      "source": "observed"
+    },
+    {
+      "rule": "no visible wall artwork",
+      "source": "observed"
+    }
+  ],
+  "final_prompt": "Create a facebook_post draft about 'Ha Noi thang nay: khong khi, anh sang, nhip song' for Vietnamese leisure guests. Content pillar: Ho Tay & nhip song Ha Noi dau tuan. Tone: warm, clear, trustworthy. Length: medium. CTA type: booking_soft.\n\nWrite the content in Vietnamese.\n\nAudience: Travelers considering a stay near West Lake (Ho Tay), Hanoi — leisure and business, VN + international.\nTone: Warm, authentic, unhurried. Show real daily life beside West Lake, not a sales pitch.\n\nBrand DNA:\n- The West Lake Living — gold #C9A84C accent, deep navy #1B2D4F, warm white #F7F4EF background.\n- Tagline: 'Where West Lake Meets Elegance'.\n- Ven Ho Hotel is the gateway/base camp of the universe — boutique mid-range, not luxury resort.\n\nRequired facts (ground your writing in these, do not contradict them, but never copy hex codes or raw English descriptors literally — paraphrase in the target language):\n- room_shape: rectangular\n- window_layout: 2x2 grid window layout\n- lighting_condition: natural daylight\n- style_category: boutique Vietnamese heritage hotel\n- bedding_color: white\n- wall_artwork: none\n- hotel_tier: boutique mid-range\n- window_frame: matte black aluminum window frame, thin profile, grid pattern\n- wall_color: light gray\n\nFlexible details (any one of the listed options is acceptable):\n- bed_size: double\n- wood_tone: dark_reddish_brown / medium_brown\n- lake_view_visible: false / partial / true\n- curtain_color: dark / dark_blue / dark_gray / gray\n- ceiling: decorative_molding / flat_white\n- floor: hardwood / laminate / tile\n- chairs: none / one_chair / two_wooden\n- desk: present_with_mirror / present_without_mirror\n- bed_headboard: wooden\n\nCall-to-action: End with one soft call-to-action inviting the reader to check availability or message the page — never pushy, never a hard sell.",
+  "optimizer": {
+    "used": false,
+    "provider": null,
+    "model": null,
+    "temperature": null
+  },
+  "validation": {
+    "structural": "pending",
+    "faithfulness": "pending"
+  },
+  "notes": [],
+  "contract_refs": null,
+  "restrictions": [
+    "no floor-to-ceiling glass wall — actual window is grid-pane black aluminum",
+    "no Dubai-style luxury interior",
+    "no generic resort look",
+    "no marble flooring",
+    "no cream and beige luxury palette",
+    "no Korean hotel style",
+    "no generic international hotel design",
+    "no rooftop or outdoor scene — this is an interior room",
+    "no floor-to-ceiling glass wall",
+    "no luxury apartment style",
+    "no marble interior",
+    "no resort aesthetic",
+    "no generic international hotel",
+    "no infinity pool",
+    "no visible wardrobe",
+    "no visible desk",
+    "no chairs present",
+    "no visible chairs",
+    "no visible ceiling details",
+    "no visible floor details",
+    "no wall artwork",
+    "no ceiling visible",
+    "no floor visible",
+    "no wall color visible",
+    "no room shape visible",
+    "no bed size visible",
+    "no bed headboard visible",
+    "no desk visible",
+    "no chairs visible",
+    "no wardrobe visible",
+    "no wood tone visible",
+    "no wall artwork visible",
+    "no window view",
+    "no visible bed",
+    "no visible curtains",
+    "no interior room features",
+    "no visible wood tone",
+    "no visible curtain",
+    "no visible style category",
+    "no visible hotel tier",
+    "no visible wall artwork",
+    "Do not claim '5 star' or 'best in Hanoi' — Ven Ho Hotel is boutique mid-range, not luxury.",
+    "Do not use the phrase 'sang chảnh nhất' or overclaim luxury positioning.",
+    "Do not fabricate guest reviews, ratings, or awards not present in Knowledge.",
+    "Do not describe West Lake as a generic tourist postcard — keep it authentic, local, unhurried."
+  ]
+}
