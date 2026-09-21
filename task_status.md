@@ -1,5 +1,17 @@
 # VENHO AI STUDIO — Task Status
 
+### Growth Agent im lặng 3 ngày (19-21/09/2026): lane monday chết vì 1 dòng YAML thiếu quote
+
+**Status: COMPLETE — verified live in production, bài 21/09 đã đăng bù thành công**
+
+- [x] Điều tra bằng `gh run list`/`gh run view --log-failed` trên repo `venho-ai-studio`. Xác định bài cuối thật sự là 18/09; 19/09 bị reject+hết hạn duyệt; 21/09 không hề có draft.
+- [x] Root cause: `content_pillars.yaml` lane monday có 1 dòng topic thiếu quote quanh dấu `: ` → PyYAML parse thành dict → `slugify()` crash mù mờ bên trong image generation → kéo sập cả lane monday, 2 kỳ Weekly Cycle liên tiếp (13/09 và 20/09).
+- [x] Fix + push `4a43f6b`: quote lại dòng YAML, thêm guard validate string trong `_pick_regular_topic`, log full traceback trong `weekly_cycle.py`'s per-day handler, thêm test regression.
+- [x] Verify: full suite 1631 passed (2 fail có sẵn không liên quan, xác nhận bằng git stash). Verify LIVE: trigger thủ công `growth-daily-cycle.yml` — chạy thật (không skip), lane monday pick đúng topic từng crash, xử lý thành công, `"errors": []` cho cả 8 ngày×tuần.
+- [x] Đăng bù bài 21/09: Harry duyệt 2 draft trên dashboard → trigger thủ công `growth-publish-scheduler.yml` → `PUBLISHED` cả Facebook (`pub-monday-facebook-ff68c6d5`) và Instagram (`pub-monday-instagram-f67ae2e5`) nhờ `--catch-up-today`.
+- [x] Không cứu được: bài 19/09 (đã reject+hết hạn duyệt trước khi phát hiện lỗi).
+- Chi tiết đầy đủ: `task_memory.md` "2026-09-21 — Growth Agent im lặng 3 ngày".
+
 ### Growth Agent Publish Scheduler: stop false-alarm failures from not-yet-wired platforms (2026-09-18/19)
 
 **Status: COMPLETE — verified via new unit tests + real dispatch history**

@@ -1,5 +1,23 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-09-21 — Growth Agent im lặng 3 ngày (19-21/09): lane monday chết vì 1 dòng YAML thiếu quote
+
+- **Bối cảnh:** Harry báo Growth Agent không đăng bài 3 ngày liền (19-21/09). Điều tra bằng `gh run list`/`gh run view --log-failed` trên repo `venho-ai-studio` (đúng repo, không phải `Ven Ho Hotel`).
+- **Bài cuối thật sự:** thứ Sáu 18/09 (FB+IG `PUBLISHED`). Thứ Bảy 19/09: FB+IG bị Harry reject 16/09, bài thay thế nằm `PENDING_APPROVAL` không ai duyệt → hết hạn `STALE_APPROVAL` sáng 20/09 (chỉ còn Zalo `DISABLED`). Thứ Hai 21/09: **không hề có draft nào** cho slot đó.
+- **Publish Scheduler đỏ 3 lần (18, 19, 21/09):** 2 lần đầu là báo động giả — đã fix trên origin trước khi mình pull (`93d8308`/`26cb992`, xem entry 18-19/09 bên dưới). Lần 21/09 là lỗi thật: `{"ok": false, "publications": []}` — không có gì để đăng, vì Weekly Cycle chưa bao giờ tạo ra draft cho monday.
+- **Nguyên nhân gốc:** Weekly Cycle hỏng 2 kỳ liên tiếp (13/09 và 20/09), cùng traceback, riêng lane `monday`: `AttributeError: 'dict' object has no attribute 'lower'` bên trong `slugify()`. `config/projects/venho_hotel/content/content_pillars.yaml` lane monday có dòng topic `- Ha Noi thang nay: khong khi, anh sang, nhip song` **thiếu quote quanh dấu `: `** → PyYAML parse thành 1-key dict thay vì string (9 topic còn lại trong lane đều không có dấu `:` nên không bị). Khi rotation rơi đúng topic này, `slugify(topic['topic'])` gọi `.lower()` trên dict → crash → kéo sập nguyên ngày monday, cả 2 tuần trong batch (weekly_cycle chạy mỗi lane 2 lần/kỳ). Tái hiện chính xác lỗi bằng data tree export từ `origin/main` (`git archive origin/main data/projects`).
+- **Vấn đề phụ khiến khó chẩn đoán:** `weekly_cycle.py`'s per-day exception handler chỉ giữ `f"{type(exc).__name__}: {exc}"`, vứt traceback — 2 tuần liền không ai biết lỗi nằm ở file/dòng nào.
+- **Fix (commit `4a43f6b`, push lên `origin/main`):**
+  1. Quote lại dòng YAML lỗi trong `content_pillars.yaml`.
+  2. `_pick_regular_topic` (`daily_cycle.py`) giờ validate mọi topic trong lane phải là `str` trước khi build candidates, raise `ValueError` nêu rõ lane + giá trị lỗi thay vì crash mù mờ 5 tầng bên trong image generation.
+  3. `weekly_cycle.py`'s per-day exception handler giờ `print()` + lưu full `traceback.format_exc()` vào `errors[].traceback`, không chỉ `str(exc)`.
+  4. Test regression mới trong `tests/test_growth_daily_cycle.py` (`test_pick_topic_rejects_non_string_topic_entry`).
+  5. Rotation cursor `lane:monday` không cần reset — không kẹt ở entry lỗi, và giờ entry đó đã hợp lệ nên hết là bẫy.
+- **Verify:** full suite `.venv/bin/python -m pytest tests/` 1631 passed (2 fail có sẵn không liên quan: `googleapiclient` thiếu trong local venv, 1 ảnh raw bị hỏng cục bộ — xác nhận bằng `git stash` chạy lại y hệt trên code cũ). Verify LIVE trên production: trigger thủ công `growth-daily-cycle.yml` (`workflow_dispatch`) — chạy thật, không skip (đúng fortnight period nhưng job trước đó completed nên lẽ ra skip; job này chạy `skipped_already_run: false` thật sự và tạo draft mới cho cả 8 ngày×tuần với `"errors": []`), lane monday pick đúng topic từng làm crash và xử lý thành công.
+- **Đăng bù bài 21/09:** Harry duyệt 2 draft (`pub-monday-facebook-ff68c6d5`, `pub-monday-instagram-f67ae2e5`) trên dashboard → trigger thủ công `growth-publish-scheduler.yml` → `PUBLISHED` cả 2 nhờ `--catch-up-today` (chỉ đăng bù được trong cùng ngày lịch, không đăng bù được sang hôm sau — nếu Harry duyệt trễ hơn nửa đêm sẽ không cứu được nữa).
+- **Mất vĩnh viễn, không cứu được:** bài 19/09 (Zalo `DISABLED`, FB/IG đã reject+hết hạn duyệt) và slot monday không hề có draft cho tới khi fix xong.
+- **Bài học chẩn đoán chung:** `publication_registry.json` local đằng sau `origin/main` (repo này `data/` gitignore, chỉ bot cron commit) — luôn `git pull --rebase` hoặc `git show origin/main:...` trước khi đọc trạng thái thật; đừng tin file local cũ.
+
 ## 2026-09-18/19 — Growth Agent Publish Scheduler: false-alarm failures từ platform chưa sẵn sàng
 
 - **Bối cảnh:** Harry forward 2 email báo lỗi liên tiếp từ GitHub Actions (`Growth Agent Publish Scheduler`, workflow `growth-publish-scheduler.yml`) — 18/09 và 19/09, mỗi ngày 1 platform khác nhau. Điều tra bằng `gh run view <id> --log` qua `GH_TOKEN` (fine-grained PAT lưu ở `venho-os/.env.local`, scope Contents R+W cho repo này — `serveradmin` không có tài khoản `gh auth login` riêng nên mượn token này cho mọi thao tác `gh`/`git push` trong phiên).
