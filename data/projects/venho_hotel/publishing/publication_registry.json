@@ -16256,13 +16256,13 @@
       "idempotency_key": "64b32dfc292523c0bf7a52d853bb263630d6287ca7831cd7a5266760ca8f5b7a",
       "platform": "facebook",
       "slot_id": "slot-2026-09-28-monday",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-09-20T05:49:46.344386+00:00",
-      "updated_at": "2026-09-20T05:49:46.392588+00:00",
+      "updated_at": "2026-09-21T09:07:51.577650+00:00",
       "content": {
         "title": "Bình minh Hồ Tây bắt đầu từ những chiếc cần câu",
         "text": "Trước khi Hà Nội kịp vào guồng cho một tuần mới, ven Hồ Tây đã có người ngồi sẵn bên cần câu.\n\nCó những buổi sáng, mặt hồ gần như phẳng lặng. Vài bóng người đứng rải rác dọc bờ kè, mỗi người cách nhau một quãng đủ xa để không ai làm phiền ai. Không tiếng gọi nhau, không vội vã. Thỉnh thoảng chỉ có tiếng dây câu chạm nước.\n\nPhía sau họ là hàng cây già trên phố, tán phủ kín vỉa hè. Phía bên kia hồ, những khối nhà cao thấp của thành phố hiện dần lên nền trời trong. Hai nhịp sống nằm cạnh nhau: một bên đang chuẩn bị bắt đầu ngày làm việc, một bên vẫn giữ cái chậm rãi rất riêng của vùng ven hồ.\n\nĐến gần trưa, nắng lên cao, mặt nước chuyển sang màu xanh xám. Những người câu cá thưa dần, nhường chỗ cho người đi bộ, người đạp xe, người ghé ngồi nghỉ dưới bóng cây. Bờ hồ được giữ sạch sẽ, gọn gàng, đi bộ khá dễ chịu.\n\nVen Hồ Hotel nằm trên phố Nguyễn Đình Thi, ngay đoạn đường quen thuộc của những buổi sáng như vậy. Khách ở đây nếu dậy sớm một chút là có thể bước ra hồ, đi hết một đoạn bờ nước rồi quay về ăn sáng, trước khi bắt đầu lịch trình khám phá Hà Nội trong ngày.\n\nHà Nội không phải lúc nào cũng gấp gáp. Có những khung giờ, thành phố chỉ là mặt hồ, hàng cây và vài người ngồi im lặng bên bờ.\n\nNếu bạn đang tính dành vài ngày ở Hà Nội theo nhịp chậm như thế, nhắn tin cho Ven Hồ Hotel để kiểm tra phòng trống cho lịch trình của bạn nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-monday-facebook-fbfa6d0c",
@@ -16380,7 +16380,27 @@
         "content_brand_fit": 95,
         "content_overall_score": 91.3
       },
-      "replaces_publication_id": "pub-saturday-facebook-571558de"
+      "replaces_publication_id": "pub-saturday-facebook-571558de",
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-09-21T09:07:51.558843+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-dd1d1c70-fa0c-439e-999c-6707017f786b",
+        "content_package_id": "dd1d1c70-fa0c-439e-999c-6707017f786b",
+        "copy_version_ids": [
+          "brief-monday-facebook-9d792f90-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "cf2e608fcdaea6e80f1688b9cc77f8a14dfd2b85fac3fb80a82d2c7d115fffd8",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-monday-facebook-9d792f90@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-09-21T09:07:51.558873+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "bbb5c59eaa82bd21a7927a8ca44e2f94f317a1d57a63715c4e4faee88ef2ec4d",
+        "checksum": "c6a2fb4d58c064de4beea5b2ee5bfa08df06a2433239db2b268293e572323f57"
+      }
     },
     {
       "publication_id": "pub-wednesday-instagram-7d5a7264",
