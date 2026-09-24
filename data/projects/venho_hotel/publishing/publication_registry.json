@@ -18077,13 +18077,13 @@
       "idempotency_key": "bf308504a47f3c5c6e212ae3bacee1fbbc1e03f85e92d5c4ebbe30c16213cfd7",
       "platform": "facebook",
       "slot_id": "slot-2026-09-30-wednesday",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-09-21T09:43:43.028054+00:00",
-      "updated_at": "2026-09-21T09:43:43.154144+00:00",
+      "updated_at": "2026-09-24T09:21:34.615749+00:00",
       "content": {
         "title": "Một góc xanh trắng bên Hồ Tây",
         "text": "Hà Nội vốn quen với màu vàng tường cũ và mái ngói nâu. Rồi giữa dãy phố ven hồ, bỗng có một mảng trắng và xanh.\n\nSantorini Vibes là quán cà phê view Hồ Tây được nhiều người nhắc đến vì tông màu xanh trắng khá khác với phần còn lại của khu phố. Vào một buổi trưa trời trong, mảng tường trắng bắt nắng rất rõ, xanh thì đậm lên theo sắc trời.\n\nPhía sau lưng quán vẫn là Hà Nội quen thuộc: nhà cao thấp xen nhau, hàng cây lâu năm đổ bóng xuống vỉa hè, xe máy chạy đều một nhịp. Chính sự lệch tông đó lại thú vị. Bạn ngồi trong một không gian sáng và sạch sẽ, nhưng chỉ cần nhìn ra ngoài là thấy nhịp sống thật của Tây Hồ.\n\nNếu đi vào giữa trưa, ánh sáng tự nhiên là thứ đáng để tận dụng nhất, cả cho một tấm ảnh lẫn cho việc ngồi yên một lúc. Còn nếu bạn thong thả hơn, có thể nán lại tới cuối buổi chiều, khi mặt hồ đổi màu và hoàng hôn Hồ Tây bắt đầu.\n\nTừ Ven Hồ Hotel trên đường Nguyễn Đình Thi, những góc cà phê ven hồ như vậy đều nằm trong tầm đi bộ hoặc một quãng xe ngắn. Chúng tôi vẫn hay ghi lại vài địa chỉ để khách tiện chọn theo tâm trạng của từng ngày.\n\nNếu bạn đang tính vài ngày ở Hà Nội, nhắn cho Ven Hồ Hotel để xem phòng trống nhé, chúng tôi sẽ gợi ý thêm vài quán quanh hồ hợp với lịch trình của bạn.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanViewHoTay #CaPheHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-9e135ca9",
@@ -18209,10 +18209,30 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 92.04
       },
-      "replaces_publication_id": "pub-wednesday-facebook-45fd9d39"
+      "replaces_publication_id": "pub-wednesday-facebook-45fd9d39",
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-09-24T09:21:34.592040+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-14d7d8b2-69c1-4013-8557-bfd4fd2c1fc0",
+        "content_package_id": "14d7d8b2-69c1-4013-8557-bfd4fd2c1fc0",
+        "copy_version_ids": [
+          "brief-wednesday-facebook-eb312721-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "175c53bad04990943a7e32fe556d01dbb8310d34b147d9599545adb09df6336f",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-wednesday-facebook-eb312721@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-09-24T09:21:34.592066+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "292d92c8dd798b93e0f5bcfa9bb8991e294458c495f86b4a1f8bb076c9fa70d6",
+        "checksum": "2861a648944b9b7638d615c10f9196aa50edd4a63f50e2253c00e7d0e498a07a"
+      }
     }
   ]
 }
