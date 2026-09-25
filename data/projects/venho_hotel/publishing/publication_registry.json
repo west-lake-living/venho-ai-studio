@@ -15540,13 +15540,13 @@
       "idempotency_key": "460e9f11f17195f0bce13da0efec5f1951cc45ec4445193f7e17d4ee46c79510",
       "platform": "facebook",
       "slot_id": "slot-2026-09-25-friday",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
-      "platform_post_id": null,
-      "permalink": null,
+      "status": "PUBLISHED",
+      "gateway_status": "PUBLISHED",
+      "platform_post_id": "1124616474074140_122140024131351048",
+      "permalink": "https://www.facebook.com/1124616474074140_122140024131351048",
       "reconciliation_proof": null,
       "created_at": "2026-09-13T16:58:53.667192+00:00",
-      "updated_at": "2026-09-14T08:04:43.525007+00:00",
+      "updated_at": "2026-09-25T06:45:54.395489+00:00",
       "content": {
         "title": "Hai ngày cuối tuần, một nhịp chậm bên Hồ Tây",
         "text": "Cuối tuần ở Hà Nội, đôi khi chỉ cần đi đủ xa để không còn nghe tiếng còi xe, nhưng vẫn đủ gần để chiều kịp ra hồ.\n\nVen Hồ Hotel nằm trên Nguyễn Đình Thi, con đường chạy sát mặt nước Hồ Tây. Bước qua cánh cửa kính là sảnh nhỏ, sàn gạch nâu với những hoa văn tròn, quầy lễ tân gỗ nâu đỏ sẫm, vài bức tranh treo trên tường và ánh sáng dịu vừa đủ. Không gian không lớn, cũng không cố gây ấn tượng bằng sự cầu kỳ. Chỉ gọn gàng, sạch sẽ và yên.\n\nMột cuối tuần ở đây thường bắt đầu khá đơn giản. Sáng dậy muộn hơn ngày thường một chút, đi bộ vài vòng theo mép hồ khi nắng còn nhẹ. Trưa tìm một quán ăn trong khu Tây Hồ. Chiều để dành cho hoàng hôn Hồ Tây, khi mặt nước đổi màu và cả con đường chậm lại theo. Tối về, lấy chìa khóa ở quầy, lên phòng, và không phải nghĩ xem mai sẽ đi đâu.\n\nĐó là cách một khách sạn view Hồ Tây quy mô vừa phải có thể phục vụ tốt nhất cho hai ngày nghỉ: không biến kỳ nghỉ thành một lịch trình, chỉ giữ cho bạn một chỗ để trở về sau mỗi vòng đi bộ quanh hồ.\n\nNếu bạn đang tính một cuối tuần chậm bên Hồ Tây, nhắn tin cho Ven Hồ Hotel để xem phòng trống những ngày bạn muốn nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanHoTay #NguyenDinhThi #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-friday-facebook-8dc4ab48",
@@ -15682,7 +15682,9 @@
         "revoked_reason": null,
         "package_versions_checksum": "150bf2d91fe3f96fa4d42e3f98a014b8c62be7f8cf2c1f9ccd17caa99e9de024",
         "checksum": "06a5910add01fa07e7b0afa4104aac38e989fcc23fb499e5ec2c0662f91bccce"
-      }
+      },
+      "gateway_error": null,
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-friday-instagram-90915549",
@@ -15690,13 +15692,13 @@
       "idempotency_key": "edc738ea57c600af4caf55cb1edaecc1e0734b2c2a2b83b97dab26ba1383d584",
       "platform": "instagram",
       "slot_id": "slot-2026-09-25-friday",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
-      "platform_post_id": null,
-      "permalink": null,
+      "status": "PUBLISHED",
+      "gateway_status": "PUBLISHED",
+      "platform_post_id": "18073311155470737",
+      "permalink": "https://www.instagram.com/18073311155470737",
       "reconciliation_proof": null,
       "created_at": "2026-09-13T16:59:29.587330+00:00",
-      "updated_at": "2026-09-14T08:04:43.525007+00:00",
+      "updated_at": "2026-09-25T06:46:06.519957+00:00",
       "content": {
         "title": "Cuối tuần chậm lại ở phía Hồ Tây",
         "text": "Cuối tuần ở Hà Nội không nhất thiết phải đi xa. Nhiều khi chỉ cần đổi chỗ ngủ sang phía Hồ Tây là đủ để nhịp hai ngày khác hẳn.\n\nVen Hồ Hotel nằm trên Nguyễn Đình Thi, ngay đoạn đường mà cuối tuần người ta hay đi bộ và đạp xe.\n\nSảnh khách sạn không lớn. Một cánh cửa kính, sàn gạch nâu với những vòng hoa văn tròn, quầy lễ tân gỗ tông nâu đỏ sẫm, vài bức tranh trên tường và ánh sáng dịu, không chói. Mọi thứ gọn gàng, vừa đủ, không cố gây ấn tượng bằng sự hoành tráng.\n\nCái hay của một không gian nhỏ là bạn đi qua nó nhiều lần trong ngày. Sáng cầm chìa khóa ra hồ khi trời còn mát. Trưa về nghỉ một lúc. Chiều lại ra ngoài, rồi quay về khi hoàng hôn Hồ Tây đã tắt sau hàng cây. Mỗi lần bước qua cửa kính là một lần hạ nhịp xuống một chút.\n\nNghỉ dưỡng cuối tuần đôi khi chỉ đơn giản vậy: một chỗ ở đủ yên để về, và một mặt hồ ngay gần để bước ra.\n\nNếu bạn đang tính hai ngày cuối tuần ở phía Hồ Tây, nhắn cho Ven Hồ Hotel để xem phòng trống những ngày bạn muốn nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanHoTay #NguyenDinhThi #HaNoi #HanoiTravel",
@@ -15833,7 +15835,9 @@
         "revoked_reason": null,
         "package_versions_checksum": "9955a64227b34ac96d97280a1441c2dbb71eff9b0afb811f20a3b84b872f9538",
         "checksum": "23a6027e4672848636810d19afa73518a6a951db4dbabdbac1e60da692c1de6c"
-      }
+      },
+      "gateway_error": null,
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-saturday-facebook-ced97eef",
