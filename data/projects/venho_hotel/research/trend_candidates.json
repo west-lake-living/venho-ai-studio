@@ -1653,5 +1653,172 @@
     "rejection_reason": null,
     "verified_by_human": false,
     "scanned_at": "2026-09-18T05:28:43.347719+00:00"
+  },
+  {
+    "id": "tavily-https://vtv.vn/ha-noi-dau-tu-san-khau-thuc-canh-tren-nuoc-cho-le-hoi-sen-2026-100260622163914148.htm",
+    "title": "Hà Nội đầu tư sân khấu thực cảnh trên nước cho Lễ hội Sen 2026",
+    "source_uri": "https://vtv.vn/ha-noi-dau-tu-san-khau-thuc-canh-tren-nuoc-cho-le-hoi-sen-2026-100260622163914148.htm",
+    "snippet": "Không chỉ thu hút đông đảo người dn và du khách bằng những không gian trưng bày độc đáo vào ban ngày, Lễ hội Sen Hà Nội 2026 còn là một sự kiện văn hóa nổi bật nhờ chuỗi hoạt động nghệ thuật quy mô lớn về đêm. Bữa tiệc của ánh sáng và m thanh hứa hẹn mang lại những trải nghiệm thị giác ấn tượng tại khu vực Hồ Ty.\n\nĐộc đáo sn khấu thực cảnh trên mặt nước [...] Bên cạnh những công trình kiến trúc thị giác mãn nhãn, các đêm hội diễn ra từ ngày 26/6 đến 28/6/2026 còn liên tục khuấy động không gian Ty Hồ bằng chuỗi hoạt động biểu diễn đa sắc màu. Từ 18h00 đến 20h00 mỗi tối, tại khu vực Thung lũng hoa Ty Hồ và Khu văn hóa ẩm thực sen, du khách sẽ được chìm đắm trong các giai điệu nghệ thuật dn tộc gắn liền với hình tượng hoa sen. [...] Đặc biệt, trong đêm khai mạc, khán giả sẽ được thưởng thức chương trình nghệ thuật đặc sắc, tái hiện qua ba chương mang đậm tính sử thi và cảm xúc: \"Ủ mầm\", \"Giông bão\" và \"Đứng thẳng - Hiên ngang\". Sự kết hợp giữa các tiết mục múa nghệ thuật uyển chuyển, hiệu ứng màn hình LED và ánh sáng huyền ảo hắt bóng xuống mặt hồ tạo nên một bức tranh tổng hòa, tôn vinh vẻ đẹp cùng sức sống mãnh liệt của hoa sen.\n\nTiểu cảnh rực sáng góc Hồ Ty",
+    "relevance_hint": 0.3486013,
+    "geographic": "westlake",
+    "thematic": "lifestyle_culture",
+    "actionability": "direct",
+    "type": "cultural_event",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "culture_festival_positive"
+    ],
+    "relevance_score": 0.6,
+    "status": "rejected",
+    "rejection_reason": "stale_dated",
+    "verified_by_human": false,
+    "scanned_at": "2026-09-25T05:42:22.101594+00:00"
+  },
+  {
+    "id": "tavily-https://www.facebook.com/www.hanoionline.vn/posts/-kh%C3%A1m-ph%C3%A1-kh%C3%B4ng-gian-v%C4%83n-h%C3%B3a-s%E1%BA%AFc-sen-h%C3%A0-n%E1%BB%99i-n%C4%83m-2026l%E1%BB%85-h%E1%BB%99i-sen-h%C3%A0-n%E1%BB%99i-n%C4%83m-nay-di/1340696908223258",
+    "title": "KHÁM PHÁ KHÔNG GIAN VĂN HÓA 'SẮC SEN HÀ NỘI' ...",
+    "source_uri": "https://www.facebook.com/www.hanoionline.vn/posts/-kh%C3%A1m-ph%C3%A1-kh%C3%B4ng-gian-v%C4%83n-h%C3%B3a-s%E1%BA%AFc-sen-h%C3%A0-n%E1%BB%99i-n%C4%83m-2026l%E1%BB%85-h%E1%BB%99i-sen-h%C3%A0-n%E1%BB%99i-n%C4%83m-nay-di/1340696908223258",
+    "snippet": "KHÁM PHÁ KHÔNG GIAN VĂN HÓA 'SẮC SEN HÀ NỘI' NĂM 2026 Lễ hội Sen Hà Nội năm nay diễn ra từ ngày 26-28/6, bao gồm 3 khu vực tại phường Tây Hồ",
+    "relevance_hint": 0.2529746,
+    "geographic": "westlake",
+    "thematic": "lifestyle_culture",
+    "actionability": "direct",
+    "type": "cultural_event",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "culture_festival_positive"
+    ],
+    "relevance_score": 0.6,
+    "status": "rejected",
+    "rejection_reason": "stale_dated",
+    "verified_by_human": false,
+    "scanned_at": "2026-09-25T05:42:22.101594+00:00"
+  },
+  {
+    "id": "tavily-https://www.facebook.com/groups/sukienvhhn",
+    "title": "Những sự kiện văn hóa tại Hà Nội (Hanoi Cultural Events)",
+    "source_uri": "https://www.facebook.com/groups/sukienvhhn",
+    "snippet": "Rồi một ngày vắng anh Societea Night Live | 19.9.2026 Tiếng đàn và giọng ca vừa mộc mạc vừa có phần sang trọng, tinh tế của hai nghệ sĩ trẻ sẽ",
+    "relevance_hint": 0.17242284,
+    "geographic": "hanoi",
+    "thematic": "lifestyle_culture",
+    "actionability": "adjacent",
+    "type": "cultural_event",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "culture_festival_positive"
+    ],
+    "relevance_score": 0.252,
+    "status": "rejected",
+    "rejection_reason": "passed",
+    "verified_by_human": false,
+    "scanned_at": "2026-09-25T05:42:22.101594+00:00"
+  },
+  {
+    "id": "tavily-https://congvienhotay.vn/su-kien",
+    "title": "Sự kiện",
+    "source_uri": "https://congvienhotay.vn/su-kien",
+    "snippet": "HỘI NGHỊ TRI ÂN ĐỐI TÁC & ĐẠI LÝ 2026 CỦA VNPT HÀ NỘI · Trang chủ · Giới thiệu · Quan hệ cổ đông · Hệ thống trò chơi · Bảng giá vé · Đặt vé online · Dịch vụ · Công",
+    "relevance_hint": 0.074480206,
+    "geographic": "westlake",
+    "thematic": "unrelated",
+    "actionability": "stretch",
+    "type": "feature_story",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local"
+    ],
+    "relevance_score": 0.0,
+    "status": "rejected",
+    "rejection_reason": "passed",
+    "verified_by_human": false,
+    "scanned_at": "2026-09-25T05:42:22.101594+00:00"
+  },
+  {
+    "id": "tavily-https://vinpearl.com/vi/thung-lung-hoa-ho-tay",
+    "title": "Thung lũng hoa Hồ Tây - Tọa độ cắm trại, chụp ảnh HOT ...",
+    "source_uri": "https://vinpearl.com/vi/thung-lung-hoa-ho-tay",
+    "snippet": "Thung lũng hoa Hồ Tây địa chỉ ở ngã ba Nhật Chiêu, Tây Hồ, thành phố Hà Nội. Địa điểm này cách công viên nước Hồ Tây khoảng 600m. Sở hữu diện",
+    "relevance_hint": 0.42591617,
+    "geographic": "westlake",
+    "thematic": "travel_stay",
+    "actionability": "direct",
+    "type": "seasonal_nature",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "travel_accommodation"
+    ],
+    "relevance_score": 1.0,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "verified_by_human": false,
+    "scanned_at": "2026-09-25T05:42:22.101594+00:00"
+  },
+  {
+    "id": "tavily-https://www.youtube.com/watch?v=1n6ZFfqm5WA",
+    "title": "Hồ Tây sớm đông | Nhịp sống Hà Nội",
+    "source_uri": "https://www.youtube.com/watch?v=1n6ZFfqm5WA",
+    "snippet": "Buổi sáng đầu đông, khi những giọt nắng vàng vẫn phủ nhẹ trên mặt hồ, ông Khang 80 tuổi, đã ngồi nhâm nhi chén trà nóng bên đường Thanh Niên",
+    "relevance_hint": 0.21757884,
+    "geographic": "westlake",
+    "thematic": "seasonal_weather",
+    "actionability": "direct",
+    "type": "seasonal_nature",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "seasonal_weather_nature"
+    ],
+    "relevance_score": 0.5,
+    "status": "rejected",
+    "rejection_reason": "passed",
+    "verified_by_human": false,
+    "scanned_at": "2026-09-25T05:42:22.101594+00:00"
+  },
+  {
+    "id": "tavily-https://www.tiktok.com/@songthao298/video/7393311981547031825",
+    "title": "Cilas Coffee & Pastry: Quán Cafe Hẹn Hò Mới View Hồ Tây ...",
+    "source_uri": "https://www.tiktok.com/@songthao298/video/7393311981547031825",
+    "snippet": "### Lý Do Nên Đến Cilas Coffee & Pastry * **View Hồ Tây Cực Đẹp:** Tận hưởng không gian mở với tầm nhìn bao quát ra mặt hồ, đặc biệt là vào",
+    "relevance_hint": 0.82560414,
+    "geographic": "westlake",
+    "thematic": "food_local",
+    "actionability": "direct",
+    "type": "lifestyle_trend",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "food_culinary",
+      "hanoi_westlake_local"
+    ],
+    "relevance_score": 0.8,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "verified_by_human": false,
+    "scanned_at": "2026-09-25T05:42:22.101594+00:00"
+  },
+  {
+    "id": "tavily-https://vinwonders.com/vi/wonderpedia/news/ca-phe-ho-tay",
+    "title": "Mê quên lối về với 25 quán cà phê Hồ Tây Hà Nội view ...",
+    "source_uri": "https://vinwonders.com/vi/wonderpedia/news/ca-phe-ho-tay",
+    "snippet": "2.1. The Summit Lounge quán cà phê Hồ Tây Hà Nội nổi tiếng · 2.2. Cup Of Tea Cafe & Bistro – quán cà phê ở Hồ Tây nên ghé · 2.3. Cà phê trứng Hồ",
+    "relevance_hint": 0.81025416,
+    "geographic": "westlake",
+    "thematic": "food_local",
+    "actionability": "direct",
+    "type": "lifestyle_trend",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "food_culinary",
+      "hanoi_westlake_local",
+      "travel_accommodation"
+    ],
+    "relevance_score": 0.8,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "verified_by_human": false,
+    "scanned_at": "2026-09-25T05:42:22.101594+00:00"
   }
 ]
