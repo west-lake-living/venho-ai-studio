@@ -1,24 +1,6 @@
 {
-  "generated_at": "2026-09-28T01:28:06.091151",
+  "generated_at": "2026-09-29T02:31:18.963095",
   "signals": [
-    {
-      "rs_id": "RS-weather-2026-09-28",
-      "type": "weather",
-      "domain": "weather_signal",
-      "evidence_level": "R2-T",
-      "forecast_date": "2026-09-28",
-      "condition": "rain",
-      "temperature_range": [
-        26.6,
-        33.8
-      ],
-      "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
-      "matching_scenario_keys": [
-        "venho_lobby_cozy"
-      ],
-      "expires_at": "2026-09-30T01:28:06.088189",
-      "fact_key": null
-    },
     {
       "rs_id": "RS-weather-2026-09-29",
       "type": "weather",
@@ -27,14 +9,14 @@
       "forecast_date": "2026-09-29",
       "condition": "heat",
       "temperature_range": [
-        26.4,
-        34.3
+        27.0,
+        34.6
       ],
       "visual_opportunity": "Nắng gắt — bóng râm rooftop, đồ uống mát",
       "matching_scenario_keys": [
         "venho_rooftop_shade"
       ],
-      "expires_at": "2026-09-30T01:28:06.088189",
+      "expires_at": "2026-10-01T02:31:18.958349",
       "fact_key": null
     },
     {
@@ -43,16 +25,16 @@
       "domain": "weather_signal",
       "evidence_level": "R2-T",
       "forecast_date": "2026-09-30",
-      "condition": "rain",
+      "condition": "heat",
       "temperature_range": [
-        27.3,
-        34.6
+        27.0,
+        34.8
       ],
-      "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
+      "visual_opportunity": "Nắng gắt — bóng râm rooftop, đồ uống mát",
       "matching_scenario_keys": [
-        "venho_lobby_cozy"
+        "venho_rooftop_shade"
       ],
-      "expires_at": "2026-09-30T01:28:06.088189",
+      "expires_at": "2026-10-01T02:31:18.958349",
       "fact_key": null
     },
     {
@@ -63,14 +45,14 @@
       "forecast_date": "2026-10-01",
       "condition": "rain",
       "temperature_range": [
-        26.5,
-        31.0
+        26.2,
+        33.1
       ],
       "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
       "matching_scenario_keys": [
         "venho_lobby_cozy"
       ],
-      "expires_at": "2026-09-30T01:28:06.088189",
+      "expires_at": "2026-10-01T02:31:18.958349",
       "fact_key": null
     },
     {
@@ -81,14 +63,14 @@
       "forecast_date": "2026-10-02",
       "condition": "rain",
       "temperature_range": [
-        26.2,
-        30.8
+        26.3,
+        32.1
       ],
       "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
       "matching_scenario_keys": [
         "venho_lobby_cozy"
       ],
-      "expires_at": "2026-09-30T01:28:06.088189",
+      "expires_at": "2026-10-01T02:31:18.958349",
       "fact_key": null
     },
     {
@@ -99,14 +81,14 @@
       "forecast_date": "2026-10-03",
       "condition": "rain",
       "temperature_range": [
-        26.3,
-        31.5
+        26.1,
+        32.4
       ],
       "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
       "matching_scenario_keys": [
         "venho_lobby_cozy"
       ],
-      "expires_at": "2026-09-30T01:28:06.088189",
+      "expires_at": "2026-10-01T02:31:18.958349",
       "fact_key": null
     },
     {
@@ -117,14 +99,32 @@
       "forecast_date": "2026-10-04",
       "condition": "rain",
       "temperature_range": [
-        24.5,
-        30.8
+        23.9,
+        31.0
       ],
       "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
       "matching_scenario_keys": [
         "venho_lobby_cozy"
       ],
-      "expires_at": "2026-09-30T01:28:06.088189",
+      "expires_at": "2026-10-01T02:31:18.958349",
+      "fact_key": null
+    },
+    {
+      "rs_id": "RS-weather-2026-10-05",
+      "type": "weather",
+      "domain": "weather_signal",
+      "evidence_level": "R2-T",
+      "forecast_date": "2026-10-05",
+      "condition": "rain",
+      "temperature_range": [
+        20.9,
+        24.3
+      ],
+      "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
+      "matching_scenario_keys": [
+        "venho_lobby_cozy"
+      ],
+      "expires_at": "2026-10-01T02:31:18.958349",
       "fact_key": null
     }
   ]
