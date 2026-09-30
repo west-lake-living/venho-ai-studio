@@ -8,12 +8,16 @@ paid generation starts, without paying for a probe. Each check is local:
 - policy     : transport attempts and paid-call guard limit parse to bounded positive ints;
                the provider's own request config keeps the 8192-token ceiling and thinking off
 - config     : Face DNA and rubric 07F load for the project/subject
+- input_text : UTF-8 bytes of the exact system prompt + user text + response schema a live
+               face validation sends (built offline); optionally checked against a caller bound
 - runtime    : google-genai imports and the provider constructs (client creation is offline)
 """
 
 from __future__ import annotations
 
+import json
 import os
+from pathlib import Path
 from typing import Any
 
 from shared.vision.providers.gemini_vision import (
@@ -22,17 +26,33 @@ from shared.vision.providers.gemini_vision import (
     GeminiVisionProvider,
     configured_transport_attempts,
 )
-from validator_studio.face_validator import _load_face_rubric
+from validator_studio.face_validator import _build_face_observe_prompt, _load_face_rubric
+from validator_studio.schemas.face_validation import FaceValidationObservation
 from validator_studio.utils import find_dna_path, load_json
 
 MAX_OUTPUT_TOKENS = 8192
+USER_TEXT = "Analyze these images and return JSON only."  # GeminiVisionProvider.analyze_many
+LIVE_REFERENCE_COUNT = 4  # candidate is compared against A2/B3/C/D
+# Reference basenames are embedded in the prompt (1 byte each per reference). The caller refuses
+# longer names, so measuring at this length gives an upper bound, not a sample.
+MAX_REFERENCE_BASENAME_CHARS = 128
 
 
 def _check(ok: bool, detail: str) -> dict[str, Any]:
     return {"ok": ok, "detail": detail}
 
 
-def validator_health(project: str, subject: str, expected_model: str) -> dict[str, Any]:
+def input_text_bytes(dna: dict[str, Any], rubric: dict[str, Any]) -> int:
+    stem = "r" * (MAX_REFERENCE_BASENAME_CHARS - len(".png") - 1)
+    refs = [Path(f"{stem}{index}.png") for index in range(LIVE_REFERENCE_COUNT)]
+    prompt = _build_face_observe_prompt(dna, rubric, reference_image_paths=refs)
+    schema = json.dumps(FaceValidationObservation.model_json_schema(), separators=(",", ":"))
+    return len(prompt.encode("utf-8")) + len(USER_TEXT.encode("utf-8")) + len(schema.encode("utf-8"))
+
+
+def validator_health(
+    project: str, subject: str, expected_model: str, max_text_bytes: int | None = None
+) -> dict[str, Any]:
     checks: dict[str, dict[str, Any]] = {}
 
     has_key = bool(os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY"))
@@ -55,8 +75,12 @@ def validator_health(project: str, subject: str, expected_model: str) -> dict[st
         rubric = _load_face_rubric(project)
         config_ok = bool(dna) and bool(rubric)
         checks["config"] = _check(config_ok, f"dna_version={dna.get('dna_version')}")
+        text_bytes = input_text_bytes(dna, rubric)
+        within = max_text_bytes is None or text_bytes <= max_text_bytes
+        checks["input_text"] = _check(within, f"bytes={text_bytes} bound={max_text_bytes}")
     except Exception as exc:  # noqa: BLE001 - any load failure means not ready
         checks["config"] = _check(False, type(exc).__name__)
+        checks["input_text"] = _check(False, type(exc).__name__)
 
     runtime_ok = False
     runtime_detail = "not constructed"

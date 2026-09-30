@@ -98,3 +98,13 @@ def test_cli_prints_one_json_line_and_exit_code_reflects_status(monkeypatch: pyt
     monkeypatch.delenv("GEMINI_API_KEY")
     blocked = CliRunner().invoke(app, ["health", "--expected-model", PIN])
     assert blocked.exit_code == 2
+
+
+def test_input_text_size_is_reported_and_bounded(monkeypatch: pytest.MonkeyPatch) -> None:
+    _ready_env(monkeypatch)
+    free = validator_health("venho_hotel", "linh_an", PIN)
+    size = int(free["checks"]["input_text"]["detail"].split()[0].split("=")[1])
+    assert size > 0 and free["checks"]["input_text"]["ok"] is True
+    tight = validator_health("venho_hotel", "linh_an", PIN, max_text_bytes=size - 1)
+    assert tight["status"] == "BLOCKED" and tight["checks"]["input_text"]["ok"] is False
+    assert validator_health("venho_hotel", "linh_an", PIN, max_text_bytes=size)["status"] == "READY"

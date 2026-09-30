@@ -122,13 +122,14 @@ def health_cmd(
     project: str = typer.Option("venho_hotel", "--project", "-p"),
     subject: str = typer.Option("linh_an", "--subject", "-s"),
     expected_model: str = typer.Option(..., "--expected-model", help="Pinned Gemini model the caller authorized"),
+    max_text_bytes: Optional[int] = typer.Option(None, "--max-text-bytes", help="Caller's priced bound on prompt+schema+user text"),
 ) -> None:
     """Non-media readiness of the live face validator. Never calls Gemini, never costs money."""
     import json
 
     from validator_studio.health import validator_health
 
-    result = validator_health(project, subject, expected_model)
+    result = validator_health(project, subject, expected_model, max_text_bytes)
     typer.echo(json.dumps(result, sort_keys=True, separators=(",", ":")))
     if result["status"] != "READY":
         raise typer.Exit(2)
