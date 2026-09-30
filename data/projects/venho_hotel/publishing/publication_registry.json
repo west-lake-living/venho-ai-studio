@@ -18553,13 +18553,13 @@
       "idempotency_key": "c2c1e530d85fb64c17e95becd690872abcf0c65d8b35024d909ebccf034ce067",
       "platform": "facebook",
       "slot_id": "slot-2026-10-07-wednesday",
-      "status": "PENDING_APPROVAL",
+      "status": "REJECTED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-09-27T17:37:17.638957+00:00",
-      "updated_at": "2026-09-27T17:37:17.669236+00:00",
+      "updated_at": "2026-09-30T07:34:46.652420+00:00",
       "content": {
         "title": "Chợ Hoa Quảng Bá: một địa chỉ màu sắc ở Tây Hồ",
         "text": "Có những địa chỉ ở Tây Hồ đáng ghé chỉ vì màu sắc. Chợ Hoa Quảng Bá, 236 đường Âu Cơ, là một trong số đó.\n\nĐây là một trong những chợ hoa lớn của khu vực, và cũng là điểm nhiều người tìm đến để chụp ảnh khi ở Tây Hồ.\n\nĐường Âu Cơ dẫn vào chợ có hàng cây lớn hai bên, tán phủ kín vỉa hè. Những hôm trời trong, nắng lọt qua kẽ lá xuống mặt đường, phía sau là dãy nhà cao thấp xen nhau rất đặc trưng của khu này. Bạn không cần đèn, không cần filter — ánh sáng tự nhiên ở đây đã đủ.\n\nMột gợi ý cho lịch trình nửa ngày: ghé chợ hoa trước, đi chậm, xem người ta chọn hoa và xếp hoa. Sau đó vòng ngược lại phía mặt nước, tìm một chỗ ngồi và đợi hoàng hôn Hồ Tây. Hai khung cảnh rất khác nhau, nhưng nằm gọn trong cùng một buổi chiều ở Tây Hồ.\n\nVen Hồ Hotel nằm trên phố Nguyễn Đình Thi, ngay cạnh hồ. Vị trí này giúp bạn đi và về trong ngày mà không phải tính toán quãng đường, và khi quay lại thì chỉ cần bước vài bước là ra tới bờ nước.\n\nNếu bạn đang lên kế hoạch cho một chuyến Hà Nội sắp tới, nhắn cho Ven Hồ Hotel để xem phòng trống những ngày bạn định ở nhé.\n\n#VenHoHotelHanoi #ChoHoaQuangBa #HoTay #TayHo #HanoiTravel\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-abc4a2c0",
@@ -18687,7 +18687,9 @@
         "claim_kill_switch_triggered": false,
         "content_brand_fit": 95,
         "content_overall_score": 92.76
-      }
+      },
+      "rejected_by": "hpham1504@gmail.com",
+      "rejected_reason": "Bài viết về chợ Hoa Quảng Bá đã có rồi."
     },
     {
       "publication_id": "pub-wednesday-instagram-cedf1872",
