@@ -18697,13 +18697,13 @@
       "idempotency_key": "463ee713ab10aae8fe2e6400098f9eaec9ed865c973d969704f40a340a52fc13",
       "platform": "instagram",
       "slot_id": "slot-2026-10-07-wednesday",
-      "status": "PENDING_APPROVAL",
+      "status": "REJECTED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-09-27T17:37:36.373441+00:00",
-      "updated_at": "2026-09-27T17:37:36.404098+00:00",
+      "updated_at": "2026-09-30T07:35:01.484625+00:00",
       "content": {
         "title": "Chợ Hoa Quảng Bá — một buổi ghé qua giữa trời trong",
         "text": "Ở Tây Hồ, có những địa chỉ bạn nhớ bằng màu sắc trước khi nhớ bằng tên đường.\n\nChợ Hoa Quảng Bá nằm ở 236 đường Âu Cơ, là khu chợ hoa lớn của khu vực Tây Hồ và cũng là điểm nhiều người tìm đến để chụp ảnh.\n\nMột ngày trời trong, hàng cây hai bên đường đổ bóng xuống vỉa hè, phía xa là những mái nhà cao thấp chen nhau của Hà Nội. Ánh sáng tự nhiên lúc giữa trưa hoặc đầu giờ chiều làm màu hoa hiện lên rất thật trong khung hình, không cần chỉnh nhiều.\n\nKhông có ghế ngồi, không có chỗ dừng lâu. Chợ hoa là nơi để đi chậm, nhìn, chọn vài bó mang về, rồi tiếp tục vòng quanh hồ.\n\nĐiểm hay của việc ở lại Tây Hồ là những nơi như thế này nằm trong cùng một nhịp đi bộ và đạp xe ven hồ. Ven Hồ Hotel trên phố Nguyễn Đình Thi là một điểm bắt đầu vừa vặn cho buổi sáng, và cũng là chỗ để quay về khi trong tay đã có hoa.\n\nNếu bạn đang lên lịch cho vài ngày ở Hà Nội, nhắn cho Ven Hồ Hotel để xem phòng trống nhé.\n\n#VenHoHotelHanoi #ChoHoaQuangBa #HoTay #WestLakeHanoi #KhachSanViewHoTay #NguyenDinhThi #HaNoi #KhamPhaHoTay",
@@ -18834,7 +18834,9 @@
         "claim_kill_switch_triggered": false,
         "content_brand_fit": 95,
         "content_overall_score": 93.55
-      }
+      },
+      "rejected_by": "hpham1504@gmail.com",
+      "rejected_reason": "Bài viết về chợ Hoa Quảng Bá đã có rồi."
     },
     {
       "publication_id": "pub-friday-facebook-358887d0",
