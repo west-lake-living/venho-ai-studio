@@ -58,7 +58,8 @@ class YuNetFaceDetector:
         cv2_module: Any | None = None,
         expected_model_sha256: str = YuNetGeometryExtractor.model_sha256,
     ) -> None:
-        root = Path(__file__).resolve().parents[3]
+        # identity_restoration/infrastructure/<file> -> repo root (parents[3] escaped the repo).
+        root = Path(__file__).resolve().parents[2]
         self.model_path = Path(model_path) if model_path is not None else (
             root / "models" / "geometry" / "yunet" / YuNetGeometryExtractor.model_name
         )

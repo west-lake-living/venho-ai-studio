@@ -43,6 +43,28 @@ def main(argv: list[str] | None = None) -> int:
 
     sub.add_parser("health", help="Probe worker health and print WorkerHealth as JSON")
 
+    prepare_p = sub.add_parser(
+        "prepare-identity-input",
+        help="Local YuNet geometry -> crop + crop-local/full-canvas masks + observability (no GPU/network)",
+    )
+    prepare_p.add_argument("--image", required=True, type=Path, help="Keyframe to prepare")
+    prepare_p.add_argument("--out-dir", required=True, type=Path, help="Write-once output directory")
+
+    measure_p = sub.add_parser(
+        "measure-identity",
+        help="Local blur/framing measurement against an approved policy (no GPU/network)",
+    )
+    measure_p.add_argument("--image", required=True, type=Path)
+    measure_p.add_argument("--policy", required=True, type=Path)
+
+    calibrate_p = sub.add_parser(
+        "calibrate-identity-measurement",
+        help="Measure the locked A2/B01 positives and derived negatives against a policy",
+    )
+    calibrate_p.add_argument("--policy", required=True, type=Path)
+    calibrate_p.add_argument("--a2", required=True, type=Path)
+    calibrate_p.add_argument("--b01", required=True, type=Path)
+
     benchmark = sub.add_parser("benchmark", help="Validate and orchestrate the GW-P4 benchmark")
     benchmark_sub = benchmark.add_subparsers(dest="benchmark_command", required=True)
     for name, help_text in (
@@ -91,6 +113,53 @@ def main(argv: list[str] | None = None) -> int:
             "vramFreeMb": result.vram_free_mb,
         })
         return 0
+
+    if args.command == "prepare-identity-input":
+        from ..application.identity_input_preparation import prepare_identity_input
+        from ..infrastructure.face_observability_yunet import (
+            create_pinned_yunet_observability_service,
+        )
+
+        try:
+            emit_json(prepare_identity_input(
+                args.image, args.out_dir, observer=create_pinned_yunet_observability_service(),
+            ))
+            return 0
+        except (OSError, ValueError) as exc:
+            emit_json({
+                "contractVersion": "identity-input-preparation-v1",
+                "error": {"code": "ERR_GW_PREPARATION_FAILED", "message": str(exc), "retryable": False},
+            })
+            return 1
+
+    if args.command in ("measure-identity", "calibrate-identity-measurement"):
+        from PIL import Image
+
+        from ..application.identity_measurement import (
+            MeasurementPolicyError,
+            load_policy,
+            measure_identity,
+        )
+        from ..infrastructure.face_observability_yunet import (
+            create_pinned_yunet_observability_service,
+        )
+
+        try:
+            policy = load_policy(json.loads(args.policy.read_text(encoding="utf-8")))
+            observer = create_pinned_yunet_observability_service()
+            if args.command == "measure-identity":
+                emit_json(measure_identity(args.image.read_bytes(), policy, observer))
+            else:
+                from ..application.identity_measurement_fixtures import calibrate
+
+                emit_json(calibrate(Image.open(args.a2), Image.open(args.b01), observer, policy))
+            return 0
+        except (OSError, ValueError, MeasurementPolicyError) as exc:
+            emit_json({
+                "contractVersion": "identity-measurement-v1",
+                "error": {"code": "ERR_IDENTITY_MEASUREMENT_FAILED", "message": str(exc), "retryable": False},
+            })
+            return 1
 
     if args.command == "run":
         module = build_identity_restoration_module()

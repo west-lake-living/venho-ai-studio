@@ -22,6 +22,7 @@
     "fullCanvasMaskFeatherPath": { "type": "string" },
     "fullCanvasMaskVersion": { "type": "string" },
     "fullCanvasMaskSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "maskEditableSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
     "cropBox": {
       "type": "object",
       "required": ["left", "top", "right", "bottom"],

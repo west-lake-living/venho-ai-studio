@@ -161,6 +161,18 @@ def parse_restore_command(payload: dict[str, Any]) -> RestoreCommand:
         raise ValueError(f"crop-local mask {crop_mask_size} must match crop {crop_size}")
     if full_mask_size != base_size:
         raise ValueError(f"full-canvas mask {full_mask_size} must match base {base_size}")
+    expected_crop_mask_sha = payload.get("maskEditableSha256")
+    if expected_crop_mask_sha is not None:
+        actual_crop_mask_sha = hashlib.sha256(mask.editable).hexdigest()
+        if actual_crop_mask_sha != expected_crop_mask_sha:
+            raise ValueError(
+                "crop-local mask SHA-256 mismatch: "
+                f"expected {expected_crop_mask_sha}, got {actual_crop_mask_sha}"
+            )
+    _assert_crop_local_is_full_canvas_crop(
+        crop_mask=mask.editable, full_canvas_mask=full_canvas_mask.editable,
+        box=transform.to_box(), base_size=base_size, crop_size=crop_size,
+    )
     return RestoreCommand(
         run_id=payload["runId"],
         attempt_id=payload["attemptId"],
@@ -178,6 +190,26 @@ def parse_restore_command(payload: dict[str, Any]) -> RestoreCommand:
         timeout_seconds=int(payload.get("timeoutSeconds", 600)),
         case_id=payload.get("caseId"),
     )
+
+
+def _assert_crop_local_is_full_canvas_crop(
+    *, crop_mask: bytes, full_canvas_mask: bytes, box: tuple[int, int, int, int],
+    base_size: tuple[int, int], crop_size: tuple[int, int],
+) -> None:
+    """The restoration (crop-local) mask must be the preservation mask under the crop box.
+
+    Otherwise the restorer could edit pixels the full-canvas pixel lock later discards, or the
+    request could pair masks from different frames.
+    """
+    left, top, right, bottom = box
+    if not (0 <= left < right <= base_size[0] and 0 <= top < bottom <= base_size[1]):
+        raise ValueError(f"cropBox {box} is outside base {base_size}")
+    if (right - left, bottom - top) != crop_size:
+        raise ValueError(f"cropBox {box} does not match crop {crop_size}")
+    full = Image.open(BytesIO(full_canvas_mask)).convert("L").crop(box)
+    local = Image.open(BytesIO(crop_mask)).convert("L")
+    if full.tobytes() != local.tobytes():
+        raise ValueError("crop-local mask is not the full-canvas mask cropped by cropBox")
 
 
 def load_restore_command(path: Path) -> RestoreCommand:

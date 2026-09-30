@@ -4889,3 +4889,26 @@ Commit `8b147cf` / `9a0abef` / `d25498e` (venho-ai-studio) · `ca481ca` /
   `OUTSIDE_DNA.json` cho khớp overrides; `dna_version` 1.1 → 1.2. Không cần đổi
   ảnh. Rule rác `observed`: xác nhận đã sạch (0/6 fail).
 # test sync Mon Sep 21 09:55:22 UTC 2026
+
+### LAV10 faceless-video mask transport support (2026-09-30, not committed)
+
+`venho-restore prepare-identity-input` generalises the frozen B01 pipeline (YuNet ->
+`crop_for_identity` -> `hierarchical_face_masks.shape`) to any frame; B01 reproduces the frozen
+crop box and both mask SHA-256s. Restoration requests may pin `maskEditableSha256`; the parser now
+refuses a crop-local mask that is not the full-canvas mask under `cropBox`; result lineage adds a
+recomputed `maskBinding`. Fixed the YuNet observability default model path (`parents[3]` escaped
+the repo, so observability always reported DETECTOR_FAILURE). No blur/occlusion/framing
+measurement exists; they are reported as UNMEASURED. identity_restoration tests 340 PASS. No
+ComfyUI, GPU, provider or network call.
+
+## Identity Measurement Authority R1 — calibration (2026-09-30, WIP, not committed)
+- Added identity_measurement.py + identity_measurement_fixtures.py + CLI measure-identity / calibrate-identity-measurement (policy linh-an-identity-measurement v1.0: blur>=70.0, occlusion proxy ==1.0, framing bbox_h/frame_h>=0.08).
+- A2/B01 PASS all three. Blur ladder and 3 framing negatives FAIL as required. Eye/nose occlusion negatives still PASS the proxy (BLOCKED_CALIBRATION, strict xfail). Thresholds untouched; awaiting Human v1.1. Details: faceless-video docs/recovery/evidence/LAV10_VOICE_PERSISTENCE_AND_JOB_SOURCE/report.md.
+- Tests: identity_restoration 347 passed, 2 xfailed.
+- Occlusion v1.1 audit (2026-09-30): BLOCKED_IMPLEMENTATION_MISSING — no local model yields a per-region visibility score (YuNet/InsightFace give points only; no face-mesh or face-parsing model present). See faceless-video evidence report.
+- Occlusion v1.1 benchmark (2026-09-30): yakhyo/face-parsing ResNet18 ONNX (sha 0d9bd318…) REJECTED — A2/B01 pass but eye/nose covered fixtures still score >= 0.70 (0.80–1.00); threshold unchanged; licence blocker separate. Details in faceless-video evidence report.
+
+## Identity Measurement Authority R1 — policy v1.1 (2026-09-30)
+- `measure-identity` now returns BLUR and FRAMING only (`identity-measurement-set-v1`, `humanGates: ["OCCLUSION"]`); occlusion is a Human HARD_GATE and a policy that names an automated occlusion algorithm is refused.
+- Removed `OCCLUSION_PROXY_V1` and its fixtures/xfail tests (proxy could not fail a covered eye/nose; face-parsing benchmark also rejected).
+- Calibration on A2/B01 unchanged (blur 1284.79 / 1319.12, ladder crosses at sigma 4, framing negatives FAIL). identity_restoration: 346 passed. Uncommitted.

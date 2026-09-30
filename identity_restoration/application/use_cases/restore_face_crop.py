@@ -195,6 +195,12 @@ class RestoreFaceCropUseCase:
                     "sha256": hashlib.sha256(cmd.full_canvas_mask.editable).hexdigest(),
                 },
             },
+            # Recomputed from the bytes actually sent to the restorer and used for compositing.
+            "maskBinding": {
+                "cropBox": list(cmd.crop_transform.to_box()),
+                "cropLocalEqualsFullCanvasCrop": _crop_local_matches(cmd),
+                "compositedWith": "preservation",
+            },
             "runtimeMs": runtime_ms,
             "pixelLock": {"passed": pixel.passed, "mutatedPixelCount": pixel.mutated_pixel_count,
                           "editableRegionHash": pixel.editable_region_hash},
@@ -227,6 +233,16 @@ class RestoreFaceCropUseCase:
             run_id=cmd.run_id, attempt_id=cmd.attempt_id, status="FAILED", pixel_lock=pixel_lock,
             error=RestorationErrorDetail(code=err.code, message=err.message, retryable=err.retryable),
         )
+
+
+def _crop_local_matches(cmd: RestoreCommand) -> bool:
+    from io import BytesIO
+
+    from PIL import Image
+
+    full = Image.open(BytesIO(cmd.full_canvas_mask.editable)).convert("L").crop(cmd.crop_transform.to_box())
+    local = Image.open(BytesIO(cmd.mask.editable)).convert("L")
+    return full.tobytes() == local.tobytes()
 
 
 def _effective_config_sha256(*, workflow_id: str | None, workflow_sha256: str | None,
