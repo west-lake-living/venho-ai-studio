@@ -18252,13 +18252,13 @@
       "idempotency_key": "e85a2bfc72256109b7b651a03e1f061630b7861efab66e4897c102d10d8db432",
       "platform": "facebook",
       "slot_id": "slot-2026-10-05-monday",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-09-27T17:36:36.946526+00:00",
-      "updated_at": "2026-09-27T17:36:36.978874+00:00",
+      "updated_at": "2026-09-30T07:34:04.303812+00:00",
       "content": {
         "title": "Sương sớm trên mặt hồ, trước khi Hà Nội thức giấc",
         "text": "Có một khoảng ngắn trước khi Hà Nội thức giấc, khi mặt Hồ Tây gần như không còn đường viền.\n\nSương nằm thấp trên mặt nước, che mất bờ bên kia. Đèn đường vẫn sáng dù trời đã ngả xanh. Vài chiếc xe chạy qua đường Nguyễn Đình Thi, tiếng động tan nhanh, rồi lại là gió và tiếng nước vỗ nhẹ vào kè đá.\n\nĐầu tuần thường bắt đầu bằng danh sách việc phải làm. Nhưng ở quãng này của buổi sáng, chưa có gì gấp. Người bán hàng dọn đồ. Một người chạy bộ đi qua. Sương mỏng dần theo từng phút, và đến lúc bạn kịp nhận ra thì bờ bên kia đã hiện lại.\n\nĐể có mười lăm phút đó, chỉ cần dậy sớm hơn thường lệ một chút và ở gần hồ.\n\nVen Hồ Hotel nằm ngay trên đường Nguyễn Đình Thi. Buổi sáng, sảnh khách sạn yên, ánh sáng dịu, sàn gạch nâu với hoa văn tròn, quầy lễ tân gỗ nâu sẫm và vài bức tranh treo tường. Đẩy cửa kính bước ra, đi thêm một đoạn ngắn là tới mép nước.\n\nMột chỗ nghỉ vừa vặn, đủ gần để bạn không bỏ lỡ phần yên nhất của ngày.\n\nNếu bạn đang tính những ngày ở Hà Nội, nhắn tin cho Ven Hồ Hotel để xem phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-monday-facebook-dc8b4f2e",
@@ -18371,8 +18371,28 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.14
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-09-30T07:34:04.282432+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-c562b4dc-1b14-427b-8266-8c118dcf3953",
+        "content_package_id": "c562b4dc-1b14-427b-8266-8c118dcf3953",
+        "copy_version_ids": [
+          "brief-monday-facebook-7f85747b-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "463a503eae73dedb4d820c172fa95e02f0fbe9755fd2121476f9fa82e3e5fdbf",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-monday-facebook-7f85747b@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-09-30T07:34:04.282458+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "27a1d6569b8af8fb1a8012ade56a70a4583a7e5a9c5e5c381c1a507519046696",
+        "checksum": "6bac2fc59e050d9062f2e33251e6f7e3640ed8f556c520f5a94978a9f8635540"
       }
     },
     {
@@ -18381,13 +18401,13 @@
       "idempotency_key": "8d695c1e860ccddeccffc3ff526300245d43372a311b419c8971215e7f9cd511",
       "platform": "instagram",
       "slot_id": "slot-2026-10-05-monday",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-09-27T17:36:51.476032+00:00",
-      "updated_at": "2026-09-27T17:36:51.506563+00:00",
+      "updated_at": "2026-09-30T07:34:04.303812+00:00",
       "content": {
         "title": "Sương sớm trên mặt hồ, trước khi Hà Nội thức giấc",
         "text": "Có những buổi sáng đầu tuần, Hồ Tây thức dậy trước cả thành phố.\n\nMặt nước phẳng, một lớp sương mỏng còn nằm lại phía xa. Vài chiếc xe máy chạy ngang Nguyễn Đình Thi, tiếng động cơ tan nhanh vào không khí ẩm. Hàng cây bên đường còn ướt, chưa kịp nắng.\n\nĐó là khoảng thời gian ngắn trong ngày khi Hồ Tây gần như thuộc về những người dậy sớm. Không cần đi xa, chỉ cần bước ra khỏi cửa và đi bộ vài trăm mét ven hồ, rồi quay lại khi thành phố bắt đầu ồn hơn.\n\nSảnh Ven Hồ Hotel lúc ấy vẫn yên. Cửa kính mở ra đường, sàn gạch nâu với những vòng tròn quen thuộc, quầy lễ tân gỗ nâu đỏ, vài bức tranh trên tường và ánh đèn dịu. Một khoảng đệm nhỏ giữa mặt hồ và một tuần mới vừa bắt đầu.\n\nNếu bạn đang tính vài ngày ở Hà Nội và muốn bắt đầu buổi sáng bên Hồ Tây, nhắn Ven Hồ Hotel để xem phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanHoTay #KhamPhaHoTay #HaNoi #HanoiTravel #NguyenDinhThi",
@@ -18503,8 +18523,28 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.7
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-09-30T07:34:04.282432+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-55471201-0451-4a71-9ec9-e9de76cd0bda",
+        "content_package_id": "55471201-0451-4a71-9ec9-e9de76cd0bda",
+        "copy_version_ids": [
+          "brief-monday-instagram-cea71e7e-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "e5ec00bb3f2db0be6b21800a4763cf04a44e720c562f8d7dc82faa880730d264",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-monday-instagram-cea71e7e@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-09-30T07:34:04.282568+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "287f86f24ea85f3a48a7d68adf1feb02e1cc2253519b0db0672974b9198e43f1",
+        "checksum": "b56fb87a4ae5ac4945578f1a78d5acf1098f1ce6cc00c57d3164570e1ad98776"
       }
     },
     {
@@ -18645,7 +18685,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 92.76
       }
     },
@@ -18790,7 +18830,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.55
       }
     },
@@ -18919,7 +18959,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 92.4
       }
     },
@@ -19050,7 +19090,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.7
       }
     },
@@ -19179,7 +19219,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 91.97
       }
     },
@@ -19310,7 +19350,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.7
       }
     }
