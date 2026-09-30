@@ -18848,13 +18848,13 @@
       "idempotency_key": "134e5b33a3d7c9226b85e7e867ebc2c5f4dbd84f47df2a1b53a3378c2341a4a9",
       "platform": "facebook",
       "slot_id": "slot-2026-10-09-friday",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-09-27T17:37:57.962130+00:00",
-      "updated_at": "2026-09-27T17:37:57.992752+00:00",
+      "updated_at": "2026-09-30T07:35:26.013275+00:00",
       "content": {
         "title": "Ngày mưa, sảnh Ven Hồ là chỗ ngồi đọc hết vài chương sách",
         "text": "Mưa Hà Nội hiếm khi báo trước. Đang định đi bộ một vòng Hồ Tây thì trời đổi ý, và cả buổi sáng bỗng trống ra.\n\nNhững lúc như vậy, sảnh khách sạn trở thành nơi hữu dụng hơn người ta tưởng.\n\nCửa kính nhìn ra Nguyễn Đình Thi, nước chảy thành vệt dài trên mặt kính, phía sau là Hồ Tây mờ đi một chút. Bên trong, sàn gạch nâu với những vòng tròn đồng tâm, quầy lễ tân gỗ nâu đỏ sậm, ánh đèn dịu và đều, vài bức tranh treo trên tường. Không gian gọn, đủ yên để nghe tiếng mưa rơi ngoài mái hiên.\n\nMột chiếc ghế kê gần cửa. Một cuốn sách mang theo từ nhà, hoặc cuốn vừa mua ở hiệu sách hôm trước. Thế là đủ cho hai tiếng.\n\nĐiều thú vị là những buổi sáng bị mưa làm hỏng kế hoạch lại thường là phần dễ nhớ nhất của chuyến đi. Không phải vì có gì đặc biệt, mà vì đó là khoảng trống hiếm hoi giữa một lịch trình kín.\n\nVà khi mưa ngớt, Hồ Tây vẫn ở ngay đó. Mặt nước sau mưa sáng hơn bình thường, đường ven hồ vắng người, không khí mát và sạch. Chuyến đi bộ bị hoãn lại chỉ đổi giờ, không mất đi.\n\nNếu bạn đang lên kế hoạch cho vài ngày ở Hà Nội, nhắn tin cho Ven Hồ Hotel để xem lịch phòng trống nhé. Thông tin phòng và vị trí có tại venhohotel.com\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-friday-facebook-358887d0",
@@ -18969,6 +18969,26 @@
         "claim_kill_switch_triggered": false,
         "content_brand_fit": 95,
         "content_overall_score": 92.4
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-09-30T07:35:25.991930+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-6d7e0add-fb24-4e7b-be60-be0435e373ff",
+        "content_package_id": "6d7e0add-fb24-4e7b-be60-be0435e373ff",
+        "copy_version_ids": [
+          "brief-friday-facebook-ba8a8aa7-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "9583366832bfd0d87ba12aa448efcec76760d598b8335d5353ee8ccbd075f8a5",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-friday-facebook-ba8a8aa7@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-09-30T07:35:25.991956+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "2267af39c507e802717e13b11f294856dcb88e4391f3374e0bf171474aaed51a",
+        "checksum": "68d8acb141426e198cbf06fdbdc7848ddb2222f8ccf3e0706cb63ec0591a86fa"
       }
     },
     {
@@ -18977,13 +18997,13 @@
       "idempotency_key": "a56cb39838068ee18221e8b68736245db28a229f7cbe2afd9e567d4d7161faa2",
       "platform": "instagram",
       "slot_id": "slot-2026-10-09-friday",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-09-27T17:38:11.854312+00:00",
-      "updated_at": "2026-09-27T17:38:11.885126+00:00",
+      "updated_at": "2026-09-30T07:35:26.013275+00:00",
       "content": {
         "title": "Ngày mưa ở lobby Ven Hồ: một cuốn sách là đủ",
         "text": "Mưa Hà Nội có cái lý của nó: làm chậm lại mọi kế hoạch trong ngày.\n\nCửa kính lobby mờ đi một chút. Ánh sáng ngoài phố dịu lại, hắt lên nền gạch nâu với những hoa văn tròn dưới chân.\n\nỞ đây có vài chiếc ghế gỗ tông nâu đỏ sẫm, một bức tranh treo tường, quầy lễ tân bằng gỗ và tiếng mưa đủ nhỏ để bạn nghe thấy mình lật trang sách. Không gian không rộng, nhưng vừa đủ để ngồi lâu hơn dự định.\n\nHồ Tây chỉ cách vài bước chân ngoài kia, trên Nguyễn Đình Thi. Mưa tạnh, mặt hồ thường sáng lên một màu khác hẳn buổi sáng — và đó là lúc nên bước ra ngoài.\n\nCòn trước đó, cứ để cơn mưa quyết định nhịp của ngày.\n\nNếu bạn đang tính những ngày ở Hà Nội, nhắn Ven Hồ Hotel để xem phòng trống nhé.\n\n#VenHoHotelHanoi #KhachSanViewHoTay #HoTay #NguyenDinhThi #WestLakeHanoi #HaNoi #HanoiTravel",
@@ -19100,6 +19120,26 @@
         "claim_kill_switch_triggered": false,
         "content_brand_fit": 95,
         "content_overall_score": 93.7
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-09-30T07:35:25.991930+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-b239243d-46f7-4522-b5ab-bd8c7ed3d546",
+        "content_package_id": "b239243d-46f7-4522-b5ab-bd8c7ed3d546",
+        "copy_version_ids": [
+          "brief-friday-instagram-a1238dc0-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "ea563b183527825c8a8d2d9b8d824bb25419b1b05c7446a250e4dd73bd54b0ef",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-friday-instagram-a1238dc0@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-09-30T07:35:25.992063+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "101a434d67d4ca1c22eeb1d814fc3c81facb05149bf658e6406980640424face",
+        "checksum": "7da90a47543a8afbc84ebf8eb7639986b60ff0e5d22c83f1f1a6d5b47c7bd77a"
       }
     },
     {
@@ -19108,13 +19148,13 @@
       "idempotency_key": "2e8f71f4e2edbf4da8a185949a7239d40b6d9c6824da29725f708da85e893a1c",
       "platform": "facebook",
       "slot_id": "slot-2026-10-10-saturday",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-09-27T17:38:39.467039+00:00",
-      "updated_at": "2026-09-27T17:38:39.497890+00:00",
+      "updated_at": "2026-09-30T07:35:51.088941+00:00",
       "content": {
         "title": "Cuối tuần ở Tây Hồ, bữa sáng thường muộn hơn một chút",
         "text": "Cuối tuần ở Tây Hồ, bữa sáng hiếm khi diễn ra đúng giờ. Và đó lại là phần dễ chịu nhất.\n\nThứ Bảy, không ai đặt báo thức. Đến gần chín giờ, nắng đã lọt qua cánh cửa kính ở sảnh Ven Hồ Hotel, đổ thành vệt dài trên nền gạch nâu có hoa văn tròn. Quầy lễ tân gỗ nâu sẫm, một bức tranh treo trên tường, ánh đèn vừa đủ sáng. Mọi thứ yên và gọn, không có gì giục bạn phải nhanh lên.\n\nBạn gửi chìa khóa, bước ra Nguyễn Đình Thi. Mặt hồ lúc này đã hết sương, gió thổi ngang mặt đường. Vài người đạp xe qua, vài người dắt chó đi dạo, nhịp đi của ai cũng chậm hơn ngày thường.\n\nBữa ăn đầu tiên trong ngày có thể là một bát bún ở quán ven đường, cũng có thể là cà phê với trứng ở một quán nhìn ra hồ. Không cần đặt bàn trước, không cần lên kế hoạch. Ngồi lâu một chút cũng chẳng sao, vì buổi chiều vẫn còn nguyên ở đó.\n\nCuối tuần ở Tây Hồ không cần nhiều hoạt động. Phần lớn giá trị nằm ở việc bạn được ăn sáng lúc mười giờ mà không thấy mình đang lãng phí thời gian.\n\nVen Hồ Hotel nằm trên Nguyễn Đình Thi, cách mặt hồ vài bước chân, đủ gần để bạn quyết định điểm ăn sáng ngay lúc mở cửa bước ra.\n\nNếu bạn đang tính một cuối tuần chậm ở Hà Nội, nhắn tin cho Ven Hồ Hotel để xem phòng trống cho ngày bạn định đi nhé.\n\n#VenHoHotelHanoi #HoTay #KhachSanHoTay #CuoiTuanOTayHo #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-saturday-facebook-559d4c1e",
@@ -19229,6 +19269,26 @@
         "claim_kill_switch_triggered": false,
         "content_brand_fit": 95,
         "content_overall_score": 91.97
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-09-30T07:35:51.067869+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-4f95ab3a-8dd0-4b38-979a-301e5147bb34",
+        "content_package_id": "4f95ab3a-8dd0-4b38-979a-301e5147bb34",
+        "copy_version_ids": [
+          "brief-saturday-facebook-95731302-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "4a35b365eb052543b6416488828897be75f1e12626e4b2ef8ae24ba796fd3305",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-saturday-facebook-95731302@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-09-30T07:35:51.067901+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "be2ccfee3a2157d04801ff19e787dccd7a38113ab3424c3287b757d03e58f40d",
+        "checksum": "c04f6901a5b9e3f0db6b5a6ef62f160348de824ee1a2068ac0f2ac2ad1436e2f"
       }
     },
     {
@@ -19237,13 +19297,13 @@
       "idempotency_key": "4385fb27527da6cf02e6787f6a1ce2eb58ab75894591a985b48bab1c40524f8e",
       "platform": "instagram",
       "slot_id": "slot-2026-10-10-saturday",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-09-27T17:39:05.568988+00:00",
-      "updated_at": "2026-09-27T17:39:05.600455+00:00",
+      "updated_at": "2026-09-30T07:35:51.088941+00:00",
       "content": {
         "title": "Bữa sáng muộn của một ngày cuối tuần ven hồ",
         "text": "Cuối tuần ở Tây Hồ thường bắt đầu muộn hơn một chút. Khoảng mười giờ, nắng mới thật sự chạm xuống mặt hồ.\n\nCửa kính ở sảnh mở ra, gió từ phía hồ đi vào cùng tiếng xe máy chạy chậm trên Nguyễn Đình Thi.\n\nSàn gạch nâu với những vòng tròn nhỏ. Quầy lễ tân gỗ sẫm màu. Vài bức tranh trên tường, ánh sáng vừa đủ, không ai vội đi đâu cả.\n\nBữa sáng muộn cuối tuần không cần cầu kỳ. Một chỗ ngồi hướng ra phía hồ, một ly cà phê, và cả buổi sáng còn lại chưa có kế hoạch gì.\n\nTừ đây đi bộ một đoạn là tới mép nước. Có người ra hồ ngay, có người ngồi lại thêm mười lăm phút nữa. Chiều quay về vẫn kịp kê ghế ngắm hoàng hôn Hồ Tây.\n\nNếu bạn đang tính một cuối tuần chậm ở Hà Nội, nhắn cho Ven Hồ Hotel để xem phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhamPhaHoTay #KhachSanHoTay #CuoiTuanOTayHo #HaNoi",
@@ -19360,6 +19420,26 @@
         "claim_kill_switch_triggered": false,
         "content_brand_fit": 95,
         "content_overall_score": 93.7
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-09-30T07:35:51.067869+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-e1528aa3-c314-435b-8948-091f127ae739",
+        "content_package_id": "e1528aa3-c314-435b-8948-091f127ae739",
+        "copy_version_ids": [
+          "brief-saturday-instagram-2e534a22-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "6f837bb807dbff438f908894a24f97b9beb2d66cd00bfa0faac64cdbdb5bfa71",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-saturday-instagram-2e534a22@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-09-30T07:35:51.068009+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "f436239ce2cba5f7f8a81a7a3c6bb26a694f89d148b4c54d11ef7bb1d8cc9564",
+        "checksum": "6b5bc4ff9060ebeb3acac73e25ef47834db5c0e93c6cf3f6b24699ddaa36613d"
       }
     }
   ]
