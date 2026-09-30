@@ -117,6 +117,23 @@ def content_cmd(
     _print_paths(run_content_validation(project, subject, draft_file, platform, lang, prompt_file, output_root))
 
 
+@app.command("health")
+def health_cmd(
+    project: str = typer.Option("venho_hotel", "--project", "-p"),
+    subject: str = typer.Option("linh_an", "--subject", "-s"),
+    expected_model: str = typer.Option(..., "--expected-model", help="Pinned Gemini model the caller authorized"),
+) -> None:
+    """Non-media readiness of the live face validator. Never calls Gemini, never costs money."""
+    import json
+
+    from validator_studio.health import validator_health
+
+    result = validator_health(project, subject, expected_model)
+    typer.echo(json.dumps(result, sort_keys=True, separators=(",", ":")))
+    if result["status"] != "READY":
+        raise typer.Exit(2)
+
+
 def _print_paths(paths: dict[str, Path]) -> None:
     typer.secho("Validation complete.", fg=typer.colors.GREEN, bold=True)
     typer.echo(f"  Markdown : {paths['md']}")
