@@ -13,10 +13,10 @@ related_briefs: []
 verified_by_human: false
 tags:
 - weather
-- clear_sunrise
+- golden_sunset
 ---
 
-# 2026-10-06 — clear_sunrise
+# 2026-10-06 — golden_sunset
 
-- Trời quang lúc bình minh — mặt hồ phẳng, ánh sáng ấm
-- Scenario: venho_lake_view_room_sunrise, venho_rooftop_sunrise
+- Hoàng hôn vàng trên Hồ Tây — rooftop cuối ngày
+- Scenario: venho_rooftop_sunset
