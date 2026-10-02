@@ -1822,5 +1822,90 @@
     "rejection_reason": null,
     "verified_by_human": false,
     "scanned_at": "2026-09-25T05:42:22.101594+00:00"
+  },
+  {
+    "id": "tavily-https://baobacninhtv.vn/nhieu-hoat-dong-hap-dan-trong-le-hoi-sen-tay-ho-164017-postid399450.bbg",
+    "title": "Nhiều hoạt động hấp dẫn trong Lễ hội Sen Tây Hồ",
+    "source_uri": "https://baobacninhtv.vn/nhieu-hoat-dong-hap-dan-trong-le-hoi-sen-tay-ho-164017-postid399450.bbg",
+    "snippet": "Lễ hội Sen Hà Nội được tổ chức nhằm quảng bá, tôn vinh những nét đẹp, giá trị văn hóa của Thăng Long Hà Nội, vùng đất Tây Hồ và hoa sen.",
+    "relevance_hint": 0.32630414,
+    "geographic": "westlake",
+    "thematic": "lifestyle_culture",
+    "actionability": "direct",
+    "type": "cultural_event",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "culture_festival_positive"
+    ],
+    "relevance_score": 0.6,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "verified_by_human": false,
+    "scanned_at": "2026-10-02T06:33:51.922376+00:00"
+  },
+  {
+    "id": "tavily-https://hk.trip.com/travel-guide/attraction/hanoi/ho-tay-flower-garden-136808638?curr=KRW&locale=en-HK",
+    "title": "Ho Tay Flower Garden Tickets [2026]",
+    "source_uri": "https://hk.trip.com/travel-guide/attraction/hanoi/ho-tay-flower-garden-136808638?curr=KRW&locale=en-HK",
+    "snippet": "Ho Tay Flower Garden. Thung lũng hoa hồ Tây. 󰺂3.4. Opening hours of Ho Tay Flower Garden.. Free entry. Ngã 3 P. Nhật Chiêu, Tây Hồ, Hà Nội, Vietnam.",
+    "relevance_hint": 0.47986987,
+    "geographic": "westlake",
+    "thematic": "travel_stay",
+    "actionability": "direct",
+    "type": "seasonal_nature",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "travel_accommodation",
+      "hanoi_westlake_local",
+      "seasonal_weather_nature"
+    ],
+    "relevance_score": 1.0,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "verified_by_human": false,
+    "scanned_at": "2026-10-02T06:33:51.922376+00:00"
+  },
+  {
+    "id": "tavily-https://www.facebook.com/ThungLungHoaHoTayandRestaurants/videos/-gi%E1%BB%AFa-l%C3%B2ng-th%E1%BB%A7-%C4%91%C3%B4-c%C3%B3-m%E1%BB%99t-r%E1%BB%ABng-hoa-%C4%91%E1%BA%B9p-%C4%91%E1%BA%BFn-th%E1%BA%BF-ngay-gi%E1%BB%AFa-l%C3%B2ng-th%E1%BB%A7-%C4%91%C3%B4-thung-l%C5%A9ng-h/1767772654257149",
+    "title": "🌸 GIỮA LÒNG THỦ ĐÔ, CÓ MỘT “RỪNG HOA” ĐẸP ĐẾN ...",
+    "source_uri": "https://www.facebook.com/ThungLungHoaHoTayandRestaurants/videos/-gi%E1%BB%AFa-l%C3%B2ng-th%E1%BB%A7-%C4%91%C3%B4-c%C3%B3-m%E1%BB%99t-r%E1%BB%ABng-hoa-%C4%91%E1%BA%B9p-%C4%91%E1%BA%BFn-th%E1%BA%BF-ngay-gi%E1%BB%AFa-l%C3%B2ng-th%E1%BB%A7-%C4%91%C3%B4-thung-l%C5%A9ng-h/1767772654257149",
+    "snippet": "✨ Thung Lũng Hoa Hồ Tây – ghé một lần, khám phá cả một thế giới trải nghiệm! Ngã 3 Nhật Chiêu, Nhật Tân, Tây Hồ, Hà Nội ☎️ Hotline: 083",
+    "relevance_hint": 0.40910333,
+    "geographic": "westlake",
+    "thematic": "lifestyle_culture",
+    "actionability": "direct",
+    "type": "seasonal_nature",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "seasonal_weather_nature"
+    ],
+    "relevance_score": 0.6,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "verified_by_human": false,
+    "scanned_at": "2026-10-02T06:33:51.922376+00:00"
+  },
+  {
+    "id": "tavily-https://www.youtube.com/watch?v=0nvcXJ5sQ2s&xstg=CAMSBhUD-7L2Hw%3D%3D",
+    "title": "QUÁN CAFE MỚI VIEW HỒ TÂY // BONJOUR CAFE",
+    "source_uri": "https://www.youtube.com/watch?v=0nvcXJ5sQ2s&xstg=CAMSBhUD-7L2Hw%3D%3D",
+    "snippet": "Hi! Mình là Tép. https://instabio.cc/4021608zKTbvW . Information quán trong video : ☑️ BONJOUR CAFE 129 Nguyễn Đình Thi, Tây Hồ,",
+    "relevance_hint": 0.7711725,
+    "geographic": "westlake",
+    "thematic": "food_local",
+    "actionability": "direct",
+    "type": "lifestyle_trend",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "food_culinary"
+    ],
+    "relevance_score": 0.8,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "verified_by_human": false,
+    "scanned_at": "2026-10-02T06:33:51.922376+00:00"
   }
 ]
