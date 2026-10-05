@@ -1,5 +1,5 @@
 ---
-rs_id: RS-weather-2026-10-08
+rs_id: RS-weather-2026-10-11
 type: trend
 domain: weather_signal
 evidence_level: R2-T
@@ -16,7 +16,7 @@ tags:
 - golden_sunset
 ---
 
-# 2026-10-08 — golden_sunset
+# 2026-10-11 — golden_sunset
 
 - Hoàng hôn vàng trên Hồ Tây — rooftop cuối ngày
 - Scenario: venho_rooftop_sunset

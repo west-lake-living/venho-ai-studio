@@ -1,24 +1,6 @@
 {
-  "generated_at": "2026-10-04T02:28:03.205773",
+  "generated_at": "2026-10-05T01:44:49.731748",
   "signals": [
-    {
-      "rs_id": "RS-weather-2026-10-04",
-      "type": "weather",
-      "domain": "weather_signal",
-      "evidence_level": "R2-T",
-      "forecast_date": "2026-10-04",
-      "condition": "rain",
-      "temperature_range": [
-        24.4,
-        28.6
-      ],
-      "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
-      "matching_scenario_keys": [
-        "venho_lobby_cozy"
-      ],
-      "expires_at": "2026-10-06T02:28:03.199832",
-      "fact_key": null
-    },
     {
       "rs_id": "RS-weather-2026-10-05",
       "type": "weather",
@@ -28,13 +10,13 @@
       "condition": "rain",
       "temperature_range": [
         22.1,
-        28.0
+        26.4
       ],
       "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
       "matching_scenario_keys": [
         "venho_lobby_cozy"
       ],
-      "expires_at": "2026-10-06T02:28:03.199832",
+      "expires_at": "2026-10-07T01:44:49.727050",
       "fact_key": null
     },
     {
@@ -43,17 +25,16 @@
       "domain": "weather_signal",
       "evidence_level": "R2-T",
       "forecast_date": "2026-10-06",
-      "condition": "clear_sunrise",
+      "condition": "golden_sunset",
       "temperature_range": [
-        21.8,
-        28.4
+        21.9,
+        27.3
       ],
-      "visual_opportunity": "Trời quang lúc bình minh — mặt hồ phẳng, ánh sáng ấm",
+      "visual_opportunity": "Hoàng hôn vàng trên Hồ Tây — rooftop cuối ngày",
       "matching_scenario_keys": [
-        "venho_lake_view_room_sunrise",
-        "venho_rooftop_sunrise"
+        "venho_rooftop_sunset"
       ],
-      "expires_at": "2026-10-06T02:28:03.199832",
+      "expires_at": "2026-10-07T01:44:49.727050",
       "fact_key": null
     },
     {
@@ -65,14 +46,14 @@
       "condition": "clear_sunrise",
       "temperature_range": [
         19.9,
-        29.2
+        28.9
       ],
       "visual_opportunity": "Trời quang lúc bình minh — mặt hồ phẳng, ánh sáng ấm",
       "matching_scenario_keys": [
         "venho_lake_view_room_sunrise",
         "venho_rooftop_sunrise"
       ],
-      "expires_at": "2026-10-06T02:28:03.199832",
+      "expires_at": "2026-10-07T01:44:49.727050",
       "fact_key": null
     },
     {
@@ -83,14 +64,14 @@
       "forecast_date": "2026-10-08",
       "condition": "golden_sunset",
       "temperature_range": [
-        20.9,
-        29.6
+        20.4,
+        29.2
       ],
       "visual_opportunity": "Hoàng hôn vàng trên Hồ Tây — rooftop cuối ngày",
       "matching_scenario_keys": [
         "venho_rooftop_sunset"
       ],
-      "expires_at": "2026-10-06T02:28:03.199832",
+      "expires_at": "2026-10-07T01:44:49.727050",
       "fact_key": null
     },
     {
@@ -101,14 +82,14 @@
       "forecast_date": "2026-10-09",
       "condition": "golden_sunset",
       "temperature_range": [
-        22.0,
-        30.1
+        22.3,
+        30.3
       ],
       "visual_opportunity": "Hoàng hôn vàng trên Hồ Tây — rooftop cuối ngày",
       "matching_scenario_keys": [
         "venho_rooftop_sunset"
       ],
-      "expires_at": "2026-10-06T02:28:03.199832",
+      "expires_at": "2026-10-07T01:44:49.727050",
       "fact_key": null
     },
     {
@@ -119,14 +100,32 @@
       "forecast_date": "2026-10-10",
       "condition": "golden_sunset",
       "temperature_range": [
-        22.8,
-        28.5
+        23.6,
+        30.3
       ],
       "visual_opportunity": "Hoàng hôn vàng trên Hồ Tây — rooftop cuối ngày",
       "matching_scenario_keys": [
         "venho_rooftop_sunset"
       ],
-      "expires_at": "2026-10-06T02:28:03.199832",
+      "expires_at": "2026-10-07T01:44:49.727050",
+      "fact_key": null
+    },
+    {
+      "rs_id": "RS-weather-2026-10-11",
+      "type": "weather",
+      "domain": "weather_signal",
+      "evidence_level": "R2-T",
+      "forecast_date": "2026-10-11",
+      "condition": "golden_sunset",
+      "temperature_range": [
+        22.6,
+        30.7
+      ],
+      "visual_opportunity": "Hoàng hôn vàng trên Hồ Tây — rooftop cuối ngày",
+      "matching_scenario_keys": [
+        "venho_rooftop_sunset"
+      ],
+      "expires_at": "2026-10-07T01:44:49.727050",
       "fact_key": null
     }
   ]
