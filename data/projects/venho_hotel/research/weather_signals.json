@@ -1,24 +1,6 @@
 {
-  "generated_at": "2026-10-05T01:44:49.731748",
+  "generated_at": "2026-10-06T02:45:55.022471",
   "signals": [
-    {
-      "rs_id": "RS-weather-2026-10-05",
-      "type": "weather",
-      "domain": "weather_signal",
-      "evidence_level": "R2-T",
-      "forecast_date": "2026-10-05",
-      "condition": "rain",
-      "temperature_range": [
-        22.1,
-        26.4
-      ],
-      "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
-      "matching_scenario_keys": [
-        "venho_lobby_cozy"
-      ],
-      "expires_at": "2026-10-07T01:44:49.727050",
-      "fact_key": null
-    },
     {
       "rs_id": "RS-weather-2026-10-06",
       "type": "weather",
@@ -27,14 +9,14 @@
       "forecast_date": "2026-10-06",
       "condition": "golden_sunset",
       "temperature_range": [
-        21.9,
-        27.3
+        21.8,
+        26.9
       ],
       "visual_opportunity": "Hoàng hôn vàng trên Hồ Tây — rooftop cuối ngày",
       "matching_scenario_keys": [
         "venho_rooftop_sunset"
       ],
-      "expires_at": "2026-10-07T01:44:49.727050",
+      "expires_at": "2026-10-08T02:45:55.017022",
       "fact_key": null
     },
     {
@@ -45,15 +27,15 @@
       "forecast_date": "2026-10-07",
       "condition": "clear_sunrise",
       "temperature_range": [
-        19.9,
-        28.9
+        19.7,
+        28.5
       ],
       "visual_opportunity": "Trời quang lúc bình minh — mặt hồ phẳng, ánh sáng ấm",
       "matching_scenario_keys": [
         "venho_lake_view_room_sunrise",
         "venho_rooftop_sunrise"
       ],
-      "expires_at": "2026-10-07T01:44:49.727050",
+      "expires_at": "2026-10-08T02:45:55.017022",
       "fact_key": null
     },
     {
@@ -64,14 +46,14 @@
       "forecast_date": "2026-10-08",
       "condition": "golden_sunset",
       "temperature_range": [
-        20.4,
-        29.2
+        20.9,
+        29.0
       ],
       "visual_opportunity": "Hoàng hôn vàng trên Hồ Tây — rooftop cuối ngày",
       "matching_scenario_keys": [
         "venho_rooftop_sunset"
       ],
-      "expires_at": "2026-10-07T01:44:49.727050",
+      "expires_at": "2026-10-08T02:45:55.017022",
       "fact_key": null
     },
     {
@@ -83,13 +65,13 @@
       "condition": "golden_sunset",
       "temperature_range": [
         22.3,
-        30.3
+        30.2
       ],
       "visual_opportunity": "Hoàng hôn vàng trên Hồ Tây — rooftop cuối ngày",
       "matching_scenario_keys": [
         "venho_rooftop_sunset"
       ],
-      "expires_at": "2026-10-07T01:44:49.727050",
+      "expires_at": "2026-10-08T02:45:55.017022",
       "fact_key": null
     },
     {
@@ -100,14 +82,14 @@
       "forecast_date": "2026-10-10",
       "condition": "golden_sunset",
       "temperature_range": [
-        23.6,
-        30.3
+        24.0,
+        30.4
       ],
       "visual_opportunity": "Hoàng hôn vàng trên Hồ Tây — rooftop cuối ngày",
       "matching_scenario_keys": [
         "venho_rooftop_sunset"
       ],
-      "expires_at": "2026-10-07T01:44:49.727050",
+      "expires_at": "2026-10-08T02:45:55.017022",
       "fact_key": null
     },
     {
@@ -118,14 +100,33 @@
       "forecast_date": "2026-10-11",
       "condition": "golden_sunset",
       "temperature_range": [
-        22.6,
+        22.8,
         30.7
       ],
       "visual_opportunity": "Hoàng hôn vàng trên Hồ Tây — rooftop cuối ngày",
       "matching_scenario_keys": [
         "venho_rooftop_sunset"
       ],
-      "expires_at": "2026-10-07T01:44:49.727050",
+      "expires_at": "2026-10-08T02:45:55.017022",
+      "fact_key": null
+    },
+    {
+      "rs_id": "RS-weather-2026-10-12",
+      "type": "weather",
+      "domain": "weather_signal",
+      "evidence_level": "R2-T",
+      "forecast_date": "2026-10-12",
+      "condition": "clear_sunrise",
+      "temperature_range": [
+        22.7,
+        30.5
+      ],
+      "visual_opportunity": "Trời quang lúc bình minh — mặt hồ phẳng, ánh sáng ấm",
+      "matching_scenario_keys": [
+        "venho_lake_view_room_sunrise",
+        "venho_rooftop_sunrise"
+      ],
+      "expires_at": "2026-10-08T02:45:55.017022",
       "fact_key": null
     }
   ]

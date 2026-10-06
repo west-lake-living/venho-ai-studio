@@ -1,5 +1,5 @@
 ---
-rs_id: RS-weather-2026-10-09
+rs_id: RS-weather-2026-10-12
 type: trend
 domain: weather_signal
 evidence_level: R2-T
@@ -13,10 +13,10 @@ related_briefs: []
 verified_by_human: false
 tags:
 - weather
-- golden_sunset
+- clear_sunrise
 ---
 
-# 2026-10-09 — golden_sunset
+# 2026-10-12 — clear_sunrise
 
-- Hoàng hôn vàng trên Hồ Tây — rooftop cuối ngày
-- Scenario: venho_rooftop_sunset
+- Trời quang lúc bình minh — mặt hồ phẳng, ánh sáng ấm
+- Scenario: venho_lake_view_room_sunrise, venho_rooftop_sunrise
