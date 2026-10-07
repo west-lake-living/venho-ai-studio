@@ -1,0 +1,46 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "project": "venho_hotel",
+  "content_type": "facebook_post",
+  "target_language": "vi",
+  "generated_at": "2026-10-07T06:55:48.028078+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_OUTSIDE_DNA.json",
+      "dna_version": "1.2",
+      "hash": "sha256:aaad1f90ca3a80fbefe9dc168823190c89ef923952e96bd2d902e73f0c5ec577"
+    }
+  ],
+  "source_prompt": {
+    "file": "data/projects/venho_hotel/prompts/content/OUTSIDE__facebook-ngu-n-1-xu-t-treebee-coffee-t-i-171-v-h-l-qu-n-c-ph-view-h-t-y-v-i-thi-__CONTENT_PROMPT_v1.0.json",
+    "prompt_id": "outside__content__facebook-ngu-n-1-xu-t-treebee-coffee-t-i-171-v-h-l-qu-n-c-ph-view-h-t-y-v-i-thi-",
+    "prompt_version": "1.0"
+  },
+  "generator": {
+    "provider": "mock",
+    "model": "deterministic-social-builder",
+    "temperature": 0.6
+  },
+  "title": "Chiều trong trên đường Vệ Hồ",
+  "hook": "Có những buổi chiều Hồ Tây trời trong đến mức mặt nước đổi màu theo từng đoạn đường bạn đi qua.",
+  "body": "Đường Vệ Hồ là một đoạn như vậy. Hàng cây lâu năm che bớt nắng, phía sau là lớp nhà phố cao thấp xen nhau, còn phía trước vẫn là hồ. Không gian ở đây gọn gàng, sạch sẽ, nắng rơi thẳng xuống mặt sân chứ không qua mái che hay bộ bàn ghế ngoài trời nào.\n\nỞ số 171 Vệ Hồ có Treebee coffee, một quán cà phê view Hồ Tây được nhắc đến nhiều nhờ phần thiết kế riêng, không giống những quán quanh hồ. Giữa trưa và đầu giờ chiều là lúc ánh sáng tự nhiên rõ nhất, cũng là lúc dễ nhìn thấy màu nước thật của hồ.\n\nĐiều thú vị khi ở quanh Hồ Tây là bạn không cần đi xa để đổi khung cảnh. Chỉ cần vòng sang một cung đường khác, hồ đã hiện ra theo một cách khác. Ven Hồ Hotel nằm trên đường Nguyễn Đình Thi, cùng chung vành đai quanh hồ, nên một buổi sáng cà phê ở phía này và một buổi hoàng hôn Hồ Tây ở phía kia đều nằm trong cùng một ngày.",
+  "cta": "Nếu bạn đang tính một chuyến Hà Nội chậm rãi quanh hồ, nhắn cho Ven Hồ Hotel để xem phòng trống những ngày bạn định đi nhé.",
+  "hashtags": [
+    "#VenHoHotelHanoi",
+    "#HoTay",
+    "#WestLakeHanoi",
+    "#KhamPhaHoTay",
+    "#KhachSanViewHoTay"
+  ],
+  "visual_note": null,
+  "contract_refs": null,
+  "payload": {},
+  "status": "draft",
+  "validation": {
+    "required": true,
+    "status": "pending",
+    "report_file": null,
+    "notes": []
+  }
+}
