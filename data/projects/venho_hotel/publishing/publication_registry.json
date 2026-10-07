@@ -19462,13 +19462,13 @@
       "idempotency_key": "dcb89b711319ae11e74ac27ee3cf8b1ec827f7577b06a71a93b76c0aeae10251",
       "platform": "facebook",
       "slot_id": "slot-2026-10-07-wednesday",
-      "status": "PENDING_APPROVAL",
+      "status": "REJECTED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-09-30T10:58:15.191473+00:00",
-      "updated_at": "2026-09-30T10:58:15.302573+00:00",
+      "updated_at": "2026-10-07T03:23:41.426796+00:00",
       "content": {
         "title": "Chùa Kim Liên — khoảng lặng văn hóa ở Nghi Tàm",
         "text": "Có những điểm đến ở Tây Hồ không cần chụp nhiều ảnh, chỉ cần đi chậm là đủ.\n\nMột buổi chiều trời trong, nắng còn sáng rõ trên mặt đường. Hàng cây lâu năm dọc phố đổ bóng từng khoảng, phía sau là những mái nhà cao thấp xen nhau — kiểu khung cảnh rất Hà Nội, vừa phố vừa hồ.\n\nĐi hết đoạn ấy, bạn sẽ tới Chùa Kim Liên ở Nghi Tàm, Quảng An, Tây Hồ. Đây là một điểm tham quan để tìm hiểu văn hóa và lịch sử của vùng ven hồ, chứ không phải nơi để vội. Khuôn viên được giữ gìn sạch sẽ, không có ghế đá hay bàn ngồi, nên phần lớn thời gian là đứng nhìn, đi vòng quanh, rồi dừng lại một chút.\n\nNếu bạn đang xếp lịch cho một ngày ở Hà Nội, Chùa Kim Liên hợp với buổi giữa trưa hoặc đầu giờ chiều, khi ánh sáng tự nhiên còn đẹp và bạn có thể kết hợp đi bộ một đoạn ven hồ.\n\nVen Hồ Hotel nằm trên Nguyễn Đình Thi, cùng bên Hồ Tây, nên sau khi đi một vòng như vậy thì việc quay về nghỉ khá thuận. Một buổi chiều ra ngoài, một buổi chiều ngồi lại bên cửa sổ — cả hai đều là cách để cảm nhận Tây Hồ.\n\nNếu bạn đang chọn chỗ nghỉ cho chuyến Hà Nội sắp tới, nhắn tin cho Ven Hồ Hotel để xem phòng trống những ngày bạn dự định nhé.\n\n#VenHoHotelHanoi #HoTay #ChuaKimLien #KhamPhaHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-7fdef27a",
@@ -19594,10 +19594,12 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 92.53
       },
-      "replaces_publication_id": "pub-wednesday-facebook-abc4a2c0"
+      "replaces_publication_id": "pub-wednesday-facebook-abc4a2c0",
+      "rejected_by": "hpham1504@gmail.com",
+      "rejected_reason": "Chủ đề này đã có rồi"
     },
     {
       "publication_id": "pub-wednesday-instagram-752540d4",
@@ -19739,7 +19741,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.29
       },
       "replaces_publication_id": "pub-wednesday-instagram-cedf1872"
