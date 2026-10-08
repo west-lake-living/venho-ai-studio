@@ -1590,10 +1590,12 @@
       "seasonal_weather_nature"
     ],
     "relevance_score": 0.6,
-    "status": "needs_human_approval",
+    "status": "rejected",
     "rejection_reason": null,
     "verified_by_human": false,
-    "scanned_at": "2026-09-18T05:28:43.347719+00:00"
+    "scanned_at": "2026-09-18T05:28:43.347719+00:00",
+    "rejected_by": "hpham1504@gmail.com",
+    "rejected_at": "2026-10-08T02:05:43.558115+00:00"
   },
   {
     "id": "tavily-https://www.lemon8-app.com/np.hoa/7209632501566980610?region=vn",
