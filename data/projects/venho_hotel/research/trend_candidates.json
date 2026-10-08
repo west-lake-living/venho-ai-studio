@@ -1246,10 +1246,12 @@
       "seasonal_weather_nature"
     ],
     "relevance_score": 0.6,
-    "status": "needs_human_approval",
+    "status": "rejected",
     "rejection_reason": null,
     "verified_by_human": false,
-    "scanned_at": "2026-09-11T05:32:24.196109+00:00"
+    "scanned_at": "2026-09-11T05:32:24.196109+00:00",
+    "rejected_by": "hpham1504@gmail.com",
+    "rejected_at": "2026-10-08T02:05:33.495541+00:00"
   },
   {
     "id": "tavily-https://www.facebook.com/tapchitiepthivagiadinh/videos/n%E1%BA%BFu-b%E1%BA%A1n-kh%C3%B4ng-%C4%91i-%C4%91%C3%A2u-xa-c%C3%A1c-ng%C3%A0y-ngh%E1%BB%89-t%E1%BA%BFt-d%C6%B0%C6%A1ng-l%E1%BB%8Bch-th%C3%AC-thung-l%C5%A9ng-hoa-h%E1%BB%93-t%C3%A2y-l/2295162120964996",
