@@ -19773,13 +19773,13 @@
       "idempotency_key": "a7f9404edf3be76b9c71ed05c42b2f83e8a89ea4ca7c03c7ffa0735ff36c6487",
       "platform": "facebook",
       "slot_id": "slot-2026-10-07-wednesday",
-      "status": "PENDING_APPROVAL",
+      "status": "REJECTED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-10-07T06:55:48.065405+00:00",
-      "updated_at": "2026-10-07T06:55:48.143119+00:00",
+      "updated_at": "2026-10-08T02:04:53.168077+00:00",
       "content": {
         "title": "Chiều trong trên đường Vệ Hồ",
         "text": "Có những buổi chiều Hồ Tây trời trong đến mức mặt nước đổi màu theo từng đoạn đường bạn đi qua.\n\nĐường Vệ Hồ là một đoạn như vậy. Hàng cây lâu năm che bớt nắng, phía sau là lớp nhà phố cao thấp xen nhau, còn phía trước vẫn là hồ. Không gian ở đây gọn gàng, sạch sẽ, nắng rơi thẳng xuống mặt sân chứ không qua mái che hay bộ bàn ghế ngoài trời nào.\n\nỞ số 171 Vệ Hồ có Treebee coffee, một quán cà phê view Hồ Tây được nhắc đến nhiều nhờ phần thiết kế riêng, không giống những quán quanh hồ. Giữa trưa và đầu giờ chiều là lúc ánh sáng tự nhiên rõ nhất, cũng là lúc dễ nhìn thấy màu nước thật của hồ.\n\nĐiều thú vị khi ở quanh Hồ Tây là bạn không cần đi xa để đổi khung cảnh. Chỉ cần vòng sang một cung đường khác, hồ đã hiện ra theo một cách khác. Ven Hồ Hotel nằm trên đường Nguyễn Đình Thi, cùng chung vành đai quanh hồ, nên một buổi sáng cà phê ở phía này và một buổi hoàng hôn Hồ Tây ở phía kia đều nằm trong cùng một ngày.\n\nNếu bạn đang tính một chuyến Hà Nội chậm rãi quanh hồ, nhắn cho Ven Hồ Hotel để xem phòng trống những ngày bạn định đi nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhamPhaHoTay #KhachSanViewHoTay\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-a8a4a990",
@@ -19907,7 +19907,9 @@
         "content_brand_fit": 95,
         "content_overall_score": 93.06
       },
-      "replaces_publication_id": "pub-wednesday-facebook-7fdef27a"
+      "replaces_publication_id": "pub-wednesday-facebook-7fdef27a",
+      "rejected_by": "hpham1504@gmail.com",
+      "rejected_reason": "Chủ đề này đã có rồi."
     }
   ]
 }
