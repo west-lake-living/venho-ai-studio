@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-08T02:36:24.058102",
+  "generated_at": "2026-10-08T06:59:45.238193",
   "signals": [
     {
       "rs_id": "RS-weather-2026-10-08",
@@ -17,7 +17,7 @@
         "venho_lake_view_room_sunrise",
         "venho_rooftop_sunrise"
       ],
-      "expires_at": "2026-10-10T02:36:24.052274",
+      "expires_at": "2026-10-10T06:59:45.233450",
       "fact_key": null
     },
     {
@@ -35,7 +35,7 @@
       "matching_scenario_keys": [
         "venho_lobby_cozy"
       ],
-      "expires_at": "2026-10-10T02:36:24.052274",
+      "expires_at": "2026-10-10T06:59:45.233450",
       "fact_key": null
     },
     {
@@ -53,7 +53,7 @@
       "matching_scenario_keys": [
         "venho_lobby_cozy"
       ],
-      "expires_at": "2026-10-10T02:36:24.052274",
+      "expires_at": "2026-10-10T06:59:45.233450",
       "fact_key": null
     },
     {
@@ -71,7 +71,7 @@
       "matching_scenario_keys": [
         "venho_rooftop_sunset"
       ],
-      "expires_at": "2026-10-10T02:36:24.052274",
+      "expires_at": "2026-10-10T06:59:45.233450",
       "fact_key": null
     },
     {
@@ -89,7 +89,7 @@
       "matching_scenario_keys": [
         "venho_rooftop_sunset"
       ],
-      "expires_at": "2026-10-10T02:36:24.052274",
+      "expires_at": "2026-10-10T06:59:45.233450",
       "fact_key": null
     },
     {
@@ -107,7 +107,7 @@
       "matching_scenario_keys": [
         "venho_lobby_cozy"
       ],
-      "expires_at": "2026-10-10T02:36:24.052274",
+      "expires_at": "2026-10-10T06:59:45.233450",
       "fact_key": null
     },
     {
@@ -125,7 +125,7 @@
       "matching_scenario_keys": [
         "venho_rooftop_sunset"
       ],
-      "expires_at": "2026-10-10T02:36:24.052274",
+      "expires_at": "2026-10-10T06:59:45.233450",
       "fact_key": null
     }
   ]
