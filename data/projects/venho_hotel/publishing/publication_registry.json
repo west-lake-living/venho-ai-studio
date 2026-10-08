@@ -19779,7 +19779,7 @@
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-10-07T06:55:48.065405+00:00",
-      "updated_at": "2026-10-08T02:04:53.168077+00:00",
+      "updated_at": "2026-10-08T07:03:35.754589+00:00",
       "content": {
         "title": "Chiều trong trên đường Vệ Hồ",
         "text": "Có những buổi chiều Hồ Tây trời trong đến mức mặt nước đổi màu theo từng đoạn đường bạn đi qua.\n\nĐường Vệ Hồ là một đoạn như vậy. Hàng cây lâu năm che bớt nắng, phía sau là lớp nhà phố cao thấp xen nhau, còn phía trước vẫn là hồ. Không gian ở đây gọn gàng, sạch sẽ, nắng rơi thẳng xuống mặt sân chứ không qua mái che hay bộ bàn ghế ngoài trời nào.\n\nỞ số 171 Vệ Hồ có Treebee coffee, một quán cà phê view Hồ Tây được nhắc đến nhiều nhờ phần thiết kế riêng, không giống những quán quanh hồ. Giữa trưa và đầu giờ chiều là lúc ánh sáng tự nhiên rõ nhất, cũng là lúc dễ nhìn thấy màu nước thật của hồ.\n\nĐiều thú vị khi ở quanh Hồ Tây là bạn không cần đi xa để đổi khung cảnh. Chỉ cần vòng sang một cung đường khác, hồ đã hiện ra theo một cách khác. Ven Hồ Hotel nằm trên đường Nguyễn Đình Thi, cùng chung vành đai quanh hồ, nên một buổi sáng cà phê ở phía này và một buổi hoàng hôn Hồ Tây ở phía kia đều nằm trong cùng một ngày.\n\nNếu bạn đang tính một chuyến Hà Nội chậm rãi quanh hồ, nhắn cho Ven Hồ Hotel để xem phòng trống những ngày bạn định đi nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhamPhaHoTay #KhachSanViewHoTay\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-a8a4a990",
@@ -19909,7 +19909,140 @@
       },
       "replaces_publication_id": "pub-wednesday-facebook-7fdef27a",
       "rejected_by": "hpham1504@gmail.com",
-      "rejected_reason": "Chủ đề này đã có rồi."
+      "rejected_reason": "Chủ đề này đã có rồi.",
+      "replacement_publication_id": "pub-monday-facebook-8de6c103"
+    },
+    {
+      "publication_id": "pub-monday-facebook-8de6c103",
+      "content_package_id": "61ed28a6-b62d-4dae-af8b-c3c8560bd320",
+      "idempotency_key": "b3551a7c4b78a129016de9c7de383278d70d3e1a11e480c922246319556f9b22",
+      "platform": "facebook",
+      "slot_id": "slot-2026-10-12-monday",
+      "status": "PENDING_APPROVAL",
+      "gateway_status": null,
+      "platform_post_id": null,
+      "permalink": null,
+      "reconciliation_proof": null,
+      "created_at": "2026-10-08T07:03:35.673730+00:00",
+      "updated_at": "2026-10-08T07:03:35.729151+00:00",
+      "content": {
+        "title": "Chiếc xe đạp chở rau trên đường Nguyễn Đình Thi",
+        "text": "Có một chiếc xe đạp chở rau đi chậm hơn cả dòng xe trên đường Nguyễn Đình Thi.\n\nHai sọt rau buộc hai bên, vài bó rau thơm gác lên yên sau. Xe đi men theo bóng những hàng cây lớn dọc đường, chỗ nắng chỗ râm, chậm đến mức người đi bộ cũng có thể theo kịp.\n\nTrời trong, nắng rõ từng tán lá. Phía sau là những mái nhà cao thấp xen nhau của Tây Hồ, phía trước là mặt hồ mở ra một khoảng rộng. Vỉa hè sạch, không hàng quán bày ra, không ghế nhựa chắn lối, nên cả đoạn đường cứ thoáng như vậy suốt buổi.\n\nĐầu tuần, phần lớn Hà Nội đang chạy. Còn ở đoạn này, nhịp sống vẫn giữ tốc độ của một chiếc xe đạp chở rau. Đó là điều khiến Hồ Tây khác: không phải vì có gì để xem, mà vì có một nhịp để thở cùng.\n\nVen Hồ Hotel nằm ngay trên Nguyễn Đình Thi. Bước ra khỏi cửa là con đường này, là hàng cây này, là mặt hồ ngay bên kia lối đi bộ. Sáng đi bộ một vòng, trưa về nghỉ, chiều lại ra ngắm nắng xuống mặt nước — một ngày ở Hà Nội có thể giản dị đúng như thế.\n\nNếu bạn đang tính vài ngày ở Hà Nội và muốn ở gần Hồ Tây, nhắn tin cho Ven Hồ Hotel để xem lịch phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #NguyenDinhThi #KhachSanViewHoTay #HanoiTravel\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-monday-facebook-8de6c103",
+        "hashtags": [
+          "#VenHoHotelHanoi",
+          "#HoTay",
+          "#NguyenDinhThi",
+          "#KhachSanViewHoTay",
+          "#HanoiTravel"
+        ],
+        "source_prompt_file": "data/projects/venho_hotel/prompts/content/OUTSIDE__facebook-xe-dap-cha-rau-cu-di-doc-duong-nguyen-dinh-thi__CONTENT_PROMPT_v1.0.json",
+        "image_run_path": null,
+        "image_public_url": "https://venhohotel.com/images/Social-pad/Lake-rain/IMG_5738.JPG",
+        "image_is_fallback": true,
+        "image_fallback_reason": "reference_or_dna_file_missing",
+        "tracking_url": "https://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-monday-facebook-8de6c103"
+      },
+      "creative_brief_id": "brief-monday-facebook-027d3a07",
+      "package_snapshot": {
+        "id": "61ed28a6-b62d-4dae-af8b-c3c8560bd320",
+        "copy_version_ids": [
+          "brief-monday-facebook-027d3a07-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "c33566f4f65f634650c41ae20b430e8e3348cada087d0ba9233585571ae23f66",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-monday-facebook-027d3a07@1"
+      },
+      "day": "monday",
+      "pillar": "Ho Tay & nhip song Ha Noi dau tuan",
+      "topic": "xe dap cha rau cu di doc duong Nguyen Dinh Thi",
+      "dna_subject": "outside",
+      "creative_brief": {
+        "schema_version": "1.0",
+        "id": "brief-monday-facebook-027d3a07",
+        "version": 1,
+        "brand_id": "venho-hotel",
+        "campaign_id": "daily-cycle-monday",
+        "objective": "qualified_inquiry",
+        "platforms": [
+          "facebook"
+        ],
+        "audience_segment": "Vietnamese leisure guests",
+        "funnel_stage": "consideration",
+        "single_minded_message": "xe dap cha rau cu di doc duong Nguyen Dinh Thi",
+        "proof_points": [],
+        "content_angle": "Ho Tay & nhip song Ha Noi dau tuan",
+        "cta": {
+          "type": "booking_link",
+          "destination_key": "hotel.website",
+          "strength": "soft"
+        },
+        "visual": {
+          "scenario_key": "venho_rooftop_sunset",
+          "required_entities": [
+            "rooftop_railing",
+            "west_lake"
+          ],
+          "forbidden_entities": [
+            "bedroom_window",
+            "highrise_skyline"
+          ],
+          "target_formats": [
+            "feed_4_5"
+          ]
+        },
+        "lane": "daily",
+        "status": "LOCKED",
+        "checksum": "sha256:bd594ec1cf6f6b1e50ac9de9e43120dae07da8aeedd17fc74f9159afd0b654f2",
+        "project": "venho_hotel",
+        "prompt_rules": "west_lake_life",
+        "recent_topics": [
+          "Nguồn 1 đề xuất Treebee coffee tại 171 Vệ Hồ là quán cà phê view Hồ Tây với thiết kế độc đáo.",
+          "Nguồn 0 đề xuất ABC Coffee Roasters là quán cà phê ban công view trọn vẹn Hồ Tây.",
+          "Nguồn 3 nêu Chùa Kim Liên tại Nghi Tàm, Quảng An, Tây Hồ là điểm tham quan tìm hiểu văn hóa lịch sử.",
+          "weekend brunch view at the hotel rooftop",
+          "goc doc sach o lobby vao ngay mua",
+          "Nguồn 3 giới thiệu Chợ Hoa Quảng Bá tại 236 Đường Âu Cơ là chợ hoa lớn và điểm tham quan chụp ảnh tại Tây Hồ."
+        ],
+        "context_refs": [
+          {
+            "rs_id": "RS-weather-2026-10-12",
+            "evidence_level": "R2-T",
+            "role": "weather_angle"
+          }
+        ],
+        "hook_hypothesis": "Hoàng hôn vàng trên Hồ Tây — rooftop cuối ngày",
+        "recent_post_texts": [
+          "Có những buổi chiều Hồ Tây trời trong đến mức mặt nước đổi màu theo từng đoạn đường bạn đi qua.\n\nĐường Vệ Hồ là một đoạn như vậy. Hàng cây lâu năm che bớt nắng, phía sau là lớp nhà phố cao thấp xen nhau, còn phía trước vẫn là hồ. Không gian ở đây gọn gàng, sạch sẽ, nắng rơi thẳng xuống mặt sân chứ không qua mái che hay bộ bàn ghế ngoài trời nào.\n\nỞ số 171 Vệ Hồ có Treebee coffee, một quán cà phê view Hồ Tây được nhắc đến nhiều nhờ phần thiết kế riêng, không giống những quán quanh hồ. Giữa trưa và đầu giờ chiều là lúc ánh sáng tự nhiên rõ nhất, cũng là lúc dễ nhìn thấy màu nước thật của hồ.\n\nĐiều thú vị khi ở quanh Hồ Tây là bạn không cần đi xa để đổi khung cảnh. Chỉ cần vòng sang một cung đường khác, hồ đã hiện ra theo một cách khác. Ven Hồ Hotel nằm trên đường Nguyễn Đình Thi, cùng chung vành đai quanh hồ, nên một buổi sáng cà phê ở phía này và một buổi hoàng hôn Hồ Tây ở phía kia đều nằm trong cùng một ngày.\n\nNếu bạn đang tính một chuyến Hà Nội chậm rãi quanh hồ, nhắn cho Ven Hồ Hotel để xem phòng trống những ngày bạn định đi nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhamPhaHoTay #KhachSanViewHoTay\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-a8a4a990",
+          "Có những chỗ ngồi mà bạn chỉ cần bước lên, nhìn ra, rồi im lặng một lúc.\n\nBan công của ABC Coffee Roasters là một trong số đó. Từ trên này, Hồ Tây mở ra trọn vẹn: mặt nước phẳng, ngả xanh xám dưới nền trời trong. Phía bên kia là những mái nhà cao thấp không đều của Hà Nội, cái mới xen cái cũ, đúng kiểu thành phố này.\n\nGiữa tầm mắt là tán lá của những cây xanh đã lớn ven đường. Buổi chiều, nắng lọt qua từng khoảng lá rồi rơi xuống nền ban công. Không bàn ghế bày ra ngoài, không cây cảnh trang trí. Chỉ có khoảng trống, tay vịn, và mặt hồ.\n\nKhông gian được giữ gọn gàng, sạch sẽ, nên mọi thứ càng nhẹ. Một cốc cà phê để nguội dần cũng không sao. Có những khung cảnh không cần phải làm gì nhiều.\n\nQuán nằm trong bán kính đi bộ hoặc vài phút xe từ khu Nguyễn Đình Thi, nơi Ven Hồ Hotel nằm. Sáng ra hồ, chiều lên ban công ngắm hoàng hôn Hồ Tây, tối đi bộ về. Một ngày ở Tây Hồ có thể đơn giản đúng như vậy.\n\nNếu bạn đang tính vài ngày chậm rãi bên hồ, nhắn Ven Hồ Hotel để xem phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhamPhaHoTay #CafeHoTay #NguyenDinhThi #HaNoi",
+          "Có những điểm đến ở Tây Hồ không cần chụp nhiều ảnh, chỉ cần đi chậm là đủ.\n\nMột buổi chiều trời trong, nắng còn sáng rõ trên mặt đường. Hàng cây lâu năm dọc phố đổ bóng từng khoảng, phía sau là những mái nhà cao thấp xen nhau — kiểu khung cảnh rất Hà Nội, vừa phố vừa hồ.\n\nĐi hết đoạn ấy, bạn sẽ tới Chùa Kim Liên ở Nghi Tàm, Quảng An, Tây Hồ. Đây là một điểm tham quan để tìm hiểu văn hóa và lịch sử của vùng ven hồ, chứ không phải nơi để vội. Khuôn viên được giữ gìn sạch sẽ, không có ghế đá hay bàn ngồi, nên phần lớn thời gian là đứng nhìn, đi vòng quanh, rồi dừng lại một chút.\n\nNếu bạn đang xếp lịch cho một ngày ở Hà Nội, Chùa Kim Liên hợp với buổi giữa trưa hoặc đầu giờ chiều, khi ánh sáng tự nhiên còn đẹp và bạn có thể kết hợp đi bộ một đoạn ven hồ.\n\nVen Hồ Hotel nằm trên Nguyễn Đình Thi, cùng bên Hồ Tây, nên sau khi đi một vòng như vậy thì việc quay về nghỉ khá thuận. Một buổi chiều ra ngoài, một buổi chiều ngồi lại bên cửa sổ — cả hai đều là cách để cảm nhận Tây Hồ.\n\nNếu bạn đang chọn chỗ nghỉ cho chuyến Hà Nội sắp tới, nhắn tin cho Ven Hồ Hotel để xem phòng trống những ngày bạn dự định nhé.\n\n#VenHoHotelHanoi #HoTay #ChuaKimLien #KhamPhaHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-7fdef27a",
+          "Cuối tuần ở Tây Hồ thường bắt đầu muộn hơn một chút. Khoảng mười giờ, nắng mới thật sự chạm xuống mặt hồ.\n\nCửa kính ở sảnh mở ra, gió từ phía hồ đi vào cùng tiếng xe máy chạy chậm trên Nguyễn Đình Thi.\n\nSàn gạch nâu với những vòng tròn nhỏ. Quầy lễ tân gỗ sẫm màu. Vài bức tranh trên tường, ánh sáng vừa đủ, không ai vội đi đâu cả.\n\nBữa sáng muộn cuối tuần không cần cầu kỳ. Một chỗ ngồi hướng ra phía hồ, một ly cà phê, và cả buổi sáng còn lại chưa có kế hoạch gì.\n\nTừ đây đi bộ một đoạn là tới mép nước. Có người ra hồ ngay, có người ngồi lại thêm mười lăm phút nữa. Chiều quay về vẫn kịp kê ghế ngắm hoàng hôn Hồ Tây.\n\nNếu bạn đang tính một cuối tuần chậm ở Hà Nội, nhắn cho Ven Hồ Hotel để xem phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhamPhaHoTay #KhachSanHoTay #CuoiTuanOTayHo #HaNoi",
+          "Cuối tuần ở Tây Hồ, bữa sáng hiếm khi diễn ra đúng giờ. Và đó lại là phần dễ chịu nhất.\n\nThứ Bảy, không ai đặt báo thức. Đến gần chín giờ, nắng đã lọt qua cánh cửa kính ở sảnh Ven Hồ Hotel, đổ thành vệt dài trên nền gạch nâu có hoa văn tròn. Quầy lễ tân gỗ nâu sẫm, một bức tranh treo trên tường, ánh đèn vừa đủ sáng. Mọi thứ yên và gọn, không có gì giục bạn phải nhanh lên.\n\nBạn gửi chìa khóa, bước ra Nguyễn Đình Thi. Mặt hồ lúc này đã hết sương, gió thổi ngang mặt đường. Vài người đạp xe qua, vài người dắt chó đi dạo, nhịp đi của ai cũng chậm hơn ngày thường.\n\nBữa ăn đầu tiên trong ngày có thể là một bát bún ở quán ven đường, cũng có thể là cà phê với trứng ở một quán nhìn ra hồ. Không cần đặt bàn trước, không cần lên kế hoạch. Ngồi lâu một chút cũng chẳng sao, vì buổi chiều vẫn còn nguyên ở đó.\n\nCuối tuần ở Tây Hồ không cần nhiều hoạt động. Phần lớn giá trị nằm ở việc bạn được ăn sáng lúc mười giờ mà không thấy mình đang lãng phí thời gian.\n\nVen Hồ Hotel nằm trên Nguyễn Đình Thi, cách mặt hồ vài bước chân, đủ gần để bạn quyết định điểm ăn sáng ngay lúc mở cửa bước ra.\n\nNếu bạn đang tính một cuối tuần chậm ở Hà Nội, nhắn tin cho Ven Hồ Hotel để xem phòng trống cho ngày bạn định đi nhé.\n\n#VenHoHotelHanoi #HoTay #KhachSanHoTay #CuoiTuanOTayHo #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-saturday-facebook-559d4c1e",
+          "Mưa Hà Nội có cái lý của nó: làm chậm lại mọi kế hoạch trong ngày.\n\nCửa kính lobby mờ đi một chút. Ánh sáng ngoài phố dịu lại, hắt lên nền gạch nâu với những hoa văn tròn dưới chân.\n\nỞ đây có vài chiếc ghế gỗ tông nâu đỏ sẫm, một bức tranh treo tường, quầy lễ tân bằng gỗ và tiếng mưa đủ nhỏ để bạn nghe thấy mình lật trang sách. Không gian không rộng, nhưng vừa đủ để ngồi lâu hơn dự định.\n\nHồ Tây chỉ cách vài bước chân ngoài kia, trên Nguyễn Đình Thi. Mưa tạnh, mặt hồ thường sáng lên một màu khác hẳn buổi sáng — và đó là lúc nên bước ra ngoài.\n\nCòn trước đó, cứ để cơn mưa quyết định nhịp của ngày.\n\nNếu bạn đang tính những ngày ở Hà Nội, nhắn Ven Hồ Hotel để xem phòng trống nhé.\n\n#VenHoHotelHanoi #KhachSanViewHoTay #HoTay #NguyenDinhThi #WestLakeHanoi #HaNoi #HanoiTravel",
+          "Mưa Hà Nội hiếm khi báo trước. Đang định đi bộ một vòng Hồ Tây thì trời đổi ý, và cả buổi sáng bỗng trống ra.\n\nNhững lúc như vậy, sảnh khách sạn trở thành nơi hữu dụng hơn người ta tưởng.\n\nCửa kính nhìn ra Nguyễn Đình Thi, nước chảy thành vệt dài trên mặt kính, phía sau là Hồ Tây mờ đi một chút. Bên trong, sàn gạch nâu với những vòng tròn đồng tâm, quầy lễ tân gỗ nâu đỏ sậm, ánh đèn dịu và đều, vài bức tranh treo trên tường. Không gian gọn, đủ yên để nghe tiếng mưa rơi ngoài mái hiên.\n\nMột chiếc ghế kê gần cửa. Một cuốn sách mang theo từ nhà, hoặc cuốn vừa mua ở hiệu sách hôm trước. Thế là đủ cho hai tiếng.\n\nĐiều thú vị là những buổi sáng bị mưa làm hỏng kế hoạch lại thường là phần dễ nhớ nhất của chuyến đi. Không phải vì có gì đặc biệt, mà vì đó là khoảng trống hiếm hoi giữa một lịch trình kín.\n\nVà khi mưa ngớt, Hồ Tây vẫn ở ngay đó. Mặt nước sau mưa sáng hơn bình thường, đường ven hồ vắng người, không khí mát và sạch. Chuyến đi bộ bị hoãn lại chỉ đổi giờ, không mất đi.\n\nNếu bạn đang lên kế hoạch cho vài ngày ở Hà Nội, nhắn tin cho Ven Hồ Hotel để xem lịch phòng trống nhé. Thông tin phòng và vị trí có tại venhohotel.com\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-friday-facebook-358887d0",
+          "Ở Tây Hồ, có những địa chỉ bạn nhớ bằng màu sắc trước khi nhớ bằng tên đường.\n\nChợ Hoa Quảng Bá nằm ở 236 đường Âu Cơ, là khu chợ hoa lớn của khu vực Tây Hồ và cũng là điểm nhiều người tìm đến để chụp ảnh.\n\nMột ngày trời trong, hàng cây hai bên đường đổ bóng xuống vỉa hè, phía xa là những mái nhà cao thấp chen nhau của Hà Nội. Ánh sáng tự nhiên lúc giữa trưa hoặc đầu giờ chiều làm màu hoa hiện lên rất thật trong khung hình, không cần chỉnh nhiều.\n\nKhông có ghế ngồi, không có chỗ dừng lâu. Chợ hoa là nơi để đi chậm, nhìn, chọn vài bó mang về, rồi tiếp tục vòng quanh hồ.\n\nĐiểm hay của việc ở lại Tây Hồ là những nơi như thế này nằm trong cùng một nhịp đi bộ và đạp xe ven hồ. Ven Hồ Hotel trên phố Nguyễn Đình Thi là một điểm bắt đầu vừa vặn cho buổi sáng, và cũng là chỗ để quay về khi trong tay đã có hoa.\n\nNếu bạn đang lên lịch cho vài ngày ở Hà Nội, nhắn cho Ven Hồ Hotel để xem phòng trống nhé.\n\n#VenHoHotelHanoi #ChoHoaQuangBa #HoTay #WestLakeHanoi #KhachSanViewHoTay #NguyenDinhThi #HaNoi #KhamPhaHoTay",
+          "Có những địa chỉ ở Tây Hồ đáng ghé chỉ vì màu sắc. Chợ Hoa Quảng Bá, 236 đường Âu Cơ, là một trong số đó.\n\nĐây là một trong những chợ hoa lớn của khu vực, và cũng là điểm nhiều người tìm đến để chụp ảnh khi ở Tây Hồ.\n\nĐường Âu Cơ dẫn vào chợ có hàng cây lớn hai bên, tán phủ kín vỉa hè. Những hôm trời trong, nắng lọt qua kẽ lá xuống mặt đường, phía sau là dãy nhà cao thấp xen nhau rất đặc trưng của khu này. Bạn không cần đèn, không cần filter — ánh sáng tự nhiên ở đây đã đủ.\n\nMột gợi ý cho lịch trình nửa ngày: ghé chợ hoa trước, đi chậm, xem người ta chọn hoa và xếp hoa. Sau đó vòng ngược lại phía mặt nước, tìm một chỗ ngồi và đợi hoàng hôn Hồ Tây. Hai khung cảnh rất khác nhau, nhưng nằm gọn trong cùng một buổi chiều ở Tây Hồ.\n\nVen Hồ Hotel nằm trên phố Nguyễn Đình Thi, ngay cạnh hồ. Vị trí này giúp bạn đi và về trong ngày mà không phải tính toán quãng đường, và khi quay lại thì chỉ cần bước vài bước là ra tới bờ nước.\n\nNếu bạn đang lên kế hoạch cho một chuyến Hà Nội sắp tới, nhắn cho Ven Hồ Hotel để xem phòng trống những ngày bạn định ở nhé.\n\n#VenHoHotelHanoi #ChoHoaQuangBa #HoTay #TayHo #HanoiTravel\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-abc4a2c0",
+          "Có những buổi sáng đầu tuần, Hồ Tây thức dậy trước cả thành phố.\n\nMặt nước phẳng, một lớp sương mỏng còn nằm lại phía xa. Vài chiếc xe máy chạy ngang Nguyễn Đình Thi, tiếng động cơ tan nhanh vào không khí ẩm. Hàng cây bên đường còn ướt, chưa kịp nắng.\n\nĐó là khoảng thời gian ngắn trong ngày khi Hồ Tây gần như thuộc về những người dậy sớm. Không cần đi xa, chỉ cần bước ra khỏi cửa và đi bộ vài trăm mét ven hồ, rồi quay lại khi thành phố bắt đầu ồn hơn.\n\nSảnh Ven Hồ Hotel lúc ấy vẫn yên. Cửa kính mở ra đường, sàn gạch nâu với những vòng tròn quen thuộc, quầy lễ tân gỗ nâu đỏ, vài bức tranh trên tường và ánh đèn dịu. Một khoảng đệm nhỏ giữa mặt hồ và một tuần mới vừa bắt đầu.\n\nNếu bạn đang tính vài ngày ở Hà Nội và muốn bắt đầu buổi sáng bên Hồ Tây, nhắn Ven Hồ Hotel để xem phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanHoTay #KhamPhaHoTay #HaNoi #HanoiTravel #NguyenDinhThi",
+          "Có một khoảng ngắn trước khi Hà Nội thức giấc, khi mặt Hồ Tây gần như không còn đường viền.\n\nSương nằm thấp trên mặt nước, che mất bờ bên kia. Đèn đường vẫn sáng dù trời đã ngả xanh. Vài chiếc xe chạy qua đường Nguyễn Đình Thi, tiếng động tan nhanh, rồi lại là gió và tiếng nước vỗ nhẹ vào kè đá.\n\nĐầu tuần thường bắt đầu bằng danh sách việc phải làm. Nhưng ở quãng này của buổi sáng, chưa có gì gấp. Người bán hàng dọn đồ. Một người chạy bộ đi qua. Sương mỏng dần theo từng phút, và đến lúc bạn kịp nhận ra thì bờ bên kia đã hiện lại.\n\nĐể có mười lăm phút đó, chỉ cần dậy sớm hơn thường lệ một chút và ở gần hồ.\n\nVen Hồ Hotel nằm ngay trên đường Nguyễn Đình Thi. Buổi sáng, sảnh khách sạn yên, ánh sáng dịu, sàn gạch nâu với hoa văn tròn, quầy lễ tân gỗ nâu sẫm và vài bức tranh treo tường. Đẩy cửa kính bước ra, đi thêm một đoạn ngắn là tới mép nước.\n\nMột chỗ nghỉ vừa vặn, đủ gần để bạn không bỏ lỡ phần yên nhất của ngày.\n\nNếu bạn đang tính những ngày ở Hà Nội, nhắn tin cho Ven Hồ Hotel để xem phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-monday-facebook-dc8b4f2e",
+          "Hà Nội vốn quen với màu vàng tường cũ và mái ngói nâu. Rồi giữa dãy phố ven hồ, bỗng có một mảng trắng và xanh.\n\nSantorini Vibes là quán cà phê view Hồ Tây được nhiều người nhắc đến vì tông màu xanh trắng khá khác với phần còn lại của khu phố. Vào một buổi trưa trời trong, mảng tường trắng bắt nắng rất rõ, xanh thì đậm lên theo sắc trời.\n\nPhía sau lưng quán vẫn là Hà Nội quen thuộc: nhà cao thấp xen nhau, hàng cây lâu năm đổ bóng xuống vỉa hè, xe máy chạy đều một nhịp. Chính sự lệch tông đó lại thú vị. Bạn ngồi trong một không gian sáng và sạch sẽ, nhưng chỉ cần nhìn ra ngoài là thấy nhịp sống thật của Tây Hồ.\n\nNếu đi vào giữa trưa, ánh sáng tự nhiên là thứ đáng để tận dụng nhất, cả cho một tấm ảnh lẫn cho việc ngồi yên một lúc. Còn nếu bạn thong thả hơn, có thể nán lại tới cuối buổi chiều, khi mặt hồ đổi màu và hoàng hôn Hồ Tây bắt đầu.\n\nTừ Ven Hồ Hotel trên đường Nguyễn Đình Thi, những góc cà phê ven hồ như vậy đều nằm trong tầm đi bộ hoặc một quãng xe ngắn. Chúng tôi vẫn hay ghi lại vài địa chỉ để khách tiện chọn theo tâm trạng của từng ngày.\n\nNếu bạn đang tính vài ngày ở Hà Nội, nhắn cho Ven Hồ Hotel để xem phòng trống nhé, chúng tôi sẽ gợi ý thêm vài quán quanh hồ hợp với lịch trình của bạn.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanViewHoTay #CaPheHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-9e135ca9"
+        ]
+      },
+      "claims": [],
+      "scene_summary": {
+        "location": "Rooftop Ven Ho Hotel sunset",
+        "time_of_day": "morning",
+        "entities": [
+          "rooftop_railing",
+          "west_lake"
+        ],
+        "mood": "calm"
+      },
+      "scorecard_signals": {
+        "claim_kill_switch_triggered": false,
+        "content_brand_fit": 95.0,
+        "content_overall_score": 92.73
+      },
+      "replaces_publication_id": "pub-wednesday-facebook-a8a4a990"
     }
   ]
 }
