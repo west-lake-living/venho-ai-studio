@@ -1875,10 +1875,12 @@
       "seasonal_weather_nature"
     ],
     "relevance_score": 1,
-    "status": "needs_human_approval",
+    "status": "rejected",
     "rejection_reason": null,
     "verified_by_human": false,
-    "scanned_at": "2026-10-02T06:33:51.922376+00:00"
+    "scanned_at": "2026-10-02T06:33:51.922376+00:00",
+    "rejected_by": "hpham1504@gmail.com",
+    "rejected_at": "2026-10-09T05:22:49.154179+00:00"
   },
   {
     "id": "tavily-https://www.facebook.com/ThungLungHoaHoTayandRestaurants/videos/-gi%E1%BB%AFa-l%C3%B2ng-th%E1%BB%A7-%C4%91%C3%B4-c%C3%B3-m%E1%BB%99t-r%E1%BB%ABng-hoa-%C4%91%E1%BA%B9p-%C4%91%E1%BA%BFn-th%E1%BA%BF-ngay-gi%E1%BB%AFa-l%C3%B2ng-th%E1%BB%A7-%C4%91%C3%B4-thung-l%C5%A9ng-h/1767772654257149",
