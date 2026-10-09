@@ -209,10 +209,11 @@
     "domain": "market_pricing",
     "question": "Tháng nào trong năm là cao điểm và thấp điểm du lịch của Hà Nội?",
     "synthesis_note": "research/synthesis/RS-2026-08-06-marketpricing-synthesis.md",
-    "status": "pending_approval",
+    "status": "rejected",
     "proposed_at": "2026-08-06T13:59:12.906902+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "hpham1504@gmail.com",
+    "decided_at": "2026-10-09T05:21:33.423305+00:00",
+    "reject_reason": null
   },
   {
     "fact_key": "hanoi_tourism.october_peak",
@@ -3828,7 +3829,7 @@
   },
   {
     "fact_key": "competitor.an_homestay_location_rating",
-    "value": 9.0,
+    "value": 9,
     "value_type": "number",
     "rationale": "Tiêu chí vị trí (Location) của An Homestay Lakeview Apartment đạt điểm đánh giá là 9.0.",
     "source_index": 0,
