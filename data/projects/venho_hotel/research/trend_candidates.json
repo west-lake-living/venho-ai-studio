@@ -1933,5 +1933,134 @@
     "scanned_at": "2026-10-02T06:33:51.922376+00:00",
     "rejected_by": "hpham1504@gmail.com",
     "rejected_at": "2026-10-09T05:21:43.366446+00:00"
+  },
+  {
+    "id": "tavily-http://www.hoinongdan.org.vn/van-hoa/ha-noi-ban-phao-hoa-tai-ho-tay-va-ho-hoan-kiem-nhieu-chuong-trinh-van-hoa-nghe-thuat-chao-mung-10-10-381629",
+    "title": "Hà Nội bắn pháo hoa tại Hồ Tây và Hồ Hoàn Kiếm, nhiều chương trình văn hóa, nghệ thuật chào mừng 10/10",
+    "source_uri": "http://www.hoinongdan.org.vn/van-hoa/ha-noi-ban-phao-hoa-tai-ho-tay-va-ho-hoan-kiem-nhieu-chuong-trinh-van-hoa-nghe-thuat-chao-mung-10-10-381629",
+    "snippet": "vực du lịch, Hà Nội xây dựng 72 gợi ý hành trình khám phá Thủ đô, khai thác các giá trị lịch sử, văn hóa, di sản, kiến trúc, làng nghề, ẩm thực và không gian sáng tạo. Thành phố đồng thời hoàn thiện, ra mắt nền tảng du lịch thông minh HanoiGo, tích hợp thông tin về điểm đến, di tích, danh thắng, làng nghề, cơ sở dịch vụ và các hành trình trải nghiệm.  Từ ngày 9-11/10, Làng Văn hóa - Du lịch các dân tộc Việt Nam tổ chức sự kiện “Cội nguồn di sản giữa lòng Thủ đô”, kết hợp hoạt động hướng về [...] 10/10. Chương trình ngày 9/10 được tổ chức theo hình thức bán vé, hướng tới một sự kiện âm nhạc mang tầm quốc tế, kết nối những tác phẩm tiêu biểu của Việt Nam và thế giới với các giá trị văn hóa đặc trưng của Hà Nội.     Phó Giám đốc Sở Văn hóa, Thể thao và Du lịch Hà Nội Nguyễn Thị Mai Hương thông tin về các chương trình văn hóa, nghệ thuật đặc sắc chào mừng Kỷ niệm 72 năm Ngày Giải phóng Thủ đô (10/10/1954 – 10/10/2026). Ảnh: Hoàng Thành     Ngày 10/10, chương trình nghệ thuật đặc biệt “Bản [...] Hà Nội. Mục tiêu không chỉ tạo không khí lễ hội, mà còn khai thác giá trị di sản, đưa nghệ thuật và các sản phẩm văn hóa đến gần hơn với công chúng. Hà Nội kể câu chuyện 72 năm Ngày Giải phóng Thủ đô bằng âm nhạc, di sản và nghệ thuật Mở đầu chuỗi hoạt động là Hội Sách Hà Nội lần thứ XI năm 2026, diễn ra từ ngày 1-4/10 tại phố đi bộ hồ Hoàn Kiếm với chủ đề “Sách mở tri thức - Công nghệ dẫn tương lai”.  Trong hai ngày 3-4/10, không gian Hồ Tây trở thành điểm nhấn thể thao - văn hóa với Giải Bơi",
+    "relevance_hint": 0.6768127,
+    "geographic": "hanoi",
+    "thematic": "lifestyle_culture",
+    "actionability": "direct",
+    "type": "cultural_event",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "culture_festival_positive"
+    ],
+    "relevance_score": 0.42,
+    "status": "rejected",
+    "rejection_reason": "passed",
+    "verified_by_human": false,
+    "scanned_at": "2026-10-09T07:04:55.704767+00:00"
+  },
+  {
+    "id": "tavily-https://www.facebook.com/Tinnongmientrung/videos/-%C4%91%E1%BB%ABng-b%E1%BB%8F-l%E1%BB%A1-m%C3%A0n-tr%C3%ACnh-di%E1%BB%85n-ph%C3%A1o-hoa-ho%C3%A0nh-tr%C3%A1ng-t%E1%BA%A1i-h%E1%BB%93-t%C3%A2y-v%C3%A0-h%E1%BB%93-ho%C3%A0n-ki%E1%BA%BFm-v%C3%A0o-t/1755996865516457",
+    "title": "Đừng bỏ lỡ màn trình diễn pháo hoa hoành tráng tại Hồ Tây ...",
+    "source_uri": "https://www.facebook.com/Tinnongmientrung/videos/-%C4%91%E1%BB%ABng-b%E1%BB%8F-l%E1%BB%A1-m%C3%A0n-tr%C3%ACnh-di%E1%BB%85n-ph%C3%A1o-hoa-ho%C3%A0nh-tr%C3%A1ng-t%E1%BA%A1i-h%E1%BB%93-t%C3%A2y-v%C3%A0-h%E1%BB%93-ho%C3%A0n-ki%E1%BA%BFm-v%C3%A0o-t/1755996865516457",
+    "snippet": "Đừng bỏ lỡ màn trình diễn pháo hoa hoành tráng tại Hồ Tây và Hồ Hoàn Kiếm vào tối 10/10 nhân kỷ niệm 72 năm Ngày Giải phóng Thủ đôTạm rời Hà",
+    "relevance_hint": 0.39312926,
+    "geographic": "westlake",
+    "thematic": "lifestyle_culture",
+    "actionability": "direct",
+    "type": "cultural_event",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "culture_festival_positive"
+    ],
+    "relevance_score": 0.6,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "verified_by_human": false,
+    "scanned_at": "2026-10-09T07:04:55.704767+00:00"
+  },
+  {
+    "id": "tavily-https://www.facebook.com/thudo.gov.vn/posts/l%E1%BB%85-h%E1%BB%99i-sen-h%C3%A0-n%E1%BB%99i-2026-ch%C3%ADnh-th%E1%BB%A9c-di%E1%BB%85n-ra-t%E1%BB%AB-26-286cu%E1%BB%91i-th%C3%A1ng-6-n%C3%A0y-th%E1%BB%A7-%C4%91%C3%B4-s%E1%BA%BD-ng/1431431182360005",
+    "title": "🪷LỄ HỘI SEN HÀ NỘI 2026 CHÍNH THỨC DIỄN RA TỪ 26",
+    "source_uri": "https://www.facebook.com/thudo.gov.vn/posts/l%E1%BB%85-h%E1%BB%99i-sen-h%C3%A0-n%E1%BB%99i-2026-ch%C3%ADnh-th%E1%BB%A9c-di%E1%BB%85n-ra-t%E1%BB%AB-26-286cu%E1%BB%91i-th%C3%A1ng-6-n%C3%A0y-th%E1%BB%A7-%C4%91%C3%B4-s%E1%BA%BD-ng/1431431182360005",
+    "snippet": "Thời gian: Từ ngày 26/6 đến 28/6/2026 Địa điểm: Vườn hoa Lý Tự Trọng, Vườn hoa Lạc Long Quân, Không gian Văn hóa sáng tạo Tây Hồ và khu",
+    "relevance_hint": 0.3351555,
+    "geographic": "westlake",
+    "thematic": "lifestyle_culture",
+    "actionability": "direct",
+    "type": "cultural_event",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "culture_festival_positive",
+      "seasonal_weather_nature"
+    ],
+    "relevance_score": 0.6,
+    "status": "rejected",
+    "rejection_reason": "stale_dated",
+    "verified_by_human": false,
+    "scanned_at": "2026-10-09T07:04:55.704767+00:00"
+  },
+  {
+    "id": "tavily-https://tatinta.com/diem-den/thung-lung-hoa-ho-tay/4344",
+    "title": "Thung lũng hoa Hồ Tây",
+    "source_uri": "https://tatinta.com/diem-den/thung-lung-hoa-ho-tay/4344",
+    "snippet": "Điểm hấp dẫn đầu tiên của thung lũng hoa hồ Tây chính là sự quy tụ của hàng trăm loài hoa, từ những loài đặc trưng của Hà Nội như hoa đào, hoa sen, hoa cúc họa",
+    "relevance_hint": 0.51544976,
+    "geographic": "westlake",
+    "thematic": "travel_stay",
+    "actionability": "direct",
+    "type": "seasonal_nature",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "seasonal_weather_nature",
+      "travel_accommodation"
+    ],
+    "relevance_score": 1.0,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "verified_by_human": false,
+    "scanned_at": "2026-10-09T07:04:55.704767+00:00"
+  },
+  {
+    "id": "tavily-https://www.youtube.com/watch?v=VWqPQ3cxEv0",
+    "title": "Hồ Tây: Di sản văn hóa - cảnh quan đặc biệt của Thủ đô | Tin tức",
+    "source_uri": "https://www.youtube.com/watch?v=VWqPQ3cxEv0",
+    "snippet": "Hồ Tây là không gian cảnh quan đặc biệt gắn với lịch sử Thăng Long – Hà Nội, mang chiều sâu văn hóa, lịch sử và là một phần ký ức của đô",
+    "relevance_hint": 0.24037358,
+    "geographic": "westlake",
+    "thematic": "lifestyle_culture",
+    "actionability": "adjacent",
+    "type": "feature_story",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "culture_festival_positive"
+    ],
+    "relevance_score": 0.36,
+    "status": "rejected",
+    "rejection_reason": "passed",
+    "verified_by_human": false,
+    "scanned_at": "2026-10-09T07:04:55.704767+00:00"
+  },
+  {
+    "id": "tavily-https://ticotravel.com.vn/cafe-ho-tay",
+    "title": "Top 20 quán Cafe Hồ Tây đáng thưởng thức nhất Hà Nội",
+    "source_uri": "https://ticotravel.com.vn/cafe-ho-tay",
+    "snippet": "1. Cafe Hồ Tây – Mộc Miên coffee · 2. Cafe Hồ Tây – Havana cafe · 3. Cafe Hồ Tây- Cộng cafe · 4. 6 Degrees · 5. The Summit Lounge · 6. Maison De Blanc – Bakery &",
+    "relevance_hint": 0.608897,
+    "geographic": "westlake",
+    "thematic": "food_local",
+    "actionability": "direct",
+    "type": "lifestyle_trend",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "food_culinary",
+      "travel_accommodation"
+    ],
+    "relevance_score": 0.8,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "verified_by_human": false,
+    "scanned_at": "2026-10-09T07:04:55.704767+00:00"
   }
 ]
