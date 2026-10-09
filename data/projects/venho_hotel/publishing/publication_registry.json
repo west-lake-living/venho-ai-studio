@@ -19918,13 +19918,13 @@
       "idempotency_key": "b3551a7c4b78a129016de9c7de383278d70d3e1a11e480c922246319556f9b22",
       "platform": "facebook",
       "slot_id": "slot-2026-10-12-monday",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-10-08T07:03:35.673730+00:00",
-      "updated_at": "2026-10-08T07:03:35.729151+00:00",
+      "updated_at": "2026-10-09T05:21:11.026257+00:00",
       "content": {
         "title": "Chiếc xe đạp chở rau trên đường Nguyễn Đình Thi",
         "text": "Có một chiếc xe đạp chở rau đi chậm hơn cả dòng xe trên đường Nguyễn Đình Thi.\n\nHai sọt rau buộc hai bên, vài bó rau thơm gác lên yên sau. Xe đi men theo bóng những hàng cây lớn dọc đường, chỗ nắng chỗ râm, chậm đến mức người đi bộ cũng có thể theo kịp.\n\nTrời trong, nắng rõ từng tán lá. Phía sau là những mái nhà cao thấp xen nhau của Tây Hồ, phía trước là mặt hồ mở ra một khoảng rộng. Vỉa hè sạch, không hàng quán bày ra, không ghế nhựa chắn lối, nên cả đoạn đường cứ thoáng như vậy suốt buổi.\n\nĐầu tuần, phần lớn Hà Nội đang chạy. Còn ở đoạn này, nhịp sống vẫn giữ tốc độ của một chiếc xe đạp chở rau. Đó là điều khiến Hồ Tây khác: không phải vì có gì để xem, mà vì có một nhịp để thở cùng.\n\nVen Hồ Hotel nằm ngay trên Nguyễn Đình Thi. Bước ra khỏi cửa là con đường này, là hàng cây này, là mặt hồ ngay bên kia lối đi bộ. Sáng đi bộ một vòng, trưa về nghỉ, chiều lại ra ngắm nắng xuống mặt nước — một ngày ở Hà Nội có thể giản dị đúng như thế.\n\nNếu bạn đang tính vài ngày ở Hà Nội và muốn ở gần Hồ Tây, nhắn tin cho Ven Hồ Hotel để xem lịch phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #NguyenDinhThi #KhachSanViewHoTay #HanoiTravel\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-monday-facebook-8de6c103",
@@ -20039,10 +20039,30 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 92.73
       },
-      "replaces_publication_id": "pub-wednesday-facebook-a8a4a990"
+      "replaces_publication_id": "pub-wednesday-facebook-a8a4a990",
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-10-09T05:21:11.002574+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-61ed28a6-b62d-4dae-af8b-c3c8560bd320",
+        "content_package_id": "61ed28a6-b62d-4dae-af8b-c3c8560bd320",
+        "copy_version_ids": [
+          "brief-monday-facebook-027d3a07-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "c33566f4f65f634650c41ae20b430e8e3348cada087d0ba9233585571ae23f66",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-monday-facebook-027d3a07@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-10-09T05:21:11.002601+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "d7b090f9c253f68807ef1ffceb0e83cff39f5154105e03dca51546461fc8437a",
+        "checksum": "1db8ac6ad02bc492c06180e0977e083a3b2be0b347782fa76c0d13c39faec999"
+      }
     }
   ]
 }
