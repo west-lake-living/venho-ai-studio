@@ -12,15 +12,15 @@
     "content_package_id": null
   },
   {
-    "slot_date": "2026-10-09",
+    "slot_date": "2026-10-16",
     "day": "friday",
-    "status": "COMPLETED",
-    "content_package_id": "6d7e0add-fb24-4e7b-be60-be0435e373ff"
+    "status": "OPEN",
+    "content_package_id": null
   },
   {
     "slot_date": "2026-10-10",
     "day": "saturday",
-    "status": "PENDING_APPROVAL",
+    "status": "COMPLETED",
     "content_package_id": "4f95ab3a-8dd0-4b38-979a-301e5147bb34"
   },
   {
@@ -36,9 +36,9 @@
     "content_package_id": null
   },
   {
-    "slot_date": "2026-10-16",
+    "slot_date": "2026-10-23",
     "day": "friday",
-    "status": "OPEN",
+    "status": "NOT_CREATED",
     "content_package_id": null
   },
   {
