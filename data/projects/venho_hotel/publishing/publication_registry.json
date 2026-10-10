@@ -19612,13 +19612,13 @@
       "idempotency_key": "fed18f67b78e5003062f26f17468d32b133109da713769e91ad7419eed511549",
       "platform": "instagram",
       "slot_id": "slot-2026-10-07-wednesday",
-      "status": "GATEWAY_ERROR",
-      "gateway_status": "MISSED_DISPATCH_WINDOW",
+      "status": "FAILED",
+      "gateway_status": "HISTORICAL_UNRECONCILED",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-09-30T10:58:30.650590+00:00",
-      "updated_at": "2026-10-09T08:05:18.702145+00:00",
+      "updated_at": "2026-10-10T05:55:29.872172+00:00",
       "content": {
         "title": "Một buổi chiều ban công ở ABC Coffee Roasters",
         "text": "Có những chỗ ngồi mà bạn chỉ cần bước lên, nhìn ra, rồi im lặng một lúc.\n\nBan công của ABC Coffee Roasters là một trong số đó. Từ trên này, Hồ Tây mở ra trọn vẹn: mặt nước phẳng, ngả xanh xám dưới nền trời trong. Phía bên kia là những mái nhà cao thấp không đều của Hà Nội, cái mới xen cái cũ, đúng kiểu thành phố này.\n\nGiữa tầm mắt là tán lá của những cây xanh đã lớn ven đường. Buổi chiều, nắng lọt qua từng khoảng lá rồi rơi xuống nền ban công. Không bàn ghế bày ra ngoài, không cây cảnh trang trí. Chỉ có khoảng trống, tay vịn, và mặt hồ.\n\nKhông gian được giữ gọn gàng, sạch sẽ, nên mọi thứ càng nhẹ. Một cốc cà phê để nguội dần cũng không sao. Có những khung cảnh không cần phải làm gì nhiều.\n\nQuán nằm trong bán kính đi bộ hoặc vài phút xe từ khu Nguyễn Đình Thi, nơi Ven Hồ Hotel nằm. Sáng ra hồ, chiều lên ban công ngắm hoàng hôn Hồ Tây, tối đi bộ về. Một ngày ở Tây Hồ có thể đơn giản đúng như vậy.\n\nNếu bạn đang tính vài ngày chậm rãi bên hồ, nhắn Ven Hồ Hotel để xem phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhamPhaHoTay #CafeHoTay #NguyenDinhThi #HaNoi",
@@ -19770,7 +19770,9 @@
         "package_versions_checksum": "647437d31e91cc2f1bc553b3e47ae780c810fbe4e8e1582f7014765297874ef1",
         "checksum": "1928bb5e23724d5c3c3c1d7786d8dbf65da98b52a9079a909be4fe646651483e"
       },
-      "gateway_error": "Scheduled for 2026-10-07T09:00:00+07:00 but scheduler ran at 2026-10-09T15:05:03.913762+07:00 (maximum lateness: 0:30:00)."
+      "gateway_error": "Scheduled for 2026-10-07T09:00:00+07:00 but scheduler ran at 2026-10-09T15:05:03.913762+07:00 (maximum lateness: 0:30:00).",
+      "incident_retired_at": "2026-10-10T05:55:29.862426+00:00",
+      "incident_retired_reason": "Publishing slot expired on 2026-10-07; not retried to prevent an outdated duplicate post."
     },
     {
       "publication_id": "pub-wednesday-facebook-a8a4a990",
