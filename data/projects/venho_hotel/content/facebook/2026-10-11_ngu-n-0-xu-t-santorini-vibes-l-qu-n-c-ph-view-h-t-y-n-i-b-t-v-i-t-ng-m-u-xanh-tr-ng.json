@@ -1,0 +1,47 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "project": "venho_hotel",
+  "content_type": "facebook_post",
+  "target_language": "vi",
+  "generated_at": "2026-10-11T17:56:54.103845+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_OUTSIDE_DNA.json",
+      "dna_version": "1.2",
+      "hash": "sha256:aaad1f90ca3a80fbefe9dc168823190c89ef923952e96bd2d902e73f0c5ec577"
+    }
+  ],
+  "source_prompt": {
+    "file": "data/projects/venho_hotel/prompts/content/OUTSIDE__facebook-ngu-n-0-xu-t-santorini-vibes-l-qu-n-c-ph-view-h-t-y-n-i-b-t-v-i-t-ng-m-__CONTENT_PROMPT_v1.0.json",
+    "prompt_id": "outside__content__facebook-ngu-n-0-xu-t-santorini-vibes-l-qu-n-c-ph-view-h-t-y-n-i-b-t-v-i-t-ng-m-",
+    "prompt_version": "1.0"
+  },
+  "generator": {
+    "provider": "mock",
+    "model": "deterministic-social-builder",
+    "temperature": 0.6
+  },
+  "title": "Một mảng xanh trắng bên Hồ Tây",
+  "hook": "Có những ngày trời Hồ Tây trong đến mức nhìn lên là thấy hết cả nền xanh. Và đúng những ngày như vậy, tông xanh trắng của Santorini Vibes trông hợp lạ.",
+  "body": "Quán nằm trong nhóm những địa chỉ cà phê quanh Hồ Tây được nhắc tới nhờ view hồ, với cách phối màu xanh và trắng khá dễ nhận ra giữa dãy nhà phố.\n\nKhông gian gọn gàng, sạch sẽ, không bày biện nhiều. Ánh sáng ban ngày tự đổ vào, không cần thêm đèn. Nhìn ra ngoài là hàng cây lớn ven đường, phía sau là những mái nhà cao thấp xen nhau — một khung hình rất Hà Nội, chỉ khác ở chỗ phần tiền cảnh lại mang màu của biển.\n\nKiểu quán này hợp với buổi chiều đi chậm. Không cần kế hoạch gì nhiều, chỉ cần một ly cà phê, ngồi đủ lâu để thấy mặt nước đổi màu theo nắng, rồi đi bộ tiếp một đoạn ven hồ.\n\nTừ Nguyễn Đình Thi, phần lớn các quán cà phê view Hồ Tây đều nằm trong tầm đi bộ hoặc vài phút chạy xe. Ở Ven Hồ Hotel, chúng tôi thường gợi ý khách bắt đầu buổi chiều bằng một vòng quanh hồ, rồi chọn một chỗ ngồi nhìn ra mặt nước — tuỳ hôm trời trong hay trời xám mà cảm giác sẽ khác nhau.",
+  "cta": "Nếu bạn đang tính vài ngày ở Hà Nội và muốn một chỗ nghỉ ngay sát Hồ Tây, nhắn cho Ven Hồ Hotel để xem lịch phòng những ngày bạn định đi nhé.",
+  "hashtags": [
+    "#VenHoHotelHanoi",
+    "#HoTay",
+    "#WestLakeHanoi",
+    "#KhamPhaHoTay",
+    "#CafeHoTay",
+    "#HaNoi"
+  ],
+  "visual_note": null,
+  "contract_refs": null,
+  "payload": {},
+  "status": "draft",
+  "validation": {
+    "required": true,
+    "status": "pending",
+    "report_file": null,
+    "notes": []
+  }
+}

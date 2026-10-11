@@ -1,0 +1,48 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "project": "venho_hotel",
+  "content_type": "instagram_post",
+  "target_language": "vi",
+  "generated_at": "2026-10-11T17:56:35.561595+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_OUTSIDE_DNA.json",
+      "dna_version": "1.2",
+      "hash": "sha256:aaad1f90ca3a80fbefe9dc168823190c89ef923952e96bd2d902e73f0c5ec577"
+    }
+  ],
+  "source_prompt": {
+    "file": "data/projects/venho_hotel/prompts/content/OUTSIDE__instagram-goc-pho-quen-thuoc-ma-nguoi-ha-noi-di-qua-moi-ngay-khong-chan__CONTENT_PROMPT_v1.0.json",
+    "prompt_id": "outside__content__instagram-goc-pho-quen-thuoc-ma-nguoi-ha-noi-di-qua-moi-ngay-khong-chan",
+    "prompt_version": "1.0"
+  },
+  "generator": {
+    "provider": "mock",
+    "model": "deterministic-social-builder",
+    "temperature": 0.6
+  },
+  "title": "Góc phố đi qua mỗi ngày mà vẫn muốn nhìn thêm một lần",
+  "hook": "Có những góc phố bạn đi qua cả trăm lần. Rồi một trưa trời trong, bạn dừng lại và thấy nó khác hẳn.",
+  "body": "Hàng cây đã lớn, tán giao nhau trên vỉa hè. Nắng lọt xuống từng mảng, đổ bóng lên nền bê tông vừa được quét sạch từ sáng sớm.\n\nPhía sau là mái nhà cũ xen lẫn những toà mới cao hơn, cái cách Hà Nội vẫn luôn chồng lớp lên nhau. Trời xanh, không một gợn mây. Xa hơn một chút là mặt nước Hồ Tây.\n\nĐầu tuần, phố không vội. Người ta đi bộ chậm, có người dắt xe qua đoạn có bóng cây rồi mới lên yên.\n\nKhông ghế, không bàn, không gì để ngồi lại. Nhưng đứng vài phút ở Nguyễn Đình Thi là đủ hiểu vì sao người sống quanh đây đi qua mỗi ngày mà không chán.\n\nỞ Ven Hồ Hotel, mấy góc như thế này nằm ngay dưới chân. Mở cửa ra là phố, đi thêm chút nữa là hồ.",
+  "cta": "Nếu bạn đang tính vài ngày ở Hà Nội, nhắn Ven Hồ Hotel để xem lịch phòng nhé.",
+  "hashtags": [
+    "#VenHoHotelHanoi",
+    "#HoTay",
+    "#WestLakeHanoi",
+    "#NguyenDinhThi",
+    "#KhachSanViewHoTay",
+    "#HaNoi",
+    "#KhamPhaHoTay"
+  ],
+  "visual_note": null,
+  "contract_refs": null,
+  "payload": {},
+  "status": "draft",
+  "validation": {
+    "required": true,
+    "status": "pending",
+    "report_file": null,
+    "notes": []
+  }
+}

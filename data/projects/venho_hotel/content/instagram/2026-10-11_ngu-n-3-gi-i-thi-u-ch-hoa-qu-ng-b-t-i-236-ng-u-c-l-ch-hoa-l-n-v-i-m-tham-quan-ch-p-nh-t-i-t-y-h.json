@@ -1,0 +1,49 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "project": "venho_hotel",
+  "content_type": "instagram_post",
+  "target_language": "vi",
+  "generated_at": "2026-10-11T17:59:59.572753+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_OUTSIDE_DNA.json",
+      "dna_version": "1.2",
+      "hash": "sha256:aaad1f90ca3a80fbefe9dc168823190c89ef923952e96bd2d902e73f0c5ec577"
+    }
+  ],
+  "source_prompt": {
+    "file": "data/projects/venho_hotel/prompts/content/OUTSIDE__instagram-ngu-n-3-gi-i-thi-u-ch-hoa-qu-ng-b-t-i-236-ng-u-c-l-ch-hoa-l-n-v-i-m-th__CONTENT_PROMPT_v1.0.json",
+    "prompt_id": "outside__content__instagram-ngu-n-3-gi-i-thi-u-ch-hoa-qu-ng-b-t-i-236-ng-u-c-l-ch-hoa-l-n-v-i-m-th",
+    "prompt_version": "1.0"
+  },
+  "generator": {
+    "provider": "mock",
+    "model": "deterministic-social-builder",
+    "temperature": 0.6
+  },
+  "title": "Chợ Hoa Quảng Bá — một điểm dừng rất Tây Hồ",
+  "hook": "Có những nơi ở Tây Hồ mà bạn nhận ra mình đã tới, trước cả khi nhìn biển tên: màu hoa hiện ra trước.",
+  "body": "Chợ Hoa Quảng Bá nằm ở 236 đường Âu Cơ, là một trong những chợ hoa lớn của khu vực Tây Hồ, và cũng là chỗ nhiều người ghé qua chỉ để chụp vài tấm ảnh.\n\nTrời Hà Nội hôm nắng trong, hàng cây dọc phố đổ bóng xuống mặt đường, phía sau là những mái nhà cao thấp của một Hà Nội rất đời thường. Giữa khung cảnh đó, chợ hoa là mảng màu rõ nhất.\n\nKhông cần kế hoạch gì phức tạp. Đi một vòng, nhìn hoa, nghe tiếng người mua bán, rồi quay lại con đường ven hồ.\n\nVen Hồ Hotel nằm trên Nguyễn Đình Thi, cùng phía Tây Hồ, nên một buổi sáng hay buổi chiều như vậy vừa đủ gọn trong lịch trình Hà Nội của bạn.",
+  "cta": "Bạn đang tính những ngày ở Hà Nội? Nhắn cho Ven Hồ Hotel để xem phòng trống nhé.",
+  "hashtags": [
+    "#VenHoHotelHanoi",
+    "#ChoHoaQuangBa",
+    "#HoTay",
+    "#WestLakeHanoi",
+    "#KhamPhaHoTay",
+    "#KhachSanViewHoTay",
+    "#HaNoi",
+    "#HanoiTravel"
+  ],
+  "visual_note": null,
+  "contract_refs": null,
+  "payload": {},
+  "status": "draft",
+  "validation": {
+    "required": true,
+    "status": "pending",
+    "report_file": null,
+    "notes": []
+  }
+}

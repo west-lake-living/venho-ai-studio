@@ -1,0 +1,47 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "project": "venho_hotel",
+  "content_type": "facebook_post",
+  "target_language": "vi",
+  "generated_at": "2026-10-11T17:59:44.007995+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_OUTSIDE_DNA.json",
+      "dna_version": "1.2",
+      "hash": "sha256:aaad1f90ca3a80fbefe9dc168823190c89ef923952e96bd2d902e73f0c5ec577"
+    }
+  ],
+  "source_prompt": {
+    "file": "data/projects/venho_hotel/prompts/content/OUTSIDE__facebook-ngu-n-3-gi-i-thi-u-ch-hoa-qu-ng-b-t-i-236-ng-u-c-l-ch-hoa-l-n-v-i-m-tha__CONTENT_PROMPT_v1.0.json",
+    "prompt_id": "outside__content__facebook-ngu-n-3-gi-i-thi-u-ch-hoa-qu-ng-b-t-i-236-ng-u-c-l-ch-hoa-l-n-v-i-m-tha",
+    "prompt_version": "1.0"
+  },
+  "generator": {
+    "provider": "mock",
+    "model": "deterministic-social-builder",
+    "temperature": 0.6
+  },
+  "title": "Chợ Hoa Quảng Bá — một góc Tây Hồ nhiều màu nhất",
+  "hook": "Có những nơi ở Hà Nội mà bạn nhận ra bằng màu sắc trước khi nhớ ra tên đường.",
+  "body": "Chợ Hoa Quảng Bá nằm ở 236 đường Âu Cơ, một trong những chợ hoa lớn của khu vực Tây Hồ, và cũng là điểm nhiều người tìm đến chỉ để chụp vài tấm ảnh.\n\nTrời trong, nắng rõ, hàng cây lớn hai bên đường đổ bóng xuống mặt đường. Phía sau là những khối nhà cao thấp của một Hà Nội rất đời thường. Ở giữa là hoa — từng bó, từng thùng, từng xe chở đi khắp thành phố.\n\nKhông có ghế để ngồi lại, không có chỗ nào để nán. Bạn đi chậm, nhìn, hỏi giá, rồi đi tiếp. Nhưng chính cái nhịp đó lại hợp với Tây Hồ: mọi thứ diễn ra tự nhiên, không chờ ai ghé thăm.\n\nMột gợi ý nhỏ nếu bạn ở quanh hồ: ghé chợ hoa vào buổi sáng, rồi thong thả đi bộ về phía đường ven hồ khi nắng đã dịu. Quãng đường ấy đủ để bạn thấy Hồ Tây đổi màu vài lần trong ngày.\n\nVen Hồ Hotel nằm trên đường Nguyễn Đình Thi, một điểm dừng chân vừa vặn để bắt đầu và kết thúc những vòng đi như thế.",
+  "cta": "Nếu bạn đang tính lịch về Hà Nội, nhắn cho Ven Hồ Hotel để kiểm tra phòng trống cho những ngày bạn dự định ở lại nhé.",
+  "hashtags": [
+    "#VenHoHotelHanoi",
+    "#ChoHoaQuangBa",
+    "#HoTay",
+    "#WestLakeHanoi",
+    "#KhachSanHoTay",
+    "#HanoiTravel"
+  ],
+  "visual_note": null,
+  "contract_refs": null,
+  "payload": {},
+  "status": "draft",
+  "validation": {
+    "required": true,
+    "status": "pending",
+    "report_file": null,
+    "notes": []
+  }
+}
