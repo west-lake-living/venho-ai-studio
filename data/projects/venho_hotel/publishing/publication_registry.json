@@ -20380,13 +20380,13 @@
       "idempotency_key": "2980b260e5446af76e75e20e0afdda7218dba56f59d3da9a8ceed4ecd0fec7b0",
       "platform": "instagram",
       "slot_id": "slot-2026-10-14-wednesday",
-      "status": "PENDING_APPROVAL",
+      "status": "REJECTED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-10-11T17:57:14.383936+00:00",
-      "updated_at": "2026-10-11T17:57:14.412592+00:00",
+      "updated_at": "2026-10-12T09:19:34.095437+00:00",
       "content": {
         "title": "Tông xanh trắng bên mặt nước Hồ Tây",
         "text": "Có những ngày trời Hà Nội trong đến mức màu sơn trắng xanh của một quán cà phê ven hồ cũng sáng hẳn lên.\n\nSantorini Vibes được nhắc đến như một trong những quán cà phê view Hồ Tây dễ nhận ra nhất, nhờ tông xanh trắng nổi bật giữa dãy nhà phố quanh hồ.\n\nHôm nắng đẹp, màu ấy ăn rất ý với trời và với mặt nước. Phía sau là mảng phố cao thấp xen nhau, phía trước là hàng cây lớn đã đứng đó nhiều năm, tán phủ xuống lối đi. Một khoảng không gian gọn gàng, sạch sẽ, không bày nhiều đồ, nên ánh sáng tự nhiên gần như chiếm trọn chỗ.\n\nCách thú vị để ghé là đi bộ dọc ven hồ từ phía Nguyễn Đình Thi, ngắm nhịp phố chậm dần rồi mới dừng lại. Buổi chiều thường là lúc dễ chịu nhất: nắng bớt gắt, gió từ mặt nước thổi lên, và cái màu trắng xanh kia trông mát mắt hơn hẳn.\n\nNhững góc như vậy quanh Hồ Tây không hiếm, chỉ cần có thời gian đi chậm một chút.\n\nNếu bạn đang lên lịch vài ngày ở Hà Nội và muốn ở gần hồ để đi bộ cho thong thả, nhắn Ven Hồ Hotel để xem lịch phòng nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhamPhaHoTay #CafeHoTay #HanoiTravel #KhachSanHoTay",
@@ -20515,7 +20515,9 @@
         "claim_kill_switch_triggered": false,
         "content_brand_fit": 95,
         "content_overall_score": 93.39
-      }
+      },
+      "rejected_by": "hpham1504@gmail.com",
+      "rejected_reason": "Không có hình ảnh của quán cafe này."
     },
     {
       "publication_id": "pub-friday-facebook-2ea04197",
