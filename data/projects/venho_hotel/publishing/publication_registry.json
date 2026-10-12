@@ -20236,13 +20236,13 @@
       "idempotency_key": "050cab3edf6eab87e15d4dbea9cd1e3325760f5312f4e1590433045949c1c243",
       "platform": "facebook",
       "slot_id": "slot-2026-10-14-wednesday",
-      "status": "PENDING_APPROVAL",
+      "status": "REJECTED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-10-11T17:56:54.417396+00:00",
-      "updated_at": "2026-10-11T17:56:54.485979+00:00",
+      "updated_at": "2026-10-12T09:19:20.620226+00:00",
       "content": {
         "title": "Một mảng xanh trắng bên Hồ Tây",
         "text": "Có những ngày trời Hồ Tây trong đến mức nhìn lên là thấy hết cả nền xanh. Và đúng những ngày như vậy, tông xanh trắng của Santorini Vibes trông hợp lạ.\n\nQuán nằm trong nhóm những địa chỉ cà phê quanh Hồ Tây được nhắc tới nhờ view hồ, với cách phối màu xanh và trắng khá dễ nhận ra giữa dãy nhà phố.\n\nKhông gian gọn gàng, sạch sẽ, không bày biện nhiều. Ánh sáng ban ngày tự đổ vào, không cần thêm đèn. Nhìn ra ngoài là hàng cây lớn ven đường, phía sau là những mái nhà cao thấp xen nhau — một khung hình rất Hà Nội, chỉ khác ở chỗ phần tiền cảnh lại mang màu của biển.\n\nKiểu quán này hợp với buổi chiều đi chậm. Không cần kế hoạch gì nhiều, chỉ cần một ly cà phê, ngồi đủ lâu để thấy mặt nước đổi màu theo nắng, rồi đi bộ tiếp một đoạn ven hồ.\n\nTừ Nguyễn Đình Thi, phần lớn các quán cà phê view Hồ Tây đều nằm trong tầm đi bộ hoặc vài phút chạy xe. Ở Ven Hồ Hotel, chúng tôi thường gợi ý khách bắt đầu buổi chiều bằng một vòng quanh hồ, rồi chọn một chỗ ngồi nhìn ra mặt nước — tuỳ hôm trời trong hay trời xám mà cảm giác sẽ khác nhau.\n\nNếu bạn đang tính vài ngày ở Hà Nội và muốn một chỗ nghỉ ngay sát Hồ Tây, nhắn cho Ven Hồ Hotel để xem lịch phòng những ngày bạn định đi nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhamPhaHoTay #CafeHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-9259bf4a",
@@ -20370,7 +20370,9 @@
         "claim_kill_switch_triggered": false,
         "content_brand_fit": 95,
         "content_overall_score": 92.32
-      }
+      },
+      "rejected_by": "hpham1504@gmail.com",
+      "rejected_reason": "Không có hình ảnh của quán cafe này."
     },
     {
       "publication_id": "pub-wednesday-instagram-7d4f7a8e",
