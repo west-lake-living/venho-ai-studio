@@ -19929,13 +19929,13 @@
       "idempotency_key": "b3551a7c4b78a129016de9c7de383278d70d3e1a11e480c922246319556f9b22",
       "platform": "facebook",
       "slot_id": "slot-2026-10-12-monday",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
-      "platform_post_id": null,
-      "permalink": null,
+      "status": "PUBLISHED",
+      "gateway_status": "PUBLISHED",
+      "platform_post_id": "1124616474074140_122144816697351048",
+      "permalink": "https://www.facebook.com/1124616474074140_122144816697351048",
       "reconciliation_proof": null,
       "created_at": "2026-10-08T07:03:35.673730+00:00",
-      "updated_at": "2026-10-09T05:21:11.026257+00:00",
+      "updated_at": "2026-10-12T08:10:23.554932+00:00",
       "content": {
         "title": "Chiếc xe đạp chở rau trên đường Nguyễn Đình Thi",
         "text": "Có một chiếc xe đạp chở rau đi chậm hơn cả dòng xe trên đường Nguyễn Đình Thi.\n\nHai sọt rau buộc hai bên, vài bó rau thơm gác lên yên sau. Xe đi men theo bóng những hàng cây lớn dọc đường, chỗ nắng chỗ râm, chậm đến mức người đi bộ cũng có thể theo kịp.\n\nTrời trong, nắng rõ từng tán lá. Phía sau là những mái nhà cao thấp xen nhau của Tây Hồ, phía trước là mặt hồ mở ra một khoảng rộng. Vỉa hè sạch, không hàng quán bày ra, không ghế nhựa chắn lối, nên cả đoạn đường cứ thoáng như vậy suốt buổi.\n\nĐầu tuần, phần lớn Hà Nội đang chạy. Còn ở đoạn này, nhịp sống vẫn giữ tốc độ của một chiếc xe đạp chở rau. Đó là điều khiến Hồ Tây khác: không phải vì có gì để xem, mà vì có một nhịp để thở cùng.\n\nVen Hồ Hotel nằm ngay trên Nguyễn Đình Thi. Bước ra khỏi cửa là con đường này, là hàng cây này, là mặt hồ ngay bên kia lối đi bộ. Sáng đi bộ một vòng, trưa về nghỉ, chiều lại ra ngắm nắng xuống mặt nước — một ngày ở Hà Nội có thể giản dị đúng như thế.\n\nNếu bạn đang tính vài ngày ở Hà Nội và muốn ở gần Hồ Tây, nhắn tin cho Ven Hồ Hotel để xem lịch phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #NguyenDinhThi #KhachSanViewHoTay #HanoiTravel\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-monday-facebook-8de6c103",
@@ -20073,7 +20073,9 @@
         "revoked_reason": null,
         "package_versions_checksum": "d7b090f9c253f68807ef1ffceb0e83cff39f5154105e03dca51546461fc8437a",
         "checksum": "1db8ac6ad02bc492c06180e0977e083a3b2be0b347782fa76c0d13c39faec999"
-      }
+      },
+      "gateway_error": null,
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-monday-instagram-83a88946",
