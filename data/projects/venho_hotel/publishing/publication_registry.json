@@ -20525,13 +20525,13 @@
       "idempotency_key": "3e788a41c65850a4f393280904059be1d1610901fc86030ab2babd62caac5c48",
       "platform": "facebook",
       "slot_id": "slot-2026-10-16-friday",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-10-11T17:57:41.518548+00:00",
-      "updated_at": "2026-10-11T17:57:41.547623+00:00",
+      "updated_at": "2026-10-12T09:19:58.941581+00:00",
       "content": {
         "title": "6 giờ sáng ở một căn phòng trên đường Nguyễn Đình Thi",
         "text": "6 giờ sáng. Trước khi kéo rèm, ánh sáng đã kịp len vào phòng một thứ màu nhạt, không gắt, không vàng rực.\n\nPhòng lúc này rất yên. Trần phẳng, sơn trắng, không có gì để nhìn ngoài một khoảng sáng đang lớn dần. Bộ bàn ghế gỗ màu nâu đỏ sẫm còn nguyên nếp của tối qua. Trên tường, bức tranh treo im lìm, chỉ rõ nét hơn một chút khi trời sáng thêm.\n\nMở cửa sổ ra, Hà Nội ở ngoài kia đã dậy trước bạn từ lâu. Tiếng xe máy đầu tiên của ngày, tiếng chổi quét, tiếng ai đó gọi nhau đi bộ. Phía Hồ Tây, không khí sáng sớm bao giờ cũng dịu hơn vài phần so với buổi trưa.\n\nXuống dưới nhà, sảnh vẫn giữ sự tĩnh lặng đó. Sàn gạch nâu với những vòng tròn nhỏ, sạch sẽ và mát chân. Quầy lễ tân bằng gỗ, tủ chìa khóa phía sau, tấm biển logo quen thuộc. Ánh đèn trung tính, đủ sáng để nhìn rõ, không đủ chói để làm bạn tỉnh hẳn.\n\nCửa kính mở ra đường Nguyễn Đình Thi. Từ đây, chỉ cần vài bước chân là đã ở trong nhịp sáng của khu Tây Hồ: người chạy bộ, mấy hàng ăn sáng dọn sớm, xe đạp chở hoa đi ngang.\n\nMột khách sạn boutique nhỏ không có quá nhiều thứ để phô ra. Thứ nó giữ được là những buổi sáng như vậy: gọn, sạch, yên, và bắt đầu đúng lúc bạn muốn bắt đầu.\n\nNếu bạn đang tìm một chỗ nghỉ gần Hồ Tây cho chuyến Hà Nội sắp tới, nhắn tin cho Ven Hồ Hotel để xem ngày còn phòng nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-friday-facebook-2ea04197",
@@ -20646,6 +20646,26 @@
         "claim_kill_switch_triggered": false,
         "content_brand_fit": 100,
         "content_overall_score": 93.06
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-10-12T09:19:58.914686+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-7a63d8d3-960d-4e5c-aedf-73195107a772",
+        "content_package_id": "7a63d8d3-960d-4e5c-aedf-73195107a772",
+        "copy_version_ids": [
+          "brief-friday-facebook-3cc903ca-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "923be2bb309d4323c9eea52345fcedecfe2501bc755c0dc186a3d19623bd393e",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-friday-facebook-3cc903ca@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-10-12T09:19:58.914711+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "9184393b60185ba28b1bcee97f8e41b0fc2b720bc21ce523e70cbcf98e897e8f",
+        "checksum": "96cdf7d79def6f2006fe89eb30b9a3dabe0dc408d62a1751e2f63750a7e9e7dc"
       }
     },
     {
@@ -20654,13 +20674,13 @@
       "idempotency_key": "93df4d8d1f21d3fc0fdb094aeae954aab51429883e6b138a67d82e8d178baf09",
       "platform": "instagram",
       "slot_id": "slot-2026-10-16-friday",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-10-11T17:58:04.312035+00:00",
-      "updated_at": "2026-10-11T17:58:04.340751+00:00",
+      "updated_at": "2026-10-12T09:19:58.941581+00:00",
       "content": {
         "title": "6 giờ sáng ở Ven Hồ Hotel",
         "text": "6 giờ sáng, ánh sáng đi qua ô cửa trước khi bạn kịp tỉnh hẳn.\n\nKéo rèm ra, phố Nguyễn Đình Thi còn đang trong nhịp chậm nhất của một ngày. Vài bước chân tập thể dục, một chiếc xe máy đi ngang, rồi lại yên.\n\nKhông cần dậy vội. Cũng chẳng có lịch trình nào bắt đầu lúc này.\n\nXuống dưới sảnh, mọi thứ đã sạch sẽ và sẵn sàng: nền gạch nâu với những vòng tròn quen mắt, quầy lễ tân gỗ nâu đỏ sẫm, bức tranh trên tường, ánh đèn trung tính vừa đủ sáng. Cánh cửa kính mở ra buổi sáng Tây Hồ.\n\nKhông gian ở Ven Hồ Hotel không lớn. Nhưng đủ gọn gàng và ấm để một ngày ở Hà Nội bắt đầu nhẹ nhàng, trước khi bạn bước ra đường và đi bộ về phía hồ.\n\nNếu bạn đang lên kế hoạch cho vài ngày ở Hà Nội, nhắn Ven Hồ Hotel để xem lịch phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanHoTay #HaNoi #HanoiTravel #NguyenDinhThi",
@@ -20777,6 +20797,26 @@
         "claim_kill_switch_triggered": false,
         "content_brand_fit": 95,
         "content_overall_score": 93.7
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-10-12T09:19:58.914686+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-a7733cb3-a147-4e8e-bfc3-ba7636d15e85",
+        "content_package_id": "a7733cb3-a147-4e8e-bfc3-ba7636d15e85",
+        "copy_version_ids": [
+          "brief-friday-instagram-28ea610f-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "5f18b9b7eb26a0059a52ba84dcab9e2a13578fcd0914d5b17f21321c06bf1c0e",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-friday-instagram-28ea610f@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-10-12T09:19:58.914820+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "37427334ddf48620d15b20a1650a4e2243b2feb55962fa378dfa1c7411a41110",
+        "checksum": "9770e7ecd0af1d66adb7c80cbc5d90c57cf9d8eab5d7789cc3040ff7f0d6654e"
       }
     },
     {
