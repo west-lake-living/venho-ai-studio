@@ -20083,13 +20083,13 @@
       "idempotency_key": "7ed0d0213d0e2c1d31f68889f85d20b88dc9e93f198b45c5d69aae22bec1cb2b",
       "platform": "instagram",
       "slot_id": "slot-2026-10-12-monday",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-10-11T17:56:35.586421+00:00",
-      "updated_at": "2026-10-11T17:56:35.616341+00:00",
+      "updated_at": "2026-10-12T09:18:54.241254+00:00",
       "content": {
         "title": "Góc phố đi qua mỗi ngày mà vẫn muốn nhìn thêm một lần",
         "text": "Có những góc phố bạn đi qua cả trăm lần. Rồi một trưa trời trong, bạn dừng lại và thấy nó khác hẳn.\n\nHàng cây đã lớn, tán giao nhau trên vỉa hè. Nắng lọt xuống từng mảng, đổ bóng lên nền bê tông vừa được quét sạch từ sáng sớm.\n\nPhía sau là mái nhà cũ xen lẫn những toà mới cao hơn, cái cách Hà Nội vẫn luôn chồng lớp lên nhau. Trời xanh, không một gợn mây. Xa hơn một chút là mặt nước Hồ Tây.\n\nĐầu tuần, phố không vội. Người ta đi bộ chậm, có người dắt xe qua đoạn có bóng cây rồi mới lên yên.\n\nKhông ghế, không bàn, không gì để ngồi lại. Nhưng đứng vài phút ở Nguyễn Đình Thi là đủ hiểu vì sao người sống quanh đây đi qua mỗi ngày mà không chán.\n\nỞ Ven Hồ Hotel, mấy góc như thế này nằm ngay dưới chân. Mở cửa ra là phố, đi thêm chút nữa là hồ.\n\nNếu bạn đang tính vài ngày ở Hà Nội, nhắn Ven Hồ Hotel để xem lịch phòng nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #NguyenDinhThi #KhachSanViewHoTay #HaNoi #KhamPhaHoTay",
@@ -20206,8 +20206,28 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.7
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-10-12T09:18:54.209128+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-777a96a4-8e6e-46ba-9521-cf7e503df094",
+        "content_package_id": "777a96a4-8e6e-46ba-9521-cf7e503df094",
+        "copy_version_ids": [
+          "brief-monday-instagram-c39cad5c-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "c2ef90c622a597f7f5d1eeb4b743ac6736c9fb6f570726a3964d160c9d0bed10",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-monday-instagram-c39cad5c@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-10-12T09:18:54.209157+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "6766f84b800ba2b2cea87ec6015b7779811522e1c3495a120059dad91b79de38",
+        "checksum": "e1bbc3daa78c3b47cf25ee76feceff91869d6aa217073475f2f7d9278f305ce7"
       }
     },
     {
@@ -20348,7 +20368,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 92.32
       }
     },
@@ -20491,7 +20511,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.39
       }
     },
@@ -20620,7 +20640,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 100.0,
+        "content_brand_fit": 100,
         "content_overall_score": 93.06
       }
     },
@@ -20751,7 +20771,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.7
       }
     },
@@ -20881,7 +20901,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 91.3
       }
     },
@@ -21012,7 +21032,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 92.4
       }
     },
@@ -21143,7 +21163,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.34
       }
     },
@@ -21277,7 +21297,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.7
       }
     },
@@ -21419,7 +21439,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 92.81
       }
     },
@@ -21563,7 +21583,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.7
       }
     },
@@ -21692,7 +21712,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 100.0,
+        "content_brand_fit": 100,
         "content_overall_score": 93.65
       }
     },
@@ -21824,7 +21844,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.7
       }
     },
@@ -21954,7 +21974,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 92.53
       }
     },
@@ -22085,7 +22105,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.7
       }
     }
