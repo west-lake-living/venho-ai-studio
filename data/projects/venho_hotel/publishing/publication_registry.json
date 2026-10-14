@@ -22525,13 +22525,13 @@
       "idempotency_key": "dd15a14386141677dbe56a0f8132eac277b1c83b7a0c2e47b0aa774ff82201dd",
       "platform": "instagram",
       "slot_id": "slot-2026-10-14-wednesday",
-      "status": "PENDING_APPROVAL",
+      "status": "REJECTED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-10-12T12:50:27.430357+00:00",
-      "updated_at": "2026-10-12T12:50:27.511900+00:00",
+      "updated_at": "2026-10-14T00:44:57.001431+00:00",
       "content": {
         "title": "Một ban công nhìn trọn Hồ Tây",
         "text": "Có những quán cà phê bạn nhớ vì đồ uống. Có những quán bạn nhớ vì chỗ ngồi.\n\nABC Coffee Roasters thuộc nhóm thứ hai. Ban công ở đây mở thẳng ra Hồ Tây, không bị chắn, nên tầm mắt cứ thế trôi từ mặt nước sang những mái nhà phía xa.\n\nChiều nắng, trời trong, hàng cây lớn bên đường đổ bóng xuống vỉa hè. Mặt hồ ánh lên màu xanh xám, lúc gió nhẹ thì gợn thành từng vệt sáng. Không gian gọn gàng, sạch sẽ, không bày biện nhiều — và có lẽ cũng không cần, vì phần đẹp nhất nằm ngoài lan can.\n\nKiểu quán này hợp với những buổi chiều bạn không có lịch trình gì cụ thể. Gọi một ly, ngồi xuống, rồi nhận ra mình đã ở đó lâu hơn dự định.\n\nTừ Nguyễn Đình Thi, chỉ cần vài phút đi bộ hoặc đạp xe ven hồ là bạn đã có một buổi chiều như vậy.\n\nNếu bạn đang tính một chuyến Hà Nội thong thả, nhắn Ven Hồ Hotel để xem phòng trống những ngày đó nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #CafeHoTay #KhamPhaHoTay #HanoiTravel",
@@ -22660,7 +22660,9 @@
         "content_brand_fit": 95,
         "content_overall_score": 93.7
       },
-      "replaces_publication_id": "pub-wednesday-instagram-7d4f7a8e"
+      "replaces_publication_id": "pub-wednesday-instagram-7d4f7a8e",
+      "rejected_by": "hpham1504@gmail.com",
+      "rejected_reason": "Không có hình ảnh minh hoạ cho chủ đề này"
     }
   ]
 }
