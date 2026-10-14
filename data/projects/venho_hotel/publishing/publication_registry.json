@@ -22361,13 +22361,13 @@
       "idempotency_key": "d6b240dbf24a91646ec4c9e84a08f79927a09e35a8583c835ffa0dcdd0e99710",
       "platform": "facebook",
       "slot_id": "slot-2026-10-14-wednesday",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-10-12T12:50:16.278358+00:00",
-      "updated_at": "2026-10-12T12:50:16.360993+00:00",
+      "updated_at": "2026-10-14T00:44:12.793961+00:00",
       "content": {
         "title": "Chùa Kim Liên: một điểm dừng văn hóa ở Nghi Tàm",
         "text": "Có những buổi trời trong xanh ở Tây Hồ mà đi đâu cũng tiếc, trừ khi đi bộ.\n\nTừ phía Nguyễn Đình Thi, chỉ cần men theo mép hồ về hướng Nghi Tàm là nhịp phố đổi khác. Hàng cây lớn đổ bóng xuống mặt đường, nắng lọt qua từng khoảng lá, phía xa vẫn thấy những mái nhà cao thấp của Hà Nội xen giữa tán xanh.\n\nĐích đến là Chùa Kim Liên, thuộc khu vực Nghi Tàm, phường Quảng An, Tây Hồ. Đây là một điểm tham quan để tìm hiểu văn hóa và lịch sử của vùng ven hồ, nên nếu bạn thích kiểu khám phá chậm, đọc kỹ, nhìn kỹ, thì nơi này hợp hơn là ghé vội mười lăm phút rồi đi.\n\nVài gợi ý nhỏ cho chuyến đi: chọn khung giờ trưa hoặc đầu giờ chiều khi trời quang, mặc đồ kín đáo lịch sự như khi vào các không gian tín ngưỡng khác, và đi bộ nếu sức khỏe cho phép, vì đoạn đường quanh hồ vốn dĩ cũng là một phần của trải nghiệm.\n\nKhi quay về, Ven Hồ Hotel nằm ngay trên Nguyễn Đình Thi, đủ gần để bạn kịp nghỉ chân trước khi tính tiếp buổi tối ở Hà Nội.\n\nNếu bạn đang lên lịch cho vài ngày ở Tây Hồ, nhắn tin cho Ven Hồ Hotel để xem phòng trống vào đúng dịp bạn tới nhé.\n\n#VenHoHotelHanoi #ChuaKimLien #HoTay #KhachSanViewHoTay #HaNoi #WestLakeHanoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-4331e429",
@@ -22494,10 +22494,30 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 92.83
       },
-      "replaces_publication_id": "pub-wednesday-facebook-9259bf4a"
+      "replaces_publication_id": "pub-wednesday-facebook-9259bf4a",
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-10-14T00:44:12.767407+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-d0fcee0a-ad07-49d4-ad43-f3bcde1abf19",
+        "content_package_id": "d0fcee0a-ad07-49d4-ad43-f3bcde1abf19",
+        "copy_version_ids": [
+          "brief-wednesday-facebook-4e50671e-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "27f526390a124f871013f94593456f67d2a7111b7e701074230dd70f4292ef08",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-wednesday-facebook-4e50671e@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-10-14T00:44:12.767435+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "e32bd29931727631e8fd23d262d96686e28cd1ee3aec814d9bfd9b698f47c982",
+        "checksum": "b9975ad85f4eaa040b5e0fc7814c4ee71ba34b77b8e54dfd1c0b963c25dd7ef7"
+      }
     },
     {
       "publication_id": "pub-wednesday-instagram-9f6c84b1",
@@ -22637,7 +22657,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.7
       },
       "replaces_publication_id": "pub-wednesday-instagram-7d4f7a8e"
