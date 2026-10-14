@@ -1,0 +1,48 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "project": "venho_hotel",
+  "content_type": "instagram_post",
+  "target_language": "vi",
+  "generated_at": "2026-10-14T01:40:47.033181+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_OUTSIDE_DNA.json",
+      "dna_version": "1.2",
+      "hash": "sha256:aaad1f90ca3a80fbefe9dc168823190c89ef923952e96bd2d902e73f0c5ec577"
+    }
+  ],
+  "source_prompt": {
+    "file": "data/projects/venho_hotel/prompts/content/OUTSIDE__instagram-ngu-n-1-xu-t-treebee-coffee-t-i-171-v-h-l-qu-n-c-ph-view-h-t-y-v-i-thi__CONTENT_PROMPT_v1.0.json",
+    "prompt_id": "outside__content__instagram-ngu-n-1-xu-t-treebee-coffee-t-i-171-v-h-l-qu-n-c-ph-view-h-t-y-v-i-thi",
+    "prompt_version": "1.0"
+  },
+  "generator": {
+    "provider": "mock",
+    "model": "deterministic-social-builder",
+    "temperature": 0.6
+  },
+  "title": "Một buổi chiều trong trẻo ở 171 Vệ Hồ",
+  "hook": "Có những đoạn đường quanh Hồ Tây chỉ cần đi bộ chậm lại một chút là thấy khác hẳn. Vệ Hồ là một trong số đó.",
+  "body": "Trời trong, nắng rơi qua tán cây lớn hai bên đường, bóng đổ loang lổ xuống vỉa hè. Phía sau hàng cây là những mái nhà thấp xen giữa vài khối nhà cao hơn — kiểu phố Tây Hồ không quá gọn gàng nhưng dễ chịu, và luôn có mặt hồ ở ngay bên kia.\n\nTreebee coffee nằm ở số 171 Vệ Hồ, được nhắc tới như một quán cà phê view Hồ Tây với thiết kế riêng, không giống phần còn lại của con phố. Mặt tiền gọn, không kê bàn ghế ra ngoài, nên bạn sẽ nhận ra quán bằng chính kiến trúc của nó chứ không phải bằng một dãy ghế ngoài hiên.\n\nCà phê ở Hồ Tây thú vị vì mỗi hướng hồ cho một cảm giác khác nhau. Phía Vệ Hồ yên hơn, ít xe hơn, ánh sáng ban ngày đủ để ngồi lâu mà không thấy sốt ruột.\n\nTừ Ven Hồ Hotel trên phố Nguyễn Đình Thi, men theo mép hồ là cách dễ nhất để ghép những điểm dừng như thế này vào một buổi chiều rảnh.",
+  "cta": "Nếu bạn đang xếp lịch cho vài ngày ở Hà Nội, nhắn Ven Hồ Hotel để xem phòng trống nhé.",
+  "hashtags": [
+    "#VenHoHotelHanoi",
+    "#HoTay",
+    "#WestLakeHanoi",
+    "#KhamPhaHoTay",
+    "#CafeHoTay",
+    "#KhachSanHoTay",
+    "#HaNoi"
+  ],
+  "visual_note": null,
+  "contract_refs": null,
+  "payload": {},
+  "status": "draft",
+  "validation": {
+    "required": true,
+    "status": "pending",
+    "report_file": null,
+    "notes": []
+  }
+}
