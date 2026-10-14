@@ -20083,13 +20083,13 @@
       "idempotency_key": "7ed0d0213d0e2c1d31f68889f85d20b88dc9e93f198b45c5d69aae22bec1cb2b",
       "platform": "instagram",
       "slot_id": "slot-2026-10-12-monday",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
+      "status": "GATEWAY_ERROR",
+      "gateway_status": "MISSED_DISPATCH_WINDOW",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-10-11T17:56:35.586421+00:00",
-      "updated_at": "2026-10-12T09:18:54.241254+00:00",
+      "updated_at": "2026-10-14T06:49:13.347030+00:00",
       "content": {
         "title": "Góc phố đi qua mỗi ngày mà vẫn muốn nhìn thêm một lần",
         "text": "Có những góc phố bạn đi qua cả trăm lần. Rồi một trưa trời trong, bạn dừng lại và thấy nó khác hẳn.\n\nHàng cây đã lớn, tán giao nhau trên vỉa hè. Nắng lọt xuống từng mảng, đổ bóng lên nền bê tông vừa được quét sạch từ sáng sớm.\n\nPhía sau là mái nhà cũ xen lẫn những toà mới cao hơn, cái cách Hà Nội vẫn luôn chồng lớp lên nhau. Trời xanh, không một gợn mây. Xa hơn một chút là mặt nước Hồ Tây.\n\nĐầu tuần, phố không vội. Người ta đi bộ chậm, có người dắt xe qua đoạn có bóng cây rồi mới lên yên.\n\nKhông ghế, không bàn, không gì để ngồi lại. Nhưng đứng vài phút ở Nguyễn Đình Thi là đủ hiểu vì sao người sống quanh đây đi qua mỗi ngày mà không chán.\n\nỞ Ven Hồ Hotel, mấy góc như thế này nằm ngay dưới chân. Mở cửa ra là phố, đi thêm chút nữa là hồ.\n\nNếu bạn đang tính vài ngày ở Hà Nội, nhắn Ven Hồ Hotel để xem lịch phòng nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #NguyenDinhThi #KhachSanViewHoTay #HaNoi #KhamPhaHoTay",
@@ -20228,7 +20228,8 @@
         "revoked_reason": null,
         "package_versions_checksum": "6766f84b800ba2b2cea87ec6015b7779811522e1c3495a120059dad91b79de38",
         "checksum": "e1bbc3daa78c3b47cf25ee76feceff91869d6aa217073475f2f7d9278f305ce7"
-      }
+      },
+      "gateway_error": "Scheduled for 2026-10-12T09:00:00+07:00 but scheduler ran at 2026-10-14T13:49:13.317120+07:00 (maximum lateness: 0:30:00)."
     },
     {
       "publication_id": "pub-wednesday-facebook-9259bf4a",
@@ -22361,13 +22362,13 @@
       "idempotency_key": "d6b240dbf24a91646ec4c9e84a08f79927a09e35a8583c835ffa0dcdd0e99710",
       "platform": "facebook",
       "slot_id": "slot-2026-10-14-wednesday",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
-      "platform_post_id": null,
-      "permalink": null,
+      "status": "PUBLISHED",
+      "gateway_status": "PUBLISHED",
+      "platform_post_id": "1124616474074140_122145276027351048",
+      "permalink": "https://www.facebook.com/1124616474074140_122145276027351048",
       "reconciliation_proof": null,
       "created_at": "2026-10-12T12:50:16.278358+00:00",
-      "updated_at": "2026-10-14T00:44:12.793961+00:00",
+      "updated_at": "2026-10-14T06:49:19.492130+00:00",
       "content": {
         "title": "Chùa Kim Liên: một điểm dừng văn hóa ở Nghi Tàm",
         "text": "Có những buổi trời trong xanh ở Tây Hồ mà đi đâu cũng tiếc, trừ khi đi bộ.\n\nTừ phía Nguyễn Đình Thi, chỉ cần men theo mép hồ về hướng Nghi Tàm là nhịp phố đổi khác. Hàng cây lớn đổ bóng xuống mặt đường, nắng lọt qua từng khoảng lá, phía xa vẫn thấy những mái nhà cao thấp của Hà Nội xen giữa tán xanh.\n\nĐích đến là Chùa Kim Liên, thuộc khu vực Nghi Tàm, phường Quảng An, Tây Hồ. Đây là một điểm tham quan để tìm hiểu văn hóa và lịch sử của vùng ven hồ, nên nếu bạn thích kiểu khám phá chậm, đọc kỹ, nhìn kỹ, thì nơi này hợp hơn là ghé vội mười lăm phút rồi đi.\n\nVài gợi ý nhỏ cho chuyến đi: chọn khung giờ trưa hoặc đầu giờ chiều khi trời quang, mặc đồ kín đáo lịch sự như khi vào các không gian tín ngưỡng khác, và đi bộ nếu sức khỏe cho phép, vì đoạn đường quanh hồ vốn dĩ cũng là một phần của trải nghiệm.\n\nKhi quay về, Ven Hồ Hotel nằm ngay trên Nguyễn Đình Thi, đủ gần để bạn kịp nghỉ chân trước khi tính tiếp buổi tối ở Hà Nội.\n\nNếu bạn đang lên lịch cho vài ngày ở Tây Hồ, nhắn tin cho Ven Hồ Hotel để xem phòng trống vào đúng dịp bạn tới nhé.\n\n#VenHoHotelHanoi #ChuaKimLien #HoTay #KhachSanViewHoTay #HaNoi #WestLakeHanoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-4331e429",
@@ -22517,7 +22518,9 @@
         "revoked_reason": null,
         "package_versions_checksum": "e32bd29931727631e8fd23d262d96686e28cd1ee3aec814d9bfd9b698f47c982",
         "checksum": "b9975ad85f4eaa040b5e0fc7814c4ee71ba34b77b8e54dfd1c0b963c25dd7ef7"
-      }
+      },
+      "gateway_error": null,
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-wednesday-instagram-9f6c84b1",
