@@ -20083,13 +20083,13 @@
       "idempotency_key": "7ed0d0213d0e2c1d31f68889f85d20b88dc9e93f198b45c5d69aae22bec1cb2b",
       "platform": "instagram",
       "slot_id": "slot-2026-10-12-monday",
-      "status": "GATEWAY_ERROR",
-      "gateway_status": "MISSED_DISPATCH_WINDOW",
+      "status": "FAILED",
+      "gateway_status": "HISTORICAL_UNRECONCILED",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-10-11T17:56:35.586421+00:00",
-      "updated_at": "2026-10-14T06:49:13.347030+00:00",
+      "updated_at": "2026-10-15T04:43:05.538558+00:00",
       "content": {
         "title": "Góc phố đi qua mỗi ngày mà vẫn muốn nhìn thêm một lần",
         "text": "Có những góc phố bạn đi qua cả trăm lần. Rồi một trưa trời trong, bạn dừng lại và thấy nó khác hẳn.\n\nHàng cây đã lớn, tán giao nhau trên vỉa hè. Nắng lọt xuống từng mảng, đổ bóng lên nền bê tông vừa được quét sạch từ sáng sớm.\n\nPhía sau là mái nhà cũ xen lẫn những toà mới cao hơn, cái cách Hà Nội vẫn luôn chồng lớp lên nhau. Trời xanh, không một gợn mây. Xa hơn một chút là mặt nước Hồ Tây.\n\nĐầu tuần, phố không vội. Người ta đi bộ chậm, có người dắt xe qua đoạn có bóng cây rồi mới lên yên.\n\nKhông ghế, không bàn, không gì để ngồi lại. Nhưng đứng vài phút ở Nguyễn Đình Thi là đủ hiểu vì sao người sống quanh đây đi qua mỗi ngày mà không chán.\n\nỞ Ven Hồ Hotel, mấy góc như thế này nằm ngay dưới chân. Mở cửa ra là phố, đi thêm chút nữa là hồ.\n\nNếu bạn đang tính vài ngày ở Hà Nội, nhắn Ven Hồ Hotel để xem lịch phòng nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #NguyenDinhThi #KhachSanViewHoTay #HaNoi #KhamPhaHoTay",
@@ -20229,7 +20229,9 @@
         "package_versions_checksum": "6766f84b800ba2b2cea87ec6015b7779811522e1c3495a120059dad91b79de38",
         "checksum": "e1bbc3daa78c3b47cf25ee76feceff91869d6aa217073475f2f7d9278f305ce7"
       },
-      "gateway_error": "Scheduled for 2026-10-12T09:00:00+07:00 but scheduler ran at 2026-10-14T13:49:13.317120+07:00 (maximum lateness: 0:30:00)."
+      "gateway_error": "Scheduled for 2026-10-12T09:00:00+07:00 but scheduler ran at 2026-10-14T13:49:13.317120+07:00 (maximum lateness: 0:30:00).",
+      "incident_retired_at": "2026-10-15T04:43:05.530279+00:00",
+      "incident_retired_reason": "Publishing slot expired on 2026-10-12; not retried to prevent an outdated duplicate post."
     },
     {
       "publication_id": "pub-wednesday-facebook-9259bf4a",
@@ -22674,13 +22676,13 @@
       "idempotency_key": "0ad3ff2fc29c31d1d1c36963305bd34eeef3ff8c1ddcaab53d188e86c66e068a",
       "platform": "instagram",
       "slot_id": "slot-2026-10-14-wednesday",
-      "status": "PENDING_APPROVAL",
+      "status": "STALE_APPROVAL",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-10-14T01:40:47.071438+00:00",
-      "updated_at": "2026-10-14T01:40:47.158447+00:00",
+      "updated_at": "2026-10-15T04:43:03.945212+00:00",
       "content": {
         "title": "Một buổi chiều trong trẻo ở 171 Vệ Hồ",
         "text": "Có những đoạn đường quanh Hồ Tây chỉ cần đi bộ chậm lại một chút là thấy khác hẳn. Vệ Hồ là một trong số đó.\n\nTrời trong, nắng rơi qua tán cây lớn hai bên đường, bóng đổ loang lổ xuống vỉa hè. Phía sau hàng cây là những mái nhà thấp xen giữa vài khối nhà cao hơn — kiểu phố Tây Hồ không quá gọn gàng nhưng dễ chịu, và luôn có mặt hồ ở ngay bên kia.\n\nTreebee coffee nằm ở số 171 Vệ Hồ, được nhắc tới như một quán cà phê view Hồ Tây với thiết kế riêng, không giống phần còn lại của con phố. Mặt tiền gọn, không kê bàn ghế ra ngoài, nên bạn sẽ nhận ra quán bằng chính kiến trúc của nó chứ không phải bằng một dãy ghế ngoài hiên.\n\nCà phê ở Hồ Tây thú vị vì mỗi hướng hồ cho một cảm giác khác nhau. Phía Vệ Hồ yên hơn, ít xe hơn, ánh sáng ban ngày đủ để ngồi lâu mà không thấy sốt ruột.\n\nTừ Ven Hồ Hotel trên phố Nguyễn Đình Thi, men theo mép hồ là cách dễ nhất để ghép những điểm dừng như thế này vào một buổi chiều rảnh.\n\nNếu bạn đang xếp lịch cho vài ngày ở Hà Nội, nhắn Ven Hồ Hotel để xem phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhamPhaHoTay #CafeHoTay #KhachSanHoTay #HaNoi",
@@ -22810,7 +22812,9 @@
         "content_brand_fit": 95.0,
         "content_overall_score": 93.06
       },
-      "replaces_publication_id": "pub-wednesday-instagram-9f6c84b1"
+      "replaces_publication_id": "pub-wednesday-instagram-9f6c84b1",
+      "stale_at": "2026-10-15T04:43:03.936055+00:00",
+      "stale_reason": "Approval window closed on 2026-10-14."
     }
   ]
 }
