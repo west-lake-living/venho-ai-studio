@@ -23,6 +23,7 @@ def test_t2c_changes_only_the_output_cap_and_targets_b03_sample_one() -> None:
 def test_gemini_request_uses_8192_and_preserves_structured_contract() -> None:
     provider = object.__new__(GeminiVisionProvider)
     provider.temperature = 0.0
+    provider.model = "gemini-2.5-flash"
     config = provider._generate_config("prompt", {"type": "object"})
     assert config == {
         "system_instruction": "prompt",

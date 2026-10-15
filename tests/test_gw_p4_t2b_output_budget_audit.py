@@ -22,6 +22,7 @@ def test_output_budget_audit_is_explicitly_r5_and_offline() -> None:
 def test_locked_request_contract_and_frozen_state_are_unchanged() -> None:
     provider = object.__new__(GeminiVisionProvider)
     provider.temperature = 0.0
+    provider.model = "gemini-2.5-flash"
     config = provider._generate_config("prompt", {"type": "object"})
     assert config["max_output_tokens"] == 8192
     assert config["response_mime_type"] == "application/json"

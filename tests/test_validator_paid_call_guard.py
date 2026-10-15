@@ -37,6 +37,50 @@ def test_paid_call_guard_enforces_explicit_gate_budget_and_ledger(tmp_path, monk
         )
 
 
+def test_paid_call_guard_scopes_budget_to_run_id(tmp_path, monkeypatch):
+    # Regression 2026-10-15: one historical intent in a shared ledger blocked every later
+    # faceless-video validation forever because the budget counted the whole ledger.
+    monkeypatch.delenv("PYTEST_CURRENT_TEST", raising=False)
+    monkeypatch.setenv("VALIDATOR_LIVE_ENABLED", "true")
+    ledger = tmp_path / "ledger.jsonl"
+    monkeypatch.setenv("VALIDATOR_RUN_ID", "job-a:1")
+    PaidCallGuard(ledger_path=ledger, max_calls=1).before_call(model="gemini-3.8-flash", sample_index=1, config={})
+    with pytest.raises(PaidCallBlocked, match="for run job-a:1"):
+        PaidCallGuard(ledger_path=ledger, max_calls=1).before_call(model="gemini-3.8-flash", sample_index=1, config={})
+
+    monkeypatch.setenv("VALIDATOR_RUN_ID", "job-b:1")
+    intent = PaidCallGuard(ledger_path=ledger, max_calls=1).before_call(model="gemini-3.8-flash", sample_index=1, config={})
+    assert intent["runId"] == "job-b:1"
+    assert intent["callNumber"] == 1
+
+
+def test_paid_call_guard_without_run_id_keeps_cumulative_budget(tmp_path, monkeypatch):
+    monkeypatch.delenv("PYTEST_CURRENT_TEST", raising=False)
+    monkeypatch.setenv("VALIDATOR_LIVE_ENABLED", "true")
+    ledger = tmp_path / "ledger.jsonl"
+    monkeypatch.setenv("VALIDATOR_RUN_ID", "job-a:1")
+    PaidCallGuard(ledger_path=ledger, max_calls=1).before_call(model="gemini-3.8-flash", sample_index=1, config={})
+    monkeypatch.delenv("VALIDATOR_RUN_ID")
+    with pytest.raises(PaidCallBlocked, match="exhausted: 1/1"):
+        PaidCallGuard(ledger_path=ledger, max_calls=1).before_call(model="gemini-3.8-flash", sample_index=1, config={})
+
+
+def test_face_cli_reports_blocked_paid_call_with_distinct_exit_code(monkeypatch, tmp_path):
+    from typer.testing import CliRunner
+
+    import validator_studio.cli as cli
+
+    def blocked(*_args, **_kwargs):
+        raise PaidCallBlocked("Validator paid-call budget exhausted: 1/1")
+
+    monkeypatch.setattr(cli, "run_face_validation", blocked)
+    image = tmp_path / "x.png"
+    image.write_bytes(b"x")
+    result = CliRunner().invoke(cli.app, ["face", "--subject", "linh_an", "--image", str(image)])
+    assert result.exit_code == cli.PAID_CALL_BLOCKED_EXIT_CODE
+    assert cli.PAID_CALL_BLOCKED_MARKER in result.output
+
+
 def test_structured_observation_maps_exactly_to_existing_image_dto(monkeypatch, tmp_path):
     import validator_studio.observe_adapter as module
 
