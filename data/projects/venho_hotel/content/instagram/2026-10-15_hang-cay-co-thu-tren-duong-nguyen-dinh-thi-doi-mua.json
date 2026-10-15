@@ -1,0 +1,48 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "project": "venho_hotel",
+  "content_type": "instagram_post",
+  "target_language": "vi",
+  "generated_at": "2026-10-15T07:05:55.626178+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_LOBBY_DNA.json",
+      "dna_version": "1.1",
+      "hash": "sha256:e01fc1fa26c2318ce93d3a670067bac2ccbf9dc329a141ea906e80fb108c673f"
+    }
+  ],
+  "source_prompt": {
+    "file": "data/projects/venho_hotel/prompts/content/LOBBY__instagram-hang-cay-co-thu-tren-duong-nguyen-dinh-thi-doi-mua__CONTENT_PROMPT_v1.0.json",
+    "prompt_id": "lobby__content__instagram-hang-cay-co-thu-tren-duong-nguyen-dinh-thi-doi-mua",
+    "prompt_version": "1.0"
+  },
+  "generator": {
+    "provider": "mock",
+    "model": "deterministic-social-builder",
+    "temperature": 0.6
+  },
+  "title": "Mưa đầu tuần dưới hàng cây Nguyễn Đình Thi",
+  "hook": "Mưa xuống, hàng cây cổ thụ trên Nguyễn Đình Thi sẫm màu lại, và cả con đường tự nhiên chậm hơn một nhịp.",
+  "body": "Tán lá phía trên giao vào nhau thành một mái che không đều. Nước men theo thân cây, đọng thành vệt trên vỉa hè, rồi lăn xuống mép đường.\n\nNgười đi bộ nép vào trong tán, bước ngắn hơn. Xe máy đi chậm, đèn vàng loang trên mặt nhựa ướt. Bên kia hàng cây, mặt Hồ Tây lấm tấm những vòng tròn nhỏ, mờ dần về phía xa.\n\nĐầu tuần ở Hà Nội thường vội. Nhưng đoạn đường này, vào một buổi mưa, lại cho phép người ta đi chậm mà không thấy mình đang chậm.\n\nKhi quay về, cánh cửa kính của Ven Hồ Hotel khép lại sau lưng, tiếng mưa nhỏ dần. Sàn gạch nâu với những hoa văn tròn, quầy lễ tân gỗ nâu đỏ, mấy bức tranh trên tường và thứ ánh sáng vừa đủ dịu. Một chỗ để phủi nước mưa trên vai rồi ngồi xuống một lúc, trước khi bắt đầu ngày mới.",
+  "cta": "Nếu bạn đang tính vài ngày ở gần Hồ Tây, nhắn cho Ven Hồ Hotel để xem phòng trống trong khoảng thời gian bạn dự định nhé.",
+  "hashtags": [
+    "#VenHoHotelHanoi",
+    "#HoTay",
+    "#WestLakeHanoi",
+    "#NguyenDinhThi",
+    "#KhachSanViewHoTay",
+    "#HaNoi",
+    "#HanoiTravel"
+  ],
+  "visual_note": null,
+  "contract_refs": null,
+  "payload": {},
+  "status": "draft",
+  "validation": {
+    "required": true,
+    "status": "pending",
+    "report_file": null,
+    "notes": []
+  }
+}
