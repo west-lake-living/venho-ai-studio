@@ -94,16 +94,29 @@ class GeminiVisionProvider:
     calls; GEMINI_VISION_MODEL can override the configured model.
     """
 
-    def __init__(self, model: str = DEFAULT_GEMINI_MODEL, temperature: float = 0.0) -> None:
+    def __init__(
+        self,
+        model: str = DEFAULT_GEMINI_MODEL,
+        temperature: float = 0.0,
+        api_version: str | None = None,
+    ) -> None:
         try:
             from google import genai
+            from google.genai import types
         except ImportError as exc:
             raise RuntimeError("google-genai is required for Gemini; install: pip install google-genai") from exc
         api_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
         if not api_key:
             raise RuntimeError("GEMINI_API_KEY (or GOOGLE_API_KEY) not set in environment")
+        pinned_api_version = api_version or os.environ.get("GEMINI_API_VERSION", "v1beta")
+        if pinned_api_version not in {"v1", "v1beta"}:
+            raise ValueError("GEMINI_API_VERSION must be v1 or v1beta")
         self._genai = genai
-        self.client = genai.Client(api_key=api_key)
+        self.api_version = pinned_api_version
+        self.client = genai.Client(
+            api_key=api_key,
+            http_options=types.HttpOptions(api_version=pinned_api_version),
+        )
         self.model = os.environ.get("GEMINI_VISION_MODEL", model)
         self.temperature = temperature
         self.last_raw_response: str | None = None
@@ -122,6 +135,16 @@ class GeminiVisionProvider:
             sink(event)
 
     def _generate_config(self, system_prompt: str, response_schema: dict[str, Any] | None) -> dict[str, Any]:
+        model = self.model.lower()
+        if model.startswith(("gemini-3.", "gemini-4-")):
+            # Gemini 3+ expects a thinking level. Keep the bounded validator call
+            # on Google's lowest supported reasoning level; thinking tokens still
+            # count toward max_output_tokens and the configured cost ceiling.
+            thinking_config = {"thinking_level": "low", "include_thoughts": False}
+        else:
+            # Gemini 2.5 supports explicitly disabling thinking, which was the
+            # validator's established behavior before the model migration.
+            thinking_config = {"thinking_budget": 0, "include_thoughts": False}
         config = {
             "system_instruction": system_prompt,
             "temperature": self.temperature,
@@ -131,7 +154,7 @@ class GeminiVisionProvider:
             # before it emits the DTO (observed as MAX_TOKENS plus a padded,
             # partial JSON body).  The observation rubric, prompt, schema,
             # thresholds, and output ceiling remain unchanged.
-            "thinking_config": {"thinking_budget": 0, "include_thoughts": False},
+            "thinking_config": thinking_config,
             "response_mime_type": "application/json",
         }
         if response_schema is not None:
