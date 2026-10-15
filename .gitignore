@@ -48,3 +48,6 @@ output/
 !.claude/skills
 !.claude/CLAUDE.md.proposed
 .obsidian/
+
+# Large pinned identity models are provisioned out of band (see PROVENANCE.json).
+models/identity/**/*.onnx
