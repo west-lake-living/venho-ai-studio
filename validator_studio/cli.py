@@ -69,7 +69,18 @@ def image_cmd(
     output_root: Optional[Path] = typer.Option(None, "--output-root", help="Validation artifact root; default is the live project validation store"),
 ) -> None:
     """Validate generated image artifact against DNA and optional prompt.json."""
-    _print_paths(run_image_validation(project, subject, image, prompt, provider, samples, scenario_profile_id, output_root))
+    from shared.vision.paid_call_guard import PaidCallBlocked
+
+    try:
+        paths = run_image_validation(
+            project, subject, image, prompt, provider, samples, scenario_profile_id, output_root
+        )
+    except PaidCallBlocked as exc:
+        # Same contract as `face`: refused before the SDK transport, so nothing was charged.
+        typer.echo(f"{PAID_CALL_BLOCKED_MARKER}: {exc}", err=True)
+        raise typer.Exit(PAID_CALL_BLOCKED_EXIT_CODE) from exc
+    _print_paths(paths)
+    _print_usage()
 
 
 @app.command("prompt")

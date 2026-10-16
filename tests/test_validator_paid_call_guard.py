@@ -165,3 +165,50 @@ def test_face_cli_prints_usage_after_report_paths(monkeypatch, tmp_path, fresh_u
     assert json.loads(usage_line[len(cli.USAGE_MARKER) + 1 :]) == {
         "calls": 1, "complete": True, "input_tokens": 8804, "output_tokens": 281, "thought_tokens": 64,
     }
+
+
+def test_image_cli_prints_usage_and_reports_blocked_calls(monkeypatch, tmp_path, fresh_usage):
+    from typer.testing import CliRunner
+
+    import validator_studio.cli as cli
+
+    image = tmp_path / "x.png"
+    image.write_bytes(b"x")
+
+    def validated(*_args, **_kwargs):
+        PaidCallGuard(ledger_path=tmp_path / "ledger.jsonl", max_calls=12).after_call({}, response=_response(1500, 300, 0))
+        return {"md": tmp_path / "r.md", "json": tmp_path / "r.json"}
+
+    monkeypatch.setattr(cli, "run_image_validation", validated)
+    args = ["image", "--subject", "westlake", "--image", str(image), "--scenario-profile-id", "linh_an_lakeside_video"]
+    result = CliRunner().invoke(cli.app, args)
+    assert result.exit_code == 0
+    assert any(line.startswith(cli.USAGE_MARKER + " ") for line in result.output.splitlines())
+
+    def blocked(*_args, **_kwargs):
+        raise PaidCallBlocked("Validator paid-call budget exhausted: 1/1")
+
+    monkeypatch.setattr(cli, "run_image_validation", blocked)
+    refused = CliRunner().invoke(cli.app, args)
+    assert refused.exit_code == cli.PAID_CALL_BLOCKED_EXIT_CODE
+
+
+def test_linh_an_lakeside_overlay_forbids_pagodas_and_mountains_and_keeps_base_rules():
+    import yaml
+
+    overlay = yaml.safe_load(open("config/projects/venho_hotel/subjects/westlake.linh_an_lakeside_video.overrides.yaml"))
+    rules = " | ".join(overlay["forbidden"])
+    assert "pagodas" in rules and "mountains" in rules
+    assert "no generic Asian city lake" in rules and "jade-teal" in rules  # base curated rules redeclared
+
+
+def test_lakeside_scenario_overlay_is_actually_applied_to_the_westlake_dna():
+    # _apply_scenario_overlay silently falls back when the file is missing; pin the real path.
+    from validator_studio.image_validator import _apply_scenario_overlay
+
+    dna = json.load(open("data/projects/venho_hotel/knowledge/VENHO_HOTEL_WESTLAKE_DNA.json"))
+    merged = _apply_scenario_overlay("venho_hotel", "westlake", "linh_an_lakeside_video", dna)
+    rules = [item["rule"] for item in merged["forbidden"]]
+    assert any("pagodas" in rule for rule in rules)
+    assert any("mountains" in rule for rule in rules)
+    assert _apply_scenario_overlay("venho_hotel", "westlake", None, dna) == dna
