@@ -75,6 +75,14 @@ def main(argv: list[str] | None = None) -> int:
     scan_p.add_argument("--out-dir", required=True, type=Path, help="Write-once output directory")
     scan_p.add_argument("--fps", type=float, default=2.0, help="Sampling rate; the last frame is always kept")
 
+    sheet_p = sub.add_parser(
+        "contact-sheet",
+        help="Timestamped frame grids of a motion clip for AI clip review (contact-sheet-v1, no GPU/network)",
+    )
+    sheet_p.add_argument("--video", required=True, type=Path)
+    sheet_p.add_argument("--out-dir", required=True, type=Path, help="Write-once output directory")
+    sheet_p.add_argument("--fps", type=float, default=1.0)
+
     calibrate_p = sub.add_parser(
         "calibrate-identity-measurement",
         help="Measure the locked A2/B01 positives and derived negatives against a policy",
@@ -171,6 +179,19 @@ def main(argv: list[str] | None = None) -> int:
             emit_json({
                 "schema": SCHEMA,
                 "error": {"code": "ERR_IDENTITY_SIMILARITY_FAILED", "message": str(exc), "retryable": False},
+            })
+            return 1
+
+    if args.command == "contact-sheet":
+        from ..application.contact_sheet import SCHEMA as SHEET_SCHEMA, build_contact_sheets
+
+        try:
+            emit_json(build_contact_sheets(args.video, args.out_dir, sample_fps=args.fps))
+            return 0
+        except (OSError, ValueError) as exc:
+            emit_json({
+                "schema": SHEET_SCHEMA,
+                "error": {"code": "ERR_CONTACT_SHEET_FAILED", "message": str(exc), "retryable": False},
             })
             return 1
 
