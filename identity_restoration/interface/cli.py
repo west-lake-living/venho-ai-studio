@@ -67,6 +67,14 @@ def main(argv: list[str] | None = None) -> int:
         help="Approved reference image; repeat for each role",
     )
 
+    scan_p = sub.add_parser(
+        "temporal-scan",
+        help="Local per-frame YuNet scan of a motion clip -> PNG frames + temporal-scan-v1 JSON (no GPU/network)",
+    )
+    scan_p.add_argument("--video", required=True, type=Path)
+    scan_p.add_argument("--out-dir", required=True, type=Path, help="Write-once output directory")
+    scan_p.add_argument("--fps", type=float, default=2.0, help="Sampling rate; the last frame is always kept")
+
     calibrate_p = sub.add_parser(
         "calibrate-identity-measurement",
         help="Measure the locked A2/B01 positives and derived negatives against a policy",
@@ -163,6 +171,26 @@ def main(argv: list[str] | None = None) -> int:
             emit_json({
                 "schema": SCHEMA,
                 "error": {"code": "ERR_IDENTITY_SIMILARITY_FAILED", "message": str(exc), "retryable": False},
+            })
+            return 1
+
+    if args.command == "temporal-scan":
+        from ..application.temporal_scan import SCHEMA as SCAN_SCHEMA, scan_video
+        from ..infrastructure.face_observability_yunet import (
+            PINNED_YUNET_CONFIG_SHA256,
+            YuNetFaceDetector,
+        )
+
+        try:
+            emit_json(scan_video(
+                args.video, args.out_dir, detector=YuNetFaceDetector(),
+                detector_config_sha256=PINNED_YUNET_CONFIG_SHA256, sample_fps=args.fps,
+            ))
+            return 0
+        except (OSError, ValueError) as exc:
+            emit_json({
+                "schema": SCAN_SCHEMA,
+                "error": {"code": "ERR_TEMPORAL_SCAN_FAILED", "message": str(exc), "retryable": False},
             })
             return 1
 
