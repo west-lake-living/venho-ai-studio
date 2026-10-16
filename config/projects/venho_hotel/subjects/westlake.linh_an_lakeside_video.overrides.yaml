@@ -1,0 +1,29 @@
+# Ven Hồ Hotel — West Lake (Hồ Tây) — Linh An lakeside video keyframes, 2026
+# Scenario-specific overlay, merged in-memory only at validate time (scenario_profile_id
+# linh_an_lakeside_video). Used by faceless-video's scene gate before a paid motion clip.
+# It does NOT touch westlake.overrides.yaml: Tran Quoc pagoda images elsewhere stay valid.
+# Harry, 2026-10-16: R7 Shot 2 came back with pagodas and mountains (Hangzhou's West Lake);
+# for Linh An lakeside videos pagodas and mountains are forbidden.
+# A scenario overlay rebuilds the list, so every curated base rule is redeclared here.
+# This file is curated by humans. Never overwrite via DNA regeneration.
+
+forbidden:
+  - "no pagodas, temples, temple roofs or stupas anywhere in the frame"
+  - "no mountains or hills behind the lake — Ho Tay is flat with a low-rise Hanoi skyline (a mountain backdrop is Hangzhou's West Lake)"
+  - "no Chinese classical architecture, pavilions, stone arch bridges or willow-lined causeways"
+  - "no tourist postcard aesthetic — must feel like daily local life, not staged"
+  - "no generic Asian city lake — must be distinctly Ho Tay / Hanoi"
+  - "no artificial or manicured park look — natural, unhurried"
+  - "no resort waterfront design — this is public lakeside street, not hotel grounds"
+  - "no dramatic staged lighting — soft Hanoi haze and natural glow only"
+  - "no saturated or oversaturated water color — must be muted jade-teal, not tropical blue"
+  - "no modern glass high-rise dominating the frame — a distant, hazy low/mid-rise skyline across the far shore is real West Lake and is fine"
+
+allowed_imperfections:
+  - "slight Hanoi haze or atmospheric softness acceptable — authentic weather"
+  - "a person (Linh An) in the foreground partially covering the lake view is expected"
+  - "shallow depth of field blurring the far shore is acceptable"
+
+notes:
+  - "Gate question: is this unmistakably Hanoi's Ho Tay, not Hangzhou's West Lake?"
+  - "Railing shape reference: ivory-white painted steel, horizontal tube rails on flat curved blade posts."
