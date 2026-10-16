@@ -37,6 +37,43 @@ def current_paid_call_context() -> dict[str, Any]:
     return dict(_context.get())
 
 
+# Billable usage of every guarded call made by this process. A caller that owns the process
+# (faceless-video runs one validation per subprocess) prices it from usage_summary().
+_usage: dict[str, Any] = {"calls": 0, "input_tokens": 0, "output_tokens": 0, "thought_tokens": 0, "complete": True}
+# Holds the response objects themselves (not id()s, which are reused after collection).
+_counted_responses: list[Any] = []
+
+
+def _token_count(value: Any) -> int | None:
+    return value if isinstance(value, int) and not isinstance(value, bool) and value >= 0 else None
+
+
+def _record_usage(response: Any) -> None:
+    if response is not None:
+        # analyze_many reports a parse failure for a response already counted by _generate.
+        if any(seen is response for seen in _counted_responses):
+            return
+        _counted_responses.append(response)
+    _usage["calls"] += 1
+    usage = getattr(response, "usage_metadata", None) if response is not None else None
+    prompt = _token_count(getattr(usage, "prompt_token_count", None))
+    candidates = _token_count(getattr(usage, "candidates_token_count", None))
+    thoughts_raw = getattr(usage, "thoughts_token_count", None)
+    # The SDK reports None (not 0) when the model produced no thinking tokens.
+    thoughts = 0 if thoughts_raw is None else _token_count(thoughts_raw)
+    if prompt is None or candidates is None or thoughts is None:
+        _usage["complete"] = False
+        return
+    _usage["input_tokens"] += prompt
+    _usage["output_tokens"] += candidates
+    _usage["thought_tokens"] += thoughts
+
+
+def usage_summary() -> dict[str, Any]:
+    """Token totals of this process's guarded calls; complete=False when any call is unpriceable."""
+    return dict(_usage)
+
+
 class PaidCallGuard:
     """One guard for all Gemini Validator calls.
 
@@ -113,6 +150,9 @@ class PaidCallGuard:
         return record
 
     def after_call(self, intent: Mapping[str, Any], *, response: Any = None, error: Exception | None = None, raw_path: str | None = None, parsed_path: str | None = None) -> None:
+        # A call that reached the transport is billable even when it later failed to parse; one
+        # that raised before any response has unknown usage.
+        _record_usage(response)
         usage = getattr(response, "usage_metadata", None)
         candidates = getattr(response, "candidates", None) or []
         finish_reason = getattr(candidates[0], "finish_reason", None) if candidates else None
@@ -122,6 +162,7 @@ class PaidCallGuard:
             "httpStatus": getattr(response, "status_code", None) if response is not None else None,
             "inputTokens": getattr(usage, "prompt_token_count", None),
             "outputTokens": getattr(usage, "candidates_token_count", None),
+            "thoughtsTokens": getattr(usage, "thoughts_token_count", None),
             "cachedTokens": getattr(usage, "cached_content_token_count", None),
             "finishReason": str(finish_reason) if finish_reason is not None else None,
             "success": error is None,
