@@ -83,6 +83,31 @@ def image_cmd(
     _print_usage()
 
 
+@app.command("clip")
+def clip_cmd(
+    sheet: list[Path] = typer.Option(..., "--sheet", help="Contact sheet PNG; repeat in time order"),
+    brief: Path = typer.Option(..., "--brief", help="JSON: prompt, expected_people, duration_sec"),
+    provider: str = typer.Option("gemini", "--provider"),
+    output_root: Optional[Path] = typer.Option(None, "--output-root"),
+) -> None:
+    """Review a generated motion clip from contact sheets (clip-review-v1)."""
+    import json as _json
+
+    from shared.vision.paid_call_guard import PaidCallBlocked
+    from validator_studio.clip_reviewer import review_clip, write_clip_review
+
+    if provider != "gemini":
+        raise typer.BadParameter("clip review supports only --provider gemini")
+    try:
+        report = review_clip(sheet, _json.loads(brief.read_text(encoding="utf-8")))
+    except PaidCallBlocked as exc:
+        typer.echo(f"{PAID_CALL_BLOCKED_MARKER}: {exc}", err=True)
+        raise typer.Exit(PAID_CALL_BLOCKED_EXIT_CODE) from exc
+    out_dir = (output_root or Path("data/projects/venho_hotel/validation")) / "clip_reviews"
+    typer.echo(f"  JSON     : {write_clip_review(report, out_dir)}")
+    _print_usage()
+
+
 @app.command("prompt")
 def prompt_cmd(
     project: str = typer.Option("venho_hotel", "--project", "-p"),
