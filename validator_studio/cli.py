@@ -16,6 +16,9 @@ from validator_studio.validation_pipeline import (
 
 app = typer.Typer(help="Validator Studio — deterministic output quality scoring")
 
+PAID_CALL_BLOCKED_EXIT_CODE = 3
+PAID_CALL_BLOCKED_MARKER = "VALIDATOR_PAID_CALL_BLOCKED_BEFORE_TRANSPORT"
+
 
 @app.callback(invoke_without_command=True)
 def validate_interactive(ctx: typer.Context) -> None:
@@ -100,7 +103,16 @@ def face_cmd(
     output_root: Optional[Path] = typer.Option(None, "--output-root", help="Validation artifact root; default is the live project validation store"),
 ) -> None:
     """Validate fictional character image against Face DNA and rubric 07F."""
-    _print_paths(run_face_validation(project, subject, image, provider, reference, samples, output_root))
+    from shared.vision.paid_call_guard import PaidCallBlocked
+
+    try:
+        paths = run_face_validation(project, subject, image, provider, reference, samples, output_root)
+    except PaidCallBlocked as exc:
+        # The guard raises before the SDK transport, so no request left this process. Callers
+        # (faceless-video) rely on this exit code + marker to prove no charge was incurred.
+        typer.echo(f"{PAID_CALL_BLOCKED_MARKER}: {exc}", err=True)
+        raise typer.Exit(PAID_CALL_BLOCKED_EXIT_CODE) from exc
+    _print_paths(paths)
 
 
 @app.command("content")

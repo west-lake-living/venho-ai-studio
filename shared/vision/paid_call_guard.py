@@ -52,6 +52,10 @@ class PaidCallGuard:
             )
         )
         self.max_calls = max_calls if max_calls is not None else int(os.environ.get("VALIDATOR_MAX_NEW_CALLS", "12"))
+        # A caller that owns one bounded attempt (faceless-video: one validation job attempt)
+        # passes VALIDATOR_RUN_ID so the budget counts only that attempt's intents. Without it
+        # the budget stays cumulative over the whole ledger (benchmark campaigns).
+        self.run_id = os.environ.get("VALIDATOR_RUN_ID", "").strip() or None
 
     def _records(self) -> list[dict[str, Any]]:
         if not self.ledger_path.is_file():
@@ -92,11 +96,19 @@ class PaidCallGuard:
         if not _truthy("VALIDATOR_LIVE_ENABLED"):
             raise PaidCallBlocked("VALIDATOR_LIVE_ENABLED=true is required for live Validator calls")
         records = self._records()
-        attempted = sum(1 for item in records if item.get("event") == "intent")
+        attempted = sum(
+            1
+            for item in records
+            if item.get("event") == "intent" and (self.run_id is None or item.get("runId") == self.run_id)
+        )
         if attempted >= self.max_calls:
-            raise PaidCallBlocked(f"Validator paid-call budget exhausted: {attempted}/{self.max_calls}")
+            scope = f" for run {self.run_id}" if self.run_id else ""
+            raise PaidCallBlocked(f"Validator paid-call budget exhausted{scope}: {attempted}/{self.max_calls}")
         record = self._common(model=model, sample_index=sample_index, config=config)
-        record.update({"event": "intent", "callNumber": attempted + 1, "budgetRemaining": self.max_calls - attempted - 1})
+        record.update({
+            "event": "intent", "runId": self.run_id,
+            "callNumber": attempted + 1, "budgetRemaining": self.max_calls - attempted - 1,
+        })
         self._append(record)
         return record
 

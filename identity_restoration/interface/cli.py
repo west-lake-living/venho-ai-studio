@@ -57,6 +57,16 @@ def main(argv: list[str] | None = None) -> int:
     measure_p.add_argument("--image", required=True, type=Path)
     measure_p.add_argument("--policy", required=True, type=Path)
 
+    similarity_p = sub.add_parser(
+        "identity-similarity",
+        help="Local ArcFace cosine similarity of a candidate face to approved references (no GPU/network)",
+    )
+    similarity_p.add_argument("--image", required=True, type=Path, help="Candidate image")
+    similarity_p.add_argument(
+        "--reference", required=True, action="append", metavar="ROLE=PATH",
+        help="Approved reference image; repeat for each role",
+    )
+
     calibrate_p = sub.add_parser(
         "calibrate-identity-measurement",
         help="Measure the locked A2/B01 positives and derived negatives against a policy",
@@ -129,6 +139,30 @@ def main(argv: list[str] | None = None) -> int:
             emit_json({
                 "contractVersion": "identity-input-preparation-v1",
                 "error": {"code": "ERR_GW_PREPARATION_FAILED", "message": str(exc), "retryable": False},
+            })
+            return 1
+
+    if args.command == "identity-similarity":
+        from ..infrastructure.arcface_similarity import (
+            SCHEMA,
+            IdentitySimilarityBlocked,
+            ReferenceImage,
+            measure_identity_similarity,
+        )
+
+        try:
+            references = []
+            for token in args.reference:
+                role, sep, path = token.partition("=")
+                if not sep or not role or not path:
+                    raise IdentitySimilarityBlocked(f"--reference must be ROLE=PATH, got {token!r}")
+                references.append(ReferenceImage(role=role, path=Path(path)))
+            emit_json(measure_identity_similarity(args.image, references))
+            return 0
+        except (OSError, ValueError) as exc:
+            emit_json({
+                "schema": SCHEMA,
+                "error": {"code": "ERR_IDENTITY_SIMILARITY_FAILED", "message": str(exc), "retryable": False},
             })
             return 1
 

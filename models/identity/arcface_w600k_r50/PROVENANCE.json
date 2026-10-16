@@ -1,0 +1,15 @@
+{
+  "model": "w600k_r50.onnx",
+  "modelId": "insightface-buffalo_l-w600k_r50",
+  "sourceRepository": "https://github.com/deepinsight/insightface",
+  "sourceUrl": "https://github.com/deepinsight/insightface/releases/download/v0.7/buffalo_l.zip",
+  "sourcePath": "buffalo_l/w600k_r50.onnx",
+  "sha256": "4c06341c33c2ca1f86781dab0e829f88ad5b64be9fba56e56bc9ebdefc619e43",
+  "sizeBytes": 174383860,
+  "license": "InsightFace pretrained models: non-commercial research use only",
+  "usageAuthority": "Harry Pham 2026-10-15: personal, non-commercial Linh An project",
+  "runtime": "cv2.dnn.readNetFromONNX (CPU); output verified identical to onnxruntime (cosine 1.0)",
+  "acquisition": "explicit pinned artifact provisioning; not committed to git (174 MB); runtime auto-download disabled",
+  "input": "112x112 BGR->RGB, (x - 127.5) / 127.5, ArcFace 5-point similarity alignment",
+  "output": "512-d embedding, L2-normalised by the caller"
+}
