@@ -97,3 +97,71 @@ def test_structured_observation_maps_exactly_to_existing_image_dto(monkeypatch, 
     monkeypatch.setattr(module, "VisionClient", FakeClient)
     result = module.observe_image_against_dna(tmp_path / "candidate.png", {}, provider="gemini", samples=1)
     assert result.model_dump() == {"dna_matches": [], "forbidden": [], "allowed_imperfections": [], "notes": []}
+
+
+def _response(prompt, candidates, thoughts):
+    class Usage:
+        prompt_token_count = prompt
+        candidates_token_count = candidates
+        thoughts_token_count = thoughts
+
+    class Response:
+        usage_metadata = Usage()
+        candidates = []
+
+    return Response()
+
+
+@pytest.fixture
+def fresh_usage(monkeypatch):
+    import shared.vision.paid_call_guard as guard
+
+    monkeypatch.setattr(guard, "_usage", {"calls": 0, "input_tokens": 0, "output_tokens": 0, "thought_tokens": 0, "complete": True})
+    monkeypatch.setattr(guard, "_counted_responses", [])
+    return guard
+
+
+def test_usage_summary_sums_billable_tokens_once_per_response(tmp_path, fresh_usage):
+    guard = PaidCallGuard(ledger_path=tmp_path / "ledger.jsonl", max_calls=12)
+    first, second = _response(8804, 281, 512), _response(8804, 269, None)
+    guard.after_call({}, response=first)
+    guard.after_call({}, response=first, error=ValueError("json"))  # parse failure of the same call
+    guard.after_call({}, response=second)
+    assert fresh_usage.usage_summary() == {
+        "calls": 2, "input_tokens": 17608, "output_tokens": 550, "thought_tokens": 512, "complete": True,
+    }
+    records = [json.loads(line) for line in (tmp_path / "ledger.jsonl").read_text().splitlines()]
+    assert records[0]["thoughtsTokens"] == 512
+
+
+def test_usage_summary_is_incomplete_when_a_call_has_no_usage(tmp_path, fresh_usage):
+    guard = PaidCallGuard(ledger_path=tmp_path / "ledger.jsonl", max_calls=12)
+    guard.after_call({}, response=_response(10, 2, 0))
+    guard.after_call({}, error=TimeoutError("no response"))
+    summary = fresh_usage.usage_summary()
+    assert summary["calls"] == 2 and summary["complete"] is False
+
+
+def test_face_cli_prints_usage_after_report_paths(monkeypatch, tmp_path, fresh_usage):
+    from typer.testing import CliRunner
+
+    import validator_studio.cli as cli
+
+    def validated(*_args, **_kwargs):
+        PaidCallGuard(ledger_path=tmp_path / "ledger.jsonl", max_calls=12).after_call({}, response=_response(8804, 281, 64))
+        return {"md": tmp_path / "r.md", "json": tmp_path / "r.json"}
+
+    monkeypatch.setattr(cli, "run_face_validation", validated)
+    image = tmp_path / "x.png"
+    image.write_bytes(b"x")
+    result = CliRunner().invoke(cli.app, ["face", "--subject", "linh_an", "--image", str(image)])
+    assert result.exit_code == 0
+    lines = result.output.splitlines()
+    # faceless-video's parser: the first line containing "JSON" and ":" is the report path.
+    first_json = next(line for line in lines if "JSON" in line and ":" in line)
+    assert first_json.split(":", 1)[1].strip() == str(tmp_path / "r.json")
+    usage_line = next(line for line in lines if line.startswith(cli.USAGE_MARKER + " "))
+    assert lines.index(usage_line) > lines.index(first_json)
+    assert json.loads(usage_line[len(cli.USAGE_MARKER) + 1 :]) == {
+        "calls": 1, "complete": True, "input_tokens": 8804, "output_tokens": 281, "thought_tokens": 64,
+    }

@@ -18,6 +18,9 @@ app = typer.Typer(help="Validator Studio — deterministic output quality scorin
 
 PAID_CALL_BLOCKED_EXIT_CODE = 3
 PAID_CALL_BLOCKED_MARKER = "VALIDATOR_PAID_CALL_BLOCKED_BEFORE_TRANSPORT"
+# Printed after the report paths. The name must not contain "JSON": faceless-video takes the first
+# stdout line containing "JSON" and ":" as the report path.
+USAGE_MARKER = "VALIDATOR_USAGE"
 
 
 @app.callback(invoke_without_command=True)
@@ -113,6 +116,7 @@ def face_cmd(
         typer.echo(f"{PAID_CALL_BLOCKED_MARKER}: {exc}", err=True)
         raise typer.Exit(PAID_CALL_BLOCKED_EXIT_CODE) from exc
     _print_paths(paths)
+    _print_usage()
 
 
 @app.command("content")
@@ -145,6 +149,14 @@ def health_cmd(
     typer.echo(json.dumps(result, sort_keys=True, separators=(",", ":")))
     if result["status"] != "READY":
         raise typer.Exit(2)
+
+
+def _print_usage() -> None:
+    import json
+
+    from shared.vision.paid_call_guard import usage_summary
+
+    typer.echo(f"{USAGE_MARKER} {json.dumps(usage_summary(), sort_keys=True)}")
 
 
 def _print_paths(paths: dict[str, Path]) -> None:
