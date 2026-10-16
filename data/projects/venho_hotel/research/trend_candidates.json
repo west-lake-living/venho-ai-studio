@@ -2063,5 +2063,26 @@
     "rejection_reason": null,
     "verified_by_human": false,
     "scanned_at": "2026-10-09T07:04:55.704767+00:00"
+  },
+  {
+    "id": "tavily-https://www.facebook.com/groups/191763499888693/posts/692048603193511",
+    "title": "Mình xin thông tin quán cafe có góc riêng tư cho cặp đôi ...",
+    "source_uri": "https://www.facebook.com/groups/191763499888693/posts/692048603193511",
+    "snippet": "Quán Double 23 - Cafe & Photobooth đang có chương trình mua 2 nước tặng 1 lượt chụp ptb. Uống càng nhiều tặng càng nhiều.",
+    "relevance_hint": 0.08279386,
+    "geographic": "westlake",
+    "thematic": "food_local",
+    "actionability": "direct",
+    "type": "lifestyle_trend",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "food_culinary"
+    ],
+    "relevance_score": 0.8,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "verified_by_human": false,
+    "scanned_at": "2026-10-16T05:21:16.668414+00:00"
   }
 ]
