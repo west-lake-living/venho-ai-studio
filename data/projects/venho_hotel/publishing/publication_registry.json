@@ -21139,13 +21139,13 @@
       "idempotency_key": "9e74285bf3ca4d116e045ef90e0bc24bb17fbc66a4f6b0ffa9ec92d8e2f11802",
       "platform": "facebook",
       "slot_id": "slot-2026-10-19-monday",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
-      "platform_post_id": null,
-      "permalink": null,
+      "status": "PUBLISHED",
+      "gateway_status": "PUBLISHED",
+      "platform_post_id": "1124616474074140_122146407669351048",
+      "permalink": "https://www.facebook.com/1124616474074140_122146407669351048",
       "reconciliation_proof": null,
       "created_at": "2026-10-11T17:59:11.767512+00:00",
-      "updated_at": "2026-10-12T09:38:02.322448+00:00",
+      "updated_at": "2026-10-19T07:02:19.772527+00:00",
       "content": {
         "title": "Một vòng xe quanh hồ để bắt đầu tuần mới",
         "text": "Có người bắt đầu tuần mới bằng danh sách việc cần làm. Ở Hồ Tây, nhiều người bắt đầu bằng một vòng xe quanh hồ.\n\nTrời trong, nắng rõ từng tán cây dọc đường. Mặt hồ hắt lên màu xanh xám, lúc gần trưa thì sáng hơn, trong hơn.\n\nMột vòng hồ không ngắn, cũng không dài đến mức phải vội. Đạp chậm thôi. Qua những hàng cây lớn đã đứng đó nhiều năm, qua đoạn vỉa hè sạch sẽ, qua chỗ nhà cửa cao thấp xen nhau — vừa thấy mặt nước, vừa thấy thành phố đang sống.\n\nĐiều hay của việc đi một vòng là bạn không cần đích đến. Không cần chụp gì, không cần đến đâu đúng giờ. Chỉ là chuyển động đủ để đầu óc nhẹ đi, trước khi tuần mới thật sự bắt đầu.\n\nĐường Nguyễn Đình Thi là một trong những đoạn dễ chịu nhất để bắt đầu hoặc kết thúc vòng xe đó. Ven Hồ Hotel nằm ngay trên con đường này, nên với khách ở đây, một vòng hồ buổi sáng hay đầu giờ chiều chỉ là chuyện bước ra khỏi cửa.\n\nNếu bạn đang tính một chuyến Hà Nội và muốn ở gần hồ, nhắn tin cho Ven Hồ Hotel để xem phòng trống những ngày bạn dự định nhé.\n\n#VenHoHotelHanoi #HoTay #NguyenDinhThi #KhamPhaHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-monday-facebook-42ce68db",
@@ -21282,7 +21282,9 @@
         "revoked_reason": null,
         "package_versions_checksum": "145ee236d6c55f403960a902470687b4db693488a79cf7d94fce5abd72369c49",
         "checksum": "ba33008a6c8a1fad12ec85329532b10c37ae90cc88178b449e630509553cef3e"
-      }
+      },
+      "gateway_error": null,
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-monday-instagram-6dabfc56",
@@ -21290,13 +21292,13 @@
       "idempotency_key": "b5154e2056a50667720266527196dbd81cfa81df0c231b9f7df50aa3a983247b",
       "platform": "instagram",
       "slot_id": "slot-2026-10-19-monday",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
-      "platform_post_id": null,
-      "permalink": null,
+      "status": "PUBLISHED",
+      "gateway_status": "PUBLISHED",
+      "platform_post_id": "17970227724189324",
+      "permalink": "https://www.instagram.com/17970227724189324",
       "reconciliation_proof": null,
       "created_at": "2026-10-11T17:59:27.042799+00:00",
-      "updated_at": "2026-10-12T09:38:02.322448+00:00",
+      "updated_at": "2026-10-19T07:02:30.248770+00:00",
       "content": {
         "title": "Một vòng xe quanh hồ để bắt đầu tuần mới",
         "text": "Thứ Hai không nhất thiết phải bắt đầu bằng một cuộc họp. Có thể bắt đầu bằng một vòng xe quanh hồ.\n\nTrời trong, nắng rõ, hàng cây già hai bên đường đổ bóng xuống mặt đường sạch. Đạp chậm thôi, đủ để nghe tiếng bánh xe lăn và tiếng phố phía sau lưng.\n\nMột bên là mặt nước mở ra rộng, một bên là những mái nhà, ban công, quán xá đang mở cửa. Hồ Tây không tách khỏi thành phố, nó chỉ đi chậm hơn thành phố một nhịp.\n\nHết một vòng, mồ hôi vừa đủ, đầu óc nhẹ hơn lúc xuất phát. Tuần mới bắt đầu từ đó cũng không tệ.\n\nVen Hồ Hotel nằm trên đường Nguyễn Đình Thi, chỗ để dắt xe ra là tới đường ven hồ, và để quay về khi đã đạp đủ.\n\nNếu bạn đang tính vài ngày ở Hà Nội theo nhịp này, nhắn tin cho Ven Hồ Hotel để xem phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhamPhaHoTay #KhachSanHoTay #NguyenDinhThi #HaNoi #HanoiTravel",
@@ -21436,7 +21438,9 @@
         "revoked_reason": null,
         "package_versions_checksum": "1a2443057acfaa9f77a3eaf88517eda6c7b213c184be027e7e4ccc801a7293ec",
         "checksum": "8169a9f64b23b9e3b36e9bad4dae54b94fcf668e91b3a00d4b7204bf2c65cabd"
-      }
+      },
+      "gateway_error": null,
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-wednesday-facebook-fa7a6e0c",
