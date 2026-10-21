@@ -227,10 +227,10 @@
     "domain": "market_pricing",
     "question": "Tháng nào trong năm là cao điểm và thấp điểm du lịch của Hà Nội?",
     "synthesis_note": "research/synthesis/RS-2026-08-06-marketpricing-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-06T13:59:12.906902+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "north_tourism.peak_months",
@@ -244,10 +244,10 @@
     "domain": "market_pricing",
     "question": "Tháng nào trong năm là cao điểm và thấp điểm du lịch của Hà Nội?",
     "synthesis_note": "research/synthesis/RS-2026-08-06-marketpricing-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-06T13:59:12.906902+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "boutique_hotel.instagram_engagement_content",
@@ -261,10 +261,10 @@
     "domain": "brand_visual",
     "question": "Yếu tố hình ảnh nào khiến ảnh khách sạn boutique đạt tương tác cao?",
     "synthesis_note": "research/synthesis/RS-2026-08-06-brandvisual-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-06T14:00:30.087797+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "social_media.visual_storytelling_engagement",
@@ -620,10 +620,10 @@
     "domain": "competitor_rating",
     "question": "Các khách sạn cạnh tranh gần Ven Ho Hotel được khách chấm bao nhiêu điểm?",
     "synthesis_note": "research/synthesis/RS-2026-08-06-competitorrating-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-06T14:57:51.943400+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.4u_homestay_cleanliness_rating",
@@ -637,10 +637,10 @@
     "domain": "competitor_rating",
     "question": "Các khách sạn cạnh tranh gần Ven Ho Hotel được khách chấm bao nhiêu điểm?",
     "synthesis_note": "research/synthesis/RS-2026-08-06-competitorrating-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-06T14:57:51.943400+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.4u_homestay_facilities_rating",
@@ -654,10 +654,10 @@
     "domain": "competitor_rating",
     "question": "Các khách sạn cạnh tranh gần Ven Ho Hotel được khách chấm bao nhiêu điểm?",
     "synthesis_note": "research/synthesis/RS-2026-08-06-competitorrating-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-06T14:57:51.943400+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.4u_homestay_service_rating",
@@ -671,10 +671,10 @@
     "domain": "competitor_rating",
     "question": "Các khách sạn cạnh tranh gần Ven Ho Hotel được khách chấm bao nhiêu điểm?",
     "synthesis_note": "research/synthesis/RS-2026-08-06-competitorrating-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-06T14:57:51.943400+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "guest_review.praise_staff",
@@ -796,10 +796,10 @@
     "domain": "competitor_rating",
     "question": "Các khách sạn cạnh tranh gần Ven Ho Hotel được khách chấm bao nhiêu điểm?",
     "synthesis_note": "research/synthesis/RS-2026-08-13-competitorrating-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-13T03:26:50.388745+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "attraction.cho_hoa_quang_ba_address",
@@ -813,10 +813,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-08-13-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-13T03:27:01.955980+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "cafe.capella_coffee_roaster_address",
@@ -830,10 +830,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-08-13-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-13T03:27:01.955980+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "cafe.ca_phe_a_beo_address",
@@ -847,10 +847,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-08-13-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-13T03:27:01.955980+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "cafe.la_coffee_corner_address",
@@ -864,10 +864,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-08-13-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-13T03:27:01.955980+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "attraction.chua_kim_lien_address",
@@ -881,10 +881,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-08-13-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-13T03:27:01.955980+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "event.world_culture_festival_hanoi",
@@ -898,10 +898,10 @@
     "domain": "local_events",
     "question": "Sự kiện hoặc lễ hội nào sắp diễn ra ở Hà Nội, vào ngày nào?",
     "synthesis_note": "research/synthesis/RS-2026-08-13-localevents-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-13T03:27:15.466622+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "event.exhibition_hanoi_master_plan",
@@ -915,10 +915,10 @@
     "domain": "local_events",
     "question": "Sự kiện hoặc lễ hội nào sắp diễn ra ở Hà Nội, vào ngày nào?",
     "synthesis_note": "research/synthesis/RS-2026-08-13-localevents-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-13T03:27:15.466622+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "event.exhibition_sang_say",
@@ -932,10 +932,10 @@
     "domain": "local_events",
     "question": "Sự kiện hoặc lễ hội nào sắp diễn ra ở Hà Nội, vào ngày nào?",
     "synthesis_note": "research/synthesis/RS-2026-08-13-localevents-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-13T03:27:15.466622+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "hanoi_tourism.peak_season_gody",
@@ -949,10 +949,10 @@
     "domain": "market_pricing",
     "question": "Tháng nào trong năm là cao điểm và thấp điểm du lịch của Hà Nội?",
     "synthesis_note": "research/synthesis/RS-2026-08-13-marketpricing-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-13T03:28:01.379741+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "hanoi_tourism.non_peak_season_gody",
@@ -966,10 +966,10 @@
     "domain": "market_pricing",
     "question": "Tháng nào trong năm là cao điểm và thấp điểm du lịch của Hà Nội?",
     "synthesis_note": "research/synthesis/RS-2026-08-13-marketpricing-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-13T03:28:01.379741+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "hanoi_tourism.peak_season_vietnam_airlines",
@@ -983,10 +983,10 @@
     "domain": "market_pricing",
     "question": "Tháng nào trong năm là cao điểm và thấp điểm du lịch của Hà Nội?",
     "synthesis_note": "research/synthesis/RS-2026-08-13-marketpricing-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-13T03:28:01.379741+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "hanoi_tourism.off_season_vietnam_airlines",
@@ -1000,10 +1000,10 @@
     "domain": "market_pricing",
     "question": "Tháng nào trong năm là cao điểm và thấp điểm du lịch của Hà Nội?",
     "synthesis_note": "research/synthesis/RS-2026-08-13-marketpricing-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-13T03:28:01.379741+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "hanoi_tourism.low_season_july",
@@ -1017,10 +1017,10 @@
     "domain": "market_pricing",
     "question": "Tháng nào trong năm là cao điểm và thấp điểm du lịch của Hà Nội?",
     "synthesis_note": "research/synthesis/RS-2026-08-13-marketpricing-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-13T03:28:01.379741+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "instagram.highest_reach_format",
@@ -1034,10 +1034,10 @@
     "domain": "platform_trend",
     "question": "Định dạng nội dung nào đang được Facebook và Instagram phân phối mạnh nhất?",
     "synthesis_note": "research/synthesis/RS-2026-08-13-platformtrend-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-13T03:28:10.499051+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "instagram.highest_engagement_format",
@@ -1051,10 +1051,10 @@
     "domain": "platform_trend",
     "question": "Định dạng nội dung nào đang được Facebook và Instagram phân phối mạnh nhất?",
     "synthesis_note": "research/synthesis/RS-2026-08-13-platformtrend-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-13T03:28:10.499051+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "facebook.broad_reach_format",
@@ -1068,10 +1068,10 @@
     "domain": "platform_trend",
     "question": "Định dạng nội dung nào đang được Facebook và Instagram phân phối mạnh nhất?",
     "synthesis_note": "research/synthesis/RS-2026-08-13-platformtrend-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-13T03:28:10.499051+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "social_media.engagement_more_than_20_photos",
@@ -1085,10 +1085,10 @@
     "domain": "brand_visual",
     "question": "Yếu tố hình ảnh nào khiến ảnh khách sạn boutique đạt tương tác cao?",
     "synthesis_note": "research/synthesis/RS-2026-08-13-brandvisual-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-13T03:28:20.386713+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "social_media.facebook_posts_with_photos_engagement",
@@ -1102,10 +1102,10 @@
     "domain": "brand_visual",
     "question": "Yếu tố hình ảnh nào khiến ảnh khách sạn boutique đạt tương tác cao?",
     "synthesis_note": "research/synthesis/RS-2026-08-13-brandvisual-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-13T03:28:20.386713+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "social_media.visual_content_authentic_behind_the_scenes",
@@ -1119,10 +1119,10 @@
     "domain": "brand_visual",
     "question": "Yếu tố hình ảnh nào khiến ảnh khách sạn boutique đạt tương tác cao?",
     "synthesis_note": "research/synthesis/RS-2026-08-13-brandvisual-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-13T03:28:20.386713+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "social_media.instagrammable_moments",
@@ -1136,10 +1136,10 @@
     "domain": "brand_visual",
     "question": "Yếu tố hình ảnh nào khiến ảnh khách sạn boutique đạt tương tác cao?",
     "synthesis_note": "research/synthesis/RS-2026-08-13-brandvisual-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-13T03:28:20.386713+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "social_media.text_overlay_on_images",
@@ -1153,10 +1153,10 @@
     "domain": "brand_visual",
     "question": "Yếu tố hình ảnh nào khiến ảnh khách sạn boutique đạt tương tác cao?",
     "synthesis_note": "research/synthesis/RS-2026-08-13-brandvisual-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-13T03:28:20.386713+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "customer_feedback.praise_service_and_staff",
@@ -1170,10 +1170,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-08-13-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-13T03:28:40.021954+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "customer_feedback.praise_location_and_view",
@@ -1187,10 +1187,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-08-13-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-13T03:28:40.021954+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "customer_feedback.praise_cleanliness",
@@ -1204,10 +1204,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-08-13-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-13T03:28:40.021954+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "customer_feedback.complaint_wifi",
@@ -1221,10 +1221,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-08-13-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-13T03:28:40.021954+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "customer_feedback.complaint_location_distance",
@@ -1238,10 +1238,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-08-13-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-13T03:28:40.021954+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "guest_review.praise_view_and_location",
@@ -1255,10 +1255,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-08-13-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-13T03:28:40.021954+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "guest_review.praise_staff_service",
@@ -1272,10 +1272,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-08-13-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-13T03:28:40.021954+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "guest_review.praise_cleanliness_and_price",
@@ -1289,10 +1289,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-08-13-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-13T03:28:40.021954+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "guest_review.complaint_no_breakfast_and_far_from_old_quarter",
@@ -1306,10 +1306,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-08-13-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-13T03:28:40.021954+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "guest_review.category_ratings",
@@ -1323,10 +1323,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-08-13-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-13T03:28:40.021954+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.avg_rate_west_lake_tripcom",
@@ -1340,10 +1340,10 @@
     "domain": "competitor",
     "question": "Giá phòng một đêm của các khách sạn quanh Hồ Tây hiện ở mức nào?",
     "synthesis_note": "research/synthesis/RS-2026-08-20-competitor-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-20T02:15:06.960674+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.min_rate_tay_ho_kayak",
@@ -1357,10 +1357,10 @@
     "domain": "competitor",
     "question": "Giá phòng một đêm của các khách sạn quanh Hồ Tây hiện ở mức nào?",
     "synthesis_note": "research/synthesis/RS-2026-08-20-competitor-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-20T02:15:06.960674+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.rate_sheraton_hanoi",
@@ -1374,10 +1374,10 @@
     "domain": "competitor",
     "question": "Giá phòng một đêm của các khách sạn quanh Hồ Tây hiện ở mức nào?",
     "synthesis_note": "research/synthesis/RS-2026-08-20-competitor-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-20T02:15:06.960674+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.rate_pan_pacific_hanoi",
@@ -1391,10 +1391,10 @@
     "domain": "competitor",
     "question": "Giá phòng một đêm của các khách sạn quanh Hồ Tây hiện ở mức nào?",
     "synthesis_note": "research/synthesis/RS-2026-08-20-competitor-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-20T02:15:06.960674+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.avg_rate_west_lake_hotelscombined",
@@ -1408,10 +1408,10 @@
     "domain": "competitor",
     "question": "Giá phòng một đêm của các khách sạn quanh Hồ Tây hiện ở mức nào?",
     "synthesis_note": "research/synthesis/RS-2026-08-20-competitor-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-20T02:15:06.960674+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "attraction.water_park",
@@ -1425,10 +1425,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-08-20-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-20T02:15:33.411925+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "attraction.tran_quoc_pagoda",
@@ -1442,10 +1442,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-08-20-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-20T02:15:33.411925+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "attraction.quang_ba_flower_market",
@@ -1459,10 +1459,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-08-20-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-20T02:15:33.411925+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "attraction.phu_tay_ho",
@@ -1476,10 +1476,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-08-20-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-20T02:15:33.411925+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "event.world_cultural_festival_dates",
@@ -1493,10 +1493,10 @@
     "domain": "local_events",
     "question": "Sự kiện hoặc lễ hội nào sắp diễn ra ở Hà Nội, vào ngày nào?",
     "synthesis_note": "research/synthesis/RS-2026-08-20-localevents-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-20T02:15:39.395980+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "event.hanoi_jazztival_dates",
@@ -1510,10 +1510,10 @@
     "domain": "local_events",
     "question": "Sự kiện hoặc lễ hội nào sắp diễn ra ở Hà Nội, vào ngày nào?",
     "synthesis_note": "research/synthesis/RS-2026-08-20-localevents-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-20T02:15:39.395980+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "event.national_day_cultural_week_dates",
@@ -1527,10 +1527,10 @@
     "domain": "local_events",
     "question": "Sự kiện hoặc lễ hội nào sắp diễn ra ở Hà Nội, vào ngày nào?",
     "synthesis_note": "research/synthesis/RS-2026-08-20-localevents-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-20T02:15:39.395980+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "market.peak_international_season",
@@ -1544,10 +1544,10 @@
     "domain": "market_pricing",
     "question": "Tháng nào trong năm là cao điểm và thấp điểm du lịch của Hà Nội?",
     "synthesis_note": "research/synthesis/RS-2026-08-20-marketpricing-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-20T02:15:50.635497+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "market.low_season_month",
@@ -1561,10 +1561,10 @@
     "domain": "market_pricing",
     "question": "Tháng nào trong năm là cao điểm và thấp điểm du lịch của Hà Nội?",
     "synthesis_note": "research/synthesis/RS-2026-08-20-marketpricing-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-20T02:15:50.635497+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "market.peak_season_start",
@@ -1578,10 +1578,10 @@
     "domain": "market_pricing",
     "question": "Tháng nào trong năm là cao điểm và thấp điểm du lịch của Hà Nội?",
     "synthesis_note": "research/synthesis/RS-2026-08-20-marketpricing-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-20T02:15:50.635497+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "hotel_photography.high_engagement_factors",
@@ -1595,10 +1595,10 @@
     "domain": "brand_visual",
     "question": "Yếu tố hình ảnh nào khiến ảnh khách sạn boutique đạt tương tác cao?",
     "synthesis_note": "research/synthesis/RS-2026-08-20-brandvisual-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-20T02:16:09.487950+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "hotel_photography.storytelling_focus",
@@ -1612,10 +1612,10 @@
     "domain": "brand_visual",
     "question": "Yếu tố hình ảnh nào khiến ảnh khách sạn boutique đạt tương tác cao?",
     "synthesis_note": "research/synthesis/RS-2026-08-20-brandvisual-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-20T02:16:09.487950+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "hotel_photography.social_photo_composition",
@@ -1629,10 +1629,10 @@
     "domain": "brand_visual",
     "question": "Yếu tố hình ảnh nào khiến ảnh khách sạn boutique đạt tương tác cao?",
     "synthesis_note": "research/synthesis/RS-2026-08-20-brandvisual-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-20T02:16:09.487950+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "marketing.visual_storytelling_engagement",
@@ -1646,10 +1646,10 @@
     "domain": "brand_visual",
     "question": "Yếu tố hình ảnh nào khiến ảnh khách sạn boutique đạt tương tác cao?",
     "synthesis_note": "research/synthesis/RS-2026-08-20-brandvisual-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-20T02:16:09.487950+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "tourism.peak_season_autumn",
@@ -1663,10 +1663,10 @@
     "domain": "market_pricing",
     "question": "Tháng nào trong năm là cao điểm và thấp điểm du lịch của Hà Nội?",
     "synthesis_note": "research/synthesis/RS-2026-08-27-marketpricing-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-27T10:53:08.269645+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "tourism.low_season_winter",
@@ -1680,10 +1680,10 @@
     "domain": "market_pricing",
     "question": "Tháng nào trong năm là cao điểm và thấp điểm du lịch của Hà Nội?",
     "synthesis_note": "research/synthesis/RS-2026-08-27-marketpricing-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-27T10:53:08.269645+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "tourism.peak_season_months",
@@ -1697,10 +1697,10 @@
     "domain": "market_pricing",
     "question": "Tháng nào trong năm là cao điểm và thấp điểm du lịch của Hà Nội?",
     "synthesis_note": "research/synthesis/RS-2026-08-27-marketpricing-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-27T10:53:08.269645+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "tourism.low_season_months",
@@ -1714,10 +1714,10 @@
     "domain": "market_pricing",
     "question": "Tháng nào trong năm là cao điểm và thấp điểm du lịch của Hà Nội?",
     "synthesis_note": "research/synthesis/RS-2026-08-27-marketpricing-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-27T10:53:08.269645+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "tourism.peak_international_season",
@@ -1731,10 +1731,10 @@
     "domain": "market_pricing",
     "question": "Tháng nào trong năm là cao điểm và thấp điểm du lịch của Hà Nội?",
     "synthesis_note": "research/synthesis/RS-2026-08-27-marketpricing-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-08-27T10:53:08.269645+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.avg_weekend_rate_westlake",
@@ -1748,10 +1748,10 @@
     "domain": "competitor",
     "question": "Giá phòng một đêm của các khách sạn quanh Hồ Tây hiện ở mức nào?",
     "synthesis_note": "research/synthesis/RS-2026-09-03-competitor-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-03T05:25:57.273235+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.min_rate_westlake_tripcom",
@@ -1765,10 +1765,10 @@
     "domain": "competitor",
     "question": "Giá phòng một đêm của các khách sạn quanh Hồ Tây hiện ở mức nào?",
     "synthesis_note": "research/synthesis/RS-2026-09-03-competitor-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-03T05:25:57.273235+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.aloha_hotel_rate",
@@ -1782,10 +1782,10 @@
     "domain": "competitor",
     "question": "Giá phòng một đêm của các khách sạn quanh Hồ Tây hiện ở mức nào?",
     "synthesis_note": "research/synthesis/RS-2026-09-03-competitor-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-03T05:25:57.273235+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.avg_4star_rate_westlake",
@@ -1799,10 +1799,10 @@
     "domain": "competitor",
     "question": "Giá phòng một đêm của các khách sạn quanh Hồ Tây hiện ở mức nào?",
     "synthesis_note": "research/synthesis/RS-2026-09-03-competitor-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-03T05:25:57.273235+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.min_rate_westlake_expedia",
@@ -1816,10 +1816,10 @@
     "domain": "competitor",
     "question": "Giá phòng một đêm của các khách sạn quanh Hồ Tây hiện ở mức nào?",
     "synthesis_note": "research/synthesis/RS-2026-09-03-competitor-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-03T05:25:57.273235+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.4u_homestay.location_rating",
@@ -1833,10 +1833,10 @@
     "domain": "competitor_rating",
     "question": "Các khách sạn cạnh tranh gần Ven Ho Hotel được khách chấm bao nhiêu điểm?",
     "synthesis_note": "research/synthesis/RS-2026-09-03-competitorrating-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-03T05:26:21.071112+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.lake_view_hotel_rating",
@@ -1850,10 +1850,10 @@
     "domain": "competitor_rating",
     "question": "Các khách sạn cạnh tranh gần Ven Ho Hotel được khách chấm bao nhiêu điểm?",
     "synthesis_note": "research/synthesis/RS-2026-09-03-competitorrating-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-03T05:26:21.071112+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.lake_view_hotel_service_rating",
@@ -1867,10 +1867,10 @@
     "domain": "competitor_rating",
     "question": "Các khách sạn cạnh tranh gần Ven Ho Hotel được khách chấm bao nhiêu điểm?",
     "synthesis_note": "research/synthesis/RS-2026-09-03-competitorrating-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-03T05:26:21.071112+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.lake_view_hotel_location_rating",
@@ -1884,10 +1884,10 @@
     "domain": "competitor_rating",
     "question": "Các khách sạn cạnh tranh gần Ven Ho Hotel được khách chấm bao nhiêu điểm?",
     "synthesis_note": "research/synthesis/RS-2026-09-03-competitorrating-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-03T05:26:21.071112+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.lake_view_hotel_value_rating",
@@ -1901,10 +1901,10 @@
     "domain": "competitor_rating",
     "question": "Các khách sạn cạnh tranh gần Ven Ho Hotel được khách chấm bao nhiêu điểm?",
     "synthesis_note": "research/synthesis/RS-2026-09-03-competitorrating-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-03T05:26:21.071112+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.the_urban_tranquil_rating",
@@ -1918,10 +1918,10 @@
     "domain": "competitor_rating",
     "question": "Các khách sạn cạnh tranh gần Ven Ho Hotel được khách chấm bao nhiêu điểm?",
     "synthesis_note": "research/synthesis/RS-2026-09-03-competitorrating-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-03T05:26:21.071112+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.the_urban_tranquil_cleanliness_score",
@@ -1935,10 +1935,10 @@
     "domain": "competitor_rating",
     "question": "Các khách sạn cạnh tranh gần Ven Ho Hotel được khách chấm bao nhiêu điểm?",
     "synthesis_note": "research/synthesis/RS-2026-09-03-competitorrating-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-03T05:26:21.071112+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.the_urban_tranquil_location_score",
@@ -1952,10 +1952,10 @@
     "domain": "competitor_rating",
     "question": "Các khách sạn cạnh tranh gần Ven Ho Hotel được khách chấm bao nhiêu điểm?",
     "synthesis_note": "research/synthesis/RS-2026-09-03-competitorrating-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-03T05:26:21.071112+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.the_urban_tranquil_value_score",
@@ -1969,10 +1969,10 @@
     "domain": "competitor_rating",
     "question": "Các khách sạn cạnh tranh gần Ven Ho Hotel được khách chấm bao nhiêu điểm?",
     "synthesis_note": "research/synthesis/RS-2026-09-03-competitorrating-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-03T05:26:21.071112+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.the_urban_tranquil_service_score",
@@ -1986,10 +1986,10 @@
     "domain": "competitor_rating",
     "question": "Các khách sạn cạnh tranh gần Ven Ho Hotel được khách chấm bao nhiêu điểm?",
     "synthesis_note": "research/synthesis/RS-2026-09-03-competitorrating-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-03T05:26:21.071112+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "attraction.cafe_abc_coffee_roasters",
@@ -2003,10 +2003,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-09-03-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-03T05:26:29.484174+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "attraction.cafe_santorini_vibes",
@@ -2020,10 +2020,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-09-03-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-03T05:26:29.484174+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "attraction.cafe_voila_address",
@@ -2037,10 +2037,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-09-03-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-03T05:26:29.484174+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "attraction.quang_ba_flower_market_address",
@@ -2054,10 +2054,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-09-03-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-03T05:26:29.484174+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "attraction.notable_temples_westlake",
@@ -2071,10 +2071,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-09-03-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-03T05:26:29.484174+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "event.le_hoi_van_hoa_the_gioi_2026_dates",
@@ -2088,10 +2088,10 @@
     "domain": "local_events",
     "question": "Sự kiện hoặc lễ hội nào sắp diễn ra ở Hà Nội, vào ngày nào?",
     "synthesis_note": "research/synthesis/RS-2026-09-03-localevents-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-03T05:26:37.700231+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "event.juliet_and_romeo_dates",
@@ -2105,10 +2105,10 @@
     "domain": "local_events",
     "question": "Sự kiện hoặc lễ hội nào sắp diễn ra ở Hà Nội, vào ngày nào?",
     "synthesis_note": "research/synthesis/RS-2026-09-03-localevents-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-03T05:26:37.700231+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "event.workshop_la_hoa_ban_the_date",
@@ -2122,10 +2122,10 @@
     "domain": "local_events",
     "question": "Sự kiện hoặc lễ hội nào sắp diễn ra ở Hà Nội, vào ngày nào?",
     "synthesis_note": "research/synthesis/RS-2026-09-03-localevents-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-03T05:26:37.700231+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "event.workshop_sang_kien_nghe_thuat_date",
@@ -2139,10 +2139,10 @@
     "domain": "local_events",
     "question": "Sự kiện hoặc lễ hội nào sắp diễn ra ở Hà Nội, vào ngày nào?",
     "synthesis_note": "research/synthesis/RS-2026-09-03-localevents-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-03T05:26:37.700231+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "hanoi.tourism.peak_season",
@@ -2156,10 +2156,10 @@
     "domain": "market_pricing",
     "question": "Tháng nào trong năm là cao điểm và thấp điểm du lịch của Hà Nội?",
     "synthesis_note": "research/synthesis/RS-2026-09-03-marketpricing-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-03T05:26:48.610160+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "hanoi.tourism.low_season",
@@ -2173,10 +2173,10 @@
     "domain": "market_pricing",
     "question": "Tháng nào trong năm là cao điểm và thấp điểm du lịch của Hà Nội?",
     "synthesis_note": "research/synthesis/RS-2026-09-03-marketpricing-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-03T05:26:48.610160+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "hanoi.tourism.shoulder_season",
@@ -2190,10 +2190,10 @@
     "domain": "market_pricing",
     "question": "Tháng nào trong năm là cao điểm và thấp điểm du lịch của Hà Nội?",
     "synthesis_note": "research/synthesis/RS-2026-09-03-marketpricing-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-03T05:26:48.610160+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "social_media.instagram_top_reach_format",
@@ -2207,10 +2207,10 @@
     "domain": "platform_trend",
     "question": "Định dạng nội dung nào đang được Facebook và Instagram phân phối mạnh nhất?",
     "synthesis_note": "research/synthesis/RS-2026-09-03-platformtrend-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-03T05:26:56.775140+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "social_media.instagram_top_engagement_format",
@@ -2224,10 +2224,10 @@
     "domain": "platform_trend",
     "question": "Định dạng nội dung nào đang được Facebook và Instagram phân phối mạnh nhất?",
     "synthesis_note": "research/synthesis/RS-2026-09-03-platformtrend-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-03T05:26:56.775140+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "social_media.facebook_top_reach_format",
@@ -2241,10 +2241,10 @@
     "domain": "platform_trend",
     "question": "Định dạng nội dung nào đang được Facebook và Instagram phân phối mạnh nhất?",
     "synthesis_note": "research/synthesis/RS-2026-09-03-platformtrend-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-03T05:26:56.775140+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "social_media.facebook_reels_reach",
@@ -2258,10 +2258,10 @@
     "domain": "platform_trend",
     "question": "Định dạng nội dung nào đang được Facebook và Instagram phân phối mạnh nhất?",
     "synthesis_note": "research/synthesis/RS-2026-09-03-platformtrend-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-03T05:26:56.775140+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "social_media.facebook_penalized_format",
@@ -2275,10 +2275,10 @@
     "domain": "platform_trend",
     "question": "Định dạng nội dung nào đang được Facebook và Instagram phân phối mạnh nhất?",
     "synthesis_note": "research/synthesis/RS-2026-09-03-platformtrend-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-03T05:26:56.775140+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "photo_engagement.visual_style",
@@ -2292,10 +2292,10 @@
     "domain": "brand_visual",
     "question": "Yếu tố hình ảnh nào khiến ảnh khách sạn boutique đạt tương tác cao?",
     "synthesis_note": "research/synthesis/RS-2026-09-03-brandvisual-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-03T05:27:04.959176+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "photo_engagement.storytelling_focus",
@@ -2309,10 +2309,10 @@
     "domain": "brand_visual",
     "question": "Yếu tố hình ảnh nào khiến ảnh khách sạn boutique đạt tương tác cao?",
     "synthesis_note": "research/synthesis/RS-2026-09-03-brandvisual-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-03T05:27:04.959176+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "photo_engagement.feed_cohesion",
@@ -2326,10 +2326,10 @@
     "domain": "brand_visual",
     "question": "Yếu tố hình ảnh nào khiến ảnh khách sạn boutique đạt tương tác cao?",
     "synthesis_note": "research/synthesis/RS-2026-09-03-brandvisual-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-03T05:27:04.959176+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "photo_engagement.content_tone",
@@ -2343,10 +2343,10 @@
     "domain": "brand_visual",
     "question": "Yếu tố hình ảnh nào khiến ảnh khách sạn boutique đạt tương tác cao?",
     "synthesis_note": "research/synthesis/RS-2026-09-03-brandvisual-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-03T05:27:04.959176+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "review.praise_view_location",
@@ -2360,10 +2360,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-09-03-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-03T05:27:27.137684+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "review.praise_staff",
@@ -2377,10 +2377,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-09-03-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-03T05:27:27.137684+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "review.praise_cleanliness_and_price",
@@ -2394,10 +2394,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-09-03-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-03T05:27:27.137684+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "review.complaint_no_breakfast",
@@ -2411,10 +2411,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-09-03-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-03T05:27:27.137684+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "review.complaint_distance_to_old_quarter",
@@ -2428,10 +2428,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-09-03-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-03T05:27:27.137684+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.avg_weekend_rate_westlake",
@@ -2445,10 +2445,10 @@
     "domain": "competitor",
     "question": "Giá phòng một đêm của các khách sạn quanh Hồ Tây hiện ở mức nào?",
     "synthesis_note": "research/synthesis/RS-2026-09-10-competitor-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-10T05:31:18.313959+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.oikia_hotel_avg_rate",
@@ -2462,10 +2462,10 @@
     "domain": "competitor",
     "question": "Giá phòng một đêm của các khách sạn quanh Hồ Tây hiện ở mức nào?",
     "synthesis_note": "research/synthesis/RS-2026-09-10-competitor-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-10T05:31:18.313959+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.avg_4star_rate_westlake_tonight",
@@ -2479,10 +2479,10 @@
     "domain": "competitor",
     "question": "Giá phòng một đêm của các khách sạn quanh Hồ Tây hiện ở mức nào?",
     "synthesis_note": "research/synthesis/RS-2026-09-10-competitor-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-10T05:31:18.313959+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.min_rate_westlake_hotels_expedia",
@@ -2496,10 +2496,10 @@
     "domain": "competitor",
     "question": "Giá phòng một đêm của các khách sạn quanh Hồ Tây hiện ở mức nào?",
     "synthesis_note": "research/synthesis/RS-2026-09-10-competitor-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-10T05:31:18.313959+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "local_guide.cafe_santorini_vibes",
@@ -2513,10 +2513,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-09-10-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-10T05:31:38.144201+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "local_guide.cafe_capella_coffee_roaster",
@@ -2530,10 +2530,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-09-10-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-10T05:31:38.144201+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "local_guide.cafe_voila",
@@ -2547,10 +2547,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-09-10-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-10T05:31:38.144201+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "local_guide.attraction_phu_tay_ho",
@@ -2564,10 +2564,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-09-10-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-10T05:31:38.144201+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "local_guide.attraction_cho_hoa_quang_ba",
@@ -2581,10 +2581,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-09-10-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-10T05:31:38.144201+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "event.standup_hanoi_david_alfie_ward_date",
@@ -2598,10 +2598,10 @@
     "domain": "local_events",
     "question": "Sự kiện hoặc lễ hội nào sắp diễn ra ở Hà Nội, vào ngày nào?",
     "synthesis_note": "research/synthesis/RS-2026-09-10-localevents-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-10T05:31:46.168536+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "event.musique_de_salon_22_date",
@@ -2615,10 +2615,10 @@
     "domain": "local_events",
     "question": "Sự kiện hoặc lễ hội nào sắp diễn ra ở Hà Nội, vào ngày nào?",
     "synthesis_note": "research/synthesis/RS-2026-09-10-localevents-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-10T05:31:46.168536+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "event.juliet_and_romeo_show_dates",
@@ -2632,10 +2632,10 @@
     "domain": "local_events",
     "question": "Sự kiện hoặc lễ hội nào sắp diễn ra ở Hà Nội, vào ngày nào?",
     "synthesis_note": "research/synthesis/RS-2026-09-10-localevents-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-10T05:31:46.168536+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "event.ngoc_sang_trong_son_exhibition_dates",
@@ -2649,10 +2649,10 @@
     "domain": "local_events",
     "question": "Sự kiện hoặc lễ hội nào sắp diễn ra ở Hà Nội, vào ngày nào?",
     "synthesis_note": "research/synthesis/RS-2026-09-10-localevents-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-10T05:31:46.168536+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "tourism.off_season_months",
@@ -2666,10 +2666,10 @@
     "domain": "market_pricing",
     "question": "Tháng nào trong năm là cao điểm và thấp điểm du lịch của Hà Nội?",
     "synthesis_note": "research/synthesis/RS-2026-09-10-marketpricing-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-10T05:31:59.258970+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "tourism.shoulder_season_months",
@@ -2683,10 +2683,10 @@
     "domain": "market_pricing",
     "question": "Tháng nào trong năm là cao điểm và thấp điểm du lịch của Hà Nội?",
     "synthesis_note": "research/synthesis/RS-2026-09-10-marketpricing-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-10T05:31:59.258970+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "facebook.highest_organic_reach_format",
@@ -2700,10 +2700,10 @@
     "domain": "platform_trend",
     "question": "Định dạng nội dung nào đang được Facebook và Instagram phân phối mạnh nhất?",
     "synthesis_note": "research/synthesis/RS-2026-09-10-platformtrend-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-10T05:32:07.002731+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "facebook.short_form_reach_format",
@@ -2717,10 +2717,10 @@
     "domain": "platform_trend",
     "question": "Định dạng nội dung nào đang được Facebook và Instagram phân phối mạnh nhất?",
     "synthesis_note": "research/synthesis/RS-2026-09-10-platformtrend-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-10T05:32:07.002731+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "facebook.heavily_penalized_format",
@@ -2734,10 +2734,10 @@
     "domain": "platform_trend",
     "question": "Định dạng nội dung nào đang được Facebook và Instagram phân phối mạnh nhất?",
     "synthesis_note": "research/synthesis/RS-2026-09-10-platformtrend-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-10T05:32:07.002731+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "review.praise_staff_service",
@@ -2751,10 +2751,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-09-10-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-10T05:32:29.028246+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "review.praise_location_view",
@@ -2768,10 +2768,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-09-10-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-10T05:32:29.028246+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "review.complaint_wifi",
@@ -2785,10 +2785,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-09-10-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-10T05:32:29.028246+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "review.complaint_distance_old_quarter",
@@ -2802,10 +2802,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-09-10-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-10T05:32:29.028246+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "review.complaint_basic_amenities",
@@ -2819,10 +2819,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-09-10-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-10T05:32:29.028246+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "market.avg_weekend_rate_tay_ho",
@@ -2836,10 +2836,10 @@
     "domain": "competitor",
     "question": "Giá phòng một đêm của các khách sạn quanh Hồ Tây hiện ở mức nào?",
     "synthesis_note": "research/synthesis/RS-2026-09-17-competitor-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-17T05:40:50.287400+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.suite_rate_5star_tay_ho",
@@ -2853,10 +2853,10 @@
     "domain": "competitor",
     "question": "Giá phòng một đêm của các khách sạn quanh Hồ Tây hiện ở mức nào?",
     "synthesis_note": "research/synthesis/RS-2026-09-17-competitor-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-17T05:40:50.287400+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.a89_west_lake_starting_rate",
@@ -2870,10 +2870,10 @@
     "domain": "competitor",
     "question": "Giá phòng một đêm của các khách sạn quanh Hồ Tây hiện ở mức nào?",
     "synthesis_note": "research/synthesis/RS-2026-09-17-competitor-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-17T05:40:50.287400+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.skyscanner_3star_rate_ho_tay",
@@ -2887,10 +2887,10 @@
     "domain": "competitor",
     "question": "Giá phòng một đêm của các khách sạn quanh Hồ Tây hiện ở mức nào?",
     "synthesis_note": "research/synthesis/RS-2026-09-17-competitor-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-17T05:40:50.287400+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.skyscanner_5star_rate_ho_tay",
@@ -2904,10 +2904,10 @@
     "domain": "competitor",
     "question": "Giá phòng một đêm của các khách sạn quanh Hồ Tây hiện ở mức nào?",
     "synthesis_note": "research/synthesis/RS-2026-09-17-competitor-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-17T05:40:50.287400+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.lake_view_hotel_service_rating",
@@ -2921,10 +2921,10 @@
     "domain": "competitor_rating",
     "question": "Các khách sạn cạnh tranh gần Ven Ho Hotel được khách chấm bao nhiêu điểm?",
     "synthesis_note": "research/synthesis/RS-2026-09-17-competitorrating-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-17T05:41:14.525718+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "attraction.cong_vien_nuoc_ho_tay",
@@ -2938,10 +2938,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-09-17-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-17T05:41:20.622175+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "attraction.chua_tran_quoc",
@@ -2955,10 +2955,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-09-17-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-17T05:41:20.622175+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "attraction.den_quan_thanh",
@@ -2972,10 +2972,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-09-17-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-17T05:41:20.622175+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "attraction.cho_hoa_quang_ba",
@@ -2989,10 +2989,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-09-17-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-17T05:41:20.622175+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "event.net_ha_thanh_ao_dai_exhibition_dates",
@@ -3006,10 +3006,10 @@
     "domain": "local_events",
     "question": "Sự kiện hoặc lễ hội nào sắp diễn ra ở Hà Nội, vào ngày nào?",
     "synthesis_note": "research/synthesis/RS-2026-09-17-localevents-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-17T05:41:28.472315+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "event.lan_nua_mai_mai_exhibition_dates",
@@ -3023,10 +3023,10 @@
     "domain": "local_events",
     "question": "Sự kiện hoặc lễ hội nào sắp diễn ra ở Hà Nội, vào ngày nào?",
     "synthesis_note": "research/synthesis/RS-2026-09-17-localevents-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-17T05:41:28.472315+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "event.immersive_theatre_performance_dates",
@@ -3040,10 +3040,10 @@
     "domain": "local_events",
     "question": "Sự kiện hoặc lễ hội nào sắp diễn ra ở Hà Nội, vào ngày nào?",
     "synthesis_note": "research/synthesis/RS-2026-09-17-localevents-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-17T05:41:28.472315+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "market.peak_season_months",
@@ -3057,10 +3057,10 @@
     "domain": "market_pricing",
     "question": "Tháng nào trong năm là cao điểm và thấp điểm du lịch của Hà Nội?",
     "synthesis_note": "research/synthesis/RS-2026-09-17-marketpricing-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-17T05:41:42.200819+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "market.low_season_months",
@@ -3074,10 +3074,10 @@
     "domain": "market_pricing",
     "question": "Tháng nào trong năm là cao điểm và thấp điểm du lịch của Hà Nội?",
     "synthesis_note": "research/synthesis/RS-2026-09-17-marketpricing-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-17T05:41:42.200819+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "market.shoulder_season_months",
@@ -3091,10 +3091,10 @@
     "domain": "market_pricing",
     "question": "Tháng nào trong năm là cao điểm và thấp điểm du lịch của Hà Nội?",
     "synthesis_note": "research/synthesis/RS-2026-09-17-marketpricing-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-17T05:41:42.200819+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "social_media.facebook_top_reach_format",
@@ -3108,10 +3108,10 @@
     "domain": "platform_trend",
     "question": "Định dạng nội dung nào đang được Facebook và Instagram phân phối mạnh nhất?",
     "synthesis_note": "research/synthesis/RS-2026-09-17-platformtrend-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-17T05:41:49.496524+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "social_media.instagram_reels_avg_reach_rate",
@@ -3125,10 +3125,10 @@
     "domain": "platform_trend",
     "question": "Định dạng nội dung nào đang được Facebook và Instagram phân phối mạnh nhất?",
     "synthesis_note": "research/synthesis/RS-2026-09-17-platformtrend-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-17T05:41:49.496524+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "social_media.facebook_reels_reach_multiplier",
@@ -3142,10 +3142,10 @@
     "domain": "platform_trend",
     "question": "Định dạng nội dung nào đang được Facebook và Instagram phân phối mạnh nhất?",
     "synthesis_note": "research/synthesis/RS-2026-09-17-platformtrend-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-17T05:41:49.496524+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "social_media.instagram_carousel_top_engagement_rate",
@@ -3159,10 +3159,10 @@
     "domain": "platform_trend",
     "question": "Định dạng nội dung nào đang được Facebook và Instagram phân phối mạnh nhất?",
     "synthesis_note": "research/synthesis/RS-2026-09-17-platformtrend-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-17T05:41:49.496524+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "review.praise_staff",
@@ -3176,10 +3176,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-09-17-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-17T05:42:26.351446+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "review.praise_location",
@@ -3193,10 +3193,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-09-17-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-17T05:42:26.351446+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "review.complaint_wifi",
@@ -3210,10 +3210,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-09-17-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-17T05:42:26.351446+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "review.complaint_room_amenities",
@@ -3227,10 +3227,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-09-17-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-17T05:42:26.351446+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "review.complaint_check_in",
@@ -3244,10 +3244,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-09-17-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-17T05:42:26.351446+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.min_price_westlake_usd",
@@ -3261,10 +3261,10 @@
     "domain": "competitor",
     "question": "Giá phòng một đêm của các khách sạn quanh Hồ Tây hiện ở mức nào?",
     "synthesis_note": "research/synthesis/RS-2026-09-24-competitor-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-24T05:48:26.843200+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.westlake_pearl_suites_price",
@@ -3278,10 +3278,10 @@
     "domain": "competitor",
     "question": "Giá phòng một đêm của các khách sạn quanh Hồ Tây hiện ở mức nào?",
     "synthesis_note": "research/synthesis/RS-2026-09-24-competitor-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-24T05:48:26.843200+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.mytour_starting_rate_tay_ho",
@@ -3295,10 +3295,10 @@
     "domain": "competitor",
     "question": "Giá phòng một đêm của các khách sạn quanh Hồ Tây hiện ở mức nào?",
     "synthesis_note": "research/synthesis/RS-2026-09-24-competitor-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-24T05:48:26.843200+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.the_urban_tranquil.review_count",
@@ -3312,10 +3312,10 @@
     "domain": "competitor_rating",
     "question": "Các khách sạn cạnh tranh gần Ven Ho Hotel được khách chấm bao nhiêu điểm?",
     "synthesis_note": "research/synthesis/RS-2026-09-24-competitorrating-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-24T05:48:47.929392+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "poi.uptown_terrace_cafe",
@@ -3329,10 +3329,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-09-24-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-24T05:48:55.787693+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "poi.abc_coffee_roasters",
@@ -3346,10 +3346,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-09-24-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-24T05:48:55.787693+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "poi.santorini_vibes_cafe",
@@ -3363,10 +3363,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-09-24-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-24T05:48:55.787693+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "poi.thung_lung_hoa_ho_tay",
@@ -3380,10 +3380,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-09-24-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-24T05:48:55.787693+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "poi.cho_hoa_quang_ba",
@@ -3397,10 +3397,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-09-24-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-24T05:48:55.787693+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "event.world_cultural_festival_hanoi_dates",
@@ -3414,10 +3414,10 @@
     "domain": "local_events",
     "question": "Sự kiện hoặc lễ hội nào sắp diễn ra ở Hà Nội, vào ngày nào?",
     "synthesis_note": "research/synthesis/RS-2026-09-24-localevents-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-24T05:49:07.486869+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "event.cafe_show_hanoi_dates",
@@ -3431,10 +3431,10 @@
     "domain": "local_events",
     "question": "Sự kiện hoặc lễ hội nào sắp diễn ra ở Hà Nội, vào ngày nào?",
     "synthesis_note": "research/synthesis/RS-2026-09-24-localevents-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-24T05:49:07.486869+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "event.vietbuild_hanoi_date",
@@ -3448,10 +3448,10 @@
     "domain": "local_events",
     "question": "Sự kiện hoặc lễ hội nào sắp diễn ra ở Hà Nội, vào ngày nào?",
     "synthesis_note": "research/synthesis/RS-2026-09-24-localevents-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-24T05:49:07.486869+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "event.shoes_and_leather_hanoi_date",
@@ -3465,10 +3465,10 @@
     "domain": "local_events",
     "question": "Sự kiện hoặc lễ hội nào sắp diễn ra ở Hà Nội, vào ngày nào?",
     "synthesis_note": "research/synthesis/RS-2026-09-24-localevents-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-24T05:49:07.486869+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "event.vietbaby_fair_hanoi_date",
@@ -3482,10 +3482,10 @@
     "domain": "local_events",
     "question": "Sự kiện hoặc lễ hội nào sắp diễn ra ở Hà Nội, vào ngày nào?",
     "synthesis_note": "research/synthesis/RS-2026-09-24-localevents-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-24T05:49:07.486869+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "market.peak_season_hanoi",
@@ -3499,10 +3499,10 @@
     "domain": "market_pricing",
     "question": "Tháng nào trong năm là cao điểm và thấp điểm du lịch của Hà Nội?",
     "synthesis_note": "research/synthesis/RS-2026-09-24-marketpricing-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-24T05:49:18.785051+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "market.low_season_hanoi",
@@ -3516,10 +3516,10 @@
     "domain": "market_pricing",
     "question": "Tháng nào trong năm là cao điểm và thấp điểm du lịch của Hà Nội?",
     "synthesis_note": "research/synthesis/RS-2026-09-24-marketpricing-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-24T05:49:18.785051+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "market.shoulder_season_hanoi",
@@ -3533,10 +3533,10 @@
     "domain": "market_pricing",
     "question": "Tháng nào trong năm là cao điểm và thấp điểm du lịch của Hà Nội?",
     "synthesis_note": "research/synthesis/RS-2026-09-24-marketpricing-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-24T05:49:18.785051+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "facebook.organic_reach_format",
@@ -3550,10 +3550,10 @@
     "domain": "platform_trend",
     "question": "Định dạng nội dung nào đang được Facebook và Instagram phân phối mạnh nhất?",
     "synthesis_note": "research/synthesis/RS-2026-09-24-platformtrend-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-24T05:49:26.045889+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "guest_review.praised_service_and_staff",
@@ -3567,10 +3567,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-09-24-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-24T05:49:58.031360+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "guest_review.praised_location_and_view",
@@ -3584,10 +3584,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-09-24-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-24T05:49:58.031360+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "guest_review.praised_room_size",
@@ -3601,10 +3601,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-09-24-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-24T05:49:58.031360+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "guest_review.criticized_wifi_and_amenities",
@@ -3618,10 +3618,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-09-24-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-24T05:49:58.031360+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "guest_review.criticized_checkin",
@@ -3635,10 +3635,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-09-24-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-24T05:49:58.031360+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "guest_review.praise_view",
@@ -3652,10 +3652,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-09-24-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-24T05:49:58.031360+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "guest_review.praise_location",
@@ -3669,10 +3669,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-09-24-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-24T05:49:58.031360+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "guest_review.praise_staff",
@@ -3686,10 +3686,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-09-24-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-24T05:49:58.031360+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "guest_review.complaint_no_breakfast",
@@ -3703,10 +3703,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-09-24-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-24T05:49:58.031360+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "guest_review.complaint_distance_to_old_quarter",
@@ -3720,10 +3720,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-09-24-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-09-24T05:49:58.031360+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.min_rate_5star_tay_ho",
@@ -3737,10 +3737,10 @@
     "domain": "competitor",
     "question": "Giá phòng một đêm của các khách sạn quanh Hồ Tây hiện ở mức nào?",
     "synthesis_note": "research/synthesis/RS-2026-10-01-competitor-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-01T06:46:41.096771+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.22land_moon_rate",
@@ -3754,10 +3754,10 @@
     "domain": "competitor",
     "question": "Giá phòng một đêm của các khách sạn quanh Hồ Tây hiện ở mức nào?",
     "synthesis_note": "research/synthesis/RS-2026-10-01-competitor-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-01T06:46:41.096771+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.eden_westlake_rate",
@@ -3771,10 +3771,10 @@
     "domain": "competitor",
     "question": "Giá phòng một đêm của các khách sạn quanh Hồ Tây hiện ở mức nào?",
     "synthesis_note": "research/synthesis/RS-2026-10-01-competitor-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-01T06:46:41.096771+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.l7_west_lake_rate",
@@ -3788,10 +3788,10 @@
     "domain": "competitor",
     "question": "Giá phòng một đêm của các khách sạn quanh Hồ Tây hiện ở mức nào?",
     "synthesis_note": "research/synthesis/RS-2026-10-01-competitor-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-01T06:46:41.096771+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.an_homestay_cleanliness_rating",
@@ -3805,10 +3805,10 @@
     "domain": "competitor_rating",
     "question": "Các khách sạn cạnh tranh gần Ven Ho Hotel được khách chấm bao nhiêu điểm?",
     "synthesis_note": "research/synthesis/RS-2026-10-01-competitorrating-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-01T06:47:04.658975+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.an_homestay_value_rating",
@@ -3822,10 +3822,10 @@
     "domain": "competitor_rating",
     "question": "Các khách sạn cạnh tranh gần Ven Ho Hotel được khách chấm bao nhiêu điểm?",
     "synthesis_note": "research/synthesis/RS-2026-10-01-competitorrating-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-01T06:47:04.658975+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.an_homestay_location_rating",
@@ -3839,10 +3839,10 @@
     "domain": "competitor_rating",
     "question": "Các khách sạn cạnh tranh gần Ven Ho Hotel được khách chấm bao nhiêu điểm?",
     "synthesis_note": "research/synthesis/RS-2026-10-01-competitorrating-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-01T06:47:04.658975+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.an_homestay_review_count",
@@ -3856,10 +3856,10 @@
     "domain": "competitor_rating",
     "question": "Các khách sạn cạnh tranh gần Ven Ho Hotel được khách chấm bao nhiêu điểm?",
     "synthesis_note": "research/synthesis/RS-2026-10-01-competitorrating-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-01T06:47:04.658975+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.the_urban_tranquil.value_rating",
@@ -3873,10 +3873,10 @@
     "domain": "competitor_rating",
     "question": "Các khách sạn cạnh tranh gần Ven Ho Hotel được khách chấm bao nhiêu điểm?",
     "synthesis_note": "research/synthesis/RS-2026-10-01-competitorrating-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-01T06:47:04.658975+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.intercontinental_westlake_rating",
@@ -3890,10 +3890,10 @@
     "domain": "competitor_rating",
     "question": "Các khách sạn cạnh tranh gần Ven Ho Hotel được khách chấm bao nhiêu điểm?",
     "synthesis_note": "research/synthesis/RS-2026-10-01-competitorrating-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-01T06:47:04.658975+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.somerset_west_point_rating",
@@ -3907,10 +3907,10 @@
     "domain": "competitor_rating",
     "question": "Các khách sạn cạnh tranh gần Ven Ho Hotel được khách chấm bao nhiêu điểm?",
     "synthesis_note": "research/synthesis/RS-2026-10-01-competitorrating-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-01T06:47:04.658975+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.hanoi_club_rating",
@@ -3924,10 +3924,10 @@
     "domain": "competitor_rating",
     "question": "Các khách sạn cạnh tranh gần Ven Ho Hotel được khách chấm bao nhiêu điểm?",
     "synthesis_note": "research/synthesis/RS-2026-10-01-competitorrating-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-01T06:47:04.658975+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.pan_pacific_hanoi_rating",
@@ -3941,10 +3941,10 @@
     "domain": "competitor_rating",
     "question": "Các khách sạn cạnh tranh gần Ven Ho Hotel được khách chấm bao nhiêu điểm?",
     "synthesis_note": "research/synthesis/RS-2026-10-01-competitorrating-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-01T06:47:04.658975+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "attraction.cafe_uptown_terrace",
@@ -3958,10 +3958,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-10-01-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-01T06:47:11.711514+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "attraction.cafe_thang_muoi",
@@ -3975,10 +3975,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-10-01-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-01T06:47:11.711514+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "attraction.cafe_6degrees",
@@ -3992,10 +3992,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-10-01-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-01T06:47:11.711514+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "attraction.historical_sites_westlake",
@@ -4009,10 +4009,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-10-01-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-01T06:47:11.711514+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "event.vpbank_international_marathon_hanoi_date",
@@ -4026,10 +4026,10 @@
     "domain": "local_events",
     "question": "Sự kiện hoặc lễ hội nào sắp diễn ra ở Hà Nội, vào ngày nào?",
     "synthesis_note": "research/synthesis/RS-2026-10-01-localevents-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-01T06:47:19.866873+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "event.standard_chartered_marathon_heritage_hanoi_date",
@@ -4043,10 +4043,10 @@
     "domain": "local_events",
     "question": "Sự kiện hoặc lễ hội nào sắp diễn ra ở Hà Nội, vào ngày nào?",
     "synthesis_note": "research/synthesis/RS-2026-10-01-localevents-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-01T06:47:19.866873+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "event.global_crafts_festival_hanoi_date",
@@ -4060,10 +4060,10 @@
     "domain": "local_events",
     "question": "Sự kiện hoặc lễ hội nào sắp diễn ra ở Hà Nội, vào ngày nào?",
     "synthesis_note": "research/synthesis/RS-2026-10-01-localevents-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-01T06:47:19.866873+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "event.smart_city_asia_hanoi_date",
@@ -4077,10 +4077,10 @@
     "domain": "local_events",
     "question": "Sự kiện hoặc lễ hội nào sắp diễn ra ở Hà Nội, vào ngày nào?",
     "synthesis_note": "research/synthesis/RS-2026-10-01-localevents-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-01T06:47:19.866873+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "social_media.instagram_top_engagement_format",
@@ -4094,10 +4094,10 @@
     "domain": "platform_trend",
     "question": "Định dạng nội dung nào đang được Facebook và Instagram phân phối mạnh nhất?",
     "synthesis_note": "research/synthesis/RS-2026-10-01-platformtrend-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-01T06:47:39.536038+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "social_media.facebook_suppressed_format",
@@ -4111,10 +4111,10 @@
     "domain": "platform_trend",
     "question": "Định dạng nội dung nào đang được Facebook và Instagram phân phối mạnh nhất?",
     "synthesis_note": "research/synthesis/RS-2026-10-01-platformtrend-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-01T06:47:39.536038+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "review.praise_staff",
@@ -4128,10 +4128,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-10-01-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-01T06:48:11.662133+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "review.praise_location",
@@ -4145,10 +4145,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-10-01-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-01T06:48:11.662133+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "review.complaint_wifi",
@@ -4162,10 +4162,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-10-01-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-01T06:48:11.662133+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "review.complaint_distance",
@@ -4179,10 +4179,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-10-01-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-01T06:48:11.662133+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "review.complaint_amenities",
@@ -4196,10 +4196,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-10-01-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-01T06:48:11.662133+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.avg_weekend_room_rate_westlake",
@@ -4213,10 +4213,10 @@
     "domain": "competitor",
     "question": "Giá phòng một đêm của các khách sạn quanh Hồ Tây hiện ở mức nào?",
     "synthesis_note": "research/synthesis/RS-2026-10-08-competitor-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-08T06:57:35.341946+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.min_rate_3star_westlake",
@@ -4230,10 +4230,10 @@
     "domain": "competitor",
     "question": "Giá phòng một đêm của các khách sạn quanh Hồ Tây hiện ở mức nào?",
     "synthesis_note": "research/synthesis/RS-2026-10-08-competitor-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-08T06:57:35.341946+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.min_rate_4star_westlake",
@@ -4247,10 +4247,10 @@
     "domain": "competitor",
     "question": "Giá phòng một đêm của các khách sạn quanh Hồ Tây hiện ở mức nào?",
     "synthesis_note": "research/synthesis/RS-2026-10-08-competitor-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-08T06:57:35.341946+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.min_rate_5star_westlake",
@@ -4264,10 +4264,10 @@
     "domain": "competitor",
     "question": "Giá phòng một đêm của các khách sạn quanh Hồ Tây hiện ở mức nào?",
     "synthesis_note": "research/synthesis/RS-2026-10-08-competitor-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-08T06:57:35.341946+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.lowest_rate_westlake",
@@ -4281,10 +4281,10 @@
     "domain": "competitor",
     "question": "Giá phòng một đêm của các khách sạn quanh Hồ Tây hiện ở mức nào?",
     "synthesis_note": "research/synthesis/RS-2026-10-08-competitor-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-08T06:57:35.341946+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "destination.cafe_a_beo_address",
@@ -4298,10 +4298,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-10-08-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-08T06:58:25.215316+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "destination.abc_coffee_roasters_feature",
@@ -4315,10 +4315,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-10-08-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-08T06:58:25.215316+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "destination.santorini_vibes_cafe_theme",
@@ -4332,10 +4332,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-10-08-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-08T06:58:25.215316+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "destination.phu_tay_ho_ticket_price",
@@ -4349,10 +4349,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-10-08-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-08T06:58:25.215316+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "destination.thung_lung_hoa_ho_tay_address",
@@ -4366,10 +4366,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-10-08-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-08T06:58:25.215316+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "event.cafe_show_hanoi_2026_date",
@@ -4383,10 +4383,10 @@
     "domain": "local_events",
     "question": "Sự kiện hoặc lễ hội nào sắp diễn ra ở Hà Nội, vào ngày nào?",
     "synthesis_note": "research/synthesis/RS-2026-10-08-localevents-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-08T06:58:37.061590+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "event.vietedu_hanoi_fair_2026_date",
@@ -4400,10 +4400,10 @@
     "domain": "local_events",
     "question": "Sự kiện hoặc lễ hội nào sắp diễn ra ở Hà Nội, vào ngày nào?",
     "synthesis_note": "research/synthesis/RS-2026-10-08-localevents-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-08T06:58:37.061590+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "event.plase_show_hanoi_2026_date",
@@ -4417,10 +4417,10 @@
     "domain": "local_events",
     "question": "Sự kiện hoặc lễ hội nào sắp diễn ra ở Hà Nội, vào ngày nào?",
     "synthesis_note": "research/synthesis/RS-2026-10-08-localevents-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-08T06:58:37.061590+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "event.hanoitex_fabric_2026_date",
@@ -4434,10 +4434,10 @@
     "domain": "local_events",
     "question": "Sự kiện hoặc lễ hội nào sắp diễn ra ở Hà Nội, vào ngày nào?",
     "synthesis_note": "research/synthesis/RS-2026-10-08-localevents-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-08T06:58:37.061590+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "hanoi.tourism_low_season",
@@ -4451,10 +4451,10 @@
     "domain": "market_pricing",
     "question": "Tháng nào trong năm là cao điểm và thấp điểm du lịch của Hà Nội?",
     "synthesis_note": "research/synthesis/RS-2026-10-08-marketpricing-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-08T06:58:57.003325+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "hanoi.tourism_shoulder_season",
@@ -4468,10 +4468,10 @@
     "domain": "market_pricing",
     "question": "Tháng nào trong năm là cao điểm và thấp điểm du lịch của Hà Nội?",
     "synthesis_note": "research/synthesis/RS-2026-10-08-marketpricing-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-08T06:58:57.003325+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "hanoi.cheapest_travel_period",
@@ -4485,10 +4485,10 @@
     "domain": "market_pricing",
     "question": "Tháng nào trong năm là cao điểm và thấp điểm du lịch của Hà Nội?",
     "synthesis_note": "research/synthesis/RS-2026-10-08-marketpricing-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-08T06:58:57.003325+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "social_media.instagram_reels_reach_rate",
@@ -4502,10 +4502,10 @@
     "domain": "platform_trend",
     "question": "Định dạng nội dung nào đang được Facebook và Instagram phân phối mạnh nhất?",
     "synthesis_note": "research/synthesis/RS-2026-10-08-platformtrend-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-08T06:59:07.163872+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "guest_review.praise_staff",
@@ -4519,10 +4519,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-10-08-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-08T06:59:45.081591+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "guest_review.praise_location_view",
@@ -4536,10 +4536,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-10-08-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-08T06:59:45.081591+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "guest_review.complaint_room_amenities",
@@ -4553,10 +4553,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-10-08-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-08T06:59:45.081591+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.avg_rate_westlake_tripcom",
@@ -4570,10 +4570,10 @@
     "domain": "competitor",
     "question": "Giá phòng một đêm của các khách sạn quanh Hồ Tây hiện ở mức nào?",
     "synthesis_note": "research/synthesis/RS-2026-10-15-competitor-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-15T05:30:27.186566+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.nature_hotel_rate_per_night",
@@ -4587,10 +4587,10 @@
     "domain": "competitor",
     "question": "Giá phòng một đêm của các khách sạn quanh Hồ Tây hiện ở mức nào?",
     "synthesis_note": "research/synthesis/RS-2026-10-15-competitor-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-15T05:30:27.186566+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.westlake_hotels_min_rate_vietgoing",
@@ -4604,10 +4604,10 @@
     "domain": "competitor",
     "question": "Giá phòng một đêm của các khách sạn quanh Hồ Tây hiện ở mức nào?",
     "synthesis_note": "research/synthesis/RS-2026-10-15-competitor-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-15T05:30:27.186566+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.alan_lumiere_boutique_rate_per_night",
@@ -4621,10 +4621,10 @@
     "domain": "competitor",
     "question": "Giá phòng một đêm của các khách sạn quanh Hồ Tây hiện ở mức nào?",
     "synthesis_note": "research/synthesis/RS-2026-10-15-competitor-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-15T05:30:27.186566+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.an_homestay_cleanliness_score",
@@ -4638,10 +4638,10 @@
     "domain": "competitor_rating",
     "question": "Các khách sạn cạnh tranh gần Ven Ho Hotel được khách chấm bao nhiêu điểm?",
     "synthesis_note": "research/synthesis/RS-2026-10-15-competitorrating-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-15T05:31:17.050774+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.an_homestay_location_score",
@@ -4655,10 +4655,10 @@
     "domain": "competitor_rating",
     "question": "Các khách sạn cạnh tranh gần Ven Ho Hotel được khách chấm bao nhiêu điểm?",
     "synthesis_note": "research/synthesis/RS-2026-10-15-competitorrating-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-15T05:31:17.050774+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.an_homestay_staff_score",
@@ -4672,10 +4672,10 @@
     "domain": "competitor_rating",
     "question": "Các khách sạn cạnh tranh gần Ven Ho Hotel được khách chấm bao nhiêu điểm?",
     "synthesis_note": "research/synthesis/RS-2026-10-15-competitorrating-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-15T05:31:17.050774+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.urban_tranquil_overall_rating",
@@ -4689,10 +4689,10 @@
     "domain": "competitor_rating",
     "question": "Các khách sạn cạnh tranh gần Ven Ho Hotel được khách chấm bao nhiêu điểm?",
     "synthesis_note": "research/synthesis/RS-2026-10-15-competitorrating-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-15T05:31:17.050774+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.urban_tranquil_cleanliness_rating",
@@ -4706,10 +4706,10 @@
     "domain": "competitor_rating",
     "question": "Các khách sạn cạnh tranh gần Ven Ho Hotel được khách chấm bao nhiêu điểm?",
     "synthesis_note": "research/synthesis/RS-2026-10-15-competitorrating-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-15T05:31:17.050774+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.urban_tranquil_service_rating",
@@ -4723,10 +4723,10 @@
     "domain": "competitor_rating",
     "question": "Các khách sạn cạnh tranh gần Ven Ho Hotel được khách chấm bao nhiêu điểm?",
     "synthesis_note": "research/synthesis/RS-2026-10-15-competitorrating-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-15T05:31:17.050774+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "competitor.urban_tranquil_value_rating",
@@ -4740,10 +4740,10 @@
     "domain": "competitor_rating",
     "question": "Các khách sạn cạnh tranh gần Ven Ho Hotel được khách chấm bao nhiêu điểm?",
     "synthesis_note": "research/synthesis/RS-2026-10-15-competitorrating-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-15T05:31:17.050774+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "nearby_attraction.cafe_thang_muoi_location",
@@ -4757,10 +4757,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-10-15-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-15T05:31:35.321606+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "nearby_attraction.cafe_6_degrees_location",
@@ -4774,10 +4774,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-10-15-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-15T05:31:35.321606+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "nearby_attraction.cafe_santorini_vibes_style",
@@ -4791,10 +4791,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-10-15-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-15T05:31:35.321606+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "nearby_attraction.cafe_abc_coffee_roasters_feature",
@@ -4808,10 +4808,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-10-15-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-15T05:31:35.321606+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "nearby_attraction.cafe_a_beo_location",
@@ -4825,10 +4825,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-10-15-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-15T05:31:35.321606+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "event.vpbank_marathon_hanoi_2026_date",
@@ -4842,10 +4842,10 @@
     "domain": "local_events",
     "question": "Sự kiện hoặc lễ hội nào sắp diễn ra ở Hà Nội, vào ngày nào?",
     "synthesis_note": "research/synthesis/RS-2026-10-15-localevents-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-15T05:31:50.107716+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "event.standard_chartered_marathon_hanoi_2026_date",
@@ -4859,10 +4859,10 @@
     "domain": "local_events",
     "question": "Sự kiện hoặc lễ hội nào sắp diễn ra ở Hà Nội, vào ngày nào?",
     "synthesis_note": "research/synthesis/RS-2026-10-15-localevents-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-15T05:31:50.107716+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "event.global_crafts_festival_2026_date",
@@ -4876,10 +4876,10 @@
     "domain": "local_events",
     "question": "Sự kiện hoặc lễ hội nào sắp diễn ra ở Hà Nội, vào ngày nào?",
     "synthesis_note": "research/synthesis/RS-2026-10-15-localevents-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-15T05:31:50.107716+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "event.vietbaby_fair_2026_dates",
@@ -4893,10 +4893,10 @@
     "domain": "local_events",
     "question": "Sự kiện hoặc lễ hội nào sắp diễn ra ở Hà Nội, vào ngày nào?",
     "synthesis_note": "research/synthesis/RS-2026-10-15-localevents-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-15T05:31:50.107716+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "event.vietnam_international_education_fair_2026_dates",
@@ -4910,10 +4910,10 @@
     "domain": "local_events",
     "question": "Sự kiện hoặc lễ hội nào sắp diễn ra ở Hà Nội, vào ngày nào?",
     "synthesis_note": "research/synthesis/RS-2026-10-15-localevents-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-15T05:31:50.107716+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "market.hanoi_peak_tourist_season",
@@ -4927,10 +4927,10 @@
     "domain": "market_pricing",
     "question": "Tháng nào trong năm là cao điểm và thấp điểm du lịch của Hà Nội?",
     "synthesis_note": "research/synthesis/RS-2026-10-15-marketpricing-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-15T05:32:12.489600+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "market.hanoi_low_tourist_season",
@@ -4944,10 +4944,10 @@
     "domain": "market_pricing",
     "question": "Tháng nào trong năm là cao điểm và thấp điểm du lịch của Hà Nội?",
     "synthesis_note": "research/synthesis/RS-2026-10-15-marketpricing-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-15T05:32:12.489600+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "market.hanoi_peak_international_season",
@@ -4961,10 +4961,10 @@
     "domain": "market_pricing",
     "question": "Tháng nào trong năm là cao điểm và thấp điểm du lịch của Hà Nội?",
     "synthesis_note": "research/synthesis/RS-2026-10-15-marketpricing-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-15T05:32:12.489600+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "market.hanoi_cheapest_travel_months",
@@ -4978,10 +4978,10 @@
     "domain": "market_pricing",
     "question": "Tháng nào trong năm là cao điểm và thấp điểm du lịch của Hà Nội?",
     "synthesis_note": "research/synthesis/RS-2026-10-15-marketpricing-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-15T05:32:12.489600+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "facebook.highest_reach_format",
@@ -4995,10 +4995,10 @@
     "domain": "platform_trend",
     "question": "Định dạng nội dung nào đang được Facebook và Instagram phân phối mạnh nhất?",
     "synthesis_note": "research/synthesis/RS-2026-10-15-platformtrend-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-15T05:32:24.559327+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "instagram.reels_reach_lead_over_carousels",
@@ -5012,10 +5012,10 @@
     "domain": "platform_trend",
     "question": "Định dạng nội dung nào đang được Facebook và Instagram phân phối mạnh nhất?",
     "synthesis_note": "research/synthesis/RS-2026-10-15-platformtrend-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-15T05:32:24.559327+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "instagram.overall_account_highest_reach_rate_format",
@@ -5029,10 +5029,10 @@
     "domain": "platform_trend",
     "question": "Định dạng nội dung nào đang được Facebook và Instagram phân phối mạnh nhất?",
     "synthesis_note": "research/synthesis/RS-2026-10-15-platformtrend-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-15T05:32:24.559327+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "guest_review.praised_view_and_location",
@@ -5046,10 +5046,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-10-15-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-15T05:33:24.482899+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "guest_review.praised_staff_service",
@@ -5063,10 +5063,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-10-15-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-15T05:33:24.482899+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "guest_review.praised_cleanliness_and_price",
@@ -5080,10 +5080,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-10-15-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-15T05:33:24.482899+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "guest_review.complaint_distance_to_old_quarter",
@@ -5097,10 +5097,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-10-15-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-15T05:33:24.482899+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "review.praised_staff_hospitality",
@@ -5114,10 +5114,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-10-15-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-15T05:33:24.482899+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "review.praised_view_and_location",
@@ -5131,10 +5131,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-10-15-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-15T05:33:24.482899+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "review.praised_cleanliness",
@@ -5148,10 +5148,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-10-15-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-15T05:33:24.482899+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "review.service_score",
@@ -5165,10 +5165,10 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-10-15-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-15T05:33:24.482899+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   },
   {
     "fact_key": "review.location_score",
@@ -5182,9 +5182,9 @@
     "domain": "guest_voice",
     "question": "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?",
     "synthesis_note": "research/synthesis/RS-2026-10-15-guestvoice-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-15T05:33:24.482899+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
+    "decided_at": "2026-10-21T10:05:09.441985+00:00"
   }
 ]
