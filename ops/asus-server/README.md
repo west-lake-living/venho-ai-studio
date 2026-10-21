@@ -24,3 +24,23 @@ These files are the source of truth; edit here, then copy to the server.
 The GitHub workflows for these jobs are `workflow_dispatch` only -- never add
 a `schedule` back: two runners holding separate registry copies can send the
 same post twice.
+
+## Dashboard checkout (`~/venho/03_AI_STUDIO/venho-ai-studio`)
+
+A second, long-lived checkout: VENHO OS shells out to its `venho-*` CLIs.
+Kept on `main` by `sync-venho-ai-studio.sh` (cron `*/5`), fast-forward only.
+
+- **Never commit or switch branches in it.** On 17/10/2026 a side branch
+  with one deploy commit stopped every sync for 4 days, silently; new
+  research notes never arrived and Knowledge Facts could not be approved.
+  Do experimental work in a separate worktree/clone. The script now alerts
+  on Telegram once when it cannot sync (off `main`, ff refused, `uv sync`
+  failed) and once when it recovers.
+- It runs `uv sync --frozen --inexact --extra drive --extra gemini` when
+  `pyproject.toml`/`uv.lock` change. Adding a dependency means running
+  `uv lock` and committing `uv.lock` in the same commit, or `--frozen`
+  installs without it.
+- Four Dashboard-written JSON files carry `skip-worktree`; keep it if you
+  ever have to re-checkout (back them up, re-copy, `git update-index --skip-worktree`).
+- `venho-studio-pull.timer` (an older `git pull` every hour) is disabled as
+  redundant (2026-10-21); the unit files are kept.
