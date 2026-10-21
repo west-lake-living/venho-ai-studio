@@ -5186,5 +5186,22 @@
     "proposed_at": "2026-10-15T05:33:24.482899+00:00",
     "decided_by": "cleanup-2026-10-21 (Harry: queue stale/unsuitable)",
     "decided_at": "2026-10-21T10:05:09.441985+00:00"
+  },
+  {
+    "fact_key": "local_intel.skyon9_rooftop_west_lake",
+    "value": "Skyon9 Rooftop West Lake (Tây Hồ, Hà Nội)",
+    "value_type": "string",
+    "rationale": "Quán rooftop sở hữu tầm view ngắm cảnh đẹp, không gian thoáng đãng lộng gió và thực đơn đồ ăn phong phú, dễ lựa chọn.",
+    "source_index": 0,
+    "source_uri": "https://www.tripadvisor.com.vn/Restaurant_Review-g21301834-d25280379-Reviews-Skyon9_Rooftop_West_Lake-Tay_Ho_Hanoi.html",
+    "source_title": "Skyon9 Rooftop West Lake, Tay Ho - Đánh giá về nhà hàng",
+    "id": "fact-local_intel-583e74048f",
+    "domain": "local_intel",
+    "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
+    "synthesis_note": "research/synthesis/RS-2026-10-21-localintel-synthesis.md",
+    "status": "pending_approval",
+    "proposed_at": "2026-10-21T10:05:49.133286+00:00",
+    "decided_by": null,
+    "decided_at": null
   }
 ]
