@@ -34,18 +34,37 @@ class TrendCandidateStore:
         self.path.write_text(json.dumps(candidates, ensure_ascii=False, indent=2), encoding="utf-8")
 
     def merge_new(self, scanned: list[dict[str, Any]]) -> int:
+        """Insert newly-scanned candidates; returns the count inserted. See
+        merge_new_detailed."""
+        return len(self.merge_new_detailed(scanned))
+
+    def merge_new_detailed(self, scanned: list[dict[str, Any]]) -> list[dict[str, Any]]:
         """Insert newly-scanned candidates by id; never overwrites an
-        already-approved candidate's verified_by_human flag with a re-scan.
-        Returns the count actually inserted."""
-        existing = {c["id"]: c for c in self.load()}
-        inserted = 0
+        already-stored candidate (approval, rejection, title) with a re-scan.
+
+        An event the store already holds under another id -- same event,
+        different headline, found by a later scan (event_clusters.matches_cluster)
+        -- only gains the new articles as `sources`; it is not re-proposed,
+        and a rejected event stays rejected. Returns the inserted rows."""
+        from research_engine.trend_radar.application.event_clusters import add_sources, matches_cluster
+
+        rows = self.load()
+        existing = {c["id"]: c for c in rows}
+        inserted: list[dict[str, Any]] = []
         now = datetime.now(timezone.utc).isoformat()
         for candidate in scanned:
             if candidate["id"] in existing:
                 continue
-            existing[candidate["id"]] = {**candidate, "verified_by_human": False, "scanned_at": now}
-            inserted += 1
-        self._save(list(existing.values()))
+            twin = next((c for c in rows if matches_cluster(c, candidate)), None) if candidate.get("is_event") else None
+            if twin is not None:
+                if add_sources(twin, candidate.get("sources") or []):
+                    twin["last_seen_at"] = now
+                continue
+            row = {**candidate, "verified_by_human": False, "scanned_at": now}
+            existing[candidate["id"]] = row
+            rows.append(row)
+            inserted.append(row)
+        self._save(rows)
         return inserted
 
     def approve(self, candidate_id: str, *, approved_by: str) -> dict[str, Any]:

@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import json
 import os
+import re
+from datetime import date
 from typing import Any, Callable, Optional
 
 # Same taxonomy as the (now retired) claude_classifier -- see
@@ -26,15 +28,36 @@ _SYSTEM_PROMPT = f"""Bạn phân loại kết quả tìm kiếm web thành taxon
 
 Với MỖI item đầu vào, trả về đúng các field sau (không thêm field khác):
 - geographic: một trong {_GEOGRAPHIC}
-- thematic: một trong {_THEMATIC}
-- actionability: một trong {_ACTIONABILITY}
+- thematic: một trong {_THEMATIC}. Ghi "unrelated" cho tin giao thông, cầu đường, hạ tầng, quy hoạch, dự án, bất động sản, xây dựng, hành chính, đoàn thể, tin tiêu cực/phàn nàn (lấn chiếm, ùn tắc, ô nhiễm), khai trương/quảng bá khách sạn hay resort khác (đối thủ) -- dù xảy ra ở Hồ Tây. Khách sạn không đăng những tin này
+- actionability: một trong {_ACTIONABILITY}. "direct" CHỈ KHI khách du lịch có thể đến xem/tham gia/trải nghiệm nó trong vài tuần tới (sự kiện, mùa hoa, chợ, quán, hoạt động ven hồ); tin chỉ để đọc là "stretch"
 - type: một trong {_SPECIAL_LANE_TYPES} (seasonal_nature = mùa/thiên nhiên Hồ Tây, cultural_event = sự kiện văn hoá cụ thể cần xác minh, lifestyle_trend = xu hướng đời sống, feature_story = không khớp loại nào)
 - brand_safety_category: nếu nội dung thuộc một trong {_FORBIDDEN_CATEGORIES} thì ghi đúng tên đó; ngược lại ghi "safe"
 - intersections: danh sách con của {_REQUIRED_INTERSECTIONS} mô tả nội dung này liên quan gì đến khách sạn/Hồ Tây (rỗng nếu không liên quan gì)
+- is_event: true nếu item nói về MỘT sự kiện cụ thể có ngày diễn ra (lễ hội, đua thuyền, pháo hoa, triển lãm, hòa nhạc, chợ phiên...), ngược lại false
+- event_name: tên ngắn gọn tiếng Việt của sự kiện (vd "Bắn pháo hoa trên Hồ Tây dịp 10/10"), null nếu không phải sự kiện
+- event_start, event_end: ngày diễn ra dạng YYYY-MM-DD, suy từ tiêu đề + ngày đăng bài + "today" (vd "tối nay" = ngày đăng; "cuối tuần này"). null nếu không xác định được. Sự kiện một ngày thì event_end = event_start
+- venue: địa điểm diễn ra (ngắn), null nếu không rõ
+- westlake_area: true CHỈ KHI sự kiện/nội dung diễn ra ở Hồ Tây hoặc ven hồ (phường Tây Hồ, Quảng An, Nhật Tân, Yên Phụ, Thụy Khuê, Bưởi, Xuân La, Phú Thượng, hồ Trúc Bạch, phủ Tây Hồ, đường Thanh Niên). Tin chỉ nhắc "Tây Hồ" như tên tổ chức hay ở tỉnh khác thì false
 
-Trả về JSON array, mỗi phần tử có "id" (giữ nguyên id đầu vào) + 6 field trên. Không thêm text ngoài JSON."""
+Đầu vào là JSON {{"today": "YYYY-MM-DD", "items": [...]}}. Trả về JSON array, mỗi phần tử có "id" (giữ nguyên id đầu vào) + 12 field trên. Không thêm text ngoài JSON."""
+
+_ISO_DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+_BATCH_SIZE = 50
 
 DEFAULT_MODEL = os.environ.get("GEMINI_TREND_MODEL", "gemini-flash-latest")
+
+
+def _normalise_event_fields(entry: dict[str, Any]) -> dict[str, Any]:
+    """Event fields are optional extras: a bad date becomes None rather than
+    dropping the whole classification (the taxonomy fields still gate safety)."""
+    for key in ("event_start", "event_end"):
+        value = entry.get(key)
+        entry[key] = value if isinstance(value, str) and _ISO_DATE.match(value) else None
+    if entry.get("event_start") and not entry.get("event_end"):
+        entry["event_end"] = entry["event_start"]
+    entry["is_event"] = entry.get("is_event") is True
+    entry["westlake_area"] = entry.get("westlake_area") is True
+    return entry
 
 
 def classify_candidates(
@@ -43,10 +66,14 @@ def classify_candidates(
     api_key: str,
     model: str = DEFAULT_MODEL,
     client_fn: Optional[Callable[..., Any]] = None,
+    today: Optional[date] = None,
 ) -> list[dict[str, Any]]:
-    """Classify raw Tavily results into the taxonomy scan_trends() needs.
+    """Classify raw search results into the taxonomy scan_trends() needs,
+    plus event fields (name, dates, venue, westlake_area) used to cluster
+    duplicate articles and flag fast-lane events.
 
-    One batched call for all candidates. `client_fn` is injectable so tests
+    One call per _BATCH_SIZE candidates; a batch whose reply is not valid
+    JSON is dropped (fail-closed) without losing the other batches. `client_fn` is injectable so tests
     never hit the real Gemini API. Returns the original candidate dicts
     merged with the classification fields; a candidate Gemini's response is
     missing or malformed for is dropped (fail-closed -- an unclassified
@@ -81,20 +108,36 @@ def classify_candidates(
             )
             return response.text
 
-    payload = [{"id": c["id"], "title": c.get("title", ""), "snippet": c.get("snippet", "")} for c in candidates]
-    raw = client_fn(
-        model=model,
-        system=_SYSTEM_PROMPT,
-        contents=json.dumps(payload, ensure_ascii=False),
-    ).strip()
-    if raw.startswith("```"):
-        raw = raw.split("\n", 1)[1].rsplit("```", 1)[0].strip()
-
-    classified_by_id = {}
-    for entry in json.loads(raw):
-        entry_id = entry.get("id")
-        if entry_id:
-            classified_by_id[entry_id] = entry
+    today_iso = (today or date.today()).isoformat()
+    classified_by_id: dict[str, dict[str, Any]] = {}
+    for start in range(0, len(candidates), _BATCH_SIZE):
+        batch = candidates[start : start + _BATCH_SIZE]
+        items = [
+            {
+                "id": c["id"],
+                "title": c.get("title", ""),
+                "snippet": c.get("snippet", ""),
+                "published_at": c.get("published_at"),
+            }
+            for c in batch
+        ]
+        raw = client_fn(
+            model=model,
+            system=_SYSTEM_PROMPT,
+            contents=json.dumps({"today": today_iso, "items": items}, ensure_ascii=False),
+        ).strip()
+        if raw.startswith("```"):
+            raw = raw.split("\n", 1)[1].rsplit("```", 1)[0].strip()
+        try:
+            entries = json.loads(raw)
+        except json.JSONDecodeError:
+            continue
+        for entry in entries if isinstance(entries, list) else []:
+            if not isinstance(entry, dict):
+                continue
+            entry_id = entry.get("id")
+            if entry_id:
+                classified_by_id[entry_id] = _normalise_event_fields(entry)
 
     results = []
     for candidate in candidates:

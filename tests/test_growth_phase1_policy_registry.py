@@ -50,6 +50,10 @@ def test_research_policy_registry_has_evidence_and_safety_rules() -> None:
         # The one written question per domain that run_research_cycle refuses
         # to run without (plan §6.7 guardrail).
         "research_questions.yaml",
+        # Trend Radar's concrete Google News queries + official pages
+        # (2026-10-21) -- instances of event_sources.yaml's approved
+        # public_news_rss / official_city_pages source types.
+        "trend_sources.yaml",
     }
     assert {path.name for path in research.glob("*.yaml")} == required
 

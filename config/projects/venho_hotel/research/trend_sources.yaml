@@ -1,0 +1,33 @@
+version: 1
+# Trend Radar search sources (2026-10-21). Google News RSS replaced Tavily
+# search: Tavily missed every West Lake event of early October 2026, Google
+# News returned all of them. Queries are place-first on purpose -- a generic
+# "sự kiện Hà Nội" query drowns West Lake under city-wide and national news.
+# Edit freely; each query is one free RSS request.
+google_news:
+  window_days: 7
+  max_results_per_query: 30
+  queries:
+    - '"Hồ Tây" lễ hội'
+    - '"Hồ Tây" sự kiện'
+    - '"Hồ Tây" festival'
+    - '"Hồ Tây" đua thuyền'
+    - '"Hồ Tây" pháo hoa'
+    - '"Hồ Tây" triển lãm'
+    - '"Hồ Tây" âm nhạc'
+    - '"phủ Tây Hồ"'
+    - '"Tây Hồ" chợ hoa'
+    - '"Trúc Bạch" lễ hội'
+    - '"Quảng An" Tây Hồ'
+    - '"Nhật Tân" hoa đào'
+    - '"Tây Hồ" ẩm thực'
+official_pages:
+  - url: https://tayho.hanoi.gov.vn/van-hoa-xa-hoi
+    path_prefix: /van-hoa-xa-hoi/
+    source_name: Cổng TTĐT phường Tây Hồ
+# Event priority: a West Lake cultural event starting within this window is
+# flagged fast_lane (Telegram alert; once Harry approves, it replaces the
+# nearest curated post before the event).
+fast_lane:
+  min_days_ahead: 2
+  max_days_ahead: 14

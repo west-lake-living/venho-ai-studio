@@ -1,23 +1,20 @@
-name: Growth Agent Trend Radar Scan
+name: Growth Agent Trend Radar Scan (manual fallback)
 
-# Real Tavily search -> Gemini Flash classification -> scan_trends scoring
-# for the Saturday special lane (research_engine/trend_radar). Runs Friday
-# so Harry has the whole weekend to review/approve on VENHO OS Dashboard
-# ("Trend Radar" panel, Publishing section) BEFORE Monday 08:00's weekly
-# cycle picks that week's Saturday topic (see growth-daily-cycle.yml and
-# growth_orchestrator/application/daily_cycle.py::_pick_topic).
+# Google News RSS (+ official pages) -> Gemini Flash classification -> event
+# clustering -> scan_trends scoring (research_engine/trend_radar).
+#
+# Scheduled scans moved to asus-server on 2026-10-21: systemd timer
+# venho-growth-trend-scan.timer runs `growth-dispatch.sh trend-scan` twice a
+# day (a weekly Friday scan found West Lake events after they had happened)
+# and sends a Telegram alert for new events in the fast-lane window. This
+# workflow stays for a manual run when the server is down.
 #
 # `human_approval: mandatory` (brand_safety.yaml) is enforced in code, not
 # by this workflow: trend-scan only writes candidates with
 # status="needs_human_approval"/"rejected" to trend_candidates.json --
-# nothing here can make a candidate eligible for Saturday's rotation pool.
-# Only an explicit `venho-growth trend-approve` (human action, via the
-# dashboard or CLI) can do that.
-#
-# Runs Friday 08:00 Asia/Ho_Chi_Minh (UTC+7) == 01:00 UTC Friday.
+# nothing here can make a candidate eligible for a post. Only an explicit
+# `venho-growth trend-approve` (human action, via the dashboard or CLI) can.
 on:
-  schedule:
-    - cron: "0 1 * * 5"
   workflow_dispatch:
 
 # The default GITHUB_TOKEN is read-only, so the commit step below 403'd on
@@ -45,7 +42,6 @@ jobs:
 
       - name: Run trend scan
         env:
-          TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: venho-growth trend-scan
 

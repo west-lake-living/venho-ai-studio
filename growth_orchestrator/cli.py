@@ -564,11 +564,13 @@ def trend_scan_cmd(
     project: str = typer.Option("venho_hotel"),
     config_root: Path = typer.Option(Path("config/projects/venho_hotel/research")),
 ) -> None:
-    """Real Tavily search -> Gemini Flash classification -> scan_trends
-    scoring for the Saturday special lane, merged into trend_candidates.json
-    as unapproved proposals. Requires TAVILY_API_KEY + GEMINI_API_KEY in
-    env; does not queue/publish anything and does not skip human approval
-    (brand_safety.yaml's `human_approval: mandatory`) -- see `trend-approve`.
+    """Google News RSS + official pages -> Gemini Flash classification ->
+    event clustering -> scan_trends scoring, merged into trend_candidates.json
+    as unapproved proposals. Requires GEMINI_API_KEY (no key = nothing
+    classified = nothing proposed). Does not queue/publish anything and does
+    not skip human approval (brand_safety.yaml's `human_approval: mandatory`)
+    -- see `trend-approve`. `new_fast_lane` lists newly found West Lake events
+    inside the fast-lane window, for the server's Telegram alert.
     """
     import os
 
@@ -577,15 +579,38 @@ def trend_scan_cmd(
     from research_engine.trend_radar.application.fetch_saturday_candidates import fetch_and_score_saturday_candidates
     from research_engine.trend_radar.trend_candidate_store import TrendCandidateStore
 
-    tavily_api_key = os.environ.get("TAVILY_API_KEY", "")
-    if not tavily_api_key:
-        typer.echo(json.dumps({"ok": False, "error": "TAVILY_API_KEY not set"}), err=True)
+    if not os.environ.get("GEMINI_API_KEY"):
+        typer.echo(json.dumps({"ok": False, "error": "GEMINI_API_KEY not set"}), err=True)
         raise typer.Exit(code=1)
     trend_policy = yaml.safe_load((config_root / "trend_policy.yaml").read_text(encoding="utf-8"))
     safety_policy = yaml.safe_load((config_root / "brand_safety.yaml").read_text(encoding="utf-8"))
-    scored = fetch_and_score_saturday_candidates(tavily_api_key=tavily_api_key, trend_policy=trend_policy, safety_policy=safety_policy)
-    inserted = TrendCandidateStore(project).merge_new(scored)
-    typer.echo(json.dumps({"ok": True, "scanned": len(scored), "inserted_new": inserted}, ensure_ascii=False, indent=2))
+    sources_path = config_root / "trend_sources.yaml"
+    sources_config = yaml.safe_load(sources_path.read_text(encoding="utf-8")) if sources_path.exists() else None
+    scored = fetch_and_score_saturday_candidates(
+        tavily_api_key=os.environ.get("TAVILY_API_KEY", ""),
+        trend_policy=trend_policy,
+        safety_policy=safety_policy,
+        sources_config=sources_config,
+    )
+    inserted = TrendCandidateStore(project).merge_new_detailed(scored)
+    fast_lane = [
+        {key: c.get(key) for key in ("id", "event_name", "title", "event_start", "event_end", "venue", "source_uri", "source_count")}
+        for c in inserted
+        if c.get("fast_lane")
+    ]
+    typer.echo(
+        json.dumps(
+            {
+                "ok": True,
+                "scanned": len(scored),
+                "inserted_new": len(inserted),
+                "pending_new": sum(1 for c in inserted if c.get("status") == "needs_human_approval"),
+                "new_fast_lane": fast_lane,
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+    )
 
 
 @app.command("trend-list")
