@@ -222,3 +222,30 @@ def test_differently_named_reports_of_one_show_still_cluster() -> None:
         _event("x", "Hòa nhạc giao hưởng mùa thu", "2026-10-10"),
     ])
     assert sorted(c.get("source_count") for c in clusters) == [1, 3]
+
+
+def test_trend_scan_cli_stores_only_proposals_and_reports_fast_lane(tmp_path: Path, monkeypatch) -> None:
+    from typer.testing import CliRunner
+
+    import research_engine.trend_radar.application.fetch_saturday_candidates as fetch_module
+    import research_engine.trend_radar.trend_candidate_store as store_module
+    from growth_orchestrator.cli import app
+
+    scored = scan_trends(
+        [_event("soon", "Pháo hoa hồ Tây", "2026-10-10"), _event("past", "Đua thuyền", "2026-09-20")],
+        _TREND_POLICY, _SAFETY_POLICY, today=_TODAY, fast_lane_policy={"min_days_ahead": 2, "max_days_ahead": 14},
+    )
+    monkeypatch.setattr(fetch_module, "fetch_and_score_saturday_candidates", lambda **_: scored)
+    original_init = store_module.TrendCandidateStore.__init__
+    monkeypatch.setattr(
+        store_module.TrendCandidateStore, "__init__", lambda self, project="venho_hotel", data_root=None: original_init(self, project, tmp_path)
+    )
+    monkeypatch.setenv("GEMINI_API_KEY", "fake")
+
+    result = CliRunner().invoke(app, ["trend-scan"])
+
+    assert result.exit_code == 0, result.output
+    payload = json.loads(result.output)
+    assert payload["rejected_by_scan"] == 1 and payload["inserted_new"] == 1
+    assert [e["id"] for e in payload["new_fast_lane"]] == ["soon"]
+    assert [c["id"] for c in TrendCandidateStore(data_root=tmp_path).load()] == ["soon"]

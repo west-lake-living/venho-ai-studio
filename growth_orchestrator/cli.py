@@ -592,7 +592,12 @@ def trend_scan_cmd(
         safety_policy=safety_policy,
         sources_config=sources_config,
     )
-    inserted = TrendCandidateStore(project).merge_new_detailed(scored)
+    # Only proposals are stored (2026-10-21): the first server scan wrote
+    # 140 auto-rejected rows, ~150 more a day, into the file the Dashboard
+    # lists. Auto-rejected rows are re-classified next scan instead; Harry's
+    # own rejections stay as tombstones (TrendCandidateStore.reject).
+    proposals = [c for c in scored if c.get("status") == "needs_human_approval"]
+    inserted = TrendCandidateStore(project).merge_new_detailed(proposals)
     fast_lane = [
         {key: c.get(key) for key in ("id", "event_name", "title", "event_start", "event_end", "venue", "source_uri", "source_count")}
         for c in inserted
@@ -603,8 +608,8 @@ def trend_scan_cmd(
             {
                 "ok": True,
                 "scanned": len(scored),
+                "rejected_by_scan": len(scored) - len(proposals),
                 "inserted_new": len(inserted),
-                "pending_new": sum(1 for c in inserted if c.get("status") == "needs_human_approval"),
                 "new_fast_lane": fast_lane,
             },
             ensure_ascii=False,
