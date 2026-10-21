@@ -8,7 +8,14 @@ import json
 from datetime import date
 from pathlib import Path
 
-from growth_orchestrator.application.local_intel import approved_local_facts, local_intel_topic_entries
+from growth_orchestrator.application.local_intel import (
+    approved_local_facts,
+    clean_rationale,
+    local_intel_topic_entries,
+    place_key,
+    recently_covered_places,
+    text_mentions_place,
+)
 
 
 def _write_facts(data_root: Path, project: str, facts: list[dict]) -> None:
@@ -134,5 +141,44 @@ def test_topic_entries_carry_proof_points_matching_the_creative_brief_schema(tmp
     assert entry["pillar"] == "Local Discovery"
     assert entry["research_backed"] is True
     assert entry["topic"]
-    assert entry["proof_points"] == [{"text": entry["topic"], "fact_key": "cafe.a"}]
+    assert entry["topic"] == "Cafe A"  # the place name, not the extractor rationale
+    assert entry["proof_points"] == [{"text": "Cafe.a = Cafe A", "fact_key": "cafe.a"}]
     assert "dna_subject" not in entry  # scenario picks the subject, not the topic
+
+
+def test_topic_is_place_name_and_source_index_is_stripped(tmp_path: Path) -> None:
+    """2026-10-21: Dashboard showed topics like "Nguồn 3 giới thiệu Chợ Hoa
+    Quảng Bá tại 236 ..." -- extractor provenance leaking into the post."""
+    data_root = tmp_path / "data" / "projects"
+    fact = _fact("attraction.cho_hoa_quang_ba", "Chợ Hoa Quảng Bá (236 Đường Âu Cơ, Quảng An, Tây Hồ)", domain="local_intel", status="approved")
+    fact["rationale"] = "Nguồn 3 giới thiệu Chợ Hoa Quảng Bá tại 236 Đường Âu Cơ là chợ hoa lớn."
+    _write_facts(data_root, "venho_hotel", [fact])
+
+    entry = local_intel_topic_entries("venho_hotel", data_root, domains=["local_intel"], pillar="P", slot_date=date(2026, 10, 21))[0]
+
+    assert entry["topic"] == "Chợ Hoa Quảng Bá (236 Đường Âu Cơ, Quảng An, Tây Hồ)"
+    assert entry["proof_points"][0]["text"] == "Chợ Hoa Quảng Bá tại 236 Đường Âu Cơ là chợ hoa lớn."
+    assert clean_rationale("Nguồn 0 đề xuất ABC Coffee Roasters là quán.") == "ABC Coffee Roasters là quán."
+
+
+def test_place_key_matches_old_rationale_topics_and_curated_lines() -> None:
+    key = place_key({"value": "Chợ Hoa Quảng Bá (236 Đường Âu Cơ)"})
+    assert key == ("cho", "hoa", "quang", "ba")
+    assert text_mentions_place("Nguồn 3 giới thiệu Chợ Hoa Quảng Bá tại 236 Đường Âu Cơ", key)
+    assert text_mentions_place("cho hoa Quang Ba luc tinh mo", key)
+    assert not text_mentions_place("mot ngoi chua co canh Ho Tay", key)
+
+
+def test_place_published_or_rejected_within_90_days_is_covered() -> None:
+    quang_ba = ("cho", "hoa", "quang", "ba")
+    kim_lien = ("chua", "kim", "lien")
+    treebee = ("treebee", "coffee")
+    publications = [
+        {"topic": "Nguồn 3 giới thiệu Chợ Hoa Quảng Bá tại 236", "status": "PUBLISHED", "created_at": "2026-09-13T17:00:00+00:00"},
+        {"topic": "Nguồn 1 đề xuất Treebee coffee tại 171 Vệ Hồ", "status": "REJECTED", "created_at": "2026-10-07T06:55:00+00:00"},
+        {"topic": "Nguồn 3 nêu Chùa Kim Liên tại Nghi Tàm", "status": "PUBLISHED", "created_at": "2026-05-01T00:00:00+00:00"},
+    ]
+
+    covered = recently_covered_places([quang_ba, kim_lien, treebee], publications, today=date(2026, 10, 21))
+
+    assert covered == {quang_ba, treebee}  # Kim Liên's only post is older than 90 days

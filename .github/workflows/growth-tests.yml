@@ -37,5 +37,5 @@ jobs:
 
       - name: Run Growth test selection
         run: |
-          files=$(ls tests/*.py | grep -iE "growth|publish|research|trend|rollout|registry|slot|budget|replace|topic|blog")
+          files=$(ls tests/*.py | grep -iE "growth|publish|research|trend|rollout|registry|slot|budget|replace|topic|blog|local_intel")
           python -m pytest -q -p no:cacheprovider $files

@@ -19,7 +19,11 @@ from content_studio.prompt_bridge import slugify
 from analytics_feedback.attribution import AttributionPolicy, build_tracking_url
 from growth_orchestrator.application.budget_gate import BudgetGate
 from growth_orchestrator.application.evergreen_pool import choose_evergreen
-from growth_orchestrator.application.local_intel import local_intel_topic_entries
+from growth_orchestrator.application.local_intel import (
+    local_intel_topic_entries,
+    recently_covered_places,
+    text_mentions_place,
+)
 from growth_orchestrator.application.run_content_pipeline import run_content_pipeline
 from growth_orchestrator.application.special_lane import select_special_lane_candidate
 from growth_orchestrator.application.topic_selector import advance_rotation, select_from_candidates
@@ -248,11 +252,26 @@ def _pick_regular_topic(lane_config: dict[str, Any], day: str, project: str, dat
         {"pillar": pillar_name, "topic": topic_text, "research_backed": False}
         for topic_text in lane_config.get("topics", [])
     ]
-    candidates = research_entries or curated_entries
+    # Place-level dedupe (2026-10-21): drop research facts whose place was
+    # covered in the last PLACE_COOLDOWN_DAYS, and curated lines naming those
+    # same places ("cho hoa Quang Ba luc tinh mo"). When every research fact
+    # is covered, fall back to the curated pool -- never to re-posting the
+    # least-recently-used place (Chợ Hoa Quảng Bá went out a 4th time that way).
+    publications = PublicationRegistry(project, data_root=data_root).load().get("publications", [])
+    covered = recently_covered_places(
+        [tuple(entry["place_key"]) for entry in research_entries], publications, today=date.today()
+    )
+    fresh_research = [entry for entry in research_entries if tuple(entry["place_key"]) not in covered]
+    fresh_curated = [
+        entry for entry in curated_entries if not any(text_mentions_place(entry["topic"], key) for key in covered)
+    ]
+    candidates = fresh_research or fresh_curated or curated_entries
     if not candidates:
         raise ValueError(f"No topic candidates configured for lane '{day}' in content_pillars.yaml")
 
-    return select_from_candidates(candidates, project=project, data_root=data_root, rotation_key=f"lane:{day}")
+    return select_from_candidates(
+        candidates, project=project, data_root=data_root, rotation_key=f"lane:{day}", publications=publications
+    )
 
 
 def _pick_special_topic(config: dict[str, Any], project: str, data_root: Path) -> dict[str, Any]:

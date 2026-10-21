@@ -990,3 +990,34 @@ def test_local_discovery_lane_only_renders_outside_scenes() -> None:
     assert pool, "local_discovery lane lost its scenario_pool"
     subjects = {registry.resolve(key).dna_subject for key in pool}
     assert subjects == {"outside"}, f"local_discovery pool renders {subjects}, expected only 'outside'"
+
+
+def test_wednesday_falls_back_to_curated_when_every_research_place_was_covered(tmp_path: Path) -> None:
+    """2026-10-21 regression: with the only approved local fact (Chợ Hoa Quảng
+    Bá) inside cooldown, the LRU fallback re-picked it for a 4th post. Now the
+    lane uses the curated pool instead -- minus the curated line that names
+    the same market."""
+    from datetime import datetime, timezone
+
+    data_root = _tmp_data_root(tmp_path)
+    facts_path = data_root / "venho_hotel" / "research" / "proposed_facts.json"
+    facts_path.parent.mkdir(parents=True, exist_ok=True)
+    rationale = "Nguồn 3 giới thiệu Chợ Hoa Quảng Bá tại 236 Đường Âu Cơ là chợ hoa lớn."
+    facts_path.write_text(json.dumps([{
+        "id": "fact-qb", "fact_key": "attraction.cho_hoa_quang_ba", "domain": "local_intel", "status": "approved",
+        "value": "Chợ Hoa Quảng Bá (236 Đường Âu Cơ, Quảng An, Tây Hồ)", "rationale": rationale,
+    }], ensure_ascii=False), encoding="utf-8")
+    registry_path = data_root / "venho_hotel" / "publishing" / "publication_registry.json"
+    registry_path.parent.mkdir(parents=True, exist_ok=True)
+    registry_path.write_text(json.dumps({"publications": [{
+        "publication_id": "pub-old-qb", "platform": "facebook", "status": "PUBLISHED", "topic": rationale,
+        "slot_id": "slot-2026-09-23-wednesday", "created_at": datetime.now(timezone.utc).isoformat(),
+    }]}, ensure_ascii=False), encoding="utf-8")
+
+    for _ in range(6):  # walk the whole curated rotation
+        result = run_daily_cycle(
+            "wednesday", platforms=["facebook"], data_root=data_root, generate_image=False,
+            content_bridge=_mock_content_bridge(data_root), validator_bridge=_AlwaysApproveValidatorBridge(),
+        )
+        assert result.topic["research_backed"] is False
+        assert "quang ba" not in result.topic["topic"].lower()

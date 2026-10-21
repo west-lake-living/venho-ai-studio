@@ -18,7 +18,11 @@ def test_publish_scheduler_is_independent_from_weekly_approval() -> None:
     workflow = Path(".github/workflows/growth-publish-scheduler.yml").read_text(encoding="utf-8")
 
     assert 'cron: "0 2 * * 1,3,5,6"' in workflow
-    assert "args=(dispatch-due --allow-shadow --catch-up-today --require-dispatch)" in workflow
+    assert "args=(dispatch-due --allow-shadow --catch-up-today)" in workflow
+    # 17:00 second pass (2026-10-21) recovers same-day late approvals; only
+    # the 09:00 pass must dispatch something.
+    assert 'cron: "0 10 * * 1,3,5,6"' in workflow
+    assert "args+=(--require-dispatch)" in workflow
     assert "--allow-shadow" in workflow
     assert "--catch-up-today" in workflow
     assert "--require-dispatch" in workflow
