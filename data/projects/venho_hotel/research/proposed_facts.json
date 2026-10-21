@@ -5234,10 +5234,11 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-10-21-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "approved",
     "proposed_at": "2026-10-21T10:08:12.426030+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "hpham1504@gmail.com",
+    "decided_at": "2026-10-21T12:41:28.012530+00:00",
+    "fact_path": "data/projects/venho_hotel/growth/facts/local_intel__pho_trang_tay_pho_ga.json"
   },
   {
     "fact_key": "local_intel.bun_bo_hue_o_huong",
