@@ -519,3 +519,41 @@ def test_make_adapter_waits_longer_than_the_default_transport_timeout() -> None:
     adapter = MakeGatewayAdapter(enabled=True, webhook_url="https://hook.example/fb", http_post=fake)
     adapter.send({"publication_id": "pub-1", "idempotency_key": "idem-1", "platform": "facebook"})
     assert fake.calls[0]["timeout"] >= 30
+
+
+def _flaky_post(statuses: list[int], ok_body: dict):
+    from shared.http import HttpError
+
+    calls = []
+
+    def post(url, *, json=None, headers=None, timeout=None):
+        calls.append(json)
+        if len(calls) <= len(statuses):
+            raise HttpError(statuses[len(calls) - 1], "edge error")
+        return ok_body
+
+    return post, calls
+
+
+def test_make_adapter_retries_edge_errors_before_the_scenario_runs() -> None:
+    post, calls = _flaky_post([503, 502], {"received": True})
+    sleeps = []
+    adapter = MakeGatewayAdapter(enabled=True, webhook_url="https://hook.us1.make.com/x", http_post=post, sleep=sleeps.append)
+
+    result = adapter.send({"publication_id": "pub-1", "idempotency_key": "idem-1", "platform": "facebook", "content": {"text": "hi"}})
+
+    assert result["status"] == "GATEWAY_ACCEPTED"
+    assert len(calls) == 3
+    assert sleeps == [5.0, 20.0]
+
+
+def test_make_adapter_never_retries_a_500_scenario_failure() -> None:
+    """A 500 'Scenario failed to complete' may come after Facebook already
+    posted -- a resend would risk a duplicate public post."""
+    post, calls = _flaky_post([500], {"received": True})
+    adapter = MakeGatewayAdapter(enabled=True, webhook_url="https://hook.us1.make.com/x", http_post=post, sleep=lambda _: None)
+
+    result = adapter.send({"publication_id": "pub-1", "idempotency_key": "idem-1", "platform": "facebook", "content": {"text": "hi"}})
+
+    assert result["status"] == "GATEWAY_ERROR"
+    assert len(calls) == 1

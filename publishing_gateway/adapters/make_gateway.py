@@ -4,11 +4,16 @@ import hashlib
 import hmac
 import json
 import re
+import time
 from typing import Any, Callable
 from urllib.parse import urlparse
 
 from publishing_gateway.fallback_images import fallback_image_url
 from shared.http import HttpError, urllib_post
+
+
+_RETRYABLE_STATUSES = {502, 503, 504}
+_RETRY_DELAYS_SECONDS = (5.0, 20.0)
 
 
 def build_make_webhook_signature(secret: str, publication_id: str, idempotency_key: str) -> str:
@@ -221,12 +226,31 @@ class MakeGatewayAdapter:
         # scenario answers only after Facebook/Instagram have actually run,
         # which measured 6-8s per platform and is slower on retries.
         timeout: float = 60.0,
+        sleep: Callable[[float], None] = time.sleep,
     ) -> None:
         self.enabled = enabled
         self.webhook_url = webhook_url
         self.webhook_secret = webhook_secret
         self.timeout = timeout
         self._http_post = http_post or urllib_post
+        self._sleep = sleep
+
+    def _post_with_retry(self, payload: dict, headers: dict | None) -> dict[str, Any]:
+        """Retry only answers that prove Make never ran the scenario.
+
+        502/503/504 come from Make's edge before the scenario starts, so a
+        resend cannot double-post. A 500 "Scenario failed to complete" is NOT
+        retried: the scenario may already have posted to Facebook before the
+        failing module (11-12/09/2026 lost 4 posts this way, but a blind
+        retry there risks a duplicate public post)."""
+        for delay in (*_RETRY_DELAYS_SECONDS, None):
+            try:
+                return self._http_post(self.webhook_url, json=payload, headers=headers, timeout=self.timeout)
+            except HttpError as exc:
+                if delay is None or exc.status not in _RETRYABLE_STATUSES:
+                    raise
+                self._sleep(delay)
+        raise AssertionError("unreachable")
 
     def send(self, command: dict) -> dict:
         publication_id = command.get("publication_id")
@@ -272,9 +296,7 @@ class MakeGatewayAdapter:
                 )
             }
         try:
-            body = self._http_post(
-                self.webhook_url, json=payload, headers=headers, timeout=self.timeout
-            )
+            body = self._post_with_retry(payload, headers)
         except HttpError as exc:
             return {
                 "status": "GATEWAY_ERROR",
