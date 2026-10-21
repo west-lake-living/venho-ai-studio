@@ -13,6 +13,9 @@
 #                                 which had no assets/raw reference photos -> every
 #                                 post since 28/08/2026 shipped a fallback photo)
 #   growth-dispatch.sh replace-rejected  regenerate rejected/expired drafts
+#   growth-dispatch.sh select-image --publication-id X --option B --selected-by E
+#   growth-dispatch.sh upload-image --publication-id X --file F --uploaded-by E
+#                                 (Dashboard image picker; stdout is the CLI JSON only)
 #
 # State lives in git (PublicationRegistry JSON + growth.db). Every run starts
 # from origin/main and pushes its state commit back; when someone pushed
@@ -21,7 +24,7 @@
 set -euo pipefail
 
 MODE="${1:-primary}"
-case "$MODE" in primary|second|sync|trend-scan|fast-lane|weekly-cycle|replace-rejected) ;; *) echo "unknown mode: $MODE" >&2; exit 2 ;; esac
+case "$MODE" in primary|second|sync|trend-scan|fast-lane|weekly-cycle|replace-rejected|select-image|upload-image) ;; *) echo "unknown mode: $MODE" >&2; exit 2 ;; esac
 REPO="$HOME/venho/growth-runtime/venho-ai-studio"
 MERGE="$HOME/venho/scripts/growth_state_merge.py"
 TELEGRAM="$HOME/venho/scripts/growth-telegram.sh"
@@ -32,8 +35,12 @@ SNAPSHOT="$PROJECT_DATA/growth/slots_snapshot.json"
 TRENDS="$PROJECT_DATA/research/trend_candidates.json"
 STATE_FILES=("$REGISTRY" "$DB" "$SNAPSHOT" "$TRENDS")
 
-exec 9>"${XDG_RUNTIME_DIR:-/tmp}/venho-growth-dispatch.lock"
-flock -w 3000 9 || { echo "another growth-dispatch run holds the lock" >&2; exit 1; }
+LOCK_WAIT=3000
+case "$MODE" in select-image|upload-image) LOCK_WAIT=90 ;; esac  # a person is waiting
+# Fixed path: the Dashboard process may not have XDG_RUNTIME_DIR set, and a
+# different lock file would not serialize anything.
+exec 9>"/run/user/$(id -u)/venho-growth-dispatch.lock"
+flock -w "$LOCK_WAIT" 9 || { echo "Growth runner is busy (weekly drafting?); try again in a few minutes" >&2; exit 75; }
 
 cd "$REPO"
 set -a; . "$HOME/venho/secrets/growth.env"; set +a
@@ -66,7 +73,7 @@ push_state() {
       git push -q origin HEAD:main && return 0
       continue
     fi
-    echo "origin/main moved; merging state (attempt $attempt)"
+    echo "origin/main moved; merging state (attempt $attempt)" >&2
     tmp="$(mktemp -d)"
     cp "$REGISTRY" "$tmp/registry.json"; cp "$DB" "$tmp/growth.db"; cp "$TRENDS" "$tmp/trends.json"
     # Every other file our unpushed commits touched (generated content,
@@ -76,9 +83,9 @@ push_state() {
     tar -cf "$tmp/ours.tar" -T "$tmp/files" 2>/dev/null || true
     git reset -q --hard origin/main
     [ -s "$tmp/files" ] && tar -xf "$tmp/ours.tar"
-    python3 "$MERGE" registry "$tmp/registry.json" "$REGISTRY"
-    python3 "$MERGE" db "$tmp/growth.db" "$DB"
-    python3 "$MERGE" trends "$tmp/trends.json" "$TRENDS"
+    python3 "$MERGE" registry "$tmp/registry.json" "$REGISTRY" >&2
+    python3 "$MERGE" db "$tmp/growth.db" "$DB" >&2
+    python3 "$MERGE" trends "$tmp/trends.json" "$TRENDS" >&2
     rm -rf "$tmp"
     snapshot_slots
     commit_state
@@ -90,7 +97,7 @@ push_state() {
 # 1. Start from origin/main, never discarding unpushed state.
 git fetch -q origin main
 if [ "$(git rev-list --count origin/main..HEAD)" != "0" ]; then
-  echo "unpushed state from a previous run; pushing it first"
+  echo "unpushed state from a previous run; pushing it first" >&2
   push_state
 fi
 git reset -q --hard origin/main
@@ -101,9 +108,17 @@ fi
 
 [ "$MODE" = "sync" ] && { echo "sync ok at $(git log --oneline -1)"; exit 0; }
 
+if [ "$MODE" = "select-image" ] || [ "$MODE" = "upload-image" ]; then
+  shift
+  venho-growth "$MODE" "$@"
+  commit_state
+  push_state >&2
+  exit 0
+fi
+
 if [ "$MODE" = "weekly-cycle" ] || [ "$MODE" = "replace-rejected" ]; then
   started="$(date -u +%Y-%m-%dT%H:%M:%S)"
-  export GROWTH_TOPIC_IDEATION=1 ANTHROPIC_TIMEOUT_SECONDS=120 OPENAI_VISION_TIMEOUT_SECONDS=180
+  export GROWTH_TOPIC_IDEATION=1 GROWTH_IMAGE_ALTERNATIVES=1 ANTHROPIC_TIMEOUT_SECONDS=120 OPENAI_VISION_TIMEOUT_SECONDS=180
   set +e
   if [ "$MODE" = "weekly-cycle" ]; then
     venho-growth weekly-cycle --platform facebook --platform instagram
@@ -129,6 +144,8 @@ if fallback:
 PY
 )"
   [ -n "$alert" ] && { "$TELEGRAM" "$alert" || true; }
+  # One album per new draft: image options + caption, picked on the Dashboard.
+  venho-growth notify-image-options --since "$started" || true
   [ "$push_rc" = "0" ] || exit "$push_rc"
   exit "$gen_rc"
 fi

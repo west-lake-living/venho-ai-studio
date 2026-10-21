@@ -20,6 +20,14 @@ from content_studio.prompt_bridge import slugify
 from analytics_feedback.attribution import AttributionPolicy, build_tracking_url
 from growth_orchestrator.application.budget_gate import BudgetGate
 from growth_orchestrator.application.evergreen_pool import choose_evergreen
+from growth_orchestrator.application.image_options import (
+    alternate_scenario,
+    alternatives_enabled,
+    library_photo_path,
+    option as image_option_entry,
+    to_upload_png,
+    topic_scenario,
+)
 from growth_orchestrator.application.local_intel import (
     local_intel_topic_entries,
     recently_covered_places,
@@ -576,7 +584,7 @@ def _build_creative_brief(
         if weather.get("visual_opportunity"):
             brief["hook_hypothesis"] = weather["visual_opportunity"]
         scenario_keys = weather.get("matching_scenario_keys") or []
-        if scenario_keys:
+        if scenario_keys and not topic.get("scenario_from_topic"):
             # The forecast decides which of the hotel's scenarios is even
             # shootable that day -- a rooftop sunset brief on a rainy
             # weekend produces an image the weather contradicts. Search
@@ -670,6 +678,16 @@ def _pick_scenario(
             candidates = [SCENARIO_BY_DNA_SUBJECT.get(wanted_subject, pool[0])]
     else:
         candidates = pool
+
+    # The topic's own words beat rotation and weather (2026-10-21): "sương
+    # sớm trên mặt hồ" was drawn as `venho_lobby_cozy` because the scene came
+    # from the lane rotation. _build_creative_brief honours the same flag so
+    # copy and image stay on one scenario.
+    matched = topic_scenario(str(topic.get("topic", "")), candidates if wanted_subject else pool)
+    if matched:
+        topic["scenario_from_topic"] = matched
+        topic.setdefault("dna_subject", scenario_registry.resolve(matched).dna_subject)
+        return matched
 
     if weather and weather.get("matching_scenario_keys"):
         # A topic with its own dna_subject stays restricted to `candidates`
@@ -857,6 +875,53 @@ def _upload_image_to_drive(
     except Exception as exc:  # noqa: BLE001 - any Drive failure (network, auth, quota) must not abort text queuing
         warnings.warn(f"Growth image upload failed; using rotated hotel photo: {type(exc).__name__}: {exc}")
         return None
+
+
+def _alternative_image_options(
+    topic: dict[str, Any],
+    day: str,
+    project: str,
+    data_root: Path,
+    scenario_registry: ScenarioRegistry,
+    *,
+    primary_scenario: str,
+    lane_config: Optional[dict[str, Any]],
+    image_provider: Any,
+    reference_resolver: ReferenceAssetResolver,
+    image_validation_provider: str,
+    budget_gate: Optional[BudgetGate],
+    slot_date: Optional[str],
+    drive_uploader: Any,
+) -> list[dict[str, Any]]:
+    """Options B (AI, a different scene) and C (a real library photo).
+    Best-effort: each one that fails is simply absent."""
+    options: list[dict[str, Any]] = []
+    package_slug = f"daily-{day}-{slugify(topic['topic'])}"
+    pool = list((lane_config or {}).get("scenario_pool") or SCENARIO_BY_DNA_SUBJECT.values())
+    alternate = alternate_scenario(primary_scenario, pool, scenario_registry)
+    if alternate:
+        alt_topic = {**topic, "dna_subject": scenario_registry.resolve(alternate).dna_subject}
+        run_folder, _reason = _generate_topic_image(
+            alt_topic, day, project, data_root, scenario_registry,
+            image_provider=image_provider, reference_resolver=reference_resolver,
+            image_validation_provider=image_validation_provider, budget_gate=budget_gate,
+            rotation_key=slot_date, scenario_key=alternate,
+        )
+        if run_folder:
+            url = _upload_image_to_drive(run_folder, day=day, content_package_id=f"{package_slug}-b", uploader=drive_uploader)
+            if url:
+                options.append(image_option_entry("B", kind="ai", url=url, scenario=alternate, asset_version_id=run_folder.name))
+    try:
+        photo = library_photo_path(primary_scenario, scenario_registry, reference_resolver, rotation_key=slot_date)
+        if photo is not None:
+            png = normalize_for_instagram(to_upload_png(photo))
+            if not aspect_ratio_rejection(png):
+                url = drive_uploader.upload_and_publish(png, folder_path=[day, f"{package_slug}-c"], mimetype="image/png")
+                if url:
+                    options.append(image_option_entry("C", kind="photo", url=url, scenario=primary_scenario, source=photo.name))
+    except Exception as exc:  # noqa: BLE001 - a library photo is optional
+        warnings.warn(f"Growth library photo option skipped: {type(exc).__name__}: {exc}")
+    return options
 
 
 def _image_qc_failure_reason(report: Any) -> str:
@@ -1370,6 +1435,34 @@ def run_daily_cycle(
     else:
         image_fallback_reason = None
 
+    # Choices for Harry (2026-10-21): A = the image above, B = another AI
+    # scene, C = a real photo from assets/raw. The first non-fallback option
+    # is the default; the Dashboard can switch it (select-image) or replace it
+    # with an upload (upload-image) while the draft is still PENDING_APPROVAL.
+    image_options = [
+        image_option_entry(
+            "A",
+            kind="fallback" if image_is_fallback else "ai",
+            url=image_public_url,
+            scenario=scenario_key,
+            asset_version_id=asset_version_ids[0] if asset_version_ids else None,
+        )
+    ]
+    if generate_image and alternatives_enabled():
+        image_options += _alternative_image_options(
+            topic, day, project, data_root, scenario_registry,
+            primary_scenario=scenario_key, lane_config=lane_config,
+            image_provider=image_provider, reference_resolver=reference_resolver,
+            image_validation_provider=image_validation_provider, budget_gate=budget_gate,
+            slot_date=slot_date, drive_uploader=drive_uploader or google_drive_uploader_from_env(os.environ),
+        )
+    selected_option = next((o for o in image_options if o["kind"] != "fallback"), image_options[0])
+    if selected_option["id"] != "A":
+        image_public_url = selected_option["url"]
+        image_is_fallback = False
+        image_fallback_reason = None
+        asset_version_ids = [selected_option["asset_version_id"]] if selected_option.get("asset_version_id") else []
+
     prompt_rules = lane_config.get("prompt_rules") if lane_config else None
     recent_topics = _recent_topics(project, data_root)
     recent_post_texts = _recent_post_texts(project, data_root)
@@ -1469,12 +1562,16 @@ def run_daily_cycle(
             publication = registry.update(
                 reserved["publication_id"],
                 status="PENDING_APPROVAL",
-                content=_content_payload(
-                    selected, image_run_path=image_run_path, image_public_url=image_public_url,
-                    image_is_fallback=image_is_fallback,
-                    image_fallback_reason=image_fallback_reason,
-                    publication_id=publication_id, platform=platform,
-                ),
+                content={
+                    **_content_payload(
+                        selected, image_run_path=image_run_path, image_public_url=image_public_url,
+                        image_is_fallback=image_is_fallback,
+                        image_fallback_reason=image_fallback_reason,
+                        publication_id=publication_id, platform=platform,
+                    ),
+                    "image_options": image_options,
+                    "image_option_selected": selected_option["id"],
+                },
                 creative_brief_id=brief["id"],
                 package_snapshot=package_snapshot,
                 # day/pillar/topic so the dashboard can group same-day publications

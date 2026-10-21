@@ -630,6 +630,55 @@ def trend_fast_lane_cmd(project: str = typer.Option("venho_hotel")) -> None:
     typer.echo(json.dumps({"ok": all(o["status"] != "failed" for o in outcomes), "outcomes": outcomes}, ensure_ascii=False, indent=2))
 
 
+@app.command("select-image")
+def select_image_cmd(
+    publication_id: str = typer.Option(..., "--publication-id"),
+    option: str = typer.Option(..., "--option", help="A, B, C or an uploaded U<n>"),
+    selected_by: str = typer.Option(..., "--selected-by"),
+    project: str = typer.Option("venho_hotel"),
+) -> None:
+    """Choose which image option a pending draft (and its sibling platform
+    drafts of the same slot) will post with. PENDING_APPROVAL only."""
+    from growth_orchestrator.application.image_choice import dump, select_image
+
+    try:
+        rows = select_image(publication_id, option, selected_by=selected_by, project=project)
+    except (KeyError, ValueError) as exc:
+        typer.echo(json.dumps({"ok": False, "error": str(exc)}, ensure_ascii=False), err=True)
+        raise typer.Exit(code=1)
+    typer.echo(json.dumps({"ok": True, "publications": json.loads(dump(rows))}, ensure_ascii=False, indent=2))
+
+
+@app.command("upload-image")
+def upload_image_cmd(
+    publication_id: str = typer.Option(..., "--publication-id"),
+    file: Path = typer.Option(..., "--file", exists=True, dir_okay=False),
+    uploaded_by: str = typer.Option(..., "--uploaded-by"),
+    project: str = typer.Option("venho_hotel"),
+) -> None:
+    """Use Harry's own photo for a pending draft: uploaded to Drive, added as
+    option U<n> and selected. PENDING_APPROVAL only."""
+    from growth_orchestrator.application.image_choice import dump, upload_image
+
+    try:
+        rows = upload_image(publication_id, file, uploaded_by=uploaded_by, project=project)
+    except (KeyError, ValueError, RuntimeError, OSError) as exc:
+        typer.echo(json.dumps({"ok": False, "error": str(exc)}, ensure_ascii=False), err=True)
+        raise typer.Exit(code=1)
+    typer.echo(json.dumps({"ok": True, "publications": json.loads(dump(rows))}, ensure_ascii=False, indent=2))
+
+
+@app.command("notify-image-options")
+def notify_image_options_cmd(
+    since: str = typer.Option(..., "--since", help="ISO UTC timestamp; drafts created at/after it"),
+    project: str = typer.Option("venho_hotel"),
+) -> None:
+    """Telegram one album per new pending draft: its image options + caption."""
+    from growth_orchestrator.application.image_choice import notify_image_options
+
+    typer.echo(json.dumps({"ok": True, "sent": notify_image_options(since=since, project=project)}))
+
+
 @app.command("trend-list")
 def trend_list_cmd(project: str = typer.Option("venho_hotel")) -> None:
     """List all Trend Radar candidates (approved and pending) for review."""

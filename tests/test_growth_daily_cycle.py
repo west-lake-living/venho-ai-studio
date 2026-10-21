@@ -99,6 +99,20 @@ def test_run_daily_cycle_queues_one_pending_approval_publication_per_platform(tm
     assert len(stored) == len(DEFAULT_PLATFORMS)
 
 
+def test_every_draft_carries_its_image_options_and_selected_choice(tmp_path: Path) -> None:
+    """The Dashboard/Telegram image picker reads `image_options`; without
+    generation (or alternatives) there is still exactly one: A, the photo
+    the draft will post with."""
+    data_root = _tmp_data_root(tmp_path)
+    result = run_daily_cycle("monday", data_root=data_root, generate_image=False, content_bridge=_mock_content_bridge(data_root), validator_bridge=_AlwaysApproveValidatorBridge())
+
+    for pub in result.publications:
+        content = pub["content"]
+        assert content["image_option_selected"] == "A"
+        assert content["image_options"][0]["url"] == content["image_public_url"]
+        assert content["image_options"][0]["kind"] == "fallback"
+
+
 def test_facebook_and_zalo_posts_carry_a_real_clickable_utm_tracking_link(tmp_path: Path) -> None:
     """DoD #25 needs a live emitter. Until 2026-08-06 only Zalo got a
     tracking link -- and Zalo is DISABLED, so in practice nothing that ever
