@@ -618,6 +618,18 @@ def trend_scan_cmd(
     )
 
 
+@app.command("trend-fast-lane")
+def trend_fast_lane_cmd(project: str = typer.Option("venho_hotel")) -> None:
+    """Draft each approved fast-lane West Lake event into the latest cadence
+    slot before it, replacing that slot's curated PENDING_APPROVAL drafts
+    (CANCELLED, not deleted). New drafts still need Duyệt. No-op (and no API
+    call) when nothing approved is waiting."""
+    from growth_orchestrator.application.trend_fast_lane import run_fast_lane
+
+    outcomes = run_fast_lane(project=project)
+    typer.echo(json.dumps({"ok": all(o["status"] != "failed" for o in outcomes), "outcomes": outcomes}, ensure_ascii=False, indent=2))
+
+
 @app.command("trend-list")
 def trend_list_cmd(project: str = typer.Option("venho_hotel")) -> None:
     """List all Trend Radar candidates (approved and pending) for review."""

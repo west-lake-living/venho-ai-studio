@@ -1138,6 +1138,7 @@ def run_daily_cycle(
     theme_angle: Optional[dict[str, Any]] = None,
     banned_openers: Optional[list[str]] = None,
     banned_phrases: Optional[list[str]] = None,
+    topic_override: Optional[dict[str, Any]] = None,
 ) -> DailyCycleResult:
     """Generate this cadence day's content drafts and queue them for approval.
 
@@ -1183,6 +1184,8 @@ def run_daily_cycle(
     exercising validation itself, since mock-generated boilerplate text
     reliably scores below the real APPROVE bar.
 
+    `topic_override` replaces the lane's topic pick (see trend_fast_lane).
+
     `slot_store`/`slot_date` wire this cadence day into the PublishingSlot
     state machine (plan v3.1 §4.4) so the dashboard has real per-slot
     visibility (filled / stranded / missed) instead of only inferring it
@@ -1199,7 +1202,10 @@ def run_daily_cycle(
         raise ValueError(f"'{day}' is not a cadence day; expected one of {sorted(CADENCE_DAYS)}")
 
     config = load_content_config(project, config_root=config_root)
-    topic = _pick_topic(config, day, project, data_root)
+    # `topic_override` (2026-10-21): the Trend Radar fast lane drafts an
+    # approved West Lake event into a chosen slot instead of the lane's own
+    # rotation pick -- and must not consume a rotation/cooldown turn.
+    topic = dict(topic_override) if topic_override is not None else _pick_topic(config, day, project, data_root)
     registry = registry or PublicationRegistry(project, data_root=data_root)
     budget_gate = budget_gate or BudgetGate(project=project, data_root=data_root, config_root=config_root)
 

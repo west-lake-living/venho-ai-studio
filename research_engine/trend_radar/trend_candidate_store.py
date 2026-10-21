@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -103,10 +103,29 @@ class TrendCandidateStore:
         """Approved, still-scored-eligible (status != rejected), not-yet-used
         candidates, shaped for special_lane.select_special_lane_candidate
         (type + verified_by_human)."""
+        today = date.today().isoformat()
         return [
             c for c in self.load()
             if c.get("verified_by_human") is True and c.get("status") == "needs_human_approval" and not c.get("used_at")
+            # The fast lane owns approved upcoming events (trend_fast_lane);
+            # Saturday only gets one the fast lane could not place.
+            and not (c.get("fast_lane") is True and c.get("fast_lane_status") != "no_free_slot")
+            # A Saturday post about an event that has already ended.
+            and not (c.get("event_end") and str(c["event_end"]) < today)
         ]
+
+    def annotate(self, candidate_id: str, **fields: Any) -> dict[str, Any]:
+        """Record bookkeeping fields (fast-lane status, drafted publication
+        ids) on one candidate. Never touches verified_by_human/status."""
+        fields.pop("verified_by_human", None)
+        fields.pop("status", None)
+        candidates = self.load()
+        for candidate in candidates:
+            if candidate["id"] == candidate_id:
+                candidate.update(fields)
+                self._save(candidates)
+                return candidate
+        raise KeyError(f"Unknown trend candidate id: {candidate_id}")
 
     def mark_used(self, candidate_id: str) -> None:
         """Once a trend candidate has been picked into a real Saturday
