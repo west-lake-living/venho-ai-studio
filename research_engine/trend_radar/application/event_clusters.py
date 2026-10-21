@@ -15,11 +15,12 @@ from datetime import date, timedelta
 from typing import Any, Optional
 
 # Words every West Lake event headline shares -- left in, they make any two
-# events look alike.
+# events look alike. "cho" is deliberately absent: accent folding turns
+# "chợ" (market) into "cho", and "chợ hoa" is a story key.
 _GENERIC_TOKENS = {
     "ho", "tay", "ha", "noi", "su", "kien", "le", "hoi", "nam", "ngay", "tai", "tren", "dip", "chao",
     "mung", "cua", "va", "cac", "nhieu", "voi", "to", "chuc", "thu", "do", "mat", "nuoc", "toi", "nay",
-    "khai", "mac", "dien", "ra", "se", "du", "nguoi", "dan", "the", "nhung", "cho", "o", "ky", "niem",
+    "khai", "mac", "dien", "ra", "se", "du", "nguoi", "dan", "the", "nhung", "o", "ky", "niem",
     "2025", "2026", "2027",
 }
 
@@ -79,12 +80,32 @@ def same_event(a: dict[str, Any], b: dict[str, Any]) -> bool:
     return len(tokens_a & tokens_b) / len(tokens_a | tokens_b) >= threshold
 
 
+def same_story(a: dict[str, Any], b: dict[str, Any]) -> bool:
+    """Two undated, non-event articles about the same thing ("Chợ hoa Quảng
+    An nhộn nhịp trước 20/10" / "Không khí nhộn nhịp tại chợ hoa đêm lớn
+    nhất Hà Nội"): at least two meaningful word pairs in common.
+
+    Why (2026-10-21): only dated events were clustered, so the night flower
+    market reached the Dashboard as three separate candidates."""
+    if a.get("is_event") or b.get("is_event"):
+        return False
+    return len(name_bigrams(a.get("title")) & name_bigrams(b.get("title"))) >= 2
+
+
+def _alike(a: dict[str, Any], b: dict[str, Any]) -> bool:
+    return same_event(a, b) or same_story(a, b)
+
+
 def matches_cluster(cluster: dict[str, Any], candidate: dict[str, Any]) -> bool:
-    """same_event against any name the cluster has absorbed, not just its
-    first article's -- report 3 may only resemble report 2."""
-    if same_event(cluster, candidate):
+    """same_event / same_story against any name or headline the cluster has
+    absorbed, not just its first article's -- report 3 may only resemble
+    report 2."""
+    if _alike(cluster, candidate):
         return True
-    return any(same_event({**cluster, "event_name": alias}, candidate) for alias in cluster.get("event_aliases", []))
+    return any(
+        _alike({**cluster, "event_name": alias, "title": alias}, candidate)
+        for alias in cluster.get("event_aliases", [])
+    )
 
 
 def event_id(candidate: dict[str, Any]) -> str:
@@ -117,23 +138,24 @@ def add_sources(target: dict[str, Any], refs: list[dict[str, Any]]) -> int:
 
 
 def cluster_events(candidates: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """Merge event candidates describing the same event; non-events pass
-    through untouched. The cluster keeps the first article's classification,
-    gets a stable `event-<start>-<hash>` id (so tomorrow's scan dedupes onto
-    it) and lists every article in `sources`."""
+    """Merge candidates describing the same event (same_event) or, for
+    non-events, the same story (same_story). The cluster keeps the first
+    article's classification and lists every article in `sources`; event
+    clusters get a stable `event-<start>-<hash>` id so tomorrow's scan
+    dedupes onto them (stories dedupe at the store via matches_cluster)."""
     clusters: list[dict[str, Any]] = []
     for candidate in candidates:
-        if not candidate.get("is_event"):
-            clusters.append(candidate)
-            continue
         match = next((c for c in clusters if matches_cluster(c, candidate)), None)
         if match is None:
-            cluster = {**candidate, "id": event_id(candidate), "sources": [source_ref(candidate)], "source_count": 1}
+            cluster = {**candidate, "sources": [source_ref(candidate)], "source_count": 1}
+            if candidate.get("is_event"):
+                cluster["id"] = event_id(candidate)
             clusters.append(cluster)
         else:
             add_sources(match, [source_ref(candidate)])
-            alias = candidate.get("event_name")
-            if alias and alias != match.get("event_name") and alias not in match.setdefault("event_aliases", []):
+            alias = candidate.get("event_name") if candidate.get("is_event") else candidate.get("title")
+            primary = match.get("event_name") if match.get("is_event") else match.get("title")
+            if alias and alias != primary and alias not in match.setdefault("event_aliases", []):
                 match["event_aliases"].append(alias)
             # A later article often carries the dates/venue an early teaser lacked.
             for key in ("venue", "event_end"):

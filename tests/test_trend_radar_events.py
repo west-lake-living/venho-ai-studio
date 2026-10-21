@@ -249,3 +249,23 @@ def test_trend_scan_cli_stores_only_proposals_and_reports_fast_lane(tmp_path: Pa
     assert payload["rejected_by_scan"] == 1 and payload["inserted_new"] == 1
     assert [e["id"] for e in payload["new_fast_lane"]] == ["soon"]
     assert [c["id"] for c in TrendCandidateStore(data_root=tmp_path).load()] == ["soon"]
+
+
+def test_non_event_articles_about_one_story_collapse() -> None:
+    def story(id_: str, title: str) -> dict:
+        return {"id": id_, "title": title, "is_event": False, "source_uri": f"https://n/{id_}"}
+
+    clusters = cluster_events([
+        story("q1", "[ẢNH] Chợ hoa Quảng An nhộn nhịp, tấp nập trước dịp 20/10"),
+        story("q2", "Không khí nhộn nhịp tại chợ hoa đêm lớn nhất Hà Nội dịp 20.10"),
+        story("q3", "Du khách 'lạc bước' trong chợ hoa lớn nhất Hà Nội lúc rạng sáng"),
+        story("b1", "Phong trào thuê xe đạp quanh Hồ Tây của giới trẻ"),
+    ])
+    assert sorted(c["source_count"] for c in clusters) == [1, 3]
+
+
+def test_rescan_of_a_known_story_does_not_requeue_it(tmp_path: Path) -> None:
+    store = TrendCandidateStore(data_root=tmp_path)
+    store.merge_new_detailed([{"id": "q1", "title": "Chợ hoa Quảng An nhộn nhịp, tấp nập trước dịp 20/10", "is_event": False}])
+    again = store.merge_new_detailed([{"id": "q9", "title": "Chợ hoa Quảng An nhộn nhịp về đêm", "is_event": False, "sources": [{"title": "Chợ hoa Quảng An nhộn nhịp về đêm"}]}])
+    assert again == [] and len(store.load()) == 1

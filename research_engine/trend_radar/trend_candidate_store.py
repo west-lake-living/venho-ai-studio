@@ -55,7 +55,7 @@ class TrendCandidateStore:
         for candidate in scanned:
             if candidate["id"] in existing:
                 continue
-            twin = next((c for c in rows if matches_cluster(c, candidate)), None) if candidate.get("is_event") else None
+            twin = next((c for c in rows if matches_cluster(c, candidate)), None)
             if twin is not None:
                 if add_sources(twin, candidate.get("sources") or []):
                     twin["last_seen_at"] = now
