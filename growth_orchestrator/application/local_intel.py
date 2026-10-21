@@ -124,6 +124,25 @@ def place_key(fact: dict[str, Any]) -> tuple[str, ...]:
     return tuple(_tokens(clean_rationale(fact.get("text") or fact.get("rationale", "")))[:6])
 
 
+# Words naming a KIND of place, not which one -- dropped before comparing
+# two names, so "Skyon9 Rooftop West Lake" and "SkyOn9 Rooftop Bar &
+# Restaurant" are recognised as one place (2026-10-21).
+_PLACE_KIND_WORDS = frozenset({
+    "rooftop", "bar", "restaurant", "nha", "hang", "quan", "cafe", "coffee", "ca", "phe", "tiem", "banh",
+    "west", "lake", "ho", "tay", "ha", "noi", "and", "the", "roaster", "roasters", "house", "garden",
+    "bistro", "lounge", "view", "pho", "bun",
+})
+
+
+def same_place(a: tuple[str, ...], b: tuple[str, ...]) -> bool:
+    """Two place keys name the same place: their distinctive words (kind
+    words removed) overlap by at least half of the shorter name."""
+    core_a, core_b = set(a) - _PLACE_KIND_WORDS, set(b) - _PLACE_KIND_WORDS
+    if not core_a or not core_b:
+        return bool(a) and set(a) == set(b)
+    return len(core_a & core_b) / min(len(core_a), len(core_b)) >= 0.5
+
+
 def text_mentions_place(text: str, key: tuple[str, ...]) -> bool:
     """True when every token of `key` appears in `text` (accent-insensitive),
     so "cho hoa Quang Ba luc tinh mo" and "Nguồn 3 giới thiệu Chợ Hoa Quảng

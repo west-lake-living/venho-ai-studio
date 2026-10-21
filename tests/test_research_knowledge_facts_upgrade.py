@@ -107,9 +107,10 @@ def test_local_intel_reads_pages_one_at_a_time_and_caps_the_queue(tmp_path: Path
 
     def fake_extract(*, per_source, **_):
         calls.append(per_source)
+        names = ["Capella", "Tiệm Mây", "Bánh Cuốn Thanh Vân", "Chè Bốn Mùa", "Kem Tràng Tiền"]
         return [
-            {"fact_key": f"local_intel.p{i}", "value": f"Quán Số {i} ({i} Quảng An)", "value_type": "string", "rationale": "r", "source_index": 0, "source_uri": "u", "source_title": "t"}
-            for i in range(5)
+            {"fact_key": f"local_intel.p{i}", "value": f"{name} ({i} Quảng An)", "value_type": "string", "rationale": "r", "source_index": 0, "source_uri": "u", "source_title": "t"}
+            for i, name in enumerate(names)
         ]
 
     result = cycle.run_research_cycle(
@@ -118,3 +119,15 @@ def test_local_intel_reads_pages_one_at_a_time_and_caps_the_queue(tmp_path: Path
     )
     assert calls == [True]
     assert result.proposals_created == 2
+
+
+def test_same_place_under_two_names_is_one_place() -> None:
+    from growth_orchestrator.application.local_intel import place_key, same_place
+
+    a = place_key({"value": "Skyon9 Rooftop West Lake (Tây Hồ)"})
+    b = place_key({"value": "SkyOn9 Rooftop Bar & Restaurant (134 Từ Hoa)"})
+    c = place_key({"value": "Phở Tráng Tay - Phở Gà (424 Lạc Long Quân)"})
+    d = place_key({"value": "Bún bò Huế O Huông (Lạc Long Quân)"})
+    assert same_place(a, b)
+    assert not same_place(c, d)
+    assert not same_place(a, c)

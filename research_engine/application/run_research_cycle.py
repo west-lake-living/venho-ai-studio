@@ -96,7 +96,7 @@ def _drop_known_places(
     store (pending, approved, rejected or expired) and places posted about
     in the last PLACE_COOLDOWN_DAYS -- Chợ Hoa Quảng Bá was proposed in
     August, September and October (2026-10-21 audit)."""
-    from growth_orchestrator.application.local_intel import place_key, recently_covered_places
+    from growth_orchestrator.application.local_intel import place_key, recently_covered_places, same_place
     from publishing_gateway.publication_registry import PublicationRegistry
 
     known = {place_key(item) for item in store.load() if item.get("domain") == "local_intel"}
@@ -107,11 +107,12 @@ def _drop_known_places(
     except Exception:  # noqa: BLE001
         publications = []
     covered = recently_covered_places([k for k in keys if k], publications, today=today or date.today())
-    kept, seen = [], set()
+    kept: list[dict[str, Any]] = []
+    seen: list[tuple[str, ...]] = []
     for proposal, key in zip(proposals, keys):
-        if not key or key in known or key in covered or key in seen:
+        if not key or key in covered or any(same_place(key, other) for other in [*known, *seen]):
             continue
-        seen.add(key)
+        seen.append(key)
         kept.append(proposal)
     return kept
 
