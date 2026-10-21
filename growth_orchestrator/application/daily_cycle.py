@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 import uuid
 import warnings
 from dataclasses import dataclass, field
@@ -158,6 +159,58 @@ def _next_cadence_date(day: str, on_or_after: date) -> date:
     return on_or_after + timedelta(days=(target - on_or_after.weekday()) % 7)
 
 
+# Headline debris that reached Saturday topics verbatim (2026-10-21 audit):
+# "TOP 10 Quán cafe Hồ Tây view sống ảo cực xịn sò", "Sen Tây Hồ: Tinh hoa
+# văn hoá Việt | Văn hoá và sự kiện".
+_HEADLINE_SECTION = re.compile(r"\s+[|–-]\s+.*$")
+_HEADLINE_LISTICLE = re.compile(r"^\s*(top\s*\d+|\d+)\s+", re.IGNORECASE)
+
+
+def _trend_topic_text(candidate: dict[str, Any]) -> str:
+    """The event's own name when the classifier extracted one; otherwise the
+    headline without its section suffix and listicle prefix."""
+    if candidate.get("event_name"):
+        return str(candidate["event_name"]).strip()
+    title = _HEADLINE_SECTION.sub("", str(candidate.get("title", ""))).strip()
+    return _HEADLINE_LISTICLE.sub("", title).strip() or str(candidate.get("title", ""))
+
+
+def _idea_entries(lane_config: dict[str, Any], day: str, project: str, data_root: Path, *, pillar: str, publications: list[dict[str, Any]], extra: Optional[dict[str, Any]] = None) -> list[dict[str, Any]]:
+    """Fresh ideation topics for this lane (topic_ideation), [] when ideation
+    is off or fails -- the curated pool then works exactly as before."""
+    from growth_orchestrator.application.topic_ideation import (
+        ideate_topics,
+        ideation_enabled,
+        load_seasonal_calendar,
+        recent_topic_texts,
+    )
+
+    if not ideation_enabled():
+        return []
+    try:
+        upcoming: list[str] = []
+        try:
+            from research_engine.trend_radar.trend_candidate_store import TrendCandidateStore
+
+            upcoming = [
+                str(c.get("event_name") or c.get("title"))
+                for c in TrendCandidateStore(project, data_root=data_root).load()
+                if c.get("verified_by_human") is True and c.get("is_event") and str(c.get("event_end") or "") >= date.today().isoformat()
+            ][:5]
+        except Exception:  # noqa: BLE001
+            upcoming = []
+        ideas = ideate_topics(
+            lane_config,
+            target_date=_next_cadence_date(day, date.today()),
+            calendar=load_seasonal_calendar(DEFAULT_CONFIG_ROOT, project),
+            recent_topics=recent_topic_texts(publications, today=date.today()),
+            upcoming_events=upcoming,
+        )
+    except Exception:  # noqa: BLE001 - never fail a content run over ideation
+        return []
+    return [{"pillar": pillar, "topic": idea, "research_backed": False, "topic_source": "ideation", **(extra or {})} for idea in ideas]
+
+
 def _trend_candidate_topic_entries(project: str, data_root: Path) -> list[dict[str, Any]]:
     """Approved Trend Radar candidates (venho-growth trend-approve), shaped
     to slot into the same rotation pool as content_pillars.yaml's hand-
@@ -168,17 +221,28 @@ def _trend_candidate_topic_entries(project: str, data_root: Path) -> list[dict[s
         from research_engine.trend_radar.trend_candidate_store import TrendCandidateStore
 
         store = TrendCandidateStore(project, data_root=data_root)
-        return [
-            {
+        entries = []
+        for candidate in store.list_eligible_for_saturday():
+            entry = {
                 "pillar": "Trend Radar",
                 "dna_subject": candidate.get("dna_subject", "westlake"),
-                "topic": candidate.get("title", ""),
+                "topic": _trend_topic_text(candidate),
                 "special_lane_type": candidate.get("type", "feature_story"),
                 "verified_by_human": True,
                 "trend_candidate_id": candidate["id"],
             }
-            for candidate in store.list_eligible_for_saturday()
-        ]
+            if candidate.get("is_event") and candidate.get("event_start"):
+                when = candidate["event_start"]
+                if candidate.get("event_end") and candidate["event_end"] != when:
+                    when = f"{when} đến {candidate['event_end']}"
+                entry["proof_points"] = [
+                    {
+                        "text": f"{entry['topic']} diễn ra {when} tại {candidate.get('venue') or 'Hồ Tây'}",
+                        "fact_key": candidate["id"],
+                    }
+                ]
+            entries.append(entry)
+        return entries
     except Exception:  # noqa: BLE001 - see docstring
         return []
 
@@ -265,7 +329,11 @@ def _pick_regular_topic(lane_config: dict[str, Any], day: str, project: str, dat
     fresh_curated = [
         entry for entry in curated_entries if not any(text_mentions_place(entry["topic"], key) for key in covered)
     ]
-    candidates = fresh_research or fresh_curated or curated_entries
+    # Ideas (2026-10-21) sit between real research facts and the static
+    # curated lines: a real place beats a fresh idea, a fresh idea beats the
+    # 8th turn of the same 10 lines.
+    idea_entries = [] if fresh_research else _idea_entries(lane_config, day, project, data_root, pillar=pillar_name, publications=publications)
+    candidates = fresh_research or idea_entries or fresh_curated or curated_entries
     if not candidates:
         raise ValueError(f"No topic candidates configured for lane '{day}' in content_pillars.yaml")
 
@@ -306,9 +374,29 @@ def _pick_special_topic(config: dict[str, Any], project: str, data_root: Path) -
                     "verified_by_human": group.get("verified_by_human", False),
                 }
             )
-    flat.extend(_trend_candidate_topic_entries(project, data_root))
+    # Harry-approved trends first, then fresh ideas, then the curated groups
+    # (2026-10-21): mixed into one rotation, 3 curated lines kept winning
+    # over approved trends and "a quiet weekend morning walk" went out 4x.
+    trend_entries = _trend_candidate_topic_entries(project, data_root)
+    idea_entries: list[dict[str, Any]] = []
+    if not trend_entries:
+        first_group = groups[0] if groups else {}
+        idea_entries = _idea_entries(
+            saturday_lane or {"special_topics": groups},
+            SPECIAL_CADENCE_DAY,
+            project,
+            data_root,
+            pillar=first_group.get("name", "special"),
+            publications=PublicationRegistry(project, data_root=data_root).load().get("publications", []),
+            extra={
+                "dna_subject": first_group.get("dna_subject", "outside"),
+                "special_lane_type": first_group.get("type", "feature_story"),
+                "verified_by_human": first_group.get("verified_by_human", False),
+            },
+        )
+    pool = trend_entries or idea_entries or flat
 
-    picked = select_from_candidates(flat, project=project, data_root=data_root, rotation_key="special")
+    picked = select_from_candidates(pool, project=project, data_root=data_root, rotation_key="special")
 
     # Real loại-4 fallback selection (special_lane.select_special_lane_candidate),
     # not just unit-tested in isolation. TR-D3: this only decides WHICH

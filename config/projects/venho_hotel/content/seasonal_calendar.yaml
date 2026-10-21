@@ -1,0 +1,27 @@
+version: 1
+# Seasonal angles for topic ideation (topic_ideation.py, 2026-10-21). These
+# are ANGLES the ideation prompt may draw on, not claims a post may state:
+# anything factual still has to pass the copy validator, and every draft
+# still needs Harry's approval. Edit freely.
+months:
+  1: [gió mùa đông bắc và sương mù trên mặt hồ, không khí sắm Tết, chợ hoa Tết Quảng Bá, đào Nhật Tân bắt đầu bung nụ, đồ ấm và trà nóng buổi sáng]
+  2: [Tết Nguyên đán, đi lễ đầu năm ở phủ Tây Hồ và chùa Trấn Quốc, mưa phùn nồm, hoa đào hoa mận, lễ hội mùa xuân]
+  3: [hoa sưa trắng, hoa ban, nắng xuân dịu, mùa đi bộ quanh hồ, lộc vừng thay lá]
+  4: [hoa loa kèn trắng, bằng lăng tím bắt đầu nở, nắng đầu hè, buổi chiều gió hồ]
+  5: [sen Hồ Tây chớm nở, phượng đỏ, bằng lăng tím, mưa rào đầu hạ, hoàng hôn dài]
+  6: [mùa sen Hồ Tây rộ, ướp trà sen Quảng An, sáng sớm đi ngắm sen, nắng hè và chỗ tránh nóng]
+  7: [cuối mùa sen, mưa ngâu, kỳ nghỉ hè gia đình, hoàng hôn rooftop sau cơn mưa]
+  8: [mưa ngâu tháng bảy âm lịch, lễ Vu Lan, hoa sen cuối mùa, gió đầu thu]
+  9: [Trung thu và phố đèn lồng, cốm làng Vòng, gió heo may, Quốc khánh 2/9, bầu trời thu trong]
+  10: [hoa sữa, cốm và hồng xiêm, heo may se lạnh, Ngày Giải phóng Thủ đô 10/10, Ngày Phụ nữ Việt Nam 20/10, chợ hoa đêm Quảng An]
+  11: [cúc họa mi, nắng vàng hanh khô, đạp xe quanh hồ, sương sớm cuối thu]
+  12: [đông về và áo ấm, Giáng sinh ở Tây Hồ, sương mù sớm trên hồ, cà phê nóng view hồ]
+# Things true about the hotel (from the hotel's own facts) that ideation may
+# build an angle on. Prices/promotions are deliberately absent.
+hotel_angles:
+  - 12 phòng boutique trên đường Nguyễn Đình Thi, sát Hồ Tây
+  - phòng đôi view Hồ Tây
+  - rooftop nhìn ra hồ, đón bình minh và hoàng hôn
+  - sảnh nhỏ ấm cúng, góc đọc sách
+  - nhận phòng 13:00, trả phòng 12:00 trưa
+  - đi bộ vài phút là ra mép hồ

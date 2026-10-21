@@ -330,9 +330,10 @@ def test_pick_topic_special_lane_prefers_seasonal_over_feature_story(tmp_path: P
 
 
 def test_pick_topic_special_lane_includes_approved_trend_candidates(tmp_path: Path) -> None:
-    """An approved (verified_by_human) Trend Radar candidate must join the
-    Saturday rotation pool alongside the hand-curated list, and get marked
-    used once picked so it doesn't repeat forever."""
+    """An approved (verified_by_human) Trend Radar candidate goes ahead of
+    the hand-curated list (2026-10-21: mixed into one rotation, 3 curated
+    lines kept beating approved trends), and is marked used once picked so
+    it doesn't repeat forever; the curated list takes the next Saturday."""
     from research_engine.trend_radar.trend_candidate_store import TrendCandidateStore
 
     config = {
@@ -349,14 +350,14 @@ def test_pick_topic_special_lane_includes_approved_trend_candidates(tmp_path: Pa
     ])
     store.approve("trend-1", approved_by="harry")
 
-    first = _pick_topic(config, "saturday", "venho_hotel", data_root)  # rotation index 0 -> hand-curated
-    second = _pick_topic(config, "saturday", "venho_hotel", data_root)  # rotation index 1 -> trend candidate
+    first = _pick_topic(config, "saturday", "venho_hotel", data_root)  # approved trend first
+    second = _pick_topic(config, "saturday", "venho_hotel", data_root)  # trend used -> hand-curated
 
-    assert first["pillar"] == "Feature"
-    assert second["pillar"] == "Trend Radar"
-    assert second["topic"] == "Mùa sen Hồ Tây"
-    assert second["dna_subject"] == "westlake"
-    assert second["special_lane_type"] == "seasonal_nature"
+    assert first["pillar"] == "Trend Radar"
+    assert first["topic"] == "Mùa sen Hồ Tây"
+    assert first["dna_subject"] == "westlake"
+    assert first["special_lane_type"] == "seasonal_nature"
+    assert second["pillar"] == "Feature"
 
     # Picked once -> excluded from future eligible pools.
     assert store.list_eligible_for_saturday() == []

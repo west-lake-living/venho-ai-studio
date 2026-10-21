@@ -46,7 +46,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install -e ".[drive]"
+        run: pip install -e ".[drive,gemini]"
 
       - name: Run weekly cycle
         env:
@@ -56,6 +56,10 @@ jobs:
           # claude-opus-5; set CLAUDE_CONTENT_MODEL only when an
           # approved alternative is enabled for this Anthropic account.
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          # Fresh per-lane topic ideas (topic_ideation.py, 2026-10-21);
+          # without the flag every lane uses its curated pool only.
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROWTH_TOPIC_IDEATION: "1"
           CLAUDE_CONTENT_MODEL: ${{ vars.CLAUDE_CONTENT_MODEL }}
           ANTHROPIC_TIMEOUT_SECONDS: "120"
           OPENAI_VISION_TIMEOUT_SECONDS: "180"
