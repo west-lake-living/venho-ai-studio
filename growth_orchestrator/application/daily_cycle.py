@@ -25,7 +25,7 @@ from growth_orchestrator.application.image_options import (
     alternatives_enabled,
     library_photo_path,
     option as image_option_entry,
-    to_upload_png,
+    to_upload_jpeg,
     topic_scenario,
 )
 from growth_orchestrator.application.local_intel import (
@@ -914,9 +914,9 @@ def _alternative_image_options(
     try:
         photo = library_photo_path(primary_scenario, scenario_registry, reference_resolver, rotation_key=slot_date)
         if photo is not None:
-            png = normalize_for_instagram(to_upload_png(photo))
-            if not aspect_ratio_rejection(png):
-                url = drive_uploader.upload_and_publish(png, folder_path=[day, f"{package_slug}-c"], mimetype="image/png")
+            upload_file = normalize_for_instagram(to_upload_jpeg(photo))
+            if not aspect_ratio_rejection(upload_file):
+                url = drive_uploader.upload_and_publish(upload_file, folder_path=[day, f"{package_slug}-c"], mimetype="image/jpeg")
                 if url:
                     options.append(image_option_entry("C", kind="photo", url=url, scenario=primary_scenario, source=photo.name))
     except Exception as exc:  # noqa: BLE001 - a library photo is optional

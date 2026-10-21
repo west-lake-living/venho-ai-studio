@@ -17,7 +17,7 @@ from pathlib import Path
 from typing import Any, Callable, Optional
 
 from growth_orchestrator.application.image_options import option as image_option_entry
-from growth_orchestrator.application.image_options import to_upload_png
+from growth_orchestrator.application.image_options import to_upload_jpeg
 from publishing_gateway.image_constraints import aspect_ratio_rejection, normalize_for_instagram
 from publishing_gateway.publication_registry import PublicationRegistry
 from shared.http import urllib_post
@@ -95,8 +95,8 @@ def upload_image(
     U<n> and the selected image."""
     registry = registry or PublicationRegistry(project, data_root=data_root)
     rows = _group(registry, publication_id)
-    png = normalize_for_instagram(to_upload_png(Path(file_path)))
-    rejection = aspect_ratio_rejection(png)
+    upload_file = normalize_for_instagram(to_upload_jpeg(Path(file_path)))
+    rejection = aspect_ratio_rejection(upload_file)
     if rejection:
         raise ValueError(f"photo cannot be posted to Instagram: {rejection}")
     if uploader is None:
@@ -105,7 +105,7 @@ def upload_image(
         uploader = google_drive_uploader_from_env(os.environ)
     options = list((rows[0].get("content") or {}).get("image_options") or [])
     option_id = f"U{sum(1 for o in options if str(o.get('id', '')).startswith('U')) + 1}"
-    url = uploader.upload_and_publish(png, folder_path=["uploads", str(rows[0].get("slot_id") or publication_id)], mimetype="image/png")
+    url = uploader.upload_and_publish(upload_file, folder_path=["uploads", str(rows[0].get("slot_id") or publication_id)], mimetype="image/jpeg")
     if not url:
         raise RuntimeError("Drive upload returned no URL")
     chosen = image_option_entry(option_id, kind="upload", url=url, source=Path(file_path).name)

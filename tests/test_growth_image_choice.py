@@ -85,7 +85,7 @@ def test_upload_adds_and_selects_harrys_photo(tmp_path: Path) -> None:
 
     class FakeUploader:
         def upload_and_publish(self, path, *, folder_path, mimetype):
-            assert Path(path).suffix == ".png"
+            assert Path(path).suffix == ".jpg" and mimetype == "image/jpeg"
             return "https://drive/harry"
 
     upload_image("fb", photo, uploaded_by="harry", registry=registry, uploader=FakeUploader())

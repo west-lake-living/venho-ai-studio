@@ -93,17 +93,19 @@ def library_photo_path(scenario_key: str, scenario_registry: Any, reference_reso
     return path if path.is_file() else None
 
 
-def to_upload_png(source: Path, *, max_side: int = 2048) -> Path:
-    """Re-encode any photo (HEIC/MPO/JPEG) as a bounded PNG for Drive/Make.
-    The resolver module registers the HEIF opener on import."""
+def to_upload_jpeg(source: Path, *, max_side: int = 2048) -> Path:
+    """Re-encode any photo (HEIC/MPO/PNG/JPEG) as a bounded JPEG for Drive,
+    Make and Telegram -- Telegram only fetches photos up to 5 MB by URL, a
+    2048px PNG of a phone photo is often larger. The resolver module
+    registers the HEIF opener on import."""
     import agent_studio.growth.reference_asset_resolver  # noqa: F401 - registers HEIF support
 
     with Image.open(source) as image:
         image = image.convert("RGB")
         image.thumbnail((max_side, max_side))
-        handle = tempfile.NamedTemporaryFile(suffix=".png", delete=False)
+        handle = tempfile.NamedTemporaryFile(suffix=".jpg", delete=False)
         handle.close()
-        image.save(handle.name, format="PNG")
+        image.save(handle.name, format="JPEG", quality=90, optimize=True)
     return Path(handle.name)
 
 
