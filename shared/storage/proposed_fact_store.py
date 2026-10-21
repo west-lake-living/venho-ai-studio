@@ -29,6 +29,10 @@ from pathlib import Path
 from typing import Any, Optional
 
 PENDING = "pending_approval"
+EXPIRED = "expired"
+# A proposal nobody decided on within this many days leaves the queue
+# (2026-10-21: Harry opened Knowledge Facts to 265 rows, most from August).
+PENDING_TTL_DAYS = 21
 APPROVED = "approved"
 REJECTED = "rejected"
 
@@ -125,6 +129,29 @@ class ProposedFactStore:
             inserted += 1
         self._save(list(existing.values()))
         return inserted
+
+    def expire_stale(self, *, now: Optional[datetime] = None, ttl_days: int = PENDING_TTL_DAYS) -> int:
+        """Move pending proposals older than `ttl_days` to EXPIRED. Kept as a
+        tombstone (not deleted) so merge_new still refuses to re-propose the
+        same finding next week."""
+        now = now or datetime.now(timezone.utc)
+        items = self.load()
+        expired = 0
+        for item in items:
+            if item.get("status") != PENDING:
+                continue
+            try:
+                proposed = datetime.fromisoformat(str(item.get("proposed_at")))
+            except ValueError:
+                continue
+            if proposed.tzinfo is None:
+                proposed = proposed.replace(tzinfo=timezone.utc)
+            if (now - proposed).days >= ttl_days:
+                item.update(status=EXPIRED, decided_by="auto-expire", decided_at=now.isoformat())
+                expired += 1
+        if expired:
+            self._save(items)
+        return expired
 
     def list_items(self, *, status: Optional[str] = None) -> list[dict[str, Any]]:
         items = self.load()

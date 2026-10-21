@@ -76,12 +76,52 @@ def _rs_id(domain: str, discriminator: str, *, today: date) -> str:
     return f"RS-{today.isoformat()}-{domain.replace('_', '')}-{safe}"
 
 
+def _queries_for_this_run(config: dict[str, Any], *, today: Optional[date] = None) -> list[str]:
+    """`query_pool` + `queries_per_run`: a different slice of the pool each
+    ISO week, so the domain reads new listings instead of the same top-10
+    pages every Thursday. Falls back to the fixed `queries`."""
+    pool = [q for q in config.get("query_pool") or [] if isinstance(q, str)]
+    if not pool:
+        return list(config.get("queries", []))
+    per_run = max(1, int(config.get("queries_per_run", 2)))
+    week = (today or date.today()).isocalendar()[1]
+    start = (week * per_run) % len(pool)
+    return [pool[(start + i) % len(pool)] for i in range(min(per_run, len(pool)))]
+
+
+def _drop_known_places(
+    proposals: list[dict[str, Any]], *, store: ProposedFactStore, project: str, data_root: Path, today: Optional[date]
+) -> list[dict[str, Any]]:
+    """local_intel: one place is proposed once. Skip places already in the
+    store (pending, approved, rejected or expired) and places posted about
+    in the last PLACE_COOLDOWN_DAYS -- Chợ Hoa Quảng Bá was proposed in
+    August, September and October (2026-10-21 audit)."""
+    from growth_orchestrator.application.local_intel import place_key, recently_covered_places
+    from publishing_gateway.publication_registry import PublicationRegistry
+
+    known = {place_key(item) for item in store.load() if item.get("domain") == "local_intel"}
+    known.discard(())
+    keys = [place_key(p) for p in proposals]
+    try:
+        publications = PublicationRegistry(project, data_root=data_root).load().get("publications", [])
+    except Exception:  # noqa: BLE001
+        publications = []
+    covered = recently_covered_places([k for k in keys if k], publications, today=today or date.today())
+    kept, seen = [], set()
+    for proposal, key in zip(proposals, keys):
+        if not key or key in known or key in covered or key in seen:
+            continue
+        seen.add(key)
+        kept.append(proposal)
+    return kept
+
+
 def _collect_tavily(config: dict[str, Any], *, api_key: str, http_post: Optional[Callable[..., Any]]) -> list[dict[str, Any]]:
     from research_engine.trend_radar.collectors.tavily_search import collect_tavily_search
 
     max_results = int(config.get("max_results", 8))
     collected: dict[str, dict[str, Any]] = {}
-    for query in config.get("queries", []):
+    for query in _queries_for_this_run(config):
         try:
             for result in collect_tavily_search(query, api_key=api_key, max_results=max_results, http_post=http_post):
                 # Dedupe across queries by URL: two queries for one domain
@@ -284,10 +324,11 @@ def run_research_cycle(
         result.synthesis_note = str(synthesis)
 
     extract = extract_fn or extract_fact_proposals
+    hint = str(config.get("extraction_hint") or "").strip()
     api_key = gemini_api_key if gemini_api_key is not None else os.environ.get("GEMINI_API_KEY", "")
     try:
         raw_proposals = extract(
-            question=question,
+            question=f"{question}\n\nYêu cầu riêng cho câu hỏi này: {hint}" if hint else question,
             sources=sources,
             api_key=api_key,
             today=today,
@@ -309,8 +350,11 @@ def run_research_cycle(
         }
         for proposal in raw_proposals
     ]
+    store = store or ProposedFactStore(project=project, data_root=data_root)
+    store.expire_stale()
+    if domain == "local_intel":
+        proposals = _drop_known_places(proposals, store=store, project=project, data_root=data_root, today=today)
     if proposals:
-        store = store or ProposedFactStore(project=project, data_root=data_root)
         result.proposals_created = store.merge_new(proposals)
     result.proposals = proposals
     return result
@@ -326,7 +370,10 @@ def run_all_research_cycles(
     returned as skipped rather than silently omitted, so the report says
     plainly which domains are waiting on a human export."""
     results = []
-    for domain in load_research_questions(config_root):
+    for domain, config in load_research_questions(config_root).items():
+        if isinstance(config, dict) and config.get("scheduled") is False:
+            results.append(ResearchCycleResult(domain=domain, question="", skipped_reason="scheduled: false (run with --domain)"))
+            continue
         try:
             results.append(run_research_cycle(domain, project=project, config_root=config_root, **kwargs))
         except Exception as exc:  # noqa: BLE001 - one domain's config error must not stop the rest

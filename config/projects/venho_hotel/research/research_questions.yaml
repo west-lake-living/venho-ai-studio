@@ -17,8 +17,16 @@ version: 1
 # question. Narrowing it to "Giá phòng một đêm quanh Hồ Tây ở mức nào?"
 # produced 4 sourced proposals from the same kind of pages (2026-08-06).
 
+# `scheduled: false` (2026-10-21): the weekly `--all` cycle skips the domain;
+# `venho-research cycle --domain <name>` still runs it by hand. Harry found
+# the whole Knowledge Facts queue (265 pending) stale and unusable: those
+# domains produced atomised rows (one per sub-score, one per address) that
+# nothing downstream reads -- only local_intel feeds a post (Wednesday), and
+# dated events now come from Trend Radar (Google News + fast lane).
+
 domains:
   competitor:
+    scheduled: false
     question: "Giá phòng một đêm của các khách sạn quanh Hồ Tây hiện ở mức nào?"
     collector: tavily
     max_results: 8
@@ -31,6 +39,7 @@ domains:
     # them.
 
   competitor_rating:
+    scheduled: false
     question: "Các khách sạn cạnh tranh gần Ven Ho Hotel được khách chấm bao nhiêu điểm?"
     collector: manual
     # The 4 nearest rivals, named by Harry 2026-08-06. Canonical URLs: the
@@ -55,11 +64,33 @@ domains:
     question: "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?"
     collector: tavily
     max_results: 8
+    # One place per fact, named (2026-10-21): rows used to carry only the
+    # address as value ("236 Đường Âu Cơ...") with the name buried in a
+    # "Nguồn 9 nêu rõ..." rationale -- unusable as a post topic.
+    extraction_hint: >-
+      Mỗi fact là MỘT địa điểm cụ thể ở khu Hồ Tây (Tây Hồ, Quảng An, Yên Phụ,
+      Nhật Tân, Thụy Khuê, Trúc Bạch). fact_key dạng "local_intel.<tên-không-dấu>".
+      value BẮT BUỘC dạng "Tên địa điểm (địa chỉ)". rationale: một câu nói vì sao
+      khách lưu trú nên ghé (món, view, không gian, giờ đẹp), KHÔNG mở đầu bằng
+      "Nguồn N". Bỏ qua chuỗi lớn, khách sạn khác, địa điểm ngoài khu Hồ Tây.
+    # Rotated weekly (two per run), so each week reads different listings
+    # instead of the same two "top 10 cafés" pages.
+    queries_per_run: 2
+    query_pool:
+      - "quán cà phê view Hồ Tây mới mở"
+      - "quán ăn ngon khu Tây Hồ Quảng An"
+      - "di tích chùa đền quanh Hồ Tây nên ghé"
+      - "hoạt động ngoài trời ven Hồ Tây đạp xe chèo thuyền"
+      - "tiệm bánh quán trà yên tĩnh Tây Hồ"
+      - "chợ phố ẩm thực Quảng An Yên Phụ Trúc Bạch"
+      - "rooftop bar view Hồ Tây"
+      - "quán bún phở lâu năm Tây Hồ"
     queries:
       - "quán cà phê view Hồ Tây đáng đi"
       - "địa điểm tham quan quanh Hồ Tây Hà Nội"
 
   local_events:
+    scheduled: false
     question: "Sự kiện hoặc lễ hội nào sắp diễn ra ở Hà Nội, vào ngày nào?"
     collector: tavily
     max_results: 8
@@ -71,6 +102,7 @@ domains:
       - "lễ hội Tây Hồ Hà Nội thời gian tổ chức"
 
   social_trend:
+    scheduled: false
     question: "Điểm đến hoặc trải nghiệm nào ở Hà Nội đang được nhắc đến nhiều tuần này?"
     collector: tavily
     max_results: 10
@@ -79,6 +111,7 @@ domains:
       - "trending places Hanoi this week"
 
   market_pricing:
+    scheduled: false
     question: "Tháng nào trong năm là cao điểm và thấp điểm du lịch của Hà Nội?"
     collector: tavily
     max_results: 8
@@ -87,6 +120,7 @@ domains:
       - "best time to visit Hanoi peak season months"
 
   platform_trend:
+    scheduled: false
     question: "Định dạng nội dung nào đang được Facebook và Instagram phân phối mạnh nhất?"
     collector: tavily
     max_results: 6
@@ -95,6 +129,7 @@ domains:
       - "Facebook page organic reach best format 2026"
 
   brand_visual:
+    scheduled: false
     question: "Yếu tố hình ảnh nào khiến ảnh khách sạn boutique đạt tương tác cao?"
     collector: tavily
     max_results: 6
@@ -102,6 +137,7 @@ domains:
       - "hotel photography engagement social media what works"
 
   guest_voice:
+    scheduled: false
     question: "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?"
     # Still `manual` as the fallback collector, but `urls:` below is filled in
     # now, so this domain runs automatically with the weekly sweep. It falls
