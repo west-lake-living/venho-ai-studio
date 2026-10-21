@@ -21448,13 +21448,13 @@
       "idempotency_key": "cbbe2e6ec303835041e1a599c14b8f3a527109793304a8a8d63da8de1f5a2044",
       "platform": "facebook",
       "slot_id": "slot-2026-10-21-wednesday",
-      "status": "APPROVED_SCHEDULED",
+      "status": "CANCELLED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-10-11T17:59:44.033378+00:00",
-      "updated_at": "2026-10-12T09:26:11.896924+00:00",
+      "updated_at": "2026-10-21T03:55:11.689853+00:00",
       "content": {
         "title": "Chợ Hoa Quảng Bá — một góc Tây Hồ nhiều màu nhất",
         "text": "Có những nơi ở Hà Nội mà bạn nhận ra bằng màu sắc trước khi nhớ ra tên đường.\n\nChợ Hoa Quảng Bá nằm ở 236 đường Âu Cơ, một trong những chợ hoa lớn của khu vực Tây Hồ, và cũng là điểm nhiều người tìm đến chỉ để chụp vài tấm ảnh.\n\nTrời trong, nắng rõ, hàng cây lớn hai bên đường đổ bóng xuống mặt đường. Phía sau là những khối nhà cao thấp của một Hà Nội rất đời thường. Ở giữa là hoa — từng bó, từng thùng, từng xe chở đi khắp thành phố.\n\nKhông có ghế để ngồi lại, không có chỗ nào để nán. Bạn đi chậm, nhìn, hỏi giá, rồi đi tiếp. Nhưng chính cái nhịp đó lại hợp với Tây Hồ: mọi thứ diễn ra tự nhiên, không chờ ai ghé thăm.\n\nMột gợi ý nhỏ nếu bạn ở quanh hồ: ghé chợ hoa vào buổi sáng, rồi thong thả đi bộ về phía đường ven hồ khi nắng đã dịu. Quãng đường ấy đủ để bạn thấy Hồ Tây đổi màu vài lần trong ngày.\n\nVen Hồ Hotel nằm trên đường Nguyễn Đình Thi, một điểm dừng chân vừa vặn để bắt đầu và kết thúc những vòng đi như thế.\n\nNếu bạn đang tính lịch về Hà Nội, nhắn cho Ven Hồ Hotel để kiểm tra phòng trống cho những ngày bạn dự định ở lại nhé.\n\n#VenHoHotelHanoi #ChoHoaQuangBa #HoTay #WestLakeHanoi #KhachSanHoTay #HanoiTravel\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-fa7a6e0c",
@@ -21602,7 +21602,9 @@
         "revoked_reason": null,
         "package_versions_checksum": "a5847d4ff75a6dc0057f4c400a66b39979d3b4e6fe54669daf77ff267e43261f",
         "checksum": "4f3155a42de0e741cb0031a48169d57645633cd32d7a8768a4e24b5e2ebb1f68"
-      }
+      },
+      "cancelled_by": "hpham1504@gmail.com",
+      "cancelled_reason": "Trung chu de Cho Hoa Quang Ba (da dang 19/08, 26/08, 23/09; tu choi 07/10). Harry huy 21/10/2026."
     },
     {
       "publication_id": "pub-wednesday-instagram-48ce96ab",
@@ -21610,13 +21612,13 @@
       "idempotency_key": "6088e3182df2c4cfa80f17a7d451527255104be6260c8bd1365fd466b2587dab",
       "platform": "instagram",
       "slot_id": "slot-2026-10-21-wednesday",
-      "status": "APPROVED_SCHEDULED",
+      "status": "CANCELLED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-10-11T17:59:59.599313+00:00",
-      "updated_at": "2026-10-12T09:26:11.896924+00:00",
+      "updated_at": "2026-10-21T03:55:11.711729+00:00",
       "content": {
         "title": "Chợ Hoa Quảng Bá — một điểm dừng rất Tây Hồ",
         "text": "Có những nơi ở Tây Hồ mà bạn nhận ra mình đã tới, trước cả khi nhìn biển tên: màu hoa hiện ra trước.\n\nChợ Hoa Quảng Bá nằm ở 236 đường Âu Cơ, là một trong những chợ hoa lớn của khu vực Tây Hồ, và cũng là chỗ nhiều người ghé qua chỉ để chụp vài tấm ảnh.\n\nTrời Hà Nội hôm nắng trong, hàng cây dọc phố đổ bóng xuống mặt đường, phía sau là những mái nhà cao thấp của một Hà Nội rất đời thường. Giữa khung cảnh đó, chợ hoa là mảng màu rõ nhất.\n\nKhông cần kế hoạch gì phức tạp. Đi một vòng, nhìn hoa, nghe tiếng người mua bán, rồi quay lại con đường ven hồ.\n\nVen Hồ Hotel nằm trên Nguyễn Đình Thi, cùng phía Tây Hồ, nên một buổi sáng hay buổi chiều như vậy vừa đủ gọn trong lịch trình Hà Nội của bạn.\n\nBạn đang tính những ngày ở Hà Nội? Nhắn cho Ven Hồ Hotel để xem phòng trống nhé.\n\n#VenHoHotelHanoi #ChoHoaQuangBa #HoTay #WestLakeHanoi #KhamPhaHoTay #KhachSanViewHoTay #HaNoi #HanoiTravel",
@@ -21766,7 +21768,9 @@
         "revoked_reason": null,
         "package_versions_checksum": "6bf40d0ca683bb1bf3d13c5ac3d8ac84401f14a2c9271def9064df6dbbcbdb07",
         "checksum": "fc3961f41d7c59400472561c7f7ec4e7c3e693f1fd1f2385b9152adca6ea78bd"
-      }
+      },
+      "cancelled_by": "hpham1504@gmail.com",
+      "cancelled_reason": "Trung chu de Cho Hoa Quang Ba (da dang 19/08, 26/08, 23/09; tu choi 07/10). Harry huy 21/10/2026."
     },
     {
       "publication_id": "pub-friday-facebook-9434c257",
