@@ -56,8 +56,8 @@ def scan_trends(
     gate = BrandSafetyGate(safety_policy)
     today = today or date.today()
     window = fast_lane_policy or {}
-    min_ahead = int(window.get("min_days_ahead", 2))
-    max_ahead = int(window.get("max_days_ahead", 14))
+    min_ahead = int(window.get("min_days_ahead", 3))
+    max_ahead = int(window.get("max_days_ahead", 10))
     threshold = trend_policy.get("min_score_to_saturday_lane", 0.6)
 
     results = []

@@ -18,6 +18,7 @@ google_news:
     - '"phủ Tây Hồ"'
     - '"Tây Hồ" chợ hoa'
     - '"Trúc Bạch" lễ hội'
+    - '"Trích Sài"'
     - '"Quảng An" Tây Hồ'
     - '"Nhật Tân" hoa đào'
     - '"Tây Hồ" ẩm thực'
@@ -25,9 +26,11 @@ official_pages:
   - url: https://tayho.hanoi.gov.vn/van-hoa-xa-hoi
     path_prefix: /van-hoa-xa-hoi/
     source_name: Cổng TTĐT phường Tây Hồ
+# congvienhotay.vn is deliberately not listed: a private company's site with
+# no concrete cultural events (Harry, 2026-10-21).
 # Event priority: a West Lake cultural event starting within this window is
 # flagged fast_lane (Telegram alert; once Harry approves, it replaces the
 # nearest curated post before the event).
 fast_lane:
-  min_days_ahead: 2
-  max_days_ahead: 14
+  min_days_ahead: 3
+  max_days_ahead: 10

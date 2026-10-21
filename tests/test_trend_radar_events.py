@@ -132,13 +132,13 @@ def test_passed_events_are_rejected_and_upcoming_westlake_events_get_fast_lane()
             _event("past", "Đua thuyền", "2026-09-20"),
             _event("soon", "Pháo hoa hồ Tây", "2026-10-10"),
             _event("far", "Lễ hội mùa xuân", "2026-12-20"),
+            _event("eleven", "Hội chợ Trích Sài", "2026-10-12"),
             _event("tomorrow", "Chợ phiên", "2026-10-02"),
             _event("elsewhere", "Lễ hội Đà Lạt", "2026-10-10", westlake_area=False),
         ],
         _TREND_POLICY,
         _SAFETY_POLICY,
         today=_TODAY,
-        fast_lane_policy={"min_days_ahead": 2, "max_days_ahead": 14},
     )
     by_id = {r["id"]: r for r in results}
 
@@ -146,7 +146,8 @@ def test_passed_events_are_rejected_and_upcoming_westlake_events_get_fast_lane()
     # On the lake and on-brand even though the classifier called it "adjacent".
     assert by_id["soon"]["status"] == "needs_human_approval" and by_id["soon"]["geographic"] == "westlake"
     assert by_id["soon"]["fast_lane"] is True
-    assert by_id["far"]["fast_lane"] is False  # beyond 14 days: normal queue
+    assert by_id["far"]["fast_lane"] is False  # beyond 10 days: normal queue
+    assert by_id["eleven"]["fast_lane"] is False  # 11 days out: just past the default window
     assert by_id["tomorrow"]["fast_lane"] is False  # too close to draft + approve
     assert by_id["elsewhere"]["status"] == "rejected"  # hanoi 0.7 x 0.6 x 0.6 < 0.6
     assert results[0]["id"] == "soon"
