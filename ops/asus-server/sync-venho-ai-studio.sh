@@ -71,9 +71,29 @@ if [ "$BEFORE" != "$AFTER" ]; then
     fi
   done < <(git ls-files --others --exclude-standard -z -- research)
 
-  if ! git merge --ff-only origin/main >>"$LOG_FILE" 2>&1; then
-    fail "fast-forward ${BEFORE:0:8} -> ${AFTER:0:8} thất bại (git status trong $REPO_DIR)"
-  fi
+  # A skip-worktree file the incoming commits also change makes git refuse
+  # the ff ("local changes would be overwritten"). Since the server runner
+  # commits the registry/trends several times a day (2026-10-21), that is
+  # routine. The Dashboard's on-disk copy wins here -- its *-sync.ts modules
+  # merge GitHub's rows in themselves on every read -- so set it aside, let
+  # the ff move the index, then put it back.
+  held=()
+  while IFS= read -r path; do
+    git diff --quiet "$BEFORE" "$AFTER" -- "$path" && continue
+    cp -p -- "$path" "$path.sync-hold" || fail "không sao lưu được $path"
+    git update-index --no-skip-worktree -- "$path"
+    git checkout -q -- "$path"
+    held+=("$path")
+  done < <(git ls-files -v | sed -n 's/^S //p')
+
+  merge_ok=1
+  git merge --ff-only origin/main >>"$LOG_FILE" 2>&1 || merge_ok=0
+  for path in "${held[@]}"; do
+    mv -f -- "$path.sync-hold" "$path"
+    git update-index --skip-worktree -- "$path"
+    log "kept Dashboard copy of $path across the ff"
+  done
+  [ "$merge_ok" = 1 ] || fail "fast-forward ${BEFORE:0:8} -> ${AFTER:0:8} thất bại (git status trong $REPO_DIR)"
   log "synced ${BEFORE:0:8} -> ${AFTER:0:8}"
 fi
 
