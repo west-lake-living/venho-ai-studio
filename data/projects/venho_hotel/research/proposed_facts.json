@@ -5216,10 +5216,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-10-21-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "expired",
     "proposed_at": "2026-10-21T10:08:12.426030+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "dedupe: same place as an earlier pending row",
+    "decided_at": "2026-10-21T10:09:09.856010+00:00"
   },
   {
     "fact_key": "local_intel.pho_trang_tay_pho_ga",
