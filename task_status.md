@@ -1,5 +1,58 @@
 # VENHO AI STUDIO — Task Status
 
+### Growth chuyển lên server + Trend Radar + ảnh + Knowledge Facts (20–21/10/2026)
+
+**Status: COMPLETE — đã chạy thử trên server; chờ các lượt chạy thật đầu tiên (xem "Theo dõi")**
+
+**1. Lịch đăng bài chuyển từ GitHub Actions sang asus-server**
+- [x] `ops/asus-server/` là nguồn gốc của mọi file trên server: `growth-dispatch.sh` (các chế độ primary/second/weekly-cycle/replace-rejected/trend-scan/fast-lane/select-image/upload-image), `growth_state_merge.py`, `growth-telegram.sh`, các unit và timer systemd.
+- [x] Runtime clone `~/venho/growth-runtime/venho-ai-studio`, khoá bằng `flock`. Sau mỗi lượt chạy: commit state rồi push; nếu push bị từ chối thì merge registry/db/trends. Lỗi được báo qua Telegram (`OnFailure`). Bot đã đổi sang `Venhohotel_bot`.
+- [x] Các workflow Growth trên GitHub giờ chỉ còn `workflow_dispatch`. **Không thêm lại `schedule`**, vì 2 nơi cùng chạy có thể gửi trùng một bài. Có test khẳng định điều này.
+
+**2. Trend Radar**
+- [x] Bỏ Tavily search, thay bằng Google News RSS: 14 truy vấn theo địa danh, có thêm "Trích Sài" (`7465ca5`), cộng cổng TTĐT phường Tây Hồ. Không dùng congvienhotay.vn vì là trang doanh nghiệp tư nhân (Harry quyết).
+- [x] Gemini trích thông tin sự kiện; gộp tin cùng một sự kiện (`event_clusters.py`); loại sự kiện đã qua; chỉ lưu các dòng chờ duyệt.
+- [x] Lane nhanh: sự kiện Hồ Tây **trong khoảng 3–10 ngày tới** được báo Telegram. Khi Harry duyệt, `trend-fast-lane` soạn bài vào slot gần nhất trước ngày sự kiện, thay bài curated đang chờ; bài này vẫn phải Duyệt trước khi đăng.
+- [x] Đã reset Trend Radar và quét lại; Harry duyệt 4 trend.
+- [x] Gợi ý chủ đề theo mùa bằng Gemini (`topic_ideation.py`, `seasonal_calendar.yaml`). Lane Thứ 7 ưu tiên trend đã duyệt.
+
+**3. Ảnh không khớp nội dung bài**
+- [x] Gốc rễ: `assets/raw/` bị gitignore, nên GitHub runner không tạo được ảnh. Từ 28/08 mọi bài đều âm thầm dùng ảnh dự phòng. Nay bài được soạn trên server, nơi có ảnh tham chiếu.
+- [x] Đọc được ảnh HEIC của iPhone (`pillow-heif`). Chọn cảnh theo chữ trong chủ đề (`topic_scenario`, ưu tiên địa điểm hơn thời điểm trong ngày).
+- [x] Mỗi bài có 3 lựa chọn: A (AI, đúng cảnh), B (AI, cảnh khác), C (ảnh thật), cộng ảnh Harry tự tải lên. Gửi album Telegram (`notify-image-options`); chọn hoặc tải trên Dashboard trước khi Duyệt.
+
+**4. Knowledge Facts**
+- [x] Chuyển 266 fact chờ duyệt cũ sang trạng thái `expired` (có sao lưu ở `~/venho/backups/knowledge-facts/`). Fact chờ quá 21 ngày tự hết hạn.
+- [x] Chỉ còn `local_intel` và `weather` chạy tự động; 8 nhóm còn lại đặt `scheduled: false`. `local_intel`: mỗi fact là một địa điểm, đọc từng nguồn một, tối đa 8 đề xuất mỗi lượt, đổi truy vấn theo tuần, bỏ địa điểm trùng bằng `same_place`.
+- [x] Lượt chạy mới cho ra 3 fact; Harry đã duyệt cả 3 (Skyon9, Phở Tráng Tay, Bún bò O Huông).
+
+**5. Gốc rễ lỗi Duyệt fact: thư mục Dashboard trên server kẹt ở nhánh phụ**
+- [x] Từ 17/10, `~/venho/03_AI_STUDIO/venho-ai-studio` nằm ở nhánh `wip/gemini-3x-validator-config`. Cron sync lỗi mỗi 5 phút nhưng chỉ ghi vào log, không ai biết. Đã đưa về `main`; commit trên nhánh đó đã có sẵn trên main. Sao lưu: tag `backup/wip-gemini-3x-2026-10-21` và `~/venho/backups/studio-checkout-20261021T124350Z`.
+- [x] `ops/asus-server/sync-venho-ai-studio.sh`:
+  - báo Telegram một lần khi bị kẹt và một lần khi hồi phục;
+  - tự chạy `uv sync --frozen --inexact` khi lock thay đổi;
+  - bỏ file ghi chú untracked đã có giống hệt trên main.
+  - Đã chạy thử trên bản sao tạm cả 3 tình huống. Timer `venho-studio-pull` bị tắt vì trùng việc.
+- [x] Ở `e3ce322` tôi thêm `pillow-heif` vào `pyproject.toml` mà không cập nhật `uv.lock`; đã sửa ở `e2e3760`. Quy tắc: thêm thư viện thì commit `uv.lock` trong cùng commit.
+
+**Kiểm chứng:** bộ test Growth chọn lọc 522 pass. Đã chạy thử trên server: tạo ảnh thật (QC 100), diễn tập đầy đủ A/B/C, album Telegram, đường từ chối của select-image, và luồng Duyệt fact.
+
+**Theo dõi:**
+- [ ] Research cycle trên GitHub, Thứ 5 22/10 08:00.
+- [ ] Lượt đăng primary đầu tiên trên server, Thứ 6 23/10 09:00.
+- [ ] Weekly-cycle đầu tiên trên server, Chủ nhật 25/10: gợi ý chủ đề, 3 ảnh, album Telegram.
+- [ ] Bài lane nhanh thật đầu tiên.
+
+**Chờ Harry quyết:**
+- [ ] Bộ lọc `X-Venho-Signature` trên Make.com.
+- [ ] Nâng rollout stage.
+- [ ] Bất biến slot-state (Lỗi #10).
+- [ ] Panel Trend Radar có hiện ngày sự kiện và cờ ⚡ không.
+- [ ] Bật lại `guest_voice` dạng bản tổng hợp hằng tháng.
+
+**Ghi chú vận hành:**
+- Ảnh thư viện mới đặt vào `assets/raw/<subject>/` trên Mac, rồi rsync lên server.
+
 ### Growth Agent im lặng 3 ngày (19-21/09/2026): lane monday chết vì 1 dòng YAML thiếu quote
 
 **Status: COMPLETE — verified live in production, bài 21/09 đã đăng bù thành công**
