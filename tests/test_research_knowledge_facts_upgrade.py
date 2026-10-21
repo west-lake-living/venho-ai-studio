@@ -90,3 +90,31 @@ def test_extraction_hint_reaches_the_extractor(tmp_path: Path) -> None:
         input_file=source, extract_fn=fake_extract, gemini_api_key="k",
     )
     assert seen and "value dạng Tên (địa chỉ)" in seen[0]
+
+
+def test_local_intel_reads_pages_one_at_a_time_and_caps_the_queue(tmp_path: Path) -> None:
+    config_root = tmp_path / "research"
+    config_root.mkdir()
+    (config_root / "research_questions.yaml").write_text(
+        yaml.safe_dump({"version": 1, "domains": {"local_intel": {
+            "question": "Quán nào?", "collector": "manual", "per_source": True, "max_proposals": 2,
+        }}}, allow_unicode=True),
+        encoding="utf-8",
+    )
+    source = tmp_path / "export.md"
+    source.write_text("x", encoding="utf-8")
+    calls: list[bool] = []
+
+    def fake_extract(*, per_source, **_):
+        calls.append(per_source)
+        return [
+            {"fact_key": f"local_intel.p{i}", "value": f"Quán Số {i} ({i} Quảng An)", "value_type": "string", "rationale": "r", "source_index": 0, "source_uri": "u", "source_title": "t"}
+            for i in range(5)
+        ]
+
+    result = cycle.run_research_cycle(
+        "local_intel", config_root=config_root, vault_root=tmp_path / "vault", data_root=tmp_path,
+        input_file=source, extract_fn=fake_extract, gemini_api_key="k",
+    )
+    assert calls == [True]
+    assert result.proposals_created == 2

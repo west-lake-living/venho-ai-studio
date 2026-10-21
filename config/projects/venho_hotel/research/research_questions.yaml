@@ -75,6 +75,8 @@ domains:
       "Nguồn N". Bỏ qua chuỗi lớn, khách sạn khác, địa điểm ngoài khu Hồ Tây.
     # Rotated weekly (two per run), so each week reads different listings
     # instead of the same two "top 10 cafés" pages.
+    per_source: true
+    max_proposals: 8
     queries_per_run: 2
     query_pool:
       - "quán cà phê view Hồ Tây mới mở"

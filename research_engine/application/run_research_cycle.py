@@ -335,7 +335,9 @@ def run_research_cycle(
             reject_past_dates=bool(config.get("reject_past_dates", True)),
             # Named pages get read one at a time; a search sweep is batched.
             # See extract_fact_proposals' per_source branch for why.
-            per_source=bool(urls) and not config.get("queries"),
+            # `per_source: true` for list pages too (local_intel, 2026-10-21):
+            # 16 "top cafés" pages in one prompt yielded ONE place.
+            per_source=bool(config.get("per_source")) or (bool(urls) and not config.get("queries")),
         )
     except Exception:  # noqa: BLE001 - the vault notes above are the durable output; a failed extraction is a missing convenience, not a failed cycle
         raw_proposals = []
@@ -354,6 +356,9 @@ def run_research_cycle(
     store.expire_stale()
     if domain == "local_intel":
         proposals = _drop_known_places(proposals, store=store, project=project, data_root=data_root, today=today)
+    if config.get("max_proposals"):
+        # A short queue Harry actually reads beats a long one he skips.
+        proposals = proposals[: int(config["max_proposals"])]
     if proposals:
         result.proposals_created = store.merge_new(proposals)
     result.proposals = proposals
