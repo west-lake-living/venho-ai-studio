@@ -1,1 +1,167 @@
-[]
+[
+  {
+    "id": "gnews-5bcfecd1334ea661",
+    "title": "Tháng 10, Hà Nội không chỉ có hoa sữa: Hãy đến những nơi này để cảm nhận trọn vẹn hương sắc mùa thu",
+    "source_uri": "https://news.google.com/rss/articles/CBMi0wFBVV95cUxNLWhWRGE1NFk5Z0xLNjRiWkxjcTc2OVhYaEVPODUtSlFyYXdBUWpWVmxjRjhCQWxsOXZ3d3g2VGNwMDBMODZ3ZGtzbElfc1dncjJrV0dVczRKSG0tZ0lhRGI5S2loOGtoVTNpbW5HMm5UWTRmM2VrNnNJNll5RnFxYk5veFZDRHgwWVk0NEd1Nl9STE50UjVMWVpGbUhyWmxLel9aNHJJRmZKdlFRcjAwcDVnekxGRjdtV1FET1hVb2NoWVBZZElWMm9Nd1FBT0R6QnFV?oc=5",
+    "source_name": "CafeF",
+    "published_at": "2026-10-15T15:11:00+00:00",
+    "snippet": "CafeF",
+    "relevance_hint": 0.0,
+    "collector": "google_news",
+    "query": "\"Hồ Tây\" âm nhạc",
+    "geographic": "hanoi",
+    "thematic": "travel_stay",
+    "actionability": "direct",
+    "type": "seasonal_nature",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "travel_accommodation",
+      "hanoi_westlake_local",
+      "seasonal_weather_nature"
+    ],
+    "is_event": false,
+    "event_name": null,
+    "event_start": null,
+    "event_end": null,
+    "venue": "Hà Nội",
+    "westlake_area": false,
+    "sources": [
+      {
+        "title": "Tháng 10, Hà Nội không chỉ có hoa sữa: Hãy đến những nơi này để cảm nhận trọn vẹn hương sắc mùa thu",
+        "source_uri": "https://news.google.com/rss/articles/CBMi0wFBVV95cUxNLWhWRGE1NFk5Z0xLNjRiWkxjcTc2OVhYaEVPODUtSlFyYXdBUWpWVmxjRjhCQWxsOXZ3d3g2VGNwMDBMODZ3ZGtzbElfc1dncjJrV0dVczRKSG0tZ0lhRGI5S2loOGtoVTNpbW5HMm5UWTRmM2VrNnNJNll5RnFxYk5veFZDRHgwWVk0NEd1Nl9STE50UjVMWVpGbUhyWmxLel9aNHJJRmZKdlFRcjAwcDVnekxGRjdtV1FET1hVb2NoWVBZZElWMm9Nd1FBT0R6QnFV?oc=5",
+        "source_name": "CafeF",
+        "published_at": "2026-10-15T15:11:00+00:00"
+      }
+    ],
+    "source_count": 1,
+    "relevance_score": 0.7,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "fast_lane": false,
+    "verified_by_human": false,
+    "scanned_at": "2026-10-21T09:15:42.026670+00:00"
+  },
+  {
+    "id": "gnews-13c1b2c36901f803",
+    "title": "Khách Trung Quốc mê đắm thu Hà Nội, làng lụa Vạn Phúc",
+    "source_uri": "https://news.google.com/rss/articles/CBMinAFBVV95cUxQLUNrMXBoNnFTY3BZYTh6SFpUUUxpZXd5UVdmSThfZi1FNzJtOVJsZVJlUnNzeGZITndUaWVLWVZKZU5hMlhNNVhRQVlEZ3RqdndReE9yZUY5UDhTaTFvWnJpNTVGcHJubEtKT2NZak95UkdRQm1lWS1jUUp2cEl1M18wREpqY2hCVGxzbEFQdlhuMUdIWnA1bVVpb3Y?oc=5",
+    "source_name": "Thanh Niên",
+    "published_at": "2026-10-18T07:22:00+00:00",
+    "snippet": "Thanh Niên",
+    "relevance_hint": 0.0,
+    "collector": "google_news",
+    "query": "\"Tây Hồ\" ẩm thực",
+    "geographic": "hanoi",
+    "thematic": "travel_stay",
+    "actionability": "direct",
+    "type": "seasonal_nature",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "travel_accommodation",
+      "seasonal_weather_nature",
+      "culture_festival_positive"
+    ],
+    "is_event": false,
+    "event_name": null,
+    "event_start": null,
+    "event_end": null,
+    "venue": "Làng lụa Vạn Phúc",
+    "westlake_area": false,
+    "sources": [
+      {
+        "title": "Khách Trung Quốc mê đắm thu Hà Nội, làng lụa Vạn Phúc",
+        "source_uri": "https://news.google.com/rss/articles/CBMinAFBVV95cUxQLUNrMXBoNnFTY3BZYTh6SFpUUUxpZXd5UVdmSThfZi1FNzJtOVJsZVJlUnNzeGZITndUaWVLWVZKZU5hMlhNNVhRQVlEZ3RqdndReE9yZUY5UDhTaTFvWnJpNTVGcHJubEtKT2NZak95UkdRQm1lWS1jUUp2cEl1M18wREpqY2hCVGxzbEFQdlhuMUdIWnA1bVVpb3Y?oc=5",
+        "source_name": "Thanh Niên",
+        "published_at": "2026-10-18T07:22:00+00:00"
+      }
+    ],
+    "source_count": 1,
+    "relevance_score": 0.7,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "fast_lane": false,
+    "verified_by_human": false,
+    "scanned_at": "2026-10-21T09:15:42.026670+00:00"
+  },
+  {
+    "id": "gnews-e308d3384378d189",
+    "title": "Phong trào thuê xe đạp quanh Hồ Tây của giới trẻ",
+    "source_uri": "https://news.google.com/rss/articles/CBMilwFBVV95cUxPVlFkODEyOGdPOEhJM0FkZWdXSzNPUE1oZlV0UjRsVmt6bURocmJuUzVtTmxsNlV6UXpRWEU2WDdENVdoSUZRcDc2ZzFPWkRkN2lLZVdQMGdCRzRYbm9fYUhEYWZyMUZyOGkxZkpXMW1Jb3RLNXphTFdUd05vNTlnTWhzc3E0SW1QY004X1RGalpsREwtdGZv?oc=5",
+    "source_name": "VTV.vn",
+    "published_at": "2026-10-21T07:05:00+00:00",
+    "snippet": "VTV.vn",
+    "relevance_hint": 0.0,
+    "collector": "google_news",
+    "query": "\"Hồ Tây\" sự kiện",
+    "geographic": "westlake",
+    "thematic": "lifestyle_culture",
+    "actionability": "direct",
+    "type": "lifestyle_trend",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local"
+    ],
+    "is_event": false,
+    "event_name": null,
+    "event_start": null,
+    "event_end": null,
+    "venue": "Hồ Tây",
+    "westlake_area": true,
+    "sources": [
+      {
+        "title": "Phong trào thuê xe đạp quanh Hồ Tây của giới trẻ",
+        "source_uri": "https://news.google.com/rss/articles/CBMilwFBVV95cUxPVlFkODEyOGdPOEhJM0FkZWdXSzNPUE1oZlV0UjRsVmt6bURocmJuUzVtTmxsNlV6UXpRWEU2WDdENVdoSUZRcDc2ZzFPWkRkN2lLZVdQMGdCRzRYbm9fYUhEYWZyMUZyOGkxZkpXMW1Jb3RLNXphTFdUd05vNTlnTWhzc3E0SW1QY004X1RGalpsREwtdGZv?oc=5",
+        "source_name": "VTV.vn",
+        "published_at": "2026-10-21T07:05:00+00:00"
+      }
+    ],
+    "source_count": 1,
+    "relevance_score": 0.6,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "fast_lane": false,
+    "verified_by_human": false,
+    "scanned_at": "2026-10-21T09:15:42.026670+00:00"
+  },
+  {
+    "id": "event-undated-1b25875277",
+    "title": "Sơ khảo \"Giọng hát hay Tây Hồ\": Bồi dưỡng tài năng âm nhạc từ cơ sở",
+    "source_uri": "https://news.google.com/rss/articles/CBMingFBVV95cUxPcGw3LUs1R0t0WEpXZ2F5RzI3eWUtRXMxR1BLNGdzUnBRUG1LMzdVeDhxS3BJb09uTnJ2eG56c2tIUVB1cFNaV2lKQnROMDczbG5qTERRLTYwRUhVV1hYd0JvQUlrNWtoanFTMW9taUVxRlFLSHhMTkpvV1VTaGF3d25fY3Q5VWNvNzhBeWhhSmY2Z0daa3ZPY0lBWFk4dw?oc=5",
+    "source_name": "Báo Hànộimới",
+    "published_at": "2026-10-17T04:23:00+00:00",
+    "snippet": "Báo Hànộimới",
+    "relevance_hint": 0.0,
+    "collector": "google_news",
+    "query": "\"Tây Hồ\" chợ hoa",
+    "geographic": "westlake",
+    "thematic": "lifestyle_culture",
+    "actionability": "stretch",
+    "type": "cultural_event",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "culture_festival_positive"
+    ],
+    "is_event": true,
+    "event_name": "Sơ khảo Giọng hát hay Tây Hồ",
+    "event_start": null,
+    "event_end": null,
+    "venue": "Tây Hồ, Hà Nội",
+    "westlake_area": true,
+    "sources": [
+      {
+        "title": "Sơ khảo \"Giọng hát hay Tây Hồ\": Bồi dưỡng tài năng âm nhạc từ cơ sở",
+        "source_uri": "https://news.google.com/rss/articles/CBMingFBVV95cUxPcGw3LUs1R0t0WEpXZ2F5RzI3eWUtRXMxR1BLNGdzUnBRUG1LMzdVeDhxS3BJb09uTnJ2eG56c2tIUVB1cFNaV2lKQnROMDczbG5qTERRLTYwRUhVV1hYd0JvQUlrNWtoanFTMW9taUVxRlFLSHhMTkpvV1VTaGF3d25fY3Q5VWNvNzhBeWhhSmY2Z0daa3ZPY0lBWFk4dw?oc=5",
+        "source_name": "Báo Hànộimới",
+        "published_at": "2026-10-17T04:23:00+00:00"
+      }
+    ],
+    "source_count": 1,
+    "relevance_score": 0.6,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "fast_lane": false,
+    "verified_by_human": false,
+    "scanned_at": "2026-10-21T09:15:42.026670+00:00"
+  }
+]
