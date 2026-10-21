@@ -35,6 +35,11 @@
   - Đã chạy thử trên bản sao tạm cả 3 tình huống. Timer `venho-studio-pull` bị tắt vì trùng việc.
 - [x] Ở `e3ce322` tôi thêm `pillow-heif` vào `pyproject.toml` mà không cập nhật `uv.lock`; đã sửa ở `e2e3760`. Quy tắc: thêm thư viện thì commit `uv.lock` trong cùng commit.
 
+**6. Chuyển expire-stale lên server + sửa sync khi gặp file skip-worktree (21/10, buổi tối)**
+- [x] `growth-expire-stale-approvals` chuyển sang chế độ `expire-stale` của `growth-dispatch.sh`, timer `venho-growth-expire-stale` chạy 07:05 ICT hằng ngày. Workflow trên GitHub giờ chỉ còn chạy tay và đã có trong test chống thêm lại `schedule` (`9d0b3e0`). Lượt chạy thử trên server OK.
+- [x] Trên GitHub còn chạy theo lịch: research-cycle (Thứ 5), blog-seo (Thứ 3), growth-tests (khi push). Repo public nên dùng Actions miễn phí; cả 3 không ghi vào sổ bài đăng.
+- [x] Lỗi sync lúc 20:10, phát hiện nhờ cảnh báo Telegram mới thêm: commit của server sửa `publication_registry.json` (đang có cờ skip-worktree) nên git từ chối ff. Script giờ cất bản của Dashboard sang bên, chạy ff, rồi trả lại (`2e6f66a`). Đã thử trên bản sao tạm lấy nguồn từ GitHub và trên server thật: md5 không đổi, còn đủ 4 cờ.
+
 **Kiểm chứng:** bộ test Growth chọn lọc 522 pass. Đã chạy thử trên server: tạo ảnh thật (QC 100), diễn tập đầy đủ A/B/C, album Telegram, đường từ chối của select-image, và luồng Duyệt fact.
 
 **Theo dõi:**

@@ -1,5 +1,18 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-10-20/21 — Growth lên server, Trend Radar Google News, 3 ảnh/bài, reset Knowledge Facts, thư mục Dashboard kẹt nhánh
+
+Chi tiết từng việc: `task_status.md`, mục cùng ngày. Dưới đây là những điều không suy ra được từ code.
+
+- **Server là nơi chạy lịch Growth duy nhất.** Tất cả workflow Growth ghi vào sổ bài đăng (`publication_registry.json`) trên GitHub chỉ còn `workflow_dispatch`, có test khẳng định. Nếu 2 nơi cùng chạy theo lịch, mỗi bên giữ một bản sổ bài đăng riêng và có thể gửi trùng một bài. GitHub còn chạy theo lịch 3 workflow không đụng tới sổ bài đăng (research-cycle, blog-seo, growth-tests); repo public nên không tốn phí.
+- **Ảnh lệch nội dung từ 28/08** không phải do AI chọn sai. `assets/raw/` bị gitignore nên runner GitHub không có ảnh tham chiếu, và mọi bài âm thầm rơi về ảnh dự phòng. Ảnh thư viện mới phải rsync lên `~/venho/growth-runtime/venho-ai-studio/assets/raw/`. Ảnh chỉ đổi được khi bài còn `PENDING_APPROVAL`, vì lúc duyệt hệ thống chốt `asset_version_ids`.
+- **Trend Radar:** Tavily bỏ sót mọi sự kiện Hồ Tây đầu tháng 10, Google News bắt được hết. Truy vấn phải bắt đầu bằng địa danh; truy vấn chung kiểu "lễ hội Hà Nội" làm tin Hồ Tây bị nhấn chìm. Không dùng congvienhotay.vn (trang doanh nghiệp tư nhân, Harry quyết). Lane nhanh 3–10 ngày.
+- **Knowledge Facts:** chỉ `local_intel` (dùng cho bài Thứ 4) và `weather` có nơi dùng tới. 8 nhóm còn lại không ai đọc nên đã tắt lịch. Đừng xoá dòng cũ: hãy đổi trạng thái sang `expired`, để chúng làm dấu chặn đề xuất lại.
+- **Cloudflare thay mọi phản hồi 502 của origin bằng trang HTML**, nên Dashboard báo "Unexpected token '<'" thay cho lý do thật. Route trong venho-os phải trả 4xx khi CLI từ chối.
+- **Thư mục Dashboard `~/venho/03_AI_STUDIO/venho-ai-studio` phải luôn ở `main`.** Từ 17/10, một phiên khác để nó ở nhánh `wip/gemini-3x-validator-config`; cron sync lỗi suốt 4 ngày mà chỉ ghi vào log. Hậu quả: ghi chú research mới không về, nên Duyệt fact hỏng. Giờ `ops/asus-server/sync-venho-ai-studio.sh` báo Telegram một lần khi bị kẹt và một lần khi hồi phục; tự chạy `uv sync --frozen --inexact` khi lock đổi; bỏ file untracked đã có giống hệt trên main; và cất bản của Dashboard sang bên khi ff đụng vào 4 file JSON có cờ skip-worktree. Thử nghiệm thì làm ở clone hoặc worktree riêng, đừng làm trong thư mục đó.
+- **Thêm thư viện thì commit `uv.lock` cùng commit đó.** Ở `e3ce322` tôi thêm `pillow-heif` mà không lock lại; `--frozen` vì thế sẽ cài thiếu nó.
+- **Clone scratch nông (`--depth 5`):** `git pull --rebase` làm hỏng lịch sử. Cách an toàn: `fetch`, rồi `checkout -B x origin/main`, sửa và commit, rồi `push HEAD:main`.
+
 ## 2026-09-21 — Growth Agent im lặng 3 ngày (19-21/09): lane monday chết vì 1 dòng YAML thiếu quote
 
 - **Bối cảnh:** Harry báo Growth Agent không đăng bài 3 ngày liền (19-21/09). Điều tra bằng `gh run list`/`gh run view --log-failed` trên repo `venho-ai-studio` (đúng repo, không phải `Ven Ho Hotel`).
