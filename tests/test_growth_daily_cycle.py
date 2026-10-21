@@ -33,6 +33,17 @@ class _AlwaysApproveValidatorBridge:
         return {"verdict": "READY_FOR_REVIEW", "reports": []}
 
 
+
+def _railing_reference_resolver(tmp_path: Path) -> ReferenceAssetResolver:
+    """The real railing photo lives under the gitignored assets/raw/, so a
+    clean checkout (or CI) never has it -- write a stand-in reference image."""
+    from PIL import Image
+
+    ref = tmp_path / "refs" / "IMG_5125.jpg"
+    ref.parent.mkdir(parents=True, exist_ok=True)
+    Image.new("RGB", (64, 64), (200, 200, 190)).save(ref, "JPEG")
+    return ReferenceAssetResolver({"venho_rooftop_railing_approved": "refs/IMG_5125.jpg"}, assets_root=tmp_path)
+
 def _tmp_data_root(tmp_path: Path) -> Path:
     root = tmp_path / "data" / "projects"
     knowledge_dir = root / "venho_hotel" / "knowledge"
@@ -387,10 +398,7 @@ def test_run_daily_cycle_skips_image_generation_when_disabled(tmp_path: Path) ->
 def test_run_daily_cycle_saturday_generates_real_image_with_injected_provider(tmp_path: Path) -> None:
     data_root = _tmp_data_root(tmp_path)
     provider = MockImageProvider()
-    resolver = ReferenceAssetResolver(
-        {"venho_rooftop_railing_approved": "assets/raw/outside/IMG_5125.jpg"},
-        assets_root=Path("."),
-    )
+    resolver = _railing_reference_resolver(tmp_path)
 
     result = run_daily_cycle(
         "saturday", platforms=["facebook"], data_root=data_root, image_provider=provider, reference_resolver=resolver
@@ -422,10 +430,7 @@ def test_run_daily_cycle_uploads_validated_image_to_drive_and_stores_public_url(
 
     data_root = _tmp_data_root(tmp_path)
     provider = MockImageProvider()
-    resolver = ReferenceAssetResolver(
-        {"venho_rooftop_railing_approved": "assets/raw/outside/IMG_5125.jpg"},
-        assets_root=Path("."),
-    )
+    resolver = _railing_reference_resolver(tmp_path)
     uploader = MockDriveUploader()
 
     result = run_daily_cycle(

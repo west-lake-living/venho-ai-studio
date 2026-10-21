@@ -91,3 +91,23 @@ def test_edit_after_lock_supersedes_and_requires_new_approval(tmp_path) -> None:
     assert draft["status"] == "DRAFT"
     assert draft["version"] == 2
     assert "locked_by" not in draft
+
+
+def test_no_approved_seed_fact_expires_within_14_days() -> None:
+    """Early warning (2026-10-21): review.agoda_overall silently expired on
+    2026-10-01 and every claim/blog citing it was blocked for three weeks.
+    This fails in CI two weeks before any approved fact's valid_to, so Harry
+    can re-verify the value while it still works."""
+    import json
+    from datetime import datetime, timedelta, timezone
+
+    facts = json.loads((ROOT / "config/projects/venho_hotel/growth/seed_facts.json").read_text(encoding="utf-8"))
+    horizon = datetime.now(timezone.utc) + timedelta(days=14)
+    expiring = [
+        f"{fact['fact_key']} (valid_to {fact['valid_to']})"
+        for fact in facts
+        if fact.get("status") == "approved"
+        and fact.get("valid_to")
+        and datetime.fromisoformat(fact["valid_to"]) <= horizon
+    ]
+    assert not expiring, f"re-verify and extend in seed_facts.json: {expiring}"

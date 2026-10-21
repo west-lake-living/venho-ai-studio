@@ -35,11 +35,11 @@
     "source_rs_id": "RS-2026-08-0003",
     "confidence": 0.95,
     "valid_from": "2026-07-01T00:00:00+07:00",
-    "valid_to": "2026-10-01T00:00:00+07:00",
+    "valid_to": "2027-01-01T00:00:00+07:00",
     "status": "approved",
-    "version": 1,
+    "version": 2,
     "approved_by": "harry",
-    "approved_at": "2026-08-03T00:00:00+07:00"
+    "approved_at": "2026-10-21T00:00:00+07:00"
   },
   {
     "fact_key": "hotel.website",

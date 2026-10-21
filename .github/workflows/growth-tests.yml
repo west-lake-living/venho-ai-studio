@@ -1,0 +1,41 @@
+name: Growth Agent Tests
+
+# Offline (0 API call) test gate for the Growth Agent path: orchestrator,
+# publishing gateway, research, trend radar, rollout, budget, topics, blog.
+# Until 2026-10-21 nothing ran tests in CI, so 6 Growth tests sat red for
+# weeks unseen -- one of them was the only signal that the Agoda rating fact
+# had expired. The daily schedule keeps date-dependent guards (fact expiry)
+# alerting even when nobody pushes code.
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "data/**"
+      - "**.md"
+  pull_request:
+  schedule:
+    - cron: "30 0 * * *" # 07:30 Asia/Ho_Chi_Minh
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  growth-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Install
+        run: pip install -e ".[drive]" pytest
+
+      - name: Run Growth test selection
+        run: |
+          files=$(ls tests/*.py | grep -iE "growth|publish|research|trend|rollout|registry|slot|budget|replace|topic|blog")
+          python -m pytest -q -p no:cacheprovider $files

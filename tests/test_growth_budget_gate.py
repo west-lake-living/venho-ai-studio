@@ -96,8 +96,10 @@ def test_budget_ledger_totals_ignore_a_prior_calendar_month(tmp_path: Path) -> N
     ledger = BudgetLedger(db_path=db_path)
     _insert_event(db_path, reservation_id="aug-1", action="COMMIT", amount_minor=490000, created_at="2026-08-20T10:00:00")
 
-    ledger.reserve("sep-1", 100, currency="VND")
-    ledger.commit("sep-1", 100, currency="VND")
+    # Dated explicitly: reserve()/commit() stamp wall-clock time, which made
+    # this test fail every month after September 2026.
+    _insert_event(db_path, reservation_id="sep-1", action="RESERVE", amount_minor=100, created_at="2026-09-10T10:00:00")
+    _insert_event(db_path, reservation_id="sep-1", action="COMMIT", amount_minor=100, created_at="2026-09-10T10:00:01")
 
     totals_september = ledger.totals(period="2026-09")
     assert totals_september == {"RESERVE": 100, "COMMIT": 100, "RELEASE": 0, "OUTSTANDING": 0}

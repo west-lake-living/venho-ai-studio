@@ -6,6 +6,11 @@ name: Growth Agent Publish Scheduler
 on:
   schedule:
     - cron: "0 2 * * 1,3,5,6" # 09:00 Asia/Ho_Chi_Minh (UTC+7)
+    # Second pass the same day (2026-10-21): a post approved after the first
+    # run used to wait for the next cadence day, exceed MAX_DISPATCH_LATENESS
+    # and fail (lost IG posts 07/10 and 12/10). dispatch-due is idempotent
+    # and --catch-up-today still refuses older backlog.
+    - cron: "0 10 * * 1,3,5,6" # 17:00 Asia/Ho_Chi_Minh
   workflow_dispatch:
 
 permissions:
@@ -22,10 +27,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.11"
 
@@ -48,7 +53,12 @@ jobs:
             echo "::error::MAKE_GROWTH_WEBHOOK_URL is not configured; refusing scheduled dispatch."
             exit 1
           fi
-          args=(dispatch-due --allow-shadow --catch-up-today --require-dispatch)
+          args=(dispatch-due --allow-shadow --catch-up-today)
+          # The 17:00 pass usually finds nothing left to send; only the
+          # primary 09:00 pass must dispatch something to count as success.
+          if [ "${{ github.event.schedule }}" != "0 10 * * 1,3,5,6" ]; then
+            args+=(--require-dispatch)
+          fi
           venho-growth "${args[@]}"
 
       - name: Commit publication state
