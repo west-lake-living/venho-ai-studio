@@ -8,10 +8,17 @@ from pathlib import Path
 import yaml
 from PIL import Image
 
+try:  # iPhone photos are HEIC even when named .jpeg (assets/raw/room, 2026-10-21)
+    from pillow_heif import register_heif_opener
+
+    register_heif_opener()
+except ImportError:  # pragma: no cover - optional on dev machines
+    pass
+
 DEFAULT_REGISTRY_PATH = Path("config/projects/venho_hotel/growth/reference_assets.yaml")
 DEFAULT_ASSETS_ROOT = Path(".")
 
-_IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png"}
+_IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".heic", ".heif"}
 
 
 def _rotation_index(rotation_key: str | None, pool_size: int, offset: int = 0) -> int:

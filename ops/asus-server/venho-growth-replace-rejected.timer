@@ -1,0 +1,9 @@
+[Unit]
+Description=Growth replace rejected/expired drafts, hourly at :25
+
+[Timer]
+OnCalendar=*-*-* *:25:00
+Unit=venho-growth-publish@replace-rejected.service
+
+[Install]
+WantedBy=timers.target

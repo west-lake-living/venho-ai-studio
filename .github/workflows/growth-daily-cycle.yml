@@ -11,10 +11,12 @@ name: Growth Agent Weekly Cycle
 # This job only generates drafts and queues them PENDING_APPROVAL in
 # PublicationRegistry -- it does NOT publish anything. Actual posting is
 # dispatched later by the independent growth-publish-scheduler workflow.
+# Scheduled runs moved to asus-server on 2026-10-21 (systemd timer ->
+# ~/venho/scripts/growth-dispatch.sh weekly-cycle): GitHub runners have no
+# assets/raw reference photos (gitignored), so every post drafted here since
+# 28/08/2026 shipped a fallback stock photo. Manual fallback only; do not
+# add a schedule back (two runners would race on the git-backed registry).
 on:
-  schedule:
-    - cron: "0 13 * * 0"
-    - cron: "0 15 * * 0"
   workflow_dispatch:
 
 # Without this the default GITHUB_TOKEN is read-only and the "Commit

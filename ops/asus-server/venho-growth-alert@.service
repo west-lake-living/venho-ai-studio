@@ -1,0 +1,6 @@
+[Unit]
+Description=Telegram alert for failed %i
+
+[Service]
+Type=oneshot
+ExecStart=%h/venho/scripts/growth-telegram.sh --unit-failed %i

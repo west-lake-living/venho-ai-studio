@@ -30,9 +30,23 @@ def test_publish_scheduler_is_independent_from_weekly_approval() -> None:
 
 
 def test_generation_runs_sunday_evening_for_a_two_week_batch() -> None:
+    # Scheduled on asus-server since 2026-10-21 (GitHub runners lack the
+    # assets/raw reference photos); the workflow is a manual fallback.
+    timer = Path("ops/asus-server/venho-growth-weekly-cycle.timer").read_text(encoding="utf-8")
+    assert "OnCalendar=Sun 20,22:00:00 Asia/Ho_Chi_Minh" in timer
+    assert "venho-growth-publish@weekly-cycle.service" in timer
     workflow = Path(".github/workflows/growth-daily-cycle.yml").read_text(encoding="utf-8")
-    assert 'cron: "0 13 * * 0"' in workflow
-    assert 'cron: "0 15 * * 0"' in workflow
+    assert "schedule:" not in workflow
+
+
+def test_no_scheduled_growth_job_runs_on_github() -> None:
+    """One runner only: a second scheduled runner holds its own copy of the
+    git-backed registry and can claim and send the same post twice."""
+    for name in (
+        "growth-publish-scheduler.yml", "growth-daily-cycle.yml",
+        "growth-replace-rejected.yml", "growth-trend-scan.yml",
+    ):
+        assert "schedule:" not in Path(".github/workflows", name).read_text(encoding="utf-8"), name
 
 
 def test_weekly_cycle_persists_partial_drafts_after_a_generation_failure() -> None:

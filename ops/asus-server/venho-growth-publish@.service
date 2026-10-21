@@ -1,0 +1,10 @@
+[Unit]
+Description=Growth publish scheduler (%i pass)
+After=network-online.target
+Wants=network-online.target
+OnFailure=venho-growth-alert@%n.service
+
+[Service]
+Type=oneshot
+ExecStart=%h/venho/scripts/growth-dispatch.sh %i
+TimeoutStartSec=75min

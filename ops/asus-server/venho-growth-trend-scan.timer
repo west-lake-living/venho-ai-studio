@@ -1,0 +1,10 @@
+[Unit]
+Description=Growth Trend Radar scan 07:15 + 19:15 ICT daily
+
+[Timer]
+OnCalendar=*-*-* 07,19:15:00 Asia/Ho_Chi_Minh
+Persistent=true
+Unit=venho-growth-publish@trend-scan.service
+
+[Install]
+WantedBy=timers.target

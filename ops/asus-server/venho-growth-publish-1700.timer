@@ -1,0 +1,10 @@
+[Unit]
+Description=Growth publish 17:00 ICT, Mon/Wed/Fri/Sat
+
+[Timer]
+OnCalendar=Mon,Wed,Fri,Sat 17:00:20 Asia/Ho_Chi_Minh
+Persistent=true
+Unit=venho-growth-publish@second.service
+
+[Install]
+WantedBy=timers.target

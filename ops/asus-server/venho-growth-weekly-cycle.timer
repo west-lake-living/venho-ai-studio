@@ -1,0 +1,10 @@
+[Unit]
+Description=Growth weekly cycle (fortnight drafting) Sun 20:00 + 22:00 ICT
+
+[Timer]
+OnCalendar=Sun 20,22:00:00 Asia/Ho_Chi_Minh
+Persistent=true
+Unit=venho-growth-publish@weekly-cycle.service
+
+[Install]
+WantedBy=timers.target
