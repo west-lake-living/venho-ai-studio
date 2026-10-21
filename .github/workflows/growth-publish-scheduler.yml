@@ -1,16 +1,12 @@
-name: Growth Agent Publish Scheduler
+name: Growth Agent Publish Scheduler (manual fallback)
 
-# One deterministic invocation per published cadence slot. GitHub scheduled
-# workflows may start well after their requested cron time, so this workflow
-# always allows recovery of today's slot while still refusing older backlog.
+# Scheduled publishing moved to asus-server on 2026-10-21: systemd timers
+# venho-growth-publish-{0900,1700}.timer run ~/venho/scripts/growth-dispatch.sh,
+# because GitHub's best-effort `schedule` started 09:00 posts at 13:18-16:34
+# ICT. Do NOT add a `schedule` back: two runners holding separate copies of
+# the git-backed registry could both claim and send the same post.
+# This workflow stays as a manual catch-up when the server is down.
 on:
-  schedule:
-    - cron: "0 2 * * 1,3,5,6" # 09:00 Asia/Ho_Chi_Minh (UTC+7)
-    # Second pass the same day (2026-10-21): a post approved after the first
-    # run used to wait for the next cadence day, exceed MAX_DISPATCH_LATENESS
-    # and fail (lost IG posts 07/10 and 12/10). dispatch-due is idempotent
-    # and --catch-up-today still refuses older backlog.
-    - cron: "0 10 * * 1,3,5,6" # 17:00 Asia/Ho_Chi_Minh
   workflow_dispatch:
 
 permissions:
@@ -54,11 +50,6 @@ jobs:
             exit 1
           fi
           args=(dispatch-due --allow-shadow --catch-up-today)
-          # The 17:00 pass usually finds nothing left to send; only the
-          # primary 09:00 pass must dispatch something to count as success.
-          if [ "${{ github.event.schedule }}" != "0 10 * * 1,3,5,6" ]; then
-            args+=(--require-dispatch)
-          fi
           venho-growth "${args[@]}"
 
       - name: Commit publication state
