@@ -3317,7 +3317,9 @@
       },
       "gateway_error": null,
       "shadow_override_by": "hpham1504@gmail.com",
-      "slot_id": "slot-2026-08-03-monday"
+      "slot_id": "slot-2026-08-03-monday",
+      "incident_retired_at": "2026-10-21T09:08:51.291015+00:00",
+      "incident_retired_reason": "Retired 2026-10-21 (Growth audit): Make accepted but never returned a post id; slot long past, outcome unknown. Status kept as evidence."
     },
     {
       "publication_id": "pub-monday-instagram-262ca240",
@@ -3380,20 +3382,22 @@
       },
       "gateway_error": null,
       "shadow_override_by": "hpham1504@gmail.com",
-      "slot_id": "slot-2026-08-03-monday"
+      "slot_id": "slot-2026-08-03-monday",
+      "incident_retired_at": "2026-10-21T09:08:51.291015+00:00",
+      "incident_retired_reason": "Retired 2026-10-21 (Growth audit): Make accepted but never returned a post id; slot long past, outcome unknown. Status kept as evidence."
     },
     {
       "publication_id": "pub-monday-threads-2e032aea",
       "content_package_id": "4442fbac-a909-4adf-a947-aa4e27490c07",
       "idempotency_key": "dec583d39c7c82491f57cbf799f8b336951e3cef9a21f8edbf3e777e1706c67e",
       "platform": "threads",
-      "status": "SHADOW_HELD",
+      "status": "CANCELLED",
       "gateway_status": "SHADOW_HELD",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-04T12:28:52.853292+00:00",
-      "updated_at": "2026-08-10T08:22:26.760887+00:00",
+      "updated_at": "2026-10-21T09:08:51.291015+00:00",
       "content": {
         "title": "Phòng hướng hồ: một cách chậm rãi để chạm vào Hồ Tây",
         "text": "Hồ Tây đẹp nhất khi ta nhìn thật chậm.\n\nTừ một căn phòng hướng hồ, Hồ Tây hiện ra không ồn ào mà rất gần gũi: mặt nước rộng, phẳng lặng, mang sắc xanh ngọc trầm và dịu mắt. Ánh sáng mềm trải qua những tầng mây mỏng, để tầm nhìn mở xa về phía những dãy nhà và đường nét thành phố phía bên kia hồ.\n\nBên dưới là nhịp sống ven hồ vừa đủ chậm: vài người đi dạo, những hàng cây rải bóng nhẹ, con đường ôm theo mặt nước và những khoảng lặng hiếm có giữa Hà Nội. Buổi chiều, gió thổi qua khung cửa, hoàng hôn xuống chậm, mọi thứ như được đặt về đúng nhịp của nghỉ ngơi.\n\nVới những ai đến Hà Nội để hẹn hò, làm việc, uống một ly cà phê hay đơn giản là đổi không khí, Ven Hồ Hotel có thể là điểm dừng chân vừa vặn — đủ gần Hồ Tây để bắt đầu một buổi đi dạo, đủ yên để trở về sau một ngày dài.\n\nNếu bạn đang tìm một kỳ nghỉ nhẹ nhàng bên Hồ Tây, hãy nhắn Ven Hồ Hotel hoặc kiểm tra tình trạng phòng khi thuận tiện.\n\n#VenHoHotel #HoTay #HanoiStay #PhongHuongHo #KhamPhaHoTay #WestLakeHanoi",
@@ -3442,7 +3446,8 @@
       },
       "gateway_error": "BundleValidationError at Make.com: missing required 'url' -- growth was pointed at the legacy VenHoSocialManager scenario and sent no image_url. Recorded GATEWAY_ACCEPTED in error; corrected 2026-08-06.",
       "rollout_stage": "shadow",
-      "shadow_held_reason": "rollout stage is shadow; dispatch withheld"
+      "shadow_held_reason": "rollout stage is shadow; dispatch withheld",
+      "cancelled_reason": "Retired 2026-10-21 (Growth audit): held by rollout stage shadow in Aug 2026, never dispatched, slot long past."
     },
     {
       "publication_id": "pub-monday-zalo-b7306b1c",
@@ -3507,13 +3512,13 @@
       "content_package_id": "89dc1873-67a2-4801-b7d5-51d1df3955f6",
       "idempotency_key": "384041153decee18fb7a0db5e06633719bba6b24ea77566f038947c722446fa4",
       "platform": "facebook",
-      "status": "SHADOW_HELD",
+      "status": "CANCELLED",
       "gateway_status": "SHADOW_HELD",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-04T12:32:14.721683+00:00",
-      "updated_at": "2026-08-10T08:23:07.625394+00:00",
+      "updated_at": "2026-10-21T09:08:51.291015+00:00",
       "content": {
         "title": "Một Hà Nội thật khẽ bên Hồ Tây",
         "text": "Hà Nội lặng hơn bên Hồ Tây.\n\nỞ Hồ Tây, thành phố dường như dịu lại. Mặt hồ mở rộng trước mắt, phẳng lặng trong sắc xanh ngọc trầm; tầm nhìn thoáng xa đến những đường nét thành phố phía bên kia bờ. Ánh sáng mềm rơi qua nền trời lưa thưa mây, gió nhẹ đi qua hàng cây vừa đủ xanh, để mọi thứ chậm hơn một nhịp.\n\nĐi dọc ven hồ, bạn có thể không cần một lịch trình dày đặc: chỉ là một buổi cà phê, một cuộc hẹn yên tĩnh, vài phút ngắm hoàng hôn hoặc trở về sau ngày làm việc tại Hà Nội. Nơi đây có sự bình yên rất đời thường — không tách khỏi phố thị, nhưng đủ rộng để tâm trí được nghỉ.\n\nVen Hồ Hotel là một điểm dừng chân vừa vặn cho những ai muốn ở gần nhịp sống ấy: thuận tiện để khám phá Hồ Tây, và đủ nhẹ nhàng để mỗi buổi sáng hay chiều muộn đều bắt đầu bằng cảm giác thư thái.\n\nNếu bạn đang lên kế hoạch cho một kỳ nghỉ Hà Nội thật yên, hãy nhắn tin cho Ven Hồ Hotel hoặc kiểm tra tình trạng phòng khi thuận tiện.\n\n#VenHoHotel #HoTay #KhamPhaHoTay #HaNoiThuThai #StayNearWestLake #QuietHanoiStay",
@@ -3563,20 +3568,21 @@
       "gateway_error": "BundleValidationError at Make.com: missing required 'url' -- growth was pointed at the legacy VenHoSocialManager scenario and sent no image_url. Recorded GATEWAY_ACCEPTED in error; corrected 2026-08-06.",
       "slot_id": "slot-2026-08-12-wednesday",
       "rollout_stage": "shadow",
-      "shadow_held_reason": "rollout stage is shadow; dispatch withheld"
+      "shadow_held_reason": "rollout stage is shadow; dispatch withheld",
+      "cancelled_reason": "Retired 2026-10-21 (Growth audit): held by rollout stage shadow in Aug 2026, never dispatched, slot long past."
     },
     {
       "publication_id": "pub-wednesday-instagram-0d823b0f",
       "content_package_id": "8ced3f66-8b31-42bc-946c-262f5f64b3b5",
       "idempotency_key": "23b21655c5dbcd86c2353c143b8d43df56b94141d4ac654053145f5bc4c84169",
       "platform": "instagram",
-      "status": "SHADOW_HELD",
+      "status": "CANCELLED",
       "gateway_status": "SHADOW_HELD",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-04T12:32:36.043666+00:00",
-      "updated_at": "2026-08-10T08:23:13.228001+00:00",
+      "updated_at": "2026-10-21T09:08:51.291015+00:00",
       "content": {
         "title": "Một Hà Nội thật khẽ bên Hồ Tây",
         "text": "Hồ Tây yên như một khoảng thở.\n\nỞ Hồ Tây, Hà Nội không vội. Mặt hồ rộng mở, màu nước xanh ngọc trầm lặng, phẳng và dịu, để tầm mắt có thể đi rất xa về phía những dãy nhà thấp thoáng nơi đường chân trời. Vào những buổi chiều trời có mây, ánh sáng mềm rơi xuống mặt nước, gió nhẹ lướt qua hàng cây vừa đủ xanh, khiến con đường ven hồ trở thành nơi người ta muốn đi chậm lại.\n\nKhông cần một lịch trình dày đặc, bạn có thể bắt đầu bằng một vòng dạo bộ, một buổi cà phê nhìn ra hồ, một cuộc hẹn giản dị, hay đơn giản là trở về nghỉ ngơi sau ngày làm việc tại Hà Nội. Nhịp sống quanh Hồ Tây thưa vừa đủ để cảm nhận sự riêng tư, nhưng vẫn đủ gần với hơi thở đô thị.\n\nGiữa không gian ấy, Ven Hồ Hotel là một điểm dừng chân tinh tế và vừa vặn — nơi bạn có thể bắt đầu hành trình khám phá Hồ Tây, rồi trở về với cảm giác nhẹ nhõm của một ngày trọn vẹn.\n\nNếu bạn đang tìm một kỳ lưu trú yên tĩnh gần Hồ Tây, hãy nhắn tin cho Ven Hồ Hotel hoặc kiểm tra tình trạng phòng khi thuận tiện.\n\n#VenHoHotel #HoTay #HaNoiCham #KhamPhaHoTay #NghiDuongHaNoi #HanoiStay",
@@ -3626,20 +3632,21 @@
       "gateway_error": "BundleValidationError at Make.com: missing required 'url' -- growth was pointed at the legacy VenHoSocialManager scenario and sent no image_url. Recorded GATEWAY_ACCEPTED in error; corrected 2026-08-06.",
       "slot_id": "slot-2026-08-12-wednesday",
       "rollout_stage": "shadow",
-      "shadow_held_reason": "rollout stage is shadow; dispatch withheld"
+      "shadow_held_reason": "rollout stage is shadow; dispatch withheld",
+      "cancelled_reason": "Retired 2026-10-21 (Growth audit): held by rollout stage shadow in Aug 2026, never dispatched, slot long past."
     },
     {
       "publication_id": "pub-wednesday-threads-2add7ad4",
       "content_package_id": "a4f97e40-e6ea-4a6a-8a5a-3b8cf63b70fa",
       "idempotency_key": "c35a33d1d16cbadf7f8df7e48a4672e386fff4ea15d0eba7f7328cc3f87fb2ef",
       "platform": "threads",
-      "status": "SHADOW_HELD",
+      "status": "CANCELLED",
       "gateway_status": "SHADOW_HELD",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-04T12:32:57.895356+00:00",
-      "updated_at": "2026-08-10T08:23:18.499018+00:00",
+      "updated_at": "2026-10-21T09:08:51.291015+00:00",
       "content": {
         "title": "Một kỳ nghỉ yên bên Hồ Tây",
         "text": "Hà Nội cũng có những khoảng lặng rất rộng.\n\nCó những buổi chiều, Hồ Tây hiện ra với mặt nước rộng và phẳng, ánh lên sắc xanh ngọc trầm rất riêng — không rực rỡ, chỉ đủ dịu để lòng người chậm lại. Gió đi nhẹ qua hàng cây ven hồ, bầu trời còn vương vài cụm mây, xa xa là dáng thành phố đứng yên trong lớp ánh sáng mềm.\n\nDọc những con đường quanh hồ, nhịp sống trở nên thưa hơn: vài bước chân đi dạo, một cuộc hẹn cà phê không vội, một khoảnh khắc ngồi yên nhìn mặt nước kéo tầm mắt ra thật xa. Giữa Hà Nội nhiều chuyển động, Hồ Tây giữ lại một khoảng bình yên rất thật — vừa gần gũi, vừa đủ riêng tư.\n\nNếu bạn đang tìm một nơi để nghỉ ngơi, hẹn hò, làm mới lịch trình công tác hoặc đơn giản là ở lại gần một Hà Nội nhẹ nhàng hơn, Ven Hồ Hotel có thể là điểm dừng chân vừa vặn cho hành trình khám phá Hồ Tây: tinh tế, ấm áp và không ồn ào.\n\nNếu Hồ Tây đang gọi bạn bằng một nhịp chậm hơn, hãy nhắn Ven Hồ Hotel hoặc kiểm tra phòng trống cho kỳ nghỉ sắp tới.\n\n#VenHoHotel #HoTay #HaNoiThuThai #KhamPhaHoTay #QuietHanoiStay",
@@ -3687,7 +3694,8 @@
       },
       "gateway_error": "BundleValidationError at Make.com: missing required 'url' -- growth was pointed at the legacy VenHoSocialManager scenario and sent no image_url. Recorded GATEWAY_ACCEPTED in error; corrected 2026-08-06.",
       "rollout_stage": "shadow",
-      "shadow_held_reason": "rollout stage is shadow; dispatch withheld"
+      "shadow_held_reason": "rollout stage is shadow; dispatch withheld",
+      "cancelled_reason": "Retired 2026-10-21 (Growth audit): held by rollout stage shadow in Aug 2026, never dispatched, slot long past."
     },
     {
       "publication_id": "pub-wednesday-zalo-5c3cbc23",
@@ -3752,13 +3760,13 @@
       "content_package_id": "9090ef30-b08d-4230-9bd4-faea1d995068",
       "idempotency_key": "3058c07059dc510686e400a67698e989b20dcb9542ea4404700a62aec43e2ef9",
       "platform": "facebook",
-      "status": "SHADOW_HELD",
+      "status": "CANCELLED",
       "gateway_status": "SHADOW_HELD",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-04T12:37:50.148893+00:00",
-      "updated_at": "2026-08-10T08:22:43.153081+00:00",
+      "updated_at": "2026-10-21T09:08:51.291015+00:00",
       "content": {
         "title": "Một buổi sáng nhẹ bên Hồ Tây",
         "text": "Có những buổi sáng ở Hà Nội, chỉ cần kéo rèm ra là nhịp ngày đã chậm lại một chút.\n\nÁnh sáng tự nhiên len qua khung cửa ô vuông viền đen, mở ra một thoáng Hồ Tây yên ả. Trong căn phòng gọn gàng của Ven Hồ Hotel, mọi thứ được giữ vừa đủ: sàn gỗ ấm, tường trắng, trần phẳng sáng, giường đôi với chăn ga trắng và đầu giường gỗ.\n\nKhông gian hình chữ nhật giúp căn phòng dễ sử dụng, thoáng mắt và không tạo cảm giác rối. Rèm xám đậm giúp bạn nghỉ thêm một chút nếu muốn một buổi sáng thật chậm. Hai chiếc ghế gỗ là nơi lý tưởng để ngồi uống nước, đọc vài trang sách, hoặc đơn giản là nhìn ánh ngày đổi màu bên hồ.\n\nVen Hồ Hotel mang tinh thần boutique Việt Nam gần gũi, chỉn chu và thực tế — một điểm dừng tầm trung cho những ai muốn ở gần Hồ Tây, thuận tiện kết nối với Hà Nội mà vẫn có khoảng lặng riêng. Dù bạn đến để nghỉ ngơi hay xen kẽ vài cuộc hẹn công việc, một căn phòng sáng, gọn và dễ chịu luôn là khởi đầu tốt cho ngày mới.\n\nNếu bạn đang tìm một kỳ lưu trú gần Hồ Tây, hãy nhắn Ven Hồ Hotel hoặc kiểm tra tình trạng phòng khi thuận tiện nhé.\n\n#VenHoHotel #HoTay #WestLakeHanoi #KhachSanGanHoTay #HanoiStay #BoutiqueHotelHanoi #DuLichHaNoi",
@@ -3809,20 +3817,21 @@
       "gateway_error": "BundleValidationError at Make.com: missing required 'url' -- growth was pointed at the legacy VenHoSocialManager scenario and sent no image_url. Recorded GATEWAY_ACCEPTED in error; corrected 2026-08-06.",
       "slot_id": "slot-2026-08-07-friday",
       "rollout_stage": "shadow",
-      "shadow_held_reason": "rollout stage is shadow; dispatch withheld"
+      "shadow_held_reason": "rollout stage is shadow; dispatch withheld",
+      "cancelled_reason": "Retired 2026-10-21 (Growth audit): held by rollout stage shadow in Aug 2026, never dispatched, slot long past."
     },
     {
       "publication_id": "pub-friday-instagram-bb9cde8b",
       "content_package_id": "7eec6bb0-e7fa-40cc-bc3e-c31e15db5ae8",
       "idempotency_key": "762a8f1a0a9c78d73c10c87eead9b0187a6aaea644079b4bba8b75d0cf539efa",
       "platform": "instagram",
-      "status": "SHADOW_HELD",
+      "status": "CANCELLED",
       "gateway_status": "SHADOW_HELD",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-04T12:38:10.449389+00:00",
-      "updated_at": "2026-08-10T08:22:48.992303+00:00",
+      "updated_at": "2026-10-21T09:08:51.291015+00:00",
       "content": {
         "title": "Một buổi sáng gọn gàng bên Hồ Tây",
         "text": "Có những buổi sáng ở Hà Nội chỉ cần mở mắt, thấy ánh ngày tràn vào phòng và Hồ Tây ở ngay trong tầm nhìn.\n\nBuổi sáng bên Hồ Tây thường bắt đầu rất chậm: ánh sáng tự nhiên đi qua khung cửa nhôm đen mảnh, chia ô gọn gàng; rèm xám còn khép hờ; căn phòng chữ nhật đủ thoáng để bạn bắt đầu ngày mới không vội.\n\nTại Ven Hồ Hotel, trải nghiệm lưu trú được giữ ở mức vừa đủ và dễ chịu. Sàn gỗ, tường trắng, trần phẳng sáng màu, giường đôi với bộ chăn ga trắng và đầu giường gỗ tạo cảm giác sạch sẽ, ấm áp. Hai chiếc ghế gỗ trong phòng là nơi bạn có thể ngồi đọc vài dòng tin nhắn, uống một ngụm nước, hoặc đơn giản là nhìn ra nhịp sống ven hồ đang thức dậy.\n\nLà khách sạn boutique tầm trung mang tinh thần di sản Việt, Ven Hồ Hotel không cố tạo cảm giác xa cách. Nơi đây phù hợp cho những ai muốn có một điểm dừng gọn gàng, gần hồ, thuận tiện để tận hưởng Hà Nội theo cách nhẹ nhàng hơn.\n\nNếu bạn đang tìm một buổi sáng như vậy ở Hồ Tây, hãy nhắn Ven Hồ Hotel hoặc kiểm tra tình trạng phòng khi bạn sẵn sàng.\n\nNhắn Ven Hồ Hotel hoặc kiểm tra tình trạng phòng khi bạn sẵn sàng nhé.\n\n#VenHoHotel #HoTay #WestLakeHanoi #KhachSanHaNoi #StayNearWestLake #HaNoiTravel #PhongGanHo",
@@ -3873,20 +3882,21 @@
       "gateway_error": "BundleValidationError at Make.com: missing required 'url' -- growth was pointed at the legacy VenHoSocialManager scenario and sent no image_url. Recorded GATEWAY_ACCEPTED in error; corrected 2026-08-06.",
       "slot_id": "slot-2026-08-07-friday",
       "rollout_stage": "shadow",
-      "shadow_held_reason": "rollout stage is shadow; dispatch withheld"
+      "shadow_held_reason": "rollout stage is shadow; dispatch withheld",
+      "cancelled_reason": "Retired 2026-10-21 (Growth audit): held by rollout stage shadow in Aug 2026, never dispatched, slot long past."
     },
     {
       "publication_id": "pub-friday-threads-25db5190",
       "content_package_id": "36d6034c-507d-4660-87ab-def7e5cc71f2",
       "idempotency_key": "8c4c3aa5e2c7ae5fb4acb5cac2bf84c580f7f9b622ecdccccb107066ba0eea51",
       "platform": "threads",
-      "status": "SHADOW_HELD",
+      "status": "CANCELLED",
       "gateway_status": "SHADOW_HELD",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-04T12:38:39.164480+00:00",
-      "updated_at": "2026-08-10T08:22:55.201583+00:00",
+      "updated_at": "2026-10-21T09:08:51.291015+00:00",
       "content": {
         "title": "Một buổi sáng nhìn ra Hồ Tây",
         "text": "Có những buổi sáng ở Hồ Tây không cần vội: chỉ cần kéo nhẹ rèm, để ánh ngày chạm vào căn phòng gọn gàng.\n\nSáng bên Hồ Tây thường bắt đầu rất khẽ. Ánh sáng tự nhiên đi qua khung cửa nhôm đen mảnh, chia ô cân đối, làm nổi nền tường trắng, trần phẳng và sàn gỗ ấm màu.\n\nTrong căn phòng chữ nhật gọn gàng của Ven Hồ Hotel, mọi thứ được giữ vừa đủ: giường đôi với ga trắng và đầu giường gỗ, rèm xám đậm để bạn điều chỉnh sự riêng tư, hai ghế gỗ cho một tách cà phê chậm hoặc vài phút đọc tin trước khi ra phố.\n\nTừ góc nhìn ra hồ, Hồ Tây hiện lên như một khoảng thở trong ngày: mặt nước rộng, nhịp đường ven hồ, cảm giác Hà Nội đang tỉnh dậy nhưng chưa quá ồn. Với tinh thần khách sạn boutique mang hơi thở Việt, Ven Hồ Hotel không cố trở thành một khu nghỉ dưỡng xa cách. Nơi đây giống một điểm dừng chân chỉn chu, ấm áp và dễ kết nối — phù hợp cho chuyến đi thư thả, một kỳ nghỉ ngắn, hoặc vài ngày công tác cần sự cân bằng.\n\nỞ đây, buổi sáng không cần nhiều. Chỉ cần một căn phòng gọn, ánh sáng thật, và Hồ Tây ở gần.\n\nNếu bạn đang tìm một nơi lưu trú gần Hồ Tây, hãy nhắn Ven Hồ Hotel hoặc kiểm tra phòng còn trống cho ngày bạn muốn ghé.\n\n#VenHoHotel #HoTay #HaNoi #DuLichHaNoi #BoutiqueHotel",
@@ -3934,7 +3944,8 @@
       },
       "gateway_error": "BundleValidationError at Make.com: missing required 'url' -- growth was pointed at the legacy VenHoSocialManager scenario and sent no image_url. Recorded GATEWAY_ACCEPTED in error; corrected 2026-08-06.",
       "rollout_stage": "shadow",
-      "shadow_held_reason": "rollout stage is shadow; dispatch withheld"
+      "shadow_held_reason": "rollout stage is shadow; dispatch withheld",
+      "cancelled_reason": "Retired 2026-10-21 (Growth audit): held by rollout stage shadow in Aug 2026, never dispatched, slot long past."
     },
     {
       "publication_id": "pub-friday-zalo-fca8a57a",
@@ -4000,13 +4011,13 @@
       "content_package_id": "19b49730-456f-4d3d-a150-4966ae00721f",
       "idempotency_key": "507021b91ee4de37969ef8e4b841a13da459fcd52416d851ea0bbf0a31e528de",
       "platform": "facebook",
-      "status": "SHADOW_HELD",
+      "status": "CANCELLED",
       "gateway_status": "SHADOW_HELD",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-04T12:44:07.873521+00:00",
-      "updated_at": "2026-08-10T04:03:30.199172+00:00",
+      "updated_at": "2026-10-21T09:08:51.291015+00:00",
       "content": {
         "title": "Một buổi sáng cuối tuần thật chậm bên Hồ Tây",
         "text": "Cuối tuần này, ra Hồ Tây đi chậm một chút.\n\nKhông cần lịch trình dày đặc, một buổi sáng quanh Hồ Tây đôi khi là đủ để thấy Hà Nội dễ thương hơn. Ánh sáng tự nhiên trải trên mặt nước xanh xám, trời trong và cao, những hàng cây lâu năm rợp bóng dọc phố khiến từng bước chân nhẹ lại.\n\nBạn có thể bắt đầu bằng một vòng dạo bộ ven hồ, nhìn thành phố hiện ra đan xen giữa những mái nhà, tòa cao tầng và khoảng trời rộng. Không gian quanh hồ được giữ gìn gọn gàng, thoáng đãng, không quá bày biện, nên rất hợp cho những ai muốn tìm một nhịp cuối tuần yên tĩnh mà vẫn gần đời sống thật của Hà Nội.\n\nSau khi đi bộ, ghé một quán cà phê nhỏ, gọi ly đồ uống quen, ngồi nghe tiếng xe xa xa và ngắm mặt hồ đổi màu theo nắng. Với khách du lịch, đây là cách dịu dàng để làm quen với Tây Hồ. Với khách công tác, đó là khoảng nghỉ cần thiết trước một ngày bận rộn.\n\nTừ Ven Hồ Hotel, bạn có thể dễ dàng bắt đầu hành trình ấy: đủ gần để chạm vào nhịp sống bên hồ, đủ riêng tư để quay về nghỉ ngơi trong sự tinh tế vừa phải.\n\nNếu bạn đang lên kế hoạch cho một cuối tuần ở Tây Hồ, hãy nhắn Ven Hồ Hotel hoặc kiểm tra tình trạng phòng để chọn cho mình một điểm dừng thật thuận tiện.\n\n#VenHoHotel #CuoiTuanOTayHo #HoTay #WestLakeHanoi #HaNoiCuoiTuan #DiBoVenHo #StayNearWestLake",
@@ -4057,20 +4068,21 @@
       "gateway_error": "BundleValidationError at Make.com: missing required 'url' -- growth was pointed at the legacy VenHoSocialManager scenario and sent no image_url. Recorded GATEWAY_ACCEPTED in error; corrected 2026-08-06.",
       "slot_id": "slot-2026-08-08-saturday",
       "rollout_stage": "shadow",
-      "shadow_held_reason": "rollout stage is shadow; dispatch withheld"
+      "shadow_held_reason": "rollout stage is shadow; dispatch withheld",
+      "cancelled_reason": "Retired 2026-10-21 (Growth audit): held by rollout stage shadow in Aug 2026, never dispatched, slot long past."
     },
     {
       "publication_id": "pub-saturday-instagram-73f7c684",
       "content_package_id": "082e81a7-5cb7-49e0-b375-1add50ea373f",
       "idempotency_key": "f8a06b15e8883dd0bb4001e26e3431f831b3e726fe0318c8dd91961cf6aed37f",
       "platform": "instagram",
-      "status": "SHADOW_HELD",
+      "status": "CANCELLED",
       "gateway_status": "SHADOW_HELD",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-04T12:44:29.161302+00:00",
-      "updated_at": "2026-08-10T04:03:37.833308+00:00",
+      "updated_at": "2026-10-21T09:08:51.291015+00:00",
       "content": {
         "title": "Một sáng cuối tuần thật chậm bên Hồ Tây",
         "text": "Cuối tuần này, hãy đi chậm một chút bên Hồ Tây.\n\nKhông có sự kiện nào cần vội vã. Chỉ cần một buổi sáng trong trẻo, ánh nắng tự nhiên trải nhẹ trên mặt hồ và những hàng cây lâu năm đổ bóng xuống lối đi.\n\nMột vòng dạo bộ quanh Hồ Tây luôn có cách làm người ta dịu lại. Bạn có thể bắt đầu bằng vài bước chân ven hồ, nhìn mặt nước xanh xám lấp lánh dưới bầu trời trong, rồi dừng lại để ngắm nhịp sống Hà Nội đi qua: người chạy bộ, xe đạp chậm rãi, vài quán cà phê mở cửa sớm, và xa hơn là đường nét thành phố hiện lên vừa quen vừa mới.\n\nKhu vực quanh Ven Hồ Hotel giữ được cảm giác gọn gàng, thoáng đãng và dễ chịu. Từ không gian ngoài trời đơn giản, không bày biện cầu kỳ, bạn có thể cảm nhận rõ tinh thần Tây Hồ: đủ gần trung tâm để thuận tiện, đủ yên để nghỉ ngơi.\n\nSau một buổi đi bộ, hãy quay về tắm nắng nhẹ, đọc vài trang sách hoặc chuẩn bị cho một ngày khám phá Hà Nội theo nhịp riêng của bạn. Ven Hồ Hotel không phải nơi để phô trương, mà là một điểm dừng ấm áp, tinh tế, giúp bạn bắt đầu và kết thúc cuối tuần gần Hồ Tây thật nhẹ nhàng.\n\nNếu bạn đang lên kế hoạch nghỉ gần Hồ Tây, hãy nhắn Ven Hồ Hotel hoặc kiểm tra tình trạng phòng để chọn thời điểm phù hợp nhé.\n\n#VenHoHotel #HoTay #TayHoWeekend #CuoiTuanOHanoi #WestLakeHanoi #HanoiStay #DiChamOHanoi",
@@ -4121,20 +4133,21 @@
       "gateway_error": "BundleValidationError at Make.com: missing required 'url' -- growth was pointed at the legacy VenHoSocialManager scenario and sent no image_url. Recorded GATEWAY_ACCEPTED in error; corrected 2026-08-06.",
       "slot_id": "slot-2026-08-08-saturday",
       "rollout_stage": "shadow",
-      "shadow_held_reason": "rollout stage is shadow; dispatch withheld"
+      "shadow_held_reason": "rollout stage is shadow; dispatch withheld",
+      "cancelled_reason": "Retired 2026-10-21 (Growth audit): held by rollout stage shadow in Aug 2026, never dispatched, slot long past."
     },
     {
       "publication_id": "pub-saturday-threads-4d61ed7d",
       "content_package_id": "5e65b729-1dcb-4d2e-8ee1-c87545c49ad1",
       "idempotency_key": "e83501690e243fa32244c809c0bef7594a8f6bf144c728a07d467a7124f21caf",
       "platform": "threads",
-      "status": "SHADOW_HELD",
+      "status": "CANCELLED",
       "gateway_status": "SHADOW_HELD",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-04T12:44:50.996586+00:00",
-      "updated_at": "2026-08-10T04:03:45.843388+00:00",
+      "updated_at": "2026-10-21T09:08:51.291015+00:00",
       "content": {
         "title": "Một sáng cuối tuần thật chậm bên Hồ Tây",
         "text": "Cuối tuần này, ra Hồ Tây thôi.\n\nKhông cần một kế hoạch dày đặc. Đôi khi, cuối tuần đẹp nhất bắt đầu bằng một buổi đi bộ thật chậm quanh Hồ Tây.\n\nBuổi sáng ở Tây Hồ có nhịp riêng: ánh sáng tự nhiên dịu mắt, bầu trời xanh trong, mặt hồ khi xanh ngọc, khi ánh xám nhẹ theo gió. Dọc đường, những hàng cây lâu năm phủ bóng xuống vỉa hè, xen giữa là nhịp sống rất Hà Nội: người chạy bộ, vài chiếc xe đạp lướt qua, tiếng quán nhỏ mở cửa, và phía xa là đường nét phố thị hiện đại pha cùng những mái nhà quen thuộc.\n\nKhông gian quanh hồ được chăm chút gọn gàng, đủ thoáng để bạn dừng lại vài phút, hít sâu và ngắm mặt nước. Không cần bàn ghế ngoài trời hay một lịch trình cầu kỳ; chỉ cần đôi giày thoải mái, một ly cà phê sau vòng dạo bộ, và chút thời gian không vội.\n\nTừ Ven Hồ Hotel, Hồ Tây không chỉ là điểm đến, mà là nhịp sống ngay bên cạnh. Một nơi lưu trú vừa đủ ấm cúng, thanh lịch, thuận tiện để bạn bắt đầu ngày mới, rồi trở về nghỉ ngơi sau khi đã chạm vào vẻ yên bình của Hà Nội.\n\nNếu bạn đang tìm một chỗ nghỉ gần Hồ Tây cho cuối tuần này, hãy nhắn Ven Hồ Hotel hoặc kiểm tra tình trạng phòng khi thuận tiện nhé.\n\n#VenHoHotel #HoTay #TayHo #CuoiTuanHaNoi #WestLakeHanoi #DiBoHoTay #HaNoiCham #StayNearWestLake",
@@ -4185,7 +4198,8 @@
       },
       "gateway_error": "BundleValidationError at Make.com: missing required 'url' -- growth was pointed at the legacy VenHoSocialManager scenario and sent no image_url. Recorded GATEWAY_ACCEPTED in error; corrected 2026-08-06.",
       "rollout_stage": "shadow",
-      "shadow_held_reason": "rollout stage is shadow; dispatch withheld"
+      "shadow_held_reason": "rollout stage is shadow; dispatch withheld",
+      "cancelled_reason": "Retired 2026-10-21 (Growth audit): held by rollout stage shadow in Aug 2026, never dispatched, slot long past."
     },
     {
       "publication_id": "pub-saturday-zalo-0e884453",
@@ -5908,13 +5922,13 @@
       "content_package_id": "c0dea1ec-fa3b-4ad5-9a1b-b0b8ff28c1d6",
       "idempotency_key": "07f2f947a9a14faea29257502d4d4489fbcbe3927ee1d733e3b28d34c3946260",
       "platform": "facebook",
-      "status": "SHADOW_HELD",
+      "status": "CANCELLED",
       "gateway_status": "SHADOW_HELD",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-12T08:14:04.234835+00:00",
-      "updated_at": "2026-08-13T08:52:33.214064+00:00",
+      "updated_at": "2026-10-21T09:08:51.291015+00:00",
       "content": {
         "title": "Buổi sáng ở Hồ Tây thường bắt đầu rất khẽ",
         "text": "Buổi sáng, mặt Hồ Tây phẳng đến mức nhìn được rất xa. Bên kia hồ, những toà nhà cao tầng hiện lên mờ trong nắng nhạt.\n\nNước hồ sáng sớm không xanh rực như biển. Nó ngả sang màu ngọc pha xám, trầm và tĩnh, đúng kiểu màu nước của một cái hồ nằm giữa thành phố.\n\nTrời hôm ấy có mây, nắng lọt qua từng khoảng, nên ánh sáng rất dịu. Không gắt, không chói. Đi bộ giờ này rất dễ chịu.\n\nHàng cây ven hồ đủ dày để có bóng mát, nhưng vẫn đủ thưa để nhìn thấy mặt nước gần như suốt quãng đường. Vài người chạy bộ, một người đạp xe chậm qua, rồi lại vắng. Sáng sớm ở đây thường như vậy.\n\nĐiều thú vị là bạn có thể vừa nhìn thấy một mặt hồ rất yên, vừa thấy đường chân trời thành phố ở phía xa. Hà Nội hiện đại và Hà Nội chậm rãi nằm cạnh nhau trong cùng một khung nhìn.\n\nVen Hồ Hotel nằm trên đường Nguyễn Đình Thi, ngay khu vực này. Từ khách sạn bước ra là tới đường ven hồ, nên buổi sáng không cần đi đâu xa — chỉ cần dậy sớm hơn một chút.\n\nNếu bạn đang tính vài ngày ở Hà Nội và muốn ở gần Hồ Tây, nhắn tin cho Ven Hồ Hotel để xem lịch phòng nhé.\n\n#VenHoHotelHanoi #HoTay #KhamPhaHoTay #KhachSanHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-c0bbe4bd",
@@ -6020,7 +6034,8 @@
       },
       "shadow_override_by": "hpham1504@gmail.com",
       "rollout_stage": "shadow",
-      "shadow_held_reason": "rollout stage is shadow; dispatch withheld"
+      "shadow_held_reason": "rollout stage is shadow; dispatch withheld",
+      "cancelled_reason": "Retired 2026-10-21 (Growth audit): held by rollout stage shadow in Aug 2026, never dispatched, slot long past."
     },
     {
       "publication_id": "pub-wednesday-instagram-9de22149",
@@ -6147,13 +6162,13 @@
       "content_package_id": "0492cd76-dc4f-48a9-9c20-29c8e867ce12",
       "idempotency_key": "422fc60604248b2e2b5f11a1fae301dd57e09a97d3d40031259a6a78352dfc52",
       "platform": "facebook",
-      "status": "SHADOW_HELD",
+      "status": "CANCELLED",
       "gateway_status": "SHADOW_HELD",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-12T08:15:18.120622+00:00",
-      "updated_at": "2026-08-13T07:17:50.028423+00:00",
+      "updated_at": "2026-10-21T09:08:51.291015+00:00",
       "content": {
         "title": "Buổi sáng trong một căn phòng gần Hồ Tây",
         "text": "Buổi sáng ở Tây Hồ thường bắt đầu bằng ánh sáng, chứ không phải tiếng chuông báo thức.\n\nÁnh sáng đi qua khung cửa sổ chia thành bốn ô vuông, viền nhôm đen mảnh, rồi rải xuống mặt sàn gỗ. Không cần bật đèn. Cả căn phòng cứ thế sáng dần lên theo buổi sáng bên ngoài.\n\nPhòng có hình chữ nhật, tường màu xám nhạt, không treo tranh. Chỉ có giường trải ga trắng, đầu giường gỗ, một chiếc bàn kê sát tường và bộ rèm tối màu vừa được kéo sang một bên. Ít đồ, nên mắt cũng nghỉ được một lúc.\n\nĐây là kiểu phòng gọn gàng dành cho những buổi sáng không có gì phải gấp. Pha một cốc nước, ngồi bên cửa sổ vài phút, nghe tiếng xe bắt đầu chạy trên đường Nguyễn Đình Thi, rồi mới nghĩ đến chuyện hôm nay đi đâu. Hồ Tây chỉ cách đó một đoạn đi bộ ngắn, và buổi sáng là lúc quanh hồ dễ chịu nhất — người đi bộ, người đạp xe, mấy quán cà phê vừa mở cửa.\n\nVen Hồ Hotel là một khách sạn boutique nhỏ, nằm ở khoảng giữa: đủ yên để ngủ ngon, đủ gần để bước ra là tới hồ.\n\nNếu bạn đang tính mấy ngày ở Hà Nội, nhắn Ven Hồ Hotel để xem còn phòng vào đúng dịp bạn muốn nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-b132faeb",
@@ -6260,7 +6275,8 @@
       },
       "shadow_override_by": "hpham1504@gmail.com",
       "rollout_stage": "shadow",
-      "shadow_held_reason": "rollout stage is shadow; dispatch withheld"
+      "shadow_held_reason": "rollout stage is shadow; dispatch withheld",
+      "cancelled_reason": "Retired 2026-10-21 (Growth audit): held by rollout stage shadow in Aug 2026, never dispatched, slot long past."
     },
     {
       "publication_id": "pub-wednesday-instagram-bb26c872",
@@ -6791,7 +6807,9 @@
         "checksum": "934e1c8a4d33717c8a6ea3f5c0f21b9e0dfb65acb003d220861726f247e0a763"
       },
       "gateway_error": null,
-      "shadow_override_by": "hpham1504@gmail.com"
+      "shadow_override_by": "hpham1504@gmail.com",
+      "incident_retired_at": "2026-10-21T09:08:51.291015+00:00",
+      "incident_retired_reason": "Retired 2026-10-21 (Growth audit): Make accepted but never returned a post id; slot long past, outcome unknown. Status kept as evidence."
     },
     {
       "publication_id": "pub-wednesday-instagram-c6fcadf7",
@@ -7083,7 +7101,9 @@
         "checksum": "e3a29fbd94f75250664e13e57c137b01cdd3970649bd7b4f3c4d71d5db126949"
       },
       "gateway_error": null,
-      "shadow_override_by": "hpham1504@gmail.com"
+      "shadow_override_by": "hpham1504@gmail.com",
+      "incident_retired_at": "2026-10-21T09:08:51.291015+00:00",
+      "incident_retired_reason": "Retired 2026-10-21 (Growth audit): Make accepted but never returned a post id; slot long past, outcome unknown. Status kept as evidence."
     },
     {
       "publication_id": "pub-wednesday-zalo-a580ac8f",
@@ -7971,7 +7991,9 @@
         "checksum": "2d32a2e3536d07ac5484669a96212f52f061b8f93238bfcf2e951d57ae31baae"
       },
       "gateway_error": null,
-      "shadow_override_by": "hpham1504@gmail.com"
+      "shadow_override_by": "hpham1504@gmail.com",
+      "incident_retired_at": "2026-10-21T09:08:51.291015+00:00",
+      "incident_retired_reason": "Retired 2026-10-21 (Growth audit): Make accepted but never returned a post id; slot long past, outcome unknown. Status kept as evidence."
     },
     {
       "publication_id": "pub-wednesday-facebook-5f4f13fa",
@@ -9043,13 +9065,13 @@
       "content_package_id": "d6a0a71c-617f-46bb-839a-1db1da2d49e3",
       "idempotency_key": "bcae766e971b1777c1811d5ff882d0ece82d9e157fb262f0b53a585390e2aa28",
       "platform": "facebook",
-      "status": "SHADOW_HELD",
+      "status": "CANCELLED",
       "gateway_status": "SHADOW_HELD",
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-08-13T11:37:18.111335+00:00",
-      "updated_at": "2026-08-21T03:43:54.296801+00:00",
+      "updated_at": "2026-10-21T09:08:51.291015+00:00",
       "content": {
         "title": "6 giờ sáng ở Ven Hồ Hotel",
         "text": "6 giờ sáng, ánh sáng đến trước mọi âm thanh.\n\nGiờ đó, sảnh của Ven Hồ Hotel vẫn còn yên. Đèn để tông trung tính, không quá vàng cũng không quá trắng, đủ để nhìn rõ nền gạch nâu với những vòng tròn nhỏ lặp lại dưới chân. Quầy lễ tân bằng gỗ nâu đỏ sẫm, chiếc tủ chìa khóa phía sau, mấy bức tranh trên tường, mọi thứ sạch và gọn theo kiểu một khách sạn nhỏ được chăm mỗi ngày.\n\nKhông có gì hoành tráng ở đây. Ven Hồ Hotel là một chỗ nghỉ vừa phải, quy mô nhỏ, và có lẽ vì thế mà buổi sáng của nó cũng nhẹ.\n\nBạn để chìa khóa lên quầy, đẩy cánh cửa kính, và ra tới Nguyễn Đình Thi. Từ đó thì chỉ còn là chuyện đi bộ: một vòng ven hồ, vài người tập thể dục, mấy quán bắt đầu dọn hàng.\n\nCó những chuyến đi mà phần dễ chịu nhất không nằm trong lịch trình, mà nằm ở mười phút đầu tiên sau khi ra khỏi cửa.\n\nNếu bạn đang tính một chuyến Hà Nội và muốn bắt đầu ngày ở phía Tây Hồ, nhắn cho Ven Hồ Hotel để hỏi phòng trống cho những ngày bạn dự định ở lại.\n\n#VenHoHotelHanoi #HoTay #NguyenDinhThi #WestLakeHanoi #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-friday-facebook-cf961950",
@@ -9174,7 +9196,8 @@
       "gateway_error": "Make.com reported PUBLISHED without a valid platform_post_id; check Webhook response mapping.",
       "shadow_override_by": "hpham1504@gmail.com",
       "rollout_stage": "shadow",
-      "shadow_held_reason": "rollout stage is shadow; dispatch withheld"
+      "shadow_held_reason": "rollout stage is shadow; dispatch withheld",
+      "cancelled_reason": "Retired 2026-10-21 (Growth audit): held by rollout stage shadow in Aug 2026, never dispatched, slot long past."
     },
     {
       "publication_id": "pub-friday-instagram-db814ad5",
@@ -13385,7 +13408,9 @@
         "checksum": "78a6b209836cad9a7c2d97b25961b23355fe20a0b3a11a99a47d5699c44da121"
       },
       "gateway_error": null,
-      "shadow_override_by": "hpham1504@gmail.com"
+      "shadow_override_by": "hpham1504@gmail.com",
+      "incident_retired_at": "2026-10-21T09:08:51.291015+00:00",
+      "incident_retired_reason": "Retired 2026-10-21 (Growth audit): Make accepted but never returned a post id; slot long past, outcome unknown. Status kept as evidence."
     },
     {
       "publication_id": "pub-saturday-zalo-1d8be4a8",
