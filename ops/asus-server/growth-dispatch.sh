@@ -24,7 +24,7 @@
 set -euo pipefail
 
 MODE="${1:-primary}"
-case "$MODE" in primary|second|sync|trend-scan|fast-lane|weekly-cycle|replace-rejected|select-image|upload-image) ;; *) echo "unknown mode: $MODE" >&2; exit 2 ;; esac
+case "$MODE" in primary|second|sync|trend-scan|fast-lane|weekly-cycle|replace-rejected|expire-stale|select-image|upload-image) ;; *) echo "unknown mode: $MODE" >&2; exit 2 ;; esac
 REPO="$HOME/venho/growth-runtime/venho-ai-studio"
 MERGE="$HOME/venho/scripts/growth_state_merge.py"
 TELEGRAM="$HOME/venho/scripts/growth-telegram.sh"
@@ -181,6 +181,16 @@ PY
   [ -n "$alert" ] && { "$TELEGRAM" "$alert" || true; }
   [ "$push_rc" = "0" ] || exit "$push_rc"
   exit "$lane_rc"
+fi
+
+if [ "$MODE" = "expire-stale" ]; then
+  # Was growth-expire-stale-approvals.yml (moved 2026-10-21): GitHub ran its
+  # 07:15 cron 4-5 h late, and a second writer of publication_registry.json.
+  venho-growth expire-stale-approvals
+  venho-growth retire-stale-incidents
+  commit_state
+  push_state
+  exit $?
 fi
 
 if [ "$MODE" = "trend-scan" ]; then

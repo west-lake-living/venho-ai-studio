@@ -13,6 +13,7 @@ GitHub's `schedule` started 09:00 posts hours late, and its runners have no
 | `venho-growth-replace-rejected.timer` | `replace-rejected` | hourly :25 |
 | `venho-growth-trend-scan.timer` | `trend-scan` | 07:15 + 19:15 |
 | `venho-growth-fast-lane.timer` | `fast-lane` | hourly 07:40–22:40 |
+| `venho-growth-expire-stale.timer` | `expire-stale` (overdue approvals, stale incidents) | daily 07:05 |
 
 Install: copy `*.sh`, `*.py` to `~/venho/scripts/`, units to
 `~/.config/systemd/user/`, `systemctl --user daemon-reload`, enable the timers.

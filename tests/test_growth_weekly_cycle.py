@@ -45,6 +45,7 @@ def test_no_scheduled_growth_job_runs_on_github() -> None:
     for name in (
         "growth-publish-scheduler.yml", "growth-daily-cycle.yml",
         "growth-replace-rejected.yml", "growth-trend-scan.yml",
+        "growth-expire-stale-approvals.yml",
     ):
         assert "schedule:" not in Path(".github/workflows", name).read_text(encoding="utf-8"), name
 

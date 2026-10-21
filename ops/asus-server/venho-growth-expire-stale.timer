@@ -1,0 +1,10 @@
+[Unit]
+Description=Growth expire stale approvals + retire stale incidents 07:05 ICT daily (07:15 is the trend scan)
+
+[Timer]
+OnCalendar=*-*-* 07:05:00 Asia/Ho_Chi_Minh
+Persistent=true
+Unit=venho-growth-publish@expire-stale.service
+
+[Install]
+WantedBy=timers.target
