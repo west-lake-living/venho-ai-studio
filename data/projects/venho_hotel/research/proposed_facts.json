@@ -5257,5 +5257,22 @@
     "decided_by": "hpham1504@gmail.com",
     "decided_at": "2026-10-21T12:42:07.363016+00:00",
     "fact_path": "data/projects/venho_hotel/growth/facts/local_intel__bun_bo_hue_o_huong.json"
+  },
+  {
+    "fact_key": "local_intel.pho_cuon_hung_ben",
+    "value": "Phở cuốn Hưng Bền (33 Ngũ Xã, Phúc Xá, Ba Đình, Hà Nội)",
+    "value_type": "string",
+    "rationale": "Quán phở cuốn lâu năm nổi tiếng với bánh phở mềm mịn, nhân thịt bò thơm lừng và nước chấm chua ngọt pha khéo đậm đà vị truyền thống.",
+    "source_index": 0,
+    "source_uri": "https://quananngonhanoi.com/top-10-quan-pho-cuon-ho-tay-noi-tieng-nhat-cam-nang-am-thuc-cho-tin-do-sanh-an",
+    "source_title": "Phở Cuốn Hồ Tây - Top 6 Quán Phở Cuốn Hồ Tây Ngon Và Nổi Tiếng",
+    "id": "fact-local_intel-120f57f506",
+    "domain": "local_intel",
+    "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
+    "synthesis_note": "research/synthesis/RS-2026-10-22-localintel-synthesis.md",
+    "status": "pending_approval",
+    "proposed_at": "2026-10-22T05:43:22.336322+00:00",
+    "decided_by": null,
+    "decided_at": null
   }
 ]
