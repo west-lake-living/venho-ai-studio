@@ -2,7 +2,7 @@
 
 ### Growth 22/10/2026: đối soát slot, scorecard rollout, guest_voice hằng tháng, filter chữ ký Make
 
-**Status: 3/5 XONG trên server (`d062fdd`) · panel Trend Radar đã push nhưng chưa deploy · rollout chưa đủ điều kiện · filter Make giao Codex**
+**Status: 4/5 XONG + filter Make XONG (19:46) · panel Trend Radar đã lên Dashboard · rollout chưa đủ điều kiện (chờ đầu tháng 11)**
 
 - [x] **Lỗi #10 – đối soát slot:** `venho-growth reconcile-slots` chạy trong lượt expire-stale lúc 07:05. Slot đã qua ngày được đóng thành COMPLETED nếu có bài đã đăng (PUBLISHED/GATEWAY_ACCEPTED), ngược lại thành MISSED. Lý do lưu ở cột mới `closed_reason`; ngày Harry tự huỷ là `all_cancelled`. Luật "chỉ MISSED khi đã hết evergreen" vẫn giữ nguyên lúc soạn bài. Lần chạy thật đầu tiên sửa 8 slot: 4 slot tháng 8 từ MISSED sang COMPLETED; 11/09, 12/09, 07/10, 21/10 sang MISSED. Có sao lưu `~/venho/backups/growth.db.bak-20261022`.
 - [ ] **Rollout stage:** chưa nâng được. Scorecard 6,67/10.
@@ -14,8 +14,13 @@
   - Còn chờ: QC ảnh thật (có từ lượt soạn tuần 25/10), và ngày trống 07/10 ra khỏi cửa sổ (04/11).
   - Chạy lại `venho-rollout scorecard` từ đầu tháng 11. Đạt thì hỏi Harry trước khi `rollout-advance`, rồi mới bỏ `--allow-shadow`.
 - [x] **guest_voice tổng hợp hằng tháng:** `scheduled: monthly` (chỉ lượt quét Thứ 5 đầu tháng), `per_source: false` (đọc chung 3 trang review), tối đa 6 chủ đề khen/chê, value có tiền tố "Tháng MM/YYYY ·". Lượt đầu: 05/11.
-- [x] **Panel Trend Radar** (venho-os `f00b454`): hiện ngày sự kiện, địa điểm, số nguồn và nhãn ⚡ Lane nhanh; sự kiện lane nhanh xếp trước. **Chưa lên Dashboard:** venho-os trên server đang ở nhánh `deploy/linhan-continuation-20261014`, có 3 commit vn-stock chưa push, nên auto-deploy từ chối (xem `venho-os/task_status.md`).
-- [ ] **Filter `X-Venho-Signature` trên Make:** giao cho Codex làm qua Chrome extension, theo `docs/handoffs/2026-10-22-make-growth-signature-filter.md`. Request thử có ký đúng/sai: `ops/asus-server/make-signature-test.sh` (không in secret). Secret trên Mac và server đã kiểm là trùng nhau. **Việc kiểm bắt buộc:** bài 09:00 ngày 23/10 phải `PUBLISHED` và có `platform_post_id`. Nếu là `GATEWAY_ACCEPTED`, filter đã chặn nhầm (Make vẫn trả "Accepted") → gỡ filter và đăng bù.
+- [x] **Panel Trend Radar** (venho-os `f00b454`): hiện ngày sự kiện, địa điểm, số nguồn và nhãn ⚡ Lane nhanh; sự kiện lane nhanh xếp trước. Đã lên Dashboard 22/10 (vn-stock tạm dừng; commit vn-stock chưa push nằm ở nhánh `server/vn-stock-20261022`, mở PR khi vn-stock chạy lại).
+- [x] **Telegram cho Dashboard** (`eb56d5a`): `deploy-venho-os.sh` báo khi auto-deploy lỗi/từ chối, timer `venho-os-watch` báo khi Dashboard ngừng phản hồi và khi hồi phục (một lần mỗi trạng thái, `alert-state.sh`).
+- [x] **Filter `X-Venho-Signature` trên Make** (scenario 5868920, Codex làm, xong 22/10 19:46): filter `Venho signature` ngay sau webhook, Get request headers = Yes.
+  - Trái: `first(map(2.Headers[];value;name;x-venho-signature))` · Phải: `sha256(2.publication_id:2.idempotency_key;hex;<secret>)` · `Equal to`.
+  - Cặp `test-sigcheck-20261022T124616Z`: `-good` qua chữ ký → HTTP 4 → dừng ở cả 2 chốt test; `-bad` dừng ngay ở filter. Không chạm module FB/IG.
+  - 3 lỗi đã gặp: `get(map(...);1)` trả rỗng; key nằm ngoài `sha256(...)` (ra SHA-256 không key); khoảng trắng sau `;` và trước secret làm lệch chữ ký.
+  - [ ] **Kiểm bắt buộc sau 09:00 ngày 23/10:** bài FB/IG phải `PUBLISHED` và có `platform_post_id`. Nếu `GATEWAY_ACCEPTED` → filter chặn nhầm (Make vẫn trả "Accepted"): gỡ filter, đăng bù.
 - [x] Tài liệu "Báo cáo status & Audit" (claude.ai doc): đã cập nhật các dòng Lỗi #7, #8, #10. Hai việc từng ghi "Chờ push" (`1bf4d49`, `f3eb9e3`) thực ra đã lên `main` dưới mã khác (`a8abb3d`, `5cd8f7e`).
 
 **Kiểm chứng:** bộ test Growth chọn lọc 530 pass.

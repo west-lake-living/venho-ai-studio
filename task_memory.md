@@ -1,5 +1,12 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-10-22 — đối soát slot, scorecard, guest_voice, filter chữ ký Make, Telegram Dashboard
+
+- **Filter chữ ký Make chặn nhầm thì không ai biết:** Make vẫn trả "Accepted", server ghi `GATEWAY_ACCEPTED` và không báo lỗi. Bằng chứng duy nhất là bài không thành `PUBLISHED`. Mọi thay đổi filter phải kiểm lại bằng `ops/asus-server/make-signature-test.sh` (cặp good/bad, id chứa `test`).
+- **Make so từng ký tự:** không để khoảng trắng trong tham số hàm (`map(...;value;...)`, trước secret). HMAC = tham số thứ 3 *bên trong* `sha256(...)`. Header lấy bằng `first(map(...))`, không phải `get(...;1)`.
+- **Giao Codex việc trên Make:** giao mục tiêu + kết quả mong đợi, và cho vòng gửi cặp test tự động trên server (mỗi 5 phút) để Codex tự lặp, thay vì xin test từng lượt qua Harry.
+- **Rollout:** đừng bỏ `--allow-shadow` khi còn `shadow`; scorecard chạy lại đầu tháng 11 (cần 8 QC ảnh thật, ngày trống 07/10 ra khỏi cửa sổ 28 ngày ~04/11), hỏi Harry trước `rollout-advance`.
+
 ## 2026-10-20/21 — Growth lên server, Trend Radar Google News, 3 ảnh/bài, reset Knowledge Facts, thư mục Dashboard kẹt nhánh
 
 Chi tiết từng việc: `task_status.md`, mục cùng ngày. Dưới đây là những điều không suy ra được từ code.
