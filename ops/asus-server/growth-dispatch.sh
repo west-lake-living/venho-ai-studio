@@ -188,6 +188,8 @@ if [ "$MODE" = "expire-stale" ]; then
   # 07:15 cron 4-5 h late, and a second writer of publication_registry.json.
   venho-growth expire-stale-approvals
   venho-growth retire-stale-incidents
+  venho-growth reconcile-slots  # Lỗi #10: settle past slots from the registry
+  snapshot_slots
   commit_state
   push_state
   exit $?

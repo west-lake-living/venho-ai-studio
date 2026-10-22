@@ -46,6 +46,9 @@ class SlotStore:
                 )
                 """
             )
+            columns = {row[1] for row in db.execute("PRAGMA table_info(publishing_slots)")}
+            if "closed_reason" not in columns:
+                db.execute("ALTER TABLE publishing_slots ADD COLUMN closed_reason TEXT")
 
     def ensure_slots(self, slots: Iterable[PublishingSlot]) -> int:
         """Idempotently insert OPEN slots (INSERT OR IGNORE on slot_id).
@@ -108,6 +111,37 @@ class SlotStore:
                 (updated.status, updated.content_package_id, updated.filled_from, now, slot_id),
             )
         return updated
+
+    def close_past_slot(self, slot_id: str, target: str, *, reason: str) -> None:
+        """After-the-fact bookkeeping for a slot whose date has passed:
+        set COMPLETED or MISSED from what the registry says actually
+        happened, bypassing the live transition map (Harry, 2026-10-22,
+        Lỗi #10).
+
+        The transition map guards the generation path -- "no MISSED before
+        the evergreen pool is exhausted" stays true there. Once the day is
+        over nothing can fill the slot any more, and leaving it at
+        PENDING_APPROVAL (or MISSED although a post went out) made the
+        table disagree with the registry and the scorecard count wrong
+        empty days."""
+        if target not in ("COMPLETED", "MISSED"):
+            raise ValueError(f"a past slot closes as COMPLETED or MISSED, not {target}")
+        now = datetime.now(timezone.utc).isoformat()
+        with self._connect() as db:
+            cursor = db.execute(
+                "UPDATE publishing_slots SET status=?, closed_reason=?, updated_at=? WHERE slot_id=?",
+                (target, reason, now, slot_id),
+            )
+        if cursor.rowcount == 0:
+            raise KeyError(f"Unknown slot_id: {slot_id}")
+
+    def missed_since(self, since: str) -> list[tuple[str, Optional[str]]]:
+        """(slot_date, closed_reason) of MISSED slots dated on/after `since`."""
+        with self._connect() as db:
+            return db.execute(
+                "SELECT slot_date, closed_reason FROM publishing_slots WHERE status='MISSED' AND slot_date>=? ORDER BY slot_date",
+                (since,),
+            ).fetchall()
 
     def list_all(self, *, status: Optional[str] = None) -> list[PublishingSlot]:
         """All slots ever created, optionally filtered by status.

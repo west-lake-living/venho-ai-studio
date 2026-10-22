@@ -139,10 +139,24 @@ domains:
       - "hotel photography engagement social media what works"
 
   guest_voice:
-    scheduled: false
+    # Monthly digest (Harry, 2026-10-22): the first Thursday sweep of each
+    # month reads the 3 review pages together and proposes a handful of
+    # praise/complaint themes, each prefixed "Tháng MM/YYYY ·". Weekly runs
+    # produced atomised scores ("8.8", "9.4") nobody could use.
+    scheduled: monthly
+    per_source: false
+    max_proposals: 6
+    reject_past_dates: false
+    extraction_hint: >-
+      Tổng hợp theo CHỦ ĐỀ, không trích từng điểm số. Mỗi fact là một chủ đề
+      khách nhắc nhiều lần, value dạng "Khen: <chủ đề ngắn> — <dẫn chứng
+      ngắn, có số review nhắc nếu đếm được>" hoặc "Chê: <chủ đề ngắn> —
+      <dẫn chứng>". Ví dụ: "Khen: vị trí sát Hồ Tây — 6 review nhắc view
+      hồ từ phòng". Tối đa 3 chủ đề Khen và 3 chủ đề Chê, ưu tiên review
+      mới nhất. Không đưa điểm số tổng (8.5/10) thành fact riêng.
     question: "Khách thật sự khen và chê điều gì ở Ven Ho Hotel?"
     # Still `manual` as the fallback collector, but `urls:` below is filled in
-    # now, so this domain runs automatically with the weekly sweep. It falls
+    # now, so this domain runs automatically (monthly, see above). It falls
     # back to waiting for an export only if every URL stops extracting.
     collector: manual
     # Ven Ho Hotel's own public review pages, read directly. Fill these in

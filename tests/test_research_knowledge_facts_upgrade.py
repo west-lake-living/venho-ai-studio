@@ -131,3 +131,45 @@ def test_same_place_under_two_names_is_one_place() -> None:
     assert same_place(a, b)
     assert not same_place(c, d)
     assert not same_place(a, c)
+
+
+def test_monthly_domain_runs_only_in_the_first_sweep_of_the_month(tmp_path: Path, monkeypatch) -> None:
+    config_root = tmp_path / "research"
+    config_root.mkdir()
+    (config_root / "research_questions.yaml").write_text(
+        yaml.safe_dump({"version": 1, "domains": {"guest_voice": {"question": "q?", "collector": "manual", "scheduled": "monthly"}}}),
+        encoding="utf-8",
+    )
+    ran: list[str] = []
+    monkeypatch.setattr(cycle, "run_research_cycle", lambda domain, **_: ran.append(domain) or cycle.ResearchCycleResult(domain=domain, question="q?"))
+
+    cycle.run_all_research_cycles(config_root=config_root, today=date(2026, 11, 5))
+    skipped = cycle.run_all_research_cycles(config_root=config_root, today=date(2026, 11, 12))
+
+    assert ran == ["guest_voice"]
+    assert "monthly" in (skipped[0].skipped_reason or "")
+
+
+def test_guest_voice_digest_reads_pages_together_and_labels_the_month(tmp_path: Path) -> None:
+    config_root = tmp_path / "research"
+    config_root.mkdir()
+    (config_root / "research_questions.yaml").write_text(
+        yaml.safe_dump({"version": 1, "domains": {"guest_voice": {
+            "question": "Khen chê gì?", "collector": "manual", "scheduled": "monthly", "per_source": False,
+        }}}, allow_unicode=True),
+        encoding="utf-8",
+    )
+    source = tmp_path / "export.md"
+    source.write_text("review", encoding="utf-8")
+    calls: list[bool] = []
+
+    def fake_extract(*, per_source, **_):
+        calls.append(per_source)
+        return [{"fact_key": "guest_voice.view", "value": "Khen: view hồ — 6 review", "value_type": "string", "rationale": "r", "source_index": 0, "source_uri": "u", "source_title": "t"}]
+
+    result = cycle.run_research_cycle(
+        "guest_voice", config_root=config_root, vault_root=tmp_path / "vault", data_root=tmp_path,
+        input_file=source, extract_fn=fake_extract, gemini_api_key="k", today=date(2026, 11, 5),
+    )
+    assert calls == [False]
+    assert result.proposals[0]["value"] == "Tháng 11/2026 · Khen: view hồ — 6 review"

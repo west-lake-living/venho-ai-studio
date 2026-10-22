@@ -1,10 +1,14 @@
 from __future__ import annotations
 
+from datetime import date, timedelta
 from pathlib import Path
 from typing import Any, Optional
 
+from growth_orchestrator.application.reconcile_slots import ALL_CANCELLED
 from publishing_gateway.publication_registry import PublicationRegistry
 from shared.jobs.slot_store import SlotStore
+
+EMPTY_DAYS_WINDOW = 28
 
 # Mirrors controlled_rollout.scorecard.QUALITY_GATES' key set. Kept as a
 # separate constant (not imported) so this module stays honest about which
@@ -18,15 +22,14 @@ _COLLECTIBLE_FROM_REAL_DATA = {
     "human_acceptance_no_major_edit",
     "unplanned_empty_days",
 }
-# Require real paid Vision QC (validator_studio.image_validator) run per
-# publication to fill -- daily_cycle defaults image_validation_provider to
-# "mock" (Part 5.7/DoD #26 budget discipline), so this data does not exist
-# in the registry today. Not fabricated; reported as a real gap instead.
-_MISSING_REQUIRES_VISION_QC = {"copy_image_alignment", "hotel_dna_pass", "linh_an_identity_pass"}
+# Real vision-QC judgements needed before the image gates are scored at all
+# (2026-10-22): rows record `scorecard_signals.image_qc` since the server
+# runner started generating images; fewer than this is too thin to gate on.
+MIN_IMAGE_QC_SAMPLE = 8
 
 
 def collect_real_scorecard_metrics(
-    *, project: str = "venho_hotel", data_root: Path = Path("data/projects"), version: str
+    *, project: str = "venho_hotel", data_root: Path = Path("data/projects"), version: str, today: Optional[date] = None
 ) -> dict[str, Any]:
     """Build a `controlled_rollout.scorecard.evaluate_golden_set` input from
     real, already-persisted operational data -- not a fixture, not a
@@ -52,13 +55,17 @@ def collect_real_scorecard_metrics(
     rows = registry.load()["publications"]
     published = [row for row in rows if row.get("status") == "PUBLISHED"]
 
-    data_gaps = [f"{key}: requires real paid Vision QC runs (image_validation_provider!='mock'); none recorded yet" for key in sorted(_MISSING_REQUIRES_VISION_QC)]
-
+    data_gaps: list[str] = []
     metrics: dict[str, Any] = {}
+    _image_gates(rows, published, metrics, data_gaps)
     if published:
         scored = [row for row in published if (row.get("scorecard_signals") or {}).get("content_brand_fit") is not None]
         if scored:
-            metrics["brand_adherence"] = round(sum(row["scorecard_signals"]["content_brand_fit"] for row in scored) / len(scored), 4)
+            # Real content_brand_fit is on a 0-100 scale; the gate is a 0-1
+            # share. Until 2026-10-22 the raw 95.2 was compared with 0.95 and
+            # always passed.
+            fits = [float(row["scorecard_signals"]["content_brand_fit"]) for row in scored]
+            metrics["brand_adherence"] = round(sum(f / 100 if f > 1 else f for f in fits) / len(fits), 4)
         else:
             data_gaps.append("brand_adherence: no PUBLISHED row has a content_report brand_fit score yet")
 
@@ -90,7 +97,46 @@ def collect_real_scorecard_metrics(
         seen.add(key)
     metrics["duplicate_publication"] = duplicates
 
-    missed_slots = SlotStore(db_path=data_root / project / "growth" / "growth.db").list_all(status="MISSED")
-    metrics["unplanned_empty_days"] = len(missed_slots)
+    # Recent window, planned gaps excluded (2026-10-22): counting every
+    # MISSED slot since August meant the gate could never pass again once
+    # one day had been missed, and a day Harry cancelled on purpose is not
+    # an unplanned gap.
+    since = ((today or date.today()) - timedelta(days=EMPTY_DAYS_WINDOW)).isoformat()
+    missed = SlotStore(db_path=data_root / project / "growth" / "growth.db").missed_since(since)
+    metrics["unplanned_empty_days"] = sum(1 for _, reason in missed if reason != ALL_CANCELLED)
 
     return {"version": version, "metrics": metrics, "sample_size": len(published), "data_gaps": data_gaps}
+
+
+def _image_gates(rows: list[dict[str, Any]], published: list[dict[str, Any]], metrics: dict[str, Any], data_gaps: list[str]) -> None:
+    """The three image gates, from real vision-QC judgements only.
+
+    hotel_dna_pass: share of QC'd drafts whose generated image passed (a
+    failed image falls back to a stock photo). copy_image_alignment: share
+    of PUBLISHED posts from the same era that went out with a generated or
+    chosen image rather than a fallback -- fallbacks were what made photo
+    and copy disagree (28/08-21/10), and Harry approves the pair together.
+    linh_an_identity_pass: not applicable while no post features Linh An.
+    """
+    judged = [
+        row for row in rows
+        if ((row.get("scorecard_signals") or {}).get("image_qc") or {}).get("provider") not in (None, "mock")
+    ]
+    if len(judged) < MIN_IMAGE_QC_SAMPLE:
+        for key in ("copy_image_alignment", "hotel_dna_pass"):
+            data_gaps.append(f"{key}: {len(judged)} real vision-QC judgements so far, need {MIN_IMAGE_QC_SAMPLE}")
+    else:
+        metrics["hotel_dna_pass"] = round(sum(1 for row in judged if row["scorecard_signals"]["image_qc"]["passed"]) / len(judged), 4)
+        judged_ids = {row["publication_id"] for row in judged}
+        sent = [row for row in published if row.get("publication_id") in judged_ids]
+        if sent:
+            aligned = sum(1 for row in sent if not (row.get("content") or {}).get("image_is_fallback"))
+            metrics["copy_image_alignment"] = round(aligned / len(sent), 4)
+        else:
+            data_gaps.append("copy_image_alignment: no vision-QC'd post published yet")
+
+    if any(row.get("dna_subject") == "linh_an" for row in published):
+        data_gaps.append("linh_an_identity_pass: Linh An posts exist but no face-gate result is recorded on rows yet")
+    else:
+        metrics["linh_an_identity_pass"] = 1.0
+        data_gaps.append("linh_an_identity_pass: not applicable -- no published post features Linh An (counted as pass)")

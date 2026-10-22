@@ -25,6 +25,7 @@ from growth_orchestrator.application.scheduled_dispatch import dispatch_due
 from growth_orchestrator.application.daily_cycle import CADENCE_DAYS, run_daily_cycle
 from growth_orchestrator.application.measure_publication import measure_publication
 from growth_orchestrator.application.reconcile_publication import reconcile_publication
+from growth_orchestrator.application.reconcile_slots import reconcile_slots
 from growth_orchestrator.application.run_blog_pipeline import run_blog_pipeline
 from growth_orchestrator.application.run_content_pipeline import run_content_pipeline
 from growth_orchestrator.application.weekly_cycle import run_weekly_cycle
@@ -50,6 +51,14 @@ def retire_stale_incidents_cmd(
     """Archive past-due GATEWAY_ERROR rows; never re-send an old post."""
     publications = retire_expired_gateway_incidents(project=project)
     typer.echo(json.dumps({"ok": True, "retired": publications}, ensure_ascii=False, indent=2))
+
+
+@app.command("reconcile-slots")
+def reconcile_slots_cmd(
+    project: str = typer.Option("venho_hotel"),
+) -> None:
+    """Close past-dated slots as COMPLETED or MISSED from the registry."""
+    typer.echo(json.dumps({"ok": True, "changed": reconcile_slots(project=project)}, ensure_ascii=False, indent=2))
 
 
 @app.command("run")

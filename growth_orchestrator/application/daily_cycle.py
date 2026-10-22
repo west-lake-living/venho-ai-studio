@@ -924,6 +924,20 @@ def _alternative_image_options(
     return options
 
 
+def _image_qc_signal(run_folder: Optional[Path], failure_reason: Optional[str], *, provider: str) -> Optional[dict[str, Any]]:
+    """Option A's vision-QC outcome, kept on the registry row for the rollout
+    scorecard's hotel_dna_pass (2026-10-22). None when QC never judged an
+    image (generation off, missing reference, provider error) -- those say
+    nothing about image quality."""
+    if run_folder is not None:
+        report_path = run_folder / "image_validation_report.json"
+        report = json.loads(report_path.read_text(encoding="utf-8")) if report_path.exists() else {}
+        return {"provider": provider, "passed": True, "score": report.get("overall_score"), "verdict": report.get("verdict")}
+    if failure_reason and failure_reason.startswith("qc_"):
+        return {"provider": provider, "passed": False, "reason": failure_reason}
+    return None
+
+
 def _image_qc_failure_reason(report: Any) -> str:
     """Name which QC gate the generated image lost on.
 
@@ -1394,6 +1408,7 @@ def run_daily_cycle(
     image_public_url: Optional[str] = None
     asset_version_ids: list[str] = []
     image_fallback_reason: Optional[str] = "image_generation_disabled"
+    image_qc: Optional[dict[str, Any]] = None
     if generate_image:
         image_provider = image_provider or gpt_image_provider_from_env(os.environ)
         reference_resolver = reference_resolver or ReferenceAssetResolver.from_file()
@@ -1405,6 +1420,7 @@ def run_daily_cycle(
             rotation_key=slot_date,
             scenario_key=scenario_key,
         )
+        image_qc = _image_qc_signal(run_folder, image_fallback_reason, provider=image_validation_provider)
         if run_folder:
             image_run_path = str(run_folder)
             # RunStore folders are named after the image's run_id (see
@@ -1596,7 +1612,7 @@ def run_daily_cycle(
                 # Real M03 scores kept alongside the snapshot hash so Phase 8's
                 # scorecard can aggregate real historical signal instead of
                 # rebuilding validation after the fact -- see _scorecard_signals.
-                scorecard_signals=_scorecard_signals(package["validation"]),
+                scorecard_signals={**_scorecard_signals(package["validation"]), **({"image_qc": image_qc} if image_qc else {})},
             )
             publications.append(publication)
         except Exception as exc:  # noqa: BLE001 - one platform's provider/network failure (rate limit, timeout) must not abort the other platforms' drafts for this day

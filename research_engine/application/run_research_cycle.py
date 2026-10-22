@@ -338,11 +338,17 @@ def run_research_cycle(
             # See extract_fact_proposals' per_source branch for why.
             # `per_source: true` for list pages too (local_intel, 2026-10-21):
             # 16 "top cafés" pages in one prompt yielded ONE place.
-            per_source=bool(config.get("per_source")) or (bool(urls) and not config.get("queries")),
+            # An explicit `per_source: false` wins (guest_voice's monthly
+            # digest reads its 3 review pages together, 2026-10-22).
+            per_source=bool(config["per_source"]) if "per_source" in config else (bool(urls) and not config.get("queries")),
         )
     except Exception:  # noqa: BLE001 - the vault notes above are the durable output; a failed extraction is a missing convenience, not a failed cycle
         raw_proposals = []
 
+    if config.get("scheduled") == "monthly":
+        # A digest repeats its themes month to month ("Khen: view hồ"); the
+        # month label keeps each month's line from being refused as a repeat.
+        raw_proposals = [{**p, "value": f"Tháng {today:%m/%Y} · {p['value']}"} for p in raw_proposals]
     proposals = [
         {
             **proposal,
@@ -376,9 +382,14 @@ def run_all_research_cycles(
     returned as skipped rather than silently omitted, so the report says
     plainly which domains are waiting on a human export."""
     results = []
+    today = kwargs.get("today") or date.today()
     for domain, config in load_research_questions(config_root).items():
         if isinstance(config, dict) and config.get("scheduled") is False:
             results.append(ResearchCycleResult(domain=domain, question="", skipped_reason="scheduled: false (run with --domain)"))
+            continue
+        # `scheduled: monthly`: only the first weekly sweep of the month.
+        if isinstance(config, dict) and config.get("scheduled") == "monthly" and today.day > 7:
+            results.append(ResearchCycleResult(domain=domain, question="", skipped_reason="scheduled: monthly (first sweep of the month)"))
             continue
         try:
             results.append(run_research_cycle(domain, project=project, config_root=config_root, **kwargs))

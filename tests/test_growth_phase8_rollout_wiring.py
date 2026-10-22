@@ -168,5 +168,38 @@ def test_unplanned_empty_days_metric_reads_real_missed_slots(tmp_path: Path) -> 
     slot_store.ensure_slots([PublishingSlot(slot_id="slot-1", slot_date="2026-08-10", slot_type="regular", lane="regular", status="OPEN")])
     slot_store.transition("slot-1", "MISSED")
 
-    result = collect_real_scorecard_metrics(project="venho_hotel", data_root=tmp_path, version="v-test")
+    from datetime import date
+
+    result = collect_real_scorecard_metrics(project="venho_hotel", data_root=tmp_path, version="v-test", today=date(2026, 8, 20))
     assert result["metrics"]["unplanned_empty_days"] == 1
+
+
+def test_image_gates_need_real_vision_qc_and_linh_an_is_not_applicable(tmp_path: Path) -> None:
+    registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
+    for i in range(8):
+        pid = f"p{i}"
+        registry.reserve({"publication_id": pid, "content_package_id": pid, "idempotency_key": pid, "platform": "facebook"})
+        passed = i != 0
+        registry.update(
+            pid, status="PUBLISHED", platform_post_id=f"fb{i}", dna_subject="westlake",
+            content={"image_is_fallback": not passed},
+            scorecard_signals={"content_brand_fit": 96.0, "claim_kill_switch_triggered": False,
+                               "image_qc": {"provider": "openai", "passed": passed}},
+        )
+
+    metrics = collect_real_scorecard_metrics(project="venho_hotel", data_root=tmp_path, version="v")["metrics"]
+
+    assert metrics["hotel_dna_pass"] == 0.875 and metrics["copy_image_alignment"] == 0.875
+    assert metrics["linh_an_identity_pass"] == 1.0
+    assert metrics["brand_adherence"] == 0.96  # 0-100 score read as a share
+
+
+def test_image_gates_stay_missing_below_the_sample(tmp_path: Path) -> None:
+    registry = PublicationRegistry("venho_hotel", data_root=tmp_path)
+    registry.reserve({"publication_id": "p", "content_package_id": "p", "idempotency_key": "p", "platform": "facebook"})
+    registry.update("p", status="PUBLISHED", scorecard_signals={"image_qc": {"provider": "mock", "passed": True}})
+
+    result = collect_real_scorecard_metrics(project="venho_hotel", data_root=tmp_path, version="v")
+
+    assert "hotel_dna_pass" not in result["metrics"]
+    assert any("need 8" in gap for gap in result["data_gaps"])

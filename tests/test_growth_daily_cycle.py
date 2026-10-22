@@ -1036,3 +1036,12 @@ def test_wednesday_falls_back_to_curated_when_every_research_place_was_covered(t
         )
         assert result.topic["research_backed"] is False
         assert "quang ba" not in result.topic["topic"].lower()
+
+
+def test_image_qc_signal_records_only_real_judgements(tmp_path) -> None:
+    from growth_orchestrator.application.daily_cycle import _image_qc_signal
+
+    (tmp_path / "image_validation_report.json").write_text('{"overall_score": 91.0, "verdict": "approve"}', encoding="utf-8")
+    assert _image_qc_signal(tmp_path, None, provider="openai") == {"provider": "openai", "passed": True, "score": 91.0, "verdict": "approve"}
+    assert _image_qc_signal(None, "qc_below_approve: 71.0", provider="openai") == {"provider": "openai", "passed": False, "reason": "qc_below_approve: 71.0"}
+    assert _image_qc_signal(None, "reference_or_dna_file_missing", provider="openai") is None
