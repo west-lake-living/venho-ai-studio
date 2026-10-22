@@ -1,5 +1,25 @@
 # VENHO AI STUDIO — Task Status
 
+### Growth 22/10/2026: đối soát slot, scorecard rollout, guest_voice hằng tháng, filter chữ ký Make
+
+**Status: 3/5 XONG trên server (`d062fdd`) · panel Trend Radar đã push nhưng chưa deploy · rollout chưa đủ điều kiện · filter Make giao Codex**
+
+- [x] **Lỗi #10 – đối soát slot:** `venho-growth reconcile-slots` chạy trong lượt expire-stale lúc 07:05. Slot đã qua ngày được đóng thành COMPLETED nếu có bài đã đăng (PUBLISHED/GATEWAY_ACCEPTED), ngược lại thành MISSED. Lý do lưu ở cột mới `closed_reason`; ngày Harry tự huỷ là `all_cancelled`. Luật "chỉ MISSED khi đã hết evergreen" vẫn giữ nguyên lúc soạn bài. Lần chạy thật đầu tiên sửa 8 slot: 4 slot tháng 8 từ MISSED sang COMPLETED; 11/09, 12/09, 07/10, 21/10 sang MISSED. Có sao lưu `~/venho/backups/growth.db.bak-20261022`.
+- [ ] **Rollout stage:** chưa nâng được. Scorecard 6,67/10.
+  - Đã sửa trong scorecard:
+    - 3 chỉ số ảnh trước đây bị gắn cứng là "thiếu". Giờ bài lưu `scorecard_signals.image_qc`; `hotel_dna_pass` và `copy_image_alignment` được chấm khi có ít nhất 8 lượt QC thật.
+    - `linh_an_identity_pass` tính là "không áp dụng" (chưa bài nào có Linh An).
+    - `unplanned_empty_days` chỉ đếm 28 ngày gần nhất và bỏ qua `all_cancelled`.
+    - `brand_adherence` trước so thang 100 với ngưỡng 0,95 nên luôn đạt; đã sửa.
+  - Còn chờ: QC ảnh thật (có từ lượt soạn tuần 25/10), và ngày trống 07/10 ra khỏi cửa sổ (04/11).
+  - Chạy lại `venho-rollout scorecard` từ đầu tháng 11. Đạt thì hỏi Harry trước khi `rollout-advance`, rồi mới bỏ `--allow-shadow`.
+- [x] **guest_voice tổng hợp hằng tháng:** `scheduled: monthly` (chỉ lượt quét Thứ 5 đầu tháng), `per_source: false` (đọc chung 3 trang review), tối đa 6 chủ đề khen/chê, value có tiền tố "Tháng MM/YYYY ·". Lượt đầu: 05/11.
+- [x] **Panel Trend Radar** (venho-os `f00b454`): hiện ngày sự kiện, địa điểm, số nguồn và nhãn ⚡ Lane nhanh; sự kiện lane nhanh xếp trước. **Chưa lên Dashboard:** venho-os trên server đang ở nhánh `deploy/linhan-continuation-20261014`, có 3 commit vn-stock chưa push, nên auto-deploy từ chối (xem `venho-os/task_status.md`).
+- [ ] **Filter `X-Venho-Signature` trên Make:** giao cho Codex làm qua Chrome extension, theo `docs/handoffs/2026-10-22-make-growth-signature-filter.md`. Request thử có ký đúng/sai: `ops/asus-server/make-signature-test.sh` (không in secret). Secret trên Mac và server đã kiểm là trùng nhau. **Việc kiểm bắt buộc:** bài 09:00 ngày 23/10 phải `PUBLISHED` và có `platform_post_id`. Nếu là `GATEWAY_ACCEPTED`, filter đã chặn nhầm (Make vẫn trả "Accepted") → gỡ filter và đăng bù.
+- [x] Tài liệu "Báo cáo status & Audit" (claude.ai doc): đã cập nhật các dòng Lỗi #7, #8, #10. Hai việc từng ghi "Chờ push" (`1bf4d49`, `f3eb9e3`) thực ra đã lên `main` dưới mã khác (`a8abb3d`, `5cd8f7e`).
+
+**Kiểm chứng:** bộ test Growth chọn lọc 530 pass.
+
 ### Growth chuyển lên server + Trend Radar + ảnh + Knowledge Facts (20–21/10/2026)
 
 **Status: COMPLETE — đã chạy thử trên server; chờ các lượt chạy thật đầu tiên (xem "Theo dõi")**
