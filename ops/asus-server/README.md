@@ -45,3 +45,19 @@ Kept on `main` by `sync-venho-ai-studio.sh` (cron `*/5`), fast-forward only.
   ever have to re-checkout (back them up, re-copy, `git update-index --skip-worktree`).
 - `venho-studio-pull.timer` (an older `git pull` every hour) is disabled as
   redundant (2026-10-21); the unit files are kept.
+
+## VENHO OS Dashboard alerts (2026-10-22)
+
+Every alert goes to the Growth Telegram bot through `alert-state.sh`:
+- An alert is sent once per problem, not once per timer tick.
+- A ✅ message is sent when the problem clears.
+- State is kept in `~/venho/state/alerts/`.
+
+| File | Installed at | Alerts on |
+|---|---|---|
+| `deploy-venho-os.sh` | `~/venho/deploy-venho-os.sh` (`venho-os-deploy.timer`, every 15 min) | Checkout cannot fast-forward to main (side branch, unpushed commits); build failed (rolled back); service down after deploy; GitHub fetch failing for 1 h |
+| `venho-os-watch.sh` + `.service`/`.timer` | `~/venho/scripts/`, `~/.config/systemd/user/` (every 5 min) | `127.0.0.1:3000/login` not answering 200 twice in a row |
+| `alert-state.sh` | `~/venho/scripts/` | Helper sourced by both |
+
+Never `git reset` the venho-os checkout to clear a "blocked" alert: the
+alert means commits exist there that main does not have.

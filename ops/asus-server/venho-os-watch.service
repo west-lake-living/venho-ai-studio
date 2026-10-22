@@ -1,0 +1,7 @@
+[Unit]
+Description=Probe the VENHO OS Dashboard and alert on Telegram when it stops answering
+
+[Service]
+Type=oneshot
+ExecStart=%h/venho/scripts/venho-os-watch.sh
+SuccessExitStatus=1
