@@ -82,7 +82,7 @@ Chỉ làm bước này khi Bước 1 đã xác nhận chốt `test` nằm trư�
 1. Scenario phải đang **ON** (scheduling bật).
 2. Nhờ Harry, hoặc Claude Code theo lời Harry, chạy trên server:
    ```
-   ssh asus-server 'bash ~/venho/growth-runtime/venho-ai-studio/ops/asus-server/make-signature-test.sh'
+   ssh asus-server '~/venho/scripts/make-signature-test.sh'
    ```
    Script gửi 2 request:
    - `test-sigcheck-<thời gian>-good`: ký đúng;
