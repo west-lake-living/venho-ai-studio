@@ -160,9 +160,27 @@
         "source_uri": "https://news.google.com/rss/articles/CBMingFBVV95cUxPcGw3LUs1R0t0WEpXZ2F5RzI3eWUtRXMxR1BLNGdzUnBRUG1LMzdVeDhxS3BJb09uTnJ2eG56c2tIUVB1cFNaV2lKQnROMDczbG5qTERRLTYwRUhVV1hYd0JvQUlrNWtoanFTMW9taUVxRlFLSHhMTkpvV1VTaGF3d25fY3Q5VWNvNzhBeWhhSmY2Z0daa3ZPY0lBWFk4dw?oc=5",
         "source_name": "Báo Hànộimới",
         "published_at": "2026-10-17T04:23:00+00:00"
+      },
+      {
+        "title": "Vòng sơ khảo cuộc thi 'Giọng hát hay Tây Hồ' diễn ra tại cơ sở",
+        "source_uri": "https://news.google.com/rss/articles/CBMihgFBVV95cUxNOWpRTzdYUlk2dTZTdHhsVTd1dW9INlJnT2UtSUNPOWV0N1lFWWV4ME9yeVRMT0dlSlJEdU9TVkh3Vlh5THZWbmZsNk00clVCMzVvXzNfMGY3d3J3WUZ4SHJBLWgzMFZhRkY4NzVpM0J3WjJGZEFMeTV5U0FmZG94b3BOM0tZUQ?oc=5",
+        "source_name": "tin.skydoor.net",
+        "published_at": "2026-10-20T07:00:00+00:00"
+      },
+      {
+        "title": "Phường Tây Hồ: sẵn sàng cho vòng Chung khảo Cuộc thi “Giọng hát hay” năm 2026",
+        "source_uri": "https://tayho.hanoi.gov.vn/van-hoa-xa-hoi/phuong-tay-ho-san-sang-cho-vong-chung-khao-cuoc-thi-giong-hat-hay-nam-2026-2697261020102906506.htm",
+        "source_name": "Cổng TTĐT phường Tây Hồ",
+        "published_at": null
+      },
+      {
+        "title": "Phường Tây Hồ: 30 thí sinh xuất sắc giành quyền vào vòng Chung khảo Cuộc thi “Giọng hát hay Tây Hồ” năm 2026",
+        "source_uri": "https://tayho.hanoi.gov.vn/van-hoa-xa-hoi/phuong-tay-ho-30-thi-sinh-xuat-sac-gianh-quyen-vao-vong-chung-khao-cuoc-thi-giong-hat-hay-tay-ho-nam-2026-2697261017221952523.htm",
+        "source_name": "Cổng TTĐT phường Tây Hồ",
+        "published_at": null
       }
     ],
-    "source_count": 1,
+    "source_count": 4,
     "relevance_score": 0.6,
     "status": "needs_human_approval",
     "rejection_reason": null,
@@ -170,7 +188,8 @@
     "verified_by_human": true,
     "scanned_at": "2026-10-21T09:15:42.026670+00:00",
     "approved_by": "hpham1504@gmail.com",
-    "approved_at": "2026-10-21T09:39:53.883533+00:00"
+    "approved_at": "2026-10-21T09:39:53.883533+00:00",
+    "last_seen_at": "2026-10-22T12:19:33.300482+00:00"
   },
   {
     "id": "event-undated-d26638befc",
@@ -434,5 +453,46 @@
     "scanned_at": "2026-10-22T00:19:29.204740+00:00",
     "approved_by": "hpham1504@gmail.com",
     "approved_at": "2026-10-22T02:15:39.578516+00:00"
+  },
+  {
+    "id": "gnews-21f3e928f33fe256",
+    "title": "5 địa điểm vui chơi hấp dẫn ở Hà Nội dịp 20/10",
+    "source_uri": "https://news.google.com/rss/articles/CBMimgFBVV95cUxOZkhsbTZPUmtkN3F4R1FNVVhZUTJSNlNtemZrZV9OTGpVQUlHbVJrUXNpVDF2c0hOcktWOVJNSTlCbWk4V2I1bmFmeWlGSDFacEttSHU2bGNQYy1CQjk4cjZ5QjMyM19Oa01zWUlkQW41d0ZMRGNac3ZySzVqNl85d3ZoSnRLdXZ1MlZfcVVJTVUyZXk2NWxSNE1B?oc=5",
+    "source_name": "Tin tức 24h",
+    "published_at": "2026-10-18T00:00:00+00:00",
+    "snippet": "Tin tức 24h",
+    "relevance_hint": 0.0,
+    "collector": "google_news",
+    "query": "\"Hồ Tây\" lễ hội",
+    "geographic": "hanoi",
+    "thematic": "travel_stay",
+    "actionability": "direct",
+    "type": "lifestyle_trend",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "travel_accommodation",
+      "culture_festival_positive"
+    ],
+    "is_event": false,
+    "event_name": null,
+    "event_start": null,
+    "event_end": null,
+    "venue": "Hà Nội",
+    "westlake_area": false,
+    "sources": [
+      {
+        "title": "5 địa điểm vui chơi hấp dẫn ở Hà Nội dịp 20/10",
+        "source_uri": "https://news.google.com/rss/articles/CBMimgFBVV95cUxOZkhsbTZPUmtkN3F4R1FNVVhZUTJSNlNtemZrZV9OTGpVQUlHbVJrUXNpVDF2c0hOcktWOVJNSTlCbWk4V2I1bmFmeWlGSDFacEttSHU2bGNQYy1CQjk4cjZ5QjMyM19Oa01zWUlkQW41d0ZMRGNac3ZySzVqNl85d3ZoSnRLdXZ1MlZfcVVJTVUyZXk2NWxSNE1B?oc=5",
+        "source_name": "Tin tức 24h",
+        "published_at": "2026-10-18T00:00:00+00:00"
+      }
+    ],
+    "source_count": 1,
+    "relevance_score": 0.7,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "fast_lane": false,
+    "verified_by_human": false,
+    "scanned_at": "2026-10-22T12:19:33.300482+00:00"
   }
 ]
