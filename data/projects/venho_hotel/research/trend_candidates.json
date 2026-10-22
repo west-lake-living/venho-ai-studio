@@ -259,5 +259,168 @@
     "fast_lane": false,
     "verified_by_human": false,
     "scanned_at": "2026-10-21T12:19:41.389729+00:00"
+  },
+  {
+    "id": "gnews-24a9111b90c213ab",
+    "title": "Trà sen Bách Diệp Tây Hồ đan hương dệt vị",
+    "source_uri": "https://news.google.com/rss/articles/CBMiSEFVX3lxTFB4Q2tHMTJUUVZZRlBFUEc2WHNvcDQwZ3BOSElsd3ZuUHpsZjUwejhPNlpmalhaelYxaTkzU1AxTVVxOEQ3ankyZg?oc=5",
+    "source_name": "VTVgo",
+    "published_at": "2026-10-21T00:00:00+00:00",
+    "snippet": "VTVgo",
+    "relevance_hint": 0.0,
+    "collector": "google_news",
+    "query": "\"Tây Hồ\" chợ hoa",
+    "geographic": "westlake",
+    "thematic": "food_local",
+    "actionability": "direct",
+    "type": "lifestyle_trend",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "food_culinary",
+      "hanoi_westlake_local"
+    ],
+    "is_event": false,
+    "event_name": null,
+    "event_start": null,
+    "event_end": null,
+    "venue": "Tây Hồ, Hà Nội",
+    "westlake_area": true,
+    "sources": [
+      {
+        "title": "Trà sen Bách Diệp Tây Hồ đan hương dệt vị",
+        "source_uri": "https://news.google.com/rss/articles/CBMiSEFVX3lxTFB4Q2tHMTJUUVZZRlBFUEc2WHNvcDQwZ3BOSElsd3ZuUHpsZjUwejhPNlpmalhaelYxaTkzU1AxTVVxOEQ3ankyZg?oc=5",
+        "source_name": "VTVgo",
+        "published_at": "2026-10-21T00:00:00+00:00"
+      }
+    ],
+    "source_count": 1,
+    "relevance_score": 0.8,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "fast_lane": false,
+    "verified_by_human": false,
+    "scanned_at": "2026-10-22T00:19:29.204740+00:00"
+  },
+  {
+    "id": "gnews-a56bc323fce4392e",
+    "title": "Độc lạ Hồ Tây, người trẻ xếp hàng thưởng thức khoai tây chiên \"tắm bột\"",
+    "source_uri": "https://news.google.com/rss/articles/CBMitwFBVV95cUxNZWg1NVZYemJQdzFndzZuYjhUcUVKMmUyaUczZ210OG1uQlhBS3FBVlhYbUVDZnNKQ215N0I3OEZyME9PbU56YU45aWhuOWx5YW9tWWhvd0pPT3lRVWZ0d3labmRaeDdLUFR3dlM4UnVvakNwWGhSSGtqSGVrVXp5eWJDLUQzQjEzelR0MkdyYkFqMENoLU85UXY4ZEh4S1lMVTZJelhZM0piR3pDNlRBNDVid1lUYlU?oc=5",
+    "source_name": "Laodong.vn",
+    "published_at": "2026-10-19T01:38:02+00:00",
+    "snippet": "Laodong.vn",
+    "relevance_hint": 0.0,
+    "collector": "google_news",
+    "query": "\"Trích Sài\"",
+    "geographic": "westlake",
+    "thematic": "food_local",
+    "actionability": "direct",
+    "type": "lifestyle_trend",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "food_culinary"
+    ],
+    "is_event": false,
+    "event_name": null,
+    "event_start": null,
+    "event_end": null,
+    "venue": "Hồ Tây",
+    "westlake_area": true,
+    "sources": [
+      {
+        "title": "Độc lạ Hồ Tây, người trẻ xếp hàng thưởng thức khoai tây chiên \"tắm bột\"",
+        "source_uri": "https://news.google.com/rss/articles/CBMitwFBVV95cUxNZWg1NVZYemJQdzFndzZuYjhUcUVKMmUyaUczZ210OG1uQlhBS3FBVlhYbUVDZnNKQ215N0I3OEZyME9PbU56YU45aWhuOWx5YW9tWWhvd0pPT3lRVWZ0d3labmRaeDdLUFR3dlM4UnVvakNwWGhSSGtqSGVrVXp5eWJDLUQzQjEzelR0MkdyYkFqMENoLU85UXY4ZEh4S1lMVTZJelhZM0piR3pDNlRBNDVid1lUYlU?oc=5",
+        "source_name": "Laodong.vn",
+        "published_at": "2026-10-19T01:38:02+00:00"
+      }
+    ],
+    "source_count": 1,
+    "relevance_score": 0.8,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "fast_lane": false,
+    "verified_by_human": false,
+    "scanned_at": "2026-10-22T00:19:29.204740+00:00"
+  },
+  {
+    "id": "event-undated-205f8ef378",
+    "title": "Tây Hồ tổ chức ngày hội chăm sóc sức khỏe cho người cao tuổi",
+    "source_uri": "https://news.google.com/rss/articles/CBMimgFBVV95cUxQYzVnSF9xajhQcV8xZXdDY3ZERURPU01MdE1MM0NoQkhPWThsbE1hbVZUWjFweFNJMjFQYXM5REw3LXF1Y1JzOUVqcnl6dnR1Mmt5RS14cW5KVERmTi1mTGozcERpdmJ4V2ZKckZrMFYzbUljZGV4eElYa3BMb19ZTVh2OTlSX3NVLXlnS2VHVGpFN3lqQU1reFJB?oc=5",
+    "source_name": "Tạp chí Người Hà Nội",
+    "published_at": "2026-10-16T01:22:00+00:00",
+    "snippet": "Tạp chí Người Hà Nội",
+    "relevance_hint": 0.0,
+    "collector": "google_news",
+    "query": "\"Tây Hồ\" chợ hoa",
+    "geographic": "westlake",
+    "thematic": "unrelated",
+    "actionability": "stretch",
+    "type": "feature_story",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local"
+    ],
+    "is_event": true,
+    "event_name": "Ngày hội chăm sóc sức khỏe cho người cao tuổi",
+    "event_start": null,
+    "event_end": null,
+    "venue": "Tây Hồ, Hà Nội",
+    "westlake_area": true,
+    "sources": [
+      {
+        "title": "Tây Hồ tổ chức ngày hội chăm sóc sức khỏe cho người cao tuổi",
+        "source_uri": "https://news.google.com/rss/articles/CBMimgFBVV95cUxQYzVnSF9xajhQcV8xZXdDY3ZERURPU01MdE1MM0NoQkhPWThsbE1hbVZUWjFweFNJMjFQYXM5REw3LXF1Y1JzOUVqcnl6dnR1Mmt5RS14cW5KVERmTi1mTGozcERpdmJ4V2ZKckZrMFYzbUljZGV4eElYa3BMb19ZTVh2OTlSX3NVLXlnS2VHVGpFN3lqQU1reFJB?oc=5",
+        "source_name": "Tạp chí Người Hà Nội",
+        "published_at": "2026-10-16T01:22:00+00:00"
+      }
+    ],
+    "source_count": 1,
+    "relevance_score": 0.6,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "fast_lane": false,
+    "verified_by_human": false,
+    "scanned_at": "2026-10-22T00:19:29.204740+00:00"
+  },
+  {
+    "id": "gnews-10dcb2a121b2dd33",
+    "title": "Không gian văn hóa làng nghề đúc đồng Ngũ Xã qua ghi chép trong thư tịch cổ",
+    "source_uri": "https://news.google.com/rss/articles/CBMitwFBVV95cUxOZ25TbDdkVEtCSlZ6QVVyUnVHNFdYU2Z3WjY3Z011QkZFNWpDeFpDVjRiQ3daelFYaVZiMjAyd2x5c3g5QUk2YnEwdTdRcmNUaWxOejlpQzB2a21SSXNvSzdIbU92bW4wQXl4blhySUNyREl5NzdpcWpuOUdoVVJLVGRrZWZWM1U4ODJfaTN5WTlWNUJkaUh6emRHcFhJRE02VGdsVE95SUNCZUFBVk16dV9NQnhHV2M?oc=5",
+    "source_name": "vanhoanghethuat.vn",
+    "published_at": "2026-10-21T04:27:00+00:00",
+    "snippet": "vanhoanghethuat.vn",
+    "relevance_hint": 0.0,
+    "collector": "google_news",
+    "query": "\"Trúc Bạch\" lễ hội",
+    "geographic": "westlake",
+    "thematic": "lifestyle_culture",
+    "actionability": "direct",
+    "type": "feature_story",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "culture_festival_positive"
+    ],
+    "is_event": false,
+    "event_name": null,
+    "event_start": null,
+    "event_end": null,
+    "venue": "Làng đúc đồng Ngũ Xã",
+    "westlake_area": true,
+    "sources": [
+      {
+        "title": "Không gian văn hóa làng nghề đúc đồng Ngũ Xã qua ghi chép trong thư tịch cổ",
+        "source_uri": "https://news.google.com/rss/articles/CBMitwFBVV95cUxOZ25TbDdkVEtCSlZ6QVVyUnVHNFdYU2Z3WjY3Z011QkZFNWpDeFpDVjRiQ3daelFYaVZiMjAyd2x5c3g5QUk2YnEwdTdRcmNUaWxOejlpQzB2a21SSXNvSzdIbU92bW4wQXl4blhySUNyREl5NzdpcWpuOUdoVVJLVGRrZWZWM1U4ODJfaTN5WTlWNUJkaUh6emRHcFhJRE02VGdsVE95SUNCZUFBVk16dV9NQnhHV2M?oc=5",
+        "source_name": "vanhoanghethuat.vn",
+        "published_at": "2026-10-21T04:27:00+00:00"
+      }
+    ],
+    "source_count": 1,
+    "relevance_score": 0.6,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "fast_lane": false,
+    "verified_by_human": false,
+    "scanned_at": "2026-10-22T00:19:29.204740+00:00"
   }
 ]
