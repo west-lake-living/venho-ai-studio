@@ -513,5 +513,62 @@
     "fast_lane": false,
     "verified_by_human": false,
     "scanned_at": "2026-10-22T12:19:33.300482+00:00"
+  },
+  {
+    "id": "event-undated-62ff9ffa01",
+    "title": "Giọng hát hay Tây Hồ 2026: Kết nối niềm đam mê âm nhạc từ 6 đến 75 tuổi",
+    "source_uri": "https://news.google.com/rss/articles/CBMimAFBVV95cUxQNERxVV9rUHFrTHNPVUt3NHlHNUh2dmMtR2owanNYcmxxOThVN0FrMXEyQXBvZ3R1VUZHYVBQQmpTdTVocExfbzVCcElXZkk4TmR3cE9Bc1h3bEVIQXJac1NVQzI0YjczVDZ2SW55VkxSbFpKQ2Nlc2xmT2VROWpEd3FqNko4ZmlrTmRoLTRyaE03emdZNERQNA?oc=5",
+    "source_name": "Vietnam.vn",
+    "published_at": "2026-10-23T13:18:19+00:00",
+    "snippet": "Vietnam.vn",
+    "relevance_hint": 0.0,
+    "collector": "google_news",
+    "query": "\"Hồ Tây\" lễ hội",
+    "geographic": "westlake",
+    "thematic": "lifestyle_culture",
+    "actionability": "adjacent",
+    "type": "cultural_event",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "culture_festival_positive"
+    ],
+    "is_event": true,
+    "event_name": "Hội thi Giọng hát hay Tây Hồ 2026",
+    "event_start": null,
+    "event_end": null,
+    "venue": "Quận Tây Hồ",
+    "westlake_area": true,
+    "sources": [
+      {
+        "title": "Giọng hát hay Tây Hồ 2026: Kết nối niềm đam mê âm nhạc từ 6 đến 75 tuổi",
+        "source_uri": "https://news.google.com/rss/articles/CBMimAFBVV95cUxQNERxVV9rUHFrTHNPVUt3NHlHNUh2dmMtR2owanNYcmxxOThVN0FrMXEyQXBvZ3R1VUZHYVBQQmpTdTVocExfbzVCcElXZkk4TmR3cE9Bc1h3bEVIQXJac1NVQzI0YjczVDZ2SW55VkxSbFpKQ2Nlc2xmT2VROWpEd3FqNko4ZmlrTmRoLTRyaE03emdZNERQNA?oc=5",
+        "source_name": "Vietnam.vn",
+        "published_at": "2026-10-23T13:18:19+00:00"
+      },
+      {
+        "title": "Giọng hát hay Tây Hồ năm 2026: Hội tụ Ban giám khảo uy tín, giàu kinh nghiệm và chuyên môn",
+        "source_uri": "https://tayho.hanoi.gov.vn/van-hoa-xa-hoi/giong-hat-hay-tay-ho-nam-2026-hoi-tu-ban-giam-khao-uy-tin-giau-kinh-nghiem-va-chuyen-mon-2697261022231100881.htm",
+        "source_name": "Cổng TTĐT phường Tây Hồ",
+        "published_at": null
+      },
+      {
+        "title": "Phường Tây Hồ: sẵn sàng cho vòng Chung khảo Cuộc thi “Giọng hát hay” năm 2026",
+        "source_uri": "https://tayho.hanoi.gov.vn/van-hoa-xa-hoi/phuong-tay-ho-san-sang-cho-vong-chung-khao-cuoc-thi-giong-hat-hay-nam-2026-2697261020102906506.htm",
+        "source_name": "Cổng TTĐT phường Tây Hồ",
+        "published_at": null
+      }
+    ],
+    "source_count": 3,
+    "event_aliases": [
+      "Cuộc thi Giọng hát hay Tây Hồ năm 2026",
+      "Vòng Chung khảo Cuộc thi Giọng hát hay Tây Hồ năm 2026"
+    ],
+    "relevance_score": 0.6,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "fast_lane": false,
+    "verified_by_human": false,
+    "scanned_at": "2026-10-24T00:19:02.489472+00:00"
   }
 ]
