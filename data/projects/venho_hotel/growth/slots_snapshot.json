@@ -18,10 +18,10 @@
     "content_package_id": null
   },
   {
-    "slot_date": "2026-10-24",
+    "slot_date": "2026-10-31",
     "day": "saturday",
-    "status": "COMPLETED",
-    "content_package_id": "334a5a42-d071-43f5-8b49-f15f68e853a7"
+    "status": "NOT_CREATED",
+    "content_package_id": null
   },
   {
     "slot_date": "2026-11-02",
@@ -42,7 +42,7 @@
     "content_package_id": null
   },
   {
-    "slot_date": "2026-10-31",
+    "slot_date": "2026-11-07",
     "day": "saturday",
     "status": "NOT_CREATED",
     "content_package_id": null
