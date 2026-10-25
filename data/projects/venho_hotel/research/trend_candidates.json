@@ -660,5 +660,61 @@
     "fast_lane": false,
     "verified_by_human": false,
     "scanned_at": "2026-10-25T00:18:09.794981+00:00"
+  },
+  {
+    "id": "event-2026-10-25-77fa913e9b",
+    "title": "Hơn 2.000 vận động viên tranh tài tại giải chạy “Run For Love”",
+    "source_uri": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxPdGVkdExwSHUwcG1wd3QzT3A1b0k5ME5wRDFQb0VIWG04Z0hTeGxJenFNWUpHYVFRZWMxa3oyRUNRQXg2UnRKenB1UkRmS05sd1c0Sk5RMmxQMVBBZjZBZ3E3RHdOZ1lBSWM2ZXphMm1qeWlVTkhocHgwQjFESktycGs0ZkI1c09JR0lJ?oc=5",
+    "source_name": "Vietnam.vn",
+    "published_at": "2026-10-25T10:55:19+00:00",
+    "snippet": "Vietnam.vn",
+    "relevance_hint": 0.0,
+    "collector": "google_news",
+    "query": "\"Hồ Tây\" lễ hội",
+    "geographic": "westlake",
+    "thematic": "lifestyle_culture",
+    "actionability": "direct",
+    "type": "cultural_event",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "culture_festival_positive"
+    ],
+    "is_event": true,
+    "event_name": "Giải chạy Run For Love 2026",
+    "event_start": "2026-10-25",
+    "event_end": "2026-10-25",
+    "venue": "Hồ Tây, Hà Nội",
+    "westlake_area": true,
+    "sources": [
+      {
+        "title": "Hơn 2.000 vận động viên tranh tài tại giải chạy “Run For Love”",
+        "source_uri": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxPdGVkdExwSHUwcG1wd3QzT3A1b0k5ME5wRDFQb0VIWG04Z0hTeGxJenFNWUpHYVFRZWMxa3oyRUNRQXg2UnRKenB1UkRmS05sd1c0Sk5RMmxQMVBBZjZBZ3E3RHdOZ1lBSWM2ZXphMm1qeWlVTkhocHgwQjFESktycGs0ZkI1c09JR0lJ?oc=5",
+        "source_name": "Vietnam.vn",
+        "published_at": "2026-10-25T10:55:19+00:00"
+      },
+      {
+        "title": "Run For Love 2026: Điểm hẹn của những bước chạy yêu thương trong hành trình “Chạm Thu Hà Nội”",
+        "source_uri": "https://news.google.com/rss/articles/CBMixgFBVV95cUxOWWNOei1PM0Q1NHlCaHVka215cUIzUW94a3hJQmstVkFpU3BnWmVPcmhhNUFOaGdiQ3pRZG02Tmp5Z2FUZnZxMHdUdC1ub1RZUHp5cVFnNFVNUGFnenFwZng2SHdDLUxIQWFCTjROZDlDbld1aUxDcjVkNkJwakdwSVNVaHpUY1BrZEY4STZ5cl9tOEctTzdwWjF4Qm9nOHljeUJtX20zS05za25qXzVQTjhRajJ0NHRDX3dSdGg3M3VyemxvTVE?oc=5",
+        "source_name": "HTV",
+        "published_at": "2026-10-25T11:13:00+00:00"
+      },
+      {
+        "title": "Hơn 2.000 vận động viên tranh tài tại giải chạy “Run For Love” của Vietnam Airlines",
+        "source_uri": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxPbVhMS1VBSUNpT1Y0VGk0LUtOQUNzM3NSWjcyaTdvNEdfcUdneEhDUmxKZHpHR1RBaVBlVnE5VWI3Q3VhZFA1S2VjSTNUODNuUFk0SllNb2dIZXN6VXd1UFVON0h4cURnN2RCd1RWSXV3NmdVYXRPeVM1ZVI4VUNoZnZVZmdXVHRUamdOcUlVV0laSlZnY2l5dzNTa1FxOE4tR0lNVXgxNXlCVDRhaUQyOWpGUk41bWV4WWsxblBDWlA2RDg?oc=5",
+        "source_name": "Báo Xây dựng",
+        "published_at": "2026-10-25T10:32:00+00:00"
+      }
+    ],
+    "source_count": 3,
+    "event_aliases": [
+      "Giải chạy Run For Love của Vietnam Airlines"
+    ],
+    "relevance_score": 0.6,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "fast_lane": false,
+    "verified_by_human": false,
+    "scanned_at": "2026-10-25T12:18:52.498709+00:00"
   }
 ]
