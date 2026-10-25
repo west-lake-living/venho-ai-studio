@@ -1,0 +1,48 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "project": "venho_hotel",
+  "content_type": "instagram_post",
+  "target_language": "vi",
+  "generated_at": "2026-10-25T13:30:28.656247+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_WESTLAKE_DNA.json",
+      "dna_version": "1.2",
+      "hash": "sha256:61f198440f5480c3ab7b63c38c97553d7cf072838b82dcdd5e4d802521e67a38"
+    }
+  ],
+  "source_prompt": {
+    "file": "data/projects/venho_hotel/prompts/content/WESTLAKE__instagram-tr-sen-b-ch-di-p-t-y-h-an-h-ng-d-t-v__CONTENT_PROMPT_v1.0.json",
+    "prompt_id": "westlake__content__instagram-tr-sen-b-ch-di-p-t-y-h-an-h-ng-d-t-v",
+    "prompt_version": "1.0"
+  },
+  "generator": {
+    "provider": "mock",
+    "model": "deterministic-social-builder",
+    "temperature": 0.6
+  },
+  "title": "Trà sen Bách Diệp: khi mùa sen Hồ Tây ở lại trong ấm trà",
+  "hook": "Mùa sen Hồ Tây đã qua từ lâu.\nNhưng hương sen thì vẫn ở lại, trong ấm trà.",
+  "body": "Sen Bách Diệp là giống sen trăm cánh gắn với các đầm quanh vùng Tây Hồ, cũng là nguyên liệu của nghề ướp trà sen lâu đời ở đây. Hoa chỉ nở vào mùa hè, nhưng vị trà thì theo người ta đi hết cả năm, đậm nhất là vào những chiều trời dịu như lúc này.\n\nMột tách trà sen không hợp với sự vội vàng. Nước còn nóng, hương bốc lên trước khi kịp uống, và tự nhiên người ta ngồi lâu hơn một chút.\n\nNgoài kia, mặt hồ phẳng, màu nước ngả xanh ngọc trầm. Trời nhiều mây, ánh sáng mềm, nhìn được rất xa sang phía những toà nhà bên kia hồ. Hàng cây ven đường chỉ đủ thưa để lọt một khoảng hồ rộng vào tầm mắt.\n\nVen Hồ Hotel nằm trên đường Nguyễn Đình Thi, cách mặt hồ vài bước chân. Một buổi chiều ở đây, chỉ cần ấm trà và khung cửa nhìn ra Hồ Tây là vừa đủ.",
+  "cta": "Bạn đang tính những ngày ở Hà Nội? Nhắn cho Ven Hồ Hotel để xem phòng trống nhé.",
+  "hashtags": [
+    "#VenHoHotelHanoi",
+    "#TraSenHoTay",
+    "#HoTay",
+    "#WestLakeHanoi",
+    "#KhamPhaHoTay",
+    "#KhachSanHoTay",
+    "#HaNoi"
+  ],
+  "visual_note": null,
+  "contract_refs": null,
+  "payload": {},
+  "status": "draft",
+  "validation": {
+    "required": true,
+    "status": "pending",
+    "report_file": null,
+    "notes": []
+  }
+}

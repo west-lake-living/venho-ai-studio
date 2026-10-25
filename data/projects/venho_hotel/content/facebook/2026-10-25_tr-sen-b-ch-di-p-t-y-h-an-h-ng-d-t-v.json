@@ -1,0 +1,46 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "project": "venho_hotel",
+  "content_type": "facebook_post",
+  "target_language": "vi",
+  "generated_at": "2026-10-25T13:29:58.511882+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_WESTLAKE_DNA.json",
+      "dna_version": "1.2",
+      "hash": "sha256:61f198440f5480c3ab7b63c38c97553d7cf072838b82dcdd5e4d802521e67a38"
+    }
+  ],
+  "source_prompt": {
+    "file": "data/projects/venho_hotel/prompts/content/WESTLAKE__facebook-tr-sen-b-ch-di-p-t-y-h-an-h-ng-d-t-v__CONTENT_PROMPT_v1.0.json",
+    "prompt_id": "westlake__content__facebook-tr-sen-b-ch-di-p-t-y-h-an-h-ng-d-t-v",
+    "prompt_version": "1.0"
+  },
+  "generator": {
+    "provider": "mock",
+    "model": "deterministic-social-builder",
+    "temperature": 0.6
+  },
+  "title": "Trà sen Bách Diệp Tây Hồ: hương của mùa hè, pha vào mùa lạnh",
+  "hook": "Mùa sen Hồ Tây khép lại từ giữa hè. Nhưng hương sen thì chưa đi đâu cả, nó đang nằm trong những gói trà ướp.",
+  "body": "Sen Bách Diệp là giống sen trăm cánh của những đầm quanh vùng Quảng An, Tây Hồ. Bông to, cánh dày, nhưng thứ người làm trà cần lại không phải cánh hoa, mà là gạo sen, những hạt trắng li ti nằm sâu bên trong.\n\nSen được hái từ sớm, lúc bông còn chưa nở hẳn. Tách cánh, lấy gạo, rồi ướp cùng trà qua nhiều lượt. Ướp xong đem sấy, sấy xong lại ướp. Cả quá trình kéo dài nhiều ngày, chỉ để hương sen kịp ngấm vào từng cánh trà.\n\nVì vậy trà sen Tây Hồ thường được pha vào mùa thu đông, khi đầm sen ngoài kia đã tàn từ lâu. Nước trà rót ra, hương sen bung lên trước, vị trà theo sau, hai thứ đan vào nhau rồi ở lại khá lâu trong cổ.\n\nPha một ấm như thế rồi nhìn ra mặt hồ cũng là cách hợp lý để dùng một buổi chiều. Nước hồ những ngày này phẳng, màu xanh ngả xám chứ không trong veo như người ta vẫn tưởng. Mây che bớt nắng nên ánh sáng rất dịu, nhìn rõ được tận dãy nhà cao bên kia bờ. Chỉ có thế, và cũng chẳng cần thêm gì.\n\nVen Hồ Hotel nằm trên đường Nguyễn Đình Thi, cách mép nước vài bước chân, nên khung cảnh ấy gần như lúc nào cũng có sẵn ngoài cửa sổ.",
+  "cta": "Nếu bạn đang tính một chuyến Hà Nội trong thời gian tới, nhắn tin cho Ven Hồ Hotel để xem phòng hướng hồ còn trống những ngày nào nhé.",
+  "hashtags": [
+    "#VenHoHotelHanoi",
+    "#TraSenTayHo",
+    "#HoTay",
+    "#KhachSanViewHoTay",
+    "#HanoiTravel"
+  ],
+  "visual_note": null,
+  "contract_refs": null,
+  "payload": {},
+  "status": "draft",
+  "validation": {
+    "required": true,
+    "status": "pending",
+    "report_file": null,
+    "notes": []
+  }
+}

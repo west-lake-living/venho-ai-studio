@@ -1,0 +1,49 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "project": "venho_hotel",
+  "content_type": "instagram_post",
+  "target_language": "vi",
+  "generated_at": "2026-10-25T13:06:53.591779+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_OUTSIDE_DNA.json",
+      "dna_version": "1.2",
+      "hash": "sha256:aaad1f90ca3a80fbefe9dc168823190c89ef923952e96bd2d902e73f0c5ec577"
+    }
+  ],
+  "source_prompt": {
+    "file": "data/projects/venho_hotel/prompts/content/OUTSIDE__instagram-skyon9-rooftop-west-lake-t-y-h-h-n-i__CONTENT_PROMPT_v1.0.json",
+    "prompt_id": "outside__content__instagram-skyon9-rooftop-west-lake-t-y-h-h-n-i",
+    "prompt_version": "1.0"
+  },
+  "generator": {
+    "provider": "mock",
+    "model": "deterministic-social-builder",
+    "temperature": 0.6
+  },
+  "title": "Skyon9 Rooftop: một buổi chiều nhìn Hồ Tây từ trên cao",
+  "hook": "Có những ngày trời trong đến mức chỉ cần lên cao thêm vài tầng là thấy cả Hồ Tây.",
+  "body": "Skyon9 Rooftop ở Tây Hồ là kiểu chỗ hợp với những buổi chiều như vậy. Trời xanh, nắng sáng rõ, mặt hồ phía dưới ngả màu xanh xám, còn phía bên kia là mái nhà thành phố xếp cao thấp xen nhau.\n\nKhông gian trên này thoáng, lộng gió, nhìn ra được một khoảng rất rộng. Thực đơn cũng nhiều lựa chọn, nên dù bạn chỉ muốn uống một ly rồi ngồi nhìn hồ hay ở lại lâu hơn cho tới lúc nắng dịu, mọi thứ đều dễ chịu.\n\nĐường ra hồ bên dưới có hàng cây lớn đổ bóng, đi bộ một đoạn là sang được những góc quen của Tây Hồ. Từ Ven Hồ Hotel trên Nguyễn Đình Thi, chuyện ghé một quán rooftop buổi chiều rồi thong thả quay về phòng là điều rất dễ sắp xếp trong lịch trình Hà Nội của bạn.",
+  "cta": "Nếu bạn đang tìm một chỗ nghỉ gần hồ để bắt đầu những buổi chiều như thế, nhắn tin cho Ven Hồ Hotel để xem phòng trống nhé.",
+  "hashtags": [
+    "#VenHoHotelHanoi",
+    "#HoTay",
+    "#WestLakeHanoi",
+    "#KhamPhaHoTay",
+    "#KhachSanViewHoTay",
+    "#NguyenDinhThi",
+    "#HaNoi",
+    "#HanoiTravel"
+  ],
+  "visual_note": null,
+  "contract_refs": null,
+  "payload": {},
+  "status": "draft",
+  "validation": {
+    "required": true,
+    "status": "pending",
+    "report_file": null,
+    "notes": []
+  }
+}

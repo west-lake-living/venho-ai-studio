@@ -1,0 +1,46 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "project": "venho_hotel",
+  "content_type": "facebook_post",
+  "target_language": "vi",
+  "generated_at": "2026-10-25T13:17:24.773417+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_OUTSIDE_DNA.json",
+      "dna_version": "1.2",
+      "hash": "sha256:aaad1f90ca3a80fbefe9dc168823190c89ef923952e96bd2d902e73f0c5ec577"
+    }
+  ],
+  "source_prompt": {
+    "file": "data/projects/venho_hotel/prompts/content/OUTSIDE__facebook-gi-heo-may-se-l-nh-th-i-d-c-ng-thanh-ni-n-s-ng-u-tu-n__CONTENT_PROMPT_v1.0.json",
+    "prompt_id": "outside__content__facebook-gi-heo-may-se-l-nh-th-i-d-c-ng-thanh-ni-n-s-ng-u-tu-n",
+    "prompt_version": "1.0"
+  },
+  "generator": {
+    "provider": "mock",
+    "model": "deterministic-social-builder",
+    "temperature": 0.6
+  },
+  "title": "Sáng đầu tuần trên đường Thanh Niên",
+  "hook": "Gió heo may về, đoạn đường đẹp nhất để đi bộ ở Hà Nội vào sáng thứ Hai có lẽ vẫn là Thanh Niên.",
+  "body": "Con đường ấy kẹp giữa hai mặt nước: một bên Hồ Tây rộng, một bên Trúc Bạch nhỏ và tĩnh hơn. Sáng đầu tuần, gió thổi dọc theo đường, lùa qua hàng cây cổ thụ hai bên, nắng lọt xuống từng mảng trên vỉa hè.\n\nNgười đi bộ, người đạp xe, người dừng lại bên lan can nhìn ra mặt hồ một lúc rồi lại đi tiếp. Phía xa, những toà nhà cao tầng của Hà Nội hiện lên sau nền trời trong. Cùng một khung hình mà có cả phần phố và phần hồ.\n\nĐầu tuần thường được mặc định là vội. Nhưng ở đoạn này, mọi thứ chậm hơn một chút. Chỉ cần đi bộ hết chiều dài con đường rồi vòng lại, bạn đã có một buổi sáng khá trọn vẹn trước khi bắt đầu mọi việc khác trong ngày.\n\nTừ Nguyễn Đình Thi, nơi Ven Hồ Hotel nằm, bạn có thể men theo ven hồ để ra Thanh Niên mà không cần gọi xe. Với nhiều khách ở đây, thói quen dễ hình thành nhất chính là dậy sớm hơn bình thường một chút.",
+  "cta": "Nếu bạn đang tính ra Hà Nội vào mùa gió heo may, nhắn cho Ven Hồ Hotel để xem lịch phòng trống những ngày bạn dự định ở lại nhé.",
+  "hashtags": [
+    "#VenHoHotelHanoi",
+    "#HoTay",
+    "#DuongThanhNien",
+    "#WestLakeHanoi",
+    "#HaNoi"
+  ],
+  "visual_note": null,
+  "contract_refs": null,
+  "payload": {},
+  "status": "draft",
+  "validation": {
+    "required": true,
+    "status": "pending",
+    "report_file": null,
+    "notes": []
+  }
+}

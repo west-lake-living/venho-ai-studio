@@ -1,0 +1,118 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "items": [
+    {
+      "id": "2026-10-25_i-b-v-i-ph-t-ra-m-p-h-ng-m-m-t-n-c-s-ng-cu-i-thu",
+      "type": "facebook_post",
+      "source_knowledge_hashes": [
+        "sha256:aaad1f90ca3a80fbefe9dc168823190c89ef923952e96bd2d902e73f0c5ec577"
+      ],
+      "source_prompt_version": "1.0",
+      "target_language": "vi",
+      "generated_at": "2026-10-25T13:03:42.733888+00:00",
+      "status": "draft",
+      "staleness": "current",
+      "markdown": "data/projects/venho_hotel/content/facebook/2026-10-25_i-b-v-i-ph-t-ra-m-p-h-ng-m-m-t-n-c-s-ng-cu-i-thu.md",
+      "json": "data/projects/venho_hotel/content/facebook/2026-10-25_i-b-v-i-ph-t-ra-m-p-h-ng-m-m-t-n-c-s-ng-cu-i-thu.json"
+    },
+    {
+      "id": "2026-10-25_skyon9-rooftop-west-lake-t-y-h-h-n-i",
+      "type": "instagram_post",
+      "source_knowledge_hashes": [
+        "sha256:aaad1f90ca3a80fbefe9dc168823190c89ef923952e96bd2d902e73f0c5ec577"
+      ],
+      "source_prompt_version": "1.0",
+      "target_language": "vi",
+      "generated_at": "2026-10-25T13:06:53.591779+00:00",
+      "status": "draft",
+      "staleness": "current",
+      "markdown": "data/projects/venho_hotel/content/instagram/2026-10-25_skyon9-rooftop-west-lake-t-y-h-h-n-i.md",
+      "json": "data/projects/venho_hotel/content/instagram/2026-10-25_skyon9-rooftop-west-lake-t-y-h-h-n-i.json"
+    },
+    {
+      "id": "2026-10-25_kh-ng-gian-m-i-hai-ph-ng-boutique-y-n-b-nh-tr-n-ng-nguy-n-nh-thi",
+      "type": "instagram_post",
+      "source_knowledge_hashes": [
+        "sha256:7c635dcdc575c74c8263cc1ade2f2b051b2359afc6ca2fc7b55067e64a2cc2f0"
+      ],
+      "source_prompt_version": "1.0",
+      "target_language": "vi",
+      "generated_at": "2026-10-25T13:10:14.013883+00:00",
+      "status": "draft",
+      "staleness": "current",
+      "markdown": "data/projects/venho_hotel/content/instagram/2026-10-25_kh-ng-gian-m-i-hai-ph-ng-boutique-y-n-b-nh-tr-n-ng-nguy-n-nh-thi.md",
+      "json": "data/projects/venho_hotel/content/instagram/2026-10-25_kh-ng-gian-m-i-hai-ph-ng-boutique-y-n-b-nh-tr-n-ng-nguy-n-nh-thi.json"
+    },
+    {
+      "id": "2026-10-25_th-ng-10-h-n-i-kh-ng-ch-c-hoa-s-a-h-y-n-nh-ng-n-i-n-y-c-m-nh-n-tr-n-v-n-h-ng-s-c-m-a-thu",
+      "type": "instagram_post",
+      "source_knowledge_hashes": [
+        "sha256:e01fc1fa26c2318ce93d3a670067bac2ccbf9dc329a141ea906e80fb108c673f"
+      ],
+      "source_prompt_version": "1.0",
+      "target_language": "vi",
+      "generated_at": "2026-10-25T13:13:42.312425+00:00",
+      "status": "draft",
+      "staleness": "current",
+      "markdown": "data/projects/venho_hotel/content/instagram/2026-10-25_th-ng-10-h-n-i-kh-ng-ch-c-hoa-s-a-h-y-n-nh-ng-n-i-n-y-c-m-nh-n-tr-n-v-n-h-ng-s-c-m-a-thu.md",
+      "json": "data/projects/venho_hotel/content/instagram/2026-10-25_th-ng-10-h-n-i-kh-ng-ch-c-hoa-s-a-h-y-n-nh-ng-n-i-n-y-c-m-nh-n-tr-n-v-n-h-ng-s-c-m-a-thu.json"
+    },
+    {
+      "id": "2026-10-25_gi-heo-may-se-l-nh-th-i-d-c-ng-thanh-ni-n-s-ng-u-tu-n",
+      "type": "instagram_post",
+      "source_knowledge_hashes": [
+        "sha256:aaad1f90ca3a80fbefe9dc168823190c89ef923952e96bd2d902e73f0c5ec577"
+      ],
+      "source_prompt_version": "1.0",
+      "target_language": "vi",
+      "generated_at": "2026-10-25T13:17:40.985851+00:00",
+      "status": "draft",
+      "staleness": "current",
+      "markdown": "data/projects/venho_hotel/content/instagram/2026-10-25_gi-heo-may-se-l-nh-th-i-d-c-ng-thanh-ni-n-s-ng-u-tu-n.md",
+      "json": "data/projects/venho_hotel/content/instagram/2026-10-25_gi-heo-may-se-l-nh-th-i-d-c-ng-thanh-ni-n-s-ng-u-tu-n.json"
+    },
+    {
+      "id": "2026-10-25_gh-th-m-ph-t-y-h-thanh-t-nh-trong-l-n-gi-heo-may",
+      "type": "instagram_post",
+      "source_knowledge_hashes": [
+        "sha256:aaad1f90ca3a80fbefe9dc168823190c89ef923952e96bd2d902e73f0c5ec577"
+      ],
+      "source_prompt_version": "1.0",
+      "target_language": "vi",
+      "generated_at": "2026-10-25T13:21:35.196165+00:00",
+      "status": "draft",
+      "staleness": "current",
+      "markdown": "data/projects/venho_hotel/content/instagram/2026-10-25_gh-th-m-ph-t-y-h-thanh-t-nh-trong-l-n-gi-heo-may.md",
+      "json": "data/projects/venho_hotel/content/instagram/2026-10-25_gh-th-m-ph-t-y-h-thanh-t-nh-trong-l-n-gi-heo-may.json"
+    },
+    {
+      "id": "2026-10-25_tr-ph-ng-m-i-hai-gi-tr-a-r-i-thong-th-ng-m-m-t-h-cu-i-thu",
+      "type": "instagram_post",
+      "source_knowledge_hashes": [
+        "sha256:7c635dcdc575c74c8263cc1ade2f2b051b2359afc6ca2fc7b55067e64a2cc2f0"
+      ],
+      "source_prompt_version": "1.0",
+      "target_language": "vi",
+      "generated_at": "2026-10-25T13:25:36.878860+00:00",
+      "status": "draft",
+      "staleness": "current",
+      "markdown": "data/projects/venho_hotel/content/instagram/2026-10-25_tr-ph-ng-m-i-hai-gi-tr-a-r-i-thong-th-ng-m-m-t-h-cu-i-thu.md",
+      "json": "data/projects/venho_hotel/content/instagram/2026-10-25_tr-ph-ng-m-i-hai-gi-tr-a-r-i-thong-th-ng-m-m-t-h-cu-i-thu.json"
+    },
+    {
+      "id": "2026-10-25_tr-sen-b-ch-di-p-t-y-h-an-h-ng-d-t-v",
+      "type": "instagram_post",
+      "source_knowledge_hashes": [
+        "sha256:61f198440f5480c3ab7b63c38c97553d7cf072838b82dcdd5e4d802521e67a38"
+      ],
+      "source_prompt_version": "1.0",
+      "target_language": "vi",
+      "generated_at": "2026-10-25T13:30:28.656247+00:00",
+      "status": "draft",
+      "staleness": "current",
+      "markdown": "data/projects/venho_hotel/content/instagram/2026-10-25_tr-sen-b-ch-di-p-t-y-h-an-h-ng-d-t-v.md",
+      "json": "data/projects/venho_hotel/content/instagram/2026-10-25_tr-sen-b-ch-di-p-t-y-h-an-h-ng-d-t-v.json"
+    }
+  ]
+}

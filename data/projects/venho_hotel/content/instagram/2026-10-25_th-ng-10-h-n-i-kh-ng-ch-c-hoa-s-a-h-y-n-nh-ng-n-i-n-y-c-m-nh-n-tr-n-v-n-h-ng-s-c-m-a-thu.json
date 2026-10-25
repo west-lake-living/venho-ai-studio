@@ -1,0 +1,49 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "project": "venho_hotel",
+  "content_type": "instagram_post",
+  "target_language": "vi",
+  "generated_at": "2026-10-25T13:13:42.312425+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_LOBBY_DNA.json",
+      "dna_version": "1.1",
+      "hash": "sha256:e01fc1fa26c2318ce93d3a670067bac2ccbf9dc329a141ea906e80fb108c673f"
+    }
+  ],
+  "source_prompt": {
+    "file": "data/projects/venho_hotel/prompts/content/LOBBY__instagram-th-ng-10-h-n-i-kh-ng-ch-c-hoa-s-a-h-y-n-nh-ng-n-i-n-y-c-m-nh-n-tr-n-v-__CONTENT_PROMPT_v1.0.json",
+    "prompt_id": "lobby__content__instagram-th-ng-10-h-n-i-kh-ng-ch-c-hoa-s-a-h-y-n-nh-ng-n-i-n-y-c-m-nh-n-tr-n-v-",
+    "prompt_version": "1.0"
+  },
+  "generator": {
+    "provider": "mock",
+    "model": "deterministic-social-builder",
+    "temperature": 0.6
+  },
+  "title": "Tháng 10 Hà Nội: mùa thu không chỉ nằm ở hương hoa sữa",
+  "hook": "Tháng 10 ở Hà Nội, thứ người ta hay nhắc là mùi hoa sữa. Nhưng thứ ở lại lâu hơn trong trí nhớ thường là ánh sáng.",
+  "body": "Nắng tháng 10 mỏng và thấp. Buổi sáng, mặt Hồ Tây còn phẳng, sương chưa tan hết, người đi bộ và người đạp xe vòng qua nhau trên lối ven hồ.\n\nQua trưa, nắng ngả vàng trên hàng cây. Chiều muộn, cả mặt nước đổi màu trong khoảng hai mươi phút rồi tắt. Hoàng hôn Hồ Tây tháng này không rực, nhưng dịu và rất dễ ngồi lâu.\n\nVài cách để cảm nhận mùa thu quanh đây mà không cần đi xa:\nĐi bộ một đoạn ven hồ trước 7 giờ sáng, khi phố còn vắng.\nNgồi một quán nhỏ quay mặt ra nước, gọi trà nóng thay vì đồ lạnh.\nRẽ vào những con ngõ nhỏ của Tây Hồ, nơi nhịp sống vẫn chậm hơn phần còn lại của thành phố.\nĐợi đến lúc đèn ven hồ bật lên rồi mới quay về.\n\nVen Hồ Hotel nằm trên đường Nguyễn Đình Thi, cách mép hồ một quãng ngắn. Cửa kính, sàn gạch nâu, quầy lễ tân gỗ sẫm và vài bức tranh trên tường. Một khách sạn nhỏ, vừa đủ để làm nơi bắt đầu và kết thúc một ngày đi bộ.",
+  "cta": "Nếu tháng 10 này bạn có vài ngày ở Hà Nội, nhắn cho Ven Hồ Hotel để xem phòng trống cho những ngày bạn định đến nhé.",
+  "hashtags": [
+    "#VenHoHotelHanoi",
+    "#HoTay",
+    "#WestLakeHanoi",
+    "#HaNoiMuaThu",
+    "#KhachSanHoTay",
+    "#NguyenDinhThi",
+    "#HoangHonHoTay",
+    "#HanoiTravel"
+  ],
+  "visual_note": null,
+  "contract_refs": null,
+  "payload": {},
+  "status": "draft",
+  "validation": {
+    "required": true,
+    "status": "pending",
+    "report_file": null,
+    "notes": []
+  }
+}

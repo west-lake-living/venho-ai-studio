@@ -1,0 +1,47 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "project": "venho_hotel",
+  "content_type": "facebook_post",
+  "target_language": "vi",
+  "generated_at": "2026-10-25T13:21:10.314009+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_OUTSIDE_DNA.json",
+      "dna_version": "1.2",
+      "hash": "sha256:aaad1f90ca3a80fbefe9dc168823190c89ef923952e96bd2d902e73f0c5ec577"
+    }
+  ],
+  "source_prompt": {
+    "file": "data/projects/venho_hotel/prompts/content/OUTSIDE__facebook-gh-th-m-ph-t-y-h-thanh-t-nh-trong-l-n-gi-heo-may__CONTENT_PROMPT_v1.0.json",
+    "prompt_id": "outside__content__facebook-gh-th-m-ph-t-y-h-thanh-t-nh-trong-l-n-gi-heo-may",
+    "prompt_version": "1.0"
+  },
+  "generator": {
+    "provider": "mock",
+    "model": "deterministic-social-builder",
+    "temperature": 0.6
+  },
+  "title": "Heo may về, Hồ Tây chậm lại một nhịp",
+  "hook": "Gió heo may không ồn ào. Nó chỉ lặng lẽ đi qua mặt hồ, rồi khiến người ta tự nhiên muốn bước chậm lại.",
+  "body": "Chiều trời trong, nắng vẫn đủ sáng nhưng không còn gắt. Con đường dẫn ra phủ Tây Hồ nhỏ dần, một bên là hàng cây lâu năm đổ bóng xuống nền gạch, một bên là mặt nước mở ra rộng, xanh xám theo màu trời.\n\nCàng đi vào trong, tiếng phố càng lùi lại phía sau. Khoảng sân sạch sẽ, gọn gàng, không ghế ngồi, không hàng quán chen vào. Người ta đứng yên một lúc, nhìn ra hồ, rồi mới đi tiếp. Nhiều người đến đây không hẳn vì muốn làm gì cụ thể, chỉ là cần một chỗ đủ tĩnh để thở chậm vài phút.\n\nNgoảnh lại phía bờ bên kia vẫn là Hà Nội quen thuộc: mái nhà thấp xen giữa những khối nhà cao, cây xanh nối thành vệt dài dọc mép nước. Hồ Tây hay như vậy, chỉ cần đi thêm vài trăm mét là nhịp sống đổi hẳn.\n\nVen Hồ Hotel nằm trên đường Nguyễn Đình Thi, cùng phía hồ với quãng đường này. Buổi sáng có thể dành cho phố cổ và những điểm trong trung tâm, còn buổi chiều để lại cho một vòng đi bộ ven hồ, rồi về phòng ngồi nhìn mặt nước đổi màu khi trời tắt nắng.",
+  "cta": "Nếu bạn đang tính một chuyến Hà Nội vào mùa heo may, nhắn cho Ven Hồ Hotel để xem phòng trống cho những ngày đó nhé.",
+  "hashtags": [
+    "#VenHoHotelHanoi",
+    "#HoTay",
+    "#PhuTayHo",
+    "#KhachSanViewHoTay",
+    "#HaNoi",
+    "#NguyenDinhThi"
+  ],
+  "visual_note": null,
+  "contract_refs": null,
+  "payload": {},
+  "status": "draft",
+  "validation": {
+    "required": true,
+    "status": "pending",
+    "report_file": null,
+    "notes": []
+  }
+}

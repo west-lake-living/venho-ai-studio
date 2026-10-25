@@ -1,0 +1,49 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "project": "venho_hotel",
+  "content_type": "instagram_post",
+  "target_language": "vi",
+  "generated_at": "2026-10-25T13:17:40.985851+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_OUTSIDE_DNA.json",
+      "dna_version": "1.2",
+      "hash": "sha256:aaad1f90ca3a80fbefe9dc168823190c89ef923952e96bd2d902e73f0c5ec577"
+    }
+  ],
+  "source_prompt": {
+    "file": "data/projects/venho_hotel/prompts/content/OUTSIDE__instagram-gi-heo-may-se-l-nh-th-i-d-c-ng-thanh-ni-n-s-ng-u-tu-n__CONTENT_PROMPT_v1.0.json",
+    "prompt_id": "outside__content__instagram-gi-heo-may-se-l-nh-th-i-d-c-ng-thanh-ni-n-s-ng-u-tu-n",
+    "prompt_version": "1.0"
+  },
+  "generator": {
+    "provider": "mock",
+    "model": "deterministic-social-builder",
+    "temperature": 0.6
+  },
+  "title": "Sáng đầu tuần, gió heo may thổi dọc đường Thanh Niên",
+  "hook": "Gió heo may se lạnh thổi dọc đường Thanh Niên. Trời trong, nắng còn nhạt, và Hà Nội bắt đầu một tuần mới chậm hơn bạn nghĩ.",
+  "body": "Hàng cây cổ thụ hai bên đường đứng im trong nắng sớm. Phía xa là những mái nhà cao thấp của thành phố, phía này là mặt nước rộng và sạch gió.\n\nNgười đi bộ mặc thêm một lớp áo mỏng. Có người dừng lại buộc lại khăn, rồi đi tiếp. Xe cộ qua lại đều đặn, không vội.\n\nMùa này, đi bộ quanh Hồ Tây vào buổi sáng dễ chịu hơn bất kỳ thời điểm nào trong ngày. Chỉ cần một vòng ngắn, đủ để tỉnh táo trước khi bắt đầu mọi thứ.\n\nVen Hồ Hotel nằm trên đường Nguyễn Đình Thi, cách đoạn đường này một quãng đi bộ. Buổi sáng ở đây thường bắt đầu bằng gió từ mặt hồ thổi vào.",
+  "cta": "Nếu bạn đang tính một chuyến Hà Nội mùa gió heo may, nhắn tin cho Ven Hồ Hotel để xem phòng trống nhé.",
+  "hashtags": [
+    "#VenHoHotelHanoi",
+    "#HoTay",
+    "#WestLakeHanoi",
+    "#DuongThanhNien",
+    "#NguyenDinhThi",
+    "#KhachSanHoTay",
+    "#HaNoi",
+    "#HanoiTravel"
+  ],
+  "visual_note": null,
+  "contract_refs": null,
+  "payload": {},
+  "status": "draft",
+  "validation": {
+    "required": true,
+    "status": "pending",
+    "report_file": null,
+    "notes": []
+  }
+}
