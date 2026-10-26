@@ -23579,13 +23579,13 @@
       "idempotency_key": "f8fd2f8775b2ec5804566104e3d7a640ca0b6723dab7b0ddd9d45326479e105b",
       "platform": "facebook",
       "slot_id": "slot-2026-10-30-friday",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-10-25T13:10:02.614603+00:00",
-      "updated_at": "2026-10-25T13:10:02.686908+00:00",
+      "updated_at": "2026-10-26T07:16:30.158121+00:00",
       "content": {
         "title": "Mười hai phòng trên đường Nguyễn Đình Thi",
         "text": "Một khách sạn chỉ có mười hai phòng thì hành lang lúc nào cũng vắng, và buổi sáng bạn gần như chỉ nghe thấy tiếng xe đạp ngoài đường Nguyễn Đình Thi.\n\nPhòng ở Ven Hồ Hotel không rộng theo kiểu khách sạn lớn. Mặt bằng hình chữ nhật, gọn gàng, mọi thứ đặt vừa đủ chỗ: giường đôi với đầu giường gỗ, chăn ga trắng, bàn làm việc kê sát tường, một chiếc ghế để ngồi uống cà phê buổi sáng.\n\nĐiều dễ chịu nhất lại là ô cửa sổ. Khung nhôm đen mảnh, chia thành bốn ô vuông, lấy ánh sáng tự nhiên suốt cả ngày. Tường sơn xám nhạt, không treo tranh, nên ánh sáng đi tới đâu là thấy rõ tới đó. Sáng sớm phòng sáng nhẹ và hơi lạnh. Đến chiều, nắng ngả vàng dần trên mặt tường. Muốn ngủ thêm thì kéo rèm tối lại, phòng trở về yên tĩnh.\n\nĐó là kiểu phòng không cố gây ấn tượng ngay từ phút đầu. Bạn nhận ra nó dễ chịu vào lúc đặt vali xuống, ngồi lên mép giường và thấy mình không cần làm gì thêm.\n\nVen Hồ Hotel nằm trên đường Nguyễn Đình Thi, khu Tây Hồ. Ra khỏi cửa là nhịp sống quen thuộc của người quanh hồ: người đi bộ, người tập thể dục, hàng quán mở từ sớm. Khách sạn thuộc nhóm boutique tầm trung, quy mô nhỏ, hợp với những chuyến đi Hà Nội muốn đi chậm hơn một chút thay vì chạy hết điểm này sang điểm khác.\n\nNếu bạn đang chọn chỗ nghỉ gần Hồ Tây cho chuyến Hà Nội sắp tới, nhắn tin cho Ven Hồ Hotel để xem phòng trống những ngày bạn định đến nhé.\n\n#VenHoHotelHanoi #HoTay #NguyenDinhThi #KhachSanHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-friday-facebook-a6737551",
@@ -23733,6 +23733,28 @@
           "score": 100,
           "verdict": "approve"
         }
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-10-26T07:16:30.124389+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-67d19f8b-4a5a-4691-981b-3fac81e2ea62",
+        "content_package_id": "67d19f8b-4a5a-4691-981b-3fac81e2ea62",
+        "copy_version_ids": [
+          "brief-friday-facebook-0ce9c829-content_studio"
+        ],
+        "asset_version_ids": [
+          "831c16f4-36ea-4200-9e01-d0b9e72b0d41"
+        ],
+        "validation_snapshot_id": "f7b87b63091e382146c3a4c3d231d9bdb808d32b1ca087ba8ceac120e6609064",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-friday-facebook-0ce9c829@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-10-26T07:16:30.124417+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "869a1c93c6184d40484c8483a712ecc12b0a3d27ad3d01580878ba2227962b00",
+        "checksum": "7c05f6d8fa6273ba24dc93c5ff61101b2c99e13029c4314321e47942ce0557a8"
       }
     },
     {
@@ -23741,13 +23763,13 @@
       "idempotency_key": "7b2f697e37dee8c121d853031450db6b57edcef0894b2db1ae6ef49f8d516136",
       "platform": "instagram",
       "slot_id": "slot-2026-10-30-friday",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-10-25T13:10:14.355851+00:00",
-      "updated_at": "2026-10-25T13:10:14.429093+00:00",
+      "updated_at": "2026-10-26T07:16:30.158121+00:00",
       "content": {
         "title": "Mười hai phòng trên đường Nguyễn Đình Thi",
         "text": "Một khách sạn chỉ có mười hai phòng thì buổi sáng nghe rất khác.\n\nKhông có tiếng kéo vali dồn dập ngoài hành lang. Chỉ có ánh sáng đi qua ô cửa chia thành bốn ô vuông, viền nhôm đen mảnh, đổ xuống tấm ga trắng và sàn gỗ nâu.\n\nPhòng hình chữ nhật, tường xám nhạt, không treo tranh. Một chiếc bàn nhỏ kê sát cửa sổ, đủ cho cốc cà phê buổi sáng hoặc chiếc laptop mở nửa chừng. Phần lớn thời gian trong ngày, phòng không cần bật đèn.\n\nVen Hồ Hotel nằm trên đường Nguyễn Đình Thi — con đường mà chỉ cần bước ra khỏi cửa là đã thấy mặt nước. Khách sạn boutique tầm trung, quy mô nhỏ, giữ tinh thần Việt trong từng chi tiết gỗ và ánh sáng.\n\nỞ một nơi mười hai phòng, bạn sẽ nhớ mặt người ở lễ tân. Và họ cũng nhớ bạn thích dậy sớm hay ngủ nướng.\n\nNếu bạn đang tính vài ngày ở Hà Nội, nhắn cho Ven Hồ Hotel để xem phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanHoTay #NguyenDinhThi #HaNoi",
@@ -23896,6 +23918,28 @@
           "score": 100,
           "verdict": "approve"
         }
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-10-26T07:16:30.124389+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-aedcdc5d-8bc6-4cc3-a507-088c3f8db52a",
+        "content_package_id": "aedcdc5d-8bc6-4cc3-a507-088c3f8db52a",
+        "copy_version_ids": [
+          "brief-friday-instagram-3e04c595-content_studio"
+        ],
+        "asset_version_ids": [
+          "831c16f4-36ea-4200-9e01-d0b9e72b0d41"
+        ],
+        "validation_snapshot_id": "13f931531bbeb2d7ef546c58000ef926c0025af7260ce047d75a4a9ffafd979a",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-friday-instagram-3e04c595@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-10-26T07:16:30.124542+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "8469c895f038c401dec04827ce0c7d76b35dfeabf215cdcdef4aca6d2ead45c9",
+        "checksum": "9475190717c61458d77b67122c132a6a251a91728fbbb80cae872555adba302a"
       }
     },
     {
