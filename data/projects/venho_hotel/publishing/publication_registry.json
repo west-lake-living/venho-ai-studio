@@ -25453,13 +25453,13 @@
       "idempotency_key": "2b6b889f76e238d73a40fbc14a9db79b658523cf7e5894722eca440187501004",
       "platform": "facebook",
       "slot_id": "slot-2026-11-07-saturday",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-10-25T13:29:58.847076+00:00",
-      "updated_at": "2026-10-26T07:39:11.470665+00:00",
+      "updated_at": "2026-10-26T07:43:32.467901+00:00",
       "content": {
         "title": "Trà sen Bách Diệp Tây Hồ: hương của mùa hè, pha vào mùa lạnh",
         "text": "Mùa sen Hồ Tây khép lại từ giữa hè. Nhưng hương sen thì chưa đi đâu cả, nó đang nằm trong những gói trà ướp.\n\nSen Bách Diệp là giống sen trăm cánh của những đầm quanh vùng Quảng An, Tây Hồ. Bông to, cánh dày, nhưng thứ người làm trà cần lại không phải cánh hoa, mà là gạo sen, những hạt trắng li ti nằm sâu bên trong.\n\nSen được hái từ sớm, lúc bông còn chưa nở hẳn. Tách cánh, lấy gạo, rồi ướp cùng trà qua nhiều lượt. Ướp xong đem sấy, sấy xong lại ướp. Cả quá trình kéo dài nhiều ngày, chỉ để hương sen kịp ngấm vào từng cánh trà.\n\nVì vậy trà sen Tây Hồ thường được pha vào mùa thu đông, khi đầm sen ngoài kia đã tàn từ lâu. Nước trà rót ra, hương sen bung lên trước, vị trà theo sau, hai thứ đan vào nhau rồi ở lại khá lâu trong cổ.\n\nPha một ấm như thế rồi nhìn ra mặt hồ cũng là cách hợp lý để dùng một buổi chiều. Nước hồ những ngày này phẳng, màu xanh ngả xám chứ không trong veo như người ta vẫn tưởng. Mây che bớt nắng nên ánh sáng rất dịu, nhìn rõ được tận dãy nhà cao bên kia bờ. Chỉ có thế, và cũng chẳng cần thêm gì.\n\nVen Hồ Hotel nằm trên đường Nguyễn Đình Thi, cách mép nước vài bước chân, nên khung cảnh ấy gần như lúc nào cũng có sẵn ngoài cửa sổ.\n\nNếu bạn đang tính một chuyến Hà Nội trong thời gian tới, nhắn tin cho Ven Hồ Hotel để xem phòng hướng hồ còn trống những ngày nào nhé.\n\n#VenHoHotelHanoi #TraSenTayHo #HoTay #KhachSanViewHoTay #HanoiTravel\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-saturday-facebook-61e16365",
@@ -25612,6 +25612,26 @@
           "score": 100,
           "verdict": "approve"
         }
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-10-26T07:43:32.435214+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-53ee8fb2-140e-47d2-93cd-6bf0d2a69121",
+        "content_package_id": "53ee8fb2-140e-47d2-93cd-6bf0d2a69121",
+        "copy_version_ids": [
+          "brief-saturday-facebook-926b1552-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "ea0c9cad78c922b8ebdcb91f4914a296b9525e72aae8ab2a076e1dc4304b1ad4",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-saturday-facebook-926b1552@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-10-26T07:43:32.435239+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "94ad5d05b146fc3de63559e9cd1d292eb621659099b19d3f547f0163dd013b09",
+        "checksum": "70374a9f04a3e3e85fa508dd9895aed932f524f4d7a2d0236b8c29fccad37fc3"
       }
     },
     {
@@ -25620,13 +25640,13 @@
       "idempotency_key": "c27f419dc319869dbb87cc2a004ac541946911778d3c993a623a262f573c8ddb",
       "platform": "instagram",
       "slot_id": "slot-2026-11-07-saturday",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-10-25T13:30:28.985144+00:00",
-      "updated_at": "2026-10-26T07:39:11.547693+00:00",
+      "updated_at": "2026-10-26T07:43:32.467901+00:00",
       "content": {
         "title": "Trà sen Bách Diệp: khi mùa sen Hồ Tây ở lại trong ấm trà",
         "text": "Mùa sen Hồ Tây đã qua từ lâu.\nNhưng hương sen thì vẫn ở lại, trong ấm trà.\n\nSen Bách Diệp là giống sen trăm cánh gắn với các đầm quanh vùng Tây Hồ, cũng là nguyên liệu của nghề ướp trà sen lâu đời ở đây. Hoa chỉ nở vào mùa hè, nhưng vị trà thì theo người ta đi hết cả năm, đậm nhất là vào những chiều trời dịu như lúc này.\n\nMột tách trà sen không hợp với sự vội vàng. Nước còn nóng, hương bốc lên trước khi kịp uống, và tự nhiên người ta ngồi lâu hơn một chút.\n\nNgoài kia, mặt hồ phẳng, màu nước ngả xanh ngọc trầm. Trời nhiều mây, ánh sáng mềm, nhìn được rất xa sang phía những toà nhà bên kia hồ. Hàng cây ven đường chỉ đủ thưa để lọt một khoảng hồ rộng vào tầm mắt.\n\nVen Hồ Hotel nằm trên đường Nguyễn Đình Thi, cách mặt hồ vài bước chân. Một buổi chiều ở đây, chỉ cần ấm trà và khung cửa nhìn ra Hồ Tây là vừa đủ.\n\nBạn đang tính những ngày ở Hà Nội? Nhắn cho Ven Hồ Hotel để xem phòng trống nhé.\n\n#VenHoHotelHanoi #TraSenHoTay #HoTay #WestLakeHanoi #KhamPhaHoTay #KhachSanHoTay #HaNoi",
@@ -25781,6 +25801,26 @@
           "score": 100,
           "verdict": "approve"
         }
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-10-26T07:43:32.435214+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-90605863-cee9-4467-8af8-bab886b2da4a",
+        "content_package_id": "90605863-cee9-4467-8af8-bab886b2da4a",
+        "copy_version_ids": [
+          "brief-saturday-instagram-a93f8e8d-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "987cdd83744c959490c4eec31d0bc78e17d9a14dcc215a25716c29d7cd95ada6",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-saturday-instagram-a93f8e8d@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-10-26T07:43:32.435383+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "068e8ad70e7ca64d340bc34a71e7f3e94ce7b87b4c3d9cf3af196d1643e0be80",
+        "checksum": "a233aa923194312756d37dd64986a22725bae234055c13dc57c753965764046c"
       }
     }
   ]
