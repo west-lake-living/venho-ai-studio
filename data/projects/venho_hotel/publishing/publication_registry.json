@@ -24321,13 +24321,13 @@
       "idempotency_key": "246d46f040261ec30eca1e18fe0e996c03666159a59b1bfe9dcbb6da5a85a77a",
       "platform": "facebook",
       "slot_id": "slot-2026-11-02-monday",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-10-25T13:17:25.090270+00:00",
-      "updated_at": "2026-10-26T07:25:10.002752+00:00",
+      "updated_at": "2026-10-26T07:25:45.799435+00:00",
       "content": {
         "title": "Sáng đầu tuần trên đường Thanh Niên",
         "text": "Gió heo may về, đoạn đường đẹp nhất để đi bộ ở Hà Nội vào sáng thứ Hai có lẽ vẫn là Thanh Niên.\n\nCon đường ấy kẹp giữa hai mặt nước: một bên Hồ Tây rộng, một bên Trúc Bạch nhỏ và tĩnh hơn. Sáng đầu tuần, gió thổi dọc theo đường, lùa qua hàng cây cổ thụ hai bên, nắng lọt xuống từng mảng trên vỉa hè.\n\nNgười đi bộ, người đạp xe, người dừng lại bên lan can nhìn ra mặt hồ một lúc rồi lại đi tiếp. Phía xa, những toà nhà cao tầng của Hà Nội hiện lên sau nền trời trong. Cùng một khung hình mà có cả phần phố và phần hồ.\n\nĐầu tuần thường được mặc định là vội. Nhưng ở đoạn này, mọi thứ chậm hơn một chút. Chỉ cần đi bộ hết chiều dài con đường rồi vòng lại, bạn đã có một buổi sáng khá trọn vẹn trước khi bắt đầu mọi việc khác trong ngày.\n\nTừ Nguyễn Đình Thi, nơi Ven Hồ Hotel nằm, bạn có thể men theo ven hồ để ra Thanh Niên mà không cần gọi xe. Với nhiều khách ở đây, thói quen dễ hình thành nhất chính là dậy sớm hơn bình thường một chút.\n\nNếu bạn đang tính ra Hà Nội vào mùa gió heo may, nhắn cho Ven Hồ Hotel để xem lịch phòng trống những ngày bạn dự định ở lại nhé.\n\n#VenHoHotelHanoi #HoTay #DuongThanhNien #WestLakeHanoi #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-monday-facebook-f2c5a901",
@@ -24482,6 +24482,26 @@
           "score": 100,
           "verdict": "approve"
         }
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-10-26T07:25:45.768688+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-29222dc6-0a03-440d-9a9f-3d9f62b51357",
+        "content_package_id": "29222dc6-0a03-440d-9a9f-3d9f62b51357",
+        "copy_version_ids": [
+          "brief-monday-facebook-81e4a271-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "6f615ead41c6e28964ab4bcd6decb05e2fa4ac41132bcaa70111f1c5ee01c95a",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-monday-facebook-81e4a271@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-10-26T07:25:45.768713+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "d5bd63d0d24ecc96167dbdd7c9ea0048f3c2a18087484a98bc94ae13fed8f4c0",
+        "checksum": "b010c99f978b2c0d0668c144f6668a8c516bd6200f642f582a8b2b7cbab755b8"
       }
     },
     {
@@ -24490,13 +24510,13 @@
       "idempotency_key": "787078b9659294dd11350536b41ab87a7a4e20df3debfb02958f6ece748e6764",
       "platform": "instagram",
       "slot_id": "slot-2026-11-02-monday",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-10-25T13:17:41.384179+00:00",
-      "updated_at": "2026-10-26T07:25:10.102686+00:00",
+      "updated_at": "2026-10-26T07:25:45.799435+00:00",
       "content": {
         "title": "Sáng đầu tuần, gió heo may thổi dọc đường Thanh Niên",
         "text": "Gió heo may se lạnh thổi dọc đường Thanh Niên. Trời trong, nắng còn nhạt, và Hà Nội bắt đầu một tuần mới chậm hơn bạn nghĩ.\n\nHàng cây cổ thụ hai bên đường đứng im trong nắng sớm. Phía xa là những mái nhà cao thấp của thành phố, phía này là mặt nước rộng và sạch gió.\n\nNgười đi bộ mặc thêm một lớp áo mỏng. Có người dừng lại buộc lại khăn, rồi đi tiếp. Xe cộ qua lại đều đặn, không vội.\n\nMùa này, đi bộ quanh Hồ Tây vào buổi sáng dễ chịu hơn bất kỳ thời điểm nào trong ngày. Chỉ cần một vòng ngắn, đủ để tỉnh táo trước khi bắt đầu mọi thứ.\n\nVen Hồ Hotel nằm trên đường Nguyễn Đình Thi, cách đoạn đường này một quãng đi bộ. Buổi sáng ở đây thường bắt đầu bằng gió từ mặt hồ thổi vào.\n\nNếu bạn đang tính một chuyến Hà Nội mùa gió heo may, nhắn tin cho Ven Hồ Hotel để xem phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #DuongThanhNien #NguyenDinhThi #KhachSanHoTay #HaNoi #HanoiTravel",
@@ -24654,6 +24674,26 @@
           "score": 100,
           "verdict": "approve"
         }
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-10-26T07:25:45.768688+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-ea967053-07ea-4b78-b67a-2368e6760175",
+        "content_package_id": "ea967053-07ea-4b78-b67a-2368e6760175",
+        "copy_version_ids": [
+          "brief-monday-instagram-0739c6f5-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "656751dc43794236d47bf9a78b167d1ab0d08c811af4ea140d7a80039663c66a",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-monday-instagram-0739c6f5@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-10-26T07:25:45.768827+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "d92c07827c0a1d2d8d1190e55e03bfcc9a2a36fe293f748401c394ec40612041",
+        "checksum": "a7816252212ef9f7f7f4d4504e414a93f9576ba979e1ad2f9d1b5b777b45a506"
       }
     },
     {
