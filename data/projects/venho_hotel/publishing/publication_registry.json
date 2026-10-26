@@ -23026,13 +23026,13 @@
       "idempotency_key": "ef3c816dd222eaedd50080befb01f4cb820e1e3f264178656f125535ed225f7a",
       "platform": "facebook",
       "slot_id": "slot-2026-10-26-monday",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
-      "platform_post_id": null,
-      "permalink": null,
+      "status": "PUBLISHED",
+      "gateway_status": "PUBLISHED",
+      "platform_post_id": "1124616474074140_122148092859351048",
+      "permalink": "https://www.facebook.com/1124616474074140_122148092859351048",
       "reconciliation_proof": null,
       "created_at": "2026-10-25T13:03:43.143230+00:00",
-      "updated_at": "2026-10-26T07:45:52.268857+00:00",
+      "updated_at": "2026-10-26T10:00:39.666392+00:00",
       "content": {
         "title": "Vài phút đi bộ ra mép hồ, sáng đầu tuần cuối thu",
         "text": "Có những ngày cuối thu trời trong đến mức mặt hồ sáng lên như vừa được lau sạch. Từ cửa khách sạn ra tới mép nước chỉ mất vài phút đi bộ.\n\nĐầu tuần ở Tây Hồ bắt đầu khá bình thường. Xe cộ đi qua Nguyễn Đình Thi, hàng cây ven đường đổ bóng xuống vỉa hè, phía xa là những khối nhà cao thấp nối nhau quanh hồ. Không có gì đặc biệt cho tới lúc bạn rẽ ra phía mặt nước.\n\nGiữa trưa và đầu giờ chiều là khoảng thời gian trời sáng nhất. Nắng chiếu thẳng xuống, nước ngả xanh xám, gió thổi liên tục nên mặt hồ gần như không lúc nào đứng yên. Đoạn mép hồ này không có ghế, chỉ có lối xi măng sạch và lan can, kiểu không gian để đứng lại một chút rồi đi tiếp.\n\nVà thường thì một chút đó là đủ. Đủ để nhìn hết một vòng từ bên này sang bên kia hồ, đủ để thở vài hơi trước khi quay lại với lịch trình trong ngày.\n\nVen Hồ Hotel nằm trên Nguyễn Đình Thi, cách mép nước đúng một quãng đi bộ ngắn như vậy. Với khách tìm khách sạn view Hồ Tây để vừa nghỉ vừa khám phá Hà Nội, khoảng cách ngắn này là thứ dễ dùng nhất: sáng ra hồ, trưa vào trung tâm, chiều về lại thấy mặt nước ngay trước mắt.\n\nNếu bạn đang lên lịch cho một chuyến Hà Nội trong những ngày trời còn trong như thế này, nhắn tin cho Ven Hồ Hotel để xem phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-monday-facebook-0c3ebad4",
@@ -23207,7 +23207,9 @@
         "revoked_reason": null,
         "package_versions_checksum": "faef3d0e83bc1faea44e8dbd4ce90b8e08eace8f3d3d50bb650a30733fcd0c2e",
         "checksum": "b58561723b3025dbba8f771a10660f7c909c5923cdc973b067ba9333c2c3fb02"
-      }
+      },
+      "gateway_error": null,
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-wednesday-facebook-d5810c98",
