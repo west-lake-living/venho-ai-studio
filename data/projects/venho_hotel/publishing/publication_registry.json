@@ -22872,13 +22872,13 @@
       "idempotency_key": "1f34ba0937b824371213de8ba1cff5692af23d33907d4534a5e147a740040cd7",
       "platform": "instagram",
       "slot_id": "slot-2026-10-26-monday",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
-      "platform_post_id": null,
-      "permalink": null,
+      "status": "PUBLISHED",
+      "gateway_status": "PUBLISHED",
+      "platform_post_id": "18119147213043536",
+      "permalink": "https://www.instagram.com/18119147213043536",
       "reconciliation_proof": null,
       "created_at": "2026-10-15T07:05:55.663647+00:00",
-      "updated_at": "2026-10-21T03:05:37.505231+00:00",
+      "updated_at": "2026-10-26T02:00:33.986596+00:00",
       "content": {
         "title": "Mưa đầu tuần dưới hàng cây Nguyễn Đình Thi",
         "text": "Mưa xuống, hàng cây cổ thụ trên Nguyễn Đình Thi sẫm màu lại, và cả con đường tự nhiên chậm hơn một nhịp.\n\nTán lá phía trên giao vào nhau thành một mái che không đều. Nước men theo thân cây, đọng thành vệt trên vỉa hè, rồi lăn xuống mép đường.\n\nNgười đi bộ nép vào trong tán, bước ngắn hơn. Xe máy đi chậm, đèn vàng loang trên mặt nhựa ướt. Bên kia hàng cây, mặt Hồ Tây lấm tấm những vòng tròn nhỏ, mờ dần về phía xa.\n\nĐầu tuần ở Hà Nội thường vội. Nhưng đoạn đường này, vào một buổi mưa, lại cho phép người ta đi chậm mà không thấy mình đang chậm.\n\nKhi quay về, cánh cửa kính của Ven Hồ Hotel khép lại sau lưng, tiếng mưa nhỏ dần. Sàn gạch nâu với những hoa văn tròn, quầy lễ tân gỗ nâu đỏ, mấy bức tranh trên tường và thứ ánh sáng vừa đủ dịu. Một chỗ để phủi nước mưa trên vai rồi ngồi xuống một lúc, trước khi bắt đầu ngày mới.\n\nNếu bạn đang tính vài ngày ở gần Hồ Tây, nhắn cho Ven Hồ Hotel để xem phòng trống trong khoảng thời gian bạn dự định nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #NguyenDinhThi #KhachSanViewHoTay #HaNoi #HanoiTravel",
@@ -23016,7 +23016,9 @@
         "revoked_reason": null,
         "package_versions_checksum": "3b7e0cb88c7878a7db791d70230baad5e6ce4c06457ebc08e1e2333f13ccc2a2",
         "checksum": "57e29cfc9fbedad66f07de2d488cf480632c495960f57874c8bb0c274f281f11"
-      }
+      },
+      "gateway_error": null,
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-monday-facebook-0c3ebad4",
