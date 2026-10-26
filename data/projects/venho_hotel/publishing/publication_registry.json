@@ -23032,7 +23032,7 @@
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-10-25T13:03:43.143230+00:00",
-      "updated_at": "2026-10-25T13:03:43.216859+00:00",
+      "updated_at": "2026-10-26T07:45:24.100180+00:00",
       "content": {
         "title": "Vài phút đi bộ ra mép hồ, sáng đầu tuần cuối thu",
         "text": "Có những ngày cuối thu trời trong đến mức mặt hồ sáng lên như vừa được lau sạch. Từ cửa khách sạn ra tới mép nước chỉ mất vài phút đi bộ.\n\nĐầu tuần ở Tây Hồ bắt đầu khá bình thường. Xe cộ đi qua Nguyễn Đình Thi, hàng cây ven đường đổ bóng xuống vỉa hè, phía xa là những khối nhà cao thấp nối nhau quanh hồ. Không có gì đặc biệt cho tới lúc bạn rẽ ra phía mặt nước.\n\nGiữa trưa và đầu giờ chiều là khoảng thời gian trời sáng nhất. Nắng chiếu thẳng xuống, nước ngả xanh xám, gió thổi liên tục nên mặt hồ gần như không lúc nào đứng yên. Đoạn mép hồ này không có ghế, chỉ có lối xi măng sạch và lan can, kiểu không gian để đứng lại một chút rồi đi tiếp.\n\nVà thường thì một chút đó là đủ. Đủ để nhìn hết một vòng từ bên này sang bên kia hồ, đủ để thở vài hơi trước khi quay lại với lịch trình trong ngày.\n\nVen Hồ Hotel nằm trên Nguyễn Đình Thi, cách mép nước đúng một quãng đi bộ ngắn như vậy. Với khách tìm khách sạn view Hồ Tây để vừa nghỉ vừa khám phá Hà Nội, khoảng cách ngắn này là thứ dễ dùng nhất: sáng ra hồ, trưa vào trung tâm, chiều về lại thấy mặt nước ngay trước mắt.\n\nNếu bạn đang lên lịch cho một chuyến Hà Nội trong những ngày trời còn trong như thế này, nhắn tin cho Ven Hồ Hotel để xem phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-monday-facebook-0c3ebad4",
@@ -23045,7 +23045,7 @@
         ],
         "source_prompt_file": "data/projects/venho_hotel/prompts/content/OUTSIDE__facebook-i-b-v-i-ph-t-ra-m-p-h-ng-m-m-t-n-c-s-ng-cu-i-thu__CONTENT_PROMPT_v1.0.json",
         "image_run_path": "data/projects/venho_hotel/growth/artifacts/daily-monday-i-b-v-i-ph-t-ra-m-p-h-ng-m-m-t-n-c-s-ng-cu-i-thu/images/0843f588-f706-42a6-ab33-1e7da1259129",
-        "image_public_url": "https://drive.google.com/uc?export=download&id=1LLE3lJVyty8klWD2qkfW1AxFxkvgN8GG",
+        "image_public_url": "https://drive.google.com/uc?export=download&id=1oldiDlpqTL3gMa5Z2RIQquMSL5KGN6Gi",
         "image_is_fallback": false,
         "image_fallback_reason": null,
         "tracking_url": "https://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-monday-facebook-0c3ebad4",
@@ -23070,9 +23070,17 @@
             "url": "https://drive.google.com/uc?export=download&id=1dq_73PLSJuAx76RzxFz56VvNajeBPcUp",
             "scenario": "venho_nguyen_dinh_thi_street",
             "source": "IMG_5138.jpeg"
+          },
+          {
+            "id": "U1",
+            "kind": "upload",
+            "url": "https://drive.google.com/uc?export=download&id=1oldiDlpqTL3gMa5Z2RIQquMSL5KGN6Gi",
+            "source": "upload.jpeg"
           }
         ],
-        "image_option_selected": "A"
+        "image_option_selected": "U1",
+        "image_selected_by": "hpham1504@gmail.com",
+        "image_selected_at": "2026-10-26T07:45:24.071625+00:00"
       },
       "creative_brief_id": "brief-monday-facebook-2c9dee1d",
       "package_snapshot": {
@@ -23080,9 +23088,7 @@
         "copy_version_ids": [
           "brief-monday-facebook-2c9dee1d-content_studio"
         ],
-        "asset_version_ids": [
-          "0843f588-f706-42a6-ab33-1e7da1259129"
-        ],
+        "asset_version_ids": [],
         "validation_snapshot_id": "09f880a7c2a397d52f5155367814b48bb073529c84a09ccb09de23c4864df02d",
         "fact_version_ids": [],
         "brief_version_id": "brief-monday-facebook-2c9dee1d@1"
