@@ -529,11 +529,13 @@
       "Vòng Chung khảo Cuộc thi Giọng hát hay Tây Hồ năm 2026"
     ],
     "relevance_score": 0.6,
-    "status": "needs_human_approval",
+    "status": "rejected",
     "rejection_reason": null,
     "fast_lane": false,
     "verified_by_human": false,
-    "scanned_at": "2026-10-24T00:19:02.489472+00:00"
+    "scanned_at": "2026-10-24T00:19:02.489472+00:00",
+    "rejected_by": "hpham1504@gmail.com",
+    "rejected_at": "2026-10-26T07:48:10.075452+00:00"
   },
   {
     "id": "gnews-ec90daf1c57416ad",
