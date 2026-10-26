@@ -25086,13 +25086,13 @@
       "idempotency_key": "d1abb8d18342c6be5c6a6ee3a1eefcf44107451388d68305cac4d1f870e2b3ec",
       "platform": "facebook",
       "slot_id": "slot-2026-11-06-friday",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-10-25T13:25:10.817116+00:00",
-      "updated_at": "2026-10-26T07:34:48.462573+00:00",
+      "updated_at": "2026-10-26T07:36:52.642861+00:00",
       "content": {
         "title": "Giờ trả phòng mười hai giờ trưa, và một buổi sáng cuối thu không cần vội",
         "text": "Chuyến đi nào cũng có một buổi sáng phải dậy sớm hơn mình muốn. Thường là buổi sáng cuối cùng.\n\nỞ Ven Hồ Hotel, giờ trả phòng là mười hai giờ trưa. Nghe thì nhỏ, nhưng nó đổi hẳn nhịp của ngày cuối.\n\nNghĩa là bạn có thể tỉnh dậy mà chưa cần nghĩ đến va li. Nắng cuối thu đi qua khung cửa nhôm đen mảnh, chia thành bốn ô vuông đều nhau, rơi xuống tấm ga trắng và mặt sàn gỗ. Tường phòng màu xám nhạt, không treo tranh, nên thứ thay đổi trong phòng suốt buổi sáng chỉ là ánh sáng.\n\nBàn gỗ kê sát tường, có gương. Đầu giường gỗ nâu sẫm. Phòng vuông vức, vừa đủ, không thừa thứ gì để phải chú ý. Một không gian boutique cỡ vừa, giữ lại chút chất liệu quen thuộc của nhà Hà Nội cũ, chứ không cố làm ra vẻ sang trọng.\n\nPha cà phê. Gấp đồ chậm. Ngồi bên cửa sổ thêm mười lăm phút nữa cũng chẳng sao.\n\nĐến gần trưa thì xuống đường Nguyễn Đình Thi. Cuối thu, mặt hồ sáng và phẳng, gió đi dọc mép nước, hàng cây bắt đầu thưa lá. Buổi trưa ở đây yên hơn người ta tưởng. Đứng nhìn một lúc rồi mới ra xe, chuyến đi tự nhiên có một cái kết tử tế hơn là cảnh vội vã kéo va li lúc chín giờ sáng.\n\nCó những khung cảnh không cần phải làm gì nhiều. Chỉ cần đủ thời gian để nhìn.\n\nNếu bạn đang xếp lịch cho vài ngày ở Hà Nội, nhắn tin cho Ven Hồ Hotel để xem phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanHoTay #NguyenDinhThi #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-friday-facebook-f7f9856e",
@@ -25241,6 +25241,26 @@
           "score": 96.21,
           "verdict": "approve"
         }
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-10-26T07:36:52.610908+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-b1f994b1-8f46-416e-a3b2-45dbea2cb885",
+        "content_package_id": "b1f994b1-8f46-416e-a3b2-45dbea2cb885",
+        "copy_version_ids": [
+          "brief-friday-facebook-87e67a07-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "583dbe375bd9bdbfd7113b5e8eb89a70baaf99f6292bccdd3b07f0c09ad32a50",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-friday-facebook-87e67a07@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-10-26T07:36:52.610934+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "a0555cc076241b67288d1ee3f4403bca3bc0a6eb63eab6b9118fd40492d33dae",
+        "checksum": "a8fb9320fc8e599c5752208c81893a00acc60b60c1bc92c361ea7fee6ba3c68a"
       }
     },
     {
@@ -25249,13 +25269,13 @@
       "idempotency_key": "df2c87176e156793c8f57378e50f76b43fb50d6d5fbabc43b8c40a81cdacf183",
       "platform": "instagram",
       "slot_id": "slot-2026-11-06-friday",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-10-25T13:25:37.223117+00:00",
-      "updated_at": "2026-10-26T07:34:48.547574+00:00",
+      "updated_at": "2026-10-26T07:36:52.642861+00:00",
       "content": {
         "title": "Mười hai giờ trưa mới trả phòng, buổi sáng cuối vẫn còn nguyên",
         "text": "Mười hai giờ trưa mới phải trả phòng. Nghĩa là buổi sáng cuối cùng ở Hà Nội vẫn còn nguyên vẹn cho bạn.\n\nKhông cần dậy sớm để kịp xếp đồ. Không cần nhìn đồng hồ khi đang uống dở ly cà phê.\n\nTrong phòng, ánh sáng cuối thu đi qua ô cửa chia thành bốn ô vuông đều đặn, khung nhôm đen mảnh, rồi đổ xuống tấm ga trắng. Tường xám nhạt để trống, không treo gì, nên ánh sáng tự làm phần còn lại. Sàn gỗ, đầu giường gỗ, chiếc bàn kê sát tường, rèm tối màu kéo gọn sang một bên từ sáng.\n\nMột căn phòng vuông vắn, vừa đủ, kiểu boutique nhỏ mang hơi hướng Việt quen thuộc. Đủ yên để bạn ngồi thêm mười lăm phút không làm gì cả.\n\nRồi gấp đồ thong thả, xuống dưới, đi bộ ra phía mặt hồ. Cuối thu, gió nhẹ, nước sáng màu, người đi bộ chậm hơn mùa hè. Một chuyến đi kết thúc như vậy thường dễ chịu hơn là vội vã ra sân bay từ sớm.\n\nNếu bạn đang tính vài ngày ở Hà Nội mùa này, nhắn cho Ven Hồ Hotel để xem lịch phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanHoTay #MuaThuHaNoi #HaNoi #HanoiTravel",
@@ -25405,6 +25425,26 @@
           "score": 96.21,
           "verdict": "approve"
         }
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-10-26T07:36:52.610908+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-b19aac56-48fe-46ac-967a-666e878c9f24",
+        "content_package_id": "b19aac56-48fe-46ac-967a-666e878c9f24",
+        "copy_version_ids": [
+          "brief-friday-instagram-fca28bf1-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "2647e2ab04d5d7e35825b1176efd0beffcf3f4eff8dc3f5091fecc434f2d56ac",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-friday-instagram-fca28bf1@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-10-26T07:36:52.611052+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "f649a38b87637c905154b0458258e59f69e9e741e5592ce47f225af8cc73272f",
+        "checksum": "f242cc0fe974165bbe9e2b01e661b3b327bc48b8bb62a1ae73d6201819804842"
       }
     },
     {
