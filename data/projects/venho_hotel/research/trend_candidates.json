@@ -718,5 +718,87 @@
     "fast_lane": false,
     "verified_by_human": false,
     "scanned_at": "2026-10-25T12:18:52.498709+00:00"
+  },
+  {
+    "id": "gnews-f1443d166aabaabc",
+    "title": "Hà Nội qua lăng kính của những du khách không muốn chỉ \"check-in\"",
+    "source_uri": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxNNkpkX1JPM0t0MTRrbVdFTzl3ZWxGT3YtS0NsZGl1S1NCRkNKanZocG5rSF9GZG9vWFVwZjJLdEphdnQxYjdYRTdTbWJkTU01X2lxSTB5emVSTnhCVUVBWlR5YnQ1Q2ZMckpvWEF1WEZRSWgxVXlQdm9SYThQMzNkNERSeGlraFFOSlVQT2dzRU84SFU1cHR3ZzJodVpVemlsVEx5NFRkYmk?oc=5",
+    "source_name": "aFamily",
+    "published_at": "2026-10-24T11:53:00+00:00",
+    "snippet": "aFamily",
+    "relevance_hint": 0.0,
+    "collector": "google_news",
+    "query": "\"Tây Hồ\" ẩm thực",
+    "geographic": "hanoi",
+    "thematic": "travel_stay",
+    "actionability": "direct",
+    "type": "lifestyle_trend",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "travel_accommodation",
+      "hanoi_westlake_local",
+      "culture_festival_positive"
+    ],
+    "is_event": false,
+    "event_name": null,
+    "event_start": null,
+    "event_end": null,
+    "venue": "Hà Nội",
+    "westlake_area": false,
+    "sources": [
+      {
+        "title": "Hà Nội qua lăng kính của những du khách không muốn chỉ \"check-in\"",
+        "source_uri": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxNNkpkX1JPM0t0MTRrbVdFTzl3ZWxGT3YtS0NsZGl1S1NCRkNKanZocG5rSF9GZG9vWFVwZjJLdEphdnQxYjdYRTdTbWJkTU01X2lxSTB5emVSTnhCVUVBWlR5YnQ1Q2ZMckpvWEF1WEZRSWgxVXlQdm9SYThQMzNkNERSeGlraFFOSlVQT2dzRU84SFU1cHR3ZzJodVpVemlsVEx5NFRkYmk?oc=5",
+        "source_name": "aFamily",
+        "published_at": "2026-10-24T11:53:00+00:00"
+      }
+    ],
+    "source_count": 1,
+    "relevance_score": 0.7,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "fast_lane": false,
+    "verified_by_human": false,
+    "scanned_at": "2026-10-26T00:18:14.386859+00:00"
+  },
+  {
+    "id": "gnews-35a29274d5c2d821",
+    "title": "Hồ Tây thế mà lại hay: Toàn idol K-pop thi nhau chạy bộ, giờ đến lượt Taeyang BIGBANG “lên dây cót” cho đêm diễn lịch sử",
+    "source_uri": "https://news.google.com/rss/articles/CBMi7gFBVV95cUxOVE9jbGRzTmZJbXhyb01Md1ZxcVM2R1U4eDc2MVVlbnlLZWV0OGtTb2dyUlhic2JLZVZZaU5IQjJVdkhJMlRTR2p1SDNRNEw2WlRqQ2JqbklfWXZBYmZMamt5VXlZV0ZsdlpWbl9xMWpQNHZMVzJSUlg5Tl81a2ptY1lsSDZLNVZySTgyVmhqcW9mdHhVUVl1RDBXa0tQZGE1bFVmamlJbmhXVW42WDY0WE1Hd19ORUtiRXo2SGQySHVISC0xV0puMU5kSGtJWGlxVHVyMV9BQ203UnZBN0NYVmhmUGtGd1JwY0hPU1F3?oc=5",
+    "source_name": "Kenh14.vn",
+    "published_at": "2026-10-25T02:30:00+00:00",
+    "snippet": "Kenh14.vn",
+    "relevance_hint": 0.0,
+    "collector": "google_news",
+    "query": "\"Hồ Tây\" lễ hội",
+    "geographic": "westlake",
+    "thematic": "lifestyle_culture",
+    "actionability": "direct",
+    "type": "lifestyle_trend",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local"
+    ],
+    "is_event": false,
+    "event_name": null,
+    "event_start": null,
+    "event_end": null,
+    "venue": "Hồ Tây, Hà Nội",
+    "westlake_area": true,
+    "sources": [
+      {
+        "title": "Hồ Tây thế mà lại hay: Toàn idol K-pop thi nhau chạy bộ, giờ đến lượt Taeyang BIGBANG “lên dây cót” cho đêm diễn lịch sử",
+        "source_uri": "https://news.google.com/rss/articles/CBMi7gFBVV95cUxOVE9jbGRzTmZJbXhyb01Md1ZxcVM2R1U4eDc2MVVlbnlLZWV0OGtTb2dyUlhic2JLZVZZaU5IQjJVdkhJMlRTR2p1SDNRNEw2WlRqQ2JqbklfWXZBYmZMamt5VXlZV0ZsdlpWbl9xMWpQNHZMVzJSUlg5Tl81a2ptY1lsSDZLNVZySTgyVmhqcW9mdHhVUVl1RDBXa0tQZGE1bFVmamlJbmhXVW42WDY0WE1Hd19ORUtiRXo2SGQySHVISC0xV0puMU5kSGtJWGlxVHVyMV9BQ203UnZBN0NYVmhmUGtGd1JwY0hPU1F3?oc=5",
+        "source_name": "Kenh14.vn",
+        "published_at": "2026-10-25T02:30:00+00:00"
+      }
+    ],
+    "source_count": 1,
+    "relevance_score": 0.6,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "fast_lane": false,
+    "verified_by_human": false,
+    "scanned_at": "2026-10-26T00:18:14.386859+00:00"
   }
 ]
