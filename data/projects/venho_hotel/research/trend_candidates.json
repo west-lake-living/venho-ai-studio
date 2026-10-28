@@ -826,5 +826,47 @@
     "fast_lane": false,
     "verified_by_human": false,
     "scanned_at": "2026-10-27T00:19:27.157169+00:00"
+  },
+  {
+    "id": "gnews-41049ffb4ed91da4",
+    "title": "Tàu du lịch Hà Nội 5 cửa ô hấp dẫn du khách",
+    "source_uri": "https://news.google.com/rss/articles/CBMiQEFVX3lxTE1ZSW9DZTFnaVNjbkdQNXRKX2VULXp4ckJYUm1EREd0eVdjR1lWakhGVDJjZmRPVEQ5WUdBc3NlYkY?oc=5",
+    "source_name": "VTVgo",
+    "published_at": "2026-10-27T00:00:00+00:00",
+    "snippet": "VTVgo",
+    "relevance_hint": 0.0,
+    "collector": "google_news",
+    "query": "\"Hồ Tây\" lễ hội",
+    "geographic": "hanoi",
+    "thematic": "travel_stay",
+    "actionability": "direct",
+    "type": "lifestyle_trend",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "travel_accommodation",
+      "hanoi_westlake_local",
+      "culture_festival_positive"
+    ],
+    "is_event": false,
+    "event_name": null,
+    "event_start": null,
+    "event_end": null,
+    "venue": "Hà Nội",
+    "westlake_area": false,
+    "sources": [
+      {
+        "title": "Tàu du lịch Hà Nội 5 cửa ô hấp dẫn du khách",
+        "source_uri": "https://news.google.com/rss/articles/CBMiQEFVX3lxTE1ZSW9DZTFnaVNjbkdQNXRKX2VULXp4ckJYUm1EREd0eVdjR1lWakhGVDJjZmRPVEQ5WUdBc3NlYkY?oc=5",
+        "source_name": "VTVgo",
+        "published_at": "2026-10-27T00:00:00+00:00"
+      }
+    ],
+    "source_count": 1,
+    "relevance_score": 0.7,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "fast_lane": false,
+    "verified_by_human": false,
+    "scanned_at": "2026-10-28T00:18:44.854158+00:00"
   }
 ]
