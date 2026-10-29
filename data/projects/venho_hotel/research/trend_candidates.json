@@ -868,5 +868,85 @@
     "fast_lane": false,
     "verified_by_human": false,
     "scanned_at": "2026-10-28T00:18:44.854158+00:00"
+  },
+  {
+    "id": "event-2026-10-28-6dbe88106a",
+    "title": "L7 WEST LAKE HANOI by LOTTE HOTELS: Đón mùa Halloween bùng nổ cùng chuỗi trải nghiệm ẩm thực và giải trí đẳng cấp",
+    "source_uri": "https://news.google.com/rss/articles/CBMi7AFBVV95cUxOeklpaktDQldHRUFBSTlHdnplcUJ2OTV6VnVldktIVGVEdlFYWmotajRVQm5OeXd4NkpIQmdHa1JUS1VXRDJvT3R4cVdMb2hhS3RIdVlpc1RubEpHVW5Mei0tVUdqN2c2bkxIYm50N0ZJVEFVdjQ2b1dwM0xLUnlrSGszbGtaSk1fNVJrZ1Z5VlhHbW1IUHNWbkIySi1zekp3cEZJV2JzTjVROFcyN2xEMDkzLWVFTGxHdm9sbkh0ZTNXSlBqSFp3aUZwQ3dkbFp5RENrdzA1blVBc2YwaU9rbWlTNF9OMzAxYUZuTg?oc=5",
+    "source_name": "VietnamBiz",
+    "published_at": "2026-10-28T07:47:00+00:00",
+    "snippet": "VietnamBiz",
+    "relevance_hint": 0.0,
+    "collector": "google_news",
+    "query": "\"Hồ Tây\" lễ hội",
+    "geographic": "westlake",
+    "thematic": "unrelated",
+    "actionability": "stretch",
+    "type": "feature_story",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local"
+    ],
+    "is_event": true,
+    "event_name": "Mùa Halloween tại L7 West Lake Hanoi",
+    "event_start": "2026-10-28",
+    "event_end": "2026-10-31",
+    "venue": "L7 West Lake Hanoi",
+    "westlake_area": true,
+    "sources": [
+      {
+        "title": "L7 WEST LAKE HANOI by LOTTE HOTELS: Đón mùa Halloween bùng nổ cùng chuỗi trải nghiệm ẩm thực và giải trí đẳng cấp",
+        "source_uri": "https://news.google.com/rss/articles/CBMi7AFBVV95cUxOeklpaktDQldHRUFBSTlHdnplcUJ2OTV6VnVldktIVGVEdlFYWmotajRVQm5OeXd4NkpIQmdHa1JUS1VXRDJvT3R4cVdMb2hhS3RIdVlpc1RubEpHVW5Mei0tVUdqN2c2bkxIYm50N0ZJVEFVdjQ2b1dwM0xLUnlrSGszbGtaSk1fNVJrZ1Z5VlhHbW1IUHNWbkIySi1zekp3cEZJV2JzTjVROFcyN2xEMDkzLWVFTGxHdm9sbkh0ZTNXSlBqSFp3aUZwQ3dkbFp5RENrdzA1blVBc2YwaU9rbWlTNF9OMzAxYUZuTg?oc=5",
+        "source_name": "VietnamBiz",
+        "published_at": "2026-10-28T07:47:00+00:00"
+      }
+    ],
+    "source_count": 1,
+    "relevance_score": 0.6,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "fast_lane": false,
+    "verified_by_human": false,
+    "scanned_at": "2026-10-29T00:17:30.406013+00:00"
+  },
+  {
+    "id": "event-undated-a69549f8ed",
+    "title": "Cận cảnh Shilla Monogram Hanoi Westlake - nơi tổ chức Diễn đàn Đầu tư Việt Nam 2027 (VIF 2027)",
+    "source_uri": "https://news.google.com/rss/articles/CBMizwFBVV95cUxPZnlkdk05Z3BTTFluWXNUXzVoMVQ5TGphYmhQa3VhS0dOdkFLb290R3JnRWtzZlFWcllhZk03bnJJdlJWN2ZTOFBOZ09FN2ZqQkRWV01mb1hJZ09pZGlCTldwVzN6emowblVfS3pKQmRPSTJkeFZxV3AzMnRKNzBJdDdZR0c4WDRmcWRLc3JFYUQtY2xBQU8xWkxxRmo5ZnBrUmV5R01qSkRhcEhXRGo2RlAzYjZQS0tGMnlaZWdvMUpKeVpERjVWcGR5alJOVVk?oc=5",
+    "source_name": "Việt Nam Mới",
+    "published_at": "2026-10-28T07:40:00+00:00",
+    "snippet": "Việt Nam Mới",
+    "relevance_hint": 0.0,
+    "collector": "google_news",
+    "query": "\"Hồ Tây\" sự kiện",
+    "geographic": "westlake",
+    "thematic": "unrelated",
+    "actionability": "stretch",
+    "type": "feature_story",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local"
+    ],
+    "is_event": true,
+    "event_name": "Diễn đàn Đầu tư Việt Nam 2027 (VIF 2027)",
+    "event_start": null,
+    "event_end": null,
+    "venue": "Shilla Monogram Hanoi Westlake",
+    "westlake_area": true,
+    "sources": [
+      {
+        "title": "Cận cảnh Shilla Monogram Hanoi Westlake - nơi tổ chức Diễn đàn Đầu tư Việt Nam 2027 (VIF 2027)",
+        "source_uri": "https://news.google.com/rss/articles/CBMizwFBVV95cUxPZnlkdk05Z3BTTFluWXNUXzVoMVQ5TGphYmhQa3VhS0dOdkFLb290R3JnRWtzZlFWcllhZk03bnJJdlJWN2ZTOFBOZ09FN2ZqQkRWV01mb1hJZ09pZGlCTldwVzN6emowblVfS3pKQmRPSTJkeFZxV3AzMnRKNzBJdDdZR0c4WDRmcWRLc3JFYUQtY2xBQU8xWkxxRmo5ZnBrUmV5R01qSkRhcEhXRGo2RlAzYjZQS0tGMnlaZWdvMUpKeVpERjVWcGR5alJOVVk?oc=5",
+        "source_name": "Việt Nam Mới",
+        "published_at": "2026-10-28T07:40:00+00:00"
+      }
+    ],
+    "source_count": 1,
+    "relevance_score": 0.6,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "fast_lane": false,
+    "verified_by_human": false,
+    "scanned_at": "2026-10-29T00:17:30.406013+00:00"
   }
 ]
