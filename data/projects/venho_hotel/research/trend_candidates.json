@@ -948,5 +948,87 @@
     "fast_lane": false,
     "verified_by_human": false,
     "scanned_at": "2026-10-29T00:17:30.406013+00:00"
+  },
+  {
+    "id": "gnews-5d27bd42ffc83046",
+    "title": "Khi người trẻ đi Phủ Tây Hồ",
+    "source_uri": "https://news.google.com/rss/articles/CBMieEFVX3lxTE1pX3Q5ME9Oc2tBV25EcVpJelpXS1R2OFV4T3pqU25zWWpoWE1EYjAxR1ZjRWpwZkVESzhNQ2RaODRBVEVhejZiTmxIanN6enpGX1d6ZXFGRDZuWWdLRW5tREdJcnh2cS1LbGk1WmdMME5iX0NQRTJuRQ?oc=5",
+    "source_name": "Báo Văn Hóa",
+    "published_at": "2026-10-29T15:02:03+00:00",
+    "snippet": "Báo Văn Hóa",
+    "relevance_hint": 0.0,
+    "collector": "google_news",
+    "query": "\"phủ Tây Hồ\"",
+    "geographic": "westlake",
+    "thematic": "lifestyle_culture",
+    "actionability": "direct",
+    "type": "lifestyle_trend",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "culture_festival_positive"
+    ],
+    "is_event": false,
+    "event_name": null,
+    "event_start": null,
+    "event_end": null,
+    "venue": "Phủ Tây Hồ",
+    "westlake_area": true,
+    "sources": [
+      {
+        "title": "Khi người trẻ đi Phủ Tây Hồ",
+        "source_uri": "https://news.google.com/rss/articles/CBMieEFVX3lxTE1pX3Q5ME9Oc2tBV25EcVpJelpXS1R2OFV4T3pqU25zWWpoWE1EYjAxR1ZjRWpwZkVESzhNQ2RaODRBVEVhejZiTmxIanN6enpGX1d6ZXFGRDZuWWdLRW5tREdJcnh2cS1LbGk1WmdMME5iX0NQRTJuRQ?oc=5",
+        "source_name": "Báo Văn Hóa",
+        "published_at": "2026-10-29T15:02:03+00:00"
+      }
+    ],
+    "source_count": 1,
+    "relevance_score": 0.6,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "fast_lane": false,
+    "verified_by_human": false,
+    "scanned_at": "2026-10-30T00:18:06.305284+00:00"
+  },
+  {
+    "id": "event-undated-f84ba1a55f",
+    "title": "Chung kết CFS 26 PATH VIETNAM: Đến Tây Hồ Tiếp Lửa Cuộc Đua Giành Vé Thế Giới, Săn Loạt Quà Hấp Dẫn",
+    "source_uri": "https://news.google.com/rss/articles/CBMingFBVV95cUxOTk5KX1Etc25MMnFNV3FCUkdnNEJvTF95eWtjSElnMnBKYnAzbWlHdmsxOG16dzI5OVFYNjlGSGZvZ1hZaFh0cnR3QkQxZ2hDelJoTjMxR1ZQZTNHVV9faHVXWUl5b05zYTJZdFA2VWMtUFY5MnZwcFdjNmFLZ0RLRW1hNzZsc1Y4TUpBLTh2ZkdfOXIxSWxMQ0otR0dRd9IBnAFBVV95cUxNeFdwMnc2cVNla0VnbTM4bWFVdFlnc013ZWI1WHVLUnNhM0V2bEEtLXJoUEg2dFdlNjhrM0NIeEpsZEtQbWpfZjZFWFRpeWZkc3JfS0hpVlFRRERJWmpsRnF0X2ZEdGgycFd1NlducTRabzNwcTlJLUJmazZ0SlRfcXRCMDdqZDY5eFFyczFhLTM4SGVsOTNuWmNWd1I?oc=5",
+    "source_name": "Lag.vn",
+    "published_at": "2026-10-29T04:30:34+00:00",
+    "snippet": "Lag.vn",
+    "relevance_hint": 0.0,
+    "collector": "google_news",
+    "query": "\"Tây Hồ\" chợ hoa",
+    "geographic": "westlake",
+    "thematic": "lifestyle_culture",
+    "actionability": "direct",
+    "type": "cultural_event",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "culture_festival_positive"
+    ],
+    "is_event": true,
+    "event_name": "Chung kết CFS 26 PATH VIETNAM",
+    "event_start": null,
+    "event_end": null,
+    "venue": "Tây Hồ",
+    "westlake_area": true,
+    "sources": [
+      {
+        "title": "Chung kết CFS 26 PATH VIETNAM: Đến Tây Hồ Tiếp Lửa Cuộc Đua Giành Vé Thế Giới, Săn Loạt Quà Hấp Dẫn",
+        "source_uri": "https://news.google.com/rss/articles/CBMingFBVV95cUxOTk5KX1Etc25MMnFNV3FCUkdnNEJvTF95eWtjSElnMnBKYnAzbWlHdmsxOG16dzI5OVFYNjlGSGZvZ1hZaFh0cnR3QkQxZ2hDelJoTjMxR1ZQZTNHVV9faHVXWUl5b05zYTJZdFA2VWMtUFY5MnZwcFdjNmFLZ0RLRW1hNzZsc1Y4TUpBLTh2ZkdfOXIxSWxMQ0otR0dRd9IBnAFBVV95cUxNeFdwMnc2cVNla0VnbTM4bWFVdFlnc013ZWI1WHVLUnNhM0V2bEEtLXJoUEg2dFdlNjhrM0NIeEpsZEtQbWpfZjZFWFRpeWZkc3JfS0hpVlFRRERJWmpsRnF0X2ZEdGgycFd1NlducTRabzNwcTlJLUJmazZ0SlRfcXRCMDdqZDY5eFFyczFhLTM4SGVsOTNuWmNWd1I?oc=5",
+        "source_name": "Lag.vn",
+        "published_at": "2026-10-29T04:30:34+00:00"
+      }
+    ],
+    "source_count": 1,
+    "relevance_score": 0.6,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "fast_lane": false,
+    "verified_by_human": false,
+    "scanned_at": "2026-10-30T00:18:06.305284+00:00"
   }
 ]
