@@ -1030,5 +1030,45 @@
     "fast_lane": false,
     "verified_by_human": false,
     "scanned_at": "2026-10-30T00:18:06.305284+00:00"
+  },
+  {
+    "id": "gnews-37a698d29f339869",
+    "title": "Khám phá Di tích quốc gia đặc biệt đền Phù Đổng",
+    "source_uri": "https://news.google.com/rss/articles/CBMimgFBVV95cUxQYnQxVGxDTkgtdkRNTHd2MTBzMzhBdnAwMThXRi1sOVk5c1JSU3pXWGVTM0RPNVZuU2RTYTNJRFdfNkFiU2lzbkVraUs2MGJiSVgzYlJzX2J6NWZ6eXo2MWh4QTVzbkhtWHZUMHlXV2dGWTZlNVduNXRRZ1g2RG03SlFQQUxWTHhEclJPNHpWaml1Z2xVMUNGc2VR?oc=5",
+    "source_name": "nhipsonghanoi.hanoimoi.vn",
+    "published_at": "2026-10-30T04:36:00+00:00",
+    "snippet": "nhipsonghanoi.hanoimoi.vn",
+    "relevance_hint": 0.0,
+    "collector": "google_news",
+    "query": "\"Trúc Bạch\" lễ hội",
+    "geographic": "hanoi",
+    "thematic": "travel_stay",
+    "actionability": "direct",
+    "type": "feature_story",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "culture_festival_positive"
+    ],
+    "is_event": false,
+    "event_name": null,
+    "event_start": null,
+    "event_end": null,
+    "venue": "Đền Phù Đổng, Gia Lâm, Hà Nội",
+    "westlake_area": false,
+    "sources": [
+      {
+        "title": "Khám phá Di tích quốc gia đặc biệt đền Phù Đổng",
+        "source_uri": "https://news.google.com/rss/articles/CBMimgFBVV95cUxQYnQxVGxDTkgtdkRNTHd2MTBzMzhBdnAwMThXRi1sOVk5c1JSU3pXWGVTM0RPNVZuU2RTYTNJRFdfNkFiU2lzbkVraUs2MGJiSVgzYlJzX2J6NWZ6eXo2MWh4QTVzbkhtWHZUMHlXV2dGWTZlNVduNXRRZ1g2RG03SlFQQUxWTHhEclJPNHpWaml1Z2xVMUNGc2VR?oc=5",
+        "source_name": "nhipsonghanoi.hanoimoi.vn",
+        "published_at": "2026-10-30T04:36:00+00:00"
+      }
+    ],
+    "source_count": 1,
+    "relevance_score": 0.7,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "fast_lane": false,
+    "verified_by_human": false,
+    "scanned_at": "2026-10-30T12:19:01.271050+00:00"
   }
 ]
