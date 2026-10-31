@@ -23984,13 +23984,13 @@
       "idempotency_key": "a7d40711b253617d2e89d6931e3a83bd604b703fa96a2ed6ab86e377b201f29f",
       "platform": "facebook",
       "slot_id": "slot-2026-10-31-saturday",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
-      "platform_post_id": null,
-      "permalink": null,
+      "status": "PUBLISHED",
+      "gateway_status": "PUBLISHED",
+      "platform_post_id": "1124616474074140_122149294629351048",
+      "permalink": "https://www.facebook.com/1124616474074140_122149294629351048",
       "reconciliation_proof": null,
       "created_at": "2026-10-25T13:13:09.459998+00:00",
-      "updated_at": "2026-10-26T07:17:45.781664+00:00",
+      "updated_at": "2026-10-31T02:00:32.437911+00:00",
       "content": {
         "title": "Tháng 10 ở Hà Nội: mùa thu không chỉ nằm ở hương hoa sữa",
         "text": "Tháng 10, người Hà Nội hay nhắc hoa sữa. Nhưng mùa thu ở đây còn nhiều dấu hiệu khác, nếu mình chịu để ý.\n\nĐó là nắng hanh buổi trưa, thứ nắng vàng nhưng không gắt, hắt lên mặt nước một màu rất riêng của tháng 10.\n\nLà gió heo may se se lúc trời vừa tối, đủ để người đi xe máy kéo cổ áo lên một chút.\n\nLà sương mỏng trên mặt Hồ Tây lúc sáng sớm, khi hồ còn phẳng và phố chưa đông.\n\nLà những thứ bày bán theo mùa: cốm gói trong lá sen, hồng đỏ xếp trong thúng, bưởi chất đầy sau yên xe hàng rong.\n\nQuanh Hồ Tây, mùa này đi lại rất dễ chịu. Đường Thanh Niên nối Hồ Tây với hồ Trúc Bạch, một bên là chùa Trấn Quốc, buổi chiều người đi bộ, người đạp xe, người chỉ ngồi nhìn ra mặt nước. Càng về cuối ngày, ánh sáng càng ngả vàng. Hoàng hôn Hồ Tây tháng 10 thường kéo dài hơn mình tưởng, và rất dễ ngồi lại lâu hơn dự định.\n\nVen Hồ Hotel nằm trên đường Nguyễn Đình Thi, phía ven hồ. Sảnh khách sạn nhỏ, cửa kính, quầy lễ tân gỗ nâu sẫm, nền gạch hoa văn tròn, vài bức tranh treo trên tường. Không có gì cầu kỳ, nhưng là một chỗ gọn gàng để quay về sau một ngày đi bộ ngoài trời, và để sáng hôm sau lại bắt đầu từ phía hồ.\n\nNếu bạn đang tính một chuyến Hà Nội trong tháng 10 này, nhắn tin cho Ven Hồ Hotel để xem phòng trống những ngày bạn định ở nhé.\n\n#VenHoHotelHanoi #HoTay #MuaThuHaNoi #KhachSanHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-saturday-facebook-49425b3f",
@@ -24161,7 +24161,9 @@
         "revoked_reason": null,
         "package_versions_checksum": "577b17fa871cc8533ad5cbab0d41d5c4de4d9e14a50b2a8a2d065c3f4198a92b",
         "checksum": "83cba5d2b2b3e1739de0e9eba7071ad230c5c92556ba213dfa2b38a73f3ec57a"
-      }
+      },
+      "gateway_error": null,
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-saturday-instagram-aad74186",
@@ -24169,13 +24171,13 @@
       "idempotency_key": "dc9b03a422fc6702f2ed476b6ce6b46f89c49d69c139599d93a35c246ecc1c7f",
       "platform": "instagram",
       "slot_id": "slot-2026-10-31-saturday",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
-      "platform_post_id": null,
-      "permalink": null,
+      "status": "PUBLISHED",
+      "gateway_status": "PUBLISHED",
+      "platform_post_id": "18098373959134505",
+      "permalink": "https://www.instagram.com/18098373959134505",
       "reconciliation_proof": null,
       "created_at": "2026-10-25T13:13:42.617062+00:00",
-      "updated_at": "2026-10-26T07:17:45.781664+00:00",
+      "updated_at": "2026-10-31T02:00:46.809085+00:00",
       "content": {
         "title": "Tháng 10 Hà Nội: mùa thu không chỉ nằm ở hương hoa sữa",
         "text": "Tháng 10 ở Hà Nội, thứ người ta hay nhắc là mùi hoa sữa. Nhưng thứ ở lại lâu hơn trong trí nhớ thường là ánh sáng.\n\nNắng tháng 10 mỏng và thấp. Buổi sáng, mặt Hồ Tây còn phẳng, sương chưa tan hết, người đi bộ và người đạp xe vòng qua nhau trên lối ven hồ.\n\nQua trưa, nắng ngả vàng trên hàng cây. Chiều muộn, cả mặt nước đổi màu trong khoảng hai mươi phút rồi tắt. Hoàng hôn Hồ Tây tháng này không rực, nhưng dịu và rất dễ ngồi lâu.\n\nVài cách để cảm nhận mùa thu quanh đây mà không cần đi xa:\nĐi bộ một đoạn ven hồ trước 7 giờ sáng, khi phố còn vắng.\nNgồi một quán nhỏ quay mặt ra nước, gọi trà nóng thay vì đồ lạnh.\nRẽ vào những con ngõ nhỏ của Tây Hồ, nơi nhịp sống vẫn chậm hơn phần còn lại của thành phố.\nĐợi đến lúc đèn ven hồ bật lên rồi mới quay về.\n\nVen Hồ Hotel nằm trên đường Nguyễn Đình Thi, cách mép hồ một quãng ngắn. Cửa kính, sàn gạch nâu, quầy lễ tân gỗ sẫm và vài bức tranh trên tường. Một khách sạn nhỏ, vừa đủ để làm nơi bắt đầu và kết thúc một ngày đi bộ.\n\nNếu tháng 10 này bạn có vài ngày ở Hà Nội, nhắn cho Ven Hồ Hotel để xem phòng trống cho những ngày bạn định đến nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #HaNoiMuaThu #KhachSanHoTay #NguyenDinhThi #HoangHonHoTay #HanoiTravel",
@@ -24349,7 +24351,9 @@
         "revoked_reason": null,
         "package_versions_checksum": "9bed20e28aff84419767db2ef957c2424ba5a40c0f1fbcd6415384362deddc92",
         "checksum": "7d9766f4c1eaa658c9909793627c8a1a2a2935c6625f170b53026448d5b49fc1"
-      }
+      },
+      "gateway_error": null,
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-monday-facebook-f2c5a901",
