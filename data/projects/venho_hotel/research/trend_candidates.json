@@ -1026,5 +1026,47 @@
     "scanned_at": "2026-10-30T12:19:01.271050+00:00",
     "approved_by": "hpham1504@gmail.com",
     "approved_at": "2026-11-02T03:48:09.214577+00:00"
+  },
+  {
+    "id": "gnews-3f4a4d7e2b714f36",
+    "title": "Thu Hà Nội và 7 trải nghiệm nhất định phải thử khi ghé thăm",
+    "source_uri": "https://news.google.com/rss/articles/CBMikgFBVV95cUxQOUREcTR4bVc5aG1jTE1uZ3VoQmJTalJ5OTFWemhud0EyQmdtRUxQZ0s4TUNydUVyTl9tLU9VbGFDZXpMZVFUN0tvUktyYjVONlN3aTZlUHAycjBVTHVwaGplbDE2WUp6bXFPMWIwNzBaOW96R3p2a0g3OUtkY3hMNW1TMlYxZi1GWlgxTkpRaThMQQ?oc=5",
+    "source_name": "ELLE",
+    "published_at": "2026-10-29T04:30:14+00:00",
+    "snippet": "ELLE",
+    "relevance_hint": 0.0,
+    "collector": "google_news",
+    "query": "\"Hồ Tây\" âm nhạc",
+    "geographic": "hanoi",
+    "thematic": "travel_stay",
+    "actionability": "direct",
+    "type": "lifestyle_trend",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "travel_accommodation",
+      "hanoi_westlake_local",
+      "seasonal_weather_nature"
+    ],
+    "is_event": false,
+    "event_name": null,
+    "event_start": null,
+    "event_end": null,
+    "venue": "Hà Nội",
+    "westlake_area": false,
+    "sources": [
+      {
+        "title": "Thu Hà Nội và 7 trải nghiệm nhất định phải thử khi ghé thăm",
+        "source_uri": "https://news.google.com/rss/articles/CBMikgFBVV95cUxQOUREcTR4bVc5aG1jTE1uZ3VoQmJTalJ5OTFWemhud0EyQmdtRUxQZ0s4TUNydUVyTl9tLU9VbGFDZXpMZVFUN0tvUktyYjVONlN3aTZlUHAycjBVTHVwaGplbDE2WUp6bXFPMWIwNzBaOW96R3p2a0g3OUtkY3hMNW1TMlYxZi1GWlgxTkpRaThMQQ?oc=5",
+        "source_name": "ELLE",
+        "published_at": "2026-10-29T04:30:14+00:00"
+      }
+    ],
+    "source_count": 1,
+    "relevance_score": 0.7,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "fast_lane": false,
+    "verified_by_human": false,
+    "scanned_at": "2026-11-02T12:17:50.233252+00:00"
   }
 ]
