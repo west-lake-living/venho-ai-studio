@@ -5288,10 +5288,11 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-10-29-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "rejected",
     "proposed_at": "2026-10-29T06:43:55.960186+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "hpham1504@gmail.com",
+    "decided_at": "2026-11-02T09:57:13.444726+00:00",
+    "reject_reason": null
   },
   {
     "fact_key": "local_intel.m_and_honey",
