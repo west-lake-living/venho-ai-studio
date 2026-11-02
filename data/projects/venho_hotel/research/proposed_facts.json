@@ -5322,9 +5322,10 @@
     "domain": "local_intel",
     "question": "Quanh Hồ Tây có những quán cà phê hay điểm đến nào đáng giới thiệu cho khách?",
     "synthesis_note": "research/synthesis/RS-2026-10-29-localintel-synthesis.md",
-    "status": "pending_approval",
+    "status": "approved",
     "proposed_at": "2026-10-29T06:43:55.960186+00:00",
-    "decided_by": null,
-    "decided_at": null
+    "decided_by": "hpham1504@gmail.com",
+    "decided_at": "2026-11-02T03:49:55.420498+00:00",
+    "fact_path": "data/projects/venho_hotel/growth/facts/local_intel__chao_suon_thuy_khue.json"
   }
 ]
