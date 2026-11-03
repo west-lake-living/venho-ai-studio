@@ -25879,7 +25879,7 @@
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-11-03T03:23:55.086494+00:00",
-      "updated_at": "2026-11-03T03:23:55.330770+00:00",
+      "updated_at": "2026-11-03T03:56:28.597610+00:00",
       "content": {
         "title": "Sáng đầu tuần, việc đầu tiên là kéo rèm",
         "text": "Sáng đầu tuần ở Hồ Tây thường bắt đầu bằng một động tác rất nhỏ: kéo rèm.\n\nNắng hanh của những ngày khô đổ xuống mặt hồ, thứ nắng vàng nhưng không gắt, đủ ấm để mở cửa sổ mà chưa cần kéo rèm lại.\n\nMặt nước hôm ấy lặng, màu xanh ngả xám như ngọc, không bóng loáng, không phản chiếu rõ ràng, chỉ phẳng và yên. Trời nhiều mây xen nắng nên ánh sáng cứ đổi dần: lúc nhạt đi vài phút, rồi lại sáng lên.\n\nKhông khí khô nên nhìn được rất xa. Bên kia hồ, những tòa nhà của thành phố hiện lên rõ từng khối, phía trước là hàng cây xanh thưa vừa đủ để không che mất đường chân trời. Hà Nội ở ngay đó, đang vào guồng của một tuần mới, còn trong phòng thì mọi thứ vẫn chậm hơn một nhịp.\n\nĐó là cái hay của một buổi sáng thứ Hai bên Hồ Tây. Bạn vẫn biết thành phố đang bận rộn, nhưng không bị cuốn vào ngay lập tức. Pha xong ly cà phê, ngồi xuống bên cửa sổ, nhìn mặt hồ thêm mươi phút nữa rồi mới mở laptop hay xếp đồ đi chơi.\n\nPhòng đôi hướng hồ ở Ven Hồ Hotel, trên đường Nguyễn Đình Thi, được giữ lại đúng khung cảnh ấy, nguyên vẹn sau lớp rèm.\n\nNếu bạn đang tính một chuyến Hà Nội và muốn bắt đầu ngày mới theo nhịp này, nhắn Ven Hồ Hotel để xem phòng đôi hướng hồ còn trống những ngày nào nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #NguyenDinhThi #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-monday-facebook-6a8ad43f",
@@ -25892,7 +25892,7 @@
         ],
         "source_prompt_file": "data/projects/venho_hotel/prompts/content/WESTLAKE__facebook-m-r-m-ph-ng-i-ng-m-n-ng-v-ng-hanh-kh-r-i-xu-ng-m-t-h__CONTENT_PROMPT_v1.0.json",
         "image_run_path": "data/projects/venho_hotel/growth/artifacts/daily-monday-m-r-m-ph-ng-i-ng-m-n-ng-v-ng-hanh-kh-r-i-xu-ng-m-t-h/images/89293df6-1f8f-41d6-b4f1-c2af547e07cd",
-        "image_public_url": "https://drive.google.com/uc?export=download&id=1bEw9zlb2Em_f7hnwXmckt0tVcLkLkj0t",
+        "image_public_url": "https://drive.google.com/uc?export=download&id=1qeEYpFdoe2gprrOQx07r7NeJ4l3BkKEG",
         "image_is_fallback": false,
         "image_fallback_reason": null,
         "tracking_url": "https://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-monday-facebook-6a8ad43f",
@@ -25919,7 +25919,9 @@
             "source": "IMG_5153.jpg"
           }
         ],
-        "image_option_selected": "A"
+        "image_option_selected": "C",
+        "image_selected_by": "hpham1504@gmail.com",
+        "image_selected_at": "2026-11-03T03:56:28.561885+00:00"
       },
       "creative_brief_id": "brief-monday-facebook-94a1b79c",
       "package_snapshot": {
@@ -25927,9 +25929,7 @@
         "copy_version_ids": [
           "brief-monday-facebook-94a1b79c-content_studio"
         ],
-        "asset_version_ids": [
-          "89293df6-1f8f-41d6-b4f1-c2af547e07cd"
-        ],
+        "asset_version_ids": [],
         "validation_snapshot_id": "44cfe238507e36826a5508152dcdb4907a9e76c21f608c8e272bead834fa29bb",
         "fact_version_ids": [],
         "brief_version_id": "brief-monday-facebook-94a1b79c@1"
@@ -26032,7 +26032,7 @@
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-11-03T03:24:08.678488+00:00",
-      "updated_at": "2026-11-03T03:24:08.766057+00:00",
+      "updated_at": "2026-11-03T03:56:28.700910+00:00",
       "content": {
         "title": "Buổi sáng đầu tuần bắt đầu bằng một lần kéo rèm",
         "text": "Thứ Hai ở Hồ Tây thường bắt đầu rất khẽ: kéo rèm, và nắng hanh đã nằm sẵn trên mặt nước.\n\nNắng mùa này khô và nhẹ, không gắt. Thứ ánh sáng ấy rơi xuống mặt hồ màu xanh ngọc trầm, lặng đến mức gần như không gợn. Trời có mây, nhưng vẫn đủ trong để nhìn được rất xa — qua những tán cây rải rác ven bờ, tới dãy nhà cao phía bên kia hồ, nơi thành phố đã bắt đầu một tuần mới.\n\nCó một khoảng lặng rất riêng của buổi sáng đầu tuần bên hồ. Chưa cần đi đâu, chưa cần làm gì. Chỉ đứng bên khung cửa, nhìn mặt nước phẳng và để đầu óc chậm lại thêm vài phút trước khi bước ra đường.\n\nỞ phòng đôi của Ven Hồ Hotel trên đường Nguyễn Đình Thi, cái khung cửa ấy là thứ dễ khiến người ta nán lại lâu hơn dự định.\n\nNếu bạn đang tính một chuyến Hà Nội và muốn thức dậy cạnh Hồ Tây, nhắn cho Ven Hồ Hotel để xem lịch phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanViewHoTay #NguyenDinhThi #HaNoi #HanoiTravel",
@@ -26047,7 +26047,7 @@
         ],
         "source_prompt_file": "data/projects/venho_hotel/prompts/content/WESTLAKE__instagram-m-r-m-ph-ng-i-ng-m-n-ng-v-ng-hanh-kh-r-i-xu-ng-m-t-h__CONTENT_PROMPT_v1.0.json",
         "image_run_path": "data/projects/venho_hotel/growth/artifacts/daily-monday-m-r-m-ph-ng-i-ng-m-n-ng-v-ng-hanh-kh-r-i-xu-ng-m-t-h/images/89293df6-1f8f-41d6-b4f1-c2af547e07cd",
-        "image_public_url": "https://drive.google.com/uc?export=download&id=1bEw9zlb2Em_f7hnwXmckt0tVcLkLkj0t",
+        "image_public_url": "https://drive.google.com/uc?export=download&id=1qeEYpFdoe2gprrOQx07r7NeJ4l3BkKEG",
         "image_is_fallback": false,
         "image_fallback_reason": null,
         "tracking_url": "https://venhohotel.com/lien-he?utm_source=instagram&utm_medium=social&utm_content=pub-monday-instagram-814284d0",
@@ -26074,7 +26074,9 @@
             "source": "IMG_5153.jpg"
           }
         ],
-        "image_option_selected": "A"
+        "image_option_selected": "C",
+        "image_selected_by": "hpham1504@gmail.com",
+        "image_selected_at": "2026-11-03T03:56:28.561885+00:00"
       },
       "creative_brief_id": "brief-monday-instagram-c6a0cf13",
       "package_snapshot": {
@@ -26082,9 +26084,7 @@
         "copy_version_ids": [
           "brief-monday-instagram-c6a0cf13-content_studio"
         ],
-        "asset_version_ids": [
-          "89293df6-1f8f-41d6-b4f1-c2af547e07cd"
-        ],
+        "asset_version_ids": [],
         "validation_snapshot_id": "9a16584503964f0174d4a06cd2f68ad569a9251a9bb9dccdbec582107e0d6092",
         "fact_version_ids": [],
         "brief_version_id": "brief-monday-instagram-c6a0cf13@1"
