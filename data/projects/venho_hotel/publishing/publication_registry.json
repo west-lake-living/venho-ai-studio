@@ -26227,7 +26227,7 @@
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-11-03T03:28:48.794732+00:00",
-      "updated_at": "2026-11-03T03:28:48.876077+00:00",
+      "updated_at": "2026-11-03T04:07:51.782473+00:00",
       "content": {
         "title": "Mùa cúc họa mi ở vườn hoa Nhật Tân",
         "text": "Cúc họa mi về, cả một góc Nhật Tân chuyển sang màu trắng.\n\nNhững luống hoa trồng thành hàng dài, cánh mỏng, nhụy vàng, cao ngang thắt lưng người lớn. Trời trong, nắng rọi thẳng xuống, màu trắng của hoa sáng lên giữa nền xanh của lá và những hàng cây lớn phía ngoài đường.\n\nỞ đây không có ghế ngồi, không có hàng quán bên trong vườn. Người ta đi bộ men theo lối đất giữa các luống, dừng lại một chút, rồi lại đi tiếp. Phần lớn thời gian chỉ là đứng nhìn, nghe tiếng gió lùa qua những thân hoa khẽ lay.\n\nVài điều nhỏ nếu bạn định ghé:\n\nCúc họa mi nở rộ trong một quãng ngắn của năm, nên đi sớm trong mùa thì hoa còn dày và tươi.\n\nBuổi sáng hoặc đầu giờ chiều, nắng nghiêng, ảnh lên màu dịu hơn so với lúc đứng bóng.\n\nCác vườn đều do chủ vườn trông nom, nên hỏi một câu trước khi bước vào chụp ảnh.\n\nĐi giày đế thấp, lối giữa luống là đất, có chỗ còn ẩm.\n\nNhật Tân nằm cùng khu Tây Hồ với Ven Hồ Hotel, nên nhiều khách chọn ghé vườn hoa buổi sáng rồi thong thả quay về phía Nguyễn Đình Thi, ngồi lại bên hồ cho hết buổi chiều. Một ngày không cần phải chạy đi đâu xa.\n\nNếu bạn đang tính lịch ra Hà Nội đúng mùa cúc họa mi, nhắn cho Ven Hồ Hotel để xem phòng trống những ngày đó nhé.\n\n#VenHoHotelHanoi #CucHoaMi #NhatTan #HoTay #KhamPhaHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-70df778f",
@@ -26241,7 +26241,7 @@
         ],
         "source_prompt_file": "data/projects/venho_hotel/prompts/content/OUTSIDE__facebook-gh-v-n-hoa-nh-t-t-n-ng-m-nh-ng-lu-ng-c-c-h-a-mi-bung-n__CONTENT_PROMPT_v1.0.json",
         "image_run_path": "data/projects/venho_hotel/growth/artifacts/daily-wednesday-gh-v-n-hoa-nh-t-t-n-ng-m-nh-ng-lu-ng-c-c-h-a-mi-bung-n/images/38844bea-5dc0-4f20-b924-d8ae35d3f33d",
-        "image_public_url": "https://drive.google.com/uc?export=download&id=1c4tW8aZyiFt89XLSprOrr_Kv-Eo9RTKt",
+        "image_public_url": "https://drive.google.com/uc?export=download&id=1GIpyUBcGjiEDk-Zdf5hLoZVzzeoJG95T",
         "image_is_fallback": false,
         "image_fallback_reason": null,
         "tracking_url": "https://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-70df778f",
@@ -26266,9 +26266,17 @@
             "url": "https://drive.google.com/uc?export=download&id=1yV4nYeQJZaNB54OSNw8iJeVF6PY4JC00",
             "scenario": "venho_rooftop_sunrise",
             "source": "IMG_5136.jpeg"
+          },
+          {
+            "id": "U1",
+            "kind": "upload",
+            "url": "https://drive.google.com/uc?export=download&id=1GIpyUBcGjiEDk-Zdf5hLoZVzzeoJG95T",
+            "source": "upload.webp"
           }
         ],
-        "image_option_selected": "A"
+        "image_option_selected": "U1",
+        "image_selected_by": "hpham1504@gmail.com",
+        "image_selected_at": "2026-11-03T04:07:51.727032+00:00"
       },
       "creative_brief_id": "brief-wednesday-facebook-f8c1b121",
       "package_snapshot": {
@@ -26276,9 +26284,7 @@
         "copy_version_ids": [
           "brief-wednesday-facebook-f8c1b121-content_studio"
         ],
-        "asset_version_ids": [
-          "38844bea-5dc0-4f20-b924-d8ae35d3f33d"
-        ],
+        "asset_version_ids": [],
         "validation_snapshot_id": "f44e834aec117298c421addb88f1dd07ef58476851cc6527bf6f8650dea59653",
         "fact_version_ids": [],
         "brief_version_id": "brief-wednesday-facebook-f8c1b121@1"
@@ -26391,7 +26397,7 @@
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-11-03T03:29:16.081500+00:00",
-      "updated_at": "2026-11-03T03:29:16.161375+00:00",
+      "updated_at": "2026-11-03T04:07:51.873385+00:00",
       "content": {
         "title": "Mùa cúc họa mi ở vườn hoa Nhật Tân",
         "text": "Trời trong, nắng rõ từng tán cây bên đường. Kiểu thời tiết hợp để đi ngắm hoa hơn là ngồi trong phòng.\n\nTừ Nguyễn Đình Thi, bạn men theo mép hồ rồi rẽ dần về phía Nhật Tân. Mặt nước lùi lại phía sau, nhà cửa thưa ra, và chỉ một lúc sau là tới những luống cúc họa mi.\n\nHoa nhỏ, cánh trắng, nhụy vàng, trồng thành từng vạt thấp ngang gối. Không có gì cầu kỳ. Người đi bộ chậm giữa các lối, dừng lại chụp vài kiểu, rồi lại đi tiếp.\n\nMùa cúc họa mi không kéo dài. Vài tuần, hoa tàn, vườn lại chuyển sang loài khác. Có lẽ vì thế mà người Hà Nội hay rủ nhau đi sớm.\n\nBuổi sáng nắng vừa lên hoặc đầu giờ chiều là lúc dễ chịu nhất. Nên mặc đồ sáng màu, đi giày thấp, và chuẩn bị tinh thần lội đất một chút.\n\nVề lại Hồ Tây, chiều vẫn còn đủ dài để đi bộ thêm một vòng ven hồ.\n\nVen Hồ Hotel nằm ngay trên Nguyễn Đình Thi, thuận đường cho những buổi sáng như vậy. Nhắn tin để xem phòng trống nếu bạn đang tính lịch ra Hà Nội mùa này nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #CucHoaMi #VuonHoaNhatTan #HaNoi #HanoiTravel #KhachSanHoTay",
@@ -26407,7 +26413,7 @@
         ],
         "source_prompt_file": "data/projects/venho_hotel/prompts/content/OUTSIDE__instagram-gh-v-n-hoa-nh-t-t-n-ng-m-nh-ng-lu-ng-c-c-h-a-mi-bung-n__CONTENT_PROMPT_v1.0.json",
         "image_run_path": "data/projects/venho_hotel/growth/artifacts/daily-wednesday-gh-v-n-hoa-nh-t-t-n-ng-m-nh-ng-lu-ng-c-c-h-a-mi-bung-n/images/38844bea-5dc0-4f20-b924-d8ae35d3f33d",
-        "image_public_url": "https://drive.google.com/uc?export=download&id=1c4tW8aZyiFt89XLSprOrr_Kv-Eo9RTKt",
+        "image_public_url": "https://drive.google.com/uc?export=download&id=1GIpyUBcGjiEDk-Zdf5hLoZVzzeoJG95T",
         "image_is_fallback": false,
         "image_fallback_reason": null,
         "tracking_url": "https://venhohotel.com/lien-he?utm_source=instagram&utm_medium=social&utm_content=pub-wednesday-instagram-aed14bf5",
@@ -26432,9 +26438,17 @@
             "url": "https://drive.google.com/uc?export=download&id=1yV4nYeQJZaNB54OSNw8iJeVF6PY4JC00",
             "scenario": "venho_rooftop_sunrise",
             "source": "IMG_5136.jpeg"
+          },
+          {
+            "id": "U1",
+            "kind": "upload",
+            "url": "https://drive.google.com/uc?export=download&id=1GIpyUBcGjiEDk-Zdf5hLoZVzzeoJG95T",
+            "source": "upload.webp"
           }
         ],
-        "image_option_selected": "A"
+        "image_option_selected": "U1",
+        "image_selected_by": "hpham1504@gmail.com",
+        "image_selected_at": "2026-11-03T04:07:51.727032+00:00"
       },
       "creative_brief_id": "brief-wednesday-instagram-7aa800e8",
       "package_snapshot": {
@@ -26442,9 +26456,7 @@
         "copy_version_ids": [
           "brief-wednesday-instagram-7aa800e8-content_studio"
         ],
-        "asset_version_ids": [
-          "38844bea-5dc0-4f20-b924-d8ae35d3f33d"
-        ],
+        "asset_version_ids": [],
         "validation_snapshot_id": "046b2d9662842c0e3c162ede6e9b4118943d0bb2c61b1930a1d5eb8f5ecff6bd",
         "fact_version_ids": [],
         "brief_version_id": "brief-wednesday-instagram-7aa800e8@1"
