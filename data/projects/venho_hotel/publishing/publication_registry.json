@@ -26929,13 +26929,13 @@
       "idempotency_key": "4d7609f8cbaf164cfd645fc276476e222ece30763bfd7d2221f263761a54b550",
       "platform": "facebook",
       "slot_id": "slot-2026-11-14-saturday",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-11-03T03:37:12.260036+00:00",
-      "updated_at": "2026-11-03T03:37:12.371434+00:00",
+      "updated_at": "2026-11-03T04:10:11.762162+00:00",
       "content": {
         "title": "Một cuối tuần chậm bên Hồ Tây, bắt đầu từ cánh cửa kính",
         "text": "Cuối tuần ở Hồ Tây thường bắt đầu rất khẽ: cánh cửa kính khép lại sau lưng, tiếng xe ngoài phố nhỏ dần.\n\nSảnh Ven Hồ Hotel không rộng, nhưng gọn gàng theo kiểu khiến người ta tự nhiên hạ giọng xuống một chút. Nền gạch nâu với những vòng tròn chạy đều dưới chân, quầy lễ tân gỗ nâu đỏ sẫm, vài bức tranh treo trên tường, ánh đèn trung tính không quá gắt. Logo khách sạn nằm ngay chỗ dễ thấy, vừa đủ để bạn biết mình đã tới nơi.\n\nĐặt vali xuống rồi thì chẳng cần vội. Nguyễn Đình Thi là con đường nên đi bộ hơn là đi xe: một bên mặt nước, một bên hàng cây, người chạy bộ, người dắt chó, người chỉ ngồi nhìn hồ mà không làm gì cả.\n\nCuối tuần ở đây hợp với những kế hoạch lỏng lẻo. Sáng cà phê muộn, trưa tìm một quán ăn trong ngõ, chiều quay lại mép hồ đúng lúc nắng xuống thấp. Hoàng hôn Hồ Tây không diễn ra nhanh, nên bạn có thời gian đi hết một đoạn đường trước khi trời tắt hẳn.\n\nMột khách sạn view Hồ Tây quy mô nhỏ như Ven Hồ Hotel hợp nhất với kiểu đi như vậy: về phòng nghỉ, rồi lại bước ra hồ chỉ sau vài phút.\n\nNếu bạn đang nghĩ đến một cuối tuần ở Hà Nội, nhắn tin cho Ven Hồ Hotel để xem phòng trống cho những ngày bạn định ở lại nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-saturday-facebook-fd80cc41",
@@ -27082,6 +27082,28 @@
           "score": 100,
           "verdict": "approve"
         }
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-11-03T04:10:11.726520+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-73b8eb79-67d6-43ee-b477-d31f6c03426a",
+        "content_package_id": "73b8eb79-67d6-43ee-b477-d31f6c03426a",
+        "copy_version_ids": [
+          "brief-saturday-facebook-bf16f5c2-content_studio"
+        ],
+        "asset_version_ids": [
+          "cbea5d8f-4e30-4b5e-bc2f-e73fd630bb4c"
+        ],
+        "validation_snapshot_id": "1f2e2ff7f89c281b5a7dea5b7b64887ca273ed733f131ec3c8e6534aa3a6452a",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-saturday-facebook-bf16f5c2@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-11-03T04:10:11.726546+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "d6fe159e920ee0c75662b925c554cd103577a860b4415ef7d8750528c44da3f0",
+        "checksum": "3439f864b34bde5b95cb1ad14ae45e9570cd4029e871f6df69218ee1889cdc33"
       }
     },
     {
@@ -27090,13 +27112,13 @@
       "idempotency_key": "29338da602759d1168e2053f529d3fffb8e584fe157d99e16813a03979d56979",
       "platform": "instagram",
       "slot_id": "slot-2026-11-14-saturday",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-11-03T03:37:36.294981+00:00",
-      "updated_at": "2026-11-03T03:37:36.385989+00:00",
+      "updated_at": "2026-11-03T04:10:11.762162+00:00",
       "content": {
         "title": "Một cuối tuần chậm bên Hồ Tây, bắt đầu từ ô cửa kính trên phố Nguyễn Đình Thi",
         "text": "Cánh cửa kính khép lại sau lưng, tiếng gió ngoài mặt hồ cũng nhỏ dần.\n\nCuối tuần ở Hồ Tây thường không cần lịch trình dày. Một vòng đi bộ dọc Nguyễn Đình Thi, dừng lại ở quán cà phê nào đó nhìn ra mặt nước, rồi quay về đúng lúc hoàng hôn Hồ Tây chuyển màu trên hàng cây.\n\nPhần còn lại của buổi chiều nằm ở khoảng sảnh nhỏ.\n\nSàn gạch nâu với những vòng tròn chạy nối nhau dưới chân. Quầy lễ tân bằng gỗ nâu đỏ sẫm, phía sau là tủ chìa khóa xếp ngay ngắn. Một bức tranh treo trên tường, ánh đèn giữ ở mức vừa đủ, không gắt.\n\nKhông gian gọn, đủ để nhận phòng xong là đã thấy mình chậm lại. Ven Hồ Hotel vốn là một khách sạn boutique tầm trung, nên mọi thứ ở đây đi theo hướng vừa vặn hơn là phô trương.\n\nVà với một ngày ven hồ, vừa vặn thường là đủ.\n\nBạn đang xếp lịch cho một cuối tuần ở Hà Nội? Nhắn cho Ven Hồ Hotel để xem phòng trống những ngày bạn định ở nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanHoTay #NguyenDinhThi #KhamPhaHoTay #HanoiTravel",
@@ -27245,6 +27267,28 @@
           "score": 100,
           "verdict": "approve"
         }
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-11-03T04:10:11.726520+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-4aa903fd-a31a-48d0-883b-581ae1d9eb9c",
+        "content_package_id": "4aa903fd-a31a-48d0-883b-581ae1d9eb9c",
+        "copy_version_ids": [
+          "brief-saturday-instagram-b468eb80-content_studio"
+        ],
+        "asset_version_ids": [
+          "cbea5d8f-4e30-4b5e-bc2f-e73fd630bb4c"
+        ],
+        "validation_snapshot_id": "9d63a423873f10b8f797342e84a596502e05d9aff9b580ab2af33d4e46486669",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-saturday-instagram-b468eb80@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-11-03T04:10:11.726660+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "799fb01d705061943636a8271515afdb53ab2c7f17b539e8b901584faca43afc",
+        "checksum": "43173267194a698bec9f813c85002ffd3081ba5db1972e113f72462e75246aa7"
       }
     },
     {
