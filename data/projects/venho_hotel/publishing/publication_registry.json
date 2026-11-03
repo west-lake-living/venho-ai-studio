@@ -26221,13 +26221,13 @@
       "idempotency_key": "0bfca8d1ca8cf70a92814781eb489bf0cdeeb8dedd0beffbc36c457f52416109",
       "platform": "facebook",
       "slot_id": "slot-2026-11-11-wednesday",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-11-03T03:28:48.794732+00:00",
-      "updated_at": "2026-11-03T04:07:51.782473+00:00",
+      "updated_at": "2026-11-03T04:08:25.217077+00:00",
       "content": {
         "title": "Mùa cúc họa mi ở vườn hoa Nhật Tân",
         "text": "Cúc họa mi về, cả một góc Nhật Tân chuyển sang màu trắng.\n\nNhững luống hoa trồng thành hàng dài, cánh mỏng, nhụy vàng, cao ngang thắt lưng người lớn. Trời trong, nắng rọi thẳng xuống, màu trắng của hoa sáng lên giữa nền xanh của lá và những hàng cây lớn phía ngoài đường.\n\nỞ đây không có ghế ngồi, không có hàng quán bên trong vườn. Người ta đi bộ men theo lối đất giữa các luống, dừng lại một chút, rồi lại đi tiếp. Phần lớn thời gian chỉ là đứng nhìn, nghe tiếng gió lùa qua những thân hoa khẽ lay.\n\nVài điều nhỏ nếu bạn định ghé:\n\nCúc họa mi nở rộ trong một quãng ngắn của năm, nên đi sớm trong mùa thì hoa còn dày và tươi.\n\nBuổi sáng hoặc đầu giờ chiều, nắng nghiêng, ảnh lên màu dịu hơn so với lúc đứng bóng.\n\nCác vườn đều do chủ vườn trông nom, nên hỏi một câu trước khi bước vào chụp ảnh.\n\nĐi giày đế thấp, lối giữa luống là đất, có chỗ còn ẩm.\n\nNhật Tân nằm cùng khu Tây Hồ với Ven Hồ Hotel, nên nhiều khách chọn ghé vườn hoa buổi sáng rồi thong thả quay về phía Nguyễn Đình Thi, ngồi lại bên hồ cho hết buổi chiều. Một ngày không cần phải chạy đi đâu xa.\n\nNếu bạn đang tính lịch ra Hà Nội đúng mùa cúc họa mi, nhắn cho Ven Hồ Hotel để xem phòng trống những ngày đó nhé.\n\n#VenHoHotelHanoi #CucHoaMi #NhatTan #HoTay #KhamPhaHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-70df778f",
@@ -26383,6 +26383,26 @@
           "score": 100,
           "verdict": "approve"
         }
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-11-03T04:08:25.180253+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-78572055-b2d1-4ca7-b0af-ce1a891e2309",
+        "content_package_id": "78572055-b2d1-4ca7-b0af-ce1a891e2309",
+        "copy_version_ids": [
+          "brief-wednesday-facebook-f8c1b121-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "f44e834aec117298c421addb88f1dd07ef58476851cc6527bf6f8650dea59653",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-wednesday-facebook-f8c1b121@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-11-03T04:08:25.180294+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "2522fda90ac2c144404f0dc0ee50245d53a1bb5727a5ddecdc64661a3949843c",
+        "checksum": "8941eafcb30f1cba37fc53885c30253eeaa32929dfbea50c8c67f2ae291b96cf"
       }
     },
     {
@@ -26391,13 +26411,13 @@
       "idempotency_key": "ecdfa214c594c6db8642bc3a0f81fd2f642de56aa3e757acdf1b6da234b0139a",
       "platform": "instagram",
       "slot_id": "slot-2026-11-11-wednesday",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-11-03T03:29:16.081500+00:00",
-      "updated_at": "2026-11-03T04:07:51.873385+00:00",
+      "updated_at": "2026-11-03T04:08:25.217077+00:00",
       "content": {
         "title": "Mùa cúc họa mi ở vườn hoa Nhật Tân",
         "text": "Trời trong, nắng rõ từng tán cây bên đường. Kiểu thời tiết hợp để đi ngắm hoa hơn là ngồi trong phòng.\n\nTừ Nguyễn Đình Thi, bạn men theo mép hồ rồi rẽ dần về phía Nhật Tân. Mặt nước lùi lại phía sau, nhà cửa thưa ra, và chỉ một lúc sau là tới những luống cúc họa mi.\n\nHoa nhỏ, cánh trắng, nhụy vàng, trồng thành từng vạt thấp ngang gối. Không có gì cầu kỳ. Người đi bộ chậm giữa các lối, dừng lại chụp vài kiểu, rồi lại đi tiếp.\n\nMùa cúc họa mi không kéo dài. Vài tuần, hoa tàn, vườn lại chuyển sang loài khác. Có lẽ vì thế mà người Hà Nội hay rủ nhau đi sớm.\n\nBuổi sáng nắng vừa lên hoặc đầu giờ chiều là lúc dễ chịu nhất. Nên mặc đồ sáng màu, đi giày thấp, và chuẩn bị tinh thần lội đất một chút.\n\nVề lại Hồ Tây, chiều vẫn còn đủ dài để đi bộ thêm một vòng ven hồ.\n\nVen Hồ Hotel nằm ngay trên Nguyễn Đình Thi, thuận đường cho những buổi sáng như vậy. Nhắn tin để xem phòng trống nếu bạn đang tính lịch ra Hà Nội mùa này nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #CucHoaMi #VuonHoaNhatTan #HaNoi #HanoiTravel #KhachSanHoTay",
@@ -26555,6 +26575,26 @@
           "score": 100,
           "verdict": "approve"
         }
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-11-03T04:08:25.180253+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-a2324123-8b0f-4b4f-adb4-2f3dad3d2a81",
+        "content_package_id": "a2324123-8b0f-4b4f-adb4-2f3dad3d2a81",
+        "copy_version_ids": [
+          "brief-wednesday-instagram-7aa800e8-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "046b2d9662842c0e3c162ede6e9b4118943d0bb2c61b1930a1d5eb8f5ecff6bd",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-wednesday-instagram-7aa800e8@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-11-03T04:08:25.180451+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "faa4a71beec7f075f35c45b19948e11b7c619f56b28949724eef658442a810fd",
+        "checksum": "9e009940c0087cbcfa35c19fa94cf74a6fb3a040d1b70e0373e4d54cbc424e26"
       }
     },
     {
