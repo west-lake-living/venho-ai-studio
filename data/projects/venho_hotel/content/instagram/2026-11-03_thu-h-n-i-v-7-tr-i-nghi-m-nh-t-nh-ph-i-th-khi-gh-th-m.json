@@ -1,0 +1,49 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "project": "venho_hotel",
+  "content_type": "instagram_post",
+  "target_language": "vi",
+  "generated_at": "2026-11-03T03:52:46.514139+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_LOBBY_DNA.json",
+      "dna_version": "1.1",
+      "hash": "sha256:e01fc1fa26c2318ce93d3a670067bac2ccbf9dc329a141ea906e80fb108c673f"
+    }
+  ],
+  "source_prompt": {
+    "file": "data/projects/venho_hotel/prompts/content/LOBBY__instagram-thu-h-n-i-v-7-tr-i-nghi-m-nh-t-nh-ph-i-th-khi-gh-th-m__CONTENT_PROMPT_v1.0.json",
+    "prompt_id": "lobby__content__instagram-thu-h-n-i-v-7-tr-i-nghi-m-nh-t-nh-ph-i-th-khi-gh-th-m",
+    "prompt_version": "1.0"
+  },
+  "generator": {
+    "provider": "mock",
+    "model": "deterministic-social-builder",
+    "temperature": 0.6
+  },
+  "title": "Thu Hà Nội và 7 trải nghiệm nên thử một lần quanh Hồ Tây",
+  "hook": "Thu Hà Nội hiếm khi đến ồn ào. Nó đến bằng một buổi sáng gió hơi lạnh trên mặt Hồ Tây, và người ta tự nhiên đi chậm lại.",
+  "body": "7 trải nghiệm đáng thử một lần, nếu mùa này bạn ghé Hà Nội:\n\n1. Dậy sớm, đi bộ một vòng ven hồ khi mặt nước còn mờ sương.\n\n2. Ghé chợ hoa Quảng An lúc trời chưa sáng hẳn, chỉ để xem người ta bó hoa và xếp lên xe.\n\n3. Ăn sáng kiểu Hà Nội: một bát phở nóng, rồi ngồi cà phê lâu hơn dự định.\n\n4. Mượn xe đạp, đi chậm qua mấy con đường nhỏ ven hồ mà không cần đích đến.\n\n5. Thắp một nén hương ở Phủ Tây Hồ vào ngày thường, khi còn vắng người.\n\n6. Thử bánh tôm Hồ Tây vào buổi chiều, lúc gió bắt đầu lên.\n\n7. Giữ lại cuối ngày cho hoàng hôn Hồ Tây. Đoạn đẹp nhất thường chỉ kéo dài mươi phút, nên đừng vội về.\n\nVen Hồ Hotel nằm trên Nguyễn Đình Thi, cách mặt hồ một đoạn đi bộ ngắn. Một khách sạn view Hồ Tây nhỏ, vừa tầm: cửa kính mở ra sảnh, quầy lễ tân gỗ nâu sẫm, nền gạch hoa văn tròn và vài bức tranh treo tường. Đủ gọn gàng để bạn cất đồ rồi đi tiếp, và đủ yên để quay về nghỉ sau một ngày dài.",
+  "cta": "Nếu bạn đang xếp lịch cho những ngày thu ở Hà Nội, nhắn tin cho Ven Hồ Hotel để xem phòng trống nhé.",
+  "hashtags": [
+    "#VenHoHotelHanoi",
+    "#HoTay",
+    "#WestLakeHanoi",
+    "#ThuHaNoi",
+    "#KhamPhaHoTay",
+    "#KhachSanHoTay",
+    "#NguyenDinhThi",
+    "#HanoiTravel"
+  ],
+  "visual_note": null,
+  "contract_refs": null,
+  "payload": {},
+  "status": "draft",
+  "validation": {
+    "required": true,
+    "status": "pending",
+    "report_file": null,
+    "notes": []
+  }
+}

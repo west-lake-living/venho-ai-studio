@@ -1,0 +1,48 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "project": "venho_hotel",
+  "content_type": "instagram_post",
+  "target_language": "vi",
+  "generated_at": "2026-11-03T03:24:08.160773+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_WESTLAKE_DNA.json",
+      "dna_version": "1.2",
+      "hash": "sha256:61f198440f5480c3ab7b63c38c97553d7cf072838b82dcdd5e4d802521e67a38"
+    }
+  ],
+  "source_prompt": {
+    "file": "data/projects/venho_hotel/prompts/content/WESTLAKE__instagram-m-r-m-ph-ng-i-ng-m-n-ng-v-ng-hanh-kh-r-i-xu-ng-m-t-h__CONTENT_PROMPT_v1.0.json",
+    "prompt_id": "westlake__content__instagram-m-r-m-ph-ng-i-ng-m-n-ng-v-ng-hanh-kh-r-i-xu-ng-m-t-h",
+    "prompt_version": "1.0"
+  },
+  "generator": {
+    "provider": "mock",
+    "model": "deterministic-social-builder",
+    "temperature": 0.6
+  },
+  "title": "Buổi sáng đầu tuần bắt đầu bằng một lần kéo rèm",
+  "hook": "Thứ Hai ở Hồ Tây thường bắt đầu rất khẽ: kéo rèm, và nắng hanh đã nằm sẵn trên mặt nước.",
+  "body": "Nắng mùa này khô và nhẹ, không gắt. Thứ ánh sáng ấy rơi xuống mặt hồ màu xanh ngọc trầm, lặng đến mức gần như không gợn. Trời có mây, nhưng vẫn đủ trong để nhìn được rất xa — qua những tán cây rải rác ven bờ, tới dãy nhà cao phía bên kia hồ, nơi thành phố đã bắt đầu một tuần mới.\n\nCó một khoảng lặng rất riêng của buổi sáng đầu tuần bên hồ. Chưa cần đi đâu, chưa cần làm gì. Chỉ đứng bên khung cửa, nhìn mặt nước phẳng và để đầu óc chậm lại thêm vài phút trước khi bước ra đường.\n\nỞ phòng đôi của Ven Hồ Hotel trên đường Nguyễn Đình Thi, cái khung cửa ấy là thứ dễ khiến người ta nán lại lâu hơn dự định.",
+  "cta": "Nếu bạn đang tính một chuyến Hà Nội và muốn thức dậy cạnh Hồ Tây, nhắn cho Ven Hồ Hotel để xem lịch phòng trống nhé.",
+  "hashtags": [
+    "#VenHoHotelHanoi",
+    "#HoTay",
+    "#WestLakeHanoi",
+    "#KhachSanViewHoTay",
+    "#NguyenDinhThi",
+    "#HaNoi",
+    "#HanoiTravel"
+  ],
+  "visual_note": null,
+  "contract_refs": null,
+  "payload": {},
+  "status": "draft",
+  "validation": {
+    "required": true,
+    "status": "pending",
+    "report_file": null,
+    "notes": []
+  }
+}

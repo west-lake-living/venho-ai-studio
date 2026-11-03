@@ -1,0 +1,46 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "project": "venho_hotel",
+  "content_type": "facebook_post",
+  "target_language": "vi",
+  "generated_at": "2026-11-03T03:23:54.336592+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_WESTLAKE_DNA.json",
+      "dna_version": "1.2",
+      "hash": "sha256:61f198440f5480c3ab7b63c38c97553d7cf072838b82dcdd5e4d802521e67a38"
+    }
+  ],
+  "source_prompt": {
+    "file": "data/projects/venho_hotel/prompts/content/WESTLAKE__facebook-m-r-m-ph-ng-i-ng-m-n-ng-v-ng-hanh-kh-r-i-xu-ng-m-t-h__CONTENT_PROMPT_v1.0.json",
+    "prompt_id": "westlake__content__facebook-m-r-m-ph-ng-i-ng-m-n-ng-v-ng-hanh-kh-r-i-xu-ng-m-t-h",
+    "prompt_version": "1.0"
+  },
+  "generator": {
+    "provider": "mock",
+    "model": "deterministic-social-builder",
+    "temperature": 0.6
+  },
+  "title": "Sáng đầu tuần, việc đầu tiên là kéo rèm",
+  "hook": "Sáng đầu tuần ở Hồ Tây thường bắt đầu bằng một động tác rất nhỏ: kéo rèm.",
+  "body": "Nắng hanh của những ngày khô đổ xuống mặt hồ, thứ nắng vàng nhưng không gắt, đủ ấm để mở cửa sổ mà chưa cần kéo rèm lại.\n\nMặt nước hôm ấy lặng, màu xanh ngả xám như ngọc, không bóng loáng, không phản chiếu rõ ràng, chỉ phẳng và yên. Trời nhiều mây xen nắng nên ánh sáng cứ đổi dần: lúc nhạt đi vài phút, rồi lại sáng lên.\n\nKhông khí khô nên nhìn được rất xa. Bên kia hồ, những tòa nhà của thành phố hiện lên rõ từng khối, phía trước là hàng cây xanh thưa vừa đủ để không che mất đường chân trời. Hà Nội ở ngay đó, đang vào guồng của một tuần mới, còn trong phòng thì mọi thứ vẫn chậm hơn một nhịp.\n\nĐó là cái hay của một buổi sáng thứ Hai bên Hồ Tây. Bạn vẫn biết thành phố đang bận rộn, nhưng không bị cuốn vào ngay lập tức. Pha xong ly cà phê, ngồi xuống bên cửa sổ, nhìn mặt hồ thêm mươi phút nữa rồi mới mở laptop hay xếp đồ đi chơi.\n\nPhòng đôi hướng hồ ở Ven Hồ Hotel, trên đường Nguyễn Đình Thi, được giữ lại đúng khung cảnh ấy, nguyên vẹn sau lớp rèm.",
+  "cta": "Nếu bạn đang tính một chuyến Hà Nội và muốn bắt đầu ngày mới theo nhịp này, nhắn Ven Hồ Hotel để xem phòng đôi hướng hồ còn trống những ngày nào nhé.",
+  "hashtags": [
+    "#VenHoHotelHanoi",
+    "#HoTay",
+    "#WestLakeHanoi",
+    "#NguyenDinhThi",
+    "#HaNoi"
+  ],
+  "visual_note": null,
+  "contract_refs": null,
+  "payload": {},
+  "status": "draft",
+  "validation": {
+    "required": true,
+    "status": "pending",
+    "report_file": null,
+    "notes": []
+  }
+}

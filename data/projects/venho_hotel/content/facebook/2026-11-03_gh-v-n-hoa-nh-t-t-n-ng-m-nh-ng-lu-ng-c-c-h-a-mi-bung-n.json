@@ -1,0 +1,47 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "project": "venho_hotel",
+  "content_type": "facebook_post",
+  "target_language": "vi",
+  "generated_at": "2026-11-03T03:28:48.094351+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_OUTSIDE_DNA.json",
+      "dna_version": "1.2",
+      "hash": "sha256:aaad1f90ca3a80fbefe9dc168823190c89ef923952e96bd2d902e73f0c5ec577"
+    }
+  ],
+  "source_prompt": {
+    "file": "data/projects/venho_hotel/prompts/content/OUTSIDE__facebook-gh-v-n-hoa-nh-t-t-n-ng-m-nh-ng-lu-ng-c-c-h-a-mi-bung-n__CONTENT_PROMPT_v1.0.json",
+    "prompt_id": "outside__content__facebook-gh-v-n-hoa-nh-t-t-n-ng-m-nh-ng-lu-ng-c-c-h-a-mi-bung-n",
+    "prompt_version": "1.0"
+  },
+  "generator": {
+    "provider": "mock",
+    "model": "deterministic-social-builder",
+    "temperature": 0.6
+  },
+  "title": "Mùa cúc họa mi ở vườn hoa Nhật Tân",
+  "hook": "Cúc họa mi về, cả một góc Nhật Tân chuyển sang màu trắng.",
+  "body": "Những luống hoa trồng thành hàng dài, cánh mỏng, nhụy vàng, cao ngang thắt lưng người lớn. Trời trong, nắng rọi thẳng xuống, màu trắng của hoa sáng lên giữa nền xanh của lá và những hàng cây lớn phía ngoài đường.\n\nỞ đây không có ghế ngồi, không có hàng quán bên trong vườn. Người ta đi bộ men theo lối đất giữa các luống, dừng lại một chút, rồi lại đi tiếp. Phần lớn thời gian chỉ là đứng nhìn, nghe tiếng gió lùa qua những thân hoa khẽ lay.\n\nVài điều nhỏ nếu bạn định ghé:\n\nCúc họa mi nở rộ trong một quãng ngắn của năm, nên đi sớm trong mùa thì hoa còn dày và tươi.\n\nBuổi sáng hoặc đầu giờ chiều, nắng nghiêng, ảnh lên màu dịu hơn so với lúc đứng bóng.\n\nCác vườn đều do chủ vườn trông nom, nên hỏi một câu trước khi bước vào chụp ảnh.\n\nĐi giày đế thấp, lối giữa luống là đất, có chỗ còn ẩm.\n\nNhật Tân nằm cùng khu Tây Hồ với Ven Hồ Hotel, nên nhiều khách chọn ghé vườn hoa buổi sáng rồi thong thả quay về phía Nguyễn Đình Thi, ngồi lại bên hồ cho hết buổi chiều. Một ngày không cần phải chạy đi đâu xa.",
+  "cta": "Nếu bạn đang tính lịch ra Hà Nội đúng mùa cúc họa mi, nhắn cho Ven Hồ Hotel để xem phòng trống những ngày đó nhé.",
+  "hashtags": [
+    "#VenHoHotelHanoi",
+    "#CucHoaMi",
+    "#NhatTan",
+    "#HoTay",
+    "#KhamPhaHoTay",
+    "#HaNoi"
+  ],
+  "visual_note": null,
+  "contract_refs": null,
+  "payload": {},
+  "status": "draft",
+  "validation": {
+    "required": true,
+    "status": "pending",
+    "report_file": null,
+    "notes": []
+  }
+}

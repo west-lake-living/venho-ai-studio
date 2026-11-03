@@ -1,0 +1,49 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "project": "venho_hotel",
+  "content_type": "instagram_post",
+  "target_language": "vi",
+  "generated_at": "2026-11-03T03:29:15.485737+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_OUTSIDE_DNA.json",
+      "dna_version": "1.2",
+      "hash": "sha256:aaad1f90ca3a80fbefe9dc168823190c89ef923952e96bd2d902e73f0c5ec577"
+    }
+  ],
+  "source_prompt": {
+    "file": "data/projects/venho_hotel/prompts/content/OUTSIDE__instagram-gh-v-n-hoa-nh-t-t-n-ng-m-nh-ng-lu-ng-c-c-h-a-mi-bung-n__CONTENT_PROMPT_v1.0.json",
+    "prompt_id": "outside__content__instagram-gh-v-n-hoa-nh-t-t-n-ng-m-nh-ng-lu-ng-c-c-h-a-mi-bung-n",
+    "prompt_version": "1.0"
+  },
+  "generator": {
+    "provider": "mock",
+    "model": "deterministic-social-builder",
+    "temperature": 0.6
+  },
+  "title": "Mùa cúc họa mi ở vườn hoa Nhật Tân",
+  "hook": "Trời trong, nắng rõ từng tán cây bên đường. Kiểu thời tiết hợp để đi ngắm hoa hơn là ngồi trong phòng.",
+  "body": "Từ Nguyễn Đình Thi, bạn men theo mép hồ rồi rẽ dần về phía Nhật Tân. Mặt nước lùi lại phía sau, nhà cửa thưa ra, và chỉ một lúc sau là tới những luống cúc họa mi.\n\nHoa nhỏ, cánh trắng, nhụy vàng, trồng thành từng vạt thấp ngang gối. Không có gì cầu kỳ. Người đi bộ chậm giữa các lối, dừng lại chụp vài kiểu, rồi lại đi tiếp.\n\nMùa cúc họa mi không kéo dài. Vài tuần, hoa tàn, vườn lại chuyển sang loài khác. Có lẽ vì thế mà người Hà Nội hay rủ nhau đi sớm.\n\nBuổi sáng nắng vừa lên hoặc đầu giờ chiều là lúc dễ chịu nhất. Nên mặc đồ sáng màu, đi giày thấp, và chuẩn bị tinh thần lội đất một chút.\n\nVề lại Hồ Tây, chiều vẫn còn đủ dài để đi bộ thêm một vòng ven hồ.",
+  "cta": "Ven Hồ Hotel nằm ngay trên Nguyễn Đình Thi, thuận đường cho những buổi sáng như vậy. Nhắn tin để xem phòng trống nếu bạn đang tính lịch ra Hà Nội mùa này nhé.",
+  "hashtags": [
+    "#VenHoHotelHanoi",
+    "#HoTay",
+    "#WestLakeHanoi",
+    "#CucHoaMi",
+    "#VuonHoaNhatTan",
+    "#HaNoi",
+    "#HanoiTravel",
+    "#KhachSanHoTay"
+  ],
+  "visual_note": null,
+  "contract_refs": null,
+  "payload": {},
+  "status": "draft",
+  "validation": {
+    "required": true,
+    "status": "pending",
+    "report_file": null,
+    "notes": []
+  }
+}

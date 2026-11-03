@@ -1,0 +1,49 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "project": "venho_hotel",
+  "content_type": "instagram_post",
+  "target_language": "vi",
+  "generated_at": "2026-11-03T03:41:17.088662+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_OUTSIDE_DNA.json",
+      "dna_version": "1.2",
+      "hash": "sha256:aaad1f90ca3a80fbefe9dc168823190c89ef923952e96bd2d902e73f0c5ec577"
+    }
+  ],
+  "source_prompt": {
+    "file": "data/projects/venho_hotel/prompts/content/OUTSIDE__instagram-n-ng-v-ng-hanh-kh-tr-i-d-i-tr-n-ng-thanh-ni-n-s-ng-u-tu-n__CONTENT_PROMPT_v1.0.json",
+    "prompt_id": "outside__content__instagram-n-ng-v-ng-hanh-kh-tr-i-d-i-tr-n-ng-thanh-ni-n-s-ng-u-tu-n",
+    "prompt_version": "1.0"
+  },
+  "generator": {
+    "provider": "mock",
+    "model": "deterministic-social-builder",
+    "temperature": 0.6
+  },
+  "title": "Sáng đầu tuần nắng hanh trên đường Thanh Niên",
+  "hook": "Đầu tuần, nắng hanh phủ một lớp vàng mỏng lên hàng cây đường Thanh Niên.",
+  "body": "Trời xanh, không một gợn mây. Nắng mùa này khô và nhẹ, chiếu qua tán lá già rồi rơi xuống mặt đường thành từng mảng sáng tối chạy dài theo chiều xe đi.\n\nMột bên là mặt hồ loang màu xám xanh. Một bên là những mái nhà cao thấp của thành phố, cái mới xen cái cũ, chẳng theo hàng lối nào nhưng nhìn lâu lại thấy quen.\n\nGần trưa, dòng người vẫn đều đặn qua lại. Có người đi bộ chậm dưới bóng cây, có người dừng xe bên lề chỉ để nhìn ra hồ một lúc rồi lại đi tiếp. Lối đi sạch, vỉa hè gọn, không ghế bàn, không gì níu chân ngoài khung cảnh.\n\nVen Hồ Hotel nằm trên đường Nguyễn Đình Thi, cùng một vòng hồ với Thanh Niên. Những buổi sáng trời trong như vậy, chỉ cần bước ra khỏi cửa là đã thấy Hồ Tây bắt đầu ngày mới.",
+  "cta": "Nếu bạn đang tính một kỳ nghỉ ngắn ở Hà Nội, nhắn Ven Hồ Hotel để xem phòng trống cho những ngày bạn định ghé nhé.",
+  "hashtags": [
+    "#VenHoHotelHanoi",
+    "#HoTay",
+    "#DuongThanhNien",
+    "#WestLakeHanoi",
+    "#KhamPhaHoTay",
+    "#KhachSanViewHoTay",
+    "#NguyenDinhThi",
+    "#HanoiTravel"
+  ],
+  "visual_note": null,
+  "contract_refs": null,
+  "payload": {},
+  "status": "draft",
+  "validation": {
+    "required": true,
+    "status": "pending",
+    "report_file": null,
+    "notes": []
+  }
+}
