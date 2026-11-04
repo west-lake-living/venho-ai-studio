@@ -6129,3 +6129,9 @@ not in local venv; installed in CI).
 - Verification: full Growth Engine 348 passed (4 warnings), architecture 2 passed, Python 3.9.6 help/compile passed, YAML parse/no-secret scan/diff-check passed, synthetic envelope dry-run passed without network.
 - CHANGE_REQUEST: current manifests still have `REQUIRED_FROM_P0` TEST identities; the running app/container has no persistent TEST command factory because P5-T03/T04 production UoW wiring is missing. The script can send an existing DB-backed envelope but cannot create one. P0-T03 Make inspection and Harry's TEST Page/scenario runs/evidence are still required; `make_capabilities.md` remains unchanged and NOT_RUN.
 - Assumptions: test Page and webhook variable are isolated and filled only after manual verification; unobserved errors remain UNKNOWN; only Harry runs the Make test matrix and records the evidence.
+
+## 2026-11-04 — GC2-P4-T05 SQLite wiring follow-up
+- Reused migration 0006 and the existing `CandidateRepository`; natural-key upsert now runs under `BEGIN IMMEDIATE`, source decisions use row-version CAS, and expiry plus append-only audit writes are atomic.
+- `build_container` now constructs the three candidate use cases with a production SQLite store; `create_app` mounts internal research, while middleware enforces the 64 KiB limit before JSON parsing and retains `Cache-Control: no-store` for `/internal/*`.
+- Real file-SQLite integration covers authenticated HTTP ingest, replay, approval decision, expiry, and audit rows. No schema migration was needed; tests make no network calls.
+- Assumption: candidate audit records keep source identifiers and hashes only; raw research payload remains in the candidate row for editorial review.

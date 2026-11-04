@@ -5352,4 +5352,13 @@ ComfyUI, GPU, provider or network call.
 **DoD:** [x] per-module TEST blueprint with fixed filter, binary/caption mapping, no-resume/no-auto-retry and deterministic receipt; [x] error-class allowlist stays empty with `OUTCOME_UNKNOWN` default; [x] sender validates `environment=test`, signed claims, `page_test` manifest identity and private envelope, with explicit `--send` + exact Page ID confirmation; [ ] create an authorized command in the TEST database and send it; [ ] Harry runs required Make scenarios and records evidence in `make_capabilities.md`.
 **INV/AC liên quan:** INV-01, INV-09; AC-06, AC-07, AC-08, AC-09; §8.1.4, GC2-P0-T03, G-P5.
 **CHANGE_REQUEST:** all TEST Page/scenario/route/connection values remain `REQUIRED_FROM_P0`, and `make_capabilities.md` is still NOT_RUN. `build_container` exposes no TEST command factory; P5-T03/T04 transaction ports are not production-wired. The sender therefore reads a pre-created private TEST envelope and cannot create a DB-backed command. Harry must verify the copied TEST scenario/Page and run the gated cases before P5-T05 or P5-T06 can be marked DONE. No production scenario was opened or changed.
+
+### GC2-P4-T05 — Wiring SQLite, UoW and research ingest (2026-11-04)
+**Status:** DONE — SQLite candidate transactions and internal research route are mounted
+**Files:** growth_engine/adapters/outbound/persistence/sqlite/{candidate_store.py,repositories/content.py,uow.py}, growth_engine/application/ports/repositories.py, growth_engine/bootstrap.py, growth_engine/adapters/inbound/api/{app.py,middleware.py}, tests/growth_engine/integration/sqlite/test_candidate_wiring.py, task_status.md, task_memory.md
+**Verify:** focused → 11 passed; VERIFY_DEV → 349 passed, 4 warnings; VERIFY_ARCH → 2 passed; `git diff --check` → OK. SQLite integration used a real file database and no network.
+**DoD:** [x] Upsert theo natural key và replay; [x] quyết định CAS + append-only decision/audit; [x] hết hạn atomic + audit; [x] router production mounted; [x] `/internal` body limit trước parse và `no-store`.
+**INV/AC liên quan:** INV-05, INV-07; §7.10, §9.2; P4-T05.
+**Rủi ro / việc để lại:** Make workflow credentials/feature flag vẫn do Harry cấu hình; không gửi request ra ngoài trong test.
+**Giả định:** ID lặp lại trong cùng transaction được coi là replay khi natural key và source hash khớp; audit chỉ lưu định danh/hash, không lưu payload research.
 **Giả định:** no Make error class is safe until observed in a redacted TEST History output; a webhook 2xx is not evidence of a Facebook post; TEST sends require the exact manifest Page ID and an operator's explicit `--send` invocation.

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from growth_engine.application.errors import Conflict
 from growth_engine.domain.content.candidate import CandidateState, ResearchCandidate
 from growth_engine.domain.content.package import ContentPackage
 
@@ -113,17 +114,167 @@ class CandidateRepository(SqliteRepository):
         ).fetchone()
         if row is None:
             return None
-        return ResearchCandidate(
-            id=row["id"],
-            project_id=row["project_id"],
-            source=row["source"],
-            external_key=row["external_key"],
-            source_revision=row["source_revision"],
-            event_key=row["event_key"],
-            topic_key=row["topic_key"],
-            event_start_at_ms=row["event_start_at"],
-            event_end_at_ms=row["event_end_at"],
-            expires_at_ms=row["expires_at"],
-            source_hash=row["source_hash"],
-            state=CandidateState(row["state"]),
+        return _candidate(row)
+
+    def upsert_candidate(
+        self,
+        candidate: ResearchCandidate,
+        *,
+        payload_json: str,
+        created_at_ms: int,
+        actor: str,
+        correlation_id: str,
+    ) -> tuple[ResearchCandidate, bool]:
+        existing = self.connection.execute(
+            """SELECT id, project_id, source, external_key, source_revision, event_key,
+                      topic_key, event_start_at, event_end_at, expires_at, source_hash, state
+               FROM research_candidates
+               WHERE project_id=? AND source=? AND external_key=? AND source_revision=?""",
+            (candidate.project_id, candidate.source, candidate.external_key, candidate.source_revision),
+        ).fetchone()
+        if existing is not None:
+            return _candidate(existing), False
+        self.save(candidate, created_at_ms=created_at_ms, payload_json=payload_json)
+        self.connection.execute(
+            """INSERT INTO audit_events
+               (id, aggregate_type, aggregate_id, actor, action, before_hash, after_hash,
+                details_json, correlation_id, created_at)
+               VALUES (?, 'research_candidate', ?, ?, 'candidate.ingested', NULL, ?, ?, ?, ?)""",
+            (
+                f"candidate-ingest:{candidate.id}",
+                candidate.id,
+                actor,
+                candidate.source_hash,
+                canonical_json(
+                    {
+                        "source": candidate.source,
+                        "external_key": candidate.external_key,
+                        "source_revision": candidate.source_revision,
+                    }
+                ),
+                correlation_id,
+                created_at_ms,
+            ),
         )
+        return candidate, True
+
+    def apply_candidate_decision(
+        self,
+        candidate_id: str,
+        *,
+        expected_source_hash: str,
+        decision_id: str,
+        decision: object,
+        next_state: CandidateState,
+        actor: str,
+        reason: str,
+        created_at_ms: int,
+        correlation_id: str,
+    ) -> ResearchCandidate:
+        row = self.connection.execute(
+            """SELECT id, project_id, source, external_key, source_revision, event_key,
+                      topic_key, event_start_at, event_end_at, expires_at, source_hash, state,
+                      row_version
+               FROM research_candidates WHERE id=?""",
+            (candidate_id,),
+        ).fetchone()
+        if row is None:
+            raise Conflict("Research candidate không còn tồn tại.")
+        if row["source_hash"] != expected_source_hash or row["state"] != CandidateState.NEW.value:
+            raise Conflict("Research candidate đã đổi hoặc đã được quyết định.")
+        changed = self.connection.execute(
+            """UPDATE research_candidates SET state=?, row_version=row_version+1
+               WHERE id=? AND source_hash=? AND state='NEW' AND row_version=?""",
+            (next_state.value, candidate_id, expected_source_hash, row["row_version"]),
+        ).rowcount
+        if changed != 1:
+            raise Conflict("Research candidate đã đổi hoặc đã được quyết định.")
+        decision_value = getattr(decision, "value", decision)
+        if not isinstance(decision_value, str):
+            raise ValueError("candidate decision must be text")
+        self.connection.execute(
+            """INSERT INTO candidate_decisions
+               (id, candidate_id, source_hash, decision, actor_id, reason, created_at)
+               VALUES (?, ?, ?, ?, ?, ?, ?)""",
+            (decision_id, candidate_id, expected_source_hash, decision_value, actor, reason, created_at_ms),
+        )
+        self.connection.execute(
+            """INSERT INTO audit_events
+               (id, aggregate_type, aggregate_id, actor, action, before_hash, after_hash,
+                details_json, correlation_id, created_at)
+               VALUES (?, 'research_candidate', ?, ?, 'candidate.decided', ?, ?, ?, ?, ?)""",
+            (
+                f"candidate-decision:{decision_id}",
+                candidate_id,
+                actor,
+                expected_source_hash,
+                expected_source_hash,
+                canonical_json({"decision": decision_value, "state": next_state.value, "reason": reason}),
+                correlation_id,
+                created_at_ms,
+            ),
+        )
+        updated = self.get(candidate_id)
+        if updated is None:
+            raise RuntimeError("candidate disappeared within its write transaction")
+        return updated
+
+    def expire_due_candidates(
+        self,
+        now_ms: int,
+        *,
+        actor: str,
+        correlation_id: str,
+    ) -> tuple[str, ...]:
+        rows = self.connection.execute(
+            """SELECT id, source_hash, row_version FROM research_candidates
+               WHERE state IN ('NEW','APPROVED')
+                 AND (expires_at<=? OR (event_end_at IS NOT NULL AND event_end_at<=?))
+               ORDER BY id""",
+            (now_ms, now_ms),
+        ).fetchall()
+        expired: list[str] = []
+        for row in rows:
+            changed = self.connection.execute(
+                """UPDATE research_candidates SET state='EXPIRED', row_version=row_version+1
+                   WHERE id=? AND row_version=? AND state IN ('NEW','APPROVED')""",
+                (row["id"], row["row_version"]),
+            ).rowcount
+            if changed != 1:
+                continue
+            event_id = f"candidate-expire:{row['id']}:{now_ms}"
+            self.connection.execute(
+                """INSERT INTO audit_events
+                   (id, aggregate_type, aggregate_id, actor, action, before_hash, after_hash,
+                    details_json, correlation_id, created_at)
+                   VALUES (?, 'research_candidate', ?, ?, 'candidate.expired', ?, ?, ?, ?, ?)""",
+                (
+                    event_id,
+                    row["id"],
+                    actor,
+                    row["source_hash"],
+                    row["source_hash"],
+                    canonical_json({"expired_at_ms": now_ms}),
+                    correlation_id,
+                    now_ms,
+                ),
+            )
+            expired.append(row["id"])
+        return tuple(expired)
+
+
+def _candidate(row: object) -> ResearchCandidate:
+    return ResearchCandidate(
+        id=row["id"],
+        project_id=row["project_id"],
+        source=row["source"],
+        external_key=row["external_key"],
+        source_revision=row["source_revision"],
+        event_key=row["event_key"],
+        topic_key=row["topic_key"],
+        event_start_at_ms=row["event_start_at"],
+        event_end_at_ms=row["event_end_at"],
+        expires_at_ms=row["expires_at"],
+        source_hash=row["source_hash"],
+        state=CandidateState(row["state"]),
+    )

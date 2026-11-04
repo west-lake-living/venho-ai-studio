@@ -5,10 +5,20 @@ import sqlite3
 import sys
 import tempfile
 import time
+from uuid import uuid4
 from dataclasses import dataclass
 from importlib import import_module
 from pathlib import Path
 from typing import Any, Callable
+
+class _SystemClock:
+    def now_ms(self) -> int:
+        return time.time_ns() // 1_000_000
+
+
+class _UuidIds:
+    def new_id(self) -> str:
+        return str(uuid4())
 
 
 MIGRATIONS = Path(__file__).parent / "adapters" / "outbound" / "persistence" / "sqlite" / "migrations"
@@ -260,6 +270,9 @@ class Container:
     legacy_import_service: Any
     doctor_service: DoctorService
     readiness_check: Callable[[], tuple[bool, int | None]]
+    ingest_candidate: Any
+    decide_candidate: Any
+    expire_candidates: Any
 
 
 def build_container(settings: Any) -> Container:
@@ -268,6 +281,12 @@ def build_container(settings: Any) -> Container:
     )
     migrator_adapter = import_module("growth_engine.adapters.outbound.persistence.sqlite.migrator")
     uow_adapter = import_module("growth_engine.adapters.outbound.persistence.sqlite.uow")
+    candidate_store_adapter = import_module(
+        "growth_engine.adapters.outbound.persistence.sqlite.candidate_store"
+    )
+    ingest_adapter = import_module("growth_engine.application.content.ingest_candidate")
+    decide_adapter = import_module("growth_engine.application.content.decide_candidate")
+    expire_adapter = import_module("growth_engine.application.content.expire_candidates")
     legacy_adapter = import_module("growth_engine.adapters.outbound.legacy.importer")
     connect = connection_adapter.connect
     migration_runner_type = migrator_adapter.MigrationRunner
@@ -286,9 +305,13 @@ def build_container(settings: Any) -> Container:
             if connection is not None:
                 connection.close()
 
+    uow_factory = lambda: uow_adapter.SqliteUnitOfWork(connection_factory)
+    candidate_store = candidate_store_adapter.SqliteCandidateStore(uow_factory)
+    clock = _SystemClock()
+    ids = _UuidIds()
     return Container(
         settings=settings,
-        uow_factory=lambda: uow_adapter.SqliteUnitOfWork(connection_factory),
+        uow_factory=uow_factory,
         migration_service=SqliteMigrationService(connect, migration_runner_type),
         legacy_import_service=legacy_adapter.LegacyImportDryRun(),
         doctor_service=DoctorService(
@@ -299,6 +322,9 @@ def build_container(settings: Any) -> Container:
             sqlite_version_error=connection_adapter.SQLiteVersionError,
         ),
         readiness_check=readiness_check,
+        ingest_candidate=ingest_adapter.IngestCandidate(candidate_store, clock, ids),
+        decide_candidate=decide_adapter.DecideCandidate(candidate_store, clock, ids),
+        expire_candidates=expire_adapter.ExpireCandidates(candidate_store, clock),
     )
 
 

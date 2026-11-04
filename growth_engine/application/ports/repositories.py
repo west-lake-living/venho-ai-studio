@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import Protocol
 
+from growth_engine.domain.content.candidate import CandidateState, ResearchCandidate
+
 
 class ChannelRepo(Protocol): ...
 class SlotRepo(Protocol): ...
@@ -19,6 +21,39 @@ class IncidentRepo(Protocol): ...
 class ControlsRepo(Protocol): ...
 class IdempotencyRepo(Protocol): ...
 class BudgetRepo(Protocol): ...
-class CandidateRepo(Protocol): ...
+class CandidateRepo(Protocol):
+    def get(self, candidate_id: str) -> ResearchCandidate | None: ...
+
+    def upsert_candidate(
+        self,
+        candidate: ResearchCandidate,
+        *,
+        payload_json: str,
+        created_at_ms: int,
+        actor: str,
+        correlation_id: str,
+    ) -> tuple[ResearchCandidate, bool]: ...
+
+    def apply_candidate_decision(
+        self,
+        candidate_id: str,
+        *,
+        expected_source_hash: str,
+        decision_id: str,
+        decision: object,
+        next_state: CandidateState,
+        actor: str,
+        reason: str,
+        created_at_ms: int,
+        correlation_id: str,
+    ) -> ResearchCandidate: ...
+
+    def expire_due_candidates(
+        self,
+        now_ms: int,
+        *,
+        actor: str,
+        correlation_id: str,
+    ) -> tuple[str, ...]: ...
 class MetricRepo(Protocol): ...
 class LegacyImportRepo(Protocol): ...
