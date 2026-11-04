@@ -5511,3 +5511,12 @@ ComfyUI, GPU, provider or network call.
 **Verify:** BFF tests → 8 passed; targeted ESLint → PASS; `tsc --noEmit` → PASS. Test covers safe mapping for 401/409/412/503 and server-only auth header replacement.
 **DoD:** [x] `GROWTH_BACKEND=legacy|v2`; [x] BFF token server-side; [x] actor comes from signed session; [x] allowlist strips browser `X-Venho-*`; [x] login HTML fails closed; [x] type generation script and output committed.
 **Giả định:** Access-authenticated VENHO OS session email is the actor identity; API base URL accepts HTTPS, with loopback HTTP allowed for local development.
+
+### GC2-P7-T04 — UI lịch, duyệt, ảnh và duyệt nhóm trong venho-os (2026-11-04)
+**Status:** PARTIAL — UI/test code committed; iPhone Safari evidence and active backend facade remain gates
+**External commit:** `venho-os` branch `codex/gc2-growth-dashboard-20261104`, commit `0aa889f` (local, chưa push)
+**Files:** `src/components/os/growth/{SlotCard,PageTargetCell,StatusChip,ReviewSheet,ImagePicker,BatchApproveBar}.tsx`, `src/lib/growth/status-labels.ts`, `src/components/os/sections/PublishingSection.tsx`, `tests/unit/components/os/growth/growth-components.test.tsx`
+**Verify:** Growth component/client tests at this task boundary → 23 passed; ESLint → PASS; `tsc --noEmit` → PASS.
+**DoD:** [x] Page A/B được hiển thị riêng trong cùng slot; [x] hành động theo `allowed_actions`; [x] preview đúng artifact, QC/facts/caption; [x] sửa caption, đổi/xoay ảnh, upload+poll job, duyệt nhóm; [x] offline giữ dữ liệu cũ và khoá mutation; [ ] Safari/iPhone checklist chưa chạy.
+**Rủi ro / việc để lại:** P7-T01 backend `dashboard_api` chưa composed nên BFF v2 chưa có API thành công; UI giữ lỗi an toàn. P7-T06 là gate kiểm thiết bị.
+**Giả định:** API trả `slots`/`items` và `as_of_ms`; review trả `review` hoặc snapshot trực tiếp, như wire contract của §9.1.

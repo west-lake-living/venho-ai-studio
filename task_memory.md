@@ -6227,3 +6227,8 @@ not in local venv; installed in CI).
 - In venho-os local branch `codex/gc2-growth-dashboard-20261104`, commit `5a698c8` adds the server-only BFF client, v2 route handler, session actor, bearer env config, request-header allowlist, GROWTH_BACKEND mode, generated OpenAPI types, and generator script.
 - Focused BFF tests 8 passed; targeted ESLint and `tsc --noEmit` passed. No push/deploy.
 - Assumption: VENHO OS signed session email is accepted as backend actor; production URL must use HTTPS.
+
+## 2026-11-04 — GC2-P7-T04 UI lịch và duyệt
+- In venho-os commit `0aa889f`, added mobile-first Page A/B slot cards, status labels, exact review sheet, action-gated caption/image/revision controls, image upload polling, and sticky batch-approval action; PublishingSection switches to v2 only after the server route confirms it, otherwise legacy remains, while v2 outage does not fall back to legacy data.
+- Focused UI/client tests 23 passed; lint and TypeScript passed. Safari/iPhone work deferred to checklist P7-T06.
+- Assumption: API response aliases match `slots|items` and `review|direct snapshot` from the API boundary contract.
