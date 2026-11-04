@@ -5433,3 +5433,12 @@ ComfyUI, GPU, provider or network call.
 **INV/AC liên quan:** AC-02, AC-06, AC-07, AC-08, AC-09, AC-12; §8.1.4, P5-T06.
 **Rủi ro / việc để lại:** FakeMake models the blueprint contract locally; it does not verify a real Make scenario or Meta result. P5-T05 TEST operator evidence remains a gate.
 **Giả định:** A duplicate command receives `ALREADY_AUTHORIZED` from the simulated endpoint; a Page-specific rejection before authorization can be safely retried only on that Page's delivery.
+
+### GC2-P6-T01 — Meta reader và verify_publication (2026-11-04)
+**Status:** PARTIAL — use case and config-driven read adapter are implemented; verified P0-T04 Meta fields/token are missing
+**Files:** growth_engine/adapters/outbound/meta/platform_reader.py, growth_engine/application/verification/verify_publication.py, tests/growth_engine/unit/application/test_verify_publication.py, task_status.md, task_memory.md
+**Verify:** focused → 7 passed; VERIFY_DEV → 374 passed, 4 warnings; VERIFY_ARCH → 2 passed; `git diff --check` → OK. All Meta responses and field names in tests are synthetic; no network calls.
+**DoD:** [x] Graph API version is taken from immutable channel config; [x] EXISTS+MATCH → PUBLISHED; [x] auth/permission failure preserves REPORTED_PUBLISHED and schedules retry; [x] deterministic NOT_FOUND → UNKNOWN + CRITICAL; [x] previously verified post deletion updates visibility to DELETED without requeue; [ ] Harry supplies verified P0-T04 fields/token and runbook fixture before a real reader can run.
+**INV/AC liên quan:** D17, D18, D25; AC-10; §7.8, P6-T01.
+**Rủi ro / việc để lại:** `docs/growth_engine/meta_capabilities.md` is absent and production Graph versions/tokens remain null; the adapter refuses `REQUIRED_FROM_P0` values. No production Meta request was made.
+**Giả định:** Meta response field paths and collection edge are injected through `ChannelConfig.capability`; retry attempt sequence is 5m, 15m, 60m, then 6h; only documented auth/permission failures open a permission incident.

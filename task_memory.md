@@ -6183,3 +6183,8 @@ not in local venv; installed in CI).
 - Added a local blueprint model with idempotent authorize/receipt endpoints and one mutation counter per delivery. Fault tests cover pre-send outbox state, post-authorization crash, post creation before receipt, receipt-apply crash, duplicate webhooks, lost responses, and separate Page A/B recovery.
 - Focused fault/e2e 9 passed; VERIFY_DEV 367 passed (4 warnings); VERIFY_ARCH 2 passed. No network or real Make/Meta calls.
 - Assumption: these fakes establish backend invariants but do not substitute for P5-T05's human TEST scenario evidence.
+
+## 2026-11-04 — GC2-P6-T01 publication verification
+- Added a GET-only Page reader whose API version and all Meta field paths come from channel config; the use case persists a verification result through a transaction port, moves deterministic mismatch to UNKNOWN, retries unavailable reads, and records visibility changes without requeue.
+- Synthetic unit tests cover match, auth failure, NOT_FOUND, deletion, retry backoff, and fail-closed placeholder fields. VERIFY_DEV 374 passed (4 warnings), VERIFY_ARCH 2 passed.
+- Assumption/gate: actual field paths, Graph API version and token require P0-T04 evidence; `meta_capabilities.md` is currently absent, so no live read can run.
