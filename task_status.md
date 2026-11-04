@@ -5154,3 +5154,11 @@ ComfyUI, GPU, provider or network call.
 **DoD:** [x] Protocols theo §4.3; DTO/error types; fake cho mọi service port trừ UoW; toàn bộ domain unit + architecture xanh.
 **INV/AC liên quan:** §4.1–4.3, §14.1
 **Rủi ro / việc để lại:** Repo Protocol hiện là structural placeholders theo danh mục UoW; method cụ thể chờ task persistence. Legacy `cv2` chưa cài; không sửa theo prompt.
+
+### GC2-P2-T01 — SQLite connection, migrator và migration 0001 (2026-11-04)
+**Status:** DONE — CLI nhận MigrationService qua composition container; wiring hoàn tất ở P2-T08
+**Files:** growth_engine/adapters/outbound/persistence/sqlite/{connection,migrator}.py, growth_engine/adapters/outbound/persistence/sqlite/migrations/0001_core.sql, growth_engine/adapters/inbound/cli/main.py, tests/growth_engine/integration/sqlite/test_migrations.py, task_status.md, task_memory.md
+**Verify:** focused → 7 passed; VERIFY_DEV → 181 passed; VERIFY_ARCH → 2 passed; `git diff --check` → OK; SQL 0001 khớp nguyên văn block §6.3 v1.2-CA.
+**DoD:** [x] PRAGMA/SQLite version guard; migration theo số, checksum SHA-256, checksum mismatch fail-closed; apply lặp no-op; `migrate`/`migrate --check` có service seam không vượt architecture boundary.
+**INV/AC liên quan:** §6.1, §6.3; P2-T01.
+**Rủi ro / việc để lại:** Settings hiện chưa khai báo ngưỡng SQLite nên connection dùng ngưỡng ADR-01 là 3.51.3; không sửa ngoài allowlist task. CLI cần composition root P2-T08 để cấp MigrationService khi chạy production.

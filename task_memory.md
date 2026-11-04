@@ -5942,3 +5942,12 @@ Tests: `test_fallback_images` 12/12, plus forbidden_policy / regeneration_policy
 / mode_b_contract / knowledge_reader / growth_phase3_image_runtime 69/69.
 Pre-existing unrelated fail: `test_growth_google_drive_uploader` (googleapiclient
 not in local venv; installed in CI).
+
+## 2026-11-04 — GC2-P2-T01 SQLite connection, migrations
+- Test-first: migration tests ban đầu đỏ do adapter chưa tồn tại; sau implementation, focused integration 7 passed.
+- `connect(path)` kiểm SQLite runtime >= ADR-01 3.51.3, bật foreign_keys/WAL/synchronous FULL/busy_timeout 5000 trên mọi connection và xác nhận FK thực sự bật.
+- Migrator tạo `schema_migrations` (version/name/SHA-256/applied_at/application_version), áp theo version số trong `BEGIN IMMEDIATE`, phát hiện migration lạ/checksum sai và lặp apply thành no-op. Test migration số 1/2/10 bắt thứ tự số thay vì thứ tự tên file.
+- `0001_core.sql` được so sánh tự động và khớp nguyên văn block v1.2-CA §6.3. Check mode chỉ đọc, báo pending mà không áp schema.
+- CLI `migrate`/`migrate --check` gọi `MigrationService` được tiêm trong context để giữ inbound không import outbound. Composition root hiện thuộc P2-T08; đến đó sẽ wiring service thực tế.
+- VERIFY_DEV 181 passed; VERIFY_ARCH 2 passed; `git diff --check` OK. VERIFY_LEGACY không thuộc verify task đơn lẻ; baseline gần nhất còn 5 collection errors thiếu `cv2`.
+- Giả định: do `Settings` chưa có field version floor và task chỉ cho phép các file card, dùng hardcoded ADR-01 minimum 3.51.3; không giả định backport nào.
