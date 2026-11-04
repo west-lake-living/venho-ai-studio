@@ -6017,3 +6017,10 @@ not in local venv; installed in CI).
 - Test fixture chỉ sinh ảnh tổng hợp bằng Pillow; HEIC được encode nếu encoder hiện diện. `transform_version` được truyền rõ từ caller vì ImageProcessor port hiện chưa có phương thức đọc dependency versions.
 - Verify: media 20 passed; VERIFY_DEV 248 passed; VERIFY_ARCH 2 passed; không chạy VERIFY_LEGACY cho đến cuối phase P3 theo prompt.
 - Giả định: `LocalMediaStore.root` chính là thư mục `media`; transform key gồm profile và các version dependency theo profile spec.
+
+## 2026-11-04 — GC2-P3-T02 URL ký và media router
+- URL ký dùng `v1.<kid>.<command_id>.<exp_ms>.<base64url(HMAC-SHA256)>`; HMAC bind SHA-256 trên path, command ID và expiry. Key ring đọc từ `GE_CAPABILITY_KEYS`, chỉ nhận base64 key ≥32 bytes, verify mọi key để hỗ trợ rotate.
+- Router kiểm command còn hiệu lực trong giới hạn `expires_at + 30 phút`, delivery còn active, revision vẫn hiện hành, approval/hash trùng, QC PASS và variant SHA/key/byte_size đúng trước khi trả file. File được đọc theo key cố định `variants/<prefix>/<sha>.jpg` và path resolve phải nằm dưới media root.
+- Integration tests dựng SQLite migrated + graph approved synthetic; kiểm bytes/hash/header, token hết hạn, SHA path sai và traversal. Không có network/token thật.
+- Change Request: card chỉ cho phép `signed_urls.py`, `routers/media.py`, test; nhưng app hiện không mount router và middleware xóa `Cache-Control` trên `/media`. Cần sửa `api/app.py` và `api/middleware.py` ở task/CR được phép mở rộng.
+- Giả định: route `/media` không cần bearer; system UTC epoch ms tạm dùng khi app chưa cung cấp authoritative clock.

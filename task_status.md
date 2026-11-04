@@ -5227,3 +5227,12 @@ ComfyUI, GPU, provider or network call.
 **INV/AC liên quan:** AC-03; §8.2; P3-T01.
 **Rủi ro / việc để lại:** Legacy suite chưa chạy cho task đơn lẻ; sẽ chạy tại ranh giới P3-T05. HEIC test chạy nếu encoder có sẵn, nếu không skip có lý do.
 **Giả định:** `LocalMediaStore` nhận media root làm `root`, nên key `variants/...` ánh xạ vào `media/variants/...`; caller truyền `transform_version` tạo bởi `transform_version(profile)`.
+
+### GC2-P3-T02 — URL ký cho media & router media (2026-11-04)
+**Status:** CHANGE_REQUEST — issuer/router đã triển khai; chưa phục vụ được qua app production hiện tại
+**Files:** growth_engine/adapters/outbound/media/signed_urls.py, growth_engine/adapters/inbound/api/routers/media.py, tests/growth_engine/integration/media/test_signed_urls.py, task_status.md, task_memory.md
+**Verify:** media signed URL focused → 4 passed; VERIFY_DEV → 252 passed; VERIFY_ARCH → 2 passed; `git diff --check` → OK.
+**DoD:** [x] HMAC `(sha256, command_id, exp)`, hỗ trợ key rotation; router kiểm command, active approval, QC PASS, variant SHA/bytes; 403 JSON cho token sai/hết hạn/path traversal; trả đúng `image/jpeg` và `Cache-Control: private, no-store` khi router được mount độc lập.
+**INV/AC liên quan:** §8.1.1, ADR-05, §9.2–9.3; P3-T02.
+**CHANGE_REQUEST:** `create_app` không mount media router và `RequestMiddleware` hiện loại bỏ `Cache-Control` của mọi response `/media`. Cần bổ sung wiring trong `growth_engine/adapters/inbound/api/app.py` và giữ `private, no-store` trong `growth_engine/adapters/inbound/api/middleware.py`; hai file này ngoài allowlist của card, nên chưa sửa.
+**Giả định:** token media dùng key ring `GE_CAPABILITY_KEYS`, định dạng base64url; `exp` được cấp bằng `execute_before_ms + 30 phút` theo ADR-05. Đồng hồ fallback hiện tại là system epoch ms cho tới khi clock chuẩn có ở P6.
