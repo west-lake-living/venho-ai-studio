@@ -5066,3 +5066,11 @@ ComfyUI, GPU, provider or network call.
 **DoD:** [x] Chọn token env theo channel; version/field/metric chỉ nhận từ CLI; GET-only; JSON output đã lọc token. [ ] Probe đủ ba kênh, xác minh quyền/field/metric và lưu fixture.
 **INV/AC liên quan:** INV-11; §8.3
 **Rủi ro / việc để lại:** Chưa có token, Page/IG IDs và field/metric đã xác minh. Docs và fixtures bị giới hạn ở task này; cần Harry chạy probe và ghi kết quả ở task phù hợp.
+
+### GC2-P0-T05 — Thiết kế Cloudflare edge (2026-11-04)
+**Status:** CHANGE_REQUEST — policy được ghi; chưa cấu hình hoặc kiểm tra ngoài mạng
+**Files:** docs/growth_engine/adr/ADR-05.md, docs/growth_engine/adr/ADR-06.md, task_status.md, task_memory.md
+**Verify:** docs-only; `git diff --check` → OK.
+**DoD:** [x] Hostname, Access policy, principal matrix và bảng kiểm curl. [ ] Harry cấu hình Tunnel/Access, xác nhận response ngoài mạng và điền kết quả.
+**INV/AC liên quan:** INV-05, INV-06; §9.2–9.3
+**Rủi ro / việc để lại:** Origin port chờ P0-T01; no-header response và header thực tế chưa kiểm chứng. Không thay Cloudflare config hoặc gọi endpoint thật.

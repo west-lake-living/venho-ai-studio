@@ -1,5 +1,10 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-11-04 — GC2-P0-T05 Cloudflare edge policy
+
+- Ghi ADR-05/06 theo GC2-D08: `/internal/*` cần Access Service Token + bearer theo principal/channel; `/media/publish/*` bypass Access nhưng vẫn bắt buộc capability ký và hash.
+- Không gọi curl hoặc đổi Cloudflare trong lượt này. No-header status/body (JSON, HTML hay redirect), origin port và route behavior phải được đo ngoài mạng sau khi Harry cấu hình.
+
 ## 2026-11-04 — GC2-P0-T04 Meta probe script
 
 - Script nhận channel + Page/IG account ID, post ID, API version, các field/metric ứng viên và period; token chỉ được đọc từ env var theo channel trong plan. Không chạy API probe trong pytest hay lượt này.
