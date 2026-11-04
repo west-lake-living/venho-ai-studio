@@ -342,6 +342,8 @@ class Container:
     dispatch_outbox: Any
     publishing_policy: Any
     publish_lane: Any
+    backup_service: Any
+    restore_service: Any
 
 
 def build_container(settings: Any) -> Container:
@@ -381,6 +383,8 @@ def build_container(settings: Any) -> Container:
     worker_loop_adapter = import_module("growth_engine.adapters.inbound.workers.loop")
     publish_lane_adapter = import_module("growth_engine.adapters.inbound.workers.publish_lane")
     legacy_adapter = import_module("growth_engine.adapters.outbound.legacy.importer")
+    backup_adapter = import_module("growth_engine.adapters.outbound.backup.sqlite_backup")
+    restore_adapter = import_module("growth_engine.adapters.outbound.backup.restore")
     connect = connection_adapter.connect
     migration_runner_type = migrator_adapter.MigrationRunner
     connection_factory = lambda: connect(settings.db_path)
@@ -515,6 +519,8 @@ def build_container(settings: Any) -> Container:
         dispatch_outbox=dispatch_outbox,
         publishing_policy=publishing_policy,
         publish_lane=publish_lane,
+        backup_service=backup_adapter.SqliteBackup(),
+        restore_service=restore_adapter.RestoreBackup(),
     )
 
 

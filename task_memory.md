@@ -6198,3 +6198,8 @@ not in local venv; installed in CI).
 - Added sanitized Telegram sender, unique incident/published notification keys, retry handling, T-24/T-6 reminder checks, and 20:00 ICT daily digest templates/config. Tests use fake transport/queue only.
 - Focused 6 passed; full suite 390 passed (4 warnings), architecture 2 passed. No Telegram request occurred.
 - Assumption/gate: durable queue dedupe and worker scheduling use the existing job lane; server bot token/chat remain unset until operator config.
+
+## 2026-11-04 — GC2-P6-T04 backup and restore
+- Implemented SQLite online snapshot, referenced-media SHA manifest, age archive adapter, safe restore validation, DISABLED/global pause/epoch rotation, CLI commands, and rehearsal runbook/script. Tests exercise a real migrated SQLite file, concurrent writer, missing media, and old token epoch mismatch using fake age.
+- VERIFY_DEV 393 passed (4 warnings), VERIFY_ARCH 2 passed, migration restore tests 3 passed. No age/Drive/server action occurred.
+- Assumption: `GE_AGE_RECIPIENT` supplies the public recipient; private identity remains operator-managed. Restore only targets a new directory.

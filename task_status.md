@@ -5460,3 +5460,12 @@ ComfyUI, GPU, provider or network call.
 **INV/AC liên quan:** §8.4, §10.4, §11.1; P6-T03.
 **Rủi ro / việc để lại:** no Telegram bot token/chat ID is configured or used. Duplicate suppression is exposed as a queue/repository contract and requires durable implementation before worker activation.
 **Giả định:** job lane polls reminders every 15 minutes; queue persists the unique dedupe keys and retry timestamp; dashboard links use an HTTPS base URL from runtime configuration.
+
+### GC2-P6-T04 — SQLite backup, age encryption và restore an toàn (2026-11-04)
+**Status:** PARTIAL — code and offline rehearsal tests pass; server `age` setup and operator restore rehearsal remain
+**Files:** growth_engine/adapters/outbound/backup/{sqlite_backup,restore}.py, growth_engine/adapters/inbound/cli/main.py, growth_engine/bootstrap.py, ops/asus-server/growth-engine/restore-rehearsal.sh, docs/growth_engine/runbooks/restore.md, tests/growth_engine/migration/test_restore_no_replay.py, task_status.md, task_memory.md
+**Verify:** restore migration tests → 3 passed; CLI backup/restore help → OK; shell syntax → OK; VERIFY_DEV → 393 passed, 4 warnings; VERIFY_ARCH → 2 passed; `git diff --check` → OK. Age was faked in tests; no server/Drive action.
+**DoD:** [x] SQLite Online Backup API snapshot and integrity/FK checks; [x] manifest includes referenced original/variant keys and SHA-256, missing artifact fails; [x] age encrypt/decrypt uses subprocess adapter and restrictive output mode; [x] restore validates DB/media and sets existing controls DISABLED + paused + new epoch; [x] CLI composes adapters through bootstrap; [ ] Harry installs `age`, provides recipient/identity, and runs the rehearsal.
+**INV/AC liên quan:** INV-01, INV-06; AC-16; §13.2–13.3, P6-T04.
+**Rủi ro / việc để lại:** backup encryption and restore were tested with copy-only synthetic age; no production backup, upload, or restore was executed. Restore refuses an existing target.
+**Giả định:** `GE_AGE_RECIPIENT` is the configured public recipient because Settings has no age field; private identity is supplied only as a local CLI file path and is never copied to the server by this task. Bootstrap change is required so inbound CLI uses the composition root rather than importing outbound adapters.

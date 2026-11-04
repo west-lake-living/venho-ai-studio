@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import os
+import time
 from importlib import import_module
 from pathlib import Path
 from typing import Protocol
@@ -10,6 +12,8 @@ from growth_engine.settings import Settings
 
 
 app = typer.Typer()
+backup_cli = typer.Typer(help="Create an encrypted Growth Engine backup.")
+app.add_typer(backup_cli, name="backup")
 
 
 class MigrationService(Protocol):
@@ -110,3 +114,64 @@ def worker(
     from growth_engine.bootstrap import build_container
 
     raise typer.Exit(code=build_container(settings).publish_lane.run_forever())
+
+
+@backup_cli.command("now")
+def backup_now(
+    ctx: typer.Context,
+    destination: Path = typer.Option(..., "--destination", help="New .age backup artifact path."),
+) -> None:
+    """Snapshot SQLite and referenced media, then encrypt with age."""
+    settings = Settings.from_env()
+    if any("REQUIRED_FROM_P0" in value for value in (settings.db_path, settings.media_root)):
+        raise typer.BadParameter("configure GE_DB_PATH and GE_MEDIA_ROOT before backup")
+    recipient = os.environ.get("GE_AGE_RECIPIENT", "")
+    try:
+        container = _container(ctx, settings)
+        result = container.backup_service.create(
+            db_path=Path(settings.db_path),
+            media_root=Path(settings.media_root),
+            destination=destination,
+            age_recipient=recipient,
+            now_ms=time.time_ns() // 1_000_000,
+        )
+    except (ValueError, RuntimeError, OSError) as error:
+        raise typer.BadParameter(str(error)) from error
+    typer.echo(f"Backup created: {result.destination} ({result.artifact_count} media artifacts)")
+
+
+@app.command()
+def restore(
+    ctx: typer.Context,
+    from_backup: Path = typer.Option(..., "--from", help="Encrypted .age backup artifact."),
+    target: Path = typer.Option(..., "--target", help="New empty restore target directory."),
+    identity: Path = typer.Option(..., "--identity", help="Protected age identity file supplied by operator."),
+) -> None:
+    """Restore into a new directory with publishing disabled and epoch rotated."""
+    try:
+        settings = Settings.from_env()
+        container = _container(ctx, settings)
+        result = container.restore_service.restore(
+            encrypted_backup=from_backup,
+            target=target,
+            identity_file=identity,
+            now_ms=time.time_ns() // 1_000_000,
+        )
+    except (ValueError, RuntimeError, OSError) as error:
+        raise typer.BadParameter(str(error)) from error
+    typer.echo(
+        f"Restored to {result.db_path}; publishing disabled; "
+        f"rotated {result.dispatch_epochs_rotated} dispatch epoch(s)."
+    )
+
+
+def _container(ctx: typer.Context, settings: Settings):
+    services = ctx.obj if isinstance(ctx.obj, dict) else {}
+    container = services.get("container")
+    if container is None:
+        from growth_engine.bootstrap import build_container
+
+        container = build_container(settings)
+        services["container"] = container
+        ctx.obj = services
+    return container

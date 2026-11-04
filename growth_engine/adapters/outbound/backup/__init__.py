@@ -1,3 +1,3 @@
 from __future__ import annotations
 
-"""Backup and restore adapters."""
+"""Encrypted SQLite and media backup adapters."""
