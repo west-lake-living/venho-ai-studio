@@ -6267,3 +6267,8 @@ not in local venv; installed in CI).
 - Wrote the §12.2 sequence with a per-step check, expected result and stop/recovery instruction, including legacy drain, final snapshot, importer, epoch, BFF, Make filter, Page A then Page B, and single-authority proof.
 - Documentation only. Verified the current CLI supports only `legacy-import --dry-run` and rejects apply mode; the runbook makes that an explicit stop before import/cutover. No host, timer, Make, Meta, or publishing action ran.
 - Assumption: operator rechecks the installed timer inventory and verified Page/channel evidence at the actual cutover window.
+
+## 2026-11-05 — GC2-P9-T04 LIVE_MANUAL pilot checklist
+- Wrote a per-slot/per-Page daily checklist with Page A before B, independent receipts and verification, UNKNOWN handling, duplicate/Page/media checks, and G-P9/AC-18 exit criteria.
+- Documentation only: no LIVE_MANUAL switch, public post, or pilot evidence was created. Pilot remains gated on successful cutover, production capabilities and Harry's go decision.
+- Assumption: a slot targeting both Pages uses the same approved revision and media SHA, while each Page outcome remains independently evidenced.
