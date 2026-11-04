@@ -23,6 +23,11 @@ class _UuidIds:
         return str(uuid4())
 
 
+class _NoVerifiedMakeErrorClasses:
+    def retryable_for(self, error_class: str) -> bool | None:
+        return None
+
+
 class _LazyCapabilityIssuer:
     def __init__(self, key_config: str) -> None:
         self._key_config = key_config
@@ -329,6 +334,10 @@ class Container:
     enqueue_due: Any
     expire_overdue: Any
     authorize_publish: Any
+    receive_receipt: Any
+    apply_receipt: Any
+    watch_receipt_timeouts: Any
+    receipt_store: Any
     dispatch_store: Any
     dispatch_outbox: Any
     publishing_policy: Any
@@ -360,6 +369,12 @@ def build_container(settings: Any) -> Container:
     authorize_store_adapter = import_module(
         "growth_engine.adapters.outbound.persistence.sqlite.authorize_store"
     )
+    receipt_store_adapter = import_module(
+        "growth_engine.adapters.outbound.persistence.sqlite.receipt_store"
+    )
+    receive_receipt_adapter = import_module("growth_engine.application.publishing.receive_receipt")
+    apply_receipt_adapter = import_module("growth_engine.application.publishing.apply_receipt")
+    receipt_timeout_adapter = import_module("growth_engine.application.publishing.watch_receipt_timeouts")
     policy_adapter = import_module("growth_engine.domain.publishing.window")
     transport_adapter = import_module("growth_engine.adapters.outbound.make.http_transport")
     envelope_adapter = import_module("growth_engine.adapters.outbound.make.envelope")
@@ -429,11 +444,37 @@ def build_container(settings: Any) -> Container:
         ids,
         publishing_policy,
     )
+    receipt_store = receipt_store_adapter.SqliteReceiptStore(uow_factory)
+    receive_receipt = receive_receipt_adapter.ReceiveReceipt(receipt_store, clock, ids)
+    apply_receipt = apply_receipt_adapter.ApplyReceipt(
+        receipt_store, clock, ids, _NoVerifiedMakeErrorClasses()
+    )
+    watch_receipt_timeouts = receipt_timeout_adapter.WatchReceiptTimeouts(
+        receipt_store, clock, ids
+    )
+
+    def process_apply_receipts() -> None:
+        for job_id, lease_token, receipt_id, correlation_id in receipt_store.claim_apply_jobs(
+            clock.now_ms()
+        ):
+            try:
+                apply_receipt.execute(receipt_id, correlation_id=correlation_id)
+            except Exception as error:
+                receipt_store.complete_apply_job(
+                    job_id, lease_token, at_ms=clock.now_ms(), error_type=type(error).__name__
+                )
+                logging.getLogger("growth_engine.publish").error(
+                    "receipt apply failed: error_type=%s", type(error).__name__
+                )
+            else:
+                receipt_store.complete_apply_job(job_id, lease_token, at_ms=clock.now_ms())
     worker_tasks = publish_lane_adapter.build_publish_tasks(
         {
             "enqueue_due": lambda: enqueue_due.execute(clock.now_ms()),
             "expire_overdue": lambda: expire_overdue.execute(clock.now_ms()),
             "dispatch_outbox": lambda: dispatch_outbox.execute(clock.now_ms()),
+            "apply_receipts": process_apply_receipts,
+            "receipt_timeouts": watch_receipt_timeouts.execute,
         }
     )
     worker_loop = worker_loop_adapter.WorkerLoop(
@@ -466,6 +507,10 @@ def build_container(settings: Any) -> Container:
         enqueue_due=enqueue_due,
         expire_overdue=expire_overdue,
         authorize_publish=authorize_publish,
+        receive_receipt=receive_receipt,
+        apply_receipt=apply_receipt,
+        watch_receipt_timeouts=watch_receipt_timeouts,
+        receipt_store=receipt_store,
         dispatch_store=dispatch_store,
         dispatch_outbox=dispatch_outbox,
         publishing_policy=publishing_policy,

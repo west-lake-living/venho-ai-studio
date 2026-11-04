@@ -360,6 +360,208 @@ def test_two_processes_authorize_one_delivery_once(tmp_path: Path) -> None:
     assert count == 1
 
 
+def test_receipt_api_persists_full_sanitized_body_and_applies_from_sqlite(tmp_path: Path) -> None:
+    container, settings, lease, grant, bearer, now_ms = _make_authorized_container(tmp_path)
+    body = _make_receipt_body(lease, grant, now_ms)
+    response = TestClient(create_app(container)).post(
+        "/internal/growth/v2/receipts",
+        headers={"Authorization": f"Bearer {bearer}"},
+        json=body,
+    )
+    assert response.status_code == 200, response.json()
+    receipt_id = response.json()["receipt_id"]
+
+    with container.uow_factory().read_only() as tx:
+        row = tx.connection.execute(
+            "SELECT event_hash, body_json, processing_state FROM receipt_inbox WHERE id=?",
+            (receipt_id,),
+        ).fetchone()
+        apply_jobs = tx.connection.execute(
+            "SELECT count(*) FROM jobs WHERE kind='apply_receipt' AND state='PENDING'"
+        ).fetchone()[0]
+    persisted = __import__("json").loads(row["body_json"])
+    assert row["processing_state"] == "RECEIVED"
+    assert len(row["event_hash"]) == 64
+    assert persisted["failed_step"] is None
+    assert persisted["permalink"] == body["permalink"]
+    assert apply_jobs == 1
+
+    claim_now_ms = time.time_ns() // 1_000_000 + 1_000
+    claimed = container.receipt_store.claim_apply_jobs(claim_now_ms)
+    assert len(claimed) == 1
+    job_id, lease_token, queued_receipt_id, correlation_id = claimed[0]
+    applied = container.apply_receipt.execute(
+        queued_receipt_id, correlation_id=correlation_id
+    )
+    assert applied.processing_state == "APPLIED"
+    assert container.receipt_store.complete_apply_job(
+        job_id, lease_token, at_ms=claim_now_ms
+    )
+    with container.uow_factory().read_only() as tx:
+        receipt = tx.connection.execute(
+            "SELECT processing_state FROM receipt_inbox WHERE id=?", (receipt_id,)
+        ).fetchone()
+        execution = tx.connection.execute(
+            "SELECT state, external_outcome FROM executions WHERE delivery_id='delivery-sqlite'"
+        ).fetchone()
+        delivery = tx.connection.execute(
+            "SELECT state, platform_post_id, permalink FROM deliveries WHERE id='delivery-sqlite'"
+        ).fetchone()
+        verify_jobs = tx.connection.execute(
+            "SELECT count(*) FROM jobs WHERE kind='verify_publication'"
+        ).fetchone()[0]
+    assert receipt["processing_state"] == "APPLIED"
+    assert execution["state"] == "REPORTED"
+    assert delivery["state"] == "REPORTED_PUBLISHED"
+    assert delivery["platform_post_id"] == "post-synthetic-001"
+    assert delivery["permalink"] == body["permalink"]
+    assert verify_jobs == 1
+
+
+def test_two_processes_deduplicate_the_same_receipt(tmp_path: Path) -> None:
+    container, settings, lease, grant, _bearer, now_ms = _make_authorized_container(tmp_path)
+    body = _make_receipt_body(lease, grant, now_ms)
+    context = multiprocessing.get_context("spawn")
+    barrier = context.Barrier(2)
+    results = context.Queue()
+    processes = [
+        context.Process(
+            target=_receive_receipt_process_worker,
+            args=(settings.db_path, settings.media_root, body, barrier, results),
+        )
+        for _ in range(2)
+    ]
+    for process in processes:
+        process.start()
+    outcomes = [results.get(timeout=30) for _ in processes]
+    for process in processes:
+        process.join(timeout=30)
+        assert process.exitcode == 0
+    results.close()
+    results.join_thread()
+    assert len({item[0] for item in outcomes}) == 1
+    assert sorted(item[1] for item in outcomes) == [False, True]
+    with container.uow_factory().read_only() as tx:
+        counts = tx.connection.execute(
+            "SELECT (SELECT count(*) FROM receipt_inbox), "
+            "(SELECT count(*) FROM jobs WHERE kind='apply_receipt')"
+        ).fetchone()
+    assert tuple(counts) == (1, 1)
+
+
+def test_sqlite_receipt_timeout_marks_unknown_once(tmp_path: Path) -> None:
+    container, _settings, _lease, _grant, _bearer, now_ms = _make_authorized_container(tmp_path)
+    with container.uow_factory().begin_immediate() as tx:
+        tx.connection.execute(
+            "UPDATE executions SET authorized_at=?, grant_expires_at=?, receipt_due_at=? "
+            "WHERE delivery_id='delivery-sqlite'",
+            (now_ms - 60_000, now_ms - 30_000, now_ms - 1),
+        )
+
+    first = container.watch_receipt_timeouts.execute()
+    second = container.watch_receipt_timeouts.execute()
+    assert first.timed_out == 1
+    assert second.timed_out == 0
+    with container.uow_factory().read_only() as tx:
+        execution = tx.connection.execute(
+            "SELECT state FROM executions WHERE delivery_id='delivery-sqlite'"
+        ).fetchone()
+        delivery = tx.connection.execute(
+            "SELECT state FROM deliveries WHERE id='delivery-sqlite'"
+        ).fetchone()
+        incidents = tx.connection.execute(
+            "SELECT count(*) FROM incidents WHERE type='UNKNOWN'"
+        ).fetchone()[0]
+    assert execution["state"] == "UNKNOWN"
+    assert delivery["state"] == "UNKNOWN"
+    assert incidents == 1
+
+
+def _make_authorized_container(tmp_path: Path):
+    bearer = "synthetic-receipt-bearer"
+    now_ms = time.time_ns() // 1_000_000
+    key_config = "receipt:" + base64.urlsafe_b64encode(b"t" * 32).decode().rstrip("=")
+    settings = Settings(
+        env="test",
+        db_path=str(tmp_path / "receipt.db"),
+        media_root=str(tmp_path / "receipt-media"),
+        public_base_url="https://growth.example.test",
+        capability_keys=key_config,
+        service_tokens=f"make-fb-hanoi:{hashlib.sha256(bearer.encode()).hexdigest()}",
+        make_webhook_urls={"PAGE_A": "https://hooks.example.test/route"},
+    )
+    container = build_container(settings)
+    container.migration_service.run(Path(settings.db_path), check=False)
+    _seed_approved_delivery(
+        container.uow_factory,
+        deadline_at_ms=now_ms + 600_000,
+        media_root=Path(settings.media_root),
+    )
+    container.enqueue_due.execute(now_ms)
+    lease = container.dispatch_store.claim_due(
+        now_ms, 1, owner="receipt-test-setup", lease_ms=30_000,
+        policy=container.publishing_policy,
+    )[0]
+    from growth_engine.application.publishing.authorize_publish import AuthorizePublishCommand
+
+    grant = container.authorize_publish.execute(
+        AuthorizePublishCommand(
+            command_token=lease.command.envelope_token,
+            payload_hash=lease.payload_hash,
+            media_report_http_status=200,
+            media_report_content_type="image/jpeg",
+            principal_id="make-fb-hanoi",
+            principal_channel_key="fb_hanoi",
+            correlation_id="receipt-authorize-synthetic",
+        )
+    )
+    assert grant.execute
+    return container, settings, lease, grant, bearer, now_ms
+
+
+def _make_receipt_body(lease, grant, now_ms: int) -> dict[str, object]:
+    return {
+        "schema_version": "growth.receipt.v2",
+        "event_id": f"{grant.grant_id}:POST_CREATED",
+        "command_id": lease.command.id,
+        "execution_id": grant.execution_id,
+        "grant_id": grant.grant_id,
+        "delivery_id": lease.command.delivery_id,
+        "revision_id": lease.command.revision_id,
+        "channel_id": lease.channel_id,
+        "remote_page_id": lease.remote_page_id,
+        "payload_hash": lease.payload_hash,
+        "outcome": "POST_CREATED",
+        "platform_post_id": "post-synthetic-001",
+        "permalink": "https://facebook.com/posts/synthetic",
+        "failed_step": None,
+        "error": None,
+        "occurred_at_ms": now_ms + 1,
+    }
+
+
+def _receive_receipt_process_worker(database_path, media_root, body, barrier, results) -> None:
+    from growth_engine.application.publishing.receive_receipt import ReceiveReceiptCommand
+
+    container = build_container(
+        Settings(
+            env="test",
+            db_path=database_path,
+            media_root=media_root,
+            public_base_url="https://growth.example.test",
+        )
+    )
+    barrier.wait(timeout=20)
+    result = container.receive_receipt.execute(
+        ReceiveReceiptCommand(
+            issuer_id="make-fb-hanoi",
+            body=body,
+            correlation_id="receipt-race-synthetic",
+        )
+    )
+    results.put((result.receipt_id, result.duplicate))
+
+
 def _seed_approved_delivery(
     uow_factory,
     *,

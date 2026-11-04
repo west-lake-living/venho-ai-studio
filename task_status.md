@@ -5397,6 +5397,15 @@ ComfyUI, GPU, provider or network call.
 **Rủi ro / việc để lại:** Không kiểm tra Meta hoặc Make thật; TEST credentials/Page và sự kiện Make vẫn do P0/P5-T05 gate.
 **Giả định:** `fact_snapshot_json` là canonical JSON; mọi fact trong snapshot phải có `valid_from` hợp lệ và còn hiệu lực tại thời điểm authorize; snapshot rỗng hợp lệ khi hash khớp.
 
+### GC2-P5-T04 — Wiring SQLite receipt inbox/apply/timeout (2026-11-04)
+**Status:** DONE — nhận, áp receipt và timeout chạy qua SQLite/UoW cùng publish lane
+**Files:** growth_engine/adapters/outbound/persistence/sqlite/receipt_store.py, growth_engine/adapters/inbound/api/{app.py,routers/internal_receipts.py}, growth_engine/adapters/inbound/workers/publish_lane.py, growth_engine/bootstrap.py, tests/growth_engine/integration/sqlite/test_publish_scheduler_wiring.py, tests/growth_engine/unit/application/test_enqueue_due.py, task_status.md, task_memory.md
+**Verify:** VERIFY_DEV → 357 passed, 4 warnings; VERIFY_ARCH → 2 passed; file-SQLite integration covers full body/hash, inbox/job/apply/verify job, timeout/idempotency and two-process receipt dedupe; `git diff --check` → OK.
+**DoD:** [x] receipt body đã sanitize được lưu nguyên vẹn cùng hash; [x] duplicate ACK giữ cùng ID, conflict ghi incident/audit; [x] apply CAS execution/delivery/inbox và tạo verification job atomic; [x] timeout bỏ qua receipt còn chờ apply, rồi đổi execution/delivery thành UNKNOWN atomic; [x] worker poll apply job và timeout.
+**INV/AC liên quan:** INV-01, INV-06, INV-09; D11–D15; AC-06–AC-10; §7.7, §11.1; P5-T04.
+**Rủi ro / việc để lại:** Không error class Make nào được xác minh là no-side-effect; REJECTED_NO_SIDE_EFFECT chưa biết lớp lỗi sẽ thành UNKNOWN theo fail-closed policy.
+**Giả định:** Apply-receipt jobs chạy trong publish lane hiện có; 5 giây polling, 30 giây lease; lỗi job retry tối đa theo `max_attempts` hiện hữu.
+
 ### GC2-P5-T01 — Wiring SQLite scheduler và publish lane (2026-11-04)
 **Status:** DONE — enqueue/expire transaction chạy qua SQLite và worker lane đã được bootstrap
 **Files:** growth_engine/adapters/outbound/persistence/sqlite/repositories/publish_scheduler.py, growth_engine/adapters/outbound/persistence/sqlite/repositories/commands.py, growth_engine/application/ports/repositories.py, growth_engine/bootstrap.py, growth_engine/adapters/inbound/cli/main.py, tests/growth_engine/integration/sqlite/test_publish_scheduler_wiring.py, task_status.md, task_memory.md

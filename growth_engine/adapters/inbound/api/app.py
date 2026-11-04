@@ -10,6 +10,7 @@ from growth_engine.adapters.inbound.api.middleware import RequestMiddleware
 from growth_engine.adapters.inbound.api.routers.health import router as health_router
 from growth_engine.adapters.inbound.api.routers.internal_research import router as internal_research_router
 from growth_engine.adapters.inbound.api.routers.internal_executions import router as internal_executions_router
+from growth_engine.adapters.inbound.api.routers.internal_receipts import router as internal_receipts_router
 from growth_engine.application.errors import ApplicationError
 from growth_engine.domain.kernel.errors import DomainError
 
@@ -23,4 +24,5 @@ def create_app(container) -> FastAPI:
     app.include_router(health_router)
     app.include_router(internal_research_router)
     app.include_router(internal_executions_router)
+    app.include_router(internal_receipts_router)
     return app

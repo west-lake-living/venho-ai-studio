@@ -25,6 +25,10 @@ def build_publish_tasks(handlers: Mapping[str, LaneHandler]) -> tuple[PeriodicTa
     ]
     if "dispatch_outbox" in handlers:
         tasks.append(PeriodicTask("dispatch-outbox", handlers["dispatch_outbox"], interval_s=5))
+    if "apply_receipts" in handlers:
+        tasks.append(PeriodicTask("apply-receipts", handlers["apply_receipts"], interval_s=5))
+    if "receipt_timeouts" in handlers:
+        tasks.append(PeriodicTask("receipt-timeouts", handlers["receipt_timeouts"], interval_s=60))
     return tuple(tasks)
 
 

@@ -329,6 +329,8 @@ def test_publish_lane_ticks_enqueue_every_30s_and_expire_every_60s() -> None:
             "enqueue_due": lambda: calls.append("enqueue"),
             "expire_overdue": lambda: calls.append("expire"),
             "dispatch_outbox": lambda: calls.append("dispatch"),
+            "apply_receipts": lambda: calls.append("apply-receipts"),
+            "receipt_timeouts": lambda: calls.append("receipt-timeouts"),
         }
     )
     by_name = {task.name: task for task in tasks}
@@ -336,7 +338,11 @@ def test_publish_lane_ticks_enqueue_every_30s_and_expire_every_60s() -> None:
     assert by_name["enqueue-due"].interval_s == 30
     assert by_name["expire-overdue"].interval_s == 60
     assert by_name["dispatch-outbox"].interval_s == 5
+    assert by_name["apply-receipts"].interval_s == 5
+    assert by_name["receipt-timeouts"].interval_s == 60
     by_name["enqueue-due"].fn()
     by_name["expire-overdue"].fn()
     by_name["dispatch-outbox"].fn()
-    assert calls == ["enqueue", "expire", "dispatch"]
+    by_name["apply-receipts"].fn()
+    by_name["receipt-timeouts"].fn()
+    assert calls == ["enqueue", "expire", "dispatch", "apply-receipts", "receipt-timeouts"]

@@ -6166,3 +6166,10 @@ not in local venv; installed in CI).
 - File-SQLite API test confirms exact caption/Page grant and one execution/audit. Two spawned processes racing the same command return one grant and one `ALREADY_AUTHORIZED`; no public service call.
 - Verification: Growth Engine 354 passed (4 warnings), architecture 2 passed, diff check passed.
 - Assumption: canonical fact snapshots carry validity timestamps for every fact; snapshot without facts is valid only when its content hash matches.
+
+## 2026-11-04 — GC2-P5-T04 SQLite receipt wiring
+- Added one SQLite transaction adapter for the full sanitized receipt inbox/hash, duplicate/conflict/audit/job writes, apply CAS, incident/verification job, and receipt timeout CAS. The API is mounted; errors remain fail-closed because the Make error-class policy has no verified entries.
+- The publish lane now leases/applies pending `apply_receipt` jobs and runs receipt timeouts. Timeout selection excludes executions with an unprocessed receipt, preventing a delayed apply job from being mistaken for a missing callback.
+- File-SQLite integration covers HTTP receipt intake, full body retention, queued job, applied `POST_CREATED` state, verification job, timeout idempotency, and a two-process identical-event race that yields one receipt and one job.
+- Verification: Growth Engine 357 passed (4 warnings), architecture 2 passed, diff check passed. No Make/Meta/network call.
+- Assumption: apply-receipt jobs can share the single locked publish lane; a missing verified Make error class never proves no side effect.
