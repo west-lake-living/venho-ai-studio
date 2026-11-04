@@ -5042,3 +5042,11 @@ ComfyUI, GPU, provider or network call.
 **DoD:** [x] Bảy trạng thái; lỗi Graph thành UNAVAILABLE; so caption 80 ký tự; cửa sổ −10′/+3h; registry reader retry 3 lần và không ghi; alert dedupe theo slot × kênh × loại. [ ] CLI, báo cáo ngoài git, Telegram và timer.
 **INV/AC liên quan:** INV-11; §8.3; §11
 **Rủi ro / việc để lại:** Không sửa `analytics_feedback/`, `ops/` hoặc `data/`; P0-T02 ID còn thiếu và P0-T04 field/version chưa probe. Test tổng hợp có `_synthetic: true`, cần thay bằng fixture thật từ P0-T03/P0-T04.
+
+### GC2-T0-06 — Insights backfill và báo cáo tuần (2026-11-04)
+**Status:** CHANGE_REQUEST — collector v2 có; legacy CLI/timer/token thật chờ
+**Files:** growth_engine/application/analytics/{__init__,insights_backfill}.py, growth_engine/adapters/outbound/analytics/{__init__,sqlite_insights_repository}.py, tests/growth_engine/unit/application/analytics/test_insights_backfill.py, task_status.md, task_memory.md
+**Verify:** `uv run --with pytest pytest -q tests/growth_engine` → 46 passed, 0 network.
+**DoD:** [x] DDL khớp migration 0009; state VALUE/ZERO/NULL/UNAVAILABLE/ERROR; skip PLACEHOLDER/DELETED; replay cùng timestamp không nhân bản; báo cáo tách kênh và không tổng hợp nhóm dưới 5 bài. [ ] Backfill thật và gửi báo cáo tuần.
+**INV/AC liên quan:** INV-11; AC-17
+**Rủi ro / việc để lại:** Không sửa `analytics_feedback/`, `ops/` hoặc thay M08. P0-T04 chưa cung cấp token, field/metric/version; T0-05 chưa chạy nên chưa có fb_venho thực. Fixture có `_synthetic: true`, cần thay bằng fixture thật từ P0-T03/P0-T04.

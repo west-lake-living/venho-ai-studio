@@ -1,5 +1,12 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-11-04 — GC2-T0-06 insights qua port và SQLite độc lập
+
+- Dùng đúng cấu trúc `metric_observations` migration 0009 trong repo độc lập; giữ các trạng thái VALUE/ZERO/NULL/UNAVAILABLE/ERROR, `source=meta_graph`, `checkpoint=adhoc`. Repo tạo trong `tmp_path` ở test, chưa ghi `~/venho/state`.
+- Metric/period/API version được inject từ cấu hình/probe; test chỉ dùng metric, version và dữ liệu tổng hợp. Fake fixture có `_synthetic: true` và ghi rõ cần thay bằng fixture thật từ P0-T03/P0-T04.
+- Báo cáo nhóm theo channel/pillar/image kind; không gộp Page; nhóm dưới 5 mẫu không có average. Không gửi Telegram hoặc gọi Meta.
+- Legacy CLI, timer, quyền đọc Insights và dữ liệu 3 tháng chờ P0-T04/Change Request; không thay MockMetricsAdapter M08.
+
 ## 2026-11-04 — GC2-T0-05 đối soát 3 kênh qua port
 
 - Viết use case v2 nhận `ChannelPostReader` và registry/slot đã chuẩn hoá; không đọc dữ liệu thật, không ghi vào `data/`, không thêm CLI/timer/Telegram vì các file legacy/ops ngoài allowlist.
