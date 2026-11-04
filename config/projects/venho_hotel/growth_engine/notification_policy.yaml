@@ -1,0 +1,14 @@
+version: 1
+timezone: Asia/Ho_Chi_Minh
+reminders:
+  offsets_minutes: [1440, 360]
+  scheduler_window_minutes: 15
+daily_digest:
+  local_time: "20:00"
+templates:
+  review_needed: "🟡 Bài chờ duyệt — {weekday} {date} {time}\nChủ đề: {topic}\nPage: {pages}\nHạn duyệt: {deadline}\n👉 Duyệt: {review_link}"
+  reminder: "⏰ Còn {hours} giờ — {count} bài chưa duyệt cho {weekday} {date}\n👉 {review_link}"
+  published: "✅ Đã đăng — {page} · {weekday} {date} {time}\n{permalink}\nXác minh: {quality_label}"
+  unknown: "🔴 Chưa rõ kết quả đăng — {page} · {weekday} {date}\nHệ thống KHÔNG tự đăng lại.\n👉 Đối soát: {reconcile_link}"
+  blocked: "🟠 Bài bị giữ lại — {page} · {weekday} {date}\nLý do: {reason} ({code})\n👉 {review_link}"
+  daily_digest: "📋 Ngày mai {weekday} {date}: {ready}/{total} bài sẵn sàng · {awaiting} chờ duyệt · {attention} cần xử lý"

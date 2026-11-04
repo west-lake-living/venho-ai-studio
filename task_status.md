@@ -5451,3 +5451,12 @@ ComfyUI, GPU, provider or network call.
 **INV/AC liên quan:** INV-06; D15, D16, D19, D20; AC-11; §7.8–7.9, P6-T02.
 **Rủi ro / việc để lại:** application services expose transaction ports; persistence/API composition and real Meta/Make evidence remain later gates. Permalink resolution requires a reader implementation that returns a verified post ID.
 **Giả định:** the transaction adapter re-reads executions, approval/revocation, deadline, max sequence and row version inside `BEGIN IMMEDIATE`; app-level evidence is never sufficient without Page verification or Make execution reference.
+
+### GC2-P6-T03 — Telegram notifications, reminders and digest (2026-11-04)
+**Status:** PARTIAL — notification behavior and transport adapter are implemented; durable job/worker composition and Telegram credentials remain unconfigured
+**Files:** growth_engine/adapters/outbound/notify/telegram_notifier.py, growth_engine/application/ops/{notifications,reminders}.py, config/projects/venho_hotel/growth_engine/notification_policy.yaml, tests/growth_engine/unit/application/test_notifications.py, task_status.md, task_memory.md
+**Verify:** focused → 6 passed; VERIFY_DEV → 390 passed, 4 warnings; VERIFY_ARCH → 2 passed; `git diff --check` → OK. Telegram transport was faked; no network request.
+**DoD:** [x] incident/published notifications have deterministic dedupe keys; [x] notifier sanitizes transport errors and redacts bot/chat credentials; [x] Telegram failure schedules retry without altering business state; [x] reminders skip approved/cancelled/revised items and key by delivery+revision; [x] T-24/T-6 and 20:00 digest templates are defined; [ ] wire durable queue/repository into worker and set server credentials.
+**INV/AC liên quan:** §8.4, §10.4, §11.1; P6-T03.
+**Rủi ro / việc để lại:** no Telegram bot token/chat ID is configured or used. Duplicate suppression is exposed as a queue/repository contract and requires durable implementation before worker activation.
+**Giả định:** job lane polls reminders every 15 minutes; queue persists the unique dedupe keys and retry timestamp; dashboard links use an HTTPS base URL from runtime configuration.

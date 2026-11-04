@@ -6193,3 +6193,8 @@ not in local venv; installed in CI).
 - Added operator-only D15/D16 resolution, safe retry sequence+1, and close-as-failed application ports plus Vietnamese runbook. Tests cover direct UNKNOWN retry refusal, verified post ID/permalink, no-side-effect evidence, approval revocation, ambiguous execution, and close guards.
 - Focused 10 passed; prior full suite 383 passed (4 warnings), architecture 2 passed. No external calls.
 - Assumption: persistence enforces all eligibility checks atomically under `BEGIN IMMEDIATE`; retry remains impossible until a durable NO_SIDE_EFFECT resolution exists.
+
+## 2026-11-04 — GC2-P6-T03 notifications
+- Added sanitized Telegram sender, unique incident/published notification keys, retry handling, T-24/T-6 reminder checks, and 20:00 ICT daily digest templates/config. Tests use fake transport/queue only.
+- Focused 6 passed; full suite 390 passed (4 warnings), architecture 2 passed. No Telegram request occurred.
+- Assumption/gate: durable queue dedupe and worker scheduling use the existing job lane; server bot token/chat remain unset until operator config.
