@@ -5976,3 +5976,11 @@ not in local venv; installed in CI).
 - `IdempotencyRepository.get_or_reserve` yêu cầu transaction, reserve mới không nuốt uniqueness; cùng key/hash trả status/body đã lưu; khác hash trả MISMATCH; key hết hạn được giải phóng trong transaction. Response JSON canonical và `save_response` khóa theo cả request hash.
 - Refactor CommandRepository sang `repositories/commands.py`, thêm JobRecord/Repo, IdempotencyRepo và expose qua UoW; thay đổi bổ trợ trong `uow.py`, `repositories/__init__.py`, `publishing.py` để luồng transaction dùng cùng adapter.
 - Focused 7 passed; VERIFY_DEV 211 passed; VERIFY_ARCH 2 passed; `git diff --check` OK.
+
+## 2026-11-04 — GC2-P2-T05 controls, audit, incidents
+- Test-first: 3 application tests ban đầu đỏ do `ControlsUseCase`/`IncidentUseCase` chưa có; sau triển khai, controls + repositories focused 7 passed.
+- Controls hỗ trợ set mode, global/channel pause/resume, bump epoch. Global dùng CAS `runtime_controls.row_version`; channel chỉ cập nhật cột paused, không chạm deliveries. Epoch `ep-UTCYYYYMMDDhhmm-<sha256(id)[:4]>` lấy ID qua port, không đọc wall clock trực tiếp.
+- `AuditRepository` chèn append-only event, details JSON canonical, before/after SHA-256; use cases ghi audit trong cùng transaction. `audit_events` DDL trigger cấm sửa/xoá.
+- `IncidentUseCase` dùng fingerprint domain, mở/touch cùng fingerprint qua partial-index UPSERT, giữ severity cao nhất + gọi domain `escalate`, occurrence_count tăng và last_seen cập nhật. Resolve lưu actor/time/reason; tất cả đổi trạng thái audit.
+- Test xác nhận pause không đổi trạng thái DRAFT delivery, mode/global/channel pause-resume/bump_epoch ghi audit, incident trùng chỉ 1 OPEN và tăng count trước khi resolve.
+- Repositories được tách thành controls/audit/incidents; `ops.py` giữ shim import cũ; UoW expose AuditRepo. VERIFY_DEV 214 passed; VERIFY_ARCH 2 passed; `git diff --check` OK.

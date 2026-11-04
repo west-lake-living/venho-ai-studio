@@ -5,16 +5,19 @@ from __future__ import annotations
 from .channels import ChannelRepository
 from .commands import CommandRepository
 from .content import CandidateRepository, PackageRepository
+from .controls import ControlsRepository
 from .delivery import DeliveryRepository
 from .idempotency import IdempotencyRepository
+from .incidents import IncidentRepository
 from .jobs import JobRecord, JobRepository
 from .media import MediaRepository, QcRepository
-from .ops import ControlsRepository, IncidentRepository
 from .publishing import ExecutionRepository, ReceiptRepository
 from .scheduling import SlotRepository
+from .audit import AuditRepository
 
 __all__ = [
     "CandidateRepository",
+    "AuditRepository",
     "ChannelRepository",
     "CommandRepository",
     "ControlsRepository",

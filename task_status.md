@@ -5186,3 +5186,11 @@ ComfyUI, GPU, provider or network call.
 **DoD:** [x] `UPDATE … RETURNING` claim trong transaction; token mới khi lease hết hạn; complete có `WHERE id AND lease_token`; token cũ không complete sau takeover; idempotency cùng hash trả response, khác hash → MISMATCH.
 **INV/AC liên quan:** INV-01…INV-03; §6.1, §6.4; C02–C06.
 **Rủi ro / việc để lại:** Caller phải truyền predicate đủ điều kiện (ví dụ `state` + `lease_until <= now`) khi claim; không có fallback JSON. Outbox envelope token vẫn được issuer inject như ghi tại P2-T03.
+
+### GC2-P2-T05 — Controls, audit và incidents (2026-11-04)
+**Status:** DONE
+**Files:** growth_engine/adapters/outbound/persistence/sqlite/repositories/{controls,audit,incidents}.py, growth_engine/application/ops/{controls,incidents}.py, tests/growth_engine/unit/application/test_controls.py, plus UoW/repository exports for audit, task_status.md, task_memory.md
+**Verify:** focused → 7 passed; VERIFY_DEV → 214 passed; VERIFY_ARCH → 2 passed; `git diff --check` → OK.
+**DoD:** [x] `set_mode`, pause/resume global + channel, `bump_epoch` theo UTC minute + 4 hex; incident open/touch dedupe occurrence count + resolve; mọi mutation ghi append-only audit cùng transaction; pause không đổi delivery.
+**INV/AC liên quan:** INV-01…INV-03, INV-06; §6.4, §7.1.
+**Rủi ro / việc để lại:** `channels` không có row_version nên channel pause dùng transaction `BEGIN IMMEDIATE` và update theo trạng thái hiện tại; global controls dùng CAS row_version.

@@ -7,6 +7,7 @@ from contextlib import contextmanager
 from typing import Any
 
 from growth_engine.adapters.outbound.persistence.sqlite.repositories import (
+    AuditRepository,
     CandidateRepository,
     ChannelRepository,
     CommandRepository,
@@ -212,6 +213,7 @@ class SqliteUnitOfWork:
         self.commands = CommandRepository(connection)
         self.executions = ExecutionRepository(connection)
         self.receipts = ReceiptRepository(connection)
+        self.audit = AuditRepository(connection)
         self.jobs = JobRepository(connection)
         self.incidents = IncidentRepository(connection)
         self.controls = ControlsRepository(connection)
