@@ -6009,3 +6009,11 @@ not in local venv; installed in CI).
 - Doctor cannot measure authoritative clock skew or heartbeat age before their upstream sources exist (later P6), and backup location is not configured yet; these remain WARN, never PASS by inference. Publish lock is checked only if the sibling `publish.lock` exists.
 - API/CLI focused 8 passed; VERIFY_DEV 228 passed; VERIFY_ARCH 2 passed. VERIFY_LEGACY exact still fails collection on five missing-`cv2` tests; continuation diagnostic 1857 passed, 79 failed, 8 skipped, 5 errors, with same pre-existing failure count.
 - Giả định: Python minimum 3.11 from ADR-01; service-token config stores lowercase SHA-256 hex as `principal:hash`, while principal scope/channel policy follows ADR-06 names and fixed channel keys.
+
+## 2026-11-04 — GC2-P3-T01 pipeline ảnh & media store
+- Pillow adapter kiểm chữ ký magic bytes trước decode, giới hạn input 25 MiB/50 MP, gọi `verify()` rồi decode đầy đủ, áp EXIF đúng một lần, bỏ orientation khỏi JPEG output và kiểm lại bytes/dimensions/4:5.
+- Dùng `ImageCms` khi ảnh có ICC; giữ alpha qua chuyển sRGB rồi composite trên màu profile. Profile Facebook giữ tỷ lệ; Instagram pad 4:5 trước khi resize, không crop.
+- Local store ghi key theo SHA-256, ghi temp trong cùng volume, flush/fsync rồi `os.replace` và fsync thư mục; lỗi replace dọn temp. Ingest/prepare làm I/O ngoài SQLite transaction và xác minh hash original trước khi tạo variant.
+- Test fixture chỉ sinh ảnh tổng hợp bằng Pillow; HEIC được encode nếu encoder hiện diện. `transform_version` được truyền rõ từ caller vì ImageProcessor port hiện chưa có phương thức đọc dependency versions.
+- Verify: media 20 passed; VERIFY_DEV 248 passed; VERIFY_ARCH 2 passed; không chạy VERIFY_LEGACY cho đến cuối phase P3 theo prompt.
+- Giả định: `LocalMediaStore.root` chính là thư mục `media`; transform key gồm profile và các version dependency theo profile spec.

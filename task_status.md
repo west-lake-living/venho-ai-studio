@@ -5218,3 +5218,12 @@ ComfyUI, GPU, provider or network call.
 **DoD:** [x] `build_container` nối SQLite/UoW/migrator/legacy dry-run; `/health/live` và `/health/ready`; bearer SHA-256 + scope/channel + chỉ BFF được đặt actor; lỗi Domain/Application theo §19.2; correlation ID, JSON 64 KiB, `Cache-Control: no-store`; CLI `api`, `doctor`, `migrate` wired.
 **INV/AC liên quan:** INV-01…INV-03, INV-10; §9, §11.4, §19.2; G-P2.
 **Rủi ro / việc để lại:** `doctor` báo WARN khi không có clock chuẩn, publish lock, heartbeat hoặc backup. Channel IDs thật vẫn REQUIRED_FROM_P0; `/health/ready` chỉ xanh sau khi DB đã migrate. API hiện chỉ có health router; endpoint nghiệp vụ thuộc task sau.
+
+### GC2-P3-T01 — Pipeline ảnh & media store (2026-11-04)
+**Status:** DONE
+**Files:** growth_engine/adapters/outbound/media/{pillow_processor,local_store}.py, growth_engine/application/media/{ingest_asset,prepare_variant}.py, config/projects/venho_hotel/growth_engine/media_policy.yaml, tests/growth_engine/support/image_fixtures.py, tests/growth_engine/integration/media/{test_pillow_pipeline,test_local_store}.py, task_status.md, task_memory.md
+**Verify:** media focused → 20 passed; VERIFY_DEV → 248 passed; VERIFY_ARCH → 2 passed; `git diff --check` → OK.
+**DoD:** [x] JPEG/PNG/HEIC signature + full decode; 25 MiB/50 MP limits; EXIF transpose once; sRGB/RGB + alpha composite; Facebook keep-aspect and Instagram 4:5 variants; progressive JPEG quality 88 ≤ 5 MiB; SHA-256; atomic fsync/rename; SQLite asset/variant persistence with QC `PENDING`.
+**INV/AC liên quan:** AC-03; §8.2; P3-T01.
+**Rủi ro / việc để lại:** Legacy suite chưa chạy cho task đơn lẻ; sẽ chạy tại ranh giới P3-T05. HEIC test chạy nếu encoder có sẵn, nếu không skip có lý do.
+**Giả định:** `LocalMediaStore` nhận media root làm `root`, nên key `variants/...` ánh xạ vào `media/variants/...`; caller truyền `transform_version` tạo bởi `transform_version(profile)`.

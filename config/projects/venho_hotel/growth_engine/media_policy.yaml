@@ -1,0 +1,17 @@
+profiles:
+  facebook_photo_v1:
+    mime: image/jpeg
+    max_long_side_px: 2048
+    max_bytes: 5242880
+    jpeg_quality: 88
+    aspect_ratio: keep
+    background: "#F7F4EF"
+    transform_version_includes: [profile, pillow_version, pillow_heif_version]
+  instagram_photo_v1:
+    mime: image/jpeg
+    max_long_side_px: 2048
+    max_bytes: 5242880
+    jpeg_quality: 88
+    aspect_ratio: pad_4_5
+    background: "#F7F4EF"
+    transform_version_includes: [profile, pillow_version, pillow_heif_version]
