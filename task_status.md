@@ -5162,3 +5162,11 @@ ComfyUI, GPU, provider or network call.
 **DoD:** [x] PRAGMA/SQLite version guard; migration theo số, checksum SHA-256, checksum mismatch fail-closed; apply lặp no-op; `migrate`/`migrate --check` có service seam không vượt architecture boundary.
 **INV/AC liên quan:** §6.1, §6.3; P2-T01.
 **Rủi ro / việc để lại:** Settings hiện chưa khai báo ngưỡng SQLite nên connection dùng ngưỡng ADR-01 là 3.51.3; không sửa ngoài allowlist task. CLI cần composition root P2-T08 để cấp MigrationService khi chạy production.
+
+### GC2-P2-T02 — Migrations 0002–0006 và test ràng buộc (2026-11-04)
+**Status:** DONE
+**Files:** growth_engine/adapters/outbound/persistence/sqlite/migrations/0002_media_qc.sql … 0006_research.sql, tests/growth_engine/integration/sqlite/test_constraints.py, tests/growth_engine/integration/sqlite/test_migrations.py (cập nhật kỳ vọng chuỗi), task_status.md, task_memory.md
+**Verify:** constraint cases → 23 passed (21 bị từ chối, 2 kịch bản được chấp nhận); persistence focused → 30 passed; VERIFY_DEV → 204 passed; VERIFY_ARCH → 2 passed; `foreign_key_check` rỗng, `integrity_check = ok`; migrations 0001–0006 khớp nguyên văn §6.3 v1.2-CA.
+**DoD:** [x] 5 migration 0002–0006 được chép nguyên văn; 21 vi phạm bị DB từ chối và hai kịch bản hợp lệ được chấp nhận; kiểm tra FK/integrity trên DB file.
+**INV/AC liên quan:** INV-01…INV-03, INV-07; §6.3, §16.3.
+**Rủi ro / việc để lại:** `metric_observations` thuộc migration 0009/P8, nên test ZERO dùng DDL test-only theo §6.3; chưa thêm migration 0009. Cập nhật test_migrations từ kỳ vọng 0001 sang 0001–0006 để giữ VERIFY_DEV xanh sau khi mở rộng chuỗi.

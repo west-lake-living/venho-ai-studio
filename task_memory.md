@@ -5951,3 +5951,12 @@ not in local venv; installed in CI).
 - CLI `migrate`/`migrate --check` gọi `MigrationService` được tiêm trong context để giữ inbound không import outbound. Composition root hiện thuộc P2-T08; đến đó sẽ wiring service thực tế.
 - VERIFY_DEV 181 passed; VERIFY_ARCH 2 passed; `git diff --check` OK. VERIFY_LEGACY không thuộc verify task đơn lẻ; baseline gần nhất còn 5 collection errors thiếu `cv2`.
 - Giả định: do `Settings` chưa có field version floor và task chỉ cho phép các file card, dùng hardcoded ADR-01 minimum 3.51.3; không giả định backport nào.
+
+## 2026-11-04 — GC2-P2-T02 migrations và constraints
+- Viết 23 case từ §16.3 trước; ban đầu đỏ đúng vì chỉ có migration 0001 và thiếu schema media/delivery/dispatch/ops/research.
+- Chép 0002_media_qc đến 0006_research nguyên văn từ v1.2-CA §6.3; so sánh văn bản xác nhận toàn bộ 0001–0006 khớp nguồn.
+- Fixture SQLite file tạm áp đủ sáu migration rồi tạo một graph hợp lệ synthetic gồm 2 Page, Instagram, deliveries/revisions/approvals. 21 lỗi DB từ chối: active delivery trùng target; hai dạng target/channel FK; sửa revision; approval sai hash; revision sai delivery; thiếu post ID; SUPERSEDED active; sửa remote ID; Threads; channel_key trùng; sửa bytes; command đang mở trùng; hash command sai; execution live trùng xuyên commands; execution lệch command; receipt event trùng; post ID trùng trên Page; incident OPEN trùng fingerprint; ZERO có value khác 0; sửa audit.
+- Hai kịch bản được chấp nhận: một slot ba kênh có delivery/revision/approval độc lập, trong đó delivery có thể tạo execution mới sau `NO_SIDE_EFFECT`; receipt không khớp execution được lưu `QUARANTINED`.
+- Metric là migration 0009/P8, ngoài allowlist P2-T02; test dùng DDL test-only chép từ §6.3 để kiểm CHECK `ZERO`.
+- P2-T02 mở rộng migration chain nên test_migrations của P2-T01 cần đổi kỳ vọng từ 1 sang versions 1–6; sửa cần thiết để toàn VERIFY_DEV vẫn xanh.
+- Constraint suite 23 passed; persistence focused 30 passed; VERIFY_DEV 204 passed; VERIFY_ARCH 2 passed; `foreign_key_check` rỗng và `integrity_check=ok` sau mỗi test.
