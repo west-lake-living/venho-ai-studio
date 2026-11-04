@@ -1,0 +1,10 @@
+{
+  "_synthetic": true,
+  "_note": "Anonymized shape sample; no raw DB rows or payloads. cần thay bằng fixture thật từ P0-T03/P0-T04.",
+  "source": "growth.db / publishing_slots",
+  "records": [
+    {"slot_id": "sample-completed-slot", "status": "COMPLETED"},
+    {"slot_id": "sample-pending-slot", "status": "PENDING_APPROVAL"},
+    {"slot_id": "sample-missed-slot", "status": "MISSED"}
+  ]
+}

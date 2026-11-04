@@ -7,6 +7,13 @@
 - **Acceptance state from v1.2:** D00, D01, D07 and D09 are confirmed 04/11/2026. D02–D06 and D08 use their stated plan defaults for this build, pending Harry's one-time review.
 - **Governance trace:** Recorded here because P0-T06 allows only ADR-01…09 and `task_memory.md`; if L2 requires a separate canonical decision-log entry, that artifact remains a follow-up.
 
+## 2026-11-04 — GC2-P0-T07 legacy inventory
+
+- Đọc `publication_registry.json` và `growth.db` read-only; registry có 265 rows, đúng báo cáo 04/11. DB có 58 `publishing_slots`; registry/DB lệch 5 slot cũ chỉ có ở registry.
+- Có 23 cặp `slot_id + platform` lặp; một cặp Instagram 15/08 có hai `PUBLISHED`. Không suy ra retry; cần đối soát bằng evidence bài thật.
+- 07/11 dùng ảnh U2 sau commit `9ab0a22`, nhưng asset không có local và URL nằm trên Google Drive. Theo giới hạn prompt, không đọc Drive; SHA-256 đang chờ Harry cung cấp file.
+- Fixture là shape sample đã ẩn danh, gắn `_synthetic: true`; không commit `data/` hoặc raw nội dung.
+
 ## 2026-11-04 — GC2-P0-T05 Cloudflare edge policy
 
 - Ghi ADR-05/06 theo GC2-D08: `/internal/*` cần Access Service Token + bearer theo principal/channel; `/media/publish/*` bypass Access nhưng vẫn bắt buộc capability ký và hash.

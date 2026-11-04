@@ -5082,3 +5082,11 @@ ComfyUI, GPU, provider or network call.
 **DoD:** [x] Chuyển D00–D09 thành ADR Context/Decision/Consequences/Alternatives; ghi DR-GC2-D00 trong task_memory. [ ] Harry xác nhận D02–D06, D08 hoặc đổi mặc định ở báo cáo cuối.
 **INV/AC liên quan:** INV-01…INV-12; GC2-D00…D09
 **Rủi ro / việc để lại:** D00, D01, D07, D09 đã xác nhận theo v1.2; D02–D06 và D08 là mặc định để tiếp tục. L2 Governance record ghi trong task_memory do task chỉ cho phép các ADR và memory.
+
+### GC2-P0-T07 — Kiểm kê dữ liệu legacy (2026-11-04)
+**Status:** CHANGE_REQUEST — số registry khớp; thiếu file ảnh local để tính SHA
+**Files:** docs/growth_engine/legacy_inventory.md, tests/growth_engine/fixtures/legacy/registry_samples.json, tests/growth_engine/fixtures/legacy/growth_db_samples.json, task_status.md, task_memory.md
+**Verify:** Python read-only: registry 265 dòng; SQLite read-only: 58 publishing slots; fixture JSON parse OK; `git diff --check` OK.
+**DoD:** [x] Bảng trạng thái khớp báo cáo 04/11; field/schema, GATEWAY_ACCEPTED, STALE_APPROVAL, slot trùng và IG/Threads được ghi. [ ] Tính SHA ảnh 07/11 khi có file local.
+**INV/AC liên quan:** INV-04, INV-07, INV-10; §12.1
+**Rủi ro / việc để lại:** Ảnh 07/11 chỉ có URL Google Drive trong snapshot và `image_run_path` local không tồn tại; không truy cập Drive theo prompt. Fixture đã ẩn danh và đánh dấu synthetic, không chứa raw data.

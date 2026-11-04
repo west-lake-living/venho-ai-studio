@@ -1,0 +1,20 @@
+{
+  "_synthetic": true,
+  "_note": "Shape sample only; IDs and slot keys are anonymized, content and URLs omitted. cần thay bằng fixture thật từ P0-T03/P0-T04.",
+  "source": "publication_registry.json",
+  "records": [
+    {"publication_id": "sample-gateway-facebook", "platform": "facebook", "status": "GATEWAY_ACCEPTED", "platform_post_id": null, "permalink": null, "published_at": null},
+    {"publication_id": "sample-gateway-instagram", "platform": "instagram", "status": "GATEWAY_ACCEPTED", "platform_post_id": null, "permalink": null, "published_at": null},
+    {"publication_id": "sample-gateway-threads-1", "platform": "threads", "status": "GATEWAY_ACCEPTED", "platform_post_id": null, "permalink": null, "published_at": null},
+    {"publication_id": "sample-gateway-threads-2", "platform": "threads", "status": "GATEWAY_ACCEPTED", "platform_post_id": null, "permalink": null, "published_at": null},
+    {"publication_id": "sample-gateway-threads-3", "platform": "threads", "status": "GATEWAY_ACCEPTED", "platform_post_id": null, "permalink": null, "published_at": null},
+    {"publication_id": "sample-gateway-threads-4", "platform": "threads", "status": "GATEWAY_ACCEPTED", "platform_post_id": null, "permalink": null, "published_at": null},
+    {"publication_id": "sample-stale-facebook", "platform": "facebook", "status": "STALE_APPROVAL", "approval_scope": null},
+    {"publication_id": "sample-stale-instagram-1", "platform": "instagram", "status": "STALE_APPROVAL", "approval_scope": null},
+    {"publication_id": "sample-stale-instagram-2", "platform": "instagram", "status": "STALE_APPROVAL", "approval_scope": null},
+    {"publication_id": "sample-placeholder-facebook-1", "platform": "facebook", "status": "PUBLISHED", "platform_post_id": "3. Post ID"},
+    {"publication_id": "sample-placeholder-facebook-2", "platform": "facebook", "status": "PUBLISHED", "platform_post_id": "3. Post ID"},
+    {"publication_id": "sample-duplicate-instagram-1", "platform": "instagram", "status": "PUBLISHED", "slot_id": "same-synthetic-slot"},
+    {"publication_id": "sample-duplicate-instagram-2", "platform": "instagram", "status": "PUBLISHED", "slot_id": "same-synthetic-slot"}
+  ]
+}
