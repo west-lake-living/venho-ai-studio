@@ -6173,3 +6173,8 @@ not in local venv; installed in CI).
 - File-SQLite integration covers HTTP receipt intake, full body retention, queued job, applied `POST_CREATED` state, verification job, timeout idempotency, and a two-process identical-event race that yields one receipt and one job.
 - Verification: Growth Engine 357 passed (4 warnings), architecture 2 passed, diff check passed. No Make/Meta/network call.
 - Assumption: apply-receipt jobs can share the single locked publish lane; a missing verified Make error class never proves no side effect.
+
+## 2026-11-04 — GC2-P5-T05 TEST command factory
+- Added an opt-in factory that writes synthetic slot, delivery, revision, approval and outbox command through the TEST SQLite UoW, then writes a mode-0600 envelope. Default remains validated dry-run; no network call occurred.
+- Real file-SQLite integration verified the persisted chain and `environment=test`. VERIFY_DEV 358 passed (4 warnings), VERIFY_ARCH 2 passed.
+- Assumption: a separate empty TEST DB is required; existing/placeholder Page, route or signing configuration fails closed. Make MK-1…MK-11 evidence remains a human gate.

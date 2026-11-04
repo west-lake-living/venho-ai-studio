@@ -5415,3 +5415,12 @@ ComfyUI, GPU, provider or network call.
 **Rủi ro / việc để lại:** Lane hiện chỉ chạy enqueue/expire; dispatch, receipt timeout và handlers sẽ được nối ở P5-T02/P5-T04. Chưa chạy worker trên server.
 **Giả định:** Môi trường `development`/`test` chỉ đọc channel environment `test`; delivery chưa có revision lấy deadline từ slot; execution `AUTHORIZED`, `REPORTED` hoặc `UNKNOWN` chặn D21.
 **Giả định:** no Make error class is safe until observed in a redacted TEST History output; a webhook 2xx is not evidence of a Facebook post; TEST sends require the exact manifest Page ID and an operator's explicit `--send` invocation.
+
+### GC2-P5-T05 — TEST command factory SQLite follow-up (2026-11-04)
+**Status:** PARTIAL — synthetic command factory is integrated; Make operator evidence remains a human gate
+**Files:** scripts/growth_engine/send_test_command.py, tests/growth_engine/integration/sqlite/test_test_command_factory.py, docs/growth_engine/runbooks/make_blueprint_v2.md, task_status.md, task_memory.md
+**Verify:** focused SQLite factory → 1 passed; VERIFY_DEV → 358 passed, 4 warnings; VERIFY_ARCH → 2 passed; `git diff --check` → OK. Test uses a real temporary SQLite DB and synthetic TEST credentials; no network call.
+**DoD:** [x] Factory creates slot → delivery → immutable revision → approval → outbox command in environment=test; [x] writes a private 0600 envelope; [x] validates signed envelope in default dry-run; [x] refuses placeholders and non-TEST environments; [ ] Harry runs MK-1…MK-11 on the isolated TEST Page and records evidence.
+**INV/AC liên quan:** INV-01, INV-09; AC-06, AC-07, AC-08, AC-09; §8.1.4, P5-T05.
+**Rủi ro / việc để lại:** no Make/Meta action performed. Current TEST manifest still contains `REQUIRED_FROM_P0`; command creation is intentionally unavailable until TEST identity, route, and runtime settings are verified. No Make-specific error class is allowlisted.
+**Giả định:** Factory uses a synthetic JPEG/caption, a dedicated TEST database with no existing `page_test` channel, and creates a pending local command; only explicit `--send` plus exact TEST Page confirmation can make a webhook request.
