@@ -5050,3 +5050,11 @@ ComfyUI, GPU, provider or network call.
 **DoD:** [x] DDL khớp migration 0009; state VALUE/ZERO/NULL/UNAVAILABLE/ERROR; skip PLACEHOLDER/DELETED; replay cùng timestamp không nhân bản; báo cáo tách kênh và không tổng hợp nhóm dưới 5 bài. [ ] Backfill thật và gửi báo cáo tuần.
 **INV/AC liên quan:** INV-11; AC-17
 **Rủi ro / việc để lại:** Không sửa `analytics_feedback/`, `ops/` hoặc thay M08. P0-T04 chưa cung cấp token, field/metric/version; T0-05 chưa chạy nên chưa có fb_venho thực. Fixture có `_synthetic: true`, cần thay bằng fixture thật từ P0-T03/P0-T04.
+
+### GC2-P0-T03 — Khảo sát Make TEST (2026-11-04)
+**Status:** CHANGE_REQUEST — checklist sẵn; chưa có Make evidence
+**Files:** docs/growth_engine/make_capabilities.md
+**Verify:** docs-only; `git diff --check` → OK.
+**DoD:** [x] Checklist MK-1…MK-11, inventory hiện trạng, TEST cases và bảng kết quả/evidence. [ ] Chụp cấu hình History/router; chạy trên TEST Page/IG; điền kết quả MK-1…MK-11.
+**INV/AC liên quan:** INV-05, INV-06; §8.1.4
+**Rủi ro / việc để lại:** Không mở Make theo giới hạn prompt; không tạo fixture giả. Scenario ID, filter, field post ID thật, error classes và header behavior cần Harry thao tác/ghi bằng chứng.

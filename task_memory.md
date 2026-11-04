@@ -1,5 +1,10 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-11-04 — GC2-P0-T03 checklist Make TEST
+
+- Chỉ tạo checklist theo §8.1.4, bao gồm MK-1…MK-11; không mở/đổi scenario, không tạo fixture Make vì prompt chỉ cho tài liệu/checklist và cấm gọi Make.
+- Scenario ID, route filters, exact post/media ID field, settings, error classes và bằng chứng TEST vẫn cần Harry lấy từ Make; không suy diễn các giá trị này.
+
 ## 2026-11-04 — GC2-T0-06 insights qua port và SQLite độc lập
 
 - Dùng đúng cấu trúc `metric_observations` migration 0009 trong repo độc lập; giữ các trạng thái VALUE/ZERO/NULL/UNAVAILABLE/ERROR, `source=meta_graph`, `checkpoint=adhoc`. Repo tạo trong `tmp_path` ở test, chưa ghi `~/venho/state`.
