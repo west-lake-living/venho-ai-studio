@@ -6213,3 +6213,8 @@ not in local venv; installed in CI).
 - Added dashboard route surface, auth scopes, ETag/If-Match forwarding, required Idempotency-Key, 50-row limits, upload stream contract, sensitive-field/Make-URL filtering, and fail-closed 503 behavior. Added slot/incident query contracts and dashboard contract tests.
 - VERIFY_DEV 403 passed, VERIFY_ARCH 2 passed, focused dashboard tests 5 passed. Added `python-multipart` to the API optional extra for FastAPI multipart parsing.
 - Status remains PARTIAL: the current bootstrap has no dashboard facade, query readers, or MediaStore upload use case composition. Assumption: the facade contract is `dashboard_api.execute(...)`; no dashboard returns success until composed.
+
+## 2026-11-04 — GC2-P7-T02 OpenAPI snapshot
+- Added `venho-engine openapi --out`, generated `contracts/growth_engine/openapi.json`, and an exact snapshot test. Generation builds the FastAPI app with no DB or external service.
+- VERIFY_DEV 404 passed, VERIFY_ARCH 2 passed; snapshot test 1 passed.
+- Assumption: OpenAPI JSON uses sorted keys, UTF-8, two-space indentation and one trailing newline.

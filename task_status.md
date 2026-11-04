@@ -5487,3 +5487,11 @@ ComfyUI, GPU, provider or network call.
 **INV/AC liên quan:** AC-13, AC-14; §9.1, §9.3, §9.4, P7-T01.
 **Rủi ro / việc để lại:** Until `dashboard_api` is composed, dashboard calls return 503 by design. `python-multipart` was added to the API extra because FastAPI needs it for multipart uploads; marker follows the plan's Python 3.11 runtime (package requires Python ≥3.10).
 **Giả định:** dashboard routes use an injected `dashboard_api.execute(operation, payload, actor, correlation_id, if_match, idempotency_key)` façade so HTTP stays outside application use cases; the next task may generate a snapshot from this route surface before composition is complete.
+
+### GC2-P7-T02 — OpenAPI & snapshot (2026-11-04)
+**Status:** DONE — generated API contract is committed and byte-for-byte guarded by test
+**Files:** `growth_engine/adapters/inbound/cli/main.py`, `contracts/growth_engine/openapi.json`, `tests/growth_engine/contract/test_openapi_snapshot.py`, `task_status.md`, `task_memory.md`
+**Verify:** snapshot → 1 passed; VERIFY_DEV → 404 passed, 4 warnings; VERIFY_ARCH → 2 passed; `git diff --check` → OK.
+**DoD:** [x] `venho-engine openapi --out PATH` generates deterministic JSON without DB or network; [x] checked-in snapshot matches generated document.
+**Rủi ro / việc để lại:** dashboard runtime routes still return 503 until the P7-T01 facade is composed; OpenAPI describes their contract.
+**Giả định:** snapshot formatting uses UTF-8, two-space indentation, sorted keys and one trailing newline.

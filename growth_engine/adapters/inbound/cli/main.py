@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import os
 import time
 from importlib import import_module
@@ -63,6 +64,24 @@ def legacy_import(
 
         service = build_container(Settings.from_env()).legacy_import_service
     typer.echo(service.run(source, report))
+
+
+@app.command()
+def openapi(
+    out: Path = typer.Option(..., "--out", help="Write generated OpenAPI JSON to this path."),
+) -> None:
+    """Generate the API contract without opening DB or external services."""
+    try:
+        from types import SimpleNamespace
+
+        from growth_engine.adapters.inbound.api.app import create_app
+    except ImportError as error:
+        typer.echo("Install the [api] extra to generate the OpenAPI contract.", err=True)
+        raise typer.Exit(code=1) from error
+    document = create_app(SimpleNamespace()).openapi()
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(document, ensure_ascii=False, indent=2, sort_keys=True) + "\n")
+    typer.echo(f"OpenAPI written: {out}")
 
 
 @app.command()
