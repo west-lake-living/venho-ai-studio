@@ -18,14 +18,15 @@ class CommandRepository(SqliteRepository):
         created_at_ms: int,
         updated_at_ms: int,
         last_error: str | None = None,
+        signing_key_id: str | None = None,
     ) -> None:
         """Persist durable envelope fields; the signed envelope token remains transient."""
         self.connection.execute(
             """INSERT INTO outbox_commands
                (id, delivery_id, revision_id, sequence_no, kind, business_key, payload_hash,
                 state, dispatch_epoch, expires_at, next_attempt_at, transport_attempts,
-                acked_at, lease_token, lease_until, last_error, created_at, updated_at)
-               VALUES (?, ?, ?, ?, 'PUBLISH', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                acked_at, lease_token, lease_until, last_error, created_at, updated_at, signing_key_id)
+               VALUES (?, ?, ?, ?, 'PUBLISH', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
             (
                 command.id,
                 command.delivery_id,
@@ -44,6 +45,7 @@ class CommandRepository(SqliteRepository):
                 last_error,
                 created_at_ms,
                 updated_at_ms,
+                signing_key_id,
             ),
         )
 
@@ -89,6 +91,32 @@ class CommandRepository(SqliteRepository):
         lease_token: str,
         *,
         acked_at_ms: int,
+        next_attempt_at_ms: int | None = None,
+        updated_at_ms: int,
+    ) -> bool:
+        fields = {
+            "state": CommandState.ACKED,
+            "acked_at": acked_at_ms,
+            "updated_at": updated_at_ms,
+        }
+        if next_attempt_at_ms is not None:
+            fields["next_attempt_at"] = next_attempt_at_ms
+        return complete_with_lease(
+            self.connection,
+            "outbox_commands",
+            command_id,
+            lease_token,
+            fields=fields,
+        )
+
+    def complete_retry(
+        self,
+        command_id: str,
+        lease_token: str,
+        *,
+        next_attempt_at_ms: int,
+        transport_attempts: int,
+        last_error: str,
         updated_at_ms: int,
     ) -> bool:
         return complete_with_lease(
@@ -97,8 +125,34 @@ class CommandRepository(SqliteRepository):
             command_id,
             lease_token,
             fields={
-                "state": CommandState.ACKED,
-                "acked_at": acked_at_ms,
+                "state": CommandState.PENDING,
+                "next_attempt_at": next_attempt_at_ms,
+                "transport_attempts": transport_attempts,
+                "last_error": last_error,
+                "updated_at": updated_at_ms,
+            },
+        )
+
+    def complete_fatal(
+        self,
+        command_id: str,
+        lease_token: str,
+        *,
+        next_attempt_at_ms: int,
+        transport_attempts: int,
+        last_error: str,
+        updated_at_ms: int,
+    ) -> bool:
+        return complete_with_lease(
+            self.connection,
+            "outbox_commands",
+            command_id,
+            lease_token,
+            fields={
+                "state": CommandState.PENDING,
+                "next_attempt_at": next_attempt_at_ms,
+                "transport_attempts": transport_attempts,
+                "last_error": last_error,
                 "updated_at": updated_at_ms,
             },
         )

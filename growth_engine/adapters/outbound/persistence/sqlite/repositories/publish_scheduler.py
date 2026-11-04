@@ -18,11 +18,17 @@ from growth_engine.domain.publishing.runtime_mode import RuntimeControls
 class SqlitePublishSchedulerStore:
     """SQLite transaction adapter for enqueue-due and overdue-expiry workflows."""
 
-    def __init__(self, uow_factory: Callable[[], UnitOfWork], environment: str) -> None:
+    def __init__(
+        self,
+        uow_factory: Callable[[], UnitOfWork],
+        environment: str,
+        signing_key_id: Callable[[], str] | None = None,
+    ) -> None:
         if environment not in {"test", "production"}:
             raise ValueError("environment must be test or production")
         self._uow_factory = uow_factory
         self._environment = environment
+        self._signing_key_id = signing_key_id
 
     def read_controls(self) -> RuntimeControls | None:
         with self._uow_factory().read_only() as tx:
@@ -62,13 +68,19 @@ class SqlitePublishSchedulerStore:
     @contextmanager
     def begin_immediate(self) -> Iterator["SqlitePublishSchedulerTransaction"]:
         with self._uow_factory().begin_immediate() as tx:
-            yield SqlitePublishSchedulerTransaction(tx, self._environment)
+            yield SqlitePublishSchedulerTransaction(tx, self._environment, self._signing_key_id)
 
 
 class SqlitePublishSchedulerTransaction:
-    def __init__(self, uow: UnitOfWork, environment: str) -> None:
+    def __init__(
+        self,
+        uow: UnitOfWork,
+        environment: str,
+        signing_key_id: Callable[[], str] | None = None,
+    ) -> None:
         self._uow = uow
         self._environment = environment
+        self._signing_key_id = signing_key_id
 
     def current_controls(self) -> RuntimeControls | None:
         return self._uow.controls.get(self._environment)
@@ -146,6 +158,7 @@ class SqlitePublishSchedulerTransaction:
                 dispatch_epoch=dispatch_epoch,
                 created_at_ms=at_ms,
                 updated_at_ms=at_ms,
+                signing_key_id=self._signing_key_id() if self._signing_key_id else None,
             )
             self._uow.audit.append(
                 event_id=audit_event_id,

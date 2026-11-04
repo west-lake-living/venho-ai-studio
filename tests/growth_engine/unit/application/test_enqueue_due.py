@@ -328,12 +328,15 @@ def test_publish_lane_ticks_enqueue_every_30s_and_expire_every_60s() -> None:
         {
             "enqueue_due": lambda: calls.append("enqueue"),
             "expire_overdue": lambda: calls.append("expire"),
+            "dispatch_outbox": lambda: calls.append("dispatch"),
         }
     )
     by_name = {task.name: task for task in tasks}
 
     assert by_name["enqueue-due"].interval_s == 30
     assert by_name["expire-overdue"].interval_s == 60
+    assert by_name["dispatch-outbox"].interval_s == 5
     by_name["enqueue-due"].fn()
     by_name["expire-overdue"].fn()
-    assert calls == ["enqueue", "expire"]
+    by_name["dispatch-outbox"].fn()
+    assert calls == ["enqueue", "expire", "dispatch"]

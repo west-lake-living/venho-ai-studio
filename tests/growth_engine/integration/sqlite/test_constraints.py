@@ -294,7 +294,7 @@ def database(tmp_path: Path) -> sqlite3.Connection:
     try:
         runner = MigrationRunner(MIGRATIONS)
         runner.apply(connection, application_version="pytest")
-        assert runner.check(connection) == (1, 2, 3, 4, 5, 6)
+        assert runner.check(connection) == (1, 2, 3, 4, 5, 6, 7)
         connection.executescript(_METRIC_TEST_SCHEMA)
         _seed_valid_graph(connection)
         yield connection

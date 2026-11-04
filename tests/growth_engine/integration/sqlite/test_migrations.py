@@ -38,8 +38,8 @@ def test_new_database_migrates_and_repeat_is_noop(tmp_path: Path) -> None:
     migrations = Path("growth_engine/adapters/outbound/persistence/sqlite/migrations")
     runner = MigrationRunner(migrations)
     with connect(database) as connection:
-        assert runner.apply(connection, application_version="synthetic-test") == 6
-        assert runner.check(connection) == (1, 2, 3, 4, 5, 6)
+        assert runner.apply(connection, application_version="synthetic-test") == 7
+        assert runner.check(connection) == (1, 2, 3, 4, 5, 6, 7)
         assert connection.execute(
             "SELECT name FROM sqlite_master WHERE type='table' AND name='runtime_controls'"
         ).fetchone()[0] == "runtime_controls"

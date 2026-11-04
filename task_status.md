@@ -5379,6 +5379,15 @@ ComfyUI, GPU, provider or network call.
 **Rủi ro / việc để lại:** ID được nhận từ prompt, chưa đối chiếu trên Meta/Make; null runtime fields và `enabled: false` giữ hệ thống fail-closed.
 **Giả định:** Entry `ig_venho` chỉ phục vụ định danh/analytics Meta; phát hành v2 vẫn chỉ target hai Facebook Page theo GC2-D01.
 
+### GC2-P5-T02 — Wiring SQLite dispatch outbox (2026-11-04)
+**Status:** DONE — dispatch chạy qua SQLite/UoW và publish lane
+**Files:** growth_engine/adapters/outbound/persistence/sqlite/migrations/0007_command_signing_key.sql, growth_engine/adapters/outbound/persistence/sqlite/repositories/{commands,dispatch,publish_scheduler}.py, growth_engine/adapters/outbound/security/capability_tokens.py, growth_engine/adapters/inbound/workers/publish_lane.py, growth_engine/bootstrap.py, tests/growth_engine/integration/sqlite/test_publish_scheduler_wiring.py, tests/growth_engine/unit/application/test_enqueue_due.py, tests/growth_engine/contract/test_api_errors.py, task_status.md, task_memory.md
+**Verify:** VERIFY_DEV → 352 passed, 4 warnings; VERIFY_ARCH → 2 passed; integration SQLite covers token reissue across key rotation, retry, ACK redelivery, expired-lease fencing, and scheduler persistence; `git diff --check` → OK.
+**DoD:** [x] chỉ claim delivery đang QUEUED, Facebook, enabled/unpaused, approval và revision/page/ảnh khớp; [x] lưu `kid` nhưng không lưu token/route; [x] route HTTPS phân giải từ cấu hình môi trường; [x] ACK/retry/fatal completion có lease fencing; [x] worker dispatch mỗi 5 giây cùng enqueue/expire trong lane đơn.
+**INV/AC liên quan:** INV-01, INV-03, INV-09; C02–C06; AC-06; §7.5, §8.1.1; P5-T02.
+**Rủi ro / việc để lại:** Make/Meta chưa được gọi; route URL, token và credentials không được ghi vào log. Page/channel/TEST values chưa được xác minh qua Make.
+**Giả định:** Existing `GE_MAKE_WEBHOOK_URL_<KEY>` refs are the only accepted route refs; production values must use HTTPS. Policy values match `config/projects/venho_hotel/growth_engine/publishing_policy.yaml`.
+
 ### GC2-P5-T01 — Wiring SQLite scheduler và publish lane (2026-11-04)
 **Status:** DONE — enqueue/expire transaction chạy qua SQLite và worker lane đã được bootstrap
 **Files:** growth_engine/adapters/outbound/persistence/sqlite/repositories/publish_scheduler.py, growth_engine/adapters/outbound/persistence/sqlite/repositories/commands.py, growth_engine/application/ports/repositories.py, growth_engine/bootstrap.py, growth_engine/adapters/inbound/cli/main.py, tests/growth_engine/integration/sqlite/test_publish_scheduler_wiring.py, task_status.md, task_memory.md

@@ -83,14 +83,20 @@ class CapabilityTokenManager:
         self._keys = normalized
         self._active_kid = next(iter(normalized))
 
+    @property
+    def active_key_id(self) -> str:
+        return self._active_kid
+
     @classmethod
     def from_environment(cls, variable: str = "GE_CAPABILITY_KEYS") -> CapabilityTokenManager:
         value = os.environ.get(variable, "")
         return cls(parse_key_ring(value))
 
-    def issue(self, claims: TokenClaims) -> str:
+    def issue(self, claims: TokenClaims, *, key_id: str | None = None) -> str:
         values = _claims_for_issue(claims)
-        kid = self._active_kid
+        kid = self._active_kid if key_id is None else key_id
+        if not isinstance(kid, str) or kid not in self._keys:
+            raise ValueError("Capability signing key id is unavailable.")
         payload = {
             "iss": "growth-engine",
             "aud": values["audience"],

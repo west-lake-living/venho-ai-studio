@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import logging
+import random
 import sqlite3
 import sys
 import tempfile
@@ -27,11 +28,32 @@ class _LazyCapabilityIssuer:
         self._key_config = key_config
         self._manager: Any | None = None
 
-    def issue(self, claims: Any) -> str:
+    @property
+    def active_key_id(self) -> str:
+        self._load_manager()
+        return self._manager.active_key_id
+
+    def issue(self, claims: Any, *, key_id: str | None = None) -> str:
+        self._load_manager()
+        return self._manager.issue(claims, key_id=key_id)
+
+    def _load_manager(self) -> None:
         if self._manager is None:
             module = import_module("growth_engine.adapters.outbound.security.capability_tokens")
             self._manager = module.CapabilityTokenManager(module.parse_key_ring(self._key_config))
-        return self._manager.issue(claims)
+
+
+class _LazyMediaUrlIssuer:
+    def __init__(self, public_base_url: str, key_config: str) -> None:
+        self._public_base_url = public_base_url
+        self._key_config = key_config
+        self._issuer: Any | None = None
+
+    def media_url(self, sha256: str, command_id: str, expires_at_ms: int) -> str:
+        if self._issuer is None:
+            module = import_module("growth_engine.adapters.outbound.media.signed_urls")
+            self._issuer = module.SignedMediaUrlIssuer(self._public_base_url, self._key_config)
+        return self._issuer.media_url(sha256, command_id, expires_at_ms)
 
 
 MIGRATIONS = Path(__file__).parent / "adapters" / "outbound" / "persistence" / "sqlite" / "migrations"
@@ -288,6 +310,9 @@ class Container:
     expire_candidates: Any
     enqueue_due: Any
     expire_overdue: Any
+    dispatch_store: Any
+    dispatch_outbox: Any
+    publishing_policy: Any
     publish_lane: Any
 
 
@@ -308,6 +333,13 @@ def build_container(settings: Any) -> Container:
     scheduler_store_adapter = import_module(
         "growth_engine.adapters.outbound.persistence.sqlite.repositories.publish_scheduler"
     )
+    dispatch_store_adapter = import_module(
+        "growth_engine.adapters.outbound.persistence.sqlite.repositories.dispatch"
+    )
+    dispatch_adapter = import_module("growth_engine.application.publishing.dispatch_outbox")
+    policy_adapter = import_module("growth_engine.domain.publishing.window")
+    transport_adapter = import_module("growth_engine.adapters.outbound.make.http_transport")
+    envelope_adapter = import_module("growth_engine.adapters.outbound.make.envelope")
     worker_loop_adapter = import_module("growth_engine.adapters.inbound.workers.loop")
     publish_lane_adapter = import_module("growth_engine.adapters.inbound.workers.publish_lane")
     legacy_adapter = import_module("growth_engine.adapters.outbound.legacy.importer")
@@ -333,15 +365,41 @@ def build_container(settings: Any) -> Container:
     clock = _SystemClock()
     ids = _UuidIds()
     channel_environment = "production" if settings.env.lower() == "production" else "test"
+    token_issuer = _LazyCapabilityIssuer(settings.capability_keys)
     scheduler_store = scheduler_store_adapter.SqlitePublishSchedulerStore(
-        uow_factory, channel_environment
+        uow_factory, channel_environment, lambda: token_issuer.active_key_id
     )
-    enqueue_due = enqueue_adapter.EnqueueDue(scheduler_store, _LazyCapabilityIssuer(settings.capability_keys), ids)
+    enqueue_due = enqueue_adapter.EnqueueDue(scheduler_store, token_issuer, ids)
     expire_overdue = overdue_adapter.ExpireOverdue(scheduler_store, ids)
+    publishing_policy = policy_adapter.PublishingPolicy(
+        window_minutes=30,
+        grant_ttl_seconds=60,
+        receipt_grace_minutes=15,
+        redeliver_after_ack_minutes=5,
+        max_transport_attempts=8,
+        verify_delay_minutes=5,
+        unknown_escalation_minutes=60,
+    )
+    dispatch_store = dispatch_store_adapter.SqliteDispatchStore(
+        uow_factory,
+        channel_environment,
+        settings.make_webhook_urls,
+        token_issuer,
+        redeliver_after_ack_minutes=publishing_policy.redeliver_after_ack_minutes,
+    )
+    dispatch_outbox = dispatch_adapter.DispatchOutbox(
+        dispatch_store,
+        transport_adapter.HttpTransport(clock),
+        _LazyMediaUrlIssuer(settings.public_base_url, settings.capability_keys),
+        envelope_adapter.MakeEnvelopeBuilder(),
+        policy=publishing_policy,
+        rng=random.uniform,
+    )
     worker_tasks = publish_lane_adapter.build_publish_tasks(
         {
             "enqueue_due": lambda: enqueue_due.execute(clock.now_ms()),
             "expire_overdue": lambda: expire_overdue.execute(clock.now_ms()),
+            "dispatch_outbox": lambda: dispatch_outbox.execute(clock.now_ms()),
         }
     )
     worker_loop = worker_loop_adapter.WorkerLoop(
@@ -373,6 +431,9 @@ def build_container(settings: Any) -> Container:
         expire_candidates=expire_adapter.ExpireCandidates(candidate_store, clock),
         enqueue_due=enqueue_due,
         expire_overdue=expire_overdue,
+        dispatch_store=dispatch_store,
+        dispatch_outbox=dispatch_outbox,
+        publishing_policy=publishing_policy,
         publish_lane=publish_lane,
     )
 

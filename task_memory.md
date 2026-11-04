@@ -6152,3 +6152,10 @@ not in local venv; installed in CI).
 - `build_container` composes both use cases with a lazy capability issuer and one locked publish lane; CLI exposes `venho-engine worker --lane publish`. Missing keys fail only when an eligible command needs issuance; no command is written on that failure.
 - File-SQLite integration proved one enqueue across repeated ticks, command closure at expiry, row-version increments and two audit events. VERIFY_DEV 350 passed; ARCH 2 passed. No external network or Make call.
 - Assumption: `development` uses `test` channel/control scope; commands with no current revision use the slot's deadline for D21.
+
+## 2026-11-04 — GC2-P5-T02 SQLite dispatch wiring
+- Persisted only the signing `kid`; dispatch re-creates the capability token from immutable command claims so retries and key rotation preserve the exact token without storing it.
+- Added a SQLite fenced-lease store that re-reads mode/pause, delivery, current approved revision, channel, route reference, and QC-passed media before claim. ACK schedules the five-minute redelivery; retry and fatal outcomes clear the lease through its fencing token.
+- Composed HTTP transport, envelope, lazy signed-media issuer, and dispatch into the single publish lane (5-second tick). Fake HTTPS route values in file-SQLite integration prove key rotation, backoff, redelivery, and stale-lease rejection without network calls.
+- Verification: Growth Engine 352 passed (4 warnings), architecture 2 passed, diff check passed.
+- Assumption: `GE_MAKE_WEBHOOK_URL_<KEY>` is the only accepted route reference syntax; route destinations must be HTTPS. Production Make credentials/scenario remain an external gate.

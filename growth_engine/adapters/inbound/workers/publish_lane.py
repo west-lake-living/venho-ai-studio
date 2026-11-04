@@ -14,15 +14,18 @@ LaneHandler = Callable[[], object]
 
 
 def build_publish_tasks(handlers: Mapping[str, LaneHandler]) -> tuple[PeriodicTask, ...]:
-    """Build the scheduler and expiry ticks owned by the single publish lane."""
+    """Build scheduler, expiry, and optional outbox dispatch ticks."""
     required = {"enqueue_due", "expire_overdue"}
     missing = sorted(required - handlers.keys())
     if missing:
         raise ValueError(f"missing publish-lane handlers: {', '.join(missing)}")
-    return (
+    tasks = [
         PeriodicTask("enqueue-due", handlers["enqueue_due"], interval_s=30),
         PeriodicTask("expire-overdue", handlers["expire_overdue"], interval_s=60),
-    )
+    ]
+    if "dispatch_outbox" in handlers:
+        tasks.append(PeriodicTask("dispatch-outbox", handlers["dispatch_outbox"], interval_s=5))
+    return tuple(tasks)
 
 
 class PublishLane:

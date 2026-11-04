@@ -5,6 +5,10 @@ from datetime import date
 from pathlib import Path
 
 from growth_engine.adapters.inbound.workers.publish_lane import PublishLane
+from growth_engine.adapters.outbound.security.capability_tokens import (
+    CapabilityTokenManager,
+    parse_key_ring,
+)
 from growth_engine.bootstrap import build_container
 from growth_engine.domain.channels.channel import Channel, ChannelConfig, ChannelPlatform, config_hash
 from growth_engine.domain.content.package import ContentPackage
@@ -61,7 +65,127 @@ def test_publish_scheduler_enqueues_and_expires_atomically_in_sqlite(tmp_path: P
     assert audit_count == 2
 
 
-def _seed_approved_delivery(uow_factory) -> None:
+def test_dispatch_store_reissues_same_token_across_rotation_and_ack_redelivery(tmp_path: Path) -> None:
+    old_key = base64.urlsafe_b64encode(b"o" * 32).decode().rstrip("=")
+    new_key = base64.urlsafe_b64encode(b"n" * 32).decode().rstrip("=")
+    settings = Settings(
+        env="test",
+        db_path=str(tmp_path / "dispatch.db"),
+        media_root=str(tmp_path / "media"),
+        public_base_url="https://growth.example.test",
+        capability_keys=f"old:{old_key}",
+        make_webhook_urls={"PAGE_A": "https://hooks.example.test/route"},
+    )
+    container = build_container(settings)
+    container.migration_service.run(Path(settings.db_path), check=False)
+    _seed_approved_delivery(container.uow_factory, deadline_at_ms=1_000_000)
+    container.enqueue_due.execute(2_000)
+
+    with container.uow_factory().read_only() as tx:
+        row = tx.connection.execute(
+            "SELECT id, revision_id, payload_hash, dispatch_epoch, expires_at, signing_key_id "
+            "FROM outbox_commands WHERE delivery_id='delivery-sqlite'"
+        ).fetchone()
+    assert row["signing_key_id"] == "old"
+    rotated = build_container(
+        Settings(
+            env="test",
+            db_path=settings.db_path,
+            media_root=settings.media_root,
+            public_base_url=settings.public_base_url,
+            capability_keys=f"new:{new_key},old:{old_key}",
+            make_webhook_urls={"PAGE_A": "https://hooks.example.test/route"},
+        )
+    )
+    token_manager = CapabilityTokenManager(parse_key_ring(f"new:{new_key},old:{old_key}"))
+    claims = _TokenClaims(
+        command_id=row["id"],
+        revision_id=row["revision_id"],
+        channel_id="channel-test-fb",
+        payload_hash=row["payload_hash"],
+        dispatch_epoch=row["dispatch_epoch"],
+        audience="make-route:channel-test-fb",
+        expires_at_ms=row["expires_at"],
+    )
+    stable_token = token_manager.issue(claims, key_id="old")
+    policy = rotated.publishing_policy
+    first = rotated.dispatch_store.claim_due(
+        2_000, 10, owner="synthetic-worker-1", lease_ms=30_000, policy=policy
+    )
+    assert len(first) == 1
+    assert first[0].route_ref == "https://hooks.example.test/route"
+    assert first[0].command.envelope_token == stable_token
+    retry_command = first[0].command.transport_failed(at_ms=2_000, rng=lambda low, high: 0.5)
+    assert rotated.dispatch_store.complete_retry(first[0], retry_command, at_ms=2_000)
+    assert rotated.dispatch_store.claim_due(
+        2_000, 10, owner="synthetic-worker-1", lease_ms=30_000, policy=policy
+    ) == ()
+    second = rotated.dispatch_store.claim_due(
+        retry_command.next_attempt_at_ms,
+        10,
+        owner="synthetic-worker-2",
+        lease_ms=30_000,
+        policy=policy,
+    )
+    assert len(second) == 1
+    assert second[0].command.envelope_token == stable_token
+    assert rotated.dispatch_store.complete_ack(second[0], at_ms=retry_command.next_attempt_at_ms)
+    ack_at = retry_command.next_attempt_at_ms
+    policy = rotated.publishing_policy
+    assert rotated.dispatch_store.claim_due(
+        ack_at + policy.redeliver_after_ack_minutes * 60_000 - 1,
+        10,
+        owner="synthetic-worker-3",
+        lease_ms=30_000,
+        policy=policy,
+    ) == ()
+    third = rotated.dispatch_store.claim_due(
+        ack_at + policy.redeliver_after_ack_minutes * 60_000,
+        10,
+        owner="synthetic-worker-3",
+        lease_ms=30_000,
+        policy=policy,
+    )
+    assert len(third) == 1
+    assert third[0].command.envelope_token == stable_token
+
+
+def test_dispatch_store_reclaims_expired_lease_and_fences_stale_ack(tmp_path: Path) -> None:
+    encoded = base64.urlsafe_b64encode(b"l" * 32).decode().rstrip("=")
+    settings = Settings(
+        env="test",
+        db_path=str(tmp_path / "lease.db"),
+        media_root=str(tmp_path / "media"),
+        public_base_url="https://growth.example.test",
+        capability_keys=f"lease:{encoded}",
+        make_webhook_urls={"PAGE_A": "https://hooks.example.test/route"},
+    )
+    container = build_container(settings)
+    container.migration_service.run(Path(settings.db_path), check=False)
+    _seed_approved_delivery(container.uow_factory, deadline_at_ms=1_000_000)
+    container.enqueue_due.execute(2_000)
+
+    first = container.dispatch_store.claim_due(
+        2_000, 1, owner="lease-worker-a", lease_ms=100, policy=container.publishing_policy
+    )[0]
+    second = container.dispatch_store.claim_due(
+        2_100, 1, owner="lease-worker-b", lease_ms=100, policy=container.publishing_policy
+    )[0]
+    assert first.lease_token != second.lease_token
+    assert not container.dispatch_store.complete_ack(first, at_ms=2_101)
+    assert container.dispatch_store.complete_ack(second, at_ms=2_101)
+    with container.uow_factory().read_only() as tx:
+        row = tx.connection.execute(
+            "SELECT state, lease_token, acked_at, next_attempt_at FROM outbox_commands "
+            "WHERE delivery_id='delivery-sqlite'"
+        ).fetchone()
+    assert row["state"] == "ACKED"
+    assert row["lease_token"] is None
+    assert row["acked_at"] == 2_101
+    assert row["next_attempt_at"] == 2_101 + 5 * 60_000
+
+
+def _seed_approved_delivery(uow_factory, *, deadline_at_ms: int = 10_000) -> None:
     channel = Channel(
         id="channel-test-fb",
         project_id="venho_hotel",
@@ -76,13 +200,13 @@ def _seed_approved_delivery(uow_factory) -> None:
         id="config-test-fb",
         channel_id=channel.id,
         version=1,
-        make_route_ref="synthetic-route-ref",
+        make_route_ref="GE_MAKE_WEBHOOK_URL_PAGE_A",
         graph_api_version="vNN.N",
         capability={"_synthetic": True, "note": "cần thay bằng fixture thật từ P0-T03/P0-T04"},
     )
     slot = Slot(
         "slot-sqlite", "venho_hotel", date(2026, 11, 4), "09:00", "Asia/Ho_Chi_Minh",
-        "weekly", "cadence-v2", 1_000, 10_000,
+        "weekly", "cadence-v2", 1_000, deadline_at_ms,
     )
     target = SlotTarget("target-sqlite", slot.id, channel.id)
     package = ContentPackage(
@@ -141,7 +265,7 @@ def _seed_approved_delivery(uow_factory) -> None:
             "caption": "Synthetic approved caption",
             "media": [{"sha256": variant.sha256, "mime": variant.mime, "width": 1080, "height": 1350}],
             "scheduled_at_ms": 1_000,
-            "deadline_at_ms": 10_000,
+            "deadline_at_ms": deadline_at_ms,
             "qc_report_id": qc.id,
             "ruleset_hash": qc.ruleset_hash,
             "fact_snapshot_hash": package.fact_snapshot_hash,
@@ -185,7 +309,7 @@ def _seed_approved_delivery(uow_factory) -> None:
             variant_id=variant.id,
             qc_report_id=qc.id,
             scheduled_at_ms=1_000,
-            deadline_at_ms=10_000,
+            deadline_at_ms=deadline_at_ms,
             caption="Synthetic approved caption",
             created_by="synthetic-editor",
             created_at_ms=1,
@@ -197,3 +321,9 @@ def _seed_approved_delivery(uow_factory) -> None:
             policy_version="synthetic-v1",
             updated_at_ms=1,
         )
+
+
+class _TokenClaims:
+    def __init__(self, **values) -> None:
+        for name, value in values.items():
+            setattr(self, name, value)
