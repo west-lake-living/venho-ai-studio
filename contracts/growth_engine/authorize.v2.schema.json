@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Growth Engine Publish Authorization v2",
+  "oneOf": [
+    {"$ref": "#/$defs/request"},
+    {"$ref": "#/$defs/success"},
+    {"$ref": "#/$defs/denied"}
+  ],
+  "$defs": {
+    "request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "command_token", "payload_hash", "media_report"],
+      "properties": {
+        "schema_version": {"const": "growth.authorize.v2"},
+        "command_token": {"type": "string", "minLength": 1, "maxLength": 8192},
+        "payload_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "media_report": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["http_status", "content_type"],
+          "properties": {
+            "http_status": {"type": "integer", "minimum": 100, "maximum": 599},
+            "content_type": {"type": "string", "minLength": 1, "maxLength": 128}
+          }
+        }
+      }
+    },
+    "success": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "execute", "reason", "execution_id", "grant_id", "grant_expires_at_ms", "remote_page_id", "caption"],
+      "properties": {
+        "schema_version": {"const": "growth.authorize.v2"},
+        "execute": {"const": true},
+        "reason": {"type": "null"},
+        "execution_id": {"type": "string", "minLength": 1},
+        "grant_id": {"type": "string", "minLength": 1},
+        "grant_expires_at_ms": {"type": "integer", "minimum": 0},
+        "remote_page_id": {"type": "string", "minLength": 1},
+        "caption": {"type": "string"}
+      }
+    },
+    "denied": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "execute", "reason", "execution_id", "grant_id", "grant_expires_at_ms", "remote_page_id", "caption"],
+      "properties": {
+        "schema_version": {"const": "growth.authorize.v2"},
+        "execute": {"const": false},
+        "reason": {"enum": ["ALREADY_AUTHORIZED", "PAUSED", "MEDIA_FETCH_FAILED", "EPOCH_MISMATCH", "WINDOW_CLOSED", "PREFLIGHT_BLOCKED"]},
+        "execution_id": {"type": "null"},
+        "grant_id": {"type": "null"},
+        "grant_expires_at_ms": {"type": "null"},
+        "remote_page_id": {"type": "null"},
+        "caption": {"type": "null"}
+      }
+    }
+  }
+}
