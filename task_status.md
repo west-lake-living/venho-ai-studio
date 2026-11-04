@@ -5122,3 +5122,11 @@ ComfyUI, GPU, provider or network call.
 **DoD:** [x] D01–D25 đúng bảng; test mọi cặp state/event; guard thuần D05/D07/D19/D23 và các guard khác fail-closed; Delivery immutable apply tăng row_version và phát DomainEvent; active chỉ false khi SUPERSEDED; allowed_actions khớp §5.7.
 **INV/AC liên quan:** INV-02, INV-03, INV-12; §5.2, §5.7
 **Rủi ro / việc để lại:** `ApprovalDecision` và guard nhận dữ liệu đã đọc; persistence, CAS transaction và dữ liệu approval thật thuộc task sau.
+
+### GC2-P1-T05 — Command, Execution, Receipt, Window, Mode, Verification (2026-11-04)
+**Status:** DONE
+**Files:** growth_engine/domain/publishing/{command,execution,receipt,window,backoff,runtime_mode}.py, growth_engine/domain/verification/verification.py, config/projects/venho_hotel/growth_engine/publishing_policy.yaml, tests/growth_engine/unit/domain/test_publishing_states.py, task_status.md, task_memory.md
+**Verify:** focused → 37 passed; VERIFY_DEV → 134 passed; VERIFY_ARCH → 2 passed; `git diff --check` → OK.
+**DoD:** [x] C01–C09, E01–E07; fencing lease, stable envelope on ACK redelivery, max 8 transport attempts, grant clamped to deadline, full-jitter cap 300s, placeholder IDs rejected; policy YAML matches §15.
+**INV/AC liên quan:** INV-02, INV-03, INV-06, INV-07; §5.3–5.4, §7.7–7.8
+**Rủi ro / việc để lại:** Không có error-class thật từ Make/P0-T03; chỉ class được xác minh mới thành NO_SIDE_EFFECT. Receipt transport, transaction và timer thuộc task sau.

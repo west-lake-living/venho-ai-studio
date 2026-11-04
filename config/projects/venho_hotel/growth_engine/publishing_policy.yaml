@@ -1,0 +1,7 @@
+window_minutes: 30
+grant_ttl_seconds: 60
+receipt_grace_minutes: 15
+redeliver_after_ack_minutes: 5
+max_transport_attempts: 8
+verify_delay_minutes: 5
+unknown_escalation_minutes: 60

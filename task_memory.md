@@ -40,6 +40,13 @@
 - `ApprovalDecision` là frozen, gắn decision với revision/hash và bắt buộc `revokes_id` khi REVOKE. `allowed_actions` theo §5.7, gắn `ERR_GC2_STATE_CONFLICT` khi hành động có guard chưa đạt.
 - Context test đều synthetic. Focused 29 pass; VERIFY_DEV 97 pass; VERIFY_ARCH 2 pass; branch coverage transitions.py 100% (51 statements, 4 branches).
 
+## 2026-11-04 — GC2-P1-T05 publishing value objects
+
+- OutboxCommand là immutable: C01–C09, ACK yêu cầu lease token hiện hành; redelivery sau ACK giữ nguyên command ID/envelope token và chỉ mở lại trước `deadline−2′`. Tám transport failure làm command không claim thêm.
+- Execution mã hoá E01–E07; grant TTL bị clamp vào deadline, receipt due cộng grace. Receipt chỉ cho `POST_CREATED` khi Page post ID không rỗng/null/template/test_; error class không xác minh đưa kết quả về UNKNOWN.
+- `full_jitter` dùng attempt zero-based, cap `min(300, 5·2^attempt)` giây; `Retry-After` là cận dưới. `classify_verification` trả None cho UNAVAILABLE/ERROR để không đổi state.
+- Policy YAML lấy các giá trị nguyên văn từ card; context test gắn `_synthetic: true`, cần thay bằng fixture thật từ P0-T03/P0-T04. Focused 37 pass; VERIFY_DEV 134 pass; VERIFY_ARCH 2 pass.
+
 ## 2026-11-04 — GC2-P0-T05 Cloudflare edge policy
 
 - Ghi ADR-05/06 theo GC2-D08: `/internal/*` cần Access Service Token + bearer theo principal/channel; `/media/publish/*` bypass Access nhưng vẫn bắt buộc capability ký và hash.
