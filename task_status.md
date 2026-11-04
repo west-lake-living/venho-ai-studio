@@ -4995,3 +4995,10 @@ ComfyUI, GPU, provider or network call.
 - `measure-identity` now returns BLUR and FRAMING only (`identity-measurement-set-v1`, `humanGates: ["OCCLUSION"]`); occlusion is a Human HARD_GATE and a policy that names an automated occlusion algorithm is refused.
 - Removed `OCCLUSION_PROXY_V1` and its fixtures/xfail tests (proxy could not fail a covered eye/nose; face-parsing benchmark also rejected).
 - Calibration on A2/B01 unchanged (blur 1284.79 / 1319.12, ladder crosses at sigma 4, framing negatives FAIL). identity_restoration: 346 passed. Uncommitted.
+
+### GC2-T0-02 — Đóng băng v3.2 (2026-11-05)
+**Status:** DONE (Harry xác nhận GC2-D07 ngày 04/11/2026)
+**Files:** task_memory.md
+**Verify:** không code
+**INV/AC liên quan:** INV-10
+**Rủi ro / việc để lại:** clone cũ `venho-ai-studio` hỏng pack; GC2 làm ở `venho-ai-studio-gc2`.

@@ -1,5 +1,12 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-11-05 — GC2 (Growth Content v2) khởi động; v3.2 đóng băng (GC2-T0-02)
+
+- **Kế hoạch:** `docs/growth_engine/GC2_MASTER_PLAN.md` (v1.1-CA). Đọc §0 và §18 trước mọi task GC2. Một task card mỗi lần, chỉ sửa file trong mục Files.
+- **v3.2 đóng băng tới cutover (GC2-D07 — Harry xác nhận 04/11/2026):** không `rollout-advance`; giữ `--allow-shadow` khi stage còn `shadow`; không thêm `schedule` vào workflow publish; chỉ hotfix an toàn. Mọi quy tắc §18 vẫn hiệu lực.
+- **Clone cũ `venho-ai-studio` bị hỏng pack** (`git fetch` lỗi commit-graph `2a5bac72…`, fsck nhiều "failed to load pack entry"). GC2 làm ở clone sạch `03_AI_STUDIO/venho-ai-studio-gc2`. 4 file sửa dở (gemini_vision + 3 test) còn trong clone cũ, đã backup diff; chưa sửa repo cũ.
+- **Gate chờ Harry:** D00–D08 (§2); P0-T01/T03/T04/T05 cần Harry thao tác server/Make/Meta/Cloudflare.
+
 ## 2026-10-22 — đối soát slot, scorecard, guest_voice, filter chữ ký Make, Telegram Dashboard
 
 - **Filter chữ ký Make chặn nhầm thì không ai biết:** Make vẫn trả "Accepted", server ghi `GATEWAY_ACCEPTED` và không báo lỗi. Bằng chứng duy nhất là bài không thành `PUBLISHED`. Mọi thay đổi filter phải kiểm lại bằng `ops/asus-server/make-signature-test.sh` (cặp good/bad, id chứa `test`).
