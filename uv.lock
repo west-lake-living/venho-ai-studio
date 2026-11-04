@@ -5714,6 +5714,7 @@ dependencies = [
 api = [
     { name = "fastapi", version = "0.128.8", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
     { name = "fastapi", version = "0.162.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
+    { name = "python-multipart", marker = "python_full_version >= '3.10'" },
     { name = "uvicorn", version = "0.39.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
     { name = "uvicorn", version = "0.53.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
 ]
@@ -5765,6 +5766,7 @@ requires-dist = [
     { name = "pillow-heif", specifier = ">=0.16" },
     { name = "pydantic", specifier = ">=2.0" },
     { name = "python-dotenv", specifier = ">=1.0" },
+    { name = "python-multipart", marker = "python_full_version >= '3.10' and extra == 'api'", specifier = ">=0.0.21" },
     { name = "pyyaml", specifier = ">=6.0" },
     { name = "streamlit", marker = "extra == 'ui'", specifier = ">=1.28" },
     { name = "typer", specifier = ">=0.12" },

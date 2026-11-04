@@ -5478,3 +5478,12 @@ ComfyUI, GPU, provider or network call.
 **INV/AC liên quan:** AC-10, AC-11, AC-16; §11, P6-T05.
 **Rủi ro / việc để lại:** URL is empty by default, so no ping occurs until configured. Backup freshness is optional and not wired in this version.
 **Giả định:** a scheduler/outbox/DB task is healthy when it completes without error (database callback must return `(True, schema_version)`); heartbeat endpoint accepts HTTPS GET; no separate backup-age gate is used unless supplied.
+
+### GC2-P7-T01 — Routers Dashboard & read models (2026-11-04)
+**Status:** PARTIAL — route contract/auth/concurrency boundary is implemented; `DashboardApi` facade, SQLite readers and use-case composition remain unconnected in bootstrap
+**Files:** `growth_engine/adapters/inbound/api/routers/{_dashboard,channels,slots,deliveries,approvals,assets,jobs,candidates,incidents,controls}.py`, `growth_engine/adapters/inbound/api/app.py`, `growth_engine/application/queries/{slot_views,incident_views}.py`, `tests/growth_engine/contract/test_dashboard_api.py`, `pyproject.toml`, `uv.lock`, `task_status.md`, `task_memory.md`
+**Verify:** dashboard contract → 5 passed; VERIFY_DEV → 403 passed, 4 warnings; VERIFY_ARCH → 2 passed; `git diff --check` → OK.
+**DoD:** [x] Dashboard endpoint surface from §9.1; [x] dashboard read/write/operator scopes; [x] If-Match forwarded for versioned mutations; [x] Idempotency-Key required for mutations; [x] delivery/candidate/incident page limits capped at 50; [x] upload passes a file stream and 25 MiB bound to the service contract; [x] credential/Make URL fields are stripped; [x] absent backend and DB failures fail as 503 (not empty lists); [ ] query readers, mutation use cases, SQLite composition and MediaStore.put_original wiring are not implemented because they are not exposed by the current container.
+**INV/AC liên quan:** AC-13, AC-14; §9.1, §9.3, §9.4, P7-T01.
+**Rủi ro / việc để lại:** Until `dashboard_api` is composed, dashboard calls return 503 by design. `python-multipart` was added to the API extra because FastAPI needs it for multipart uploads; marker follows the plan's Python 3.11 runtime (package requires Python ≥3.10).
+**Giả định:** dashboard routes use an injected `dashboard_api.execute(operation, payload, actor, correlation_id, if_match, idempotency_key)` façade so HTTP stays outside application use cases; the next task may generate a snapshot from this route surface before composition is complete.

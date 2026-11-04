@@ -39,7 +39,7 @@ geometry = ["insightface>=0.7.3", "opencv-python-headless>=4.8", "onnxruntime>=1
 # InsightFace or download a detector model; the pinned YuNet artifact and MIT
 # license are retained under models/geometry/yunet/.
 geometry-yunet = ["opencv-python-headless>=4.10,<5.0"]
-api = ["fastapi>=0.115", "uvicorn>=0.30"]
+api = ["fastapi>=0.115", "uvicorn>=0.30", "python-multipart>=0.0.21; python_version >= '3.10'"]
 
 [project.scripts]
 venho = "knowledge_studio.vision.cli:app"

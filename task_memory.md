@@ -6208,3 +6208,8 @@ not in local venv; installed in CI).
 - Added redacted `GE_HEARTBEAT_URL`, injectable heartbeat service, HTTPS sender, and worker health gating requiring scheduler enqueue/expiry, outbox dispatch and database readiness; optional stale-backup handler can suppress ping.
 - Focused 5 passed; VERIFY_DEV 398 passed (4 warnings), VERIFY_ARCH 2 passed. All heartbeat tests used fakes.
 - Assumption/gate: endpoint uses HTTPS GET; no ping occurs until Harry configures the URL. Backup age gating remains optional.
+
+## 2026-11-04 — GC2-P7-T01 Dashboard API boundary
+- Added dashboard route surface, auth scopes, ETag/If-Match forwarding, required Idempotency-Key, 50-row limits, upload stream contract, sensitive-field/Make-URL filtering, and fail-closed 503 behavior. Added slot/incident query contracts and dashboard contract tests.
+- VERIFY_DEV 403 passed, VERIFY_ARCH 2 passed, focused dashboard tests 5 passed. Added `python-multipart` to the API optional extra for FastAPI multipart parsing.
+- Status remains PARTIAL: the current bootstrap has no dashboard facade, query readers, or MediaStore upload use case composition. Assumption: the facade contract is `dashboard_api.execute(...)`; no dashboard returns success until composed.
