@@ -5026,3 +5026,11 @@ ComfyUI, GPU, provider or network call.
 **DoD:** [x] GET-only, version bắt buộc, transport tiêm được, phân trang có giới hạn, token không lộ trong repr/lỗi. [ ] Chia sẻ client với v3.2 và probe thật.
 **INV/AC liên quan:** INV-11; §8.3
 **Rủi ro / việc để lại:** Không sửa `shared/`, `.env.example` hoặc legacy theo allowlist; generic HTTP 4xx chưa phân loại cho tới P0-T04; cạnh, field, metric và version thật chưa được cấu hình.
+
+### GC2-T0-01 — Cổng kiểm ảnh đầu ra legacy (2026-11-04)
+**Status:** CHANGE_REQUEST — gate v2 có; chưa nối vào dispatcher v3.2
+**Files:** growth_engine/adapters/outbound/legacy/{__init__,output_image_gate}.py, tests/growth_engine/unit/adapters/outbound/legacy/test_output_image_gate.py, task_status.md, task_memory.md
+**Verify:** `uv run --with pytest pytest -q tests/growth_engine` → 36 passed, 0 network. `uv run --with pytest pytest -q tests` → 5 lỗi thu thập legacy do thiếu `cv2`.
+**DoD:** [x] Chặn ảnh xoay, HTML, quá 5 MiB, JPEG hỏng, tỉ lệ ngoài cửa sổ; cho JPEG hợp lệ. [ ] Gọi gate trước POST Make; gửi cảnh báo theo đường hiện tại.
+**INV/AC liên quan:** INV-08; §18
+**Rủi ro / việc để lại:** Tích hợp cần sửa `publishing_gateway/adapters/make_gateway.py` và suite legacy; hai file ngoài allowlist. Cửa sổ ảnh lấy từ `publishing_gateway.image_constraints` qua adapter legacy.

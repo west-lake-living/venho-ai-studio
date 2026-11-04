@@ -1,5 +1,11 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-11-04 — GC2-T0-01 output image gate
+
+- Không sửa `publishing_gateway` hay `growth_orchestrator` trong lượt này. Đặt checker dưới outbound/legacy adapter và dùng aspect-ratio constants hiện có qua đúng ranh giới legacy.
+- Test ảnh tạo tại chỗ, synthetic; fetch luôn giả lập. Gate chặn đúng yêu cầu nhưng chưa có hiệu lực trên luồng v3.2 cho tới khi có Change Request cho điểm gọi trước POST.
+- VERIFY_LEGACY tiếp tục dừng ở 5 lỗi collection vì thiếu `cv2` trong môi trường; test mới không phát sinh lỗi khác.
+
 ## 2026-11-04 — GC2-T0-04 Meta Graph client chỉ đọc
 
 - Repo làm việc `venho-ai-studio-gc2` còn chứa bản `GC2_MASTER_PLAN.md` v1.1; prompt và tài liệu Harry gửi là v1.2. Dùng thẻ v1.2 cho task mới, không tự sửa bản kế hoạch trong repo vì ngoài phạm vi task.
