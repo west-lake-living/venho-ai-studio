@@ -6262,3 +6262,8 @@ not in local venv; installed in CI).
 - Wrote the 3–7 day checklist to compare slot, schedule, topic/pillar, approved image SHA and both verified Page IDs, including daily redacted digest and stop conditions.
 - Documentation only: did not start a worker, DRY_RUN, Telegram delivery, or production observation. CLI still lacks `worker --lane jobs`; runtime must prove DB-only behavior before the gate can open.
 - Assumption: Page mapping comes from the production channel manifest; evidence references point only to redacted internal records.
+
+## 2026-11-05 — GC2-P9-T03 cutover runbook
+- Wrote the §12.2 sequence with a per-step check, expected result and stop/recovery instruction, including legacy drain, final snapshot, importer, epoch, BFF, Make filter, Page A then Page B, and single-authority proof.
+- Documentation only. Verified the current CLI supports only `legacy-import --dry-run` and rejects apply mode; the runbook makes that an explicit stop before import/cutover. No host, timer, Make, Meta, or publishing action ran.
+- Assumption: operator rechecks the installed timer inventory and verified Page/channel evidence at the actual cutover window.

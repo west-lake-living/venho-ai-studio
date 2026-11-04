@@ -5571,3 +5571,11 @@ ComfyUI, GPU, provider or network call.
 **DoD:** [x] tiêu chí song song 3–7 ngày và so sánh slot/chủ đề/ảnh SHA/mapping hai Page; [x] checklist digest và điều kiện dừng; [ ] runtime jobs lane/DRY_RUN chưa sẵn sàng và Harry chưa xác nhận vận hành.
 **Rủi ro / việc để lại:** CLI hiện từ chối `worker --lane jobs`; chưa có evidence runtime chứng minh DRY_RUN không phát sinh side effect. Giữ production DISABLED.
 **Giả định:** bảng mapping dùng Page ID đã khai báo trong `channels.yaml`; mọi evidence lưu ở kho nội bộ đã khử bí mật.
+
+### GC2-P9-T03 — Cutover (2026-11-05)
+**Status:** PARTIAL — runbook tuần tự hoàn tất; cutover chưa chạy và importer `--apply` còn thiếu
+**Files:** `docs/growth_engine/runbooks/cutover.md`, `task_status.md`, `task_memory.md`
+**Verify:** các bước được đối chiếu §12.2/§12.3, mỗi bước có check, kết quả mong đợi và điểm dừng; `git diff --check` → OK. Không gọi server, Make, Meta hay timer.
+**DoD:** [x] checklist bảo trì, dừng/drain legacy, snapshot, mapping/import, epoch, BFF, Make, mở A rồi B và xác nhận authority đơn; [x] quy tắc rollback trước/sau grant; [ ] CLI importer chỉ có `--dry-run`, chưa có `--apply`; [ ] Harry chưa thực hiện gate cutover.
+**Rủi ro / việc để lại:** Không được bỏ qua điểm dừng import; production publish phải giữ DISABLED cho tới khi importer apply được review, các worker cần thiết hoạt động và mọi gate/evidence đạt.
+**Giả định:** tên timer legacy đối chiếu lại với `legacy_inventory.md` tại ngày thực hiện; Page ID phải lấy từ manifest/evidence đã xác minh.
