@@ -749,6 +749,62 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/api/growth/v2/analytics/weekly": {
+      "get": {
+        "operationId": "weekly_analytics_api_growth_v2_analytics_weekly_get",
+        "parameters": [
+          {
+            "description": "Monday date in Asia/Ho_Chi_Minh, YYYY-MM-DD",
+            "in": "query",
+            "name": "week_start",
+            "required": true,
+            "schema": {
+              "description": "Monday date in Asia/Ho_Chi_Minh, YYYY-MM-DD",
+              "title": "Week Start",
+              "type": "string"
+            }
+          },
+          {
+            "description": "24h, 72h, or 7d",
+            "in": "query",
+            "name": "checkpoint",
+            "required": false,
+            "schema": {
+              "default": "7d",
+              "description": "24h, 72h, or 7d",
+              "title": "Checkpoint",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Weekly Analytics Api Growth V2 Analytics Weekly Get"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Weekly Analytics",
+        "tags": [
+          "growth-dashboard"
+        ]
+      }
+    },
     "/api/growth/v2/approvals/batch": {
       "post": {
         "operationId": "approve_batch_api_growth_v2_approvals_batch_post",

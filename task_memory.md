@@ -6247,3 +6247,8 @@ not in local venv; installed in CI).
 - Added GET-only Meta Insights adapter with per-Page throttling, newest-sample selection, safe per-metric errors, unsupported-value handling, and a collector that writes observations through SQLite with a leased `(delivery, checkpoint, version)` job key. Added optional 15-minute jobs-lane hook and production composition guard against mock sources.
 - Focused tests, including a real migrated SQLite file, passed 10; VERIFY_DEV 424 passed (4 warnings); VERIFY_ARCH 2 passed. No Meta/network call occurred.
 - Assumption/gate: Meta source remains injectable until P0-T04 supplies real field/scope/period/permission and API-version evidence; job discovery for due published deliveries is not yet composed.
+
+## 2026-11-05 — GC2-P8-T03 weekly Analytics
+- Added a Page-scoped weekly query and report: averages/counts by pillar and image source, reliability state counts, and internal engagement rate only for complete numeric samples. Added read-scoped no-store API and mobile Analytics UI; OpenAPI snapshot and generated venho-os types were refreshed.
+- Backend report/API/SQLite/OpenAPI 12 passed; VERIFY_DEV 430 passed (4 warnings); VERIFY_ARCH 2 passed. UI component 1 passed; targeted ESLint/TypeScript passed. No external calls.
+- Assumption/gate: weeks are Monday–Sunday ICT and values use the latest observation per delivery/metric/checkpoint. Results remain empty until P0-T04 verifies Meta capabilities and collection is composed.

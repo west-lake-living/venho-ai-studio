@@ -119,6 +119,44 @@ class MetricRepository(SqliteRepository):
             inserted += cursor.rowcount
         return inserted
 
+    def load_weekly_samples(
+        self, *, start_ms: int, until_ms: int, checkpoint: str
+    ) -> list[dict[str, object]]:
+        rows = self.connection.execute(
+            """WITH published AS (
+                     SELECT d.id AS delivery_id, d.channel_id, ch.name AS page_name,
+                            cp.pillar, COALESCE(ma.source_type, 'unknown') AS image_kind
+                     FROM deliveries d
+                     JOIN channels ch ON ch.id=d.channel_id
+                     JOIN content_packages cp ON cp.id=d.package_id
+                     LEFT JOIN delivery_revisions r
+                       ON r.id=d.current_revision_id AND r.delivery_id=d.id
+                     LEFT JOIN media_variants mv ON mv.id=r.variant_id
+                     LEFT JOIN media_assets ma ON ma.id=mv.asset_id
+                     WHERE d.state='PUBLISHED' AND d.published_at >= ? AND d.published_at < ?
+                 ), ranked AS (
+                     SELECT mo.delivery_id, mo.metric, mo.value, mo.value_state,
+                            mo.observed_at,
+                            ROW_NUMBER() OVER (
+                                PARTITION BY mo.delivery_id, mo.metric
+                                ORDER BY mo.observed_at DESC, mo.id DESC
+                            ) AS row_number
+                     FROM metric_observations mo
+                     WHERE mo.checkpoint=? AND mo.source='meta_graph'
+                 ), names(metric) AS (
+                     VALUES ('reach'), ('reactions'), ('comments'), ('shares')
+                 )
+                 SELECT p.delivery_id, p.channel_id, p.page_name, p.pillar, p.image_kind,
+                        n.metric, m.value, m.value_state, m.observed_at AS observed_at_ms
+                 FROM published p
+                 CROSS JOIN names n
+                 LEFT JOIN ranked m
+                   ON m.delivery_id=p.delivery_id AND m.metric=n.metric AND m.row_number=1
+                 ORDER BY p.channel_id, p.pillar, p.image_kind, p.delivery_id, n.metric""",
+            (start_ms, until_ms, checkpoint),
+        ).fetchall()
+        return [dict(row) for row in rows]
+
     def complete_collection(
         self,
         job_id: str,

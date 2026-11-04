@@ -65,6 +65,10 @@ class MetricRepo(Protocol):
 
     def append(self, observations: Sequence[MetricObservation]) -> int: ...
 
+    def load_weekly_samples(
+        self, *, start_ms: int, until_ms: int, checkpoint: str
+    ) -> list[dict[str, object]]: ...
+
     def complete_collection(
         self,
         job_id: str,

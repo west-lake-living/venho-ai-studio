@@ -327,6 +327,7 @@ class Container:
     migration_service: SqliteMigrationService
     legacy_import_service: Any
     doctor_service: DoctorService
+    analytics_views: Any
     readiness_check: Callable[[], tuple[bool, int | None]]
     ingest_candidate: Any
     decide_candidate: Any
@@ -411,6 +412,8 @@ def build_container(settings: Any, *, metrics_source: Any | None = None) -> Cont
                 connection.close()
 
     uow_factory = lambda: uow_adapter.SqliteUnitOfWork(connection_factory)
+    analytics_adapter = import_module("growth_engine.application.queries.analytics_views")
+    analytics_views = analytics_adapter.AnalyticsViews(uow_factory)
     candidate_store = candidate_store_adapter.SqliteCandidateStore(uow_factory)
     clock = _SystemClock()
     ids = _UuidIds()
@@ -522,6 +525,7 @@ def build_container(settings: Any, *, metrics_source: Any | None = None) -> Cont
             sqlite_version_check=connection_adapter.check_sqlite_version,
             sqlite_version_error=connection_adapter.SQLiteVersionError,
         ),
+        analytics_views=analytics_views,
         readiness_check=readiness_check,
         ingest_candidate=ingest_adapter.IngestCandidate(candidate_store, clock, ids),
         decide_candidate=decide_adapter.DecideCandidate(candidate_store, clock, ids),

@@ -17,6 +17,7 @@ from growth_engine.adapters.inbound.api.routers.jobs import router as jobs_route
 from growth_engine.adapters.inbound.api.routers.candidates import router as candidates_router
 from growth_engine.adapters.inbound.api.routers.incidents import router as incidents_router
 from growth_engine.adapters.inbound.api.routers.controls import router as controls_router
+from growth_engine.adapters.inbound.api.routers.analytics import router as analytics_router
 from growth_engine.adapters.inbound.api.routers.internal_research import router as internal_research_router
 from growth_engine.adapters.inbound.api.routers.internal_executions import router as internal_executions_router
 from growth_engine.adapters.inbound.api.routers.internal_receipts import router as internal_receipts_router
@@ -41,6 +42,7 @@ def create_app(container) -> FastAPI:
         candidates_router,
         incidents_router,
         controls_router,
+        analytics_router,
     ):
         app.include_router(router)
     app.include_router(internal_research_router)
