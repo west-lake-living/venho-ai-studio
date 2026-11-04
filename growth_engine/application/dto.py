@@ -72,6 +72,7 @@ class RawMetric:
     value: int | None
     state: str
     observed_at_ms: int
+    error_code: str | None = None
 
 
 @dataclass(frozen=True)

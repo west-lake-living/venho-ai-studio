@@ -6242,3 +6242,8 @@ not in local venv; installed in CI).
 - Added MetricObservation/ValueState, strict value-state validation, 2-hour age checkpoint classification, append-only migration 0009, and a registry with only internal formula metrics plus REQUIRED_FROM_P0 provider fields. Migration/constraint tests now use real SQLite schema 0009 rather than test-only metric DDL; schema expectations now report version 9.
 - VERIFY_DEV 414 passed, VERIFY_ARCH 2 passed; focused migration/domain checks 48 passed.
 - Assumption: use ±2h around all named checkpoints; missing `meta_capabilities.md` means no Meta field/scope/period/permission is claimed.
+
+## 2026-11-04 — GC2-P8-T02 metrics collector
+- Added GET-only Meta Insights adapter with per-Page throttling, newest-sample selection, safe per-metric errors, unsupported-value handling, and a collector that writes observations through SQLite with a leased `(delivery, checkpoint, version)` job key. Added optional 15-minute jobs-lane hook and production composition guard against mock sources.
+- Focused tests, including a real migrated SQLite file, passed 10; VERIFY_DEV 424 passed (4 warnings); VERIFY_ARCH 2 passed. No Meta/network call occurred.
+- Assumption/gate: Meta source remains injectable until P0-T04 supplies real field/scope/period/permission and API-version evidence; job discovery for due published deliveries is not yet composed.

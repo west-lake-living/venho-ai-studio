@@ -18,6 +18,7 @@ from growth_engine.adapters.outbound.persistence.sqlite.repositories import (
     IdempotencyRepository,
     JobRepository,
     MediaRepository,
+    MetricRepository,
     PackageRepository,
     QcRepository,
     ReceiptRepository,
@@ -218,6 +219,7 @@ class SqliteUnitOfWork:
         self.incidents = IncidentRepository(connection)
         self.controls = ControlsRepository(connection)
         self.candidates = CandidateRepository(connection)
+        self.metrics = MetricRepository(connection)
         self.idempotency = IdempotencyRepository(connection)
 
 

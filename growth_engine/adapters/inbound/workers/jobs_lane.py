@@ -25,4 +25,7 @@ def build_jobs_tasks(handlers: Mapping[str, JobHandler]) -> tuple[PeriodicTask, 
         PeriodicTask(f"fast-{hour:02d}40", handlers["fast"], cron_ict=f"{hour:02d}:40")
         for hour in range(7, 23)
     )
+    if "metrics" in handlers:
+        # Keep analytics on the slower jobs lane; an exception is isolated by WorkerLoop.
+        tasks.append(PeriodicTask("metrics-collector", handlers["metrics"], interval_s=15 * 60))
     return tuple(tasks)

@@ -5538,3 +5538,11 @@ ComfyUI, GPU, provider or network call.
 **INV/AC liên quan:** AC-17; §6.3 migration 0009; §8.3; P8-T01.
 **Rủi ro / việc để lại:** `docs/growth_engine/meta_capabilities.md` is absent. Registry uses REQUIRED_FROM_P0 for every provider field and access property; no real Meta names/permissions were inferred.
 **Giả định:** 2-hour tolerance applies uniformly to 24h, 72h and 7d checkpoints until a verified checkpoint policy says otherwise; metrics outside tolerance use `adhoc`.
+
+### GC2-P8-T02 — Collector (2026-11-04)
+**Status:** PARTIAL — collector, SQLite job/observation persistence and optional jobs-lane tick are implemented; production Meta source/target selection remains gated by P0-T04 evidence.
+**Files:** `growth_engine/adapters/outbound/meta/metrics_source.py`, `growth_engine/application/analytics/collect_metrics.py`, `growth_engine/adapters/inbound/workers/jobs_lane.py`, SQLite MetricRepository/UoW wiring, bootstrap production guard, `tests/growth_engine/unit/application/test_collect_metrics.py`, `tests/growth_engine/integration/sqlite/test_collect_metrics_sqlite.py`, `task_status.md`, `task_memory.md`
+**Verify:** focused collector + real SQLite → 10 passed; VERIFY_DEV → 424 passed, 4 warnings; VERIFY_ARCH → 2 passed.
+**DoD:** [x] job key is delivery/checkpoint/collector version with leased SQLite dedupe; [x] per-Page request rate limit; [x] unsupported/missing/zero/null/error remain distinct; [x] latest snapshot is stored without summing; [x] production composition rejects non-`meta_graph` sources; [x] optional 15-minute jobs-lane handler remains isolated from publish-lane tasks; [ ] verified provider fields/tokens and due-target source are unavailable until P0-T04.
+**Rủi ro / việc để lại:** No Meta or network call occurred. Bootstrap accepts an injected verified source; it does not infer provider fields or build a real Graph client from placeholder config.
+**Giả định:** Default per-Page minimum request interval is 1 second; supported scopes are `post` and `page`; failed collections retry after 5 minutes, with a 10-minute lease and three attempts.

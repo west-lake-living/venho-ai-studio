@@ -11,6 +11,7 @@ from .idempotency import IdempotencyRepository
 from .incidents import IncidentRepository
 from .jobs import JobRecord, JobRepository
 from .media import MediaRepository, QcRepository
+from .metrics import MetricRepository
 from .publishing import ExecutionRepository, ReceiptRepository
 from .scheduling import SlotRepository
 from .audit import AuditRepository
@@ -28,6 +29,7 @@ __all__ = [
     "JobRecord",
     "JobRepository",
     "MediaRepository",
+    "MetricRepository",
     "PackageRepository",
     "QcRepository",
     "ReceiptRepository",

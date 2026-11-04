@@ -342,11 +342,18 @@ class Container:
     dispatch_outbox: Any
     publishing_policy: Any
     publish_lane: Any
+    collect_metrics: Any | None
     backup_service: Any
     restore_service: Any
 
 
-def build_container(settings: Any) -> Container:
+def build_container(settings: Any, *, metrics_source: Any | None = None) -> Container:
+    if (
+        settings.env.lower() == "production"
+        and metrics_source is not None
+        and getattr(metrics_source, "source_kind", None) != "meta_graph"
+    ):
+        raise ValueError("production composition requires a meta_graph metrics source")
     connection_adapter = import_module(
         "growth_engine.adapters.outbound.persistence.sqlite.connection"
     )
@@ -499,6 +506,10 @@ def build_container(settings: Any) -> Container:
         worker_loop,
         Path(settings.db_path).parent / "publish.lock",
     )
+    collect_metrics = None
+    if metrics_source is not None:
+        collector_adapter = import_module("growth_engine.application.analytics.collect_metrics")
+        collect_metrics = collector_adapter.CollectMetrics(uow_factory, metrics_source, ids, clock)
     return Container(
         settings=settings,
         uow_factory=uow_factory,
@@ -526,6 +537,7 @@ def build_container(settings: Any) -> Container:
         dispatch_outbox=dispatch_outbox,
         publishing_policy=publishing_policy,
         publish_lane=publish_lane,
+        collect_metrics=collect_metrics,
         backup_service=backup_adapter.SqliteBackup(),
         restore_service=restore_adapter.RestoreBackup(),
     )

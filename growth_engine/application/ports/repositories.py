@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+from collections.abc import Sequence
 from typing import Protocol
 
 from growth_engine.domain.content.candidate import CandidateState, ResearchCandidate
+from growth_engine.domain.analytics.metric import MetricObservation
 
 
 class ChannelRepo(Protocol): ...
@@ -56,5 +58,20 @@ class CandidateRepo(Protocol):
         actor: str,
         correlation_id: str,
     ) -> tuple[str, ...]: ...
-class MetricRepo(Protocol): ...
+class MetricRepo(Protocol):
+    def claim_collection(
+        self, *, job_id: str, business_key: str, now_ms: int, lease_ms: int
+    ) -> tuple[str, str] | None: ...
+
+    def append(self, observations: Sequence[MetricObservation]) -> int: ...
+
+    def complete_collection(
+        self,
+        job_id: str,
+        lease_token: str,
+        *,
+        now_ms: int,
+        failed: bool,
+        retry_delay_ms: int,
+    ) -> bool: ...
 class LegacyImportRepo(Protocol): ...
