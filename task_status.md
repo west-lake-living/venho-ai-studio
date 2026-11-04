@@ -5114,3 +5114,11 @@ ComfyUI, GPU, provider or network call.
 **DoD:** [x] 3 golden hash cố định; NFC/CRLF chỉ chuẩn hoá lúc tạo revision; float/NaN bị từ chối; sort key/separator/UTF-8 đúng §5.6; payload khớp JSON Schema.
 **INV/AC liên quan:** INV-02; §5.6
 **Rủi ro / việc để lại:** `DeliveryRevision` hiện đóng gói canonical payload và hash; metadata persistence sẽ do P2 bổ sung.
+
+### GC2-P1-T04 — Máy trạng thái Delivery, approval và allowed_actions (2026-11-04)
+**Status:** DONE
+**Files:** growth_engine/domain/delivery/{states,transitions,delivery,approval,allowed_actions}.py, tests/growth_engine/unit/domain/{test_delivery_transitions,test_allowed_actions}.py, task_status.md, task_memory.md
+**Verify:** focused → 29 passed; VERIFY_DEV → 97 passed; VERIFY_ARCH → 2 passed; branch coverage `transitions.py` → 100% (51 statements, 4 branches); `git diff --check` → OK.
+**DoD:** [x] D01–D25 đúng bảng; test mọi cặp state/event; guard thuần D05/D07/D19/D23 và các guard khác fail-closed; Delivery immutable apply tăng row_version và phát DomainEvent; active chỉ false khi SUPERSEDED; allowed_actions khớp §5.7.
+**INV/AC liên quan:** INV-02, INV-03, INV-12; §5.2, §5.7
+**Rủi ro / việc để lại:** `ApprovalDecision` và guard nhận dữ liệu đã đọc; persistence, CAS transaction và dữ liệu approval thật thuộc task sau.

@@ -33,6 +33,13 @@
 - `DeliveryRevision.create` là điểm duy nhất gọi `normalize_caption` (NFC, CRLF/CR → LF); revision giữ payload JSON bất biến dạng chuỗi và hash. Metadata persistence dành cho P2.
 - Fixture hợp đồng synthetic có ba biến thể NFD/emoji/CRLF; hash golden ghi trực tiếp trong test. VERIFY_DEV 68 pass, VERIFY_ARCH 2 pass.
 
+## 2026-11-04 — GC2-P1-T04 Delivery state machine
+
+- `TRANSITIONS` khớp D01–D25; các guard thuần chỉ nhận context đã đọc, không đọc đồng hồ/hạ tầng. Phân biệt receipt retryable/non-retryable bằng hai event enum để D12/D13 không nhập nhằng.
+- `Delivery.apply` trả aggregate mới, tăng `row_version`, phát một `DomainEvent` với thời gian lấy từ `now_ms`/`at_ms`; không gọi clock. `active` chỉ false ở SUPERSEDED.
+- `ApprovalDecision` là frozen, gắn decision với revision/hash và bắt buộc `revokes_id` khi REVOKE. `allowed_actions` theo §5.7, gắn `ERR_GC2_STATE_CONFLICT` khi hành động có guard chưa đạt.
+- Context test đều synthetic. Focused 29 pass; VERIFY_DEV 97 pass; VERIFY_ARCH 2 pass; branch coverage transitions.py 100% (51 statements, 4 branches).
+
 ## 2026-11-04 — GC2-P0-T05 Cloudflare edge policy
 
 - Ghi ADR-05/06 theo GC2-D08: `/internal/*` cần Access Service Token + bearer theo principal/channel; `/media/publish/*` bypass Access nhưng vẫn bắt buộc capability ký và hash.
