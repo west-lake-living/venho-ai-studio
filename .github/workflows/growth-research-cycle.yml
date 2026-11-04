@@ -61,15 +61,138 @@ jobs:
             venho-research cycle --all
           fi
 
-      # research/ is tracked normally (unlike data/), but proposed_facts.json
-      # lives under the gitignored data/ tree and needs -f -- the same gotcha
-      # documented in the sister workflows.
+      - name: Send pending proposals to Growth Engine
+        if: vars.GC2_RESEARCH_INGEST_V2 == 'true'
+        env:
+          GC2_RESEARCH_INGEST_URL: ${{ vars.GC2_RESEARCH_INGEST_URL }}
+          GC2_RESEARCH_INGEST_TOKEN: ${{ secrets.GC2_RESEARCH_INGEST_TOKEN }}
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          import sys
+          import urllib.error
+          import urllib.request
+          from datetime import datetime, timedelta, timezone
+          from pathlib import Path
+          from urllib.parse import urlsplit, urlunsplit
+
+          endpoint = os.environ.get("GC2_RESEARCH_INGEST_URL", "").strip()
+          token = os.environ.get("GC2_RESEARCH_INGEST_TOKEN", "").strip()
+          if not endpoint or not token:
+              print("Growth Engine research ingest is enabled but its URL or token is missing.", file=sys.stderr)
+              raise SystemExit(1)
+          parsed_endpoint = urlsplit(endpoint)
+          ingest_path = "/internal/growth/v2/research/ingest"
+          if parsed_endpoint.scheme != "https" or not parsed_endpoint.netloc or parsed_endpoint.query or parsed_endpoint.fragment:
+              print("Growth Engine research ingest URL must be HTTPS without query or fragment.", file=sys.stderr)
+              raise SystemExit(1)
+          if not parsed_endpoint.path.endswith(ingest_path):
+              endpoint = urlunsplit((
+                  parsed_endpoint.scheme,
+                  parsed_endpoint.netloc,
+                  parsed_endpoint.path.rstrip("/") + ingest_path,
+                  "",
+                  "",
+              ))
+
+          path = Path("data/projects/venho_hotel/research/proposed_facts.json")
+          if not path.exists():
+              print("No pending research proposals to ingest.")
+              raise SystemExit(0)
+          proposals = json.loads(path.read_text(encoding="utf-8"))
+          if not isinstance(proposals, list):
+              print("Research proposal file has an invalid shape.", file=sys.stderr)
+              raise SystemExit(1)
+
+          def stable_value(value):
+              if isinstance(value, float):
+                  return format(value, ".15g")
+              if isinstance(value, list):
+                  return [stable_value(item) for item in value]
+              if isinstance(value, dict):
+                  return {key: stable_value(item) for key, item in value.items()}
+              return value
+
+          sent = 0
+          for proposal in proposals:
+              if not isinstance(proposal, dict) or proposal.get("status") != "pending_approval":
+                  continue
+              external_key = proposal.get("id")
+              fact_key = proposal.get("fact_key")
+              if not isinstance(external_key, str) or not external_key or not isinstance(fact_key, str) or not fact_key:
+                  continue
+              payload = stable_value({
+                  key: value for key, value in proposal.items()
+                  if key not in {"status", "proposed_at", "decided_by", "decided_at"}
+              })
+              canonical = json.dumps(
+                  payload,
+                  ensure_ascii=False,
+                  sort_keys=True,
+                  separators=(",", ":"),
+                  allow_nan=False,
+              )
+              source_revision = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+              proposed_at = proposal.get("proposed_at")
+              try:
+                  created = datetime.fromisoformat(str(proposed_at).replace("Z", "+00:00"))
+                  if created.tzinfo is None:
+                      created = created.replace(tzinfo=timezone.utc)
+              except ValueError:
+                  created = datetime.now(timezone.utc)
+              expires_at_ms = int((created + timedelta(days=21)).timestamp() * 1000)
+              body = {
+                  "schema_version": "growth.research_ingest.v2",
+                  "project_id": "venho_hotel",
+                  "source": "research_cycle",
+                  "external_key": external_key,
+                  "source_revision": source_revision,
+                  "topic_key": f"{proposal.get('domain', 'research')}:{fact_key}",
+                  "event_key": None,
+                  "event_start_at_ms": None,
+                  "event_end_at_ms": None,
+                  "expires_at_ms": expires_at_ms,
+                  "payload": payload,
+              }
+              request = urllib.request.Request(
+                  endpoint,
+                  data=json.dumps(body, ensure_ascii=False, separators=(",", ":")).encode("utf-8"),
+                  headers={
+                      "Authorization": f"Bearer {token}",
+                      "Content-Type": "application/json",
+                  },
+                  method="POST",
+              )
+              try:
+                  with urllib.request.urlopen(request, timeout=15) as response:
+                      if response.status not in (200, 201):
+                          print(f"Research ingest rejected a proposal (HTTP {response.status}).", file=sys.stderr)
+                          raise SystemExit(1)
+              except urllib.error.HTTPError as error:
+                  print(f"Research ingest rejected a proposal (HTTP {error.code}).", file=sys.stderr)
+                  raise SystemExit(1)
+              except Exception:
+                  print("Research ingest failed; endpoint and credentials were omitted.", file=sys.stderr)
+                  raise SystemExit(1)
+              sent += 1
+          print(f"Research ingest accepted or replayed {sent} proposal(s).")
+          PY
+
+      # Until GC2_RESEARCH_INGEST_V2 is enabled, proposals keep the original
+      # JSON-in-git path. Vault notes and weather signals remain committed in
+      # either mode; the research-ingest bearer is never written to the repo.
       - name: Commit vault notes and proposed facts
+        env:
+          GC2_RESEARCH_INGEST_V2: ${{ vars.GC2_RESEARCH_INGEST_V2 }}
         run: |
           git config user.name "venho-growth-bot"
           git config user.email "venho-growth-bot@users.noreply.github.com"
           git add research/
-          git add -f data/projects/*/research/proposed_facts.json \
-                     data/projects/*/research/weather_signals.json 2>/dev/null || true
+          git add -f data/projects/*/research/weather_signals.json 2>/dev/null || true
+          if [ "$GC2_RESEARCH_INGEST_V2" != "true" ]; then
+            git add -f data/projects/*/research/proposed_facts.json 2>/dev/null || true
+          fi
           git diff --cached --quiet || git commit -m "chore: research cycle $(date -u +%Y-%m-%d)"
           git push
