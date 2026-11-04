@@ -1,0 +1,40 @@
+version: 1
+status: awaiting_p0_t04_evidence
+source: docs/growth_engine/meta_capabilities.md
+source_status: REQUIRED_FROM_P0
+checkpoint_tolerance_seconds: 7200
+metrics:
+  # Internal names come from the weekly-report formula in GC2_MASTER_PLAN §8.3/§9.1.
+  # Provider field, scope, period, lag and permission remain unverified until P0-T04.
+  - name: reach
+    provider_field: REQUIRED_FROM_P0
+    scope: REQUIRED_FROM_P0
+    period: REQUIRED_FROM_P0
+    data_lag_seconds: REQUIRED_FROM_P0
+    permissions: REQUIRED_FROM_P0
+    availability: AWAITING_P0_T04
+    reason: No verified Page fixture/capability record is available.
+  - name: reactions
+    provider_field: REQUIRED_FROM_P0
+    scope: REQUIRED_FROM_P0
+    period: REQUIRED_FROM_P0
+    data_lag_seconds: REQUIRED_FROM_P0
+    permissions: REQUIRED_FROM_P0
+    availability: AWAITING_P0_T04
+    reason: No verified Page fixture/capability record is available.
+  - name: comments
+    provider_field: REQUIRED_FROM_P0
+    scope: REQUIRED_FROM_P0
+    period: REQUIRED_FROM_P0
+    data_lag_seconds: REQUIRED_FROM_P0
+    permissions: REQUIRED_FROM_P0
+    availability: AWAITING_P0_T04
+    reason: No verified Page fixture/capability record is available.
+  - name: shares
+    provider_field: REQUIRED_FROM_P0
+    scope: REQUIRED_FROM_P0
+    period: REQUIRED_FROM_P0
+    data_lag_seconds: REQUIRED_FROM_P0
+    permissions: REQUIRED_FROM_P0
+    availability: AWAITING_P0_T04
+    reason: No verified Page fixture/capability record is available.

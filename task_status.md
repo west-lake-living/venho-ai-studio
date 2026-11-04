@@ -5529,3 +5529,12 @@ ComfyUI, GPU, provider or network call.
 **DoD:** [x] UNKNOWN has reconcile action and no retry; [x] blocked retry only when `safe_retry` is allowed; [x] controls require second confirmation and state that Pause does not cancel active work; [x] backend errors lock mutation; [ ] live backend and browser check remain.
 **Rủi ro / việc để lại:** No public publish was run. Eight full-suite errors are external/stale-env failures, not edited by this task.
 **Giả định:** operator evidence uses verified Facebook permalink or Make execution reference plus reason; no client-provided actor is sent.
+
+### GC2-P8-T01 — Registry metric và migration 0009 (2026-11-04)
+**Status:** PARTIAL — domain schema/migration/value states are complete; verified Meta registry data is absent
+**Files:** `growth_engine/domain/analytics/metric.py`, `growth_engine/adapters/outbound/persistence/sqlite/migrations/0009_metrics.sql`, `config/projects/venho_hotel/growth_engine/metrics_registry.yaml`, `tests/growth_engine/unit/domain/test_metric_value_state.py`, migration/constraint contract expectations, `task_status.md`, `task_memory.md`
+**Verify:** VERIFY_DEV → 414 passed, 4 warnings; VERIFY_ARCH → 2 passed; focused metric+migration+constraint+API checks → 48 passed; `git diff --check` → OK.
+**DoD:** [x] VALUE/ZERO/NULL/UNAVAILABLE/ERROR distinction; [x] metric checkpoint within ±2h else adhoc; [x] append-only `metric_observations` migration; [x] tests use real SQLite migration; [ ] provider field/scope/period/lag/permissions require P0-T04 capability evidence.
+**INV/AC liên quan:** AC-17; §6.3 migration 0009; §8.3; P8-T01.
+**Rủi ro / việc để lại:** `docs/growth_engine/meta_capabilities.md` is absent. Registry uses REQUIRED_FROM_P0 for every provider field and access property; no real Meta names/permissions were inferred.
+**Giả định:** 2-hour tolerance applies uniformly to 24h, 72h and 7d checkpoints until a verified checkpoint policy says otherwise; metrics outside tolerance use `adhoc`.

@@ -16,31 +16,6 @@ HASH_B = "b" * 64
 HASH_C = "c" * 64
 
 # All database rows and identifiers below are synthetic test data.
-# Metrics belongs to P8 migration 0009, outside this task's committed migration set.
-# Keep this test-only schema aligned with v1.2-CA §6.3 to cover the §16.3 ZERO constraint.
-_METRIC_TEST_SCHEMA = """
-CREATE TABLE metric_observations (
-  id TEXT PRIMARY KEY,
-  delivery_id TEXT NOT NULL REFERENCES deliveries(id),
-  metric TEXT NOT NULL,
-  checkpoint TEXT NOT NULL CHECK(checkpoint IN ('24h','72h','7d','adhoc')),
-  observed_at INTEGER NOT NULL,
-  post_age_seconds INTEGER NOT NULL CHECK(post_age_seconds >= 0),
-  value INTEGER,
-  value_state TEXT NOT NULL CHECK(value_state IN ('VALUE','ZERO','NULL','UNAVAILABLE','ERROR')),
-  source TEXT NOT NULL CHECK(source IN ('meta_graph','mock')),
-  api_version TEXT NOT NULL,
-  period TEXT,
-  dimensions_json TEXT NOT NULL DEFAULT '{}',
-  error_code TEXT,
-  UNIQUE(delivery_id, metric, checkpoint, observed_at, source),
-  CHECK(value_state NOT IN ('VALUE','ZERO') OR value IS NOT NULL),
-  CHECK(value_state != 'ZERO' OR value = 0),
-  CHECK(value_state IN ('VALUE','ZERO') OR value IS NULL)
-);
-CREATE TRIGGER no_metric_update BEFORE UPDATE ON metric_observations
-BEGIN SELECT RAISE(ABORT, 'metric_observation_is_append_only'); END;
-"""
 
 
 def _insert_command(
@@ -294,8 +269,7 @@ def database(tmp_path: Path) -> sqlite3.Connection:
     try:
         runner = MigrationRunner(MIGRATIONS)
         runner.apply(connection, application_version="pytest")
-        assert runner.check(connection) == (1, 2, 3, 4, 5, 6, 7)
-        connection.executescript(_METRIC_TEST_SCHEMA)
+        assert runner.check(connection) == (1, 2, 3, 4, 5, 6, 7, 9)
         _seed_valid_graph(connection)
         yield connection
         assert connection.execute("PRAGMA foreign_key_check").fetchall() == []

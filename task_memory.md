@@ -6237,3 +6237,8 @@ not in local venv; installed in CI).
 - In venho-os commit `64bd403`, added UNKNOWN-only reconciliation, evidence form, allowed-action safe retry for non-UNKNOWN, per-Page/global pause/mode with second confirmation, and shared offline lock banner. UNKNOWN has no retry control.
 - Focused UI/client tests 26 passed, targeted lint/TypeScript passed. Full frontend test suite: 615 passed, 1 skipped, 8 unrelated failures from absent sibling social-agent files and unset OpenAI provider config.
 - Assumption: reconcile payload carries `POST_FOUND` permalink or `NO_SIDE_EFFECT` Make execution reference, plus operator reason.
+
+## 2026-11-04 — GC2-P8-T01 metric domain and migration
+- Added MetricObservation/ValueState, strict value-state validation, 2-hour age checkpoint classification, append-only migration 0009, and a registry with only internal formula metrics plus REQUIRED_FROM_P0 provider fields. Migration/constraint tests now use real SQLite schema 0009 rather than test-only metric DDL; schema expectations now report version 9.
+- VERIFY_DEV 414 passed, VERIFY_ARCH 2 passed; focused migration/domain checks 48 passed.
+- Assumption: use ±2h around all named checkpoints; missing `meta_capabilities.md` means no Meta field/scope/period/permission is claimed.

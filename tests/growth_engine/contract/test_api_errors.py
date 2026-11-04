@@ -129,10 +129,10 @@ def test_composition_root_wires_migrator_and_ready_health(tmp_path: Path) -> Non
     )
     container = build_container(settings)
     result = container.migration_service.run(Path(settings.db_path), check=False)
-    assert "schema version 7" in result
+    assert "schema version 9" in result
     response = TestClient(create_app(container)).get("/health/ready")
     assert response.status_code == 200
-    assert response.json() == {"status": "ready", "schema_version": 7}
+    assert response.json() == {"status": "ready", "schema_version": 9}
     report = container.doctor_service.run()
     assert "Python & SQLite version" in report.render()
     assert "Heartbeat age" in report.render()
@@ -182,7 +182,7 @@ def test_migrate_cli_uses_composition_root_by_default(tmp_path: Path) -> None:
         env={"GE_ENV": "test", "GE_DB_PATH": str(database)},
     )
     assert result.exit_code == 0, result.output
-    assert "Applied 7 migration(s); schema version 7" in result.output
+    assert "Applied 8 migration(s); schema version 9" in result.output
 
     checked = CliRunner().invoke(
         cli_app,
@@ -190,7 +190,7 @@ def test_migrate_cli_uses_composition_root_by_default(tmp_path: Path) -> None:
         env={"GE_ENV": "test", "GE_DB_PATH": str(database)},
     )
     assert checked.exit_code == 0, checked.output
-    assert "Schema is current at version 7" in checked.output
+    assert "Schema is current at version 9" in checked.output
 
 
 def test_non_bff_cannot_supply_venho_actor_header(tmp_path: Path) -> None:
