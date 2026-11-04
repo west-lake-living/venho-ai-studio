@@ -1,6 +1,6 @@
 # ADR-05 — Media delivery through Cloudflare edge
 
-**Status:** Design accepted by GC2-D08; edge configuration and external checks are pending.
+**Status:** Draft using the GC2-D08 default; edge configuration and external checks are pending.
 
 ## Context
 
@@ -14,6 +14,8 @@ Facebook modules in Make need the approved JPEG bytes. Instagram for Business gi
 - Apply Cloudflare Access Service Token policy to `/internal/*`. The application also requires a principal-specific bearer and scope for each operation.
 - Apply Access **Bypass** to `/media/publish/*`; this only bypasses Cloudflare Access. The media handler still verifies the signed `t` capability, expiry, approved variant and SHA-256. Invalid/expired capabilities return 403 JSON. Successful responses use `Content-Type: image/jpeg` and `Cache-Control: private, no-store`.
 - Do not route Dashboard or other browser paths through the machine endpoint policy. Do not expose the origin directly.
+
+Under GC2-D02, both Facebook Pages use the same approved source image bytes; Instagram uses its own approved 4:5 media variant. Captions follow the channel's `caption_profile` (defaulting to the same caption) and remain covered by the one grouped approval.
 
 ## Route and validation matrix
 
@@ -33,6 +35,12 @@ All live results are `NOT_RUN`; Harry must configure the edge and run the checks
 - Instagram can fetch signed media without an Access login. MK-10 and P7-T06 must verify the behavior from outside.
 - A Bypass rule does not make the media public: the application signature and expiry remain mandatory.
 - The actual no-header response may be a denial, HTML login page or redirect; do not assume which. Capture the real response and confirm the protected handler was not reached before accepting the edge configuration.
+
+## Alternatives
+
+- Put the API under `os.venhohotel.com`: listed as the alternative to the GC2-D08 default; not selected for this build.
+- Expose the origin directly or bypass application media signatures: rejected because it broadens access and could return bytes other than the approved variant.
+- Use unrelated image bytes for each Facebook Page or silently transform an approved image at dispatch: rejected because approval binds the exact media bytes.
 
 ## Human gate
 

@@ -1,6 +1,6 @@
 # ADR-06 — Machine authentication at the edge
 
-**Status:** Design accepted by GC2-D08/ADR-06; credentials and edge validation are pending.
+**Status:** Draft per ADR-06 defaults; credentials and edge validation are pending.
 
 ## Context
 
@@ -42,6 +42,12 @@ The Make Router and research ingest need machine access to a small set of intern
 - Service-token presence alone does not authorize a publish action; the per-channel bearer and scope are also checked.
 - Make custom-header support is a prerequisite (MK-6). Keep production publishing closed until that test passes.
 - Rotation of one channel credential does not require rotating the others.
+
+## Alternatives
+
+- One shared bearer for all Make routes: rejected because compromise of one route would grant every channel's authority.
+- Cloudflare Service Token alone: rejected because it identifies access to the edge but does not authorize a specific application principal/channel.
+- Put a bearer on the media URL: rejected; the signed, expiring capability is the media route's authorization mechanism.
 
 ## Human gate
 

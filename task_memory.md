@@ -1,5 +1,12 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-11-04 — DR-GC2-D00 / L2 Governance
+
+- **Decision:** Reopen GC2 for the publishing portion deferred under Control Plane v4.x. Build one Growth Engine authority under Plan C while v3.2's publishing core remains frozen; only the specified read-only Track 0 modules may be added.
+- **Scope:** Three channels (`fb_hanoi`, `fb_venho`, `ig_venho`); no authorization to migrate the wider Control Plane or alter the live publishing authority before the P9 gates.
+- **Acceptance state from v1.2:** D00, D01, D07 and D09 are confirmed 04/11/2026. D02–D06 and D08 use their stated plan defaults for this build, pending Harry's one-time review.
+- **Governance trace:** Recorded here because P0-T06 allows only ADR-01…09 and `task_memory.md`; if L2 requires a separate canonical decision-log entry, that artifact remains a follow-up.
+
 ## 2026-11-04 — GC2-P0-T05 Cloudflare edge policy
 
 - Ghi ADR-05/06 theo GC2-D08: `/internal/*` cần Access Service Token + bearer theo principal/channel; `/media/publish/*` bypass Access nhưng vẫn bắt buộc capability ký và hash.

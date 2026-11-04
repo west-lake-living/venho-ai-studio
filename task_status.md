@@ -5074,3 +5074,11 @@ ComfyUI, GPU, provider or network call.
 **DoD:** [x] Hostname, Access policy, principal matrix và bảng kiểm curl. [ ] Harry cấu hình Tunnel/Access, xác nhận response ngoài mạng và điền kết quả.
 **INV/AC liên quan:** INV-05, INV-06; §9.2–9.3
 **Rủi ro / việc để lại:** Origin port chờ P0-T01; no-header response và header thực tế chưa kiểm chứng. Không thay Cloudflare config hoặc gọi endpoint thật.
+
+### GC2-P0-T06 — Quyết định và ADR (2026-11-04)
+**Status:** CHANGE_REQUEST — ADR/DR đã ghi; xác nhận mặc định chờ Harry
+**Files:** docs/growth_engine/adr/ADR-01.md … ADR-09.md, task_memory.md
+**Verify:** docs-only; `git diff --check` → OK.
+**DoD:** [x] Chuyển D00–D09 thành ADR Context/Decision/Consequences/Alternatives; ghi DR-GC2-D00 trong task_memory. [ ] Harry xác nhận D02–D06, D08 hoặc đổi mặc định ở báo cáo cuối.
+**INV/AC liên quan:** INV-01…INV-12; GC2-D00…D09
+**Rủi ro / việc để lại:** D00, D01, D07, D09 đã xác nhận theo v1.2; D02–D06 và D08 là mặc định để tiếp tục. L2 Governance record ghi trong task_memory do task chỉ cho phép các ADR và memory.
