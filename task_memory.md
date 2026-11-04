@@ -47,6 +47,14 @@
 - `full_jitter` dùng attempt zero-based, cap `min(300, 5·2^attempt)` giây; `Retry-After` là cận dưới. `classify_verification` trả None cho UNAVAILABLE/ERROR để không đổi state.
 - Policy YAML lấy các giá trị nguyên văn từ card; context test gắn `_synthetic: true`, cần thay bằng fixture thật từ P0-T03/P0-T04. Focused 37 pass; VERIFY_DEV 134 pass; VERIFY_ARCH 2 pass.
 
+## 2026-11-04 — GC2-P1-T06 channels, cadence, projection, candidates
+
+- Cadence v2 là các rule weekday T2/T4/T6/T7; horizon dùng khoảng ngày nửa mở `[start_date, start_date + horizon_days)`. `window_minutes=30` lấy theo publishing policy của P1-T05; lịch 14 ngày từ 05/11 sinh 8 slot 09:00 ICT.
+- Slot kế hoạch chưa có DB ID; ID được thêm lúc persist từ IdGenerator. Config hash canonicalize channel ID/version, route ref, Graph version, capability, caption profile; không có token trong `ChannelConfig`.
+- `derive_slot_view` ưu tiên CANCELLED → NEEDS_ATTENTION → COMPLETE → PARTIAL → MISSED → READY → AWAITING_REVIEW → PLANNED; `required=false` không cản COMPLETE/progress nhưng lỗi của target vẫn cần attention.
+- `ResearchCandidate.is_usable` đòi APPROVED, `at_ms < expires_at_ms` và trước `event_end_at_ms` nếu có; boundary bằng thời điểm hết hạn là không dùng được. Test lịch/cấu hình/candidate đều synthetic và cần thay bằng fixture thật từ P0-T03/P0-T04.
+- Focused 14 pass; VERIFY_DEV 148 pass; VERIFY_ARCH 2 pass.
+
 ## 2026-11-04 — GC2-P0-T05 Cloudflare edge policy
 
 - Ghi ADR-05/06 theo GC2-D08: `/internal/*` cần Access Service Token + bearer theo principal/channel; `/media/publish/*` bypass Access nhưng vẫn bắt buộc capability ký và hash.

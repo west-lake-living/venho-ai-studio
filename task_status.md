@@ -5130,3 +5130,11 @@ ComfyUI, GPU, provider or network call.
 **DoD:** [x] C01–C09, E01–E07; fencing lease, stable envelope on ACK redelivery, max 8 transport attempts, grant clamped to deadline, full-jitter cap 300s, placeholder IDs rejected; policy YAML matches §15.
 **INV/AC liên quan:** INV-02, INV-03, INV-06, INV-07; §5.3–5.4, §7.7–7.8
 **Rủi ro / việc để lại:** Không có error-class thật từ Make/P0-T03; chỉ class được xác minh mới thành NO_SIDE_EFFECT. Receipt transport, transaction và timer thuộc task sau.
+
+### GC2-P1-T06 — Scheduling, channels, content (2026-11-04)
+**Status:** DONE
+**Files:** growth_engine/domain/channels/channel.py, growth_engine/domain/scheduling/{slot,cadence,slot_projection}.py, growth_engine/domain/content/{package,candidate}.py, tests/growth_engine/unit/domain/{test_cadence,test_slot_projection,test_candidate}.py, task_status.md, task_memory.md
+**Verify:** focused → 14 passed; VERIFY_DEV → 148 passed; VERIFY_ARCH → 2 passed; `git diff --check` → OK.
+**DoD:** [x] 14 ngày từ 05/11/2026 cho 8 slot T2/T4/T6/T7; config hash ổn định theo canonical JSON; projection đủ 8 trạng thái và ưu tiên NEEDS_ATTENTION; candidate hết hạn theo `expires_at`/`event_end_at`.
+**INV/AC liên quan:** INV-02, INV-03, INV-07, INV-12; §4.2, §5.5, §6.1
+**Rủi ro / việc để lại:** Page IDs/config production vẫn là REQUIRED_FROM_P0; task này chỉ mô hình hoá domain, không bật kênh hay ghi dữ liệu.
