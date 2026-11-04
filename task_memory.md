@@ -6257,3 +6257,8 @@ not in local venv; installed in CI).
 - Added an isolated release deploy script with frozen extras, migration/doctor checks, atomic `current` switch, three-unit restart/health checks and rollback; added user API/worker units and setup README.
 - `bash -n` and `git diff --check` passed; required unit directives inspected. No server, systemd, SSH or production action ran. `shellcheck` is unavailable locally.
 - Gate: Harry deploys only in `DISABLED`; current CLI still rejects `worker --lane jobs`, so runtime composition must precede the first deployment. The script does not deploy a commit unavailable from `origin`.
+
+## 2026-11-05 — GC2-P9-T02 DRY_RUN parallel runbook
+- Wrote the 3–7 day checklist to compare slot, schedule, topic/pillar, approved image SHA and both verified Page IDs, including daily redacted digest and stop conditions.
+- Documentation only: did not start a worker, DRY_RUN, Telegram delivery, or production observation. CLI still lacks `worker --lane jobs`; runtime must prove DB-only behavior before the gate can open.
+- Assumption: Page mapping comes from the production channel manifest; evidence references point only to redacted internal records.

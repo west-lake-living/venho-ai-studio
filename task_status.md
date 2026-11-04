@@ -5563,3 +5563,11 @@ ComfyUI, GPU, provider or network call.
 **DoD:** [x] script creates isolated release and frozen extras, checks schema/doctor before switch, atomically switches current, restarts API+two workers and rolls back on failure; [x] units use required environment/working paths, restart and existing alert handler; [x] README records prerequisites and disable-mode gate; [ ] Harry deploys DISABLED and receives doctor PASS; [ ] `venho-engine worker --lane jobs` runtime composition is not implemented.
 **Rủi ro / việc để lại:** No SSH, user systemd, production database, or deployment action was used. A real deployment must wait for jobs-lane runtime support and Harry’s gate.
 **Giả định:** Script runs from a clean GC2 checkout whose origin contains the requested commit; transient `systemd-run` checks consume the same protected EnvironmentFile as the services.
+
+### GC2-P9-T02 — DRY_RUN song song 3–7 ngày (2026-11-05)
+**Status:** PARTIAL — runbook/checklist hoàn tất; chưa triển khai hoặc chạy quan sát DRY_RUN theo giới hạn task
+**Files:** `docs/growth_engine/runbooks/dry_run_parallel.md`, `task_status.md`, `task_memory.md`
+**Verify:** checklist đối chiếu với §12.2; `git diff --check` → OK. Không chạy DRY_RUN, worker, Telegram hay dịch vụ production.
+**DoD:** [x] tiêu chí song song 3–7 ngày và so sánh slot/chủ đề/ảnh SHA/mapping hai Page; [x] checklist digest và điều kiện dừng; [ ] runtime jobs lane/DRY_RUN chưa sẵn sàng và Harry chưa xác nhận vận hành.
+**Rủi ro / việc để lại:** CLI hiện từ chối `worker --lane jobs`; chưa có evidence runtime chứng minh DRY_RUN không phát sinh side effect. Giữ production DISABLED.
+**Giả định:** bảng mapping dùng Page ID đã khai báo trong `channels.yaml`; mọi evidence lưu ở kho nội bộ đã khử bí mật.
