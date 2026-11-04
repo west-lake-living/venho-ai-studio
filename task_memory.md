@@ -5991,3 +5991,11 @@ not in local venv; installed in CI).
 - Dữ liệu thử hoàn toàn synthetic, migration vào DB file tạm; worker là top-level target để chạy được với spawn.
 - VERIFY_DEV 217 passed; VERIFY_ARCH 2 passed; CI `growth-engine-tests` chạy `python -m pytest -q tests/growth_engine`, bao gồm file này. Pytest hiện cảnh báo `slow` chưa đăng ký; giữ marker theo task và không sửa pyproject ngoài allowlist.
 - Giả định: mỗi test có 20 tranh chấp lặp liên tiếp (60 races tổng cộng), phù hợp DoD “Chạy 20 lần liên tiếp” và giữ kiểm tra CI trong toàn suite.
+
+## 2026-11-04 — GC2-P2-T07 legacy import dry-run
+- `legacy-import` yêu cầu rõ `--dry-run`, `--source`, `--report`; command chỉ nhận service qua context để composition root P2-T08 wiring. `LegacyImportDryRun` tạo DB trong `TemporaryDirectory`, nên không có `--apply`/production DB path.
+- Import quét JSON list/wrapper và bảng SQLite ở read-only mode; mỗi raw row lưu canonical JSON + SHA-256 theo `(source_name, source_key, raw_hash)`. Threads/manual/unsupported chỉ lưu lịch sử. Facebook route theo page evidence/cutover; Instagram theo `ig_venho`; mọi channel dry-run disabled.
+- Không tự tái tạo revision, approval, asset/QC hay command. `PUBLISHED` cũ chưa verify, `GATEWAY_ACCEPTED` đóng `CLOSED_UNRESOLVED`, placeholder Post ID giữ `PLACEHOLDER_POST_ID`, `APPROVED_SCHEDULED` về `IN_REVIEW`.
+- Snapshot curated local chạy read-only qua symlink temp: 995 raw rows, 995 legacy imports, 116 delivery rows; hai channel ID `fb_venho`/`ig_venho` còn `REQUIRED_FROM_P0`. Mọi file `data/` nguyên trạng; report chỉ tạo dưới `/tmp` rồi được dọn.
+- Focused 3 passed; VERIFY_DEV 220 passed; VERIFY_ARCH 2 passed. VERIFY_LEGACY tiếp tục có 5 lỗi collection `cv2`; `--continue-on-collection-errors`: 1849 passed, 79 failed, 8 skipped, 5 errors, bằng số lỗi baseline đã biết (79/5).
+- Giả định: đối với Facebook sau 03/11, dùng phân loại `fb_venho` từ T0-05 “UNTRACKED”, nhưng channel vẫn disabled và ID placeholder cho tới khi P0 xác minh; ngày bài ưu tiên `published_at`, rồi mới `created_at`.

@@ -5202,3 +5202,11 @@ ComfyUI, GPU, provider or network call.
 **DoD:** [x] `spawn` hai process trên cùng SQLite file; chèn command seq 1 chỉ một thành công; CAS authorize chỉ một execution; hai cập nhật field khác nhau được giữ cùng row_version=3; đánh dấu `@pytest.mark.slow`.
 **INV/AC liên quan:** INV-01…INV-03; AC-02; §6.1, §12.
 **Rủi ro / việc để lại:** pytest cảnh báo marker `slow` chưa đăng ký trong cấu hình; test vẫn chạy và CI chạy toàn bộ suite. Không mở rộng file cấu hình ngoài allowlist task.
+
+### GC2-P2-T07 — Legacy import dry-run (2026-11-04)
+**Status:** DONE — legacy suite giữ baseline 5 lỗi collection do thiếu `cv2`
+**Files:** growth_engine/adapters/outbound/legacy/importer.py, growth_engine/adapters/inbound/cli/main.py, tests/growth_engine/migration/test_legacy_import.py, task_status.md, task_memory.md
+**Verify:** focused → 3 passed; VERIFY_DEV → 220 passed; VERIFY_ARCH → 2 passed; VERIFY_LEGACY → 5 lỗi collection do `cv2` thiếu; diagnostic tiếp tục → 1849 passed, 79 failed, 8 skipped, 5 errors; `git diff --check` → OK.
+**DoD:** [x] CLI chỉ có `legacy-import --dry-run --source --report`; temp DB v2; raw JSON/SQLite row được băm và import idempotent; báo cáo Markdown source × trạng thái, mismatch, issue codes; không tái tạo approval hoặc cho phép apply.
+**INV/AC liên quan:** INV-01…INV-04, INV-10; AC-15; §12.1.
+**Rủi ro / việc để lại:** dry-run curated snapshot (registry, growth.db, slot snapshot, trends) giữ 995/995 raw rows và tạo 116 delivery không publishable; 2 `GATEWAY_ACCEPTED` thành `LEGACY_UNVERIFIED/CLOSED_UNRESOLVED`, 2 placeholder thành `PLACEHOLDER_POST_ID`. Page ID fb_venho/ig_venho vẫn `REQUIRED_FROM_P0`; thiếu bằng chứng thì không khôi phục approval.
