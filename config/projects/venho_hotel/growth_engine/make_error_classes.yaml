@@ -1,0 +1,7 @@
+# Only add a class after a redacted TEST run proves CREATE_POST had no side effect.
+version: 1
+verified_by: null
+verified_on: null
+source_scenario: NOT_RUN
+classes: []
+default_outcome: OUTCOME_UNKNOWN
