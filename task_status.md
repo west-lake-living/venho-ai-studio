@@ -5018,3 +5018,11 @@ ComfyUI, GPU, provider or network call.
 **DoD:** [ ] Harry điền Page ID thật, tên Page, scenario ID; script `--require-filled` trả 0
 **INV/AC liên quan:** AC-01
 **Rủi ro / việc để lại:** Thêm test ngoài mục Files của card (Harry yêu cầu rõ). conftest gốc cần `python-dotenv` nên lệnh verify phải có `--with python-dotenv` cho tới khi P1-T01 tạo conftest riêng.
+
+### GC2-T0-04 — Meta Graph client chỉ đọc (2026-11-04)
+**Status:** CHANGE_REQUEST — adapter v2 có; tích hợp chung với v3.2 chưa làm
+**Files:** growth_engine/adapters/outbound/meta/{__init__,graph_client}.py, tests/growth_engine/conftest.py, tests/growth_engine/unit/adapters/outbound/meta/test_graph_client.py, task_memory.md
+**Verify:** `uv run --with pytest pytest -q tests/growth_engine` → 29 passed, 0 network. `uv run --with pytest pytest -q tests` → collection lỗi ở 5 test legacy do thiếu `cv2` (`test_candidate_v3_service`, `test_canonical_transform`, `test_phase4_quality`, `test_phase7_candidate_v3_evaluation`, `test_yunet_geometry`).
+**DoD:** [x] GET-only, version bắt buộc, transport tiêm được, phân trang có giới hạn, token không lộ trong repr/lỗi. [ ] Chia sẻ client với v3.2 và probe thật.
+**INV/AC liên quan:** INV-11; §8.3
+**Rủi ro / việc để lại:** Không sửa `shared/`, `.env.example` hoặc legacy theo allowlist; generic HTTP 4xx chưa phân loại cho tới P0-T04; cạnh, field, metric và version thật chưa được cấu hình.

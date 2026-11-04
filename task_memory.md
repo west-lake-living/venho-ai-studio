@@ -1,5 +1,12 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-11-04 — GC2-T0-04 Meta Graph client chỉ đọc
+
+- Repo làm việc `venho-ai-studio-gc2` còn chứa bản `GC2_MASTER_PLAN.md` v1.1; prompt và tài liệu Harry gửi là v1.2. Dùng thẻ v1.2 cho task mới, không tự sửa bản kế hoạch trong repo vì ngoài phạm vi task.
+- `shared/`, `.env.example` và legacy bị giới hạn trong lượt này. Tạo client GET-only trong `growth_engine/adapters/outbound/meta` để P6/P8 dùng; chưa thể chia sẻ nó với v3.2. Ghi CHANGE_REQUEST cho tích hợp cũ.
+- Test chỉ dùng transport giả, version/edge/field/metric tổng hợp; không có fixture thật. Status HTTP 401/403/404/429/5xx được phân loại, 4xx khác để UNCLASSIFIED tới khi P0-T04 xác minh.
+- `tests/growth_engine` 29 passed. VERIFY_LEGACY dừng ở 5 lỗi thu thập do optional dependency `cv2` vắng mặt; không sửa dependency legacy.
+
 ## 2026-11-05 — GC2 (Growth Content v2) khởi động; v3.2 đóng băng (GC2-T0-02)
 
 - **Kế hoạch:** `docs/growth_engine/GC2_MASTER_PLAN.md` (v1.1-CA). Đọc §0 và §18 trước mọi task GC2. Một task card mỗi lần, chỉ sửa file trong mục Files.
