@@ -5194,3 +5194,11 @@ ComfyUI, GPU, provider or network call.
 **DoD:** [x] `set_mode`, pause/resume global + channel, `bump_epoch` theo UTC minute + 4 hex; incident open/touch dedupe occurrence count + resolve; mọi mutation ghi append-only audit cùng transaction; pause không đổi delivery.
 **INV/AC liên quan:** INV-01…INV-03, INV-06; §6.4, §7.1.
 **Rủi ro / việc để lại:** `channels` không có row_version nên channel pause dùng transaction `BEGIN IMMEDIATE` và update theo trạng thái hiện tại; global controls dùng CAS row_version.
+
+### GC2-P2-T06 — Concurrency trên file SQLite thật (2026-11-04)
+**Status:** DONE
+**Files:** tests/growth_engine/integration/sqlite/test_concurrency_multiprocess.py, task_status.md, task_memory.md
+**Verify:** concurrency focused → 3 passed (mỗi kiểu tranh chấp lặp 20 lần); VERIFY_DEV → 217 passed; VERIFY_ARCH → 2 passed; CI kiểm tra chạy toàn bộ `tests/growth_engine`; `git diff --check` → OK.
+**DoD:** [x] `spawn` hai process trên cùng SQLite file; chèn command seq 1 chỉ một thành công; CAS authorize chỉ một execution; hai cập nhật field khác nhau được giữ cùng row_version=3; đánh dấu `@pytest.mark.slow`.
+**INV/AC liên quan:** INV-01…INV-03; AC-02; §6.1, §12.
+**Rủi ro / việc để lại:** pytest cảnh báo marker `slow` chưa đăng ký trong cấu hình; test vẫn chạy và CI chạy toàn bộ suite. Không mở rộng file cấu hình ngoài allowlist task.

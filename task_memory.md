@@ -5984,3 +5984,10 @@ not in local venv; installed in CI).
 - `IncidentUseCase` dùng fingerprint domain, mở/touch cùng fingerprint qua partial-index UPSERT, giữ severity cao nhất + gọi domain `escalate`, occurrence_count tăng và last_seen cập nhật. Resolve lưu actor/time/reason; tất cả đổi trạng thái audit.
 - Test xác nhận pause không đổi trạng thái DRAFT delivery, mode/global/channel pause-resume/bump_epoch ghi audit, incident trùng chỉ 1 OPEN và tăng count trước khi resolve.
 - Repositories được tách thành controls/audit/incidents; `ops.py` giữ shim import cũ; UoW expose AuditRepo. VERIFY_DEV 214 passed; VERIFY_ARCH 2 passed; `git diff --check` OK.
+
+## 2026-11-04 — GC2-P2-T06 concurrency multiprocess
+- Thêm ba bài test `multiprocessing.get_context("spawn")`; mỗi bài chạy 20 race độc lập qua hai process dùng cùng SQLite file và barrier. Kết quả: 3 passed, không flaky trong 20 vòng mỗi loại.
+- Insert command cùng delivery/revision/sequence: uniqueness chỉ cho một lệnh; CAS authorize: một process thắng, một conflict và chỉ một execution tồn tại; cập nhật song song `cancelled_at`/`cancel_reason`: giữ cả hai giá trị và `row_version=3`.
+- Dữ liệu thử hoàn toàn synthetic, migration vào DB file tạm; worker là top-level target để chạy được với spawn.
+- VERIFY_DEV 217 passed; VERIFY_ARCH 2 passed; CI `growth-engine-tests` chạy `python -m pytest -q tests/growth_engine`, bao gồm file này. Pytest hiện cảnh báo `slow` chưa đăng ký; giữ marker theo task và không sửa pyproject ngoài allowlist.
+- Giả định: mỗi test có 20 tranh chấp lặp liên tiếp (60 races tổng cộng), phù hợp DoD “Chạy 20 lần liên tiếp” và giữ kiểm tra CI trong toàn suite.
