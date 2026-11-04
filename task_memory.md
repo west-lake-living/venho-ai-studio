@@ -6218,3 +6218,7 @@ not in local venv; installed in CI).
 - Added `venho-engine openapi --out`, generated `contracts/growth_engine/openapi.json`, and an exact snapshot test. Generation builds the FastAPI app with no DB or external service.
 - VERIFY_DEV 404 passed, VERIFY_ARCH 2 passed; snapshot test 1 passed.
 - Assumption: OpenAPI JSON uses sorted keys, UTF-8, two-space indentation and one trailing newline.
+
+## 2026-11-04 — GC2-P7-T06 checklist iPhone
+- Added a five-step Safari checklist for Access/CSP preview, separate Page A/B partial status, stale-tab 412, HEIC upload, and one-handed use. It explicitly prohibits public test posts and requests redacted screenshots.
+- Assumption: Page A/B partial fixture can be loaded in TEST without publishing; Harry supplies device screenshots and sign-off.

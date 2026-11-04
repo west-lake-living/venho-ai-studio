@@ -5495,3 +5495,11 @@ ComfyUI, GPU, provider or network call.
 **DoD:** [x] `venho-engine openapi --out PATH` generates deterministic JSON without DB or network; [x] checked-in snapshot matches generated document.
 **Rủi ro / việc để lại:** dashboard runtime routes still return 503 until the P7-T01 facade is composed; OpenAPI describes their contract.
 **Giả định:** snapshot formatting uses UTF-8, two-space indentation, sorted keys and one trailing newline.
+
+### GC2-P7-T06 — Checklist kiểm trên Safari iPhone (2026-11-04)
+**Status:** PARTIAL — checklist đã sẵn sàng; kiểm tra thật và ảnh bằng chứng đang chờ Harry
+**Files:** `docs/growth_engine/ios_dashboard_checklist.md`, `task_status.md`, `task_memory.md`
+**Verify:** tài liệu được rà theo CSP/Access preview, Page A/B partial, stale tab 412, upload HEIC và thao tác một tay; chưa có thiết bị iPhone để xác nhận.
+**DoD:** [x] checklist có bước, kết quả mong đợi và ô lưu evidence; [ ] Safari/iPhone thực tế và ảnh chụp chưa thực hiện.
+**Gate:** Harry kiểm trên iPhone bằng dữ liệu TEST; không phát sinh bài đăng công khai.
+**Giả định:** fixture TEST có thể tạo trạng thái Page A/B partial mà không gọi Facebook/Meta thật.
