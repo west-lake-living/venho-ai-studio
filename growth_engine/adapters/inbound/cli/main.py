@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from importlib import import_module
 from pathlib import Path
 from typing import Protocol
 
@@ -37,8 +38,9 @@ def migrate(
         raise typer.BadParameter("configure GE_DB_PATH before running migrations")
     service = ctx.obj.get("migration_service") if isinstance(ctx.obj, dict) else None
     if service is None:
-        typer.echo("Migration service is not wired into the CLI container yet.", err=True)
-        raise typer.Exit(code=1)
+        from growth_engine.bootstrap import build_container
+
+        service = build_container(settings).migration_service
     typer.echo(service.run(configured_path, check))
 
 
@@ -53,6 +55,43 @@ def legacy_import(
         raise typer.BadParameter("legacy-import supports only --dry-run; apply mode is not available")
     service = ctx.obj.get("legacy_import_service") if isinstance(ctx.obj, dict) else None
     if service is None:
-        typer.echo("Legacy import service is not wired into the CLI container yet.", err=True)
-        raise typer.Exit(code=1)
+        from growth_engine.bootstrap import build_container
+
+        service = build_container(Settings.from_env()).legacy_import_service
     typer.echo(service.run(source, report))
+
+
+@app.command()
+def doctor(
+    pre_switch: bool = typer.Option(False, "--pre-switch", help="Run checks before switching a release."),
+) -> None:
+    from growth_engine.bootstrap import build_container
+
+    try:
+        container = build_container(Settings.from_env())
+    except ValueError as error:
+        raise typer.BadParameter(str(error)) from error
+    report = container.doctor_service.run(pre_switch=pre_switch)
+    typer.echo(report.render())
+    if report.failed:
+        raise typer.Exit(code=1)
+
+
+@app.command()
+def api(
+    host: str = typer.Option("127.0.0.1", "--host", help="API bind address."),
+    port: int = typer.Option(8021, "--port", min=1, max=65535, help="API bind port."),
+) -> None:
+    from growth_engine.adapters.inbound.api.app import create_app
+    from growth_engine.bootstrap import build_container
+
+    try:
+        container = build_container(Settings.from_env())
+    except ValueError as error:
+        raise typer.BadParameter(str(error)) from error
+    try:
+        uvicorn = import_module("uvicorn")
+    except ImportError as error:
+        typer.echo("Install the [api] extra to run the API command.", err=True)
+        raise typer.Exit(code=1) from error
+    uvicorn.run(create_app(container), host=host, port=port)

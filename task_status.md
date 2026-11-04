@@ -5210,3 +5210,11 @@ ComfyUI, GPU, provider or network call.
 **DoD:** [x] CLI chỉ có `legacy-import --dry-run --source --report`; temp DB v2; raw JSON/SQLite row được băm và import idempotent; báo cáo Markdown source × trạng thái, mismatch, issue codes; không tái tạo approval hoặc cho phép apply.
 **INV/AC liên quan:** INV-01…INV-04, INV-10; AC-15; §12.1.
 **Rủi ro / việc để lại:** dry-run curated snapshot (registry, growth.db, slot snapshot, trends) giữ 995/995 raw rows và tạo 116 delivery không publishable; 2 `GATEWAY_ACCEPTED` thành `LEGACY_UNVERIFIED/CLOSED_UNRESOLVED`, 2 placeholder thành `PLACEHOLDER_POST_ID`. Page ID fb_venho/ig_venho vẫn `REQUIRED_FROM_P0`; thiếu bằng chứng thì không khôi phục approval.
+
+### GC2-P2-T08 — Skeleton API, composition root, doctor (2026-11-04)
+**Status:** DONE — legacy suite giữ baseline thiếu `cv2`
+**Files:** growth_engine/bootstrap.py, growth_engine/adapters/inbound/api/{app,auth,errors,middleware}.py, growth_engine/adapters/inbound/api/routers/health.py, growth_engine/adapters/inbound/api/schemas/common.py, growth_engine/adapters/inbound/cli/main.py, tests/growth_engine/contract/test_api_errors.py, task_status.md, task_memory.md
+**Verify:** API/CLI focused → 8 passed; VERIFY_DEV → 228 passed; VERIFY_ARCH → 2 passed; VERIFY_LEGACY → 5 lỗi collection do `cv2` thiếu; diagnostic tiếp tục → 1857 passed, 79 failed, 8 skipped, 5 errors; `git diff --check` → OK.
+**DoD:** [x] `build_container` nối SQLite/UoW/migrator/legacy dry-run; `/health/live` và `/health/ready`; bearer SHA-256 + scope/channel + chỉ BFF được đặt actor; lỗi Domain/Application theo §19.2; correlation ID, JSON 64 KiB, `Cache-Control: no-store`; CLI `api`, `doctor`, `migrate` wired.
+**INV/AC liên quan:** INV-01…INV-03, INV-10; §9, §11.4, §19.2; G-P2.
+**Rủi ro / việc để lại:** `doctor` báo WARN khi không có clock chuẩn, publish lock, heartbeat hoặc backup. Channel IDs thật vẫn REQUIRED_FROM_P0; `/health/ready` chỉ xanh sau khi DB đã migrate. API hiện chỉ có health router; endpoint nghiệp vụ thuộc task sau.
