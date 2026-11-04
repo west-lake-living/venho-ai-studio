@@ -27,6 +27,12 @@
 - `ErrorCode` lưu đúng 20 giá trị của §19.2; `DomainError.code` chuẩn hoá thành chuỗi và copy `details`. `DomainEvent` là frozen dataclass.
 - VERIFY_DEV 59 pass, VERIFY_ARCH 2 pass; focused kernel 5 pass.
 
+## 2026-11-04 — GC2-P1-T03 canonical payload
+
+- `build_publish_payload` nhận caption đã chuẩn hoá, tạo đúng bộ field `growth.publish.v2`, canonical JSON UTF-8 (NFC payload, sort keys, separators `,`/`:`) và SHA-256. Chặn mọi float/NaN, dimensions phải là int.
+- `DeliveryRevision.create` là điểm duy nhất gọi `normalize_caption` (NFC, CRLF/CR → LF); revision giữ payload JSON bất biến dạng chuỗi và hash. Metadata persistence dành cho P2.
+- Fixture hợp đồng synthetic có ba biến thể NFD/emoji/CRLF; hash golden ghi trực tiếp trong test. VERIFY_DEV 68 pass, VERIFY_ARCH 2 pass.
+
 ## 2026-11-04 — GC2-P0-T05 Cloudflare edge policy
 
 - Ghi ADR-05/06 theo GC2-D08: `/internal/*` cần Access Service Token + bearer theo principal/channel; `/media/publish/*` bypass Access nhưng vẫn bắt buộc capability ký và hash.

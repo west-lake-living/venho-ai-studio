@@ -1,0 +1,27 @@
+{
+  "_synthetic": true,
+  "_note": "Golden payload sample; synthetic IDs and hashes. cần thay bằng fixture thật từ P0-T03/P0-T04.",
+  "input_caption": "Hồ Tây trong một buổi sáng yên bình.",
+  "payload": {
+    "schema_version": "growth.publish.v2",
+    "delivery_id": "00000000-0000-0000-0000-000000000001",
+    "revision_id": "00000000-0000-0000-0000-000000000002",
+    "channel_id": "00000000-0000-0000-0000-000000000003",
+    "remote_account_id": "synthetic-page-id",
+    "channel_config_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "caption": "Hồ Tây trong một buổi sáng yên bình.",
+    "media": [
+      {
+        "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "mime": "image/jpeg",
+        "width": 1536,
+        "height": 1024
+      }
+    ],
+    "scheduled_at_ms": 1794189600000,
+    "deadline_at_ms": 1794191400000,
+    "qc_report_id": "00000000-0000-0000-0000-000000000004",
+    "ruleset_hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "fact_snapshot_hash": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+  }
+}

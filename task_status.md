@@ -5106,3 +5106,11 @@ ComfyUI, GPU, provider or network call.
 **DoD:** [x] BusinessCalendar dùng ICT và epoch ms; đủ 20 mã `ERR_GC2_*`; DomainError giữ code/message/details; DomainEvent frozen; domain chỉ dùng stdlib.
 **INV/AC liên quan:** §4.1, §19.2
 **Rủi ro / việc để lại:** `local_time` là giờ tường địa phương `HH:MM` không kèm timezone.
+
+### GC2-P1-T03 — Payload canonical và revision (2026-11-04)
+**Status:** DONE
+**Files:** growth_engine/domain/kernel/hashing.py, growth_engine/domain/delivery/{canonical_payload,revision}.py, contracts/growth_engine/publish_payload.v2.schema.json, contracts/growth_engine/fixtures/publish_payload.v2/valid/*.json, tests/growth_engine/unit/domain/test_canonical_payload.py, task_status.md, task_memory.md
+**Verify:** focused → 9 passed; VERIFY_DEV → 68 passed; VERIFY_ARCH → 2 passed.
+**DoD:** [x] 3 golden hash cố định; NFC/CRLF chỉ chuẩn hoá lúc tạo revision; float/NaN bị từ chối; sort key/separator/UTF-8 đúng §5.6; payload khớp JSON Schema.
+**INV/AC liên quan:** INV-02; §5.6
+**Rủi ro / việc để lại:** `DeliveryRevision` hiện đóng gói canonical payload và hash; metadata persistence sẽ do P2 bổ sung.

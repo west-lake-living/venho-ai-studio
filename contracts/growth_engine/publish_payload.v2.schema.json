@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Growth Engine publish payload v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "delivery_id",
+    "revision_id",
+    "channel_id",
+    "remote_account_id",
+    "channel_config_hash",
+    "caption",
+    "media",
+    "scheduled_at_ms",
+    "deadline_at_ms",
+    "qc_report_id",
+    "ruleset_hash",
+    "fact_snapshot_hash"
+  ],
+  "properties": {
+    "schema_version": {"const": "growth.publish.v2"},
+    "delivery_id": {"type": "string", "format": "uuid"},
+    "revision_id": {"type": "string", "format": "uuid"},
+    "channel_id": {"type": "string", "format": "uuid"},
+    "remote_account_id": {"type": "string", "minLength": 1},
+    "channel_config_hash": {"$ref": "#/$defs/sha256"},
+    "caption": {"type": "string", "minLength": 1},
+    "media": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["sha256", "mime", "width", "height"],
+        "properties": {
+          "sha256": {"$ref": "#/$defs/sha256"},
+          "mime": {"const": "image/jpeg"},
+          "width": {"type": "integer", "minimum": 1},
+          "height": {"type": "integer", "minimum": 1}
+        }
+      }
+    },
+    "scheduled_at_ms": {"type": "integer", "minimum": 0},
+    "deadline_at_ms": {"type": "integer", "minimum": 0},
+    "qc_report_id": {"type": "string", "format": "uuid"},
+    "ruleset_hash": {"$ref": "#/$defs/sha256"},
+    "fact_snapshot_hash": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  }
+}
