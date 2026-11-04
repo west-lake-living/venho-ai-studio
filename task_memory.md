@@ -1,5 +1,11 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-11-04 — GC2-P0-T04 Meta probe script
+
+- Script nhận channel + Page/IG account ID, post ID, API version, các field/metric ứng viên và period; token chỉ được đọc từ env var theo channel trong plan. Không chạy API probe trong pytest hay lượt này.
+- Field/metric không có mặc định; mọi probe dùng GET qua `GraphClient`; output chỉ giữ kết quả, không in request/token. `--help` chạy offline.
+- Cần Harry cung cấp quyền token và ID thật để chạy ba probe, xác minh field/metric và sinh fixture lọc. Phần docs/fixture không thêm trong task theo giới hạn lượt chạy.
+
 ## 2026-11-04 — GC2-P0-T03 checklist Make TEST
 
 - Chỉ tạo checklist theo §8.1.4, bao gồm MK-1…MK-11; không mở/đổi scenario, không tạo fixture Make vì prompt chỉ cho tài liệu/checklist và cấm gọi Make.

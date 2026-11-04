@@ -5058,3 +5058,11 @@ ComfyUI, GPU, provider or network call.
 **DoD:** [x] Checklist MK-1…MK-11, inventory hiện trạng, TEST cases và bảng kết quả/evidence. [ ] Chụp cấu hình History/router; chạy trên TEST Page/IG; điền kết quả MK-1…MK-11.
 **INV/AC liên quan:** INV-05, INV-06; §8.1.4
 **Rủi ro / việc để lại:** Không mở Make theo giới hạn prompt; không tạo fixture giả. Scenario ID, filter, field post ID thật, error classes và header behavior cần Harry thao tác/ghi bằng chứng.
+
+### GC2-P0-T04 — Probe Meta read-only (2026-11-04)
+**Status:** CHANGE_REQUEST — script sẵn; chưa chạy với token/ID thật
+**Files:** scripts/growth_engine/probe_meta_read.py
+**Verify:** `uv run python scripts/growth_engine/probe_meta_read.py --help` → OK; không gọi API.
+**DoD:** [x] Chọn token env theo channel; version/field/metric chỉ nhận từ CLI; GET-only; JSON output đã lọc token. [ ] Probe đủ ba kênh, xác minh quyền/field/metric và lưu fixture.
+**INV/AC liên quan:** INV-11; §8.3
+**Rủi ro / việc để lại:** Chưa có token, Page/IG IDs và field/metric đã xác minh. Docs và fixtures bị giới hạn ở task này; cần Harry chạy probe và ghi kết quả ở task phù hợp.
