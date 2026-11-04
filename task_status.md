@@ -5138,3 +5138,11 @@ ComfyUI, GPU, provider or network call.
 **DoD:** [x] 14 ngày từ 05/11/2026 cho 8 slot T2/T4/T6/T7; config hash ổn định theo canonical JSON; projection đủ 8 trạng thái và ưu tiên NEEDS_ATTENTION; candidate hết hạn theo `expires_at`/`event_end_at`.
 **INV/AC liên quan:** INV-02, INV-03, INV-07, INV-12; §4.2, §5.5, §6.1
 **Rủi ro / việc để lại:** Page IDs/config production vẫn là REQUIRED_FROM_P0; task này chỉ mô hình hoá domain, không bật kênh hay ghi dữ liệu.
+
+### GC2-P1-T07 — Media/QC VO, preflight, incident, budget (2026-11-04)
+**Status:** DONE
+**Files:** growth_engine/domain/media/{asset,media_policy,qc}.py, growth_engine/domain/publishing/preflight.py, growth_engine/domain/ops/{incident,budget}.py, tests/growth_engine/unit/domain/{test_preflight_rules,test_incident,test_budget}.py, task_status.md, task_memory.md
+**Verify:** focused → 26 passed; VERIFY_DEV → 174 passed; VERIFY_ARCH → 2 passed; `git diff --check` → OK.
+**DoD:** [x] 15 mã PF_* có case bật/tắt; mode/pause/media-fetch không blocking; preflight không mutate; media/QC objects và hai profile; UNKNOWN lên HIGH/CRITICAL; budget tính RESERVED+UNKNOWN+SETTLED+amount.
+**INV/AC liên quan:** INV-02, INV-03, INV-06, INV-08; §7.6, §8.2, §11.3, §19.2
+**Rủi ro / việc để lại:** P0-T03 chưa xác minh error class Make; preflight chỉ nhận facts đã đọc, không tự gọi Meta/Make/ảnh/QC.

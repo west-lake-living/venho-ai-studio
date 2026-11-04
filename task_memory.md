@@ -55,6 +55,13 @@
 - `ResearchCandidate.is_usable` đòi APPROVED, `at_ms < expires_at_ms` và trước `event_end_at_ms` nếu có; boundary bằng thời điểm hết hạn là không dùng được. Test lịch/cấu hình/candidate đều synthetic và cần thay bằng fixture thật từ P0-T03/P0-T04.
 - Focused 14 pass; VERIFY_DEV 148 pass; VERIFY_ARCH 2 pass.
 
+## 2026-11-04 — GC2-P1-T07 media, preflight, incidents, budget
+
+- Preflight là pure function, mỗi PF_* một rule, trả hết issue; `PF_MEDIA_FETCH_FAILED`, `PF_MODE_FORBIDS`, `PF_PAUSED` chỉ chờ và không blocking; rule time đóng cửa sổ khi `now_ms > deadline_at_ms`.
+- Media/QC value objects chỉ chứa metadata; profile Facebook giữ ratio, IG pad 4:5; không import Pillow hay chạy xử lý ảnh. Giới hạn profile lấy nguyên từ §8.2.
+- Incident `UNKNOWN` lên HIGH ngay, CRITICAL sau 60 phút từ first_seen; VERIFY_MISMATCH/RECEIPT_CONFLICT/DUPLICATE_POST CRITICAL. Budget dùng đơn vị minor integer và gồm RESERVED+UNKNOWN+SETTLED+amount.
+- Test inputs synthetic có marker/note cần thay bằng fixture thật từ P0-T03/P0-T04. Focused 26 pass; VERIFY_DEV 174 pass; VERIFY_ARCH 2 pass.
+
 ## 2026-11-04 — GC2-P0-T05 Cloudflare edge policy
 
 - Ghi ADR-05/06 theo GC2-D08: `/internal/*` cần Access Service Token + bearer theo principal/channel; `/media/publish/*` bypass Access nhưng vẫn bắt buộc capability ký và hash.
