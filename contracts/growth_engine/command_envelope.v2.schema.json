@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "growth.command.v2",
+  "title": "Growth Engine command envelope v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "environment",
+    "command_id",
+    "delivery_id",
+    "revision_id",
+    "channel_id",
+    "remote_page_id",
+    "idempotency_key",
+    "payload_hash",
+    "dispatch_epoch",
+    "execute_before_ms",
+    "media_url",
+    "command_token"
+  ],
+  "properties": {
+    "schema_version": {"const": "growth.command.v2"},
+    "environment": {"enum": ["test", "production"]},
+    "command_id": {"type": "string", "minLength": 1},
+    "delivery_id": {"type": "string", "minLength": 1},
+    "revision_id": {"type": "string", "minLength": 1},
+    "channel_id": {"type": "string", "minLength": 1},
+    "remote_page_id": {"type": "string", "minLength": 1},
+    "idempotency_key": {"type": "string", "minLength": 1},
+    "payload_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "dispatch_epoch": {"type": "string", "minLength": 1},
+    "execute_before_ms": {"type": "integer", "minimum": 0},
+    "media_url": {"type": "string", "pattern": "^https://[^\\s]+$"},
+    "command_token": {"type": "string", "pattern": "^v1\\.[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+$"}
+  }
+}
