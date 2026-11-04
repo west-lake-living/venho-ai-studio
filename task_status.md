@@ -5263,3 +5263,12 @@ ComfyUI, GPU, provider or network call.
 **INV/AC liên quan:** INV-04, INV-06, INV-12; D04, D06, D08, D22, D23; §7.3–7.4, §11.4; G-P3.
 **CHANGE_REQUEST:** SQLite/UoW lacks atomic workflow operations for approval batch/idempotency, reject+D23, revoke/cancel command, and slot/delivery/revision reschedule. Need scope for `application/ports/repositories.py`, SQLite `repositories/{delivery,scheduling,commands,idempotency,jobs,audit}.py`, UoW and review/scheduling API routers/composition. The card allowed only application use cases/tests, so those adapters remain unwired.
 **Giả định:** store ports re-read and CAS all affected rows inside one `BEGIN IMMEDIATE`, write audit/jobs in that transaction, and re-check any execution race; rescheduling preserves the slot's deadline duration and requires facts to remain valid through the new scheduled time.
+
+### GC2-P4-T01 — Legacy generation seam map (2026-11-04)
+**Status:** DONE — side-effect boundary mapped; no legacy code change required
+**Files:** docs/growth_engine/legacy_generation_seam.md, task_status.md, task_memory.md
+**Verify:** source review of the eight named application modules and all five bridges; `git diff --check` → OK; no runtime tests (documentation-only inventory).
+**DoD:** [x] call graph from `run_weekly_cycle` to topic/brief/caption/A-B-C images; [x] function/input/output/side-effect/disable table; [x] pure-data adapter seam proposed; [x] confirmed adapter can avoid legacy edits by using lower-level builders/providers and temporary outputs.
+**INV/AC liên quan:** GC2-D02, GC2-D05; §4.4, §7.10; P4-T01.
+**Rủi ro / việc để lại:** legacy wrappers directly write rotation, RunStore/content/prompt artifacts, Drive, registry/slot/job records and may send Telegram alerts; even `FactStore.__init__` creates a directory. P4 adapter must use direct DNA/prompt builder and read-only fact-file reads; if it needs the full M05 or image-run wrapper, add a narrow persistence-off Change Request first.
+**Giả định:** data-only means no persistent application writes; production provider calls can still be external/paid and must use injected ports/budget control from later tasks.
