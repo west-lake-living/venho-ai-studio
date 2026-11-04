@@ -5034,3 +5034,11 @@ ComfyUI, GPU, provider or network call.
 **DoD:** [x] Chặn ảnh xoay, HTML, quá 5 MiB, JPEG hỏng, tỉ lệ ngoài cửa sổ; cho JPEG hợp lệ. [ ] Gọi gate trước POST Make; gửi cảnh báo theo đường hiện tại.
 **INV/AC liên quan:** INV-08; §18
 **Rủi ro / việc để lại:** Tích hợp cần sửa `publishing_gateway/adapters/make_gateway.py` và suite legacy; hai file ngoài allowlist. Cửa sổ ảnh lấy từ `publishing_gateway.image_constraints` qua adapter legacy.
+
+### GC2-T0-05 — Đối soát 3 kênh (2026-11-04)
+**Status:** CHANGE_REQUEST — use case v2 có; job legacy chưa nối
+**Files:** growth_engine/application/ops/{__init__,channel_reconcile}.py, tests/growth_engine/unit/application/ops/test_channel_reconcile.py, task_status.md, task_memory.md
+**Verify:** `uv run --with pytest pytest -q tests/growth_engine` → 41 passed, 0 network.
+**DoD:** [x] Bảy trạng thái; lỗi Graph thành UNAVAILABLE; so caption 80 ký tự; cửa sổ −10′/+3h; registry reader retry 3 lần và không ghi; alert dedupe theo slot × kênh × loại. [ ] CLI, báo cáo ngoài git, Telegram và timer.
+**INV/AC liên quan:** INV-11; §8.3; §11
+**Rủi ro / việc để lại:** Không sửa `analytics_feedback/`, `ops/` hoặc `data/`; P0-T02 ID còn thiếu và P0-T04 field/version chưa probe. Test tổng hợp có `_synthetic: true`, cần thay bằng fixture thật từ P0-T03/P0-T04.

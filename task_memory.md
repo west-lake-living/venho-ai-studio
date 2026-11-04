@@ -1,5 +1,12 @@
 # VENHO AI STUDIO — Task Memory
 
+## 2026-11-04 — GC2-T0-05 đối soát 3 kênh qua port
+
+- Viết use case v2 nhận `ChannelPostReader` và registry/slot đã chuẩn hoá; không đọc dữ liệu thật, không ghi vào `data/`, không thêm CLI/timer/Telegram vì các file legacy/ops ngoài allowlist.
+- So ID trước, rồi caption NFC/whitespace-normalized 80 ký tự; lỗi Graph/quyền trả `UNAVAILABLE`, chỉ `NOT_FOUND` của ID đã ghi nhận mới thành `DELETED`. Cửa sổ do slot đầu vào quyết định (`−10 phút/+3 giờ`).
+- Test JSON trong `tmp_path` có `_synthetic: true`; các post/channel khác cũng là dữ liệu tổng hợp, cần thay bằng fixture thật từ P0-T03/P0-T04.
+- P0-T02 trong repo vẫn có template Page A/B với placeholder, chưa đủ cấu hình ba kênh của v1.2. Không sửa vì task đang làm không cho phép đổi manifest.
+
 ## 2026-11-04 — GC2-T0-01 output image gate
 
 - Không sửa `publishing_gateway` hay `growth_orchestrator` trong lượt này. Đặt checker dưới outbound/legacy adapter và dùng aspect-ratio constants hiện có qua đúng ranh giới legacy.
