@@ -21,6 +21,12 @@
 - Fixture dùng `fake_clock() -> epoch_ms`, `tmp_db_path` trong pytest tempdir và `ids.new_id()` UUID xác định. Socket connect chỉ cho ba host loopback theo task card.
 - VERIFY_DEV 54 pass; VERIFY_ARCH 2 pass. VERIFY_LEGACY hiện dừng ở 5 lỗi thu thập `cv2`, đã thấy ở lượt trước; chạy tiếp thu thập báo 79 legacy failures và 8 skips, chưa quy nguyên nhân cho task này.
 
+## 2026-11-04 — GC2-P1-T02 domain kernel
+
+- `BusinessCalendar` nhận `date` và local time string không timezone; chuyển theo `ZoneInfo` sang epoch ms UTC. `period_key` lấy tháng sau khi đổi về ICT.
+- `ErrorCode` lưu đúng 20 giá trị của §19.2; `DomainError.code` chuẩn hoá thành chuỗi và copy `details`. `DomainEvent` là frozen dataclass.
+- VERIFY_DEV 59 pass, VERIFY_ARCH 2 pass; focused kernel 5 pass.
+
 ## 2026-11-04 — GC2-P0-T05 Cloudflare edge policy
 
 - Ghi ADR-05/06 theo GC2-D08: `/internal/*` cần Access Service Token + bearer theo principal/channel; `/media/publish/*` bypass Access nhưng vẫn bắt buộc capability ký và hash.

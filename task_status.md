@@ -5098,3 +5098,11 @@ ComfyUI, GPU, provider or network call.
 **DoD:** [x] Package tree, Settings fail-closed, network guard, AST boundaries, extra/lock, script stub và CI job. [ ] VERIFY_LEGACY xanh; CI trên GitHub chưa chạy.
 **INV/AC liên quan:** INV-01…INV-12; §4.1
 **Rủi ro / việc để lại:** 5 lỗi thu thập do thiếu optional `cv2` đã có trong lần VERIFY_LEGACY trước task; 79 lỗi ở diagnostic chạy tiếp chưa được xác nhận baseline. CLI còn là stub rỗng theo yêu cầu P2-T01.
+
+### GC2-P1-T02 — Kernel thời gian, lỗi và sự kiện (2026-11-04)
+**Status:** DONE
+**Files:** growth_engine/domain/kernel/{time,errors,events}.py, tests/growth_engine/unit/domain/test_kernel.py, task_status.md, task_memory.md
+**Verify:** focused → 5 passed; VERIFY_DEV → 59 passed; VERIFY_ARCH → 2 passed.
+**DoD:** [x] BusinessCalendar dùng ICT và epoch ms; đủ 20 mã `ERR_GC2_*`; DomainError giữ code/message/details; DomainEvent frozen; domain chỉ dùng stdlib.
+**INV/AC liên quan:** §4.1, §19.2
+**Rủi ro / việc để lại:** `local_time` là giờ tường địa phương `HH:MM` không kèm timezone.
