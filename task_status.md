@@ -5361,4 +5361,12 @@ ComfyUI, GPU, provider or network call.
 **INV/AC liên quan:** INV-05, INV-07; §7.10, §9.2; P4-T05.
 **Rủi ro / việc để lại:** Make workflow credentials/feature flag vẫn do Harry cấu hình; không gửi request ra ngoài trong test.
 **Giả định:** ID lặp lại trong cùng transaction được coi là replay khi natural key và source hash khớp; audit chỉ lưu định danh/hash, không lưu payload research.
+
+### GC2-P0-T03 — VERIFY_LEGACY baseline từ main (2026-11-04)
+**Status:** CHANGE_REQUEST — baseline đã lưu; Make TEST evidence vẫn chờ Harry
+**Files:** docs/growth_engine/legacy_test_baseline.txt, task_status.md, task_memory.md
+**Verify:** main `9ba1435e`; suite với năm test thiếu optional `geometry-yunet` bị ignore → 1627 passed, 79 failed, 10 skipped, 8 warnings; 79 node ID đỏ được lưu làm baseline.
+**DoD:** [x] Chạy legacy trên worktree sạch từ main; [x] ghi node ID đỏ sẵn và lệnh tái lập; [ ] MK-1…MK-11 và scenario TEST cần Harry.
+**INV/AC liên quan:** INV-05, INV-06; §8.1.4, §16.1; P0-T03.
+**Rủi ro / việc để lại:** VERIFY_LEGACY hiện hành phải so các node ID đỏ với baseline; năm file geometry cần cài optional extra để chạy.
 **Giả định:** no Make error class is safe until observed in a redacted TEST History output; a webhook 2xx is not evidence of a Facebook post; TEST sends require the exact manifest Page ID and an operator's explicit `--send` invocation.

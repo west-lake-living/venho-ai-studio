@@ -6135,3 +6135,8 @@ not in local venv; installed in CI).
 - `build_container` now constructs the three candidate use cases with a production SQLite store; `create_app` mounts internal research, while middleware enforces the 64 KiB limit before JSON parsing and retains `Cache-Control: no-store` for `/internal/*`.
 - Real file-SQLite integration covers authenticated HTTP ingest, replay, approval decision, expiry, and audit rows. No schema migration was needed; tests make no network calls.
 - Assumption: candidate audit records keep source identifiers and hashes only; raw research payload remains in the candidate row for editorial review.
+
+## 2026-11-04 — GC2-P0-T03 legacy baseline
+- Captured the full suite from detached `main` (`9ba1435e`) in a temporary worktree with offline `uv`; used `PYTHONPATH=.` so package imports resolve from the checkout.
+- Ignored the five test files requiring the unavailable optional `geometry-yunet` extra, then recorded all 79 pre-existing failing node IDs in `docs/growth_engine/legacy_test_baseline.txt` (1627 passed, 79 failed, 10 skipped, 8 warnings).
+- No legacy source or test files were edited. The Make TEST scenario/evidence remains a human gate.

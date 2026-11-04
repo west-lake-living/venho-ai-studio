@@ -1,0 +1,88 @@
+# VERIFY_LEGACY baseline captured from main
+
+- Main commit: `9ba1435e` (`docs(growth): status report 2026-11-04 — structure, strengths/weaknesses, open issues, upgrades`).
+- Captured: 2026-11-04.
+- Invocation: `PYTHONPATH=. UV_OFFLINE=1 uv run --with pytest --with httpx pytest -q tests --ignore tests/identity_restoration/application/test_candidate_v3_service.py --ignore tests/identity_restoration/application/test_canonical_transform.py --ignore tests/identity_restoration/application/test_phase4_quality.py --ignore tests/identity_restoration/application/test_phase7_candidate_v3_evaluation.py --ignore tests/test_yunet_geometry.py --tb=no`.
+- The five ignored files require the optional `geometry-yunet` extra (`cv2`); pytest has no network access.
+- Main result: `1627 passed, 79 failed, 10 skipped, 8 warnings`.
+- The following 79 failing node IDs were already red on `main` and are excluded from regression comparisons:
+
+- `tests/identity_restoration/application/test_benchmark_geometry.py::test_freeze_recomputes_masks_through_existing_geometry_path`
+- `tests/identity_restoration/application/test_identity_measurement.py::test_three_results_are_canonical_replayable_and_bound_to_bytes_and_policy`
+- `tests/identity_restoration/application/test_identity_measurement.py::test_pass_is_derived_from_value_operator_threshold_and_checks`
+- `tests/identity_restoration/application/test_identity_measurement.py::test_no_face_and_many_faces_fail_closed_with_deterministic_results`
+- `tests/identity_restoration/application/test_identity_measurement.py::test_framing_rules_small_face_border_clip_and_off_centre_is_allowed`
+- `tests/identity_restoration/infrastructure/test_file_identity_pack_repository.py::test_valid_approved_pack_loads_with_pinned_detector_and_exactly_one_face`
+- `tests/test_arcface_identity_similarity.py::test_reports_per_reference_cosine_mean_and_max`
+- `tests/test_arcface_identity_similarity.py::test_counts_prominent_faces_but_ignores_tiny_background_faces`
+- `tests/test_arcface_identity_similarity.py::test_candidate_without_face_is_measured_not_blocked`
+- `tests/test_growth_google_drive_uploader.py::test_expired_token_uses_secret_client_config_before_refresh`
+- `tests/test_gw_p3_authoritative_mask.py::test_authoritative_full_canvas_mask_matches_locked_case_and_crop_space`
+- `tests/test_gw_p4_r1_t3_authority.py::test_authority_precedence_is_explicit_and_default_is_intact`
+- `tests/test_gw_p4_r1_t3_authority.py::test_action_authority_replay_is_reproducible[B03-gw-p4-t2h-c1-b03-regional-20260825-r15-97.51]`
+- `tests/test_gw_p4_r1_t3_authority.py::test_action_authority_replay_is_reproducible[B04-gw-p4-t2h-c1-b04-regional-20260825-r16-94.14]`
+- `tests/test_phase5_contract_refs.py::test_m06_video_locks_outfit_id_across_scene_prompts_and_package`
+- `tests/test_phase6.py::TestRawAssetsExist::test_lake_view_room_images_exist`
+- `tests/test_phase6.py::TestRawAssetsExist::test_deluxe_double_images_exist`
+- `tests/test_pipeline_manifest_integration.py::test_video_pipeline_saves_via_manifest`
+- `tests/test_prompt_cli.py::test_run_one_video_parses_character_then_environment_subjects`
+- `tests/test_qc4.py::test_qc4_authority_and_lineage_use_one_candidate_chain`
+- `tests/test_qc4.py::test_qc4_production_pixel_lock_and_byte_difference_are_persisted`
+- `tests/test_qc4.py::test_qc4_unknown_regions_block_and_base_geometry_score_does_not_leak`
+- `tests/test_qc4a.py::test_qc4a_candidate_is_bound_to_exact_existing_final_artifact`
+- `tests/test_qc4a.py::test_qc4a_missing_scene_and_global_evidence_stays_unknown_and_blocked`
+- `tests/test_qc4a.py::test_qc4a_authoritative_scores_are_not_overwritten`
+- `tests/test_qc4b.py::test_qc4b_contract_matrix_is_fail_closed_and_hash_bound`
+- `tests/test_qc4b.py::test_qc4b_preservation_does_not_become_a_regional_score`
+- `tests/test_qc4b.py::test_qc4b_geometry_provenance_is_existing_metric`
+- `tests/test_qc4c.py::test_qc4c_reproduces_both_persisted_scores_without_threshold_change`
+- `tests/test_qc4c.py::test_qc4c_binds_reference_to_base_not_a2_and_preserves_artifacts`
+- `tests/test_qc4c.py::test_qc4c_records_stage_contract_gap_and_identity_interaction_as_non_monotonic`
+- `tests/test_qc4c3.py::test_qc4c3_base_authority_and_geometry_source_sha_are_identical`
+- `tests/test_qc4c3.py::test_qc4c3_serialized_geometry_provenance_has_real_five_landmarks`
+- `tests/test_qc4d.py::test_qc4d_uses_same_extractor_and_preserves_gate_contract`
+- `tests/test_qc4d.py::test_qc4d_provenance_binds_both_source_hashes_and_not_a2`
+- `tests/test_qc4d.py::test_qc4d_keeps_full_scene_detector_and_canonical_bytes_unchanged`
+- `tests/test_qc4e.py::test_qc4e_bounded_matrix_and_locked_authority`
+- `tests/test_qc4e.py::test_qc4e_all_candidates_pass_hard_gates_but_missing_validator_is_not_pass`
+- `tests/test_qc4e.py::test_qc4e_historical_artifact_unchanged`
+- `tests/test_qc4e1.py::test_qc4e1_redacts_credentials_and_reuses_existing_matrix`
+- `tests/test_qc4e1.py::test_qc4e1_selection_uses_hard_gates_and_face_thresholds`
+- `tests/test_qc4e1.py::test_qc4e1_all_face_evidence_is_bound_to_candidate_hash`
+- `tests/test_qc4f.py::test_qc4f_existing_candidate_has_deterministic_preservation_pass`
+- `tests/test_qc4f.py::test_qc4f_preservation_is_region_and_stage_isolated`
+- `tests/test_qc4g.py::test_qc4g_fails_closed_without_image_context`
+- `tests/test_qc4g.py::test_qc4g_binds_exact_candidate_and_lineage`
+- `tests/test_qc4g.py::test_qc4g_does_not_override_gate_or_thresholds`
+- `tests/test_qc4h.py::test_qc4h_semantic_context_is_fail_closed`
+- `tests/test_qc4h.py::test_qc4h_does_not_promote_face_context_to_global_context`
+- `tests/test_qc4h.py::test_qc4h_sha_first_binding_and_no_mutation`
+- `tests/test_qc4h1.py::test_qc4h1_human_recovery_is_not_historical_provenance`
+- `tests/test_qc4h1.py::test_qc4h1_unresolved_reference_roles_fail_closed`
+- `tests/test_qc4h2.py::test_qc4h2_reference_roles_are_distinct_with_shared_artifact`
+- `tests/test_qc4h2.py::test_qc4h2_reference_set_is_complete_and_human_recovery`
+- `tests/test_qc4h2.py::test_qc4h2_does_not_call_validator_or_change_images`
+- `tests/test_reference_asset_resolver.py::test_reference_assets_yaml_folders_exist_and_are_not_empty`
+- `tests/test_step15_comprehensive.py::test_all_four_prompt_types_generate_and_pass_validation_without_touching_knowledge`
+- `tests/test_validator_studio.py::test_prompt_resolver_finds_active_manifest_prompt`
+- `tests/test_validator_studio.py::test_cli_validate_prompt_latest_from_manifest`
+- `tests/test_validator_studio.py::test_face_validator_passes_binary_gates_before_weighted_score`
+- `tests/test_validator_studio.py::test_face_validator_failed_gate_overrides_weighted_score`
+- `tests/test_validator_studio.py::test_face_validator_provider_path_uses_rubric_and_schema_guard`
+- `tests/test_validator_studio.py::test_face_validator_provider_rejects_missing_required_gates`
+- `tests/test_validator_studio.py::test_face_validator_provider_rejects_rubric_weight_scale_scores`
+- `tests/test_validator_studio.py::test_face_validator_provider_rejects_identity_matching_fields`
+- `tests/test_validator_studio.py::test_face_validator_samples_majority_vote_gates_and_average_scores`
+- `tests/test_validator_studio.py::test_face_validator_uses_reference_images_when_provided`
+- `tests/test_validator_studio.py::test_face_validator_missing_reference_image_raises_before_api_call`
+- `tests/test_validator_studio.py::test_face_validator_no_reference_images_keeps_old_behavior`
+- `tests/test_validator_studio.py::test_cli_validate_face_command`
+- `tests/test_video_prompt_builder.py::test_build_video_prompt_merges_character_and_environment_dna`
+- `tests/test_video_prompt_builder.py::test_forbidden_is_deduped_union_and_drives_negative_prompt`
+- `tests/test_video_prompt_builder.py::test_final_prompt_contains_every_required_dna_value`
+- `tests/test_video_prompt_builder.py::test_build_video_prompt_is_deterministic_across_two_runs`
+- `tests/test_video_studio.py::test_storyboard_duration_check_is_exact`
+- `tests/test_video_studio.py::test_video_engine_generates_mvp_lifestyle_reel`
+- `tests/test_video_studio.py::test_character_request_requires_face_dna`
+- `tests/test_video_studio.py::test_character_package_adds_face_lock_continuity`
+- `tests/test_video_studio.py::test_video_cli_generate_command_matches_readme`
