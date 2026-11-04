@@ -5170,3 +5170,11 @@ ComfyUI, GPU, provider or network call.
 **DoD:** [x] 5 migration 0002–0006 được chép nguyên văn; 21 vi phạm bị DB từ chối và hai kịch bản hợp lệ được chấp nhận; kiểm tra FK/integrity trên DB file.
 **INV/AC liên quan:** INV-01…INV-03, INV-07; §6.3, §16.3.
 **Rủi ro / việc để lại:** `metric_observations` thuộc migration 0009/P8, nên test ZERO dùng DDL test-only theo §6.3; chưa thêm migration 0009. Cập nhật test_migrations từ kỳ vọng 0001 sang 0001–0006 để giữ VERIFY_DEV xanh sau khi mở rộng chuỗi.
+
+### GC2-P2-T03 — Unit of Work và SQLite repositories (2026-11-04)
+**Status:** DONE — repository round-trip; lưu ý envelope token được inject khi hydrate
+**Files:** growth_engine/adapters/outbound/persistence/sqlite/{uow.py,repositories/*.py}, tests/growth_engine/integration/sqlite/test_repositories.py, task_status.md, task_memory.md
+**Verify:** repository focused → 4 passed; VERIFY_DEV → 208 passed; VERIFY_ARCH → 2 passed; `git diff --check` → OK.
+**DoD:** [x] `begin_immediate`/`read_only`; retry writer lock 5 lần với backoff 20–200 ms rồi `ERR_GC2_DB_BUSY`; CAS tăng row_version và sai version → `ConcurrencyConflict`; rollback; round-trip các domain aggregate persistence hiện có; không chứa business transitions.
+**INV/AC liên quan:** INV-01…INV-03; §4.1, §6.1, §6.4.
+**Rủi ro / việc để lại:** Schema hiện không có cột cho `OutboxCommand.envelope_token`; repository không lưu credential/token, `get()` nhận token từ issuer để hydrate. Cần issuer tái tạo token ổn định theo C06; không lưu token nhạy cảm vào SQLite.

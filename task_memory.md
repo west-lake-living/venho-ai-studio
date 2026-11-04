@@ -5960,3 +5960,11 @@ not in local venv; installed in CI).
 - Metric là migration 0009/P8, ngoài allowlist P2-T02; test dùng DDL test-only chép từ §6.3 để kiểm CHECK `ZERO`.
 - P2-T02 mở rộng migration chain nên test_migrations của P2-T01 cần đổi kỳ vọng từ 1 sang versions 1–6; sửa cần thiết để toàn VERIFY_DEV vẫn xanh.
 - Constraint suite 23 passed; persistence focused 30 passed; VERIFY_DEV 204 passed; VERIFY_ARCH 2 passed; `foreign_key_check` rỗng và `integrity_check=ok` sau mỗi test.
+
+## 2026-11-04 — GC2-P2-T03 Unit of Work và repositories
+- Test-first: test repository ban đầu đỏ ở import vì `uow.py` chưa có. Sau implementation, repository integration 4 passed.
+- `SqliteUnitOfWork` mở/đóng một connection cho mỗi context; `begin_immediate` chỉ retry lỗi BUSY/LOCKED tại BEGIN, tối đa 5 lần (20,40,80,160,200 ms) rồi raise `DatabaseBusy` (`ERR_GC2_DB_BUSY`, 503). `read_only` bật `query_only`.
+- `cas_update` chỉ cho phép bảng `slots`, `deliveries`, `research_candidates` và field allowlist; update `WHERE id AND row_version`, tăng version hoặc raise `ConcurrencyConflict` (`ERR_GC2_STATE_CONFLICT`). Rollback tự chạy khi context nhận exception.
+- Repository mapper cho Channel/ChannelConfig, Slot/SlotTarget, ContentPackage/ResearchCandidate, MediaAsset/Variant/QcReport, Delivery/Revision/Approval, OutboxCommand/Execution/Receipt, RuntimeControls/Incident. JSON input được parse và serialize canonical; config hash được tái kiểm khi đọc.
+- `OutboxCommand.envelope_token` không có cột trong DDL. Để không ghi capability token vào DB, `CommandRepository.get(..., envelope_token=...)` nhận lại từ issuer. Giả định issuer sinh lại token/envelope ổn định theo cùng command khi C06 redeliver; nếu token phải tồn tại độc lập trong DB cần đổi schema qua migration mới và rà soát bảo mật.
+- Synthetic aggregate graph không gọi network. VERIFY_DEV 208 passed; VERIFY_ARCH 2 passed; `git diff --check` OK.
