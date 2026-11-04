@@ -120,6 +120,7 @@ class FakeAuthorizeStore:
         delivery: Delivery,
         execution,
         *,
+        principal_id: str,
         expected_row_version: int,
         audit_event_id: str,
         correlation_id: str,

@@ -1,9 +1,14 @@
 from __future__ import annotations
 
 import base64
+import hashlib
+import multiprocessing
+import time
 from datetime import date
 from pathlib import Path
 
+from fastapi.testclient import TestClient
+from growth_engine.adapters.inbound.api.app import create_app
 from growth_engine.adapters.inbound.workers.publish_lane import PublishLane
 from growth_engine.adapters.outbound.security.capability_tokens import (
     CapabilityTokenManager,
@@ -185,7 +190,190 @@ def test_dispatch_store_reclaims_expired_lease_and_fences_stale_ack(tmp_path: Pa
     assert row["next_attempt_at"] == 2_101 + 5 * 60_000
 
 
-def _seed_approved_delivery(uow_factory, *, deadline_at_ms: int = 10_000) -> None:
+def test_authorize_router_commits_real_sqlite_execution_and_audit(tmp_path: Path) -> None:
+    bearer = "synthetic-authorize-bearer"
+    now_ms = time.time_ns() // 1_000_000
+    key_config = "authorize:" + base64.urlsafe_b64encode(b"a" * 32).decode().rstrip("=")
+    settings = Settings(
+        env="test",
+        db_path=str(tmp_path / "authorize.db"),
+        media_root=str(tmp_path / "media"),
+        public_base_url="https://growth.example.test",
+        capability_keys=key_config,
+        service_tokens=f"make-fb-hanoi:{hashlib.sha256(bearer.encode()).hexdigest()}",
+        make_webhook_urls={"PAGE_A": "https://hooks.example.test/route"},
+    )
+    container = build_container(settings)
+    container.migration_service.run(Path(settings.db_path), check=False)
+    _seed_approved_delivery(
+        container.uow_factory,
+        deadline_at_ms=now_ms + 600_000,
+        media_root=Path(settings.media_root),
+    )
+    container.enqueue_due.execute(now_ms)
+    lease = container.dispatch_store.claim_due(
+        now_ms,
+        1,
+        owner="authorize-integration",
+        lease_ms=30_000,
+        policy=container.publishing_policy,
+    )[0]
+
+    response = TestClient(create_app(container)).post(
+        "/internal/growth/v2/executions/authorize",
+        headers={"Authorization": f"Bearer {bearer}"},
+        json={
+            "schema_version": "growth.authorize.v2",
+            "command_token": lease.command.envelope_token,
+            "payload_hash": lease.payload_hash,
+            "media_report": {"http_status": 200, "content_type": "image/jpeg"},
+        },
+    )
+    assert response.status_code == 200, response.json()
+    body = response.json()
+    assert body["execute"] is True
+    assert body["remote_page_id"] == "synthetic-page"
+    assert body["caption"] == "Synthetic approved caption"
+    with container.uow_factory().read_only() as tx:
+        delivery = tx.connection.execute(
+            "SELECT state FROM deliveries WHERE id='delivery-sqlite'"
+        ).fetchone()
+        command = tx.connection.execute(
+            "SELECT state, lease_token FROM outbox_commands WHERE delivery_id='delivery-sqlite'"
+        ).fetchone()
+        executions = tx.connection.execute(
+            "SELECT state, grant_id FROM executions WHERE delivery_id='delivery-sqlite'"
+        ).fetchall()
+        audit = tx.connection.execute(
+            "SELECT action FROM audit_events WHERE aggregate_id='delivery-sqlite'"
+        ).fetchall()
+    assert delivery["state"] == "EXECUTING"
+    assert command["state"] == "AUTHORIZED" and command["lease_token"] is None
+    assert len(executions) == 1 and executions[0]["state"] == "AUTHORIZED"
+    assert [row["action"] for row in audit].count("publish.command_authorized") == 1
+
+
+def _authorize_process_worker(
+    database_path,
+    media_root,
+    key_config,
+    service_tokens,
+    command_token,
+    payload_hash,
+    barrier,
+    results,
+) -> None:
+    from growth_engine.application.publishing.authorize_publish import AuthorizePublishCommand
+
+    try:
+        container = build_container(
+            Settings(
+                env="test",
+                db_path=database_path,
+                media_root=media_root,
+                public_base_url="https://growth.example.test",
+                capability_keys=key_config,
+                service_tokens=service_tokens,
+            )
+        )
+        barrier.wait(timeout=20)
+        result = container.authorize_publish.execute(
+            AuthorizePublishCommand(
+                command_token=command_token,
+                payload_hash=payload_hash,
+                media_report_http_status=200,
+                media_report_content_type="image/jpeg",
+                principal_id="make-fb-hanoi",
+                principal_channel_key="fb_hanoi",
+                correlation_id="authorize-race-synthetic",
+            )
+        )
+        results.put((result.execute, result.reason))
+    except BaseException as error:
+        results.put(("ERROR", type(error).__name__))
+        raise
+
+
+def test_two_processes_authorize_one_delivery_once(tmp_path: Path) -> None:
+    bearer = "synthetic-race-bearer"
+    service_tokens = f"make-fb-hanoi:{hashlib.sha256(bearer.encode()).hexdigest()}"
+    key_config = "race:" + base64.urlsafe_b64encode(b"r" * 32).decode().rstrip("=")
+    now_ms = time.time_ns() // 1_000_000
+    settings = Settings(
+        env="test",
+        db_path=str(tmp_path / "authorize-race.db"),
+        media_root=str(tmp_path / "race-media"),
+        public_base_url="https://growth.example.test",
+        capability_keys=key_config,
+        service_tokens=service_tokens,
+        make_webhook_urls={"PAGE_A": "https://hooks.example.test/route"},
+    )
+    container = build_container(settings)
+    container.migration_service.run(Path(settings.db_path), check=False)
+    _seed_approved_delivery(
+        container.uow_factory,
+        deadline_at_ms=now_ms + 600_000,
+        media_root=Path(settings.media_root),
+    )
+    container.enqueue_due.execute(now_ms)
+    lease = container.dispatch_store.claim_due(
+        now_ms,
+        1,
+        owner="authorize-race-setup",
+        lease_ms=30_000,
+        policy=container.publishing_policy,
+    )[0]
+
+    context = multiprocessing.get_context("spawn")
+    barrier = context.Barrier(2)
+    results = context.Queue()
+    processes = [
+        context.Process(
+            target=_authorize_process_worker,
+            args=(
+                settings.db_path,
+                settings.media_root,
+                key_config,
+                service_tokens,
+                lease.command.envelope_token,
+                lease.payload_hash,
+                barrier,
+                results,
+            ),
+        )
+        for _ in range(2)
+    ]
+    for process in processes:
+        process.start()
+    outcomes = [results.get(timeout=30) for _ in processes]
+    for process in processes:
+        process.join(timeout=30)
+        assert process.exitcode == 0
+    results.close()
+    results.join_thread()
+    assert outcomes.count((True, None)) == 1
+    assert outcomes.count((False, "ALREADY_AUTHORIZED")) == 1
+    with container.uow_factory().read_only() as tx:
+        count = tx.connection.execute(
+            "SELECT count(*) FROM executions WHERE delivery_id='delivery-sqlite'"
+        ).fetchone()[0]
+    assert count == 1
+
+
+def _seed_approved_delivery(
+    uow_factory,
+    *,
+    deadline_at_ms: int = 10_000,
+    media_root: Path | None = None,
+) -> None:
+    media_bytes = b"synthetic image bytes"
+    media_sha = hashlib.sha256(media_bytes).hexdigest()
+    media_key = f"variants/{media_sha[:2]}/{media_sha}.jpg"
+    fact_hash = hashlib.sha256(b"{}").hexdigest()
+    if media_root is not None:
+        from growth_engine.adapters.outbound.media.local_store import LocalMediaStore
+
+        media_key = LocalMediaStore(media_root).put_variant(media_bytes, media_sha)
     channel = Channel(
         id="channel-test-fb",
         project_id="venho_hotel",
@@ -217,7 +405,7 @@ def _seed_approved_delivery(uow_factory, *, deadline_at_ms: int = 10_000) -> Non
         lane="weekly",
         source_snapshot_json='{"_synthetic":true}',
         fact_snapshot_json="{}",
-        fact_snapshot_hash="b" * 64,
+        fact_snapshot_hash=fact_hash,
         generation_version="synthetic-v1",
         created_at_ms=1,
     )
@@ -226,7 +414,7 @@ def _seed_approved_delivery(uow_factory, *, deadline_at_ms: int = 10_000) -> Non
         source_type="upload",
         source_ref="synthetic",
         source_revision="r1",
-        source_sha256="c" * 64,
+        source_sha256=media_sha,
         original_key="synthetic/original.jpg",
         metadata_json="{}",
         created_at_ms=1,
@@ -235,8 +423,8 @@ def _seed_approved_delivery(uow_factory, *, deadline_at_ms: int = 10_000) -> Non
         id="variant-sqlite",
         asset_id=asset.id,
         transform_version="synthetic-v1",
-        sha256="a" * 64,
-        object_key="synthetic/variant.jpg",
+        sha256=media_sha,
+        object_key=media_key,
         width=1080,
         height=1350,
         mime="image/jpeg",
@@ -247,7 +435,7 @@ def _seed_approved_delivery(uow_factory, *, deadline_at_ms: int = 10_000) -> Non
     qc = QcReport(
         id="qc-sqlite",
         variant_id=variant.id,
-        caption_hash="d" * 64,
+        caption_hash=hashlib.sha256(b"Synthetic approved caption").hexdigest(),
         ruleset_hash="e" * 64,
         fact_snapshot_hash=package.fact_snapshot_hash,
         decision=QcDecision.PASS,

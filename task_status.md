@@ -5388,6 +5388,15 @@ ComfyUI, GPU, provider or network call.
 **Rủi ro / việc để lại:** Make/Meta chưa được gọi; route URL, token và credentials không được ghi vào log. Page/channel/TEST values chưa được xác minh qua Make.
 **Giả định:** Existing `GE_MAKE_WEBHOOK_URL_<KEY>` refs are the only accepted route refs; production values must use HTTPS. Policy values match `config/projects/venho_hotel/growth_engine/publishing_policy.yaml`.
 
+### GC2-P5-T03 — Wiring SQLite authorize gate (2026-11-04)
+**Status:** DONE — endpoint, local media preflight và commit authorize đã dùng SQLite/UoW
+**Files:** growth_engine/application/publishing/authorize_publish.py, growth_engine/adapters/outbound/persistence/sqlite/authorize_store.py, growth_engine/adapters/inbound/api/{app.py,routers/internal_executions.py}, growth_engine/bootstrap.py, tests/growth_engine/integration/sqlite/test_publish_scheduler_wiring.py, tests/growth_engine/unit/application/test_authorize_publish.py, task_status.md, task_memory.md
+**Verify:** VERIFY_DEV → 354 passed, 4 warnings; VERIFY_ARCH → 2 passed; file-SQLite API integration → execution/command/delivery/audit atomic; spawn multiprocess race → đúng 1 execution; `git diff --check` → OK.
+**DoD:** [x] verifier/principal/channel/page/hash kiểm tra trước commit; [x] local media SHA và candidate được đọc lại trong transaction; [x] authorize, block+incident, expire đều CAS delivery/command và audit atomic; [x] API mount `/internal/growth/v2/executions/authorize`; [x] hai process cạnh tranh chỉ tạo một execution.
+**INV/AC liên quan:** INV-01, INV-03, INV-06; D09–D10, D21; AC-04–AC-06, AC-12; §7.6, §9.2; P5-T03.
+**Rủi ro / việc để lại:** Không kiểm tra Meta hoặc Make thật; TEST credentials/Page và sự kiện Make vẫn do P0/P5-T05 gate.
+**Giả định:** `fact_snapshot_json` là canonical JSON; mọi fact trong snapshot phải có `valid_from` hợp lệ và còn hiệu lực tại thời điểm authorize; snapshot rỗng hợp lệ khi hash khớp.
+
 ### GC2-P5-T01 — Wiring SQLite scheduler và publish lane (2026-11-04)
 **Status:** DONE — enqueue/expire transaction chạy qua SQLite và worker lane đã được bootstrap
 **Files:** growth_engine/adapters/outbound/persistence/sqlite/repositories/publish_scheduler.py, growth_engine/adapters/outbound/persistence/sqlite/repositories/commands.py, growth_engine/application/ports/repositories.py, growth_engine/bootstrap.py, growth_engine/adapters/inbound/cli/main.py, tests/growth_engine/integration/sqlite/test_publish_scheduler_wiring.py, task_status.md, task_memory.md

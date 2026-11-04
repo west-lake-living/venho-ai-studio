@@ -6159,3 +6159,10 @@ not in local venv; installed in CI).
 - Composed HTTP transport, envelope, lazy signed-media issuer, and dispatch into the single publish lane (5-second tick). Fake HTTPS route values in file-SQLite integration prove key rotation, backoff, redelivery, and stale-lease rejection without network calls.
 - Verification: Growth Engine 352 passed (4 warnings), architecture 2 passed, diff check passed.
 - Assumption: `GE_MAKE_WEBHOOK_URL_<KEY>` is the only accepted route reference syntax; route destinations must be HTTPS. Production Make credentials/scenario remain an external gate.
+
+## 2026-11-04 — GC2-P5-T03 SQLite authorize wiring
+- Mounted the internal execution router and composed `AuthorizePublish` over a SQLite store plus the local content-addressed media verifier. Capability verification remains lazy and returns no token in API output.
+- The store rehydrates current command, delivery, revision, approval/revocation, channel/config, media/QC, fact snapshot and live-execution state. Authorization, preflight block/incident and expiry each commit guarded command/delivery changes with execution/audit/incident in one immediate transaction.
+- File-SQLite API test confirms exact caption/Page grant and one execution/audit. Two spawned processes racing the same command return one grant and one `ALREADY_AUTHORIZED`; no public service call.
+- Verification: Growth Engine 354 passed (4 warnings), architecture 2 passed, diff check passed.
+- Assumption: canonical fact snapshots carry validity timestamps for every fact; snapshot without facts is valid only when its content hash matches.

@@ -37,6 +37,10 @@ class _LazyCapabilityIssuer:
         self._load_manager()
         return self._manager.issue(claims, key_id=key_id)
 
+    def verify(self, token: str, audience: str, now_ms: int) -> Any:
+        self._load_manager()
+        return self._manager.verify(token, audience, now_ms)
+
     def _load_manager(self) -> None:
         if self._manager is None:
             module = import_module("growth_engine.adapters.outbound.security.capability_tokens")
@@ -54,6 +58,20 @@ class _LazyMediaUrlIssuer:
             module = import_module("growth_engine.adapters.outbound.media.signed_urls")
             self._issuer = module.SignedMediaUrlIssuer(self._public_base_url, self._key_config)
         return self._issuer.media_url(sha256, command_id, expires_at_ms)
+
+
+class _LazyLocalMediaVerifier:
+    def __init__(self, media_root: str) -> None:
+        self._media_root = media_root
+        self._store: Any | None = None
+
+    def verify(self, object_key: str, sha256: str) -> bool:
+        if _is_required(self._media_root):
+            return False
+        if self._store is None:
+            module = import_module("growth_engine.adapters.outbound.media.local_store")
+            self._store = module.LocalMediaStore(Path(self._media_root))
+        return self._store.verify(object_key, sha256)
 
 
 MIGRATIONS = Path(__file__).parent / "adapters" / "outbound" / "persistence" / "sqlite" / "migrations"
@@ -310,6 +328,7 @@ class Container:
     expire_candidates: Any
     enqueue_due: Any
     expire_overdue: Any
+    authorize_publish: Any
     dispatch_store: Any
     dispatch_outbox: Any
     publishing_policy: Any
@@ -337,6 +356,10 @@ def build_container(settings: Any) -> Container:
         "growth_engine.adapters.outbound.persistence.sqlite.repositories.dispatch"
     )
     dispatch_adapter = import_module("growth_engine.application.publishing.dispatch_outbox")
+    authorize_adapter = import_module("growth_engine.application.publishing.authorize_publish")
+    authorize_store_adapter = import_module(
+        "growth_engine.adapters.outbound.persistence.sqlite.authorize_store"
+    )
     policy_adapter = import_module("growth_engine.domain.publishing.window")
     transport_adapter = import_module("growth_engine.adapters.outbound.make.http_transport")
     envelope_adapter = import_module("growth_engine.adapters.outbound.make.envelope")
@@ -395,6 +418,17 @@ def build_container(settings: Any) -> Container:
         policy=publishing_policy,
         rng=random.uniform,
     )
+    authorize_store = authorize_store_adapter.SqliteAuthorizePublishStore(
+        uow_factory, channel_environment, clock
+    )
+    authorize_publish = authorize_adapter.AuthorizePublish(
+        authorize_store,
+        token_issuer,
+        _LazyLocalMediaVerifier(settings.media_root),
+        clock,
+        ids,
+        publishing_policy,
+    )
     worker_tasks = publish_lane_adapter.build_publish_tasks(
         {
             "enqueue_due": lambda: enqueue_due.execute(clock.now_ms()),
@@ -431,6 +465,7 @@ def build_container(settings: Any) -> Container:
         expire_candidates=expire_adapter.ExpireCandidates(candidate_store, clock),
         enqueue_due=enqueue_due,
         expire_overdue=expire_overdue,
+        authorize_publish=authorize_publish,
         dispatch_store=dispatch_store,
         dispatch_outbox=dispatch_outbox,
         publishing_policy=publishing_policy,
