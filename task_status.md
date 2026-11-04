@@ -5236,3 +5236,12 @@ ComfyUI, GPU, provider or network call.
 **INV/AC liên quan:** §8.1.1, ADR-05, §9.2–9.3; P3-T02.
 **CHANGE_REQUEST:** `create_app` không mount media router và `RequestMiddleware` hiện loại bỏ `Cache-Control` của mọi response `/media`. Cần bổ sung wiring trong `growth_engine/adapters/inbound/api/app.py` và giữ `private, no-store` trong `growth_engine/adapters/inbound/api/middleware.py`; hai file này ngoài allowlist của card, nên chưa sửa.
 **Giả định:** token media dùng key ring `GE_CAPABILITY_KEYS`, định dạng base64url; `exp` được cấp bằng `execute_before_ms + 30 phút` theo ADR-05. Đồng hồ fallback hiện tại là system epoch ms cho tới khi clock chuẩn có ở P6.
+
+### GC2-P3-T03 — QC adapter và evaluate_qc (2026-11-04)
+**Status:** CHANGE_REQUEST — adapter/use case xong; cần bổ sung seam ghi `media_variants.qc_status`
+**Files:** growth_engine/adapters/outbound/legacy/qc_adapter.py, growth_engine/application/media/evaluate_qc.py, tests/growth_engine/unit/application/test_evaluate_qc.py, task_status.md, task_memory.md
+**Verify:** QC focused → 7 passed; VERIFY_DEV → 259 passed; VERIFY_ARCH → 2 passed; `git diff --check` → OK.
+**DoD:** [x] `compile_effective_qc_policy` hash DNA JSON + validation reference; scenario overlay chưa hỗ trợ thì báo lỗi; curated forbidden/kill switch ép FAIL; detector thiếu đưa coverage gap và hạ PASS thành REVIEW; `FakeQc` use case lưu report trong transaction và nhận status updater atomically.
+**INV/AC liên quan:** AC-03; §8.2, §18; P3-T03.
+**CHANGE_REQUEST:** `MediaRepo` chưa khai báo `update_qc_status`, SQLite `MediaRepository` cũng chưa cài đặt. Use case fail-closed nếu thiếu updater; cần cho phép sửa `growth_engine/application/ports/repositories.py` và `growth_engine/adapters/outbound/persistence/sqlite/repositories/media.py` để hoàn tất persistence production.
+**Giả định:** không đọc `overrides.yaml`; khi có scenario yêu cầu overlay, compilation dừng với cấu hình không hỗ trợ. Provider mặc định là Validator Studio `mock` cho chế độ offline; runtime provider thật cần composition task wiring.

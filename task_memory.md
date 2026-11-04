@@ -6024,3 +6024,11 @@ not in local venv; installed in CI).
 - Integration tests dựng SQLite migrated + graph approved synthetic; kiểm bytes/hash/header, token hết hạn, SHA path sai và traversal. Không có network/token thật.
 - Change Request: card chỉ cho phép `signed_urls.py`, `routers/media.py`, test; nhưng app hiện không mount router và middleware xóa `Cache-Control` trên `/media`. Cần sửa `api/app.py` và `api/middleware.py` ở task/CR được phép mở rộng.
 - Giả định: route `/media` không cần bearer; system UTC epoch ms tạm dùng khi app chưa cung cấp authoritative clock.
+
+## 2026-11-04 — GC2-P3-T03 QC adapter và evaluate_qc
+- `compile_effective_qc_policy` là compiler duy nhất trong adapter: hash raw DNA JSON + `validation.yaml` + version/subject; chỉ lấy curated forbidden. Không đọc `overrides.yaml`; scenario overlay chưa hỗ trợ thì raise lỗi cấu hình rõ ràng.
+- `LegacyQcAdapter` hash-check bytes của variant trước Validator Studio, truyền path tạm với provider injection (mặc định mock/offline), giữ report JSON và hash caption/facts/ruleset. `forbidden` curated hoặc kill switch buộc FAIL; coverage gap kỹ thuật/lan can đưa PASS thành REVIEW.
+- `EvaluateQc` đọc variant trước, gọi evaluator ngoài transaction, kiểm lại hash và policy/caption/facts, rồi lưu report + cập nhật status cùng transaction qua updater injection; thiếu updater fail-closed để không ghi report nửa vời.
+- Unit tests dùng FakeQc và validator mock, không network: 7 passed; DEV 259; ARCH 2.
+- Change Request: port/repository MediaRepo chưa expose `update_qc_status`; cần mở rộng hai file persistence/port để ứng dụng SQLite production ghi được status. Runtime provider cũng cần composition injection.
+- Giả định: detector technical-quality chưa có bằng chứng kiểm chứng nên mọi report nhận gap này và không thể tự PASS; scenario-specific overlay sẽ được bật riêng sau khi có compiler được duyệt.
