@@ -1,44 +1,61 @@
 # GC2-P0-T02 — Danh mục Page đích. KHÔNG chứa secret (token/URL webhook nằm ở env, tham chiếu bằng tên).
-# Mọi giá trị REQUIRED_FROM_P0 do Harry điền (xem docs/growth_engine/environment_manifest.md).
-# Loader ở production phải fail nếu còn REQUIRED_FROM_P0 (GC2-P1-T01).
-# Không map bằng tên hiển thị: định danh Page là remote_page_id. Đổi Page = channel mới.
+# ID production dưới đây do Harry cung cấp ngày 2026-11-04. Kênh giữ disabled cho đến khi
+# route/connection Make và Graph API capability được xác minh; null là cấu hình chưa cấp.
+# Không map bằng tên hiển thị: định danh đích là remote_page_id/remote_account_id.
 version: 1
 project: venho_hotel
 timezone: Asia/Ho_Chi_Minh
 
 channels:
-  - channel_id: page_a                       # logical id nội bộ, không đổi
+  - channel_id: fb_hanoi
     environment: production
     platform: facebook
-    display_name: REQUIRED_FROM_P0           # chỉ để hiển thị
-    remote_page_id: REQUIRED_FROM_P0         # Facebook Page ID (TEXT, không parse sang số)
-    make_scenario_id: REQUIRED_FROM_P0
+    display_name: Ven Hồ Hotel Hanoi
+    remote_page_id: "1124616474074140"       # Facebook Page ID; giữ nguyên dạng TEXT
+    make_scenario_id: null                    # chưa xác minh
     make_route_ref: GE_MAKE_WEBHOOK_URL_PAGE_A   # TÊN biến môi trường, không phải URL
-    make_connection_ref: REQUIRED_FROM_P0    # tên connection trong Make, không phải token
-    graph_api_version: REQUIRED_FROM_P0      # phiên bản đã probe ở P0-T04, không dùng "latest"
-    service_principal: make-page-a
+    make_connection_ref: null                 # chưa xác minh; không phải token
+    graph_api_version: null                   # chưa probe ở P0-T04
+    service_principal: make-fb-hanoi
     scopes: [executions.authorize, receipts.write, media.read]
     meta_read_token_ref: GE_META_READ_TOKEN_PAGE_A   # TÊN biến môi trường
     caption_profile: default
-    owner: REQUIRED_FROM_P0
-    verified_on: REQUIRED_FROM_P0            # YYYY-MM-DD ngày Harry xác minh Page ID + route
+    owner: null
+    verified_on: null                         # ID do Harry cung cấp; route chưa xác minh
     enabled: false
 
-  - channel_id: page_b
+  - channel_id: fb_venho
     environment: production
     platform: facebook
-    display_name: REQUIRED_FROM_P0
-    remote_page_id: REQUIRED_FROM_P0
-    make_scenario_id: REQUIRED_FROM_P0
+    display_name: Ven Hồ Hotel
+    remote_page_id: "803531149684177"
+    make_scenario_id: null
     make_route_ref: GE_MAKE_WEBHOOK_URL_PAGE_B
-    make_connection_ref: REQUIRED_FROM_P0
-    graph_api_version: REQUIRED_FROM_P0
-    service_principal: make-page-b
+    make_connection_ref: null
+    graph_api_version: null
+    service_principal: make-fb-venho
     scopes: [executions.authorize, receipts.write, media.read]
     meta_read_token_ref: GE_META_READ_TOKEN_PAGE_B
     caption_profile: default
-    owner: REQUIRED_FROM_P0
-    verified_on: REQUIRED_FROM_P0
+    owner: null
+    verified_on: null
+    enabled: false
+
+  - channel_id: ig_venho
+    environment: production
+    platform: instagram
+    display_name: Ven Hồ Hotel Instagram
+    remote_account_id: "17841457936965829"   # instagram_business_account.id
+    make_scenario_id: null                    # v2 không đăng Instagram
+    make_route_ref: null
+    make_connection_ref: null
+    graph_api_version: null                   # chưa probe ở P0-T04
+    service_principal: make-ig
+    scopes: [media.read]
+    meta_read_token_ref: GE_META_READ_TOKEN_IG_VENHO
+    caption_profile: default
+    owner: null
+    verified_on: null                         # ID do Harry cung cấp; token chưa probe
     enabled: false
 
   # Page TEST riêng + scenario TEST riêng: mọi test có side effect chỉ chạy ở đây.

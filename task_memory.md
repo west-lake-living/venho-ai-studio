@@ -6140,3 +6140,8 @@ not in local venv; installed in CI).
 - Captured the full suite from detached `main` (`9ba1435e`) in a temporary worktree with offline `uv`; used `PYTHONPATH=.` so package imports resolve from the checkout.
 - Ignored the five test files requiring the unavailable optional `geometry-yunet` extra, then recorded all 79 pre-existing failing node IDs in `docs/growth_engine/legacy_test_baseline.txt` (1627 passed, 79 failed, 10 skipped, 8 warnings).
 - No legacy source or test files were edited. The Make TEST scenario/evidence remains a human gate.
+
+## 2026-11-04 — GC2-P0-T02 production channel IDs
+- Recorded the three IDs supplied in Harry's prompt as text: `fb_hanoi` 1124616474074140, `fb_venho` 803531149684177, and `ig_venho` 17841457936965829.
+- Removed production `REQUIRED_FROM_P0` values. Unverified Make scenario/connection and Graph API fields are `null`; all three production channels remain disabled. TEST channel placeholders remain unchanged.
+- Assumption: Instagram is an analytics/read identity only; v2 publication remains the two Facebook Pages per GC2-D01. The IDs are user-provided and have not been independently checked against Meta.

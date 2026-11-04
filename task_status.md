@@ -5369,4 +5369,13 @@ ComfyUI, GPU, provider or network call.
 **DoD:** [x] Chạy legacy trên worktree sạch từ main; [x] ghi node ID đỏ sẵn và lệnh tái lập; [ ] MK-1…MK-11 và scenario TEST cần Harry.
 **INV/AC liên quan:** INV-05, INV-06; §8.1.4, §16.1; P0-T03.
 **Rủi ro / việc để lại:** VERIFY_LEGACY hiện hành phải so các node ID đỏ với baseline; năm file geometry cần cài optional extra để chạy.
+
+### GC2-P0-T02 — Ghi ba Meta ID production đã cung cấp (2026-11-04)
+**Status:** PARTIAL — Page/Instagram ID đã ghi; route và quyền đọc Meta chưa xác minh
+**Files:** config/projects/venho_hotel/growth_engine/channels.yaml, docs/growth_engine/environment_manifest.md, task_status.md, task_memory.md
+**Verify:** YAML parse OK; `fb_hanoi=1124616474074140`, `fb_venho=803531149684177`, `ig_venho=17841457936965829`; mọi giá trị `REQUIRED_FROM_P0` trong `channels.yaml` chỉ nằm ở environment `test`; ba channel production vẫn disabled.
+**DoD:** [x] Ghi Page A/B và IG ID đã được Harry cung cấp; [x] không để placeholder production; [ ] scenario, connection, Graph API version, owner và ngày xác minh route còn thiếu.
+**INV/AC liên quan:** AC-01; §8.1.5; P0-T02.
+**Rủi ro / việc để lại:** ID được nhận từ prompt, chưa đối chiếu trên Meta/Make; null runtime fields và `enabled: false` giữ hệ thống fail-closed.
+**Giả định:** Entry `ig_venho` chỉ phục vụ định danh/analytics Meta; phát hành v2 vẫn chỉ target hai Facebook Page theo GC2-D01.
 **Giả định:** no Make error class is safe until observed in a redacted TEST History output; a webhook 2xx is not evidence of a Facebook post; TEST sends require the exact manifest Page ID and an operator's explicit `--send` invocation.

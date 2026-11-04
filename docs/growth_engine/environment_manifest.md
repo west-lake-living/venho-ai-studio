@@ -1,4 +1,4 @@
-# GC2 — Manifest đích (2 Page production + 1 Page test)
+# GC2 — Manifest đích (2 Facebook Page + Instagram production ID + 1 Page test)
 
 > **Không ghi secret** vào file này (token, URL webhook, Client Secret). Chỉ ghi định danh và *tên* biến môi trường.
 > Sau khi điền, chạy: `python3 scripts/growth_engine/check_manifest_no_secrets.py` (phải trả 0) và
@@ -12,17 +12,20 @@ Không map bằng tên hiển thị; đổi tên Page không đổi channel; Pag
 
 | Trường | Page A (`page_a`) | Page B (`page_b`) |
 |---|---|---|
-| Tên Page hiển thị | REQUIRED_FROM_P0 | REQUIRED_FROM_P0 |
-| `remote_page_id` | REQUIRED_FROM_P0 | REQUIRED_FROM_P0 |
-| Make scenario ID | REQUIRED_FROM_P0 | REQUIRED_FROM_P0 |
+| Tên Page hiển thị | Ven Hồ Hotel Hanoi | Ven Hồ Hotel |
+| `remote_page_id` | `1124616474074140` | `803531149684177` |
+| Make scenario ID | `null` — chưa xác minh | `null` — chưa xác minh |
 | Route ref (tên env) | `GE_MAKE_WEBHOOK_URL_PAGE_A` | `GE_MAKE_WEBHOOK_URL_PAGE_B` |
-| Make connection (tên) | REQUIRED_FROM_P0 | REQUIRED_FROM_P0 |
-| Graph API version | REQUIRED_FROM_P0 | REQUIRED_FROM_P0 |
-| Principal | `make-page-a` | `make-page-b` |
+| Make connection (tên) | `null` — chưa xác minh | `null` — chưa xác minh |
+| Graph API version | `null` — chưa probe P0-T04 | `null` — chưa probe P0-T04 |
+| Principal | `make-fb-hanoi` | `make-fb-venho` |
 | Scopes | `executions.authorize`, `receipts.write`, `media.read` | như Page A |
 | Env token đọc Meta (tên) | `GE_META_READ_TOKEN_PAGE_A` | `GE_META_READ_TOKEN_PAGE_B` |
-| Owner | REQUIRED_FROM_P0 | REQUIRED_FROM_P0 |
-| Ngày xác minh | REQUIRED_FROM_P0 | REQUIRED_FROM_P0 |
+| Owner | `null` — chưa chỉ định | `null` — chưa chỉ định |
+| Ngày xác minh route | `null` — ID do Harry cung cấp, route chưa xác minh | `null` — ID do Harry cung cấp, route chưa xác minh |
+| Trạng thái | disabled | disabled |
+
+Instagram (chỉ định danh production; v2 không đăng IG): `ig_venho` → `instagram_business_account.id` `17841457936965829`; Graph API version/token chưa probe; channel disabled.
 
 ## Test (Page test riêng + scenario test riêng)
 
