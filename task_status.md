@@ -5010,3 +5010,11 @@ ComfyUI, GPU, provider or network call.
 **DoD:** [x] kết quả dán vào legacy_inventory.md#host · [ ] chạy lại bản mới để có `python_uv`
 **INV/AC liên quan:** ADR-01
 **Rủi ro / việc để lại:** Python hệ thống server SQLite 3.46.1 dưới ngưỡng; thiếu `age` (cần trước P6).
+
+### GC2-P0-T02 — Manifest 2 Page (2026-11-05)
+**Status:** DONE phần AI; chờ Harry điền
+**Files:** docs/growth_engine/environment_manifest.md, config/projects/venho_hotel/growth_engine/channels.yaml, scripts/growth_engine/check_manifest_no_secrets.py, tests/growth_engine/test_check_manifest_no_secrets.py
+**Verify:** `uv run --no-sync --with pytest --with python-dotenv pytest -q tests/growth_engine` → 17 passed, 0 network. Script mặc định → exit 0; `--require-filled` → exit 1 (còn REQUIRED_FROM_P0, đúng dự kiến).
+**DoD:** [ ] Harry điền Page ID thật, tên Page, scenario ID; script `--require-filled` trả 0
+**INV/AC liên quan:** AC-01
+**Rủi ro / việc để lại:** Thêm test ngoài mục Files của card (Harry yêu cầu rõ). conftest gốc cần `python-dotenv` nên lệnh verify phải có `--with python-dotenv` cho tới khi P1-T01 tạo conftest riêng.

@@ -1,0 +1,60 @@
+# GC2-P0-T02 — Danh mục Page đích. KHÔNG chứa secret (token/URL webhook nằm ở env, tham chiếu bằng tên).
+# Mọi giá trị REQUIRED_FROM_P0 do Harry điền (xem docs/growth_engine/environment_manifest.md).
+# Loader ở production phải fail nếu còn REQUIRED_FROM_P0 (GC2-P1-T01).
+# Không map bằng tên hiển thị: định danh Page là remote_page_id. Đổi Page = channel mới.
+version: 1
+project: venho_hotel
+timezone: Asia/Ho_Chi_Minh
+
+channels:
+  - channel_id: page_a                       # logical id nội bộ, không đổi
+    environment: production
+    platform: facebook
+    display_name: REQUIRED_FROM_P0           # chỉ để hiển thị
+    remote_page_id: REQUIRED_FROM_P0         # Facebook Page ID (TEXT, không parse sang số)
+    make_scenario_id: REQUIRED_FROM_P0
+    make_route_ref: GE_MAKE_WEBHOOK_URL_PAGE_A   # TÊN biến môi trường, không phải URL
+    make_connection_ref: REQUIRED_FROM_P0    # tên connection trong Make, không phải token
+    graph_api_version: REQUIRED_FROM_P0      # phiên bản đã probe ở P0-T04, không dùng "latest"
+    service_principal: make-page-a
+    scopes: [executions.authorize, receipts.write, media.read]
+    meta_read_token_ref: GE_META_READ_TOKEN_PAGE_A   # TÊN biến môi trường
+    caption_profile: default
+    owner: REQUIRED_FROM_P0
+    verified_on: REQUIRED_FROM_P0            # YYYY-MM-DD ngày Harry xác minh Page ID + route
+    enabled: false
+
+  - channel_id: page_b
+    environment: production
+    platform: facebook
+    display_name: REQUIRED_FROM_P0
+    remote_page_id: REQUIRED_FROM_P0
+    make_scenario_id: REQUIRED_FROM_P0
+    make_route_ref: GE_MAKE_WEBHOOK_URL_PAGE_B
+    make_connection_ref: REQUIRED_FROM_P0
+    graph_api_version: REQUIRED_FROM_P0
+    service_principal: make-page-b
+    scopes: [executions.authorize, receipts.write, media.read]
+    meta_read_token_ref: GE_META_READ_TOKEN_PAGE_B
+    caption_profile: default
+    owner: REQUIRED_FROM_P0
+    verified_on: REQUIRED_FROM_P0
+    enabled: false
+
+  # Page TEST riêng + scenario TEST riêng: mọi test có side effect chỉ chạy ở đây.
+  - channel_id: page_test
+    environment: test
+    platform: facebook
+    display_name: REQUIRED_FROM_P0
+    remote_page_id: REQUIRED_FROM_P0
+    make_scenario_id: REQUIRED_FROM_P0
+    make_route_ref: GE_MAKE_WEBHOOK_URL_PAGE_TEST
+    make_connection_ref: REQUIRED_FROM_P0
+    graph_api_version: REQUIRED_FROM_P0
+    service_principal: make-page-test
+    scopes: [executions.authorize, receipts.write, media.read]
+    meta_read_token_ref: GE_META_READ_TOKEN_PAGE_TEST
+    caption_profile: default
+    owner: REQUIRED_FROM_P0
+    verified_on: REQUIRED_FROM_P0
+    enabled: false
