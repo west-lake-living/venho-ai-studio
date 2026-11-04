@@ -19,7 +19,7 @@ import unicodedata
 from pathlib import Path
 from typing import Any, Optional
 
-from PIL import Image
+from PIL import Image, ImageOps
 
 # Option B/C cost one more gpt-image-2 + vision QC call and one Drive upload
 # per topic; enabled on the server runner, off in tests and local runs.
@@ -101,7 +101,9 @@ def to_upload_jpeg(source: Path, *, max_side: int = 2048) -> Path:
     import agent_studio.growth.reference_asset_resolver  # noqa: F401 - registers HEIF support
 
     with Image.open(source) as image:
-        image = image.convert("RGB")
+        # Phone photos store rotation as an EXIF tag; re-encoding drops EXIF,
+        # so the pixels must be rotated first or the post goes out sideways.
+        image = ImageOps.exif_transpose(image).convert("RGB")
         image.thumbnail((max_side, max_side))
         handle = tempfile.NamedTemporaryFile(suffix=".jpg", delete=False)
         handle.close()
