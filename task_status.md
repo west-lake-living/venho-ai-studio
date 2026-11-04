@@ -5272,3 +5272,12 @@ ComfyUI, GPU, provider or network call.
 **INV/AC liên quan:** GC2-D02, GC2-D05; §4.4, §7.10; P4-T01.
 **Rủi ro / việc để lại:** legacy wrappers directly write rotation, RunStore/content/prompt artifacts, Drive, registry/slot/job records and may send Telegram alerts; even `FactStore.__init__` creates a directory. P4 adapter must use direct DNA/prompt builder and read-only fact-file reads; if it needs the full M05 or image-run wrapper, add a narrow persistence-off Change Request first.
 **Giả định:** data-only means no persistent application writes; production provider calls can still be external/paid and must use injected ports/budget control from later tasks.
+
+### GC2-P4-T02 — LegacyGeneratorAdapter & LegacyFactSource (2026-11-04)
+**Status:** DONE — content/image generation seam and read-only approved fact snapshot implemented
+**Files:** growth_engine/adapters/outbound/legacy/{generator_adapter,fact_source}.py, tests/growth_engine/unit/application/test_generator_contract.py, task_status.md, task_memory.md
+**Verify:** focused → 3 passed; VERIFY_DEV → 277 passed, 4 warnings; VERIFY_ARCH → 2 passed; `compileall` + `git diff --check` → OK.
+**DoD:** [x] `draft(DraftRequest) -> DraftPackage`; current Claude/OpenAI providers injectable/configured; no prompt/store/Drive/registry writes; generated and curated image paths live under managed temp dirs; captions mapped to current channel profiles; only approved facts valid at `at_ms` are snapshotted.
+**INV/AC liên quan:** GC2-D02; §7.10; P4-T02.
+**Rủi ro / việc để lại:** option B follows legacy `GROWTH_IMAGE_ALTERNATIVES=1`; disabled image provider can still return curated option C or no image. `close()` must run after consumers ingest temporary paths. Current Page profiles are all `default`, so captions match per GC2-D02.
+**Giả định:** provider calls and paid-call accounting are invoked by the later P4-T03 caller; facts are stored as `<safe_fact_key>.json` with `status`, `valid_from`, and optional `valid_to`.
