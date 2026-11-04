@@ -6178,3 +6178,8 @@ not in local venv; installed in CI).
 - Added an opt-in factory that writes synthetic slot, delivery, revision, approval and outbox command through the TEST SQLite UoW, then writes a mode-0600 envelope. Default remains validated dry-run; no network call occurred.
 - Real file-SQLite integration verified the persisted chain and `environment=test`. VERIFY_DEV 358 passed (4 warnings), VERIFY_ARCH 2 passed.
 - Assumption: a separate empty TEST DB is required; existing/placeholder Page, route or signing configuration fails closed. Make MK-1…MK-11 evidence remains a human gate.
+
+## 2026-11-04 — GC2-P5-T06 FakeMake fault matrix
+- Added a local blueprint model with idempotent authorize/receipt endpoints and one mutation counter per delivery. Fault tests cover pre-send outbox state, post-authorization crash, post creation before receipt, receipt-apply crash, duplicate webhooks, lost responses, and separate Page A/B recovery.
+- Focused fault/e2e 9 passed; VERIFY_DEV 367 passed (4 warnings); VERIFY_ARCH 2 passed. No network or real Make/Meta calls.
+- Assumption: these fakes establish backend invariants but do not substitute for P5-T05's human TEST scenario evidence.

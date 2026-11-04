@@ -5424,3 +5424,12 @@ ComfyUI, GPU, provider or network call.
 **INV/AC liên quan:** INV-01, INV-09; AC-06, AC-07, AC-08, AC-09; §8.1.4, P5-T05.
 **Rủi ro / việc để lại:** no Make/Meta action performed. Current TEST manifest still contains `REQUIRED_FROM_P0`; command creation is intentionally unavailable until TEST identity, route, and runtime settings are verified. No Make-specific error class is allowlisted.
 **Giả định:** Factory uses a synthetic JPEG/caption, a dedicated TEST database with no existing `page_test` channel, and creates a pending local command; only explicit `--send` plus exact TEST Page confirmation can make a webhook request.
+
+### GC2-P5-T06 — Fault injection và hai Page với FakeMake (2026-11-04)
+**Status:** DONE — fake Make covers duplicate webhook, lost responses, injected crashes and two-page isolation
+**Files:** tests/growth_engine/support/fake_make.py, tests/growth_engine/fault/{test_crash_points,test_duplicate_webhook,test_lost_responses}.py, tests/growth_engine/e2e/test_two_pages_happy_path.py, task_status.md, task_memory.md
+**Verify:** focused fault/e2e → 9 passed; VERIFY_DEV → 367 passed, 4 warnings; VERIFY_ARCH → 2 passed; `git diff --check` → OK. All tests are local and synthetic.
+**DoD:** [x] Counted post mutation is at most one per delivery across crash points; [x] duplicate webhook and lost ACK do not create another mutation; [x] lost authorize response cannot grant or post twice; [x] Page A success and Page B failure/recovery never replays A; [x] both Pages receive identical caption/media hashes in happy path.
+**INV/AC liên quan:** AC-02, AC-06, AC-07, AC-08, AC-09, AC-12; §8.1.4, P5-T06.
+**Rủi ro / việc để lại:** FakeMake models the blueprint contract locally; it does not verify a real Make scenario or Meta result. P5-T05 TEST operator evidence remains a gate.
+**Giả định:** A duplicate command receives `ALREADY_AUTHORIZED` from the simulated endpoint; a Page-specific rejection before authorization can be safely retried only on that Page's delivery.
