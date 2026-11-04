@@ -6222,3 +6222,8 @@ not in local venv; installed in CI).
 ## 2026-11-04 — GC2-P7-T06 checklist iPhone
 - Added a five-step Safari checklist for Access/CSP preview, separate Page A/B partial status, stale-tab 412, HEIC upload, and one-handed use. It explicitly prohibits public test posts and requests redacted screenshots.
 - Assumption: Page A/B partial fixture can be loaded in TEST without publishing; Harry supplies device screenshots and sign-off.
+
+## 2026-11-04 — GC2-P7-T03 BFF v2
+- In venho-os local branch `codex/gc2-growth-dashboard-20261104`, commit `5a698c8` adds the server-only BFF client, v2 route handler, session actor, bearer env config, request-header allowlist, GROWTH_BACKEND mode, generated OpenAPI types, and generator script.
+- Focused BFF tests 8 passed; targeted ESLint and `tsc --noEmit` passed. No push/deploy.
+- Assumption: VENHO OS signed session email is accepted as backend actor; production URL must use HTTPS.

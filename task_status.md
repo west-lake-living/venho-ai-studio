@@ -5503,3 +5503,11 @@ ComfyUI, GPU, provider or network call.
 **DoD:** [x] checklist có bước, kết quả mong đợi và ô lưu evidence; [ ] Safari/iPhone thực tế và ảnh chụp chưa thực hiện.
 **Gate:** Harry kiểm trên iPhone bằng dữ liệu TEST; không phát sinh bài đăng công khai.
 **Giả định:** fixture TEST có thể tạo trạng thái Page A/B partial mà không gọi Facebook/Meta thật.
+
+### GC2-P7-T03 — BFF client Growth Engine v2 trong venho-os (2026-11-04)
+**Status:** DONE — BFF route, server-only bearer/session actor và kiểu OpenAPI đã được nối
+**External commit:** `venho-os` branch `codex/gc2-growth-dashboard-20261104`, commit `5a698c8` (local, chưa push)
+**Files:** `src/bff/growth/growth-engine.client.ts`, `src/bff/growth/growth-engine.types.ts`, `src/app/api/v1/studio/growth/v2/[...path]/route.ts`, `scripts/gen-growth-types.sh`, `tests/unit/bff/growth/growth-engine.client.test.ts`
+**Verify:** BFF tests → 8 passed; targeted ESLint → PASS; `tsc --noEmit` → PASS. Test covers safe mapping for 401/409/412/503 and server-only auth header replacement.
+**DoD:** [x] `GROWTH_BACKEND=legacy|v2`; [x] BFF token server-side; [x] actor comes from signed session; [x] allowlist strips browser `X-Venho-*`; [x] login HTML fails closed; [x] type generation script and output committed.
+**Giả định:** Access-authenticated VENHO OS session email is the actor identity; API base URL accepts HTTPS, with loopback HTTP allowed for local development.
