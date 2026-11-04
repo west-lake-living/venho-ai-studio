@@ -5002,3 +5002,11 @@ ComfyUI, GPU, provider or network call.
 **Verify:** không code
 **INV/AC liên quan:** INV-10
 **Rủi ro / việc để lại:** clone cũ `venho-ai-studio` hỏng pack; GC2 làm ở `venho-ai-studio-gc2`.
+
+### GC2-P0-T01 — Script kiểm tra host tự chứa (2026-11-05)
+**Status:** DONE
+**Files:** ops/asus-server/growth-engine/preflight-host.sh, docs/growth_engine/legacy_inventory.md
+**Verify:** `bash -n` OK; chạy `bash -s -- <state> < script` từ cwd khác trên Mac → JSON hợp lệ, 3 khoá interpreter (`python_system/runtime/uv`) mỗi khoá có `sqlite_version`, WAL probe dùng thư mục tạm bị xoá (`created_dirs: []`). shellcheck chưa cài. Server (bản script cũ): runtime Python 3.11.16 / SQLite 3.53.1, WAL ok, linger yes, cổng trống 8021/8023/8024.
+**DoD:** [x] kết quả dán vào legacy_inventory.md#host · [ ] chạy lại bản mới để có `python_uv`
+**INV/AC liên quan:** ADR-01
+**Rủi ro / việc để lại:** Python hệ thống server SQLite 3.46.1 dưới ngưỡng; thiếu `age` (cần trước P6).
