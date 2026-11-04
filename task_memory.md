@@ -14,6 +14,13 @@
 - 07/11 dùng ảnh U2 sau commit `9ab0a22`, nhưng asset không có local và URL nằm trên Google Drive. Theo giới hạn prompt, không đọc Drive; SHA-256 đang chờ Harry cung cấp file.
 - Fixture là shape sample đã ẩn danh, gắn `_synthetic: true`; không commit `data/` hoặc raw nội dung.
 
+## 2026-11-04 — GC2-P1-T01 package và cấu hình
+
+- Tạo khung package theo §14.1; giữ nguyên export ở `application.analytics` và `application.ops` đã có từ Track 0. CLI `venho-engine` chỉ là Typer stub cho tới P2-T01.
+- `Settings.from_env()` giữ giá trị tích hợp ở dạng chuỗi/opaque, ẩn secrets khỏi `repr`, production fail khi giá trị rỗng/placeholder; Telegram dùng hai tên `GE_TELEGRAM_BOT_TOKEN` và `GE_TELEGRAM_CHAT_ID`, dựa trên cặp legacy hiện có.
+- Fixture dùng `fake_clock() -> epoch_ms`, `tmp_db_path` trong pytest tempdir và `ids.new_id()` UUID xác định. Socket connect chỉ cho ba host loopback theo task card.
+- VERIFY_DEV 54 pass; VERIFY_ARCH 2 pass. VERIFY_LEGACY hiện dừng ở 5 lỗi thu thập `cv2`, đã thấy ở lượt trước; chạy tiếp thu thập báo 79 legacy failures và 8 skips, chưa quy nguyên nhân cho task này.
+
 ## 2026-11-04 — GC2-P0-T05 Cloudflare edge policy
 
 - Ghi ADR-05/06 theo GC2-D08: `/internal/*` cần Access Service Token + bearer theo principal/channel; `/media/publish/*` bypass Access nhưng vẫn bắt buộc capability ký và hash.

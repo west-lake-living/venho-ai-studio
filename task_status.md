@@ -5090,3 +5090,11 @@ ComfyUI, GPU, provider or network call.
 **DoD:** [x] Bảng trạng thái khớp báo cáo 04/11; field/schema, GATEWAY_ACCEPTED, STALE_APPROVAL, slot trùng và IG/Threads được ghi. [ ] Tính SHA ảnh 07/11 khi có file local.
 **INV/AC liên quan:** INV-04, INV-07, INV-10; §12.1
 **Rủi ro / việc để lại:** Ảnh 07/11 chỉ có URL Google Drive trong snapshot và `image_run_path` local không tồn tại; không truy cập Drive theo prompt. Fixture đã ẩn danh và đánh dấu synthetic, không chứa raw data.
+
+### GC2-P1-T01 — Package skeleton, settings và test architecture (2026-11-04)
+**Status:** CHANGE_REQUEST — VERIFY_DEV/ARCH pass; VERIFY_LEGACY bị chặn bởi dependency legacy
+**Files:** growth_engine/**/__init__.py, growth_engine/settings.py, growth_engine/README.md, growth_engine/adapters/inbound/cli/main.py, tests/growth_engine/{__init__,conftest}.py, tests/growth_engine/architecture/test_layer_boundaries.py, tests/growth_engine/test_settings.py, tests/growth_engine/test_test_harness.py, pyproject.toml, uv.lock, .env.example, .github/workflows/growth-tests.yml
+**Verify:** VERIFY_DEV → 54 passed; VERIFY_ARCH → 2 passed; `uv lock --check` → OK; VERIFY_LEGACY → 5 collection errors (`cv2` missing). `--continue-on-collection-errors`: 1683 passed, 79 failed, 8 skipped, 5 errors.
+**DoD:** [x] Package tree, Settings fail-closed, network guard, AST boundaries, extra/lock, script stub và CI job. [ ] VERIFY_LEGACY xanh; CI trên GitHub chưa chạy.
+**INV/AC liên quan:** INV-01…INV-12; §4.1
+**Rủi ro / việc để lại:** 5 lỗi thu thập do thiếu optional `cv2` đã có trong lần VERIFY_LEGACY trước task; 79 lỗi ở diagnostic chạy tiếp chưa được xác nhận baseline. CLI còn là stub rỗng theo yêu cầu P2-T01.

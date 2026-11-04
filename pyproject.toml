@@ -39,6 +39,7 @@ geometry = ["insightface>=0.7.3", "opencv-python-headless>=4.8", "onnxruntime>=1
 # InsightFace or download a detector model; the pinned YuNet artifact and MIT
 # license are retained under models/geometry/yunet/.
 geometry-yunet = ["opencv-python-headless>=4.10,<5.0"]
+api = ["fastapi>=0.115", "uvicorn>=0.30"]
 
 [project.scripts]
 venho = "knowledge_studio.vision.cli:app"
@@ -54,10 +55,11 @@ venho-theme = "growth_orchestrator.weekly_theme.cli:app"
 venho-strategy = "strategy_memory.cli:app"
 venho-rollout = "controlled_rollout.cli:app"
 venho-restore = "identity_restoration.interface.cli:main"
+venho-engine = "growth_engine.adapters.inbound.cli.main:app"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["agent_studio*", "analytics_feedback*", "app*", "automation_studio*", "content_studio*", "controlled_rollout*", "core*", "dashboard*", "growth_orchestrator*", "identity_restoration*", "image_studio_runtime*", "knowledge_studio*", "productize*", "prompt_studio*", "providers*", "publishing_gateway*", "research_engine*", "shared*", "strategy_memory*", "validator_studio*", "video_studio*"]
+include = ["agent_studio*", "analytics_feedback*", "app*", "automation_studio*", "content_studio*", "controlled_rollout*", "core*", "dashboard*", "growth_engine*", "growth_orchestrator*", "identity_restoration*", "image_studio_runtime*", "knowledge_studio*", "productize*", "prompt_studio*", "providers*", "publishing_gateway*", "research_engine*", "shared*", "strategy_memory*", "validator_studio*", "video_studio*"]
 
 [tool.setuptools.package-data]
 "knowledge_studio.vision.prompts" = ["*.md"]
@@ -66,3 +68,4 @@ include = ["agent_studio*", "analytics_feedback*", "app*", "automation_studio*",
 "research_engine.local_beat" = ["*.yaml"]
 "growth_orchestrator.weekly_theme" = ["*.yaml"]
 "content_studio.generators.prompts" = ["*.md"]
+"growth_engine.adapters.outbound.persistence.sqlite" = ["migrations/*.sql"]
