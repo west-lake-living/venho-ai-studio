@@ -1,0 +1,19 @@
+[Unit]
+Description=Ven Ho Growth Engine worker lane (%i)
+After=network-online.target
+Wants=network-online.target
+OnFailure=venho-growth-alert@%n.service
+
+[Service]
+Type=simple
+EnvironmentFile=%h/venho/secrets/growth-engine.env
+WorkingDirectory=%h/venho/growth-engine/current
+ExecStart=%h/venho/growth-engine/current/.venv/bin/venho-engine worker --lane %i
+Restart=on-failure
+RestartSec=5s
+TimeoutStopSec=60s
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ReadWritePaths=%h/venho/state/growth-engine

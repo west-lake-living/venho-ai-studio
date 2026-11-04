@@ -6252,3 +6252,8 @@ not in local venv; installed in CI).
 - Added a Page-scoped weekly query and report: averages/counts by pillar and image source, reliability state counts, and internal engagement rate only for complete numeric samples. Added read-scoped no-store API and mobile Analytics UI; OpenAPI snapshot and generated venho-os types were refreshed.
 - Backend report/API/SQLite/OpenAPI 12 passed; VERIFY_DEV 430 passed (4 warnings); VERIFY_ARCH 2 passed. UI component 1 passed; targeted ESLint/TypeScript passed. No external calls.
 - Assumption/gate: weeks are Monday–Sunday ICT and values use the latest observation per delivery/metric/checkpoint. Results remain empty until P0-T04 verifies Meta capabilities and collection is composed.
+
+## 2026-11-05 — GC2-P9-T01 release deployment assets
+- Added an isolated release deploy script with frozen extras, migration/doctor checks, atomic `current` switch, three-unit restart/health checks and rollback; added user API/worker units and setup README.
+- `bash -n` and `git diff --check` passed; required unit directives inspected. No server, systemd, SSH or production action ran. `shellcheck` is unavailable locally.
+- Gate: Harry deploys only in `DISABLED`; current CLI still rejects `worker --lane jobs`, so runtime composition must precede the first deployment. The script does not deploy a commit unavailable from `origin`.
