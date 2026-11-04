@@ -5245,3 +5245,12 @@ ComfyUI, GPU, provider or network call.
 **INV/AC liên quan:** AC-03; §8.2, §18; P3-T03.
 **CHANGE_REQUEST:** `MediaRepo` chưa khai báo `update_qc_status`, SQLite `MediaRepository` cũng chưa cài đặt. Use case fail-closed nếu thiếu updater; cần cho phép sửa `growth_engine/application/ports/repositories.py` và `growth_engine/adapters/outbound/persistence/sqlite/repositories/media.py` để hoàn tất persistence production.
 **Giả định:** không đọc `overrides.yaml`; khi có scenario yêu cầu overlay, compilation dừng với cấu hình không hỗ trợ. Provider mặc định là Validator Studio `mock` cho chế độ offline; runtime provider thật cần composition task wiring.
+
+### GC2-P3-T04 — create_revision & build_review_snapshot (2026-11-04)
+**Status:** CHANGE_REQUEST — application seams implemented; production persistence/query adapters are missing
+**Files:** growth_engine/application/review/{create_revision,build_review_snapshot}.py, growth_engine/application/queries/delivery_views.py, tests/growth_engine/unit/application/test_create_revision.py, task_status.md, task_memory.md
+**Verify:** focused → 4 passed; VERIFY_DEV → 263 passed; VERIFY_ARCH → 2 passed; `git diff --check` → OK.
+**DoD:** [x] APPROVED image change creates REVOKE + new immutable revision + IN_REVIEW; QUEUED + AUTHORIZED → 409; snapshot preview SHA matches exact variant and includes allowed actions/ETag; revision requires QC report matching caption, facts and selected variant.
+**INV/AC liên quan:** AC-04; D02–D03, D06, D08; §5.6, §7.4; P3-T04.
+**CHANGE_REQUEST:** `DeliveryRepository` lacks an atomic `create_revision` operation/CAS update for current revision and active approval, command cancellation, audit and notify job; query adapters cannot assemble the delivery/revision/channel/variant/QC/action context for `ReviewDataReader`. The application contracts are explicit and fakes prove behavior, but production SQLite/API wiring requires opening the relevant repository and router/composition files outside this card's allowlist.
+**Giả định:** callers prepare QC for the requested caption and selected variant before `CreateRevision`; `RevisionStore.apply_revision` must execute the complete §7.4 write under `BEGIN IMMEDIATE` and CAS `row_version`.
