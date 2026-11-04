@@ -6232,3 +6232,8 @@ not in local venv; installed in CI).
 - In venho-os commit `0aa889f`, added mobile-first Page A/B slot cards, status labels, exact review sheet, action-gated caption/image/revision controls, image upload polling, and sticky batch-approval action; PublishingSection switches to v2 only after the server route confirms it, otherwise legacy remains, while v2 outage does not fall back to legacy data.
 - Focused UI/client tests 23 passed; lint and TypeScript passed. Safari/iPhone work deferred to checklist P7-T06.
 - Assumption: API response aliases match `slots|items` and `review|direct snapshot` from the API boundary contract.
+
+## 2026-11-04 — GC2-P7-T05 operations UI
+- In venho-os commit `64bd403`, added UNKNOWN-only reconciliation, evidence form, allowed-action safe retry for non-UNKNOWN, per-Page/global pause/mode with second confirmation, and shared offline lock banner. UNKNOWN has no retry control.
+- Focused UI/client tests 26 passed, targeted lint/TypeScript passed. Full frontend test suite: 615 passed, 1 skipped, 8 unrelated failures from absent sibling social-agent files and unset OpenAI provider config.
+- Assumption: reconcile payload carries `POST_FOUND` permalink or `NO_SIDE_EFFECT` Make execution reference, plus operator reason.

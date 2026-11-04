@@ -5520,3 +5520,12 @@ ComfyUI, GPU, provider or network call.
 **DoD:** [x] Page A/B được hiển thị riêng trong cùng slot; [x] hành động theo `allowed_actions`; [x] preview đúng artifact, QC/facts/caption; [x] sửa caption, đổi/xoay ảnh, upload+poll job, duyệt nhóm; [x] offline giữ dữ liệu cũ và khoá mutation; [ ] Safari/iPhone checklist chưa chạy.
 **Rủi ro / việc để lại:** P7-T01 backend `dashboard_api` chưa composed nên BFF v2 chưa có API thành công; UI giữ lỗi an toàn. P7-T06 là gate kiểm thiết bị.
 **Giả định:** API trả `slots`/`items` và `as_of_ms`; review trả `review` hoặc snapshot trực tiếp, như wire contract của §9.1.
+
+### GC2-P7-T05 — UI sự cố, đối soát, điều khiển và offline (2026-11-04)
+**Status:** PARTIAL — UI/test committed; backend composition and manual browser verification remain
+**External commit:** `venho-os` branch `codex/gc2-growth-dashboard-20261104`, commit `64bd403` (local, chưa push)
+**Files:** `src/components/os/growth/{ReconcileDialog,IncidentList,ControlsPanel,OfflineBanner}.tsx`, `src/components/os/sections/PublishingSection.tsx`, `tests/unit/components/os/growth/growth-components.test.tsx`
+**Verify:** focused Growth UI/client tests → 26 passed; targeted ESLint → PASS; `tsc --noEmit` → PASS. Full venho-os `npm test` → 615 passed, 1 skipped, 8 unrelated failures (missing sibling social-agent assets/repo and unset OpenAI test provider).
+**DoD:** [x] UNKNOWN has reconcile action and no retry; [x] blocked retry only when `safe_retry` is allowed; [x] controls require second confirmation and state that Pause does not cancel active work; [x] backend errors lock mutation; [ ] live backend and browser check remain.
+**Rủi ro / việc để lại:** No public publish was run. Eight full-suite errors are external/stale-env failures, not edited by this task.
+**Giả định:** operator evidence uses verified Facebook permalink or Make execution reference plus reason; no client-provided actor is sent.
