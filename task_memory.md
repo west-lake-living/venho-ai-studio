@@ -6188,3 +6188,8 @@ not in local venv; installed in CI).
 - Added a GET-only Page reader whose API version and all Meta field paths come from channel config; the use case persists a verification result through a transaction port, moves deterministic mismatch to UNKNOWN, retries unavailable reads, and records visibility changes without requeue.
 - Synthetic unit tests cover match, auth failure, NOT_FOUND, deletion, retry backoff, and fail-closed placeholder fields. VERIFY_DEV 374 passed (4 warnings), VERIFY_ARCH 2 passed.
 - Assumption/gate: actual field paths, Graph API version and token require P0-T04 evidence; `meta_capabilities.md` is currently absent, so no live read can run.
+
+## 2026-11-04 — GC2-P6-T02 UNKNOWN recovery
+- Added operator-only D15/D16 resolution, safe retry sequence+1, and close-as-failed application ports plus Vietnamese runbook. Tests cover direct UNKNOWN retry refusal, verified post ID/permalink, no-side-effect evidence, approval revocation, ambiguous execution, and close guards.
+- Focused 10 passed; prior full suite 383 passed (4 warnings), architecture 2 passed. No external calls.
+- Assumption: persistence enforces all eligibility checks atomically under `BEGIN IMMEDIATE`; retry remains impossible until a durable NO_SIDE_EFFECT resolution exists.

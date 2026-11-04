@@ -5442,3 +5442,12 @@ ComfyUI, GPU, provider or network call.
 **INV/AC liên quan:** D17, D18, D25; AC-10; §7.8, P6-T01.
 **Rủi ro / việc để lại:** `docs/growth_engine/meta_capabilities.md` is absent and production Graph versions/tokens remain null; the adapter refuses `REQUIRED_FROM_P0` values. No production Meta request was made.
 **Giả định:** Meta response field paths and collection edge are injected through `ChannelConfig.capability`; retry attempt sequence is 5m, 15m, 60m, then 6h; only documented auth/permission failures open a permission incident.
+
+### GC2-P6-T02 — Đối soát UNKNOWN và retry an toàn (2026-11-04)
+**Status:** DONE — explicit operator evidence controls D15/D16; only verified NO_SIDE_EFFECT can create sequence+1
+**Files:** growth_engine/application/verification/{resolve_unknown,request_safe_retry,close_delivery}.py, docs/growth_engine/runbooks/unknown_reconcile.md, tests/growth_engine/unit/application/test_unknown_and_retry.py, task_status.md, task_memory.md
+**Verify:** focused → 10 passed; preceding full VERIFY_DEV → 383 passed, 4 warnings; VERIFY_ARCH → 2 passed; `git diff --check` → OK.
+**DoD:** [x] UNKNOWN cannot be retried directly; [x] post evidence is re-read against the target Page before D15; [x] NO_SIDE_EFFECT requires actor, reason and Make execution ref before D16; [x] retry requires only NO_SIDE_EFFECT history, current approval, no live execution, fresh row version and ≥2m deadline; [x] sequence increments and business key matches; [x] close delivery is audited with actor/reason.
+**INV/AC liên quan:** INV-06; D15, D16, D19, D20; AC-11; §7.8–7.9, P6-T02.
+**Rủi ro / việc để lại:** application services expose transaction ports; persistence/API composition and real Meta/Make evidence remain later gates. Permalink resolution requires a reader implementation that returns a verified post ID.
+**Giả định:** the transaction adapter re-reads executions, approval/revocation, deadline, max sequence and row version inside `BEGIN IMMEDIATE`; app-level evidence is never sufficient without Page verification or Make execution reference.
