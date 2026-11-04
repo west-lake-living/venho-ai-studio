@@ -5968,3 +5968,11 @@ not in local venv; installed in CI).
 - Repository mapper cho Channel/ChannelConfig, Slot/SlotTarget, ContentPackage/ResearchCandidate, MediaAsset/Variant/QcReport, Delivery/Revision/Approval, OutboxCommand/Execution/Receipt, RuntimeControls/Incident. JSON input được parse và serialize canonical; config hash được tái kiểm khi đọc.
 - `OutboxCommand.envelope_token` không có cột trong DDL. Để không ghi capability token vào DB, `CommandRepository.get(..., envelope_token=...)` nhận lại từ issuer. Giả định issuer sinh lại token/envelope ổn định theo cùng command khi C06 redeliver; nếu token phải tồn tại độc lập trong DB cần đổi schema qua migration mới và rà soát bảo mật.
 - Synthetic aggregate graph không gọi network. VERIFY_DEV 208 passed; VERIFY_ARCH 2 passed; `git diff --check` OK.
+
+## 2026-11-04 — GC2-P2-T04 CAS leases và idempotency
+- Test-first: 2 integration tests đỏ do UnitOfWork chưa expose JobRepo/IdempotencyRepo; implementation bật thuộc tính và thêm test fencing cho cả jobs và outbox command.
+- `cas.claim_with_lease` allowlist chỉ `outbox_commands`/`jobs`, cột predicate/operator cũng allowlist; claim dùng một `UPDATE ... RETURNING *`, set state/owner/token/until/updated_at trong transaction. Token URL-safe ngẫu nhiên. Caller nêu predicate gồm thời hạn lease hết để takeover.
+- `complete_with_lease` dùng `WHERE id=? AND lease_token=?`, dọn ba cột lease; mismatch trả `False` và không sửa row. Job hoàn tất thành SUCCEEDED; command ACKED và ghi `acked_at`.
+- `IdempotencyRepository.get_or_reserve` yêu cầu transaction, reserve mới không nuốt uniqueness; cùng key/hash trả status/body đã lưu; khác hash trả MISMATCH; key hết hạn được giải phóng trong transaction. Response JSON canonical và `save_response` khóa theo cả request hash.
+- Refactor CommandRepository sang `repositories/commands.py`, thêm JobRecord/Repo, IdempotencyRepo và expose qua UoW; thay đổi bổ trợ trong `uow.py`, `repositories/__init__.py`, `publishing.py` để luồng transaction dùng cùng adapter.
+- Focused 7 passed; VERIFY_DEV 211 passed; VERIFY_ARCH 2 passed; `git diff --check` OK.

@@ -5178,3 +5178,11 @@ ComfyUI, GPU, provider or network call.
 **DoD:** [x] `begin_immediate`/`read_only`; retry writer lock 5 lần với backoff 20–200 ms rồi `ERR_GC2_DB_BUSY`; CAS tăng row_version và sai version → `ConcurrencyConflict`; rollback; round-trip các domain aggregate persistence hiện có; không chứa business transitions.
 **INV/AC liên quan:** INV-01…INV-03; §4.1, §6.1, §6.4.
 **Rủi ro / việc để lại:** Schema hiện không có cột cho `OutboxCommand.envelope_token`; repository không lưu credential/token, `get()` nhận token từ issuer để hydrate. Cần issuer tái tạo token ổn định theo C06; không lưu token nhạy cảm vào SQLite.
+
+### GC2-P2-T04 — CAS lease fencing và idempotency store (2026-11-04)
+**Status:** DONE
+**Files:** growth_engine/adapters/outbound/persistence/sqlite/cas.py, growth_engine/adapters/outbound/persistence/sqlite/repositories/{commands,jobs,idempotency}.py, growth_engine/adapters/outbound/persistence/sqlite/repositories/{__init__,publishing}.py, growth_engine/adapters/outbound/persistence/sqlite/uow.py, tests/growth_engine/integration/sqlite/test_cas_and_leases.py, task_status.md, task_memory.md
+**Verify:** focused lease/UoW → 7 passed; VERIFY_DEV → 211 passed; VERIFY_ARCH → 2 passed; `git diff --check` → OK.
+**DoD:** [x] `UPDATE … RETURNING` claim trong transaction; token mới khi lease hết hạn; complete có `WHERE id AND lease_token`; token cũ không complete sau takeover; idempotency cùng hash trả response, khác hash → MISMATCH.
+**INV/AC liên quan:** INV-01…INV-03; §6.1, §6.4; C02–C06.
+**Rủi ro / việc để lại:** Caller phải truyền predicate đủ điều kiện (ví dụ `state` + `lease_until <= now`) khi claim; không có fallback JSON. Outbox envelope token vẫn được issuer inject như ghi tại P2-T03.

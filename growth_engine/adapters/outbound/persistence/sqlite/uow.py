@@ -14,6 +14,8 @@ from growth_engine.adapters.outbound.persistence.sqlite.repositories import (
     DeliveryRepository,
     ExecutionRepository,
     IncidentRepository,
+    IdempotencyRepository,
+    JobRepository,
     MediaRepository,
     PackageRepository,
     QcRepository,
@@ -210,9 +212,11 @@ class SqliteUnitOfWork:
         self.commands = CommandRepository(connection)
         self.executions = ExecutionRepository(connection)
         self.receipts = ReceiptRepository(connection)
+        self.jobs = JobRepository(connection)
         self.incidents = IncidentRepository(connection)
         self.controls = ControlsRepository(connection)
         self.candidates = CandidateRepository(connection)
+        self.idempotency = IdempotencyRepository(connection)
 
 
 def _is_busy(error: sqlite3.OperationalError) -> bool:
