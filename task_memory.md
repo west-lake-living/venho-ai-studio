@@ -6203,3 +6203,8 @@ not in local venv; installed in CI).
 - Implemented SQLite online snapshot, referenced-media SHA manifest, age archive adapter, safe restore validation, DISABLED/global pause/epoch rotation, CLI commands, and rehearsal runbook/script. Tests exercise a real migrated SQLite file, concurrent writer, missing media, and old token epoch mismatch using fake age.
 - VERIFY_DEV 393 passed (4 warnings), VERIFY_ARCH 2 passed, migration restore tests 3 passed. No age/Drive/server action occurred.
 - Assumption: `GE_AGE_RECIPIENT` supplies the public recipient; private identity remains operator-managed. Restore only targets a new directory.
+
+## 2026-11-04 — GC2-P6-T05 health-gated heartbeat
+- Added redacted `GE_HEARTBEAT_URL`, injectable heartbeat service, HTTPS sender, and worker health gating requiring scheduler enqueue/expiry, outbox dispatch and database readiness; optional stale-backup handler can suppress ping.
+- Focused 5 passed; VERIFY_DEV 398 passed (4 warnings), VERIFY_ARCH 2 passed. All heartbeat tests used fakes.
+- Assumption/gate: endpoint uses HTTPS GET; no ping occurs until Harry configures the URL. Backup age gating remains optional.

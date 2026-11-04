@@ -23,6 +23,7 @@ class Settings(BaseModel):
     make_webhook_urls: dict[str, str] = Field(default_factory=dict, repr=False)
     meta_read_tokens: dict[str, str] = Field(default_factory=dict, repr=False)
     telegram: dict[str, str] = Field(default_factory=dict, repr=False)
+    heartbeat_url: str = Field(default="", repr=False)
 
     @classmethod
     def from_env(cls, environ: Mapping[str, str] | None = None) -> Settings:
@@ -37,6 +38,7 @@ class Settings(BaseModel):
             make_webhook_urls=_read_prefix(source, "GE_MAKE_WEBHOOK_URL_"),
             meta_read_tokens=_read_prefix(source, "GE_META_READ_TOKEN_"),
             telegram=_read_prefix(source, "GE_TELEGRAM_"),
+            heartbeat_url=source.get("GE_HEARTBEAT_URL", ""),
         )
         if settings.env.lower() == "production":
             settings._validate_production()

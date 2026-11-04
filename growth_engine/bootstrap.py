@@ -382,6 +382,7 @@ def build_container(settings: Any) -> Container:
     envelope_adapter = import_module("growth_engine.adapters.outbound.make.envelope")
     worker_loop_adapter = import_module("growth_engine.adapters.inbound.workers.loop")
     publish_lane_adapter = import_module("growth_engine.adapters.inbound.workers.publish_lane")
+    heartbeat_adapter = import_module("growth_engine.application.ops.heartbeat")
     legacy_adapter = import_module("growth_engine.adapters.outbound.legacy.importer")
     backup_adapter = import_module("growth_engine.adapters.outbound.backup.sqlite_backup")
     restore_adapter = import_module("growth_engine.adapters.outbound.backup.restore")
@@ -472,6 +473,10 @@ def build_container(settings: Any) -> Container:
                 )
             else:
                 receipt_store.complete_apply_job(job_id, lease_token, at_ms=clock.now_ms())
+    heartbeat = heartbeat_adapter.Heartbeat(
+        settings.heartbeat_url,
+        publish_lane_adapter.UrllibHeartbeatSender(),
+    )
     worker_tasks = publish_lane_adapter.build_publish_tasks(
         {
             "enqueue_due": lambda: enqueue_due.execute(clock.now_ms()),
@@ -479,6 +484,8 @@ def build_container(settings: Any) -> Container:
             "dispatch_outbox": lambda: dispatch_outbox.execute(clock.now_ms()),
             "apply_receipts": process_apply_receipts,
             "receipt_timeouts": watch_receipt_timeouts.execute,
+            "database_health": readiness_check,
+            "heartbeat": heartbeat.execute,
         }
     )
     worker_loop = worker_loop_adapter.WorkerLoop(

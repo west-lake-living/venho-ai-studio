@@ -5469,3 +5469,12 @@ ComfyUI, GPU, provider or network call.
 **INV/AC liên quan:** INV-01, INV-06; AC-16; §13.2–13.3, P6-T04.
 **Rủi ro / việc để lại:** backup encryption and restore were tested with copy-only synthetic age; no production backup, upload, or restore was executed. Restore refuses an existing target.
 **Giả định:** `GE_AGE_RECIPIENT` is the configured public recipient because Settings has no age field; private identity is supplied only as a local CLI file path and is never copied to the server by this task. Bootstrap change is required so inbound CLI uses the composition root rather than importing outbound adapters.
+
+### GC2-P6-T05 — Heartbeat có điều kiện và dead-man switch (2026-11-04)
+**Status:** PARTIAL — health-gated worker ping is wired; GE_HEARTBEAT_URL and external watchdog remain unconfigured
+**Files:** growth_engine/application/ops/heartbeat.py, growth_engine/adapters/inbound/workers/publish_lane.py, growth_engine/settings.py, growth_engine/bootstrap.py, tests/growth_engine/unit/application/test_heartbeat.py, task_status.md, task_memory.md
+**Verify:** focused heartbeat → 5 passed; VERIFY_DEV → 398 passed, 4 warnings; VERIFY_ARCH → 2 passed; `git diff --check` → OK. Ping sender was faked; no network call.
+**DoD:** [x] `GE_HEARTBEAT_URL` is read and redacted; [x] HTTPS ping is scheduled every 60 seconds only after enqueue, expiry, dispatch and DB health checks succeed; [x] optional stale-backup check suppresses ping; [x] ping errors do not stop lane tasks; [ ] Harry configures and verifies an external heartbeat URL/watchdog.
+**INV/AC liên quan:** AC-10, AC-11, AC-16; §11, P6-T05.
+**Rủi ro / việc để lại:** URL is empty by default, so no ping occurs until configured. Backup freshness is optional and not wired in this version.
+**Giả định:** a scheduler/outbox/DB task is healthy when it completes without error (database callback must return `(True, schema_version)`); heartbeat endpoint accepts HTTPS GET; no separate backup-age gate is used unless supplied.
