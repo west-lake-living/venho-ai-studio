@@ -6272,3 +6272,8 @@ not in local venv; installed in CI).
 - Wrote a per-slot/per-Page daily checklist with Page A before B, independent receipts and verification, UNKNOWN handling, duplicate/Page/media checks, and G-P9/AC-18 exit criteria.
 - Documentation only: no LIVE_MANUAL switch, public post, or pilot evidence was created. Pilot remains gated on successful cutover, production capabilities and Harry's go decision.
 - Assumption: a slot targeting both Pages uses the same approved revision and media SHA, while each Page outcome remains independently evidenced.
+
+## 2026-11-05 — GC2-P9-T05 legacy retirement checklist
+- Wrote a gated retire checklist for legacy publish timers/workflows, read-only registry archive with SHA, VENHO OS v2-only configuration, operations docs and DR closure. Added post-grant forward-recovery and no-automatic-legacy-reactivation rules.
+- Documentation only: no host timer, GitHub workflow, registry JSON, VENHO OS setting, or DR system was changed. Harry approval and successful pilot/restore evidence remain required.
+- Assumption: operator identifies exact publisher units/workflows from the current host inventory before making any change.

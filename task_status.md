@@ -5587,3 +5587,11 @@ ComfyUI, GPU, provider or network call.
 **DoD:** [x] checklist theo slot và Page; [x] tiêu chí ≥8 slot/≥16 target/≥14 ngày, 0 duplicate/sai Page/sai ảnh, UNKNOWN xử lý, restore rehearsal; [ ] cutover và pilot thực tế còn chờ gates/operator.
 **Rủi ro / việc để lại:** chưa có bằng chứng đăng/verify thực tế; dashboard/runtime integration và production capability gates còn thiếu. Không coi checklist là kết quả pilot.
 **Giả định:** cùng nội dung/ảnh giữa Page A/B nghĩa là cùng revision và SHA media, nhưng receipts, post IDs và verification độc lập.
+
+### GC2-P9-T05 — Retire đường đăng legacy (2026-11-05)
+**Status:** PARTIAL — checklist retire và đóng DR hoàn tất; không retire hệ thống trong phạm vi task
+**Files:** `docs/growth_engine/runbooks/retire_legacy.md`, `task_status.md`, `task_memory.md`
+**Verify:** checklist bao gồm gate G-P9/AC-18, dừng publisher, archive checksum read-only, VENHO OS v2-only, ops docs và DR record; `git diff --check` → OK. Không chạm host/timer/workflow/registry/VENHO OS.
+**DoD:** [x] thứ tự retire có check và điểm dừng; [x] ngăn bật lại legacy tự động sau production grant; [ ] Harry chưa phê duyệt; [ ] pilot, restore rehearsal và thay đổi host/app chưa thực hiện.
+**Rủi ro / việc để lại:** retire trước khi đủ pilot hoặc trước khi xác nhận authority đơn có thể làm gián đoạn hoặc đăng trùng. Checklist không phải bằng chứng legacy đã tắt.
+**Giả định:** danh sách chính xác timer/workflow đối chiếu với inventory/host hiện hành tại ngày được phê duyệt; chỉ tắt publisher legacy đã định danh.
