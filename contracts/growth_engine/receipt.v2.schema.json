@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Growth Engine Make Receipt v2",
+  "oneOf": [
+    {"$ref": "#/$defs/receipt"},
+    {"$ref": "#/$defs/ack"}
+  ],
+  "$defs": {
+    "error": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["class", "message"],
+      "properties": {
+        "class": {"type": "string", "minLength": 1, "maxLength": 128},
+        "message": {"type": "string", "minLength": 1, "maxLength": 4096}
+      }
+    },
+    "receipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version", "event_id", "command_id", "execution_id", "grant_id",
+        "delivery_id", "revision_id", "channel_id", "remote_page_id", "payload_hash",
+        "outcome", "platform_post_id", "permalink", "failed_step", "error", "occurred_at_ms"
+      ],
+      "properties": {
+        "schema_version": {"const": "growth.receipt.v2"},
+        "event_id": {"type": "string", "minLength": 1, "maxLength": 256},
+        "command_id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "execution_id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "grant_id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "delivery_id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "revision_id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "channel_id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "remote_page_id": {"type": "string", "minLength": 1, "maxLength": 256},
+        "payload_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "outcome": {"enum": ["POST_CREATED", "REJECTED_NO_SIDE_EFFECT", "OUTCOME_UNKNOWN"]},
+        "platform_post_id": {"type": ["string", "null"], "maxLength": 512},
+        "permalink": {"type": ["string", "null"], "maxLength": 2048, "pattern": "^https://"},
+        "failed_step": {"enum": ["FETCH_MEDIA", "AUTHORIZE", "CREATE_POST", null]},
+        "error": {"oneOf": [{"$ref": "#/$defs/error"}, {"type": "null"}]},
+        "occurred_at_ms": {"type": "integer", "minimum": 0}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"outcome": {"const": "REJECTED_NO_SIDE_EFFECT"}}},
+          "then": {"properties": {"error": {"$ref": "#/$defs/error"}}}
+        }
+      ]
+    },
+    "ack": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "receipt_id", "accepted", "duplicate"],
+      "properties": {
+        "schema_version": {"const": "growth.receipt.v2"},
+        "receipt_id": {"type": "string", "minLength": 1},
+        "accepted": {"const": true},
+        "duplicate": {"type": "boolean"}
+      }
+    }
+  }
+}
