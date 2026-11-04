@@ -102,3 +102,16 @@ class CommandRepository(SqliteRepository):
                 "updated_at": updated_at_ms,
             },
         )
+
+    def close_open_for_delivery(self, delivery_id: str, at_ms: int) -> int:
+        """Expire any un-authorized outbox command when its delivery window closes."""
+        if not delivery_id.strip() or type(at_ms) is not int or at_ms < 0:
+            raise ValueError("delivery_id and timestamp are required")
+        cursor = self.connection.execute(
+            """UPDATE outbox_commands
+               SET state='EXPIRED', lease_owner=NULL, lease_token=NULL, lease_until=NULL,
+                   updated_at=?
+               WHERE delivery_id=? AND state IN ('PENDING','DELIVERING','ACKED')""",
+            (at_ms, delivery_id),
+        )
+        return cursor.rowcount

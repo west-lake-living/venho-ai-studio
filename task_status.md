@@ -5378,4 +5378,13 @@ ComfyUI, GPU, provider or network call.
 **INV/AC liên quan:** AC-01; §8.1.5; P0-T02.
 **Rủi ro / việc để lại:** ID được nhận từ prompt, chưa đối chiếu trên Meta/Make; null runtime fields và `enabled: false` giữ hệ thống fail-closed.
 **Giả định:** Entry `ig_venho` chỉ phục vụ định danh/analytics Meta; phát hành v2 vẫn chỉ target hai Facebook Page theo GC2-D01.
+
+### GC2-P5-T01 — Wiring SQLite scheduler và publish lane (2026-11-04)
+**Status:** DONE — enqueue/expire transaction chạy qua SQLite và worker lane đã được bootstrap
+**Files:** growth_engine/adapters/outbound/persistence/sqlite/repositories/publish_scheduler.py, growth_engine/adapters/outbound/persistence/sqlite/repositories/commands.py, growth_engine/application/ports/repositories.py, growth_engine/bootstrap.py, growth_engine/adapters/inbound/cli/main.py, tests/growth_engine/integration/sqlite/test_publish_scheduler_wiring.py, task_status.md, task_memory.md
+**Verify:** VERIFY_DEV → 350 passed, 4 warnings; VERIFY_ARCH → 2 passed; `venho-engine worker --help` → OK; `git diff --check` → OK. Integration dùng file SQLite thật, replay hai tick không nhân bản command.
+**DoD:** [x] Đọc controls/due context từ DB; [x] enqueue CAS + command + audit atomic; [x] D21 đóng delivery và command open atomic; [x] CLI giữ lock publish lane, process thứ hai thoát 75 (unit test).
+**INV/AC liên quan:** INV-01, INV-03, INV-09; D07, D21; §7.5, §11.1; P5-T01.
+**Rủi ro / việc để lại:** Lane hiện chỉ chạy enqueue/expire; dispatch, receipt timeout và handlers sẽ được nối ở P5-T02/P5-T04. Chưa chạy worker trên server.
+**Giả định:** Môi trường `development`/`test` chỉ đọc channel environment `test`; delivery chưa có revision lấy deadline từ slot; execution `AUTHORIZED`, `REPORTED` hoặc `UNKNOWN` chặn D21.
 **Giả định:** no Make error class is safe until observed in a redacted TEST History output; a webhook 2xx is not evidence of a Facebook post; TEST sends require the exact manifest Page ID and an operator's explicit `--send` invocation.

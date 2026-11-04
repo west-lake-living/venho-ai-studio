@@ -95,3 +95,18 @@ def api(
         typer.echo("Install the [api] extra to run the API command.", err=True)
         raise typer.Exit(code=1) from error
     uvicorn.run(create_app(container), host=host, port=port)
+
+
+@app.command()
+def worker(
+    lane: str = typer.Option(..., "--lane", help="Worker lane to run."),
+) -> None:
+    """Run the publish scheduler lane."""
+    if lane != "publish":
+        raise typer.BadParameter("only the publish lane is available")
+    settings = Settings.from_env()
+    if not settings.db_path.strip() or "REQUIRED_FROM_P0" in settings.db_path:
+        raise typer.BadParameter("configure GE_DB_PATH before running the worker")
+    from growth_engine.bootstrap import build_container
+
+    raise typer.Exit(code=build_container(settings).publish_lane.run_forever())

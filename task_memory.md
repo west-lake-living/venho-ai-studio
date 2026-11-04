@@ -6145,3 +6145,10 @@ not in local venv; installed in CI).
 - Recorded the three IDs supplied in Harry's prompt as text: `fb_hanoi` 1124616474074140, `fb_venho` 803531149684177, and `ig_venho` 17841457936965829.
 - Removed production `REQUIRED_FROM_P0` values. Unverified Make scenario/connection and Graph API fields are `null`; all three production channels remain disabled. TEST channel placeholders remain unchanged.
 - Assumption: Instagram is an analytics/read identity only; v2 publication remains the two Facebook Pages per GC2-D01. The IDs are user-provided and have not been independently checked against Meta.
+
+## 2026-11-04 — GC2-P5-T01 SQLite scheduler wiring
+- `SqlitePublishSchedulerStore` reads due approved deliveries and re-reads controls, approval/revocation, current revision, channel and config under `BEGIN IMMEDIATE`. Enqueue writes the delivery CAS, command and audit under a savepoint; signed token material is never persisted.
+- D21 selects overdue DRAFT/IN_REVIEW/APPROVED/QUEUED/BLOCKED deliveries, blocks when a live/ambiguous execution exists, then atomically expires the delivery and any open command with audit.
+- `build_container` composes both use cases with a lazy capability issuer and one locked publish lane; CLI exposes `venho-engine worker --lane publish`. Missing keys fail only when an eligible command needs issuance; no command is written on that failure.
+- File-SQLite integration proved one enqueue across repeated ticks, command closure at expiry, row-version increments and two audit events. VERIFY_DEV 350 passed; ARCH 2 passed. No external network or Make call.
+- Assumption: `development` uses `test` channel/control scope; commands with no current revision use the slot's deadline for D21.

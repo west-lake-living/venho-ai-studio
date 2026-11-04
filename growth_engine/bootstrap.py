@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import logging
 import sqlite3
 import sys
 import tempfile
@@ -19,6 +20,18 @@ class _SystemClock:
 class _UuidIds:
     def new_id(self) -> str:
         return str(uuid4())
+
+
+class _LazyCapabilityIssuer:
+    def __init__(self, key_config: str) -> None:
+        self._key_config = key_config
+        self._manager: Any | None = None
+
+    def issue(self, claims: Any) -> str:
+        if self._manager is None:
+            module = import_module("growth_engine.adapters.outbound.security.capability_tokens")
+            self._manager = module.CapabilityTokenManager(module.parse_key_ring(self._key_config))
+        return self._manager.issue(claims)
 
 
 MIGRATIONS = Path(__file__).parent / "adapters" / "outbound" / "persistence" / "sqlite" / "migrations"
@@ -273,6 +286,9 @@ class Container:
     ingest_candidate: Any
     decide_candidate: Any
     expire_candidates: Any
+    enqueue_due: Any
+    expire_overdue: Any
+    publish_lane: Any
 
 
 def build_container(settings: Any) -> Container:
@@ -287,6 +303,13 @@ def build_container(settings: Any) -> Container:
     ingest_adapter = import_module("growth_engine.application.content.ingest_candidate")
     decide_adapter = import_module("growth_engine.application.content.decide_candidate")
     expire_adapter = import_module("growth_engine.application.content.expire_candidates")
+    enqueue_adapter = import_module("growth_engine.application.publishing.enqueue_due")
+    overdue_adapter = import_module("growth_engine.application.publishing.expire_overdue")
+    scheduler_store_adapter = import_module(
+        "growth_engine.adapters.outbound.persistence.sqlite.repositories.publish_scheduler"
+    )
+    worker_loop_adapter = import_module("growth_engine.adapters.inbound.workers.loop")
+    publish_lane_adapter = import_module("growth_engine.adapters.inbound.workers.publish_lane")
     legacy_adapter = import_module("growth_engine.adapters.outbound.legacy.importer")
     connect = connection_adapter.connect
     migration_runner_type = migrator_adapter.MigrationRunner
@@ -309,6 +332,29 @@ def build_container(settings: Any) -> Container:
     candidate_store = candidate_store_adapter.SqliteCandidateStore(uow_factory)
     clock = _SystemClock()
     ids = _UuidIds()
+    channel_environment = "production" if settings.env.lower() == "production" else "test"
+    scheduler_store = scheduler_store_adapter.SqlitePublishSchedulerStore(
+        uow_factory, channel_environment
+    )
+    enqueue_due = enqueue_adapter.EnqueueDue(scheduler_store, _LazyCapabilityIssuer(settings.capability_keys), ids)
+    expire_overdue = overdue_adapter.ExpireOverdue(scheduler_store, ids)
+    worker_tasks = publish_lane_adapter.build_publish_tasks(
+        {
+            "enqueue_due": lambda: enqueue_due.execute(clock.now_ms()),
+            "expire_overdue": lambda: expire_overdue.execute(clock.now_ms()),
+        }
+    )
+    worker_loop = worker_loop_adapter.WorkerLoop(
+        worker_tasks,
+        clock,
+        on_error=lambda task, error: logging.getLogger("growth_engine.publish").error(
+            "publish task failed: task=%s error_type=%s", task.name, type(error).__name__
+        ),
+    )
+    publish_lane = publish_lane_adapter.PublishLane(
+        worker_loop,
+        Path(settings.db_path).parent / "publish.lock",
+    )
     return Container(
         settings=settings,
         uow_factory=uow_factory,
@@ -325,6 +371,9 @@ def build_container(settings: Any) -> Container:
         ingest_candidate=ingest_adapter.IngestCandidate(candidate_store, clock, ids),
         decide_candidate=decide_adapter.DecideCandidate(candidate_store, clock, ids),
         expire_candidates=expire_adapter.ExpireCandidates(candidate_store, clock),
+        enqueue_due=enqueue_due,
+        expire_overdue=expire_overdue,
+        publish_lane=publish_lane,
     )
 
 
