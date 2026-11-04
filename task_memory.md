@@ -62,6 +62,13 @@
 - Incident `UNKNOWN` lên HIGH ngay, CRITICAL sau 60 phút từ first_seen; VERIFY_MISMATCH/RECEIPT_CONFLICT/DUPLICATE_POST CRITICAL. Budget dùng đơn vị minor integer và gồm RESERVED+UNKNOWN+SETTLED+amount.
 - Test inputs synthetic có marker/note cần thay bằng fixture thật từ P0-T03/P0-T04. Focused 26 pass; VERIFY_DEV 174 pass; VERIFY_ARCH 2 pass.
 
+## 2026-11-04 — GC2-P1-T08 application ports and fakes
+
+- Protocols theo §4.3: clock/IDs, service ports, và UoW với đúng danh mục repository. Repo Protocol chưa có method vì §4.3 chỉ định danh thuộc tính; method contract được bổ sung ở task persistence.
+- Fake ports chạy trong bộ nhớ; `FakeTokens` chỉ map token tổng hợp→claims, `FakeMediaStore` không ghi disk, không có network/AI/Make/Meta. Fake data có `_synthetic: true` và note thay fixture P0-T03/P0-T04.
+- `assert_fakes_match_ports()` kiểm tra structural `isinstance` cho 14 service fakes; không tạo FakeUnitOfWork theo card. VERIFY_DEV 174 pass; VERIFY_ARCH 2 pass.
+- VERIFY_LEGACY chạy sau pha: 5 collection errors thiếu `cv2` tại `test_candidate_v3_service`, `test_canonical_transform`, `test_phase4_quality`, `test_phase7_candidate_v3_evaluation`, `test_yunet_geometry`; cùng baseline P1-T01, không sửa legacy.
+
 ## 2026-11-04 — GC2-P0-T05 Cloudflare edge policy
 
 - Ghi ADR-05/06 theo GC2-D08: `/internal/*` cần Access Service Token + bearer theo principal/channel; `/media/publish/*` bypass Access nhưng vẫn bắt buộc capability ký và hash.

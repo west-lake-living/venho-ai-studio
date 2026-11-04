@@ -5146,3 +5146,11 @@ ComfyUI, GPU, provider or network call.
 **DoD:** [x] 15 mã PF_* có case bật/tắt; mode/pause/media-fetch không blocking; preflight không mutate; media/QC objects và hai profile; UNKNOWN lên HIGH/CRITICAL; budget tính RESERVED+UNKNOWN+SETTLED+amount.
 **INV/AC liên quan:** INV-02, INV-03, INV-06, INV-08; §7.6, §8.2, §11.3, §19.2
 **Rủi ro / việc để lại:** P0-T03 chưa xác minh error class Make; preflight chỉ nhận facts đã đọc, không tự gọi Meta/Make/ảnh/QC.
+
+### GC2-P1-T08 — Ports & DTO application (2026-11-04)
+**Status:** DONE — VERIFY_LEGACY vẫn đỏ sẵn do dependency ngoài pha
+**Files:** growth_engine/application/ports/{clock,uow,repositories,media,publishing,platform,content,notify}.py, growth_engine/application/{dto,errors}.py, tests/growth_engine/support/fakes.py, task_status.md, task_memory.md
+**Verify:** VERIFY_DEV → 174 passed; VERIFY_ARCH → 2 passed; fake/Protocol `isinstance` harness → 14 passed; VERIFY_LEGACY → 5 collection errors do `cv2` missing (same baseline).
+**DoD:** [x] Protocols theo §4.3; DTO/error types; fake cho mọi service port trừ UoW; toàn bộ domain unit + architecture xanh.
+**INV/AC liên quan:** §4.1–4.3, §14.1
+**Rủi ro / việc để lại:** Repo Protocol hiện là structural placeholders theo danh mục UoW; method cụ thể chờ task persistence. Legacy `cv2` chưa cài; không sửa theo prompt.
