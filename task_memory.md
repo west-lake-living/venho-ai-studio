@@ -6286,3 +6286,6 @@ not in local venv; installed in CI).
 - Meta probing remains read-only and unrun. A user must supply the token through the channel-specific environment variable and verify API version/fields before interpreting results.
 ### 2026-11-05 — P0-T05: human gate
 - Cloudflare policy is documented; host inventory, Tunnel/Access changes and outside-host curl checks were not performed.
+### 2026-11-05 — P0-T06: decisions recorded
+- Recorded the current build defaults in ADR-01…08. Updated the authority decision to include `ig_venho` as a v2 publishing channel, with production disabled pending route/provider evidence.
+- P0-T06 is DONE for decision documentation; Make, Meta and Cloudflare validation remain separate human gates.

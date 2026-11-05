@@ -1,6 +1,6 @@
 # ADR-05 — Media delivery through Cloudflare edge
 
-**Status:** Draft using the GC2-D08 default; edge configuration and external checks are pending.
+**Status:** Decision recorded for this build on 2026-11-05; edge configuration and external checks remain pending under P0-T05.
 
 ## Context
 

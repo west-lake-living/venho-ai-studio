@@ -1,6 +1,6 @@
 # ADR-02 — Growth Engine is the publishing authority
 
-**Status:** GC2-D00 confirmed 2026-11-04 for the publishing portion; production transition remains gated.
+**Status:** Decision recorded for this build on 2026-11-05; production transition remains gated.
 
 ## Context
 
@@ -9,6 +9,8 @@ Legacy JSON state can be written by more than one process and synchronized throu
 ## Decision
 
 Use one `growth-engine-api` and its two workers as the only writers to `growth_engine.db`. Dashboard, Make and research ingestion call the API. GitHub Actions and the dashboard must not write the DB directly. Keep v3.2's existing publishing path frozen until the cutover gates pass.
+
+The v2 publishing scope has three independent channel targets: `fb_hanoi`, `fb_venho`, and `ig_venho`. This corrects the earlier two-Page-only assumption; Instagram is a publishing channel and uses its own approved 4:5 variant, Make route, authorization principal and receipt. The three production channels remain disabled until their route and provider capabilities are verified.
 
 GC2-D07 allows only the read-only Track 0 modules in parallel. Do not advance rollout, remove `--allow-shadow`, add a publishing workflow schedule, or change legacy dispatch/registry behavior during this build.
 

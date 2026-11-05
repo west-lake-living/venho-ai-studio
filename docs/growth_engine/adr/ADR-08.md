@@ -1,6 +1,6 @@
 # ADR-08 — Separate publish and jobs worker lanes
 
-**Status:** Default selected per ADR-08; final G-P0 acceptance pending.
+**Status:** Decision recorded for this build on 2026-11-05.
 
 ## Context
 

@@ -1,6 +1,6 @@
 # ADR-06 — Machine authentication at the edge
 
-**Status:** Draft per ADR-06 defaults; credentials and edge validation are pending.
+**Status:** Decision recorded for this build on 2026-11-05; credentials and edge validation remain pending under P0-T05.
 
 ## Context
 

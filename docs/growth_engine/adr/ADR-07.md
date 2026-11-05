@@ -1,6 +1,6 @@
 # ADR-07 — User-level deployment layout
 
-**Status:** Default selected per ADR-07; final G-P0 acceptance and server deployment pending.
+**Status:** Decision recorded for this build on 2026-11-05; server deployment remains separately gated.
 
 ## Context
 

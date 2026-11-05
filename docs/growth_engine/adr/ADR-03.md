@@ -1,6 +1,6 @@
 # ADR-03 — Clean Architecture package boundary
 
-**Status:** Default selected per GC2-D04; final G-P0 acceptance pending.
+**Status:** Decision recorded for this build on 2026-11-05.
 
 ## Context
 

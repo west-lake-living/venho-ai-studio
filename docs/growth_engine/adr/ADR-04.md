@@ -1,6 +1,6 @@
 # ADR-04 — Single-gate publishing admission
 
-**Status:** Default selected per GC2-D03; final G-P0 acceptance pending.
+**Status:** Decision recorded for this build on 2026-11-05.
 
 ## Context
 

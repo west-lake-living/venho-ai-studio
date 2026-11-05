@@ -5620,3 +5620,9 @@ ComfyUI, GPU, provider or network call.
 **Files:** `docs/growth_engine/adr/ADR-05.md`, `docs/growth_engine/adr/ADR-06.md`, `task_status.md`, `task_memory.md`
 **Verify:** ADR route/principal matrices reviewed; no Cloudflare config or endpoint was accessed.
 **DoD:** [x] `/internal/*` and `/media/publish/*` policy recorded; [ ] external response matrix remains NOT_RUN.
+
+### GC2-P0-T06 — ADR decision record (2026-11-05)
+**Status:** DONE — selected decisions are recorded in ADR-01…ADR-08 and the L2 Governance memory; external setup/evidence gates remain separate.
+**Files:** `docs/growth_engine/adr/ADR-01.md` … `ADR-08.md`, `task_memory.md`, `task_status.md`
+**Verify:** all eight ADRs contain decision/status sections; `git diff --check` → PASS.
+**DoD:** [x] current build decisions recorded; [x] Instagram publishing scope recorded; [x] unresolved host/Make/Meta configuration tracked under P0-T03…T05.

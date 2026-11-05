@@ -1,6 +1,6 @@
 # ADR-01 — Local SQLite storage
 
-**Status:** Default selected; runtime verification recorded by P0-T01, final G-P0 acceptance pending.
+**Status:** Decision recorded for this build on 2026-11-05; runtime verification is recorded separately by P0-T01.
 
 ## Context
 
