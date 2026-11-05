@@ -78,6 +78,25 @@ def test_probe_marks_metric_errors_unsupported_and_continues(tmp_path: Path) -> 
     assert "synthetic-token" not in str(result)
 
 
+def test_probe_includes_safe_meta_error_identifiers(tmp_path: Path) -> None:
+    args = _config(tmp_path, channel_id="fb_hanoi")
+
+    class _ErrorClient(_FakeClient):
+        def get_insights(self, object_id, metrics, period):
+            raise MetaGraphError(None, 400, provider_code=100, provider_subcode=33, provider_type="GraphMethodException")
+
+    result = run_probe(
+        args,
+        {"TOKEN_fb_hanoi": "synthetic-token"},
+        client_factory=lambda **kwargs: _ErrorClient(**kwargs),
+    )
+
+    first_metric = result["metrics"][0]
+    assert first_metric["meta_error_code"] == 100
+    assert first_metric["meta_error_subcode"] == 33
+    assert first_metric["meta_error_type"] == "GraphMethodException"
+
+
 def test_probe_uses_posts_edge_for_fb_venho_list_recent(tmp_path: Path) -> None:
     args = _config(tmp_path, channel_id="fb_venho", mode="recent")
     client = _FakeClient(api_version="vTEST", access_token="synthetic-token", collection_edge="posts")

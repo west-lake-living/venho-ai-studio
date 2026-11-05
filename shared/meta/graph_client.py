@@ -19,16 +19,31 @@ class MetaErrorKind(str, Enum):
 class MetaGraphError(RuntimeError):
     """Provider error without response text, request URL, or credentials."""
 
-    def __init__(self, kind: Optional[MetaErrorKind], status: Optional[int]) -> None:
+    def __init__(
+        self,
+        kind: Optional[MetaErrorKind],
+        status: Optional[int],
+        *,
+        provider_code: Optional[int] = None,
+        provider_subcode: Optional[int] = None,
+        provider_type: Optional[str] = None,
+    ) -> None:
         self.kind = kind
         self.status = status
+        self.provider_code = provider_code
+        self.provider_subcode = provider_subcode
+        self.provider_type = provider_type
         label = kind.value if kind is not None else "UNCLASSIFIED"
         status_text = f", HTTP {status}" if status is not None else ""
         super().__init__(f"Meta Graph request failed ({label}{status_text})")
 
     def __repr__(self) -> str:
         label = self.kind.value if self.kind is not None else "UNCLASSIFIED"
-        return f"MetaGraphError(kind={label!r}, status={self.status!r})"
+        return (
+            f"MetaGraphError(kind={label!r}, status={self.status!r}, "
+            f"provider_code={self.provider_code!r}, provider_subcode={self.provider_subcode!r}, "
+            f"provider_type={self.provider_type!r})"
+        )
 
 
 class GraphResponse(Protocol):
@@ -72,6 +87,25 @@ def _http_error_kind(status: int) -> Optional[MetaErrorKind]:
         return MetaErrorKind.TRANSIENT
     # Other 4xx statuses need the P0-T04 probe before assigning a business class.
     return None
+
+
+def _provider_error_details(body: bytes) -> tuple[Optional[int], Optional[int], Optional[str]]:
+    """Extract stable, non-secret Graph error identifiers; intentionally omit its message."""
+    try:
+        payload = json.loads(body.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        return None, None, None
+    error = payload.get("error") if isinstance(payload, dict) else None
+    if not isinstance(error, dict):
+        return None, None, None
+    code = error.get("code")
+    subcode = error.get("error_subcode")
+    error_type = error.get("type")
+    return (
+        code if isinstance(code, int) else None,
+        subcode if isinstance(subcode, int) else None,
+        error_type if isinstance(error_type, str) and len(error_type) <= 80 else None,
+    )
 
 
 def _fields_value(fields: Sequence[str]) -> str:
@@ -193,7 +227,14 @@ class ReadOnlyGraphClient:
             # Do not chain provider/transport exceptions: their text may contain credentials.
             raise MetaGraphError(MetaErrorKind.TRANSIENT, None) from None
         if response.status < 200 or response.status >= 300:
-            raise MetaGraphError(_http_error_kind(response.status), response.status)
+            provider_code, provider_subcode, provider_type = _provider_error_details(response.body)
+            raise MetaGraphError(
+                _http_error_kind(response.status),
+                response.status,
+                provider_code=provider_code,
+                provider_subcode=provider_subcode,
+                provider_type=provider_type,
+            )
         try:
             payload = json.loads(response.body.decode("utf-8"))
         except (UnicodeDecodeError, json.JSONDecodeError):

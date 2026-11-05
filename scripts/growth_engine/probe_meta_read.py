@@ -42,6 +42,20 @@ def _redact(value: Any, token: str) -> Any:
     return value
 
 
+def _error_details(error: MetaGraphError) -> dict[str, Any]:
+    details: dict[str, Any] = {
+        "error_class": error.kind.value if error.kind is not None else "UNCLASSIFIED",
+        "http_status": error.status,
+    }
+    if error.provider_code is not None:
+        details["meta_error_code"] = error.provider_code
+    if error.provider_subcode is not None:
+        details["meta_error_subcode"] = error.provider_subcode
+    if error.provider_type is not None:
+        details["meta_error_type"] = error.provider_type
+    return details
+
+
 def _load_config(channel_id: str, candidates_path: Path, channels_path: Path) -> tuple[dict[str, Any], str]:
     candidates = yaml.safe_load(candidates_path.read_text(encoding="utf-8")) or {}
     channels = yaml.safe_load(channels_path.read_text(encoding="utf-8")) or {}
@@ -68,12 +82,7 @@ def _field_probes(client: Any, object_id: str, fields: list[str]) -> list[dict[s
             response = client.get_object(object_id, [field])
             probes.append({"field": field, "result": "READABLE" if field in response else "NOT_RETURNED", "value": response.get(field)})
         except MetaGraphError as error:
-            probes.append({
-                "field": field,
-                "result": "ERROR",
-                "error_class": error.kind.value if error.kind is not None else "UNCLASSIFIED",
-                "http_status": error.status,
-            })
+            probes.append({"field": field, "result": "ERROR", **_error_details(error)})
     return probes
 
 
@@ -117,11 +126,7 @@ def run_probe(
                 account_id, since_ms, until_ms, fields, int(candidate.get("max_pages", 3))
             )
         except MetaGraphError as error:
-            result["recent_posts"] = {
-                "result": "ERROR",
-                "error_class": error.kind.value if error.kind is not None else "UNCLASSIFIED",
-                "http_status": error.status,
-            }
+            result["recent_posts"] = {"result": "ERROR", **_error_details(error)}
     else:
         post_id = str(candidate.get("post_id") or "")
         if not post_id:
@@ -134,13 +139,9 @@ def run_probe(
             try:
                 response = client.get_insights(post_id, [name], period)
             except MetaGraphError as error:
-                result["metrics"].append({
-                    "metric": name,
-                    "period": period,
-                    "result": "UNSUPPORTED",
-                    "error_class": error.kind.value if error.kind is not None else "UNCLASSIFIED",
-                    "http_status": error.status,
-                })
+                result["metrics"].append(
+                    {"metric": name, "period": period, "result": "UNSUPPORTED", **_error_details(error)}
+                )
                 continue
             result["metrics"].append({"metric": name, "period": period, "result": "READABLE", "response": response})
     return _redact(result, token)

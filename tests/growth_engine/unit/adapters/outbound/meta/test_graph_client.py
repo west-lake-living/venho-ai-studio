@@ -132,6 +132,34 @@ def test_http_status_errors_are_classified_without_exposing_body_or_token(
     assert "synthetic-secret-token" not in repr(caught.value)
 
 
+def test_http_error_exposes_only_safe_meta_identifiers() -> None:
+    transport = FakeTransport(
+        [
+            FakeResponse(
+                400,
+                {
+                    "error": {
+                        "message": "synthetic-secret-token must never surface",
+                        "type": "OAuthException",
+                        "code": 190,
+                        "error_subcode": 463,
+                    },
+                    **_SYNTHETIC,
+                },
+            )
+        ]
+    )
+
+    with pytest.raises(MetaGraphError) as caught:
+        _client(transport).get_object("object-1", ["field_x"])
+
+    assert caught.value.provider_code == 190
+    assert caught.value.provider_subcode == 463
+    assert caught.value.provider_type == "OAuthException"
+    assert "synthetic-secret-token" not in str(caught.value)
+    assert "synthetic-secret-token" not in repr(caught.value)
+
+
 def test_get_insights_passes_requested_metrics_and_period_without_post_surface() -> None:
     transport = FakeTransport([FakeResponse(200, {"data": [{"name": "metric_x", **_SYNTHETIC}]})])
     client = _client(transport)
