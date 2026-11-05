@@ -29,6 +29,7 @@ CURRENT_LINK="$BASE_DIR/current"
 STATE_DIR="$HOME/venho/state/growth-engine"
 SECRETS_FILE="$HOME/venho/secrets/growth-engine.env"
 USER_UNITS_DIR="$HOME/.config/systemd/user"
+UV_BIN="$HOME/.local/bin/uv"
 UNITS=(growth-engine-api.service growth-engine-worker@publish.service growth-engine-worker@jobs.service)
 SWITCHED=0
 PREVIOUS_TARGET=""
@@ -64,7 +65,7 @@ mode="$(stat -c '%a' "$SECRETS_FILE")"
 grep -Eq '^[[:space:]]*GE_ENV=production[[:space:]]*$' "$SECRETS_FILE" \
   || fail "growth-engine.env must set GE_ENV=production"
 command -v git >/dev/null 2>&1 || fail "git is required"
-command -v uv >/dev/null 2>&1 || fail "uv is required"
+[[ -x "$UV_BIN" ]] || fail "managed uv is required at $UV_BIN"
 command -v systemd-run >/dev/null 2>&1 || fail "systemd-run is required"
 command -v systemctl >/dev/null 2>&1 || fail "systemctl is required"
 
@@ -80,7 +81,7 @@ actual_sha="$(git -C "$RELEASE_DIR" rev-parse HEAD)"
 [[ "${actual_sha,,}" == "${RELEASE_SHA,,}" || "${actual_sha,,}" == "${RELEASE_SHA,,}"* ]] \
   || fail "checked out commit does not match requested git-sha"
 
-(cd "$RELEASE_DIR" && uv sync --frozen --extra api --extra drive --extra gemini)
+(cd "$RELEASE_DIR" && UV_PYTHON_PREFERENCE=only-managed "$UV_BIN" sync --frozen --python 3.11 --extra api --extra drive --extra gemini)
 
 install -m 0644 "$SOURCE_ROOT/ops/asus-server/growth-engine/growth-engine-api.service" "$USER_UNITS_DIR/"
 install -m 0644 "$SOURCE_ROOT/ops/asus-server/growth-engine/growth-engine-worker@.service" "$USER_UNITS_DIR/"
