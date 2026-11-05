@@ -6332,3 +6332,7 @@ not in local venv; installed in CI).
 ### 2026-11-05 — GC2-P5-T06 IG support
 - FakeMake now routes only `(fb_hanoi, facebook)`, `(fb_venho, facebook)`, or `(ig_venho, instagram)` and rejects mismatches.
 - IG fake output uses `fake-media-*`; per-command route identity cannot change during replay.
+
+### 2026-11-05 — GC2-P6-T01 IG support
+- PlatformReader now accepts a generic remote account ID and configured `platform_post_id_path`/`owner_account_id_path`, while retaining Facebook path aliases.
+- Synthetic IG media verify covers ID, account, caption and media presence using GET-only fake transport; provider fields remain REQUIRED_FROM_P0.

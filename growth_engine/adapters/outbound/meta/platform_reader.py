@@ -18,7 +18,7 @@ class PlatformPostResult:
 
 
 class PlatformReader:
-    """Read-only Page post reader driven only by P0-verified channel capabilities."""
+    """Read-only Facebook post or Instagram media reader using configured capabilities."""
 
     def __init__(self, *, access_token: str, transport: Any = None) -> None:
         self._access_token = access_token
@@ -28,10 +28,14 @@ class PlatformReader:
         self,
         *,
         channel_config: ChannelConfig,
-        remote_page_id: str,
+        remote_page_id: str | None = None,
+        remote_account_id: str | None = None,
         platform_post_id: str,
         expected_caption: str,
     ) -> PlatformPostResult:
+        account_id = remote_account_id or remote_page_id
+        if not isinstance(account_id, str) or not account_id.strip():
+            raise ValueError("remote platform account ID is required")
         capability = channel_config.capability
         fields = _required_fields(capability)
         edge = capability.get("post_collection_edge")
@@ -51,14 +55,16 @@ class PlatformReader:
             kind = error.kind.value if error.kind is not None else "UNAVAILABLE"
             return PlatformPostResult("UNAVAILABLE", "UNKNOWN", error_kind=kind)
 
-        post_id = _at_path(post, _required_path(capability, "post_id_path"))
-        owner = _at_path(post, _required_path(capability, "owner_page_id_path"))
+        post_id_path_key = "platform_post_id_path" if "platform_post_id_path" in capability else "post_id_path"
+        owner_path_key = "owner_account_id_path" if "owner_account_id_path" in capability else "owner_page_id_path"
+        post_id = _at_path(post, _required_path(capability, post_id_path_key))
+        owner = _at_path(post, _required_path(capability, owner_path_key))
         caption = _at_path(post, _required_path(capability, "caption_path"))
         created_time = _at_path(post, _required_path(capability, "created_time_path"))
         media_value = _at_path(post, _required_path(capability, "media_path"))
         if not isinstance(post_id, str) or not post_id.strip() or not isinstance(owner, str):
             return PlatformPostResult("UNAVAILABLE", "UNKNOWN", error_kind="INCOMPLETE_RESPONSE")
-        if post_id != platform_post_id or owner != remote_page_id:
+        if post_id != platform_post_id or owner != account_id:
             return PlatformPostResult("MISMATCH", "MISMATCH")
         if not isinstance(caption, str):
             caption_match = None

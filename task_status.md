@@ -5711,3 +5711,10 @@ ComfyUI, GPU, provider or network call.
 **Verify:** fault + e2e → 10 passed; tests confirm three isolated route branches and one mutation per synthetic delivery.
 **DoD:** [x] 3 channel branches; [x] invalid key/platform pairs fail closed; [x] Instagram output uses a synthetic media ID; [x] prior two-Facebook isolation remains covered.
 **Giả định:** Instagram media IDs share the fake `post_id` slot used by the provider-neutral receipt envelope.
+
+### GC2-P6-T01 — IG media verify path (2026-11-05)
+**Status:** PARTIAL — reader verifies configured Instagram media/account paths; actual Meta capability fixture/token remains P0-T04 gated.
+**Files:** `growth_engine/adapters/outbound/meta/platform_reader.py`, `tests/growth_engine/unit/application/test_verify_publication.py`, `task_status.md`, `task_memory.md`
+**Verify:** verify-publication + Meta client tests → 21 passed; synthetic IG media ID/account match is read via GET-only Graph client.
+**DoD:** [x] provider-neutral post ID and account ID paths support Instagram media verification; [x] caption/media evidence stays config-driven; [ ] real fields, token and live results await P0-T04.
+**Giả định:** Meta capability config supplies platform-specific ID/owner paths; no Graph field name is inferred in code.

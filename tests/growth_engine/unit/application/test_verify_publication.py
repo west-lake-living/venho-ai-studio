@@ -207,6 +207,51 @@ def test_platform_reader_uses_configured_version_and_synthetic_fields() -> None:
     assert "synthetic-token" not in transport.calls[0]["url"]
 
 
+def test_platform_reader_verifies_instagram_media_id_and_account_with_configured_paths() -> None:
+    capability = {
+        "_synthetic": True,
+        "note": "cần thay bằng fixture thật từ P0-T03/P0-T04",
+        "post_fields": [
+            "synthetic_media_identifier",
+            "synthetic_ig_owner",
+            "synthetic_caption",
+            "synthetic_created",
+            "synthetic_media",
+        ],
+        "post_collection_edge": "synthetic-ig-media-edge",
+        "platform_post_id_path": "synthetic_media_identifier",
+        "owner_account_id_path": "synthetic_ig_owner.account_id",
+        "caption_path": "synthetic_caption",
+        "created_time_path": "synthetic_created",
+        "media_path": "synthetic_media",
+    }
+    config = replace(_candidate().channel_config, capability=capability)
+    transport = FakeTransport(
+        {
+            "_synthetic": True,
+            "note": "cần thay bằng fixture thật từ P0-T03/P0-T04",
+            "synthetic_media_identifier": "ig-media-synthetic-123",
+            "synthetic_ig_owner": {"account_id": "ig-business-synthetic"},
+            "synthetic_caption": "synthetic caption",
+            "synthetic_created": "synthetic-time",
+            "synthetic_media": {"present": True},
+        }
+    )
+
+    result = PlatformReader(access_token="synthetic-token", transport=transport).read_post(
+        channel_config=config,
+        remote_account_id="ig-business-synthetic",
+        platform_post_id="ig-media-synthetic-123",
+        expected_caption="synthetic caption",
+    )
+
+    assert result.existence == "EXISTS"
+    assert result.ownership == "MATCH"
+    assert result.media_present is True
+    assert result.caption_match is True
+    assert "/v-synthetic/ig-media-synthetic-123" in transport.calls[0]["url"]
+
+
 def test_platform_reader_refuses_unverified_meta_fields() -> None:
     config = replace(_candidate().channel_config, capability={"post_fields": ["REQUIRED_FROM_P0"]})
     reader = PlatformReader(access_token="synthetic-token", transport=FakeTransport({}))
