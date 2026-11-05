@@ -6280,3 +6280,5 @@ not in local venv; installed in CI).
 ### 2026-11-05 — P0-T02: Instagram publishing channel
 - Corrected the earlier assumption: `ig_venho` is a v2 publishing target. Kept production and TEST channels disabled until route/account evidence exists.
 - Instagram publishes use authorize/receipt/media scopes and the existing 4:5 profile; never route TEST traffic to the production account.
+### 2026-11-05 — P0-T03: human gate
+- Classified Make capability evidence as BLOCKED_HUMAN. No Make access, scenario changes, TEST posts or synthetic substitutes were used.

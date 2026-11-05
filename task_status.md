@@ -5602,3 +5602,9 @@ ComfyUI, GPU, provider or network call.
 **Verify:** `check_manifest_no_secrets.py` → PASS; YAML parse → PASS; `ig_venho` ID giữ nguyên `17841457936965829`, channel production disabled.
 **DoD:** [x] `ig_venho` được khai báo là publishing channel v2; [x] scopes gồm authorize/receipt/media; [x] thêm `ig_test` fail-closed; [ ] Harry xác minh TEST account, Make route/connection và Graph capability.
 **Giả định:** IG dùng cùng caption mặc định và receipt contract với Facebook; ảnh đã duyệt chọn variant `instagram_photo_v1` 4:5.
+
+### GC2-P0-T03 — Evidence Make TEST (2026-11-05)
+**Status:** BLOCKED_HUMAN — checklist MK-1…MK-11 đã sẵn; chỉ Harry có thể tạo scenario TEST và cung cấp output History đã khử bí mật.
+**Files:** `docs/growth_engine/make_capabilities.md`, `task_status.md`, `task_memory.md`
+**Verify:** checklist và lệnh offline hiện có; không truy cập Make hoặc tạo fixture giả.
+**DoD:** [x] bảng kiểm/evidence đã chuẩn bị; [ ] scenario Facebook + Instagram TEST, output thật và kết quả MK-1…MK-11 còn thiếu.
