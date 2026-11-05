@@ -6306,3 +6306,7 @@ not in local venv; installed in CI).
 ### 2026-11-05 — P0-T06: decisions recorded
 - Recorded the current build defaults in ADR-01…08. Updated the authority decision to include `ig_venho` as a v2 publishing channel, with production disabled pending route/provider evidence.
 - P0-T06 is DONE for decision documentation; Make, Meta and Cloudflare validation remain separate human gates.
+
+### 2026-11-05 — GC2-T0-05 SQLite wiring
+- Nối cảnh báo reconcile vào `incidents` qua UoW; fingerprint tách slot × channel × trạng thái, incident mở dedupe bền vững.
+- Test chạy migration trên file SQLite; external Graph/Telegram/legacy scheduler không được gọi.
