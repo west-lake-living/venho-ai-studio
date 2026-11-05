@@ -89,6 +89,18 @@ class MediaRepository(SqliteRepository):
             created_at_ms=row["created_at"],
         )
 
+    def update_qc_status(self, variant_id: str, status: VariantQcStatus) -> None:
+        if not self.connection.in_transaction:
+            raise RuntimeError("variant QC status updates require an active transaction")
+        if not isinstance(status, VariantQcStatus):
+            raise ValueError("status must be a VariantQcStatus")
+        cursor = self.connection.execute(
+            "UPDATE media_variants SET qc_status=? WHERE id=?",
+            (status.value, variant_id),
+        )
+        if cursor.rowcount != 1:
+            raise KeyError(f"media variant not found: {variant_id}")
+
 
 class QcRepository(SqliteRepository):
     def save(self, report: QcReport) -> None:

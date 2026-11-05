@@ -27,6 +27,9 @@
 ### 2026-11-05 — P3-T02: signed media route composition
 - Mounted the media router in `create_app`; changed middleware to preserve the handler's cache policy on public signed-media paths while keeping `no-store` forced on private API paths.
 - Integration checks use the normal app, migrated temporary SQLite file and local media store; signature, expiry, traversal and exact hash behavior pass.
+### 2026-11-05 — P3-T03: QC SQLite transaction
+- Added `MediaRepository.update_qc_status()` with an active-transaction guard and an affected-row check. `EvaluateQc` now persists report and status in one real `SqliteUnitOfWork` transaction.
+- Integration input is marked `_synthetic: true`; no legacy validator or network provider was called.
 
 ## 2026-11-04 — GC2-P1-T01 package và cấu hình
 

@@ -5656,3 +5656,9 @@ ComfyUI, GPU, provider or network call.
 **Files:** `growth_engine/adapters/inbound/api/{app,middleware}.py`, `tests/growth_engine/integration/media/test_signed_urls.py`, `task_status.md`, `task_memory.md`
 **Verify:** signed media app integration + architecture → 6 passed; database and media bytes use a real temporary SQLite file.
 **DoD:** [x] exact approved bytes and 403 cases are tested through the composed API app; [x] no-cache header survives middleware.
+
+### GC2-P3-T03 — SQLite QC persistence wiring (2026-11-05)
+**Status:** DONE — the SQLite media repository updates only `qc_status` and stores the immutable QC report in the same UoW transaction.
+**Files:** `growth_engine/adapters/outbound/persistence/sqlite/repositories/media.py`, `tests/growth_engine/integration/sqlite/test_qc_wiring.py`, `task_status.md`, `task_memory.md`
+**Verify:** SQLite QC integration + use-case tests → 8 passed; temporary file DB, migrations and real repository/UoW used.
+**DoD:** [x] QC report and variant status commit atomically; [x] bytes/identity remain protected by existing migration trigger; no external validator/network used.
