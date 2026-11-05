@@ -65,12 +65,20 @@ class FakeReceiptEndpoint:
 
 
 class FakeMake:
-    """Local Make blueprint model with one counted post mutation per command."""
+    """Local Make blueprint model with one explicit platform route per command."""
+
+    _ROUTES = {
+        ("fb_hanoi", "facebook"): "facebook_hanoi",
+        ("fb_venho", "facebook"): "facebook_venho",
+        ("ig_venho", "instagram"): "instagram_venho",
+    }
 
     def __init__(self) -> None:
         self.posts_by_command: dict[str, dict[str, object]] = {}
         self.mutation_counter: Counter[str] = Counter()
         self.delivery_calls: Counter[str] = Counter()
+        self.route_by_command: dict[str, str] = {}
+        self.route_hits: Counter[str] = Counter()
 
     def deliver(
         self,
@@ -82,6 +90,15 @@ class FakeMake:
     ) -> dict[str, object]:
         command_id = str(envelope["command_id"])
         delivery_id = str(envelope["delivery_id"])
+        channel_key = str(envelope.get("channel_key", ""))
+        platform = str(envelope.get("platform", ""))
+        route = self._ROUTES.get((channel_key, platform))
+        if route is None:
+            raise ValueError("command channel_key/platform does not match a publish branch")
+        previous_route = self.route_by_command.setdefault(command_id, route)
+        if previous_route != route:
+            raise ValueError("one command cannot enter multiple publish branches")
+        self.route_hits[route] += 1
         self.delivery_calls[command_id] += 1
         grant = authorize(envelope)
         if not grant.execute:
@@ -92,8 +109,10 @@ class FakeMake:
         post = self.posts_by_command.get(command_id)
         if post is None:
             post = {
-                "post_id": f"fake-post-{uuid4()}",
+                "post_id": f"fake-media-{uuid4()}" if platform == "instagram" else f"fake-post-{uuid4()}",
                 "page_id": str(envelope["remote_page_id"]),
+                "platform": platform,
+                "channel_key": channel_key,
                 "delivery_id": delivery_id,
                 "caption_hash": envelope.get("caption_hash"),
                 "media_sha256": envelope.get("media_sha256"),

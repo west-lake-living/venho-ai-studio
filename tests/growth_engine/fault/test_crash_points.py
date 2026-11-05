@@ -17,6 +17,8 @@ def _envelope(command_id: str = "command-1", delivery_id: str = "delivery-1") ->
     return {
         "command_id": command_id,
         "delivery_id": delivery_id,
+        "channel_key": "fb_hanoi",
+        "platform": "facebook",
         "remote_page_id": "page-test-a",
         "payload_hash": "a" * 64,
         "caption_hash": "b" * 64,

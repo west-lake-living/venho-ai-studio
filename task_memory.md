@@ -6328,3 +6328,7 @@ not in local venv; installed in CI).
 
 ### 2026-11-05 — GC2-P5-T04 IG support
 - Receipt inbox already used provider-neutral `platform_post_id`; verified that synthetic IG media ID survives schema validation, multi-process duplicate receipt, SQLite apply and delivery persistence.
+
+### 2026-11-05 — GC2-P5-T06 IG support
+- FakeMake now routes only `(fb_hanoi, facebook)`, `(fb_venho, facebook)`, or `(ig_venho, instagram)` and rejects mismatches.
+- IG fake output uses `fake-media-*`; per-command route identity cannot change during replay.

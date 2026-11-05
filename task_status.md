@@ -5704,3 +5704,10 @@ ComfyUI, GPU, provider or network call.
 **Verify:** receipt unit + SQLite publishing integration + contract → 28 passed, 1 dependency warning; two processes submit the same IG media-ID receipt and create one inbox/job; applying it preserves ID and permalink.
 **DoD:** [x] media ID is accepted as platform post identifier; [x] receipt dedupe/apply is durable; [x] page identity remains checked by existing receipt store.
 **Giả định:** Instagram's post identifier is supplied in the existing `platform_post_id` contract field; permalink remains optional provider output.
+
+### GC2-P5-T06 — FakeMake ba nhánh IG (2026-11-05)
+**Status:** DONE — FakeMake routes by explicit channel key/platform to Hanoi, Ven Hồ or Instagram; each command stays on one branch.
+**Files:** `tests/growth_engine/support/fake_make.py`, `tests/growth_engine/fault/test_crash_points.py`, `tests/growth_engine/e2e/test_two_pages_happy_path.py`, `task_status.md`, `task_memory.md`
+**Verify:** fault + e2e → 10 passed; tests confirm three isolated route branches and one mutation per synthetic delivery.
+**DoD:** [x] 3 channel branches; [x] invalid key/platform pairs fail closed; [x] Instagram output uses a synthetic media ID; [x] prior two-Facebook isolation remains covered.
+**Giả định:** Instagram media IDs share the fake `post_id` slot used by the provider-neutral receipt envelope.
