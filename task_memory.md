@@ -6284,3 +6284,5 @@ not in local venv; installed in CI).
 - Classified Make capability evidence as BLOCKED_HUMAN. No Make access, scenario changes, TEST posts or synthetic substitutes were used.
 ### 2026-11-05 — P0-T04: human gate
 - Meta probing remains read-only and unrun. A user must supply the token through the channel-specific environment variable and verify API version/fields before interpreting results.
+### 2026-11-05 — P0-T05: human gate
+- Cloudflare policy is documented; host inventory, Tunnel/Access changes and outside-host curl checks were not performed.

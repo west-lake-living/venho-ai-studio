@@ -5614,3 +5614,9 @@ ComfyUI, GPU, provider or network call.
 **Files:** `scripts/growth_engine/probe_meta_read.py`, `task_status.md`, `task_memory.md`
 **Verify:** `python3 scripts/growth_engine/probe_meta_read.py --help` → PASS; không gọi Meta.
 **DoD:** [x] token lấy từ env riêng từng channel, output redacted; [ ] ba probe và capability evidence chưa chạy.
+
+### GC2-P0-T05 — Cloudflare edge validation (2026-11-05)
+**Status:** BLOCKED_HUMAN — ADR policy is ready; host/Tunnel/Access configuration and external curl evidence require Harry.
+**Files:** `docs/growth_engine/adr/ADR-05.md`, `docs/growth_engine/adr/ADR-06.md`, `task_status.md`, `task_memory.md`
+**Verify:** ADR route/principal matrices reviewed; no Cloudflare config or endpoint was accessed.
+**DoD:** [x] `/internal/*` and `/media/publish/*` policy recorded; [ ] external response matrix remains NOT_RUN.
