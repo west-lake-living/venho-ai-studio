@@ -6,7 +6,7 @@
 | **Phiên bản** | v1.2-CA — bản hợp nhất, tối ưu kiến trúc từ *Technical Spec & Plan v1.0* (04/11/2026) |
 | **Ngày** | 04/11/2026 (Asia/Ho_Chi_Minh) |
 | **Đầu vào** | `GROWTH_CONTENT_V2_TECHNICAL_SPEC_AND_PLAN.md` v1.0 · `VENHO_GROWTH_AGENT_STATUS_REPORT_2026-11-04.md` · cấu trúc repo `west-lake-living/venho-ai-studio` @ `9ab0a22` (04/11/2026) |
-| **Trạng thái** | PROPOSED — chưa triển khai, chưa đổi production. Đã chốt 04/11: phương án C, 3 kênh, Make router (xem §2) |
+| **Trạng thái** | IN PROGRESS — code đã commit trên `gc2/build-v1-2`; chưa đổi production. Human gates cho Make, Meta và deploy vẫn mở. Đã chốt 04/11: phương án C, 3 kênh, Make Router (xem §2) |
 | **Người đọc chính** | AI Agent (Claude Code trong VS Code) + Harry (duyệt gate) |
 | **Vị trí lưu đề xuất trong repo** | `docs/growth_engine/GC2_MASTER_PLAN.md` |
 
@@ -118,8 +118,8 @@ Growth Agent v3.2 đăng đúng giờ từ khi lên asus-server (21/10), nhưng 
 | `channel_key` | Kênh | ID | Ghi chú |
 |---|---|---|---|
 | `fb_hanoi` | Facebook Page *Ven Hồ Hotel Hanoi* | `1124616474074140` | Đăng từ 08/2026; registry có 35 bài PUBLISHED: 32 post ID chuẩn, 1 ID dạng `pfbid…`, 2 ID giả |
-| `fb_venho` | Facebook Page *Ven Hồ Hotel* | xác minh ở P0-T02 | Thêm ngày 03/11/2026; bài đầu tiên 04/11 (bị xoá vì ảnh sai, Harry đăng lại tay) |
-| `ig_venho` | Instagram business | xác minh ở P0-T02 | Đăng đều từ 08/2026 (46 bài) |
+| `fb_venho` | Facebook Page *Ven Hồ Hotel* | `803531149684177` | ID có trong `channels.yaml`; route/Meta access còn chờ P0-T03/P0-T04 verification |
+| `ig_venho` | Instagram business | `17841457936965829` | ID có trong `channels.yaml`; route/Meta access còn chờ P0-T03/P0-T04 verification; đăng đều từ 08/2026 |
 
 Make hiện dùng **Router rẽ cả hai nhánh Facebook** cho mỗi lệnh FB, nên registry chỉ ghi post ID của Page Hanoi — kết quả Page *Ven Hồ Hotel* không được hệ thống theo dõi. Ngoài ra 2 bài (10/08, 12/08) mang post ID giả `"3. Post ID"` (nhãn field Make) nhưng vẫn ở trạng thái PUBLISHED.
 
