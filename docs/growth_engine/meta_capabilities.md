@@ -1,13 +1,13 @@
 # Meta read capability probe — GC2-P0-T04
 
-**Status:** candidate configuration is ready; probes have not been run. No Meta token was available or used in this task. Candidate fields and metrics must be confirmed per account, permission set and API version before they are used by reconciliation or Insights.
+**Status:** read access was verified on 2026-11-05 with Meta Graph API Explorer and the local probe, using read-only requests. Candidate API version is pinned to `v27.0`. Tokens were supplied through environment variables only; they are not stored in the repository.
 
-Run these from the repository root after the matching read token is present in the environment. No account ID, post ID, field, metric, period or API version needs to be supplied on the command line.
+Run these from the repository root when repeating the checks:
 
 ```bash
-python3 scripts/growth_engine/probe_meta_read.py --channel fb_hanoi
-python3 scripts/growth_engine/probe_meta_read.py --channel fb_venho --list-recent
-python3 scripts/growth_engine/probe_meta_read.py --channel ig_venho
+uv run --no-sync python scripts/growth_engine/probe_meta_read.py --channel fb_hanoi
+uv run --no-sync python scripts/growth_engine/probe_meta_read.py --channel fb_venho --list-recent
+uv run --no-sync python scripts/growth_engine/probe_meta_read.py --channel ig_venho
 ```
 
 Required token environment variables:
@@ -16,12 +16,12 @@ Required token environment variables:
 - `GE_META_READ_TOKEN_FB_VENHO`
 - `GE_META_READ_TOKEN_IG_VENHO`
 
-The probe reads candidates from `config/projects/venho_hotel/growth_engine/meta_probe_candidates.yaml` and checks the account IDs against `channels.yaml`. The candidate version is `v26.0`; Facebook post fields, Page metrics (`period=lifetime`, one metric per request), Instagram media fields and Instagram media metrics (period omitted, one metric per request) remain **unverified**. A metric request error is recorded as `UNSUPPORTED`, then the next candidate metric is attempted. The Facebook Ven Hồ Hotel command enumerates the `posts` edge instead of using a supplied post ID.
-
-| Channel | Candidate account ID | Candidate post/source | Probe result |
+| Channel | Account ID | Sample/source | Verified result |
 |---|---:|---|---|
-| `fb_hanoi` | `1124616474074140` | `1124616474074140_122149744263351048` (02/11) | `NOT_RUN` |
-| `fb_venho` | `803531149684177` | Recent items via `posts` edge | `NOT_RUN` |
-| `ig_venho` | `17841457936965829` | `18098055056408999` (02/11) | `NOT_RUN` |
+| `fb_hanoi` | `1124616474074140` | `1124616474074140_122150227155351048` | `id`, `created_time`, `permalink_url`, `message`, `from`, and `full_picture` readable. `shares` was not returned. `reactions` and `comments` summary fields rejected with Meta code 10. Both lifetime metrics, `post_media_view` and `post_total_media_view_unique`, readable. |
+| `fb_venho` | `803531149684177` | Recent `posts` edge; latest observed `803531149684177_1973847183910795` (2026-11-04) | Recent posts edge and base fields (`id`, `created_time`, `permalink_url`, `message`, `from`, `full_picture`) readable. `shares` was not returned; `reactions` and `comments` summary fields rejected with Meta code 10 and are excluded from the list request. |
+| `ig_venho` | `17841457936965829` | `18098373959134505` | Media edge and all configured fields (`id`, `timestamp`, `permalink`, `caption`, `media_type`, `media_url`, `owner`, `username`, `like_count`, `comments_count`) readable. All configured metrics (`reach`, `likes`, `comments`, `shares`, `saved`, `total_interactions`, `views`) readable with period omitted. |
 
-Record the redacted JSON output, exact readable fields, permission errors and metric results here after the operator runs the commands. Do not paste tokens or full environment-file contents. Do not mark a candidate verified solely because the CLI exited successfully.
+The probe checks account IDs against `channels.yaml`. It tests Facebook post metrics with `period=lifetime`, one metric per request, and Instagram metrics with period omitted, one metric per request. A metric error is recorded as `UNSUPPORTED` and does not stop later metric checks. The `fb_venho` check enumerates its `posts` edge instead of using a fixed post ID.
+
+These results verify read access for the observed accounts and sample objects. They do not change production publishing or reconciliation configuration. Do not paste tokens or full environment-file contents into reports.

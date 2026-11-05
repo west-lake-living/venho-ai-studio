@@ -1,12 +1,14 @@
 # Candidate-only Meta Graph API read settings, based on the Meta Pages/Instagram API references.
 # P0-T04 must verify API version, each field/metric, permissions and account access with the read token.
 # Nothing in this file is a verified production capability.
-api_version: v26.0
+# Graph API Explorer redirected the verified read request from v26.0 to v27.0 on 2026-11-05.
+# Keep this pinned to the version actually accepted by Meta rather than relying on the former candidate.
+api_version: v27.0
 channels:
   fb_hanoi:
     platform: facebook
     account_id: "1124616474074140"
-    post_id: "1124616474074140_122149744263351048"
+    post_id: "1124616474074140_122150227155351048"
     token_env: GE_META_READ_TOKEN_FB_HANOI
     collection_edge: posts
     list_recent: false
@@ -43,13 +45,11 @@ channels:
       - from
       - full_picture
       - shares
-      - reactions.summary(total_count).limit(0)
-      - comments.summary(total_count).limit(0)
     metrics: []
   ig_venho:
     platform: instagram
     account_id: "17841457936965829"
-    post_id: "18098055056408999"
+    post_id: "18098373959134505"
     token_env: GE_META_READ_TOKEN_IG_VENHO
     collection_edge: media
     list_recent: false
