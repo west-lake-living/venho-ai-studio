@@ -37,21 +37,20 @@ class _MetricClient:
 
 
 class _EngagementClient:
-    def __init__(self):
-        self.insights_calls = []
+    def __init__(self, probe_fixture):
         self.object_calls = []
-
-    def get_insights(self, object_id, metrics, period):
-        self.insights_calls.append((object_id, tuple(metrics), period))
-        value = 14 if metrics[0] == "post_media_view" else 10
-        return {"data": [{"name": metrics[0], "values": [{"value": value}], "_fixture": True}]}
+        self.posts = {}
+        for post in probe_fixture["channels"]["fb_venho"]["recent_posts"]:
+            self.posts[post["post_id"]] = {
+                "reactions": {"summary": {"total_count": post["reactions_total"]["value"]}},
+                "comments": {"summary": {"total_count": post["comments_total"]["value"]}},
+            }
 
     def get_object(self, object_id, fields):
         self.object_calls.append((object_id, tuple(fields)))
-        return {
-            "reactions": {"data": [], "summary": {"total_count": 2}},
-            "comments": {"data": [], "summary": {"total_count": 1}},
-        }
+        post = self.posts[object_id]
+        roots = {field.split(".", 1)[0] for field in fields}
+        return {root: post[root] for root in roots}
 
 
 def _write_yaml(path: Path, value) -> None:
@@ -158,21 +157,29 @@ def test_unverified_metrics_are_skipped_without_meta_calls(tmp_path: Path) -> No
 
 def test_facebook_engagement_registry_blocks_by_default_and_enables_with_fixture(tmp_path: Path) -> None:
     config_root, data_root, report_root = _sources(tmp_path)
+    probe_path = Path(__file__).parent / "fixtures/growth_engine/fb_engagement_probe_20261105.json"
+    probe_fixture = json.loads(probe_path.read_text(encoding="utf-8"))
+    sample_post = probe_fixture["channels"]["fb_venho"]["recent_posts"][0]
     reconcile_path = report_root / "channel_reconcile" / "2026-11-05.json"
-    reconcile_path.write_text(json.dumps({"_synthetic": True, "results": []}), encoding="utf-8")
+    published_at = datetime.fromisoformat(sample_post["created_time"].replace("Z", "+00:00"))
+    reconcile_path.write_text(json.dumps({"results": [{
+        "channel_id": "fb_venho", "status": "UNTRACKED", "post_id": sample_post["post_id"],
+        "created_at_ms": int(published_at.timestamp() * 1000),
+    }]}), encoding="utf-8")
+    publication_registry_path = data_root / "venho_hotel" / "publishing" / "publication_registry.json"
+    publication_registry_path.write_text(json.dumps({"publications": []}), encoding="utf-8")
     metrics_path = config_root / "growth_engine" / "metrics_registry.yaml"
     registry = {
-        "capabilities": {"facebook_engagement": {"default": "BLOCKED", "channels": {}}},
+        "capabilities": {"facebook_engagement": {
+            "default": "BLOCKED", "channels": {"fb_hanoi": "BLOCKED", "fb_venho": "BLOCKED"}
+        }},
         "metrics": [
-            {"name": "post_media_view", "provider_field": "post_media_view", "scope": "post", "period": "lifetime", "availability": "VERIFIED", "channels": ["fb_hanoi"]},
-            {"name": "post_total_media_view_unique", "provider_field": "post_total_media_view_unique", "scope": "post", "period": "lifetime", "availability": "VERIFIED", "channels": ["fb_hanoi"]},
-            {"name": "reactions_total", "provider_field": "reactions.summary(total_count).limit(0)", "scope": "post_field", "period": None, "availability": "CONDITIONAL", "capability": "facebook_engagement", "channels": ["fb_hanoi"]},
-            {"name": "comments_total", "provider_field": "comments.summary(total_count).limit(0)", "scope": "post_field", "period": None, "availability": "CONDITIONAL", "capability": "facebook_engagement", "channels": ["fb_hanoi"]},
-            {"name": "shares", "provider_field": "shares", "scope": "post_field", "period": None, "availability": "CONDITIONAL", "capability": "facebook_engagement", "missing_value_state": "ZERO", "channels": ["fb_hanoi"]},
+            {"name": "reactions_total", "provider_field": "reactions.summary(total_count).limit(0)", "scope": "post_field", "period": None, "availability": "CONDITIONAL", "capability": "facebook_engagement", "channels": ["fb_venho"]},
+            {"name": "comments_total", "provider_field": "comments.summary(total_count).limit(0)", "scope": "post_field", "period": None, "availability": "CONDITIONAL", "capability": "facebook_engagement", "channels": ["fb_venho"]},
         ],
     }
     _write_yaml(metrics_path, registry)
-    client = _EngagementClient()
+    client = _EngagementClient(probe_fixture)
     factory = lambda channel_id, candidates_path, env: (client, "v27.0")
     now = datetime(2026, 11, 5, 9, 0, tzinfo=ZoneInfo("Asia/Ho_Chi_Minh"))
 
@@ -180,27 +187,30 @@ def test_facebook_engagement_registry_blocks_by_default_and_enables_with_fixture
         days=90, config_root=config_root, data_root=data_root, reports_root=report_root,
         metrics_registry_path=metrics_path, now=now, env={}, client_factory=factory,
     )
-    assert blocked["inserted"] == 2
-    assert len(client.insights_calls) == 2
+    assert blocked["inserted"] == 0
+    assert blocked["skipped"] == [{"delivery_id": f"manual:fb_venho:{sample_post['post_id']}", "reason": "no_verified_metrics"}]
     assert client.object_calls == []
-    insights_report(reports_root=report_root, metrics_registry_path=metrics_path, now=now)
-    blocked_json = json.loads((report_root / "insights" / f"weekly-{now.date().isoformat()}.json").read_text())
-    assert blocked_json["groups"][0]["internal_engagement_rate"] == {
-        "state": "UNAVAILABLE", "reason": "CAPABILITY_BLOCKED", "samples": 0, "average": None
-    }
 
-    registry["capabilities"]["facebook_engagement"]["channels"]["fb_hanoi"] = "SUPPORTED"
+    registry["capabilities"]["facebook_engagement"]["channels"]["fb_venho"] = "SUPPORTED"
     _write_yaml(metrics_path, registry)
     supported = backfill_insights(
         days=90, config_root=config_root, data_root=data_root, reports_root=report_root,
         metrics_registry_path=metrics_path, now=now, env={}, client_factory=factory,
     )
-    assert supported["inserted"] == 3
-    assert len(client.object_calls) == 3
+    assert supported["inserted"] == 2
+    assert client.object_calls == [
+        (sample_post["post_id"], ("reactions.summary(total_count).limit(0)",)),
+        (sample_post["post_id"], ("comments.summary(total_count).limit(0)",)),
+    ]
+    with sqlite3.connect(report_root / "insights.db") as connection:
+        values = connection.execute(
+            "SELECT metric, value, value_state FROM metric_observations ORDER BY metric"
+        ).fetchall()
+    assert values == [("comments_total", 0, "ZERO"), ("reactions_total", 0, "ZERO")]
     insights_report(reports_root=report_root, metrics_registry_path=metrics_path, now=now)
     supported_json = json.loads((report_root / "insights" / f"weekly-{now.date().isoformat()}.json").read_text())
     assert supported_json["groups"][0]["internal_engagement_rate"] == {
-        "state": "VALUE", "reason": None, "samples": 1, "average": 0.3
+        "state": "UNAVAILABLE", "reason": "DATA_INCOMPLETE", "samples": 0, "average": None
     }
 
 

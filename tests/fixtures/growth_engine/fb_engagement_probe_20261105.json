@@ -1,0 +1,36 @@
+{
+  "captured_on": "2026-11-05",
+  "api_version": "v27.0",
+  "source": "sanitized local probe report; no token, URL, caption, or image data",
+  "channels": {
+    "fb_hanoi": {
+      "account_id": "1124616474074140",
+      "sample_post_id": "1124616474074140_122150227155351048",
+      "reactions_total": {"state": "NOT_RETURNED"},
+      "comments_total": {"state": "NOT_RETURNED"}
+    },
+    "fb_venho": {
+      "account_id": "803531149684177",
+      "recent_posts": [
+        {
+          "post_id": "803531149684177_1973847183910795",
+          "created_time": "2026-11-04T03:00:00Z",
+          "reactions_total": {"state": "READABLE", "value": 0},
+          "comments_total": {"state": "READABLE", "value": 0}
+        },
+        {
+          "post_id": "803531149684177_1976111517017695",
+          "created_time": "2026-11-04T02:31:00Z",
+          "reactions_total": {"state": "READABLE", "value": 0},
+          "comments_total": {"state": "READABLE", "value": 0}
+        },
+        {
+          "post_id": "803531149684177_1973835800578600",
+          "created_time": "2026-11-02T02:50:00Z",
+          "reactions_total": {"state": "READABLE", "value": 1},
+          "comments_total": {"state": "READABLE", "value": 0}
+        }
+      ]
+    }
+  }
+}

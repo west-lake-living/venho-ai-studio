@@ -2,7 +2,9 @@ from __future__ import annotations
 
 # _synthetic: true — cần thay bằng fixture thật từ P0-T03/P0-T04.
 
+import json
 from dataclasses import dataclass
+from pathlib import Path
 
 import pytest
 
@@ -260,12 +262,15 @@ def test_facebook_engagement_fields_are_skipped_when_capability_is_blocked() -> 
     assert result == [RawMetric("reactions_total", None, "UNAVAILABLE", 7)]
 
 
-def test_facebook_engagement_fields_use_fixture_and_missing_shares_are_zero() -> None:
+def test_facebook_engagement_fields_parse_sanitized_fb_venho_probe_fixture() -> None:
+    fixture_path = Path(__file__).parents[3] / "fixtures/growth_engine/fb_engagement_probe_20261105.json"
+    fixture = json.loads(fixture_path.read_text(encoding="utf-8"))
+    post = fixture["channels"]["fb_venho"]["recent_posts"][0]
     client = FakeGraphClient(
         {"data": []},
         {
-            "reactions": {"data": [], "summary": {"total_count": 2}},
-            "comments": {"data": [], "summary": {"total_count": 1}},
+            "reactions": {"summary": {"total_count": post["reactions_total"]["value"]}},
+            "comments": {"summary": {"total_count": post["comments_total"]["value"]}},
         },
     )
     source = MetaMetricsSource(lambda _channel: client, now_ms=lambda: 7, min_interval_seconds=0)
@@ -274,27 +279,38 @@ def test_facebook_engagement_fields_use_fixture_and_missing_shares_are_zero() ->
                    capability="facebook_engagement", capability_state="SUPPORTED"),
         MetricSpec("comments_total", "comments.summary(total_count).limit(0)", "post_field", None,
                    capability="facebook_engagement", capability_state="SUPPORTED"),
-        MetricSpec("shares", "shares", "post_field", None,
-                   capability="facebook_engagement", capability_state="SUPPORTED", missing_value_state="ZERO"),
     ]
 
     result = source.fetch(
-        ChannelConfigView("fb_hanoi", "page-synthetic", "facebook", "vXX.X"),
-        "post-synthetic",
+        ChannelConfigView("fb_venho", fixture["channels"]["fb_venho"]["account_id"], "facebook", fixture["api_version"]),
+        post["post_id"],
         specs,
     )
 
     assert [(row.name, row.value, row.state) for row in result] == [
-        ("reactions_total", 2, "VALUE"),
-        ("comments_total", 1, "VALUE"),
-        ("shares", 0, "ZERO"),
+        ("reactions_total", 0, "ZERO"),
+        ("comments_total", 0, "ZERO"),
     ]
     assert client.object_calls == [
-        ("post-synthetic", ("reactions.summary(total_count).limit(0)",)),
-        ("post-synthetic", ("comments.summary(total_count).limit(0)",)),
-        ("post-synthetic", ("shares",)),
+        (post["post_id"], ("reactions.summary(total_count).limit(0)",)),
+        (post["post_id"], ("comments.summary(total_count).limit(0)",)),
     ]
     assert client.calls == []
+
+
+def test_facebook_engagement_missing_shares_follow_zero_policy() -> None:
+    client = FakeGraphClient({"data": []}, {})
+    source = MetaMetricsSource(lambda _channel: client, now_ms=lambda: 7, min_interval_seconds=0)
+    spec = MetricSpec("shares", "shares", "post_field", None,
+                      capability="facebook_engagement", capability_state="SUPPORTED", missing_value_state="ZERO")
+
+    result = source.fetch(
+        ChannelConfigView("fb_venho", "page-synthetic", "facebook", "v27.0"),
+        "post-synthetic",
+        [spec],
+    )
+
+    assert [(row.name, row.value, row.state) for row in result] == [("shares", 0, "ZERO")]
 
 
 def test_meta_source_rate_limits_by_page_and_unsupported_metrics_do_not_call_provider() -> None:

@@ -21,6 +21,18 @@ def test_registry_defaults_facebook_engagement_to_blocked() -> None:
     assert by_name["shares"].missing_value_state == "ZERO"
 
 
+def test_probed_facebook_engagement_is_enabled_only_for_fb_venho() -> None:
+    path = Path("config/projects/venho_hotel/growth_engine/metrics_registry.yaml")
+
+    hanoi = {spec.name: spec for spec in load_metric_specs(path, "fb_hanoi")}
+    venho = {spec.name: spec for spec in load_metric_specs(path, "fb_venho")}
+
+    assert hanoi["reactions_total"].capability_state == "BLOCKED"
+    assert hanoi["comments_total"].capability_state == "BLOCKED"
+    assert venho["reactions_total"].capability_state == "SUPPORTED"
+    assert venho["comments_total"].capability_state == "SUPPORTED"
+
+
 def test_registry_can_enable_engagement_per_page(tmp_path: Path) -> None:
     payload = {
         "capabilities": {

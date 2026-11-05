@@ -1,12 +1,14 @@
 version: 2
-status: pending_p0_t04b_reprobe
+status: partial_p0_t04b_reprobe
 source: docs/growth_engine/meta_capabilities.md
-source_status: PENDING_REPROBE
+source_status: PARTIAL
 checkpoint_tolerance_seconds: 7200
 capabilities:
   facebook_engagement:
     default: BLOCKED
-    channels: {}
+    channels:
+      fb_hanoi: BLOCKED
+      fb_venho: SUPPORTED
 metrics:
   # The current read probe verified these v27.0 Page post metrics.
   - name: post_media_view
@@ -21,7 +23,7 @@ metrics:
     period: lifetime
     availability: VERIFIED
     channels: [fb_hanoi, fb_venho]
-  # Engagement fields stay off unless P0-T04b marks the Page capability SUPPORTED.
+  # Enable reactions/comments only for the Page where the sanitized re-probe returned them.
   - name: reactions_total
     provider_field: reactions.summary(total_count).limit(0)
     scope: post_field
