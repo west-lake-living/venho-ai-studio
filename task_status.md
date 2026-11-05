@@ -5638,3 +5638,9 @@ ComfyUI, GPU, provider or network call.
 **Files:** `.github/workflows/growth-tests.yml`, `task_status.md`, `task_memory.md`
 **Verify:** workflow inspection confirms `growth-engine-tests` runs `tests/growth_engine` and architecture tests on PR; push trigger is limited to `main`.
 **DoD:** [x] CI checks run automatically on configured pushes; [x] CI checks run on pull requests. No push was made in this session.
+
+### GC2-T0-04 — Shared Meta GET client (2026-11-05)
+**Status:** PARTIAL — shared GET-only implementation and v2 wrapper are connected; live probe and real capabilities remain human-gated under P0-T04.
+**Files:** `shared/{__init__.py,meta/__init__.py,meta/graph_client.py}`, `growth_engine/adapters/outbound/meta/graph_client.py`, `tests/growth_engine/unit/adapters/outbound/meta/test_graph_client.py`, `task_status.md`, `task_memory.md`
+**Verify:** Meta adapter + architecture tests → 15 passed; network guard remains active; no API request.
+**DoD:** [x] legacy-safe shared client location; [x] v2 wrapper; [ ] production token/version/field probe awaits P0-T04.

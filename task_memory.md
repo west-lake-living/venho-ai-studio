@@ -18,6 +18,9 @@
 - Removed the 07/11 image SHA from P0-T07 completion; v3.2 publishes that slot before cutover.
 ### 2026-11-05 — P1-T01: CI gate
 - Marked P1-T01 DONE based on the committed workflow; it runs Growth Engine and architecture checks on pull request and configured `main` pushes. No push was made here.
+### 2026-11-05 — T0-04: shared Meta client
+- Moved the GET-only client implementation to `shared/meta/` and made the Growth Engine outbound Meta adapter a thin wrapper. Legacy packages can import the shared client without importing Growth Engine.
+- Tests used injected offline transport only; production token, API version, fields and metrics remain unverified.
 
 ## 2026-11-04 — GC2-P1-T01 package và cấu hình
 

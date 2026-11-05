@@ -11,6 +11,7 @@ from growth_engine.adapters.outbound.meta.graph_client import (
     MetaErrorKind,
     MetaGraphError,
 )
+from shared.meta.graph_client import ReadOnlyGraphClient
 
 
 _SYNTHETIC = {"_synthetic": True}
@@ -154,3 +155,7 @@ def test_api_version_must_be_configured_and_pinned(version: str) -> None:
             collection_edge="synthetic-post-edge",
             transport=FakeTransport([]),
         )
+
+
+def test_growth_adapter_wraps_the_shared_read_only_graph_client() -> None:
+    assert issubclass(GraphClient, ReadOnlyGraphClient)
