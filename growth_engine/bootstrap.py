@@ -343,6 +343,8 @@ class Container:
     doctor_service: DoctorService
     analytics_views: Any
     generation_store: Any
+    review_store: Any
+    review_data_reader: Any
     ensure_slots: Any
     generate_package: Any
     run_lanes: Any
@@ -444,10 +446,14 @@ def build_container(settings: Any, *, metrics_source: Any | None = None) -> Cont
     generation_store_adapter = import_module(
         "growth_engine.adapters.outbound.persistence.sqlite.generation_store"
     )
+    review_store_adapter = import_module(
+        "growth_engine.adapters.outbound.persistence.sqlite.review_store"
+    )
     analytics_views = analytics_adapter.AnalyticsViews(uow_factory)
     clock = _SystemClock()
     ids = _UuidIds()
     generation_store = generation_store_adapter.SqliteGenerationStore(uow_factory, ids)
+    review_store = review_store_adapter.SqliteReviewStore(uow_factory, ids, clock)
     candidate_store = candidate_store_adapter.SqliteCandidateStore(uow_factory)
     channel_environment = "production" if settings.env.lower() == "production" else "test"
     token_issuer = _LazyCapabilityIssuer(settings.capability_keys)
@@ -643,6 +649,8 @@ def build_container(settings: Any, *, metrics_source: Any | None = None) -> Cont
         ),
         analytics_views=analytics_views,
         generation_store=generation_store,
+        review_store=review_store,
+        review_data_reader=review_store,
         ensure_slots=ensure_slots,
         generate_package=generate_package,
         run_lanes=run_lanes,

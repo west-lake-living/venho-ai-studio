@@ -5756,6 +5756,13 @@ ComfyUI, GPU, provider or network call.
 **Verify:** lane/SQLite focused → 27 passed; VERIFY_DEV → 453 passed, 4 warnings; VERIFY_ARCH → 2 passed; `git diff --check` → OK. SQLite integration covers three channel targets, shared package, PUBLISHED/live target protection, replacement only on SUPERSEDED target, and worker composition.
 **DoD:** [x] FakeClock advances through a week of ICT schedules; [x] CLI selects `jobs`; [x] fast/replacement use `ReserveTarget` and preserve INV-12; [x] 120-day topic exclusion and race re-read; [x] task errors open SQLite incidents.
 **Giả định:** The card specifies no replacement cadence, so the worker checks superseded targets every 15 minutes. `assemble_revision` jobs are durably written for the jobs queue implemented in P6-T03; no provider or external service was called.
+
+### GC2-P3-T04 — SQLite revision persistence and review reader (2026-11-05)
+**Status:** DONE — SQLite CAS stores immutable revisions, approval revocation, audit and notify job atomically; review reader is composed in the container.
+**Files:** `growth_engine/adapters/outbound/persistence/sqlite/review_store.py`, `growth_engine/bootstrap.py`, `tests/growth_engine/integration/sqlite/{test_revision_store.py,test_generation_store.py}`, `task_status.md`, `task_memory.md`
+**Verify:** revision/unit/bootstrap integration → 11 passed; VERIFY_DEV → 455 passed, 4 warnings; VERIFY_ARCH → 2 passed; `git diff --check` → OK. File-SQLite tests cover edit + REVOKE + notification/audit and reject an AUTHORIZED execution without writes.
+**DoD:** [x] APPROVED edit writes immutable revision and REVOKE then moves to IN_REVIEW; [x] revision guard rejects an AUTHORIZED execution; [x] review snapshot reads exact variant SHA and allowed actions; [x] UoW/adapter is exposed from bootstrap.
+**Giả định:** The preview URL builder remains supplied by the dashboard facade; P7-T01 composes that inbound facade and API operation. Notification uses durable `notify` job on the `publish` lane per §11.1.
 **Files:** `tests/growth_engine/integration/sqlite/test_analytics_views_sqlite.py`, `task_status.md`, `task_memory.md`
 **Verify:** weekly analytics SQLite + collector/report tests → 14 passed; Facebook Hanoi, Facebook Ven Hồ and Instagram reach values remain separate.
 **DoD:** [x] `ig_venho` observations retain their own page/channel aggregate; [x] mock observations and out-of-week data remain excluded; [ ] real Meta observations remain gated.

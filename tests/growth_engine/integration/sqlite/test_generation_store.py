@@ -229,6 +229,7 @@ def test_bootstrap_exposes_sqlite_generation_store(tmp_path: Path) -> None:
     )
     assert result.targets_created == 3
     assert container.jobs_lane is not None
+    assert container.review_store is container.review_data_reader
 
 
 def test_sqlite_generation_timeout_is_unknown_and_not_retried(tmp_path: Path) -> None:
