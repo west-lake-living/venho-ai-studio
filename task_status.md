@@ -5608,3 +5608,9 @@ ComfyUI, GPU, provider or network call.
 **Files:** `docs/growth_engine/make_capabilities.md`, `task_status.md`, `task_memory.md`
 **Verify:** checklist và lệnh offline hiện có; không truy cập Make hoặc tạo fixture giả.
 **DoD:** [x] bảng kiểm/evidence đã chuẩn bị; [ ] scenario Facebook + Instagram TEST, output thật và kết quả MK-1…MK-11 còn thiếu.
+
+### GC2-P0-T04 — Probe Meta read-only (2026-11-05)
+**Status:** BLOCKED_HUMAN — probe chỉ GET và script offline sẵn; token/version/field/fixture thật cần Harry cung cấp.
+**Files:** `scripts/growth_engine/probe_meta_read.py`, `task_status.md`, `task_memory.md`
+**Verify:** `python3 scripts/growth_engine/probe_meta_read.py --help` → PASS; không gọi Meta.
+**DoD:** [x] token lấy từ env riêng từng channel, output redacted; [ ] ba probe và capability evidence chưa chạy.
