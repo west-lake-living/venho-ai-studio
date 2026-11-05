@@ -5690,3 +5690,10 @@ ComfyUI, GPU, provider or network call.
 **Verify:** dispatch unit + publish/authorize/receipt SQLite integration + Make contract → 21 passed, 1 dependency warning; Instagram test creates a real SQLite dispatch lease with `ig_test` and `instagram`.
 **DoD:** [x] both platforms flow through dispatch; [x] v2 envelope carries explicit channel key/platform; [x] signed image URL expires at `execute_before_ms + 30m`; [x] Facebook contract/behavior remains covered.
 **Giả định:** the existing `remote_page_id` field carries Instagram's configured remote account ID for backward-compatible receipt/authorize identity.
+
+### GC2-P5-T03 — IG authorize và kiểm profile ảnh (2026-11-05)
+**Status:** DONE — authorize dùng channel principal và profile ảnh theo platform; hai process chỉ cấp một execution IG.
+**Files:** `growth_engine/application/publishing/authorize_publish.py`, `tests/growth_engine/unit/application/test_authorize_publish.py`, `tests/growth_engine/integration/sqlite/test_publish_scheduler_wiring.py`, `task_status.md`, `task_memory.md`
+**Verify:** authorize unit + real SQLite publish/receipt integration → 24 passed, 1 dependency warning; multiprocess IG race yields one authorization and one `ALREADY_AUTHORIZED`.
+**DoD:** [x] Instagram preflight chọn profile IG và chặn variant không 4:5; [x] principal `ig_test` được xác minh theo channel; [x] hai process cạnh tranh không cấp grant thứ hai.
+**Giả định:** 4:5 được kiểm tra bằng tỷ lệ nguyên chính xác trên variant đã duyệt.

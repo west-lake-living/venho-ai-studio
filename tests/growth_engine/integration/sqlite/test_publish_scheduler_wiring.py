@@ -296,6 +296,8 @@ def _authorize_process_worker(
     payload_hash,
     barrier,
     results,
+    principal_id="make-fb-hanoi",
+    channel_key="fb_hanoi",
 ) -> None:
     from growth_engine.application.publishing.authorize_publish import AuthorizePublishCommand
 
@@ -317,8 +319,8 @@ def _authorize_process_worker(
                 payload_hash=payload_hash,
                 media_report_http_status=200,
                 media_report_content_type="image/jpeg",
-                principal_id="make-fb-hanoi",
-                principal_channel_key="fb_hanoi",
+                principal_id=principal_id,
+                principal_channel_key=channel_key,
                 correlation_id="authorize-race-synthetic",
             )
         )
@@ -392,6 +394,76 @@ def test_two_processes_authorize_one_delivery_once(tmp_path: Path) -> None:
             "SELECT count(*) FROM executions WHERE delivery_id='delivery-sqlite'"
         ).fetchone()[0]
     assert count == 1
+
+
+def test_two_processes_authorize_instagram_target_once(tmp_path: Path) -> None:
+    bearer = "synthetic-ig-race-bearer"
+    service_tokens = f"make-ig-test:{hashlib.sha256(bearer.encode()).hexdigest()}"
+    key_config = "ig-race:" + base64.urlsafe_b64encode(b"g" * 32).decode().rstrip("=")
+    now_ms = time.time_ns() // 1_000_000
+    settings = Settings(
+        env="test",
+        db_path=str(tmp_path / "ig-authorize-race.db"),
+        media_root=str(tmp_path / "ig-race-media"),
+        public_base_url="https://growth.example.test",
+        capability_keys=key_config,
+        service_tokens=service_tokens,
+        make_webhook_urls={"IG_TEST": "https://hooks.example.test/instagram"},
+    )
+    container = build_container(settings)
+    container.migration_service.run(Path(settings.db_path), check=False)
+    _seed_approved_delivery(
+        container.uow_factory,
+        deadline_at_ms=now_ms + 600_000,
+        media_root=Path(settings.media_root),
+        channel_id="channel-test-ig",
+        channel_key="ig_test",
+        platform=ChannelPlatform.INSTAGRAM,
+        remote_account_id="ig-synthetic",
+        route_ref="GE_MAKE_WEBHOOK_URL_IG_TEST",
+    )
+    container.enqueue_due.execute(now_ms)
+    lease = container.dispatch_store.claim_due(
+        now_ms, 1, owner="ig-authorize-race-setup", lease_ms=30_000,
+        policy=container.publishing_policy,
+    )[0]
+
+    context = multiprocessing.get_context("spawn")
+    barrier = context.Barrier(2)
+    results = context.Queue()
+    processes = [
+        context.Process(
+            target=_authorize_process_worker,
+            args=(
+                settings.db_path,
+                settings.media_root,
+                key_config,
+                service_tokens,
+                lease.command.envelope_token,
+                lease.payload_hash,
+                barrier,
+                results,
+                "make-ig-test",
+                "ig_test",
+            ),
+        )
+        for _ in range(2)
+    ]
+    for process in processes:
+        process.start()
+    outcomes = [results.get(timeout=30) for _ in processes]
+    for process in processes:
+        process.join(timeout=30)
+        assert process.exitcode == 0
+    results.close()
+    results.join_thread()
+    assert outcomes.count((True, None)) == 1
+    assert outcomes.count((False, "ALREADY_AUTHORIZED")) == 1
+    with container.uow_factory().read_only() as tx:
+        row = tx.connection.execute(
+            "SELECT principal_id FROM executions WHERE delivery_id='delivery-sqlite'"
+        ).fetchone()
+    assert row["principal_id"] == "make-ig-test"
 
 
 def test_receipt_api_persists_full_sanitized_body_and_applies_from_sqlite(tmp_path: Path) -> None:

@@ -14,7 +14,7 @@ from growth_engine.domain.delivery.revision import DeliveryRevision
 from growth_engine.domain.delivery.states import DeliveryEvent, DeliveryState
 from growth_engine.domain.kernel.errors import DomainError, ErrorCode
 from growth_engine.domain.media.asset import MediaVariant, VariantQcStatus
-from growth_engine.domain.media.media_policy import FACEBOOK_PHOTO_V1
+from growth_engine.domain.media.media_policy import FACEBOOK_PHOTO_V1, INSTAGRAM_PHOTO_V1
 from growth_engine.domain.media.qc import QcDecision, QcReport
 from growth_engine.domain.publishing.command import CommandState, OutboxCommand
 from growth_engine.domain.publishing.execution import Execution
@@ -459,12 +459,20 @@ def _preflight_input(
         and report.decision in {QcDecision.PASS, QcDecision.REVIEW}
     )
     variant_safe = variant is not None and variant.qc_status is not VariantQcStatus.QUARANTINED
-    profile = FACEBOOK_PHOTO_V1.spec
+    profile = (
+        INSTAGRAM_PHOTO_V1.spec
+        if candidate.channel.platform.value == "instagram"
+        else FACEBOOK_PHOTO_V1.spec
+    )
     media_policy_valid = (
         variant is not None
         and variant.mime == "image/jpeg"
         and max(variant.width, variant.height) <= profile.max_long_side_px
         and variant.byte_size <= profile.max_bytes
+        and (
+            candidate.channel.platform.value != "instagram"
+            or variant.width * 5 == variant.height * 4
+        )
     )
     caption_hash_matches = bool(
         report is not None

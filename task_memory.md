@@ -6321,3 +6321,7 @@ not in local venv; installed in CI).
 ### 2026-11-05 — GC2-P5-T02 IG support
 - Dispatch query had a hard-coded Facebook predicate. It now accepts Facebook/Instagram and includes explicit `channel_key` + `platform` in the Make v2 envelope.
 - Signed media URL expiry is deadline plus 30 minutes; envelope execute-before remains the command deadline.
+
+### 2026-11-05 — GC2-P5-T03 IG support
+- Authorize trước đây luôn dùng profile Facebook. Giờ chọn profile theo platform; Instagram variant phải đúng 4:5, JPEG và giới hạn byte/cạnh dài của profile.
+- Kiểm tra Instagram principal bằng race hai process trên DB file; không gọi Meta/Make.

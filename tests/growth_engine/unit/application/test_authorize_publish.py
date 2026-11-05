@@ -186,13 +186,17 @@ def make_world(
     global_pause: bool = False,
     channel_paused: bool = False,
     media_valid: bool = True,
+    platform: ChannelPlatform = ChannelPlatform.FACEBOOK,
+    channel_key: str = CHANNEL_KEY,
+    media_width: int = 1080,
+    media_height: int = 1350,
 ) -> dict[str, object]:
     channel = Channel(
         id=CHANNEL_ID,
         project_id="venho_hotel",
         environment="test",
-        channel_key=CHANNEL_KEY,
-        platform=ChannelPlatform.FACEBOOK,
+        channel_key=channel_key,
+        platform=platform,
         remote_account_id=REMOTE_PAGE_ID,
         name="Hanoi synthetic",
         enabled=True,
@@ -212,8 +216,8 @@ def make_world(
         transform_version="synthetic-v1",
         sha256=MEDIA_SHA,
         object_key="variants/synthetic.jpg",
-        width=1080,
-        height=1350,
+        width=media_width,
+        height=media_height,
         mime="image/jpeg",
         byte_size=100_000,
         qc_status=VariantQcStatus.PASS,
@@ -238,7 +242,7 @@ def make_world(
             "remote_account_id": channel.remote_account_id,
             "channel_config_hash": config_hash(config),
             "caption": CAPTION,
-            "media": [{"sha256": MEDIA_SHA, "mime": "image/jpeg", "width": 1080, "height": 1350}],
+            "media": [{"sha256": MEDIA_SHA, "mime": "image/jpeg", "width": media_width, "height": media_height}],
             "scheduled_at_ms": NOW_MS - 60_000,
             "deadline_at_ms": deadline_at_ms,
             "qc_report_id": report.id,
@@ -357,11 +361,39 @@ def test_first_authorization_executes_and_replay_returns_already_authorized() ->
     assert world["store"].candidate.command.state is CommandState.AUTHORIZED
     assert len(world["store"].executions) == 1
 
-    replay = world["use_case"].execute(request_for(world))
+
+def test_instagram_authorization_accepts_approved_four_to_five_variant() -> None:
+    world = make_world(
+        platform=ChannelPlatform.INSTAGRAM,
+        channel_key="ig_venho",
+        media_width=864,
+        media_height=1080,
+    )
+
+    result = world["use_case"].execute(request_for(world, channel_key="ig_venho"))
+
+    assert result.execute is True
+    assert result.remote_page_id == REMOTE_PAGE_ID
+
+    replay = world["use_case"].execute(request_for(world, channel_key="ig_venho"))
 
     assert replay.execute is False
     assert replay.reason == "ALREADY_AUTHORIZED"
     assert len(world["store"].executions) == 1
+
+
+def test_instagram_authorization_blocks_non_four_to_five_variant() -> None:
+    world = make_world(
+        platform=ChannelPlatform.INSTAGRAM,
+        channel_key="ig_venho",
+        media_width=1080,
+        media_height=1080,
+    )
+
+    result = world["use_case"].execute(request_for(world, channel_key="ig_venho"))
+
+    assert result.execute is False
+    assert result.reason == "PREFLIGHT_BLOCKED"
 
 
 @pytest.mark.parametrize("race", ["approval_revoked", "image_changed"])
