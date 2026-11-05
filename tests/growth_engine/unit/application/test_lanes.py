@@ -90,6 +90,24 @@ def test_jobs_worker_runs_ict_cron_tasks_at_the_scheduled_times_for_a_week():
     assert len(seen["replacement"]) == 4 * 24 * 7
 
 
+def test_notification_jobs_use_reminder_interval_and_ict_digest_time():
+    calls: list[str] = []
+    tasks = build_jobs_tasks({
+        "ensure_slots": lambda: None,
+        "weekly": lambda: None,
+        "fast": lambda: None,
+        "reminders": lambda: calls.append("reminders"),
+        "daily_digest": lambda: calls.append("daily-digest"),
+    })
+    by_name = {task.name: task for task in tasks}
+
+    assert by_name["review-reminders"].interval_s == 15 * 60
+    assert by_name["daily-digest"].cron_ict == "20:00"
+    by_name["review-reminders"].fn()
+    by_name["daily-digest"].fn()
+    assert calls == ["reminders", "daily-digest"]
+
+
 class FakeLaneStore:
     def __init__(self, targets: list[LaneTarget], recent: tuple[str, ...] = ()) -> None:
         self.targets = {target.target_id: target for target in targets}

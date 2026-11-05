@@ -370,6 +370,9 @@ class Container:
     publish_lane: Any
     jobs_lane: Any
     collect_metrics: Any | None
+    notification_queue: Any
+    notifications: Any | None
+    reminders: Any
     backup_service: Any
     restore_service: Any
 
@@ -418,6 +421,11 @@ def build_container(settings: Any, *, metrics_source: Any | None = None) -> Cont
     publish_lane_adapter = import_module("growth_engine.adapters.inbound.workers.publish_lane")
     heartbeat_adapter = import_module("growth_engine.application.ops.heartbeat")
     jobs_lane_adapter = import_module("growth_engine.adapters.inbound.workers.jobs_lane")
+    notifications_adapter = import_module("growth_engine.application.ops.notifications")
+    reminders_adapter = import_module("growth_engine.application.ops.reminders")
+    notification_queue_adapter = import_module(
+        "growth_engine.adapters.outbound.persistence.sqlite.notifications"
+    )
     lanes_adapter = import_module("growth_engine.application.content.run_lanes")
     ensure_slots_adapter = import_module("growth_engine.application.scheduling.ensure_slots")
     reserve_target_adapter = import_module("growth_engine.application.scheduling.reserve_target")
@@ -465,6 +473,50 @@ def build_container(settings: Any, *, metrics_source: Any | None = None) -> Cont
     analytics_views = analytics_adapter.AnalyticsViews(uow_factory)
     clock = _SystemClock()
     ids = _UuidIds()
+    project_config = Path(__file__).resolve().parents[1] / "config" / "projects" / "venho_hotel" / "growth_engine"
+    notification_config = import_module("yaml").safe_load(
+        (project_config / "notification_policy.yaml").read_text(encoding="utf-8")
+    )
+    dashboard_base_url = settings.dashboard_base_url.strip()
+    notification_queue = notification_queue_adapter.SqliteNotificationQueue(
+        uow_factory,
+        ids,
+        dashboard_base_url=dashboard_base_url,
+        templates=notification_config.get("templates", {}),
+        timezone_name=notification_config.get("timezone", "Asia/Ho_Chi_Minh"),
+    )
+    reminder_repository = notification_queue_adapter.SqliteReminderRepository(
+        uow_factory,
+        ids,
+        environment="production" if settings.env.lower() == "production" else "test",
+        timezone_name=notification_config.get("timezone", "Asia/Ho_Chi_Minh"),
+    )
+    reminder_config = notification_config.get("reminders", {})
+    reminder_policy = reminders_adapter.ReminderPolicy(
+        timezone=notification_config.get("timezone", "Asia/Ho_Chi_Minh"),
+        reminder_offsets_minutes=tuple(reminder_config.get("offsets_minutes", (1440, 360))),
+        window_minutes=int(reminder_config.get("scheduler_window_minutes", 15)),
+        digest_local_time=str(notification_config.get("daily_digest", {}).get("local_time", "20:00")),
+        dashboard_base_url=dashboard_base_url,
+    )
+    reminders = reminders_adapter.Reminders(reminder_repository, notification_queue, reminder_policy)
+    telegram = settings.telegram
+    telegram_token = telegram.get("BOT_TOKEN", "").strip()
+    telegram_chat_id = telegram.get("CHAT_ID", "").strip()
+    notification_sender = None
+    if (
+        telegram_token
+        and telegram_chat_id
+        and "REQUIRED_FROM_P0" not in telegram_token
+        and "REQUIRED_FROM_P0" not in telegram_chat_id
+    ):
+        telegram_adapter = import_module("growth_engine.adapters.outbound.notify.telegram_notifier")
+        notification_sender = telegram_adapter.TelegramNotifier(telegram_token, telegram_chat_id)
+    notifications = (
+        notifications_adapter.Notifications(notification_queue, notification_sender, clock)
+        if notification_sender is not None
+        else None
+    )
     generation_store = generation_store_adapter.SqliteGenerationStore(uow_factory, ids)
     review_store = review_store_adapter.SqliteReviewStore(uow_factory, ids, clock)
     review_workflow_store = review_workflows_adapter.SqliteReviewWorkflowStore(uow_factory, ids)
@@ -554,6 +606,7 @@ def build_container(settings: Any, *, metrics_source: Any | None = None) -> Cont
             "receipt_timeouts": watch_receipt_timeouts.execute,
             "database_health": readiness_check,
             "heartbeat": heartbeat.execute,
+            **({"notifications": lambda: notifications.dispatch()} if notifications is not None else {}),
         }
     )
     worker_loop = worker_loop_adapter.WorkerLoop(
@@ -646,6 +699,10 @@ def build_container(settings: Any, *, metrics_source: Any | None = None) -> Cont
         "fast": lambda: run_lanes.run_fast(horizon_days=14),
         "replacement": lambda: run_lanes.run_replacement(horizon_days=14),
     }
+    if notifications is not None:
+        jobs_handlers["daily_digest"] = lambda: reminders.enqueue_daily_digest(clock.now_ms())
+        if dashboard_base_url.startswith("https://"):
+            jobs_handlers["reminders"] = lambda: reminders.tick(clock.now_ms())
     if collect_metrics is not None:
         jobs_handlers["metrics"] = lambda: collect_metrics.execute(clock.now_ms())
     jobs_tasks = jobs_lane_adapter.build_jobs_tasks(jobs_handlers)
@@ -696,6 +753,9 @@ def build_container(settings: Any, *, metrics_source: Any | None = None) -> Cont
         publish_lane=publish_lane,
         jobs_lane=jobs_lane,
         collect_metrics=collect_metrics,
+        notification_queue=notification_queue,
+        notifications=notifications,
+        reminders=reminders,
         backup_service=backup_adapter.SqliteBackup(),
         restore_service=restore_adapter.RestoreBackup(),
     )

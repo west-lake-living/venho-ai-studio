@@ -6370,3 +6370,8 @@ not in local venv; installed in CI).
 - Added BEGIN IMMEDIATE/CAS persistence for whole-batch approvals with idempotency, rejection modes, D23 replacement delivery, revoke, cancel, and slot reschedule; audit, notification, and generation jobs are committed with their state changes.
 - Real file-SQLite integration verifies all-stale-batch rollback, success replay without publish commands, NEW_TOPIC replacement, ACKED command cancellation, and reschedule rejection when any execution exists.
 - VERIFY_LEGACY remained exactly at the main baseline: 79 same red node IDs, 0 new, 0 missing.
+
+### 2026-11-05 — GC2-P6-T03 durable notification wiring
+- Implemented notification persistence/leases/retries on the existing `jobs` table; SQLite reminder readers reserve only current revisions and compute tomorrow's digest. Composed reminder/digest into `worker --lane jobs` and send dispatch into the publish worker.
+- Verified file-backed SQLite, retry through the `Notifications` service, stale revision cancellation, dedupe and conditional bootstrap schedules; all outbound behavior used fakes or remained unconfigured.
+- Production requires `GE_DASHBOARD_BASE_URL`, `GE_TELEGRAM_BOT_TOKEN`, and `GE_TELEGRAM_CHAT_ID`; no credentials or outbound request were used.

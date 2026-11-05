@@ -18,6 +18,7 @@ class Settings(BaseModel):
     db_path: str = _REQUIRED
     media_root: str = _REQUIRED
     public_base_url: str = _REQUIRED
+    dashboard_base_url: str = ""
     capability_keys: str = Field(default=_REQUIRED, repr=False)
     service_tokens: str = Field(default=_REQUIRED, repr=False)
     make_webhook_urls: dict[str, str] = Field(default_factory=dict, repr=False)
@@ -33,6 +34,7 @@ class Settings(BaseModel):
             db_path=source.get("GE_DB_PATH", _REQUIRED),
             media_root=source.get("GE_MEDIA_ROOT", _REQUIRED),
             public_base_url=source.get("GE_PUBLIC_BASE_URL", _REQUIRED),
+            dashboard_base_url=source.get("GE_DASHBOARD_BASE_URL", ""),
             capability_keys=source.get("GE_CAPABILITY_KEYS", _REQUIRED),
             service_tokens=source.get("GE_SERVICE_TOKENS", _REQUIRED),
             make_webhook_urls=_read_prefix(source, "GE_MAKE_WEBHOOK_URL_"),
@@ -49,6 +51,7 @@ class Settings(BaseModel):
             "GE_DB_PATH": self.db_path,
             "GE_MEDIA_ROOT": self.media_root,
             "GE_PUBLIC_BASE_URL": self.public_base_url,
+            "GE_DASHBOARD_BASE_URL": self.dashboard_base_url,
             "GE_CAPABILITY_KEYS": self.capability_keys,
             "GE_SERVICE_TOKENS": self.service_tokens,
             "GE_TELEGRAM_BOT_TOKEN": self.telegram.get("BOT_TOKEN", ""),
@@ -61,6 +64,8 @@ class Settings(BaseModel):
         for name, value in required.items():
             if not value.strip() or _REQUIRED in value:
                 raise ValueError(f"{name} is empty or still contains {_REQUIRED}")
+        if not self.dashboard_base_url.startswith("https://"):
+            raise ValueError("GE_DASHBOARD_BASE_URL must be an HTTPS URL")
         for prefix, values in (
             ("GE_MAKE_WEBHOOK_URL_", self.make_webhook_urls),
             ("GE_META_READ_TOKEN_", self.meta_read_tokens),

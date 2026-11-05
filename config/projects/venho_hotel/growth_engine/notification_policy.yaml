@@ -1,5 +1,6 @@
 version: 1
 timezone: Asia/Ho_Chi_Minh
+dashboard_base_url: REQUIRED_FROM_P0
 reminders:
   offsets_minutes: [1440, 360]
   scheduler_window_minutes: 15

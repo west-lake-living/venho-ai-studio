@@ -36,6 +36,10 @@ def build_jobs_tasks(handlers: Mapping[str, JobHandler]) -> tuple[PeriodicTask, 
         # The card does not define a replacement cadence; process superseded targets
         # every 15 minutes so review-time replacements do not wait for the next weekly run.
         tasks.append(PeriodicTask("replacement", handlers["replacement"], interval_s=15 * 60))
+    if "reminders" in handlers:
+        tasks.append(PeriodicTask("review-reminders", handlers["reminders"], interval_s=15 * 60))
+    if "daily_digest" in handlers:
+        tasks.append(PeriodicTask("daily-digest", handlers["daily_digest"], cron_ict="20:00"))
     if "metrics" in handlers:
         # Keep analytics on the slower jobs lane; an exception is isolated by WorkerLoop.
         tasks.append(PeriodicTask("metrics-collector", handlers["metrics"], interval_s=15 * 60))
