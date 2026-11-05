@@ -501,7 +501,17 @@ def build_container(settings: Any, *, metrics_source: Any | None = None) -> Cont
     revoke_approval_adapter = import_module("growth_engine.application.review.revoke_approval")
     cancel_delivery_adapter = import_module("growth_engine.application.review.cancel_delivery")
     reschedule_slot_adapter = import_module("growth_engine.application.scheduling.reschedule_slot")
-    analytics_views = analytics_adapter.AnalyticsViews(uow_factory)
+    metrics_registry_adapter = import_module("growth_engine.adapters.outbound.meta.metric_registry")
+    metrics_registry_path = (
+        Path(__file__).resolve().parents[1]
+        / "config/projects/venho_hotel/growth_engine/metrics_registry.yaml"
+    )
+    analytics_views = analytics_adapter.AnalyticsViews(
+        uow_factory,
+        engagement_capabilities=metrics_registry_adapter.load_facebook_engagement_capabilities(
+            metrics_registry_path
+        ),
+    )
     clock = _SystemClock()
     ids = _UuidIds()
     channel_reconcile_store = channel_reconcile_store_adapter.SqliteChannelReconcileStore(

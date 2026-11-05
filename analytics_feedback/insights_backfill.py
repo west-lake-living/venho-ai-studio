@@ -16,6 +16,7 @@ from zoneinfo import ZoneInfo
 import yaml
 
 from shared.meta.graph_client import MetaGraphError, ReadOnlyGraphClient
+from shared.meta.metric_capabilities import capability_state
 from shared.notify.telegram import TelegramNotifier
 
 
@@ -140,18 +141,36 @@ def _verified_metric_specs(registry_path: Path, channel_id: str) -> list[dict[st
     payload = yaml.safe_load(registry_path.read_text(encoding="utf-8")) or {}
     result: list[dict[str, Any]] = []
     for metric in payload.get("metrics", []):
-        channel_spec = (metric.get("channels") or {}).get(channel_id)
+        channel_values = metric.get("channels")
+        if isinstance(channel_values, list) and channel_id not in channel_values:
+            continue
+        channel_spec = channel_values.get(channel_id) if isinstance(channel_values, dict) else None
         spec = channel_spec if isinstance(channel_spec, dict) else metric
         if str(spec.get("availability", metric.get("availability", ""))).upper() not in {"VERIFIED", "AVAILABLE", "READABLE"}:
-            continue
+            if str(spec.get("availability", metric.get("availability", ""))).upper() != "CONDITIONAL":
+                continue
         name = str(spec.get("name") or metric.get("name") or "").strip()
         provider_field = str(spec.get("provider_field") or "").strip()
         period = spec.get("period")
+        scope = str(spec.get("scope") or metric.get("scope") or "post").strip()
+        capability = spec.get("capability") or metric.get("capability")
+        if scope == "post_field" and not capability:
+            continue
+        if capability and capability_state(payload, str(capability), channel_id) != "SUPPORTED":
+            continue
         if not name or not provider_field or "REQUIRED_FROM_P0" in provider_field:
             continue
         if period is not None and not isinstance(period, str):
             continue
-        result.append({"name": name, "provider_field": provider_field, "period": period})
+        result.append(
+            {
+                "name": name,
+                "provider_field": provider_field,
+                "period": period,
+                "scope": scope,
+                "missing_value_state": spec.get("missing_value_state", metric.get("missing_value_state")),
+            }
+        )
     return result
 
 
@@ -172,12 +191,12 @@ def _client_for(channel_id: str, candidates_path: Path, env: Mapping[str, str]) 
 
 
 def _read_one_metric(client: Any, target: Mapping[str, Any], spec: Mapping[str, Any]) -> tuple[int | None, str, str | None]:
+    if spec.get("scope") == "post_field":
+        return _read_one_post_field(client, target, spec)
     try:
         payload = client.get_insights(str(target["post_id"]), [str(spec["provider_field"])], spec.get("period"))
     except MetaGraphError as error:
-        if error.kind is None:
-            return None, "UNAVAILABLE", "UNSUPPORTED" if error.status == 400 else f"META_HTTP_{error.status or 'UNKNOWN'}"
-        return None, "ERROR", f"META_{error.kind.value}"
+        return _metric_error(error)
     except Exception:
         return None, "ERROR", "SOURCE_ERROR"
     data = payload.get("data")
@@ -198,6 +217,51 @@ def _read_one_metric(client: Any, target: Mapping[str, Any], spec: Mapping[str, 
     if type(value) is not int or value < 0:
         return None, "ERROR", "INVALID_VALUE"
     return value, "ZERO" if value == 0 else "VALUE", None
+
+
+def _read_one_post_field(
+    client: Any, target: Mapping[str, Any], spec: Mapping[str, Any]
+) -> tuple[int | None, str, str | None]:
+    provider_field = str(spec["provider_field"])
+    root_field = provider_field.split(".", 1)[0]
+    try:
+        payload = client.get_object(str(target["post_id"]), [provider_field])
+    except MetaGraphError as error:
+        return _metric_error(error)
+    except Exception:
+        return None, "ERROR", "SOURCE_ERROR"
+    if not isinstance(payload, dict):
+        return None, "ERROR", "INVALID_RESPONSE"
+
+    field_value = payload.get(root_field)
+    if field_value is None:
+        if str(spec.get("missing_value_state") or "").upper() == "ZERO":
+            return 0, "ZERO", None
+        return None, "UNAVAILABLE", None
+    if root_field in {"reactions", "comments"}:
+        summary = field_value.get("summary") if isinstance(field_value, dict) else None
+        value = summary.get("total_count") if isinstance(summary, dict) else None
+        if value is None:
+            return None, "UNAVAILABLE", None
+    elif root_field == "shares":
+        value = field_value.get("count") if isinstance(field_value, dict) else None
+        if value is None:
+            if str(spec.get("missing_value_state") or "").upper() == "ZERO":
+                return 0, "ZERO", None
+            return None, "UNAVAILABLE", None
+    else:
+        value = field_value
+    if type(value) is not int or value < 0:
+        return None, "ERROR", "INVALID_VALUE"
+    return value, "ZERO" if value == 0 else "VALUE", None
+
+
+def _metric_error(error: MetaGraphError) -> tuple[int | None, str, str | None]:
+    if error.provider_code is not None:
+        return None, "UNAVAILABLE", f"META_CODE_{error.provider_code}"
+    if error.kind is None:
+        return None, "UNAVAILABLE", "UNSUPPORTED" if error.status == 400 else f"META_HTTP_{error.status or 'UNKNOWN'}"
+    return None, "ERROR", f"META_{error.kind.value}"
 
 
 def _observation_id(delivery_id: str, metric: str, observed_at_ms: int) -> str:
@@ -320,6 +384,7 @@ def _write_json(path: Path, payload: object) -> None:
 def insights_report(
     *,
     reports_root: Path | None = None,
+    metrics_registry_path: Path | None = None,
     env: Mapping[str, str] | None = None,
     minimum_samples: int = 5,
     send_telegram: bool = False,
@@ -331,6 +396,11 @@ def insights_report(
         raise ValueError("minimum_samples must be positive")
     environment = env or os.environ
     root = reports_root or Path(environment.get("GE_GROWTH_REPORTS_DIR", "~/venho/state/growth-reports")).expanduser()
+    registry_path = metrics_registry_path or Path("config/projects/venho_hotel/growth_engine/metrics_registry.yaml")
+    try:
+        metric_registry = yaml.safe_load(registry_path.read_text(encoding="utf-8")) or {}
+    except OSError:
+        metric_registry = {}
     database_path = root / "insights.db"
     zone = ZoneInfo("Asia/Ho_Chi_Minh")
     current = now or datetime.now(zone)
@@ -378,6 +448,10 @@ def insights_report(
             "metrics": metrics, "manual_delivery_ids": manual_ids,
             "manual_label": "đăng tay" if manual_ids else None,
         }
+        if channel_id.startswith("fb_"):
+            section["internal_engagement_rate"] = _legacy_facebook_engagement_rate(
+                channel_id, delivery_ids, latest, metric_registry
+            )
         sections.append(section)
         title = f"## {channel_id} · {pillar} · {image_kind} ({sample_count} bài)"
         if manual_ids:
@@ -390,6 +464,14 @@ def insights_report(
             for metric_row in metrics:
                 value = f"average={metric_row['average']}" if "average" in metric_row else f"values={metric_row.get('values', [])}; states={metric_row['states']}"
                 markdown.append(f"- {metric_row['metric']}: {value}")
+        engagement = section.get("internal_engagement_rate")
+        if isinstance(engagement, dict):
+            if engagement.get("state") == "VALUE":
+                markdown.append(
+                    f"- internal_engagement_rate: average={engagement['average']}; samples={engagement['samples']}"
+                )
+            else:
+                markdown.append(f"- internal_engagement_rate: UNAVAILABLE ({engagement.get('reason')})")
         markdown.append("")
     if not sections:
         markdown.extend(["Chưa có metric observations.", ""])
@@ -406,3 +488,27 @@ def insights_report(
         if not response.get("ok", True):
             raise ValueError("Telegram report delivery failed")
     return markdown_path
+
+
+def _legacy_facebook_engagement_rate(
+    channel_id: str,
+    delivery_ids: Sequence[str],
+    latest: Mapping[tuple[str, str], tuple[Any, ...]],
+    registry: Mapping[str, Any],
+) -> dict[str, Any]:
+    if capability_state(registry, "facebook_engagement", channel_id) != "SUPPORTED":
+        return {"state": "UNAVAILABLE", "reason": "CAPABILITY_BLOCKED", "samples": 0, "average": None}
+    rates: list[float] = []
+    required = ("post_total_media_view_unique", "reactions_total", "comments_total", "shares")
+    for delivery_id in delivery_ids:
+        rows = [latest.get((delivery_id, metric)) for metric in required]
+        if any(row is None or row[4] not in {"VALUE", "ZERO"} or row[3] is None for row in rows):
+            continue
+        denominator = rows[0][3]
+        if type(denominator) is not int or denominator <= 0:
+            continue
+        interactions = sum(int(row[3]) for row in rows[1:])
+        rates.append(interactions / denominator)
+    if not rates:
+        return {"state": "UNAVAILABLE", "reason": "DATA_INCOMPLETE", "samples": 0, "average": None}
+    return {"state": "VALUE", "reason": None, "samples": len(rates), "average": round(mean(rates), 6)}

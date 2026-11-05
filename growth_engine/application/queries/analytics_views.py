@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import date, datetime, time, timedelta
-from typing import Callable
+from typing import Callable, Mapping
 from zoneinfo import ZoneInfo
 
 from growth_engine.application.analytics.build_weekly_report import (
@@ -19,8 +19,14 @@ _WEEKLY_CHECKPOINTS = {MetricCheckpoint.H24.value, MetricCheckpoint.H72.value, M
 class AnalyticsViews:
     """Read published Page-scoped samples for a Monday-starting ICT week."""
 
-    def __init__(self, uow_factory: Callable[[], UnitOfWork]) -> None:
+    def __init__(
+        self,
+        uow_factory: Callable[[], UnitOfWork],
+        *,
+        engagement_capabilities: Mapping[str, str] | None = None,
+    ) -> None:
         self._uow_factory = uow_factory
+        self._engagement_capabilities = dict(engagement_capabilities or {"default": "BLOCKED"})
 
     def weekly(self, *, week_start: str, checkpoint: str) -> dict[str, object]:
         try:
@@ -46,4 +52,5 @@ class AnalyticsViews:
             week_start=start.isoformat(),
             week_end=end.isoformat(),
             checkpoint=checkpoint,
+            engagement_capabilities=self._engagement_capabilities,
         )

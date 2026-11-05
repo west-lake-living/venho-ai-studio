@@ -124,7 +124,7 @@ class MetricRepository(SqliteRepository):
     ) -> list[dict[str, object]]:
         rows = self.connection.execute(
             """WITH published AS (
-                     SELECT d.id AS delivery_id, d.channel_id, ch.name AS page_name,
+                     SELECT d.id AS delivery_id, d.channel_id, ch.channel_key, ch.name AS page_name,
                             cp.pillar, COALESCE(ma.source_type, 'unknown') AS image_kind
                      FROM deliveries d
                      JOIN channels ch ON ch.id=d.channel_id
@@ -144,9 +144,11 @@ class MetricRepository(SqliteRepository):
                      FROM metric_observations mo
                      WHERE mo.checkpoint=? AND mo.source='meta_graph'
                  ), names(metric) AS (
-                     VALUES ('reach'), ('reactions'), ('comments'), ('shares')
+                     VALUES ('reach'), ('post_media_view'), ('post_total_media_view_unique'),
+                            ('reactions_total'), ('comments_total'), ('shares'),
+                            ('reactions'), ('comments')
                  )
-                 SELECT p.delivery_id, p.channel_id, p.page_name, p.pillar, p.image_kind,
+                 SELECT p.delivery_id, p.channel_id, p.channel_key, p.page_name, p.pillar, p.image_kind,
                         n.metric, m.value, m.value_state, m.observed_at AS observed_at_ms
                  FROM published p
                  CROSS JOIN names n

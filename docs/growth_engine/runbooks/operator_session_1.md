@@ -2,6 +2,12 @@
 
 **Trạng thái:** hướng dẫn chưa chạy. Tất cả URL, Page test, route Make, credentials và quyết định được Harry xác minh khi thực hiện. Không thay giá trị `REQUIRED_FROM_P0` bằng phỏng đoán.
 
+**Meta read app:** VENHO Growth Read — App ID `1679968647246378` (Development). Không ghi Meta token vào runbook.
+
+Ngày 2026-11-05, chỉ thêm `pages_read_user_content`; Meta hiển thị **Ready for testing**. Trước khi tạo token mới, Harry thu hồi token cũ khỏi Facebook Business Integrations.
+
+Trước mọi lệnh `systemctl --user enable`, chạy `systemd-analyze --user verify` cho toàn bộ unit file được cài; lệnh kiểm tất cả unit của repo nằm ở mục 8.
+
 Thực hiện đúng thứ tự. Nếu kết quả không đạt mong đợi ở một bước, dừng tại đó; không bật publisher hoặc tiếp tục Make TEST. Không ghi token, webhook URL, Access secret, signed URL hay nội dung file env vào terminal log/evidence.
 
 ## 1. Cài age và tạo recipient backup
@@ -58,6 +64,8 @@ grep -qx 'GE_ENV=test' "$HOME/venho/secrets/growth-engine-test.env"
 ```
 
 File TEST cần `GE_DB_PATH`, `GE_MEDIA_ROOT`, `GE_PUBLIC_BASE_URL` và các TEST credentials/refs sau khi chúng được xác minh. Không sao chép production token, webhook hoặc Page ID vào TEST.
+
+Meta token lifecycle: biến Page trên server là Page access token lấy từ long-lived user token; không hết hạn theo thời gian nhưng có thể bị thu hồi. Instagram dùng long-lived user token khoảng 60 ngày; đặt nhắc gia hạn trước hạn. Không ghi giá trị token vào tài liệu/log.
 
 **Mong đợi:** cả hai file tồn tại với mode `600`; kiểm tra chỉ in quyền và `GE_ENV`, không in giá trị còn lại.
 
@@ -219,6 +227,8 @@ venho-analytics insights-report
 **Dừng:** nếu không đủ quyền đọc hoặc report có `UNAVAILABLE`, không đánh dấu bài là thiếu và không enable timer trước khi xử lý token/quyền.
 
 ```bash
+find ops/asus-server -type f \( -name '*.service' -o -name '*.timer' \) -print0 \
+  | xargs -0 -n1 systemd-analyze --user verify
 systemctl --user daemon-reload
 install -d -m 700 "$HOME/venho/state/growth-reports"
 systemctl --user enable --now venho-growth-reconcile.timer venho-growth-insights.timer

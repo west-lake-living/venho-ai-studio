@@ -1,40 +1,46 @@
-version: 1
-status: awaiting_p0_t04_evidence
+version: 2
+status: pending_p0_t04b_reprobe
 source: docs/growth_engine/meta_capabilities.md
-source_status: REQUIRED_FROM_P0
+source_status: PENDING_REPROBE
 checkpoint_tolerance_seconds: 7200
+capabilities:
+  facebook_engagement:
+    default: BLOCKED
+    channels: {}
 metrics:
-  # Internal names come from the weekly-report formula in GC2_MASTER_PLAN §8.3/§9.1.
-  # Provider field, scope, period, lag and permission remain unverified until P0-T04.
-  - name: reach
-    provider_field: REQUIRED_FROM_P0
-    scope: REQUIRED_FROM_P0
-    period: REQUIRED_FROM_P0
-    data_lag_seconds: REQUIRED_FROM_P0
-    permissions: REQUIRED_FROM_P0
-    availability: AWAITING_P0_T04
-    reason: No verified Page fixture/capability record is available.
-  - name: reactions
-    provider_field: REQUIRED_FROM_P0
-    scope: REQUIRED_FROM_P0
-    period: REQUIRED_FROM_P0
-    data_lag_seconds: REQUIRED_FROM_P0
-    permissions: REQUIRED_FROM_P0
-    availability: AWAITING_P0_T04
-    reason: No verified Page fixture/capability record is available.
-  - name: comments
-    provider_field: REQUIRED_FROM_P0
-    scope: REQUIRED_FROM_P0
-    period: REQUIRED_FROM_P0
-    data_lag_seconds: REQUIRED_FROM_P0
-    permissions: REQUIRED_FROM_P0
-    availability: AWAITING_P0_T04
-    reason: No verified Page fixture/capability record is available.
+  # The current read probe verified these v27.0 Page post metrics.
+  - name: post_media_view
+    provider_field: post_media_view
+    scope: post
+    period: lifetime
+    availability: VERIFIED
+    channels: [fb_hanoi, fb_venho]
+  - name: post_total_media_view_unique
+    provider_field: post_total_media_view_unique
+    scope: post
+    period: lifetime
+    availability: VERIFIED
+    channels: [fb_hanoi, fb_venho]
+  # Engagement fields stay off unless P0-T04b marks the Page capability SUPPORTED.
+  - name: reactions_total
+    provider_field: reactions.summary(total_count).limit(0)
+    scope: post_field
+    period: null
+    capability: facebook_engagement
+    availability: CONDITIONAL
+    channels: [fb_hanoi, fb_venho]
+  - name: comments_total
+    provider_field: comments.summary(total_count).limit(0)
+    scope: post_field
+    period: null
+    capability: facebook_engagement
+    availability: CONDITIONAL
+    channels: [fb_hanoi, fb_venho]
   - name: shares
-    provider_field: REQUIRED_FROM_P0
-    scope: REQUIRED_FROM_P0
-    period: REQUIRED_FROM_P0
-    data_lag_seconds: REQUIRED_FROM_P0
-    permissions: REQUIRED_FROM_P0
-    availability: AWAITING_P0_T04
-    reason: No verified Page fixture/capability record is available.
+    provider_field: shares
+    scope: post_field
+    period: null
+    capability: facebook_engagement
+    availability: CONDITIONAL
+    missing_value_state: ZERO
+    channels: [fb_hanoi, fb_venho]

@@ -10,7 +10,9 @@ from growth_engine.adapters.outbound.meta.graph_client import MetaGraphError
 
 
 class InsightsClient(Protocol):
-    def get_insights(self, object_id: str, metrics: list[str], period: str) -> dict[str, Any]: ...
+    def get_insights(self, object_id: str, metrics: list[str], period: str | None) -> dict[str, Any]: ...
+
+    def get_object(self, object_id: str, fields: list[str]) -> dict[str, Any]: ...
 
 
 class MetaMetricsSource:
@@ -53,7 +55,11 @@ class MetaMetricsSource:
                 if client is None:
                     client = self._client_factory(channel)
                 self._wait_for_page_slot(channel.remote_account_id)
-                payload = client.get_insights(object_id, [spec.provider_field], spec.period)
+                if spec.scope == "post_field":
+                    payload = client.get_object(post_id, [spec.provider_field])
+                else:
+                    object_id = post_id if spec.scope == "post" else channel.remote_account_id
+                    payload = client.get_insights(object_id, [spec.provider_field], spec.period)
             except MetaGraphError as error:
                 results.append(
                     RawMetric(spec.name, None, "ERROR", timestamp, _meta_error_code(error))
@@ -61,7 +67,18 @@ class MetaMetricsSource:
             except Exception:
                 results.append(RawMetric(spec.name, None, "ERROR", timestamp, "SOURCE_ERROR"))
             else:
-                results.append(_extract_metric(spec.name, spec.provider_field, payload, timestamp))
+                if spec.scope == "post_field":
+                    results.append(
+                        _extract_post_field_metric(
+                            spec.name,
+                            spec.provider_field,
+                            payload,
+                            timestamp,
+                            missing_value_state=spec.missing_value_state,
+                        )
+                    )
+                else:
+                    results.append(_extract_metric(spec.name, spec.provider_field, payload, timestamp))
         return results
 
     def _wait_for_page_slot(self, page_id: str) -> None:
@@ -77,12 +94,22 @@ class MetaMetricsSource:
 
 
 def _unsupported_reason(spec: MetricSpec) -> str | None:
-    values = (spec.name, spec.provider_field, spec.scope, spec.period)
+    values = (spec.name, spec.provider_field, spec.scope)
     if any(not isinstance(value, str) or not value.strip() for value in values):
         return "missing configuration"
+    if spec.scope == "post_field" and (
+        not spec.capability or spec.capability_state.upper() != "SUPPORTED"
+    ):
+        return "capability is blocked"
+    if spec.capability and spec.capability_state.upper() != "SUPPORTED":
+        return "capability is blocked"
     if any("REQUIRED_FROM_P0" in value for value in values):
         return "capability evidence is pending"
-    if spec.scope not in {"post", "page"}:
+    if spec.scope in {"post", "page"} and (
+        not isinstance(spec.period, str) or not spec.period.strip() or "REQUIRED_FROM_P0" in spec.period
+    ):
+        return "period is not configured"
+    if spec.scope not in {"post", "page", "post_field"}:
         return "scope is not supported by the collector"
     return None
 
@@ -113,7 +140,43 @@ def _extract_metric(name: str, provider_field: str, payload: Mapping[str, Any], 
     return RawMetric(name, value, "VALUE", timestamp)
 
 
+def _extract_post_field_metric(
+    name: str,
+    provider_field: str,
+    payload: Mapping[str, Any],
+    timestamp: int,
+    *,
+    missing_value_state: str | None = None,
+) -> RawMetric:
+    root_field = provider_field.split(".", 1)[0]
+    value: Any = payload.get(root_field)
+    if value is None:
+        if missing_value_state == "ZERO":
+            return RawMetric(name, 0, "ZERO", timestamp)
+        return RawMetric(name, None, "UNAVAILABLE", timestamp)
+    if root_field in {"reactions", "comments"}:
+        if not isinstance(value, Mapping):
+            return RawMetric(name, None, "ERROR", timestamp, "INVALID_RESPONSE")
+        summary = value.get("summary")
+        value = summary.get("total_count") if isinstance(summary, Mapping) else None
+        if value is None:
+            return RawMetric(name, None, "UNAVAILABLE", timestamp)
+    elif root_field == "shares":
+        if not isinstance(value, Mapping):
+            return RawMetric(name, None, "ERROR", timestamp, "INVALID_RESPONSE")
+        value = value.get("count")
+        if value is None:
+            if missing_value_state == "ZERO":
+                return RawMetric(name, 0, "ZERO", timestamp)
+            return RawMetric(name, None, "UNAVAILABLE", timestamp)
+    if type(value) is not int or value < 0:
+        return RawMetric(name, None, "ERROR", timestamp, "INVALID_VALUE")
+    return RawMetric(name, value, "ZERO" if value == 0 else "VALUE", timestamp)
+
+
 def _meta_error_code(error: MetaGraphError) -> str:
+    if error.provider_code is not None:
+        return f"META_CODE_{error.provider_code}"
     if error.kind is not None:
         return f"META_{error.kind.value}"
     if error.status is not None:

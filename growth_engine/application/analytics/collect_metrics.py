@@ -190,7 +190,11 @@ def _to_observations(
                 value_state=state,
                 source=source,
                 api_version=api_version,
-                period=spec.period if "REQUIRED_FROM_P0" not in spec.period else None,
+                period=(
+                    spec.period
+                    if isinstance(spec.period, str) and "REQUIRED_FROM_P0" not in spec.period
+                    else None
+                ),
                 dimensions={},
                 error_code=error_code,
             )

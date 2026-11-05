@@ -35,31 +35,32 @@ def test_report_keeps_pages_separate_and_blocks_comparison_below_five_posts() ->
         delivery = f"hanoi-{index}"
         samples.extend(
             [
-                _sample(delivery, "fb_hanoi", "reach", 0 if index == 4 else 10, ValueState.ZERO if index == 4 else ValueState.VALUE),
-                _sample(delivery, "fb_hanoi", "reactions", 1, ValueState.VALUE),
+                _sample(delivery, "fb_hanoi", "post_total_media_view_unique", 0 if index == 4 else 10, ValueState.ZERO if index == 4 else ValueState.VALUE),
+                _sample(delivery, "fb_hanoi", "reactions_total", 1, ValueState.VALUE),
                 _sample(delivery, "fb_hanoi", "shares", 1, ValueState.VALUE),
             ]
         )
         if index == 0:
-            samples.append(_sample(delivery, "fb_hanoi", "comments", 0, ValueState.ZERO))
+            samples.append(_sample(delivery, "fb_hanoi", "comments_total", 0, ValueState.ZERO))
         elif index == 1:
-            samples.append(_sample(delivery, "fb_hanoi", "comments", None, ValueState.NULL))
+            samples.append(_sample(delivery, "fb_hanoi", "comments_total", None, ValueState.NULL))
         elif index == 2:
-            samples.append(_sample(delivery, "fb_hanoi", "comments", None, ValueState.UNAVAILABLE))
+            samples.append(_sample(delivery, "fb_hanoi", "comments_total", None, ValueState.UNAVAILABLE))
         elif index == 3:
-            samples.append(_sample(delivery, "fb_hanoi", "comments", None, ValueState.ERROR))
+            samples.append(_sample(delivery, "fb_hanoi", "comments_total", None, ValueState.ERROR))
 
     samples.extend(
         [
-            _sample("venho-1", "fb_venho", "reach", 100, ValueState.VALUE),
-            _sample("venho-1", "fb_venho", "reactions", 1, ValueState.VALUE),
-            _sample("venho-1", "fb_venho", "comments", 1, ValueState.VALUE),
+            _sample("venho-1", "fb_venho", "post_total_media_view_unique", 100, ValueState.VALUE),
+            _sample("venho-1", "fb_venho", "reactions_total", 1, ValueState.VALUE),
+            _sample("venho-1", "fb_venho", "comments_total", 1, ValueState.VALUE),
             _sample("venho-1", "fb_venho", "shares", 1, ValueState.VALUE),
         ]
     )
 
     report = build_weekly_report(
-        samples, week_start="2026-11-02", week_end="2026-11-08", checkpoint="7d"
+        samples, week_start="2026-11-02", week_end="2026-11-08", checkpoint="7d",
+        engagement_capabilities={"fb_hanoi": "SUPPORTED", "fb_venho": "SUPPORTED"},
     )
 
     by_page = {group["channel_id"]: group for group in report["groups"]}
@@ -68,17 +69,33 @@ def test_report_keeps_pages_separate_and_blocks_comparison_below_five_posts() ->
     assert by_page["fb_hanoi"]["comparison_allowed"] is True
     assert by_page["fb_venho"]["sample_count"] == 1
     assert by_page["fb_venho"]["comparison_allowed"] is False
-    assert by_page["fb_venho"]["content_effectiveness"]["reach"]["average"] == 100
+    assert by_page["fb_venho"]["content_effectiveness"]["post_total_media_view_unique"]["average"] == 100
     assert by_page["fb_venho"]["content_effectiveness"]["internal_engagement_rate"]["average"] == 0.03
 
-    hanoi_comments = by_page["fb_hanoi"]["operational_reliability"]["comments"]
+    hanoi_comments = by_page["fb_hanoi"]["operational_reliability"]["comments_total"]
     assert hanoi_comments["zero_samples"] == 1
     assert hanoi_comments["null_samples"] == 1
     assert hanoi_comments["unavailable_samples"] == 1
     assert hanoi_comments["error_samples"] == 1
     assert hanoi_comments["missing_samples"] == 1
-    assert by_page["fb_hanoi"]["content_effectiveness"]["comments"]["average"] == 0
+    assert by_page["fb_hanoi"]["content_effectiveness"]["comments_total"]["average"] == 0
     assert by_page["fb_hanoi"]["content_effectiveness"]["internal_engagement_rate"]["samples"] == 1
+
+
+def test_facebook_engagement_is_unavailable_by_default() -> None:
+    samples = [
+        _sample("delivery-1", "fb_hanoi", "post_total_media_view_unique", 10, ValueState.VALUE),
+        _sample("delivery-1", "fb_hanoi", "reactions_total", 2, ValueState.VALUE),
+        _sample("delivery-1", "fb_hanoi", "comments_total", 1, ValueState.VALUE),
+        _sample("delivery-1", "fb_hanoi", "shares", 0, ValueState.ZERO),
+    ]
+
+    report = build_weekly_report(samples, week_start="2026-11-02", week_end="2026-11-08", checkpoint="7d")
+
+    engagement = report["groups"][0]["content_effectiveness"]["internal_engagement_rate"]
+    assert engagement == {
+        "state": "UNAVAILABLE", "reason": "CAPABILITY_BLOCKED", "samples": 0, "average": None
+    }
 
 
 def test_no_observations_produces_no_groups() -> None:

@@ -63,7 +63,10 @@ class MetricSpec:
     name: str
     provider_field: str
     scope: str
-    period: str
+    period: str | None
+    capability: str | None = None
+    capability_state: str = "BLOCKED"
+    missing_value_state: str | None = None
 
 
 @dataclass(frozen=True)

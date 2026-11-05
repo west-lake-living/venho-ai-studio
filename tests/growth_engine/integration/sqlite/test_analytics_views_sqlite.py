@@ -85,6 +85,9 @@ def test_weekly_view_keeps_page_reach_separate_and_filters_mock_and_dates(tmp_pa
     groups = {row["channel_id"]: row for row in report["groups"]}
     assert set(groups) == {"channel-hanoi", "channel-venho", "channel-ig"}
     assert groups["channel-hanoi"]["content_effectiveness"]["reach"]["average"] == 100
+    assert groups["channel-hanoi"]["content_effectiveness"]["internal_engagement_rate"] == {
+        "state": "UNAVAILABLE", "reason": "CAPABILITY_BLOCKED", "samples": 0, "average": None
+    }
     assert groups["channel-venho"]["content_effectiveness"]["reach"]["average"] == 200
     assert groups["channel-ig"]["content_effectiveness"]["reach"]["average"] == 300
     assert groups["channel-hanoi"]["pillar"] == "local_discovery"

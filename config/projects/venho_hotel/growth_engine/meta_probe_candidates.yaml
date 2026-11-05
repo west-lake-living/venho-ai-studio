@@ -45,6 +45,8 @@ channels:
       - from
       - full_picture
       - shares
+      - reactions.summary(total_count).limit(0)
+      - comments.summary(total_count).limit(0)
     metrics: []
   ig_venho:
     platform: instagram

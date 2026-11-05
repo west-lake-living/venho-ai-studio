@@ -7,7 +7,16 @@ from typing import Mapping, Sequence
 from growth_engine.domain.analytics.metric import ValueState
 
 
-METRICS = ("reach", "reactions", "comments", "shares")
+METRICS = (
+    "reach",
+    "post_media_view",
+    "post_total_media_view_unique",
+    "reactions_total",
+    "comments_total",
+    "shares",
+    "reactions",
+    "comments",
+)
 
 
 @dataclass(frozen=True)
@@ -21,17 +30,22 @@ class AnalyticsMetricSample:
     value: int | None
     value_state: ValueState | None
     observed_at_ms: int | None
+    channel_key: str = ""
 
 
 def build_weekly_report(
-    samples: Sequence[AnalyticsMetricSample], *, week_start: str, week_end: str, checkpoint: str
+    samples: Sequence[AnalyticsMetricSample], *, week_start: str, week_end: str, checkpoint: str,
+    engagement_capabilities: Mapping[str, str] | None = None,
 ) -> dict[str, object]:
     """Build Page-scoped groups; missing observations never become zero."""
     latest: dict[tuple[str, str], AnalyticsMetricSample] = {}
     group_deliveries: dict[tuple[str, str, str, str], set[str]] = defaultdict(set)
+    group_channel_keys: dict[tuple[str, str, str, str], str] = {}
     for sample in samples:
         group_key = (sample.channel_id, sample.page_name, sample.pillar, sample.image_kind)
         group_deliveries[group_key].add(sample.delivery_id)
+        if sample.channel_key:
+            group_channel_keys[group_key] = sample.channel_key
         key = (sample.delivery_id, sample.metric)
         current = latest.get(key)
         if current is None or (sample.observed_at_ms or -1) >= (current.observed_at_ms or -1):
@@ -78,21 +92,59 @@ def build_weekly_report(
                 "average": (sum(numeric) / len(numeric)) if numeric else None,
             }
 
-        rates: list[float] = []
-        for delivery_id in delivery_ids:
-            values = sample_by_delivery.get((*group_key, delivery_id), {})
-            chosen = [values.get(metric) for metric in METRICS]
-            if any(row is None or row.value_state not in {ValueState.VALUE, ValueState.ZERO} for row in chosen):
-                continue
-            reach = chosen[0].value
-            if reach is None or reach <= 0:
-                continue
-            interactions = sum(row.value or 0 for row in chosen[1:])
-            rates.append(interactions / reach)
-        effectiveness["internal_engagement_rate"] = {
-            "samples": len(rates),
-            "average": (sum(rates) / len(rates)) if rates else None,
-        }
+        channel_key = group_channel_keys.get(group_key, channel_id)
+        if channel_key.startswith("fb_"):
+            configured_state = (engagement_capabilities or {}).get(
+                channel_key, (engagement_capabilities or {}).get("default", "BLOCKED")
+            )
+            if str(configured_state).upper() != "SUPPORTED":
+                engagement = {
+                    "state": "UNAVAILABLE", "reason": "CAPABILITY_BLOCKED", "samples": 0, "average": None
+                }
+            else:
+                rates: list[float] = []
+                for delivery_id in delivery_ids:
+                    values = sample_by_delivery.get((*group_key, delivery_id), {})
+                    chosen = [
+                        values.get("post_total_media_view_unique"),
+                        values.get("reactions_total"),
+                        values.get("comments_total"),
+                        values.get("shares"),
+                    ]
+                    if any(
+                        row is None or row.value_state not in {ValueState.VALUE, ValueState.ZERO}
+                        for row in chosen
+                    ):
+                        continue
+                    denominator = chosen[0].value
+                    if denominator is None or denominator <= 0:
+                        continue
+                    interactions = sum(row.value or 0 for row in chosen[1:])
+                    rates.append(interactions / denominator)
+                engagement = {
+                    "state": "VALUE" if rates else "UNAVAILABLE",
+                    "reason": None if rates else "DATA_INCOMPLETE",
+                    "samples": len(rates),
+                    "average": (sum(rates) / len(rates)) if rates else None,
+                }
+        else:
+            rates = []
+            for delivery_id in delivery_ids:
+                values = sample_by_delivery.get((*group_key, delivery_id), {})
+                chosen = [values.get("reach"), values.get("reactions"), values.get("comments"), values.get("shares")]
+                if any(row is None or row.value_state not in {ValueState.VALUE, ValueState.ZERO} for row in chosen):
+                    continue
+                denominator = chosen[0].value
+                if denominator is None or denominator <= 0:
+                    continue
+                rates.append(sum(row.value or 0 for row in chosen[1:]) / denominator)
+            engagement = {
+                "state": "VALUE" if rates else "UNAVAILABLE",
+                "reason": None if rates else "DATA_INCOMPLETE",
+                "samples": len(rates),
+                "average": (sum(rates) / len(rates)) if rates else None,
+            }
+        effectiveness["internal_engagement_rate"] = engagement
 
         groups.append(
             {
@@ -131,4 +183,5 @@ def sample_from_mapping(row: Mapping[str, object]) -> AnalyticsMetricSample:
         value=value if type(value) is int else None,
         value_state=state,
         observed_at_ms=observed_at if type(observed_at) is int else None,
+        channel_key=str(row.get("channel_key") or row["channel_id"]),
     )

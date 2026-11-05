@@ -157,13 +157,19 @@ def test_checkpoint_must_match_post_age() -> None:
 
 
 class FakeGraphClient:
-    def __init__(self, payload: dict[str, object]) -> None:
+    def __init__(self, payload: dict[str, object], object_payload: dict[str, object] | None = None) -> None:
         self.payload = payload
+        self.object_payload = object_payload or {}
         self.calls: list[tuple[str, tuple[str, ...], str]] = []
+        self.object_calls: list[tuple[str, tuple[str, ...]]] = []
 
-    def get_insights(self, object_id: str, metrics: list[str], period: str):
+    def get_insights(self, object_id: str, metrics: list[str], period: str | None):
         self.calls.append((object_id, tuple(metrics), period))
         return self.payload
+
+    def get_object(self, object_id: str, fields: list[str]):
+        self.object_calls.append((object_id, tuple(fields)))
+        return self.object_payload
 
 
 def test_meta_source_uses_latest_snapshot_without_summing_and_marks_missing_unavailable() -> None:
@@ -229,6 +235,66 @@ def test_meta_source_returns_zero_null_and_provider_errors_separately() -> None:
 
     assert [metric.state for metric in result] == ["ZERO", "NULL", "UNAVAILABLE"]
     assert len(client.calls) == 2
+
+
+def test_facebook_engagement_fields_are_skipped_when_capability_is_blocked() -> None:
+    spec = MetricSpec(
+        "reactions_total",
+        "reactions.summary(total_count).limit(0)",
+        "post_field",
+        None,
+        capability="facebook_engagement",
+        capability_state="BLOCKED",
+    )
+    source = MetaMetricsSource(
+        lambda _channel: pytest.fail("BLOCKED capability must not create a Meta client"),
+        now_ms=lambda: 7,
+    )
+
+    result = source.fetch(
+        ChannelConfigView("fb_hanoi", "page-synthetic", "facebook", "vXX.X"),
+        "post-synthetic",
+        [spec],
+    )
+
+    assert result == [RawMetric("reactions_total", None, "UNAVAILABLE", 7)]
+
+
+def test_facebook_engagement_fields_use_fixture_and_missing_shares_are_zero() -> None:
+    client = FakeGraphClient(
+        {"data": []},
+        {
+            "reactions": {"data": [], "summary": {"total_count": 2}},
+            "comments": {"data": [], "summary": {"total_count": 1}},
+        },
+    )
+    source = MetaMetricsSource(lambda _channel: client, now_ms=lambda: 7, min_interval_seconds=0)
+    specs = [
+        MetricSpec("reactions_total", "reactions.summary(total_count).limit(0)", "post_field", None,
+                   capability="facebook_engagement", capability_state="SUPPORTED"),
+        MetricSpec("comments_total", "comments.summary(total_count).limit(0)", "post_field", None,
+                   capability="facebook_engagement", capability_state="SUPPORTED"),
+        MetricSpec("shares", "shares", "post_field", None,
+                   capability="facebook_engagement", capability_state="SUPPORTED", missing_value_state="ZERO"),
+    ]
+
+    result = source.fetch(
+        ChannelConfigView("fb_hanoi", "page-synthetic", "facebook", "vXX.X"),
+        "post-synthetic",
+        specs,
+    )
+
+    assert [(row.name, row.value, row.state) for row in result] == [
+        ("reactions_total", 2, "VALUE"),
+        ("comments_total", 1, "VALUE"),
+        ("shares", 0, "ZERO"),
+    ]
+    assert client.object_calls == [
+        ("post-synthetic", ("reactions.summary(total_count).limit(0)",)),
+        ("post-synthetic", ("comments.summary(total_count).limit(0)",)),
+        ("post-synthetic", ("shares",)),
+    ]
+    assert client.calls == []
 
 
 def test_meta_source_rate_limits_by_page_and_unsupported_metrics_do_not_call_provider() -> None:
