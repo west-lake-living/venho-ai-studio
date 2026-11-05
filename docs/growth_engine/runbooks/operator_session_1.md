@@ -211,6 +211,6 @@ systemctl --user list-unit-files 'venho-growth-*.timer'
 venho-engine --help
 ```
 
-**Mong đợi:** chỉ các legacy timers đã liệt kê trong inventory; hiện chưa có Growth Engine CLI cho reconcile/backfill hoặc T0-05/T0-06 timer units.
+**Mong đợi:** `systemctl` chỉ hiển thị các legacy timers trong inventory. Growth Engine hiện có UoW logic cho reconcile/backfill nhưng chưa có CLI runner hoặc T0-05/T0-06 timer units.
 
-**Dừng:** không enable, sửa hoặc thay lịch legacy timer để giả lập T0-05/T0-06. Các task này chỉ wiring repository/logic; cần task/file được duyệt bổ sung CLI runner và timer unit trước khi có thể cài lịch. Production giữ `DISABLED`.
+**Dừng:** không enable, sửa hoặc thay lịch legacy timer để giả lập T0-05/T0-06. Cần triển khai và review CLI runner cùng service/timer units trước khi cài lịch cho các use case này. Production giữ `DISABLED`.

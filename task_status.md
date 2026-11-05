@@ -5560,9 +5560,9 @@ ComfyUI, GPU, provider or network call.
 **Status:** PARTIAL — deploy assets, composed jobs worker, and operator-session runbook are ready; server deployment and T0-05/T0-06 timer wiring remain gated.
 **Files:** `ops/asus-server/growth-engine/{deploy-release.sh,growth-engine-api.service,growth-engine-worker@.service,README.md}`, `docs/growth_engine/runbooks/operator_session_1.md`, `task_status.md`, `task_memory.md`
 **Verify:** `bash -n ops/asus-server/growth-engine/deploy-release.sh` → PASS; runbook commands/sequence and service directives inspected; `git diff --check` → PASS. `shellcheck` and target systemd validation unavailable; no unit was installed or started.
-**DoD:** [x] isolated release/doctor/switch/restart/rollback script and API + both worker units; [x] CLI and bootstrap compose `worker --lane jobs` (GC2-P4-T04); [x] first-session steps cover age, environment, disabled deploy + TEST API, Cloudflare, three-channel Make TEST, health/Telegram, restore rehearsal and ordered production ramp-up; [ ] Harry performs the gated deployment; [ ] T0-05/T0-06 timer CLI/units are not in the permitted files and must be implemented before scheduling.
-**Rủi ro / việc để lại:** No push, SSH, systemd, production DB, timer, or deployment action was used. Operator runbook stops at the timer gate rather than enabling legacy timers.
-**Giả định:** ASUS is Ubuntu/Debian with user systemd; the session runbook documents operator commands but does not perform them.
+**DoD:** [x] isolated release/doctor/switch/rollback script and API + both worker units; [x] CLI and bootstrap compose `worker --lane jobs` (GC2-P4-T04); [x] first-session steps cover age, environment, disabled deploy + TEST API, Cloudflare, three-channel Make TEST, health/Telegram, restore rehearsal and ordered production ramp-up; [ ] Harry performs the gated deployment; [ ] T0-05/T0-06 CLI runner and timer units remain code work before scheduling.
+**Rủi ro / việc để lại:** No push, SSH, systemd, production DB, timer, or deployment action was used. Operator runbook stops before installing schedules because the reconcile/backfill commands and units do not exist yet; existing legacy timers remain untouched.
+**Giả định:** ASUS is Ubuntu/Debian with user systemd; T0-05/T0-06 need dedicated CLI runners and service/timer units that call their use cases.
 
 ### GC2-P9-T02 — DRY_RUN song song 3–7 ngày (2026-11-05)
 **Status:** PARTIAL — runbook/checklist hoàn tất; chưa triển khai hoặc chạy quan sát DRY_RUN theo giới hạn task

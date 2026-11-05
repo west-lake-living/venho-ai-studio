@@ -6388,7 +6388,7 @@ not in local venv; installed in CI).
 
 ### 2026-11-05 — GC2-P9-T01 operator session runbook
 - Added a first-session checklist with ordered copy/paste commands, expected results, stop points, private environment handling, TEST API, Make TEST, health/Telegram and restore rehearsal; linked it from the deploy README.
-- Jobs lane is now composed by GC2-P4-T04. The runbook stops at T0-05/T0-06 because the permitted task files contain no timer CLI/unit; no push, host command or deployment ran.
+- Jobs lane is now composed by GC2-P4-T04. The runbook stops before T0-05/T0-06 schedules because their CLI runners and service/timer units are not implemented; no push, host command or deployment ran.
 - Assumption: ASUS uses Ubuntu/Debian and user systemd; operator confirms package and unit availability on the host.
 
 ### 2026-11-05 — GC2-P9-T02 Instagram target mapping
