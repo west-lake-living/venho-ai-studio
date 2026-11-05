@@ -4,6 +4,7 @@ import argparse
 import json
 import os
 import sys
+import time
 from pathlib import Path
 from typing import Any
 
@@ -31,7 +32,19 @@ def _parser() -> argparse.ArgumentParser:
         required=True,
         help="Facebook Page ID or Instagram business account ID",
     )
-    parser.add_argument("--post-id", required=True)
+    target = parser.add_mutually_exclusive_group(required=True)
+    target.add_argument("--post-id")
+    target.add_argument(
+        "--list-recent",
+        action="store_true",
+        help="List a bounded window of recent posts instead of probing a supplied post ID.",
+    )
+    parser.add_argument(
+        "--collection-edge",
+        help="Verified one-segment collection edge; required with --list-recent.",
+    )
+    parser.add_argument("--recent-days", type=int, default=7)
+    parser.add_argument("--max-pages", type=int, default=3)
     parser.add_argument("--api-version", required=True)
     parser.add_argument(
         "--field",
@@ -91,6 +104,19 @@ def _probe_object(client: GraphClient, object_id: str, fields: list[str]) -> lis
 def run_probe(args: argparse.Namespace, environ: dict[str, str]) -> dict[str, Any]:
     if args.metrics and not args.period:
         raise ValueError("--period is required when --metric is used")
+    if args.list_recent:
+        if args.post_id:
+            raise ValueError("--post-id cannot be used with --list-recent")
+        if not isinstance(args.collection_edge, str) or not args.collection_edge.strip():
+            raise ValueError("--collection-edge is required with --list-recent")
+        if type(args.recent_days) is not int or not 1 <= args.recent_days <= 30:
+            raise ValueError("--recent-days must be between 1 and 30")
+        if type(args.max_pages) is not int or not 1 <= args.max_pages <= 10:
+            raise ValueError("--max-pages must be between 1 and 10")
+        if args.metrics:
+            raise ValueError("metric probes require --post-id")
+    elif not args.post_id:
+        raise ValueError("--post-id is required unless --list-recent is used")
     token_env = _TOKEN_ENV_BY_CHANNEL[args.channel]
     token = environ.get(token_env, "").strip()
     if not token:
@@ -101,7 +127,7 @@ def run_probe(args: argparse.Namespace, environ: dict[str, str]) -> dict[str, An
     client = GraphClient(
         api_version=args.api_version,
         access_token=token,
-        collection_edge="unused_for_object_probe",
+        collection_edge=args.collection_edge or "unused_for_object_probe",
     )
     result: dict[str, Any] = {
         "channel": args.channel,
@@ -109,9 +135,27 @@ def run_probe(args: argparse.Namespace, environ: dict[str, str]) -> dict[str, An
         "post_id": args.post_id,
         "api_version": args.api_version,
         "account_fields": _probe_object(client, args.page_id, args.fields),
-        "post_fields": _probe_object(client, args.post_id, args.fields),
+        "post_fields": [] if args.list_recent else _probe_object(client, args.post_id, args.fields),
         "metrics": [],
     }
+    if args.list_recent:
+        until_ms = time.time_ns() // 1_000_000
+        since_ms = until_ms - args.recent_days * 24 * 60 * 60 * 1000
+        result["recent_window_ms"] = {"since": since_ms, "until": until_ms}
+        try:
+            result["recent_posts"] = client.list_recent_posts(
+                args.page_id,
+                since_ms,
+                until_ms,
+                args.fields,
+                args.max_pages,
+            )
+        except MetaGraphError as exc:
+            result["recent_posts"] = {
+                "result": "ERROR",
+                "error_class": exc.kind.value if exc.kind is not None else "UNCLASSIFIED",
+                "http_status": exc.status,
+            }
     for metric in args.metrics:
         try:
             value = client.get_insights(args.post_id, [metric], args.period)

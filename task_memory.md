@@ -6381,3 +6381,7 @@ not in local venv; installed in CI).
 - Upload receipts are stored as durable jobs, and identical Idempotency-Key replays are fingerprint-checked. SQLite integration covers actual reads, stale ETag, all-or-nothing approval conflict, database outage, media persistence and upload replay.
 - VERIFY_DEV: 471 passed; VERIFY_ARCH: 2 passed; VERIFY_LEGACY: 2103 passed, 79 failed, 8 skipped; the 79 failed node IDs match the committed main baseline exactly. No network or provider call occurred.
 - Delivery reconcile/safe-retry routes remain fail-closed until their evidence-bound use cases are composed; no retry is available for UNKNOWN.
+
+### 2026-11-05 — GC2-P0-T04 recent-post probe mode
+- Added bounded `--list-recent` GET mode for a channel whose registry has no trustworthy post ID; it requires an explicitly verified collection edge and never guesses Meta fields or API version.
+- Both post-ID and list modes were exercised through a fake Graph client with token-redaction assertions; no Meta request ran.

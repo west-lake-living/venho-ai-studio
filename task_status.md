@@ -5612,8 +5612,8 @@ ComfyUI, GPU, provider or network call.
 ### GC2-P0-T04 — Probe Meta read-only (2026-11-05)
 **Status:** BLOCKED_HUMAN — probe chỉ GET và script offline sẵn; token/version/field/fixture thật cần Harry cung cấp.
 **Files:** `scripts/growth_engine/probe_meta_read.py`, `task_status.md`, `task_memory.md`
-**Verify:** `python3 scripts/growth_engine/probe_meta_read.py --help` → PASS; không gọi Meta.
-**DoD:** [x] token lấy từ env riêng từng channel, output redacted; [ ] ba probe và capability evidence chưa chạy.
+**Verify:** `--help` → PASS; post-ID probe và bounded recent-list mode chạy qua fake Graph client; token redaction PASS; không gọi Meta.
+**DoD:** [x] token lấy từ env riêng từng channel, output redacted; [x] `--list-recent` cho Page không có post ID đáng tin cậy, yêu cầu edge đã xác minh; [ ] ba probe và capability evidence chưa chạy.
 
 ### GC2-P0-T05 — Cloudflare edge validation (2026-11-05)
 **Status:** BLOCKED_HUMAN — ADR policy is ready; host/Tunnel/Access configuration and external curl evidence require Harry.
