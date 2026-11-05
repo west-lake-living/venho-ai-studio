@@ -5626,3 +5626,9 @@ ComfyUI, GPU, provider or network call.
 **Files:** `docs/growth_engine/adr/ADR-01.md` … `ADR-08.md`, `task_memory.md`, `task_status.md`
 **Verify:** all eight ADRs contain decision/status sections; `git diff --check` → PASS.
 **DoD:** [x] current build decisions recorded; [x] Instagram publishing scope recorded; [x] unresolved host/Make/Meta configuration tracked under P0-T03…T05.
+
+### GC2-P0-T07 — Legacy inventory (2026-11-05)
+**Status:** DONE — registry/DB inventory and redacted synthetic fixtures match the 04/11 report; the 07/11 image SHA is excluded because v3.2 posts before cutover.
+**Files:** `docs/growth_engine/legacy_inventory.md`, `tests/growth_engine/fixtures/legacy/registry_samples.json`, `tests/growth_engine/fixtures/legacy/growth_db_samples.json`, `task_status.md`, `task_memory.md`
+**Verify:** registry 265 rows; SQLite 58 publishing slots; fixtures parse as JSON; `git diff --check` → PASS.
+**DoD:** [x] counts, state/schema exceptions and IG/Threads history documented; [x] 07/11 SHA is not required for P0-T07.

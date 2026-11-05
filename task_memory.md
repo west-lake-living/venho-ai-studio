@@ -11,8 +11,11 @@
 
 - Đọc `publication_registry.json` và `growth.db` read-only; registry có 265 rows, đúng báo cáo 04/11. DB có 58 `publishing_slots`; registry/DB lệch 5 slot cũ chỉ có ở registry.
 - Có 23 cặp `slot_id + platform` lặp; một cặp Instagram 15/08 có hai `PUBLISHED`. Không suy ra retry; cần đối soát bằng evidence bài thật.
-- 07/11 dùng ảnh U2 sau commit `9ab0a22`, nhưng asset không có local và URL nằm trên Google Drive. Theo giới hạn prompt, không đọc Drive; SHA-256 đang chờ Harry cung cấp file.
+- 07/11 dùng ảnh U2 sau commit `9ab0a22`; v3.2 đăng slot này trước cutover nên SHA ảnh không phải tiêu chí hoàn tất kiểm kê P0-T07.
 - Fixture là shape sample đã ẩn danh, gắn `_synthetic: true`; không commit `data/` hoặc raw nội dung.
+
+### 2026-11-05 — P0-T07: close image SHA item
+- Removed the 07/11 image SHA from P0-T07 completion; v3.2 publishes that slot before cutover.
 
 ## 2026-11-04 — GC2-P1-T01 package và cấu hình
 

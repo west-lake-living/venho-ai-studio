@@ -71,6 +71,6 @@ Có 23 cặp lặp `slot_id + platform` (33 dòng vượt ngoài một bản ghi
 - 3 `STALE_APPROVAL`: Facebook 1, Instagram 2; approval cũ không đủ để tự khôi phục.
 - Instagram có 98 dòng; Threads có 30 dòng lịch sử; Zalo có 28 dòng. Threads/Zalo không được biến thành delivery v2.
 - Hai dòng Facebook `PUBLISHED` mang `platform_post_id = "3. Post ID"`; đây là placeholder, không phải ID bài thật.
-- Slot 07/11 có bản Facebook và Instagram `APPROVED_SCHEDULED`; commit `9ab0a22` đổi ảnh được chọn sang `U2`. `image_run_path` không có file local. URL ảnh trong snapshot nằm trên Google Drive; không truy cập Drive theo giới hạn lượt chạy nên **chưa xác định được SHA-256**.
+- Slot 07/11 có bản Facebook và Instagram `APPROVED_SCHEDULED`; commit `9ab0a22` đổi ảnh được chọn sang `U2`. Đây là slot v3.2 đăng trước cutover; SHA ảnh không thuộc tiêu chí hoàn tất kiểm kê P0-T07.
 
 Fixture đã lọc/anonymize đặt trong `tests/growth_engine/fixtures/legacy/`; không commit registry, database, nội dung bài, URL ảnh hoặc thông tin duyệt thật. Fixture đánh dấu `_synthetic: true` theo yêu cầu prompt và cần thay bằng fixture thật từ P0-T03/P0-T04.
