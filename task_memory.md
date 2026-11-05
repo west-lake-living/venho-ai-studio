@@ -6385,3 +6385,8 @@ not in local venv; installed in CI).
 ### 2026-11-05 — GC2-P0-T04 recent-post probe mode
 - Added bounded `--list-recent` GET mode for a channel whose registry has no trustworthy post ID; it requires an explicitly verified collection edge and never guesses Meta fields or API version.
 - Both post-ID and list modes were exercised through a fake Graph client with token-redaction assertions; no Meta request ran.
+
+### 2026-11-05 — GC2-P9-T01 operator session runbook
+- Added a first-session checklist with ordered copy/paste commands, expected results, stop points, private environment handling, TEST API, Make TEST, health/Telegram and restore rehearsal; linked it from the deploy README.
+- Jobs lane is now composed by GC2-P4-T04. The runbook stops at T0-05/T0-06 because the permitted task files contain no timer CLI/unit; no push, host command or deployment ran.
+- Assumption: ASUS uses Ubuntu/Debian and user systemd; operator confirms package and unit availability on the host.

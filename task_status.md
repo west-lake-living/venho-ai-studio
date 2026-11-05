@@ -5557,12 +5557,12 @@ ComfyUI, GPU, provider or network call.
 **Giả định:** Week begins Monday in ICT; only PUBLISHED deliveries by `published_at` are included; latest observation per delivery/metric/checkpoint wins; image kind is `media_assets.source_type`, otherwise `unknown`.
 
 ### GC2-P9-T01 — Công cụ deploy & systemd units (2026-11-05)
-**Status:** PARTIAL — release script, API/worker units and operator README are ready; deployment remains Harry-gated and the current CLI has not composed the `jobs` worker lane.
-**Files:** `ops/asus-server/growth-engine/{deploy-release.sh,growth-engine-api.service,growth-engine-worker@.service,README.md}`, `task_status.md`, `task_memory.md`
-**Verify:** `bash -n ops/asus-server/growth-engine/deploy-release.sh` → PASS; `git diff --check` → PASS; required EnvironmentFile/WorkingDirectory/Restart/OnFailure directives inspected. `shellcheck` and systemd host validation are unavailable; no unit was installed or started.
-**DoD:** [x] script creates isolated release and frozen extras, checks schema/doctor before switch, atomically switches current, restarts API+two workers and rolls back on failure; [x] units use required environment/working paths, restart and existing alert handler; [x] README records prerequisites and disable-mode gate; [ ] Harry deploys DISABLED and receives doctor PASS; [ ] `venho-engine worker --lane jobs` runtime composition is not implemented.
-**Rủi ro / việc để lại:** No SSH, user systemd, production database, or deployment action was used. A real deployment must wait for jobs-lane runtime support and Harry’s gate.
-**Giả định:** Script runs from a clean GC2 checkout whose origin contains the requested commit; transient `systemd-run` checks consume the same protected EnvironmentFile as the services.
+**Status:** PARTIAL — deploy assets, composed jobs worker, and operator-session runbook are ready; server deployment and T0-05/T0-06 timer wiring remain gated.
+**Files:** `ops/asus-server/growth-engine/{deploy-release.sh,growth-engine-api.service,growth-engine-worker@.service,README.md}`, `docs/growth_engine/runbooks/operator_session_1.md`, `task_status.md`, `task_memory.md`
+**Verify:** `bash -n ops/asus-server/growth-engine/deploy-release.sh` → PASS; runbook commands/sequence and service directives inspected; `git diff --check` → PASS. `shellcheck` and target systemd validation unavailable; no unit was installed or started.
+**DoD:** [x] isolated release/doctor/switch/restart/rollback script and API + both worker units; [x] CLI and bootstrap compose `worker --lane jobs` (GC2-P4-T04); [x] first-session steps cover age, environment, disabled deploy + TEST API, Cloudflare, Make TEST, health/Telegram and restore rehearsal; [ ] Harry performs the gated deployment; [ ] T0-05/T0-06 timer CLI/units are not in the permitted files and must be implemented before scheduling.
+**Rủi ro / việc để lại:** No push, SSH, systemd, production DB, timer, or deployment action was used. Operator runbook stops at the timer gate rather than enabling legacy timers.
+**Giả định:** ASUS is Ubuntu/Debian with user systemd; the session runbook documents operator commands but does not perform them.
 
 ### GC2-P9-T02 — DRY_RUN song song 3–7 ngày (2026-11-05)
 **Status:** PARTIAL — runbook/checklist hoàn tất; chưa triển khai hoặc chạy quan sát DRY_RUN theo giới hạn task

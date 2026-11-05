@@ -14,7 +14,7 @@ These files prepare a user-level deployment under `~/venho`. They do not deploy 
 1. Run from a clean GC2 checkout whose `origin` contains the requested commit.
 2. Install `git`, `uv`, and user systemd support. Create the environment file with `GE_ENV=production`, DB/media paths under the state directory, and reviewed production settings; do not put secrets in Git or command arguments.
 3. Confirm the target DB is already at the expected schema and runtime publish mode is `DISABLED`. The release script checks migrations without applying them.
-4. Confirm the target release supports both worker lanes. In particular, `venho-engine worker --lane jobs` must be implemented before starting `growth-engine-worker@jobs.service`.
+4. Confirm the target release supports both worker lanes. `venho-engine worker --lane jobs` is composed with the SQLite jobs queue; keep the production runtime `DISABLED` until Harry completes the operator gates in [operator session 1](../../docs/growth_engine/runbooks/operator_session_1.md).
 
 ## Deploy a release
 
