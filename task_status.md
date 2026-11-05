@@ -5683,3 +5683,10 @@ ComfyUI, GPU, provider or network call.
 **Verify:** enqueue scheduler tests → 8 passed; Instagram receives a durable publish command through the normal eligible path.
 **DoD:** [x] Instagram is no longer silently excluded after approval; Facebook pause/filter behavior remains covered.
 **Giả định:** the platform-specific media profile and verified route are enforced downstream at authorization/Make, while this scheduler keeps the same lifecycle rules.
+
+### GC2-P5-T02 — IG envelope và dispatch (2026-11-05)
+**Status:** DONE — scheduler claim accepts both platforms; Make envelope names `channel_key`/`platform`; signed media remains valid through deadline + 30 minutes.
+**Files:** `growth_engine/application/publishing/dispatch_outbox.py`, `growth_engine/adapters/outbound/{make/envelope.py,persistence/sqlite/repositories/dispatch.py}`, `contracts/growth_engine/command_envelope.v2.schema.json`, dispatch unit/contract/SQLite integration tests, `task_status.md`, `task_memory.md`
+**Verify:** dispatch unit + publish/authorize/receipt SQLite integration + Make contract → 21 passed, 1 dependency warning; Instagram test creates a real SQLite dispatch lease with `ig_test` and `instagram`.
+**DoD:** [x] both platforms flow through dispatch; [x] v2 envelope carries explicit channel key/platform; [x] signed image URL expires at `execute_before_ms + 30m`; [x] Facebook contract/behavior remains covered.
+**Giả định:** the existing `remote_page_id` field carries Instagram's configured remote account ID for backward-compatible receipt/authorize identity.

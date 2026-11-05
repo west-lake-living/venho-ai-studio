@@ -44,6 +44,8 @@ class DispatchLease:
     lease_token: str
     environment: str
     channel_id: str
+    channel_key: str
+    platform: str
     remote_page_id: str
     payload_hash: str
     dispatch_epoch: str
@@ -52,7 +54,7 @@ class DispatchLease:
 
     def __post_init__(self) -> None:
         for name in (
-            "lease_token", "environment", "channel_id", "remote_page_id",
+            "lease_token", "environment", "channel_id", "channel_key", "platform", "remote_page_id",
             "payload_hash", "dispatch_epoch", "route_ref", "media_sha256",
         ):
             value = getattr(self, name)
@@ -60,6 +62,8 @@ class DispatchLease:
                 raise ValueError(f"{name} is required")
         if self.environment not in {"test", "production"}:
             raise ValueError("environment is invalid")
+        if self.platform not in {"facebook", "instagram"}:
+            raise ValueError("platform is unsupported")
         if not re.fullmatch(r"[0-9a-f]{64}", self.payload_hash) or not re.fullmatch(
             r"[0-9a-f]{64}", self.media_sha256
         ):
@@ -164,7 +168,7 @@ class DispatchOutbox:
             media_url = self._media_urls.media_url(
                 lease.media_sha256,
                 command.id,
-                command.expires_at_ms,
+                command.expires_at_ms + 30 * 60_000,
             )
             envelope = self._envelopes.build(lease, media_url=media_url)
             try:

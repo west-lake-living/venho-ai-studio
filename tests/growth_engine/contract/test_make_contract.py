@@ -18,6 +18,8 @@ def test_growth_command_v2_contract_rejects_unknown_fields() -> None:
             "delivery_id": "delivery-synthetic",
             "revision_id": "revision-synthetic",
             "channel_id": "channel-synthetic",
+            "channel_key": "fb_hanoi",
+            "platform": "facebook",
             "remote_page_id": "remote-page-synthetic",
             "idempotency_key": "publish:delivery-synthetic:revision-synthetic:1",
             "payload_hash": "a" * 64,

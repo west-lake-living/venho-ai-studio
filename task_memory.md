@@ -6317,3 +6317,7 @@ not in local venv; installed in CI).
 
 ### 2026-11-05 — GC2-P5-T01 IG support
 - Mở eligibility của publish scheduler cho cả hai giá trị platform đã định nghĩa; test xác nhận target `ig_venho` tạo command bình thường.
+
+### 2026-11-05 — GC2-P5-T02 IG support
+- Dispatch query had a hard-coded Facebook predicate. It now accepts Facebook/Instagram and includes explicit `channel_key` + `platform` in the Make v2 envelope.
+- Signed media URL expiry is deadline plus 30 minutes; envelope execute-before remains the command deadline.

@@ -190,6 +190,40 @@ def test_dispatch_store_reclaims_expired_lease_and_fences_stale_ack(tmp_path: Pa
     assert row["next_attempt_at"] == 2_101 + 5 * 60_000
 
 
+def test_instagram_channel_is_dispatchable_with_explicit_channel_key_and_platform(tmp_path: Path) -> None:
+    encoded = base64.urlsafe_b64encode(b"i" * 32).decode().rstrip("=")
+    settings = Settings(
+        env="test",
+        db_path=str(tmp_path / "instagram-dispatch.db"),
+        media_root=str(tmp_path / "media"),
+        public_base_url="https://growth.example.test",
+        capability_keys=f"ig:{encoded}",
+        make_webhook_urls={"IG_TEST": "https://hooks.example.test/instagram"},
+    )
+    container = build_container(settings)
+    container.migration_service.run(Path(settings.db_path), check=False)
+    _seed_approved_delivery(
+        container.uow_factory,
+        deadline_at_ms=1_000_000,
+        channel_id="channel-test-ig",
+        channel_key="ig_test",
+        platform=ChannelPlatform.INSTAGRAM,
+        remote_account_id="ig-synthetic",
+        route_ref="GE_MAKE_WEBHOOK_URL_IG_TEST",
+    )
+    container.enqueue_due.execute(2_000)
+
+    leases = container.dispatch_store.claim_due(
+        2_000, 10, owner="ig-synthetic-worker", lease_ms=30_000,
+        policy=container.publishing_policy,
+    )
+
+    assert len(leases) == 1
+    assert leases[0].channel_key == "ig_test"
+    assert leases[0].platform == "instagram"
+    assert leases[0].remote_page_id == "ig-synthetic"
+
+
 def test_authorize_router_commits_real_sqlite_execution_and_audit(tmp_path: Path) -> None:
     bearer = "synthetic-authorize-bearer"
     now_ms = time.time_ns() // 1_000_000
@@ -567,6 +601,11 @@ def _seed_approved_delivery(
     *,
     deadline_at_ms: int = 10_000,
     media_root: Path | None = None,
+    channel_id: str = "channel-test-fb",
+    channel_key: str = "fb_hanoi",
+    platform: ChannelPlatform = ChannelPlatform.FACEBOOK,
+    remote_account_id: str = "synthetic-page",
+    route_ref: str = "GE_MAKE_WEBHOOK_URL_PAGE_A",
 ) -> None:
     media_bytes = b"synthetic image bytes"
     media_sha = hashlib.sha256(media_bytes).hexdigest()
@@ -577,20 +616,20 @@ def _seed_approved_delivery(
 
         media_key = LocalMediaStore(media_root).put_variant(media_bytes, media_sha)
     channel = Channel(
-        id="channel-test-fb",
+        id=channel_id,
         project_id="venho_hotel",
         environment="test",
-        channel_key="fb_hanoi",
-        platform=ChannelPlatform.FACEBOOK,
-        remote_account_id="synthetic-page",
+        channel_key=channel_key,
+        platform=platform,
+        remote_account_id=remote_account_id,
         name="Synthetic Page",
         enabled=True,
     )
     config = ChannelConfig(
-        id="config-test-fb",
+        id=f"config-{channel_key}",
         channel_id=channel.id,
         version=1,
-        make_route_ref="GE_MAKE_WEBHOOK_URL_PAGE_A",
+        make_route_ref=route_ref,
         graph_api_version="vNN.N",
         capability={"_synthetic": True, "note": "cần thay bằng fixture thật từ P0-T03/P0-T04"},
     )

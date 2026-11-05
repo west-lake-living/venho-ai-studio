@@ -20,6 +20,8 @@ class MakeEnvelopeBuilder:
             "delivery_id": command.delivery_id,
             "revision_id": command.revision_id,
             "channel_id": lease.channel_id,
+            "channel_key": lease.channel_key,
+            "platform": lease.platform,
             "remote_page_id": lease.remote_page_id,
             "idempotency_key": command.business_key,
             "payload_hash": lease.payload_hash,

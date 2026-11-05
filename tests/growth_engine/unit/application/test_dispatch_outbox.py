@@ -91,6 +91,8 @@ class FakeDispatchStore:
         self.context = {
             "environment": "test",
             "channel_id": CHANNEL_ID,
+            "channel_key": "fb_hanoi",
+            "platform": "facebook",
             "remote_page_id": REMOTE_PAGE_ID,
             "payload_hash": PAYLOAD_HASH,
             "dispatch_epoch": EPOCH,
@@ -246,6 +248,8 @@ def test_command_envelope_matches_schema_without_extra_fields() -> None:
         lease_token="lease-synthetic",
         environment="test",
         channel_id=CHANNEL_ID,
+        channel_key="fb_hanoi",
+        platform="facebook",
         remote_page_id=REMOTE_PAGE_ID,
         payload_hash=PAYLOAD_HASH,
         dispatch_epoch=EPOCH,
@@ -261,9 +265,29 @@ def test_command_envelope_matches_schema_without_extra_fields() -> None:
     assert envelope["schema_version"] == "growth.command.v2"
     assert envelope["command_token"] == "v1.c3ludGhldGlj.c2ln"
     assert envelope["dispatch_epoch"] == EPOCH
+    assert envelope["channel_key"] == "fb_hanoi"
+    assert envelope["platform"] == "facebook"
     assert "_synthetic" not in envelope
     with pytest.raises(jsonschema.ValidationError):
         jsonschema.validate({**envelope, "access_token": "never"}, schema)
+    instagram_envelope = MakeEnvelopeBuilder().build(
+        replace(lease, channel_key="ig_venho", platform="instagram"),
+        media_url=FakeMediaURLs().media_url(MEDIA_SHA, COMMAND_ID, DEADLINE_MS),
+    )
+    jsonschema.validate(instagram_envelope, schema)
+    assert instagram_envelope["channel_key"] == "ig_venho"
+    assert instagram_envelope["platform"] == "instagram"
+
+
+def test_media_url_lifetime_extends_thirty_minutes_past_execution_deadline() -> None:
+    store = FakeDispatchStore(make_command())
+    transport = FakeTransport([DispatchTransportResult(TransportDisposition.ACK, status=200)])
+
+    make_dispatch(store, transport).execute(NOW_MS)
+
+    assert transport.sent[0][1]["media_url"].endswith(
+        f"exp={DEADLINE_MS + 30 * 60_000}"
+    )
 
 
 def test_retryable_transport_retries_same_envelope_after_backoff() -> None:

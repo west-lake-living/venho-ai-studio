@@ -60,7 +60,7 @@ class SqliteDispatchStore:
                           c.lease_token, c.lease_until, c.signing_key_id,
                           d.current_revision_id, d.active_approval_id, d.channel_id,
                           r.payload_json, r.payload_hash AS revision_hash, r.variant_id,
-                          a.decision AS approval_decision, ch.remote_account_id, ch.enabled,
+                          a.decision AS approval_decision, ch.channel_key, ch.remote_account_id, ch.enabled,
                           ch.paused, ch.platform, cfg.make_route_ref, mv.sha256 AS media_sha256
                    FROM outbox_commands c
                    JOIN deliveries d ON d.id=c.delivery_id
@@ -78,7 +78,7 @@ class SqliteDispatchStore:
                        WHERE rev.decision='REVOKE' AND rev.revokes_id=a.id
                      )
                      AND ch.environment=? AND ch.enabled=1 AND ch.paused=0
-                     AND ch.platform='facebook' AND cfg.id=r.channel_config_id
+                     AND ch.platform IN ('facebook','instagram') AND cfg.id=r.channel_config_id
                      AND mv.qc_status='PASS'
                      AND ((c.state IN ('PENDING','ACKED') AND c.next_attempt_at<=?)
                        OR (c.state='DELIVERING' AND c.lease_until<=?))
@@ -138,6 +138,8 @@ class SqliteDispatchStore:
                         lease_token=lease_token,
                         environment=self._environment,
                         channel_id=row["channel_id"],
+                        channel_key=row["channel_key"],
+                        platform=row["platform"],
                         remote_page_id=row["remote_account_id"],
                         payload_hash=row["revision_hash"],
                         dispatch_epoch=row["dispatch_epoch"],
