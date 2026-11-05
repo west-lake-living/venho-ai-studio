@@ -132,7 +132,9 @@ curl --config <(printf 'header = "CF-Access-Client-Id: %s"\nheader = "CF-Access-
 
 ## 5. Tạo scenario Make TEST và chạy MK-1…MK-11
 
-Trong Make, duplicate `VenHo Growth Agent-FB/IG` thành TEST; schedule off; chỉ gắn Facebook/Instagram TEST account đã đối chiếu ID và scenario TEST route. Làm theo [make_blueprint_v2.md](make_blueprint_v2.md), điền ma trận [make_capabilities.md](../make_capabilities.md) bằng History/module output thật đã khử bí mật.
+Trong Make, duplicate `VenHo Growth Agent-FB/IG` thành TEST; schedule off; chỉ gắn TEST account đã đối chiếu ID và scenario TEST route. Đối chiếu riêng `fb_hanoi` (`1124616474074140`), `fb_venho` (`803531149684177`) và `ig_venho` (`17841457936965829`); không dùng label thay ID. Làm theo [make_blueprint_v2.md](make_blueprint_v2.md), điền ma trận [make_capabilities.md](../make_capabilities.md) bằng History/module output thật đã khử bí mật.
+
+Sau khi mọi gate được duyệt, thứ tự mở target production là `fb_hanoi` → `fb_venho` → `ig_venho`; chỉ mở target kế tiếp sau khi target trước có receipt/verify xác định. Trong phiên TEST này không bật production và không đăng thử công khai.
 
 Tạo command TEST và private envelope (lệnh này không gửi webhook):
 

@@ -6405,3 +6405,7 @@ not in local venv; installed in CI).
 - Updated pilot gates and daily records for the three independent targets, ordered Hanoi Facebook → Ven Hồ Facebook → Instagram. Required at least 8 slots, 24 outcomes and 14 days; Instagram verifies its 4:5 variant and media ID.
 - This is a checklist only: no LIVE_MANUAL, public post or pilot evidence was created.
 - Assumption: each slot targets all three channels; any cancelled/missing target reduces outcome count and extends the pilot.
+
+### 2026-11-05 — GC2-P9-T01 Instagram operator session
+- Listed all three TEST channel IDs and recorded the production ramp-up order after approval; the TEST session explicitly does not enable production or create a public post.
+- Verification remains document inspection and `git diff --check`; no Make or Meta access was used.
