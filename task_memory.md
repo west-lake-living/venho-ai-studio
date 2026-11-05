@@ -6355,3 +6355,8 @@ not in local venv; installed in CI).
 ### 2026-11-05 — GC2-T0-01 VERIFY_LEGACY collection repair
 - Renamed the Growth-specific `test_output_image_gate.py` module to `test_gc2_output_image_gate.py`; pytest can now collect the legacy module with the same basename.
 - VERIFY_LEGACY completed with 79 failed node IDs, exactly matching the committed main baseline; 2081 passed and no new baseline regression was found. The optional `cv2`-dependent files remain excluded as specified in the baseline.
+
+### 2026-11-05 — GC2-P4-T04 SQLite jobs worker
+- Composed `worker --lane jobs` with the SQLite lane selector, existing generation use case, `ReserveTarget`, and incident reporting. The scheduler runs ensure-slots, weekly, fast and replacement work using ICT timestamps.
+- `RunLanes` keeps one package per slot across enabled channels, blocks PUBLISHED/live targets, re-reads a reservation race, and applies the 120-day topic exclusion. Assembly jobs persist in SQLite for P6-T03's durable job consumer.
+- No replacement cadence is defined by the card; selected 15 minutes and recorded it in task status. No provider, credentials, or remote service were used.

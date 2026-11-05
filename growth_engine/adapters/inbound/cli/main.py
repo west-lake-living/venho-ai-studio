@@ -124,15 +124,17 @@ def api(
 def worker(
     lane: str = typer.Option(..., "--lane", help="Worker lane to run."),
 ) -> None:
-    """Run the publish scheduler lane."""
-    if lane != "publish":
-        raise typer.BadParameter("only the publish lane is available")
+    """Run the publish or content-jobs lane."""
+    if lane not in {"publish", "jobs"}:
+        raise typer.BadParameter("lane must be 'publish' or 'jobs'")
     settings = Settings.from_env()
     if not settings.db_path.strip() or "REQUIRED_FROM_P0" in settings.db_path:
         raise typer.BadParameter("configure GE_DB_PATH before running the worker")
     from growth_engine.bootstrap import build_container
 
-    raise typer.Exit(code=build_container(settings).publish_lane.run_forever())
+    container = build_container(settings)
+    worker_lane = container.publish_lane if lane == "publish" else container.jobs_lane
+    raise typer.Exit(code=worker_lane.run_forever())
 
 
 @backup_cli.command("now")

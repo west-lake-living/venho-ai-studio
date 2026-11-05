@@ -5749,6 +5749,13 @@ ComfyUI, GPU, provider or network call.
 **Files:** `tests/growth_engine/unit/adapters/outbound/legacy/test_gc2_output_image_gate.py`, `task_status.md`, `task_memory.md`
 **Verify:** focused gate → 7 passed; VERIFY_DEV → 449 passed, 4 warnings; VERIFY_ARCH → 2 passed; VERIFY_LEGACY → 2081 passed, 79 failed, 8 skipped, 12 warnings; exact 79 failure node IDs match `docs/growth_engine/legacy_test_baseline.txt` (0 new, 0 missing); `git diff --check` → OK.
 **DoD:** [x] legacy pytest collection completes; [x] no new legacy failure relative to main baseline.
+
+### GC2-P4-T04 — SQLite `jobs` worker and content lanes (2026-11-05)
+**Status:** DONE — `venho-engine worker --lane jobs` is composed with SQLite slot selection, weekly/fast/replacement lanes, and failure incidents.
+**Files:** `growth_engine/adapters/inbound/{cli/main.py,workers/jobs_lane.py}`, `growth_engine/adapters/outbound/persistence/sqlite/{generation_store.py,lane_store.py}`, `growth_engine/bootstrap.py`, `tests/growth_engine/{unit/application/test_lanes.py,integration/sqlite/test_generation_store.py,integration/sqlite/test_run_lanes_sqlite.py}`, `task_status.md`, `task_memory.md`
+**Verify:** lane/SQLite focused → 27 passed; VERIFY_DEV → 453 passed, 4 warnings; VERIFY_ARCH → 2 passed; `git diff --check` → OK. SQLite integration covers three channel targets, shared package, PUBLISHED/live target protection, replacement only on SUPERSEDED target, and worker composition.
+**DoD:** [x] FakeClock advances through a week of ICT schedules; [x] CLI selects `jobs`; [x] fast/replacement use `ReserveTarget` and preserve INV-12; [x] 120-day topic exclusion and race re-read; [x] task errors open SQLite incidents.
+**Giả định:** The card specifies no replacement cadence, so the worker checks superseded targets every 15 minutes. `assemble_revision` jobs are durably written for the jobs queue implemented in P6-T03; no provider or external service was called.
 **Files:** `tests/growth_engine/integration/sqlite/test_analytics_views_sqlite.py`, `task_status.md`, `task_memory.md`
 **Verify:** weekly analytics SQLite + collector/report tests → 14 passed; Facebook Hanoi, Facebook Ven Hồ and Instagram reach values remain separate.
 **DoD:** [x] `ig_venho` observations retain their own page/channel aggregate; [x] mock observations and out-of-week data remain excluded; [ ] real Meta observations remain gated.

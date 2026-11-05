@@ -29,9 +29,16 @@ from growth_engine.domain.scheduling.slot import Slot, SlotTarget
 class SqliteGenerationStore:
     """SQLite transaction adapter for slot preparation and package generation."""
 
-    def __init__(self, uow_factory: Callable[[], Any], ids: Any) -> None:
+    def __init__(
+        self,
+        uow_factory: Callable[[], Any],
+        ids: Any,
+        *,
+        reserve_drafts: bool = True,
+    ) -> None:
         self._uow_factory = uow_factory
         self._ids = ids
+        self._reserve_drafts = reserve_drafts
 
     @contextmanager
     def begin_immediate(self) -> Iterator[_GenerationTransaction]:
@@ -237,7 +244,7 @@ class SqliteGenerationStore:
             if not targets:
                 raise RuntimeError("generation package has no enabled slot target")
             delivery_ids: list[str] = []
-            for target in targets:
+            for target in (targets if self._reserve_drafts else ()):
                 delivery_id = str(uuid4())
                 tx.deliveries.save(
                     Delivery(delivery_id, DeliveryState.DRAFT),
@@ -280,6 +287,11 @@ class SqliteGenerationStore:
                         "channel_config_id": target["config_id"],
                         "channel_key": target["channel_key"],
                         "platform": target["platform"],
+                        "media_profile": (
+                            "instagram_photo_v1"
+                            if target["platform"] == "instagram"
+                            else "facebook_photo_v1"
+                        ),
                         "captions_by_profile": dict(captions_by_profile),
                         "asset_option_ids": [item["option_id"] for item in asset_options],
                     },
@@ -436,6 +448,42 @@ class _GenerationTransaction:
             if existing is not None:
                 return False
             raise error
+        package = self.connection.execute(
+            "SELECT source_snapshot_json FROM content_packages WHERE id=?", (package_id,)
+        ).fetchone()
+        route = self.connection.execute(
+            """SELECT c.channel_key, c.platform, cc.id AS channel_config_id
+               FROM channels c LEFT JOIN channel_configs cc ON cc.channel_id=c.id
+               WHERE c.id=? ORDER BY cc.version DESC LIMIT 1""",
+            (target.channel_id,),
+        ).fetchone()
+        if package is None or route is None:
+            raise RuntimeError("package or channel route is missing for delivery assembly")
+        snapshot = json.loads(package["source_snapshot_json"])
+        image_options = snapshot.get("images", [])
+        self._tx.jobs.save(JobRecord(
+            id=self._ids.new_id(),
+            kind="assemble_revision",
+            lane="jobs",
+            business_key=f"assemble-revision:{delivery.id}:1",
+            payload_json=_json({
+                "delivery_id": delivery.id,
+                "channel_config_id": route["channel_config_id"],
+                "channel_key": route["channel_key"],
+                "platform": route["platform"],
+                "media_profile": (
+                    "instagram_photo_v1"
+                    if route["platform"] == "instagram"
+                    else "facebook_photo_v1"
+                ),
+                "captions_by_profile": snapshot.get("captions_by_profile", {}),
+                "asset_options": image_options,
+            }),
+            state="PENDING",
+            run_at_ms=created_at_ms,
+            created_at_ms=created_at_ms,
+            updated_at_ms=created_at_ms,
+        ))
         return True
 
 

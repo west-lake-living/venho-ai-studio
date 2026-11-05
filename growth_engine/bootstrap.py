@@ -79,6 +79,20 @@ class _LazyLocalMediaVerifier:
         return self._store.verify(object_key, sha256)
 
 
+class _LazyLocalMediaWriter:
+    def __init__(self, media_root: str) -> None:
+        self._media_root = media_root
+        self._store: Any | None = None
+
+    def put_original(self, stream: Any, *, max_bytes: int) -> Any:
+        if _is_required(self._media_root):
+            raise ValueError("configure GE_MEDIA_ROOT before ingesting generated images")
+        if self._store is None:
+            module = import_module("growth_engine.adapters.outbound.media.local_store")
+            self._store = module.LocalMediaStore(Path(self._media_root))
+        return self._store.put_original(stream, max_bytes=max_bytes)
+
+
 MIGRATIONS = Path(__file__).parent / "adapters" / "outbound" / "persistence" / "sqlite" / "migrations"
 REQUIRED_CHANNELS = frozenset({"fb_hanoi", "fb_venho", "ig_venho"})
 _REQUIRED = "REQUIRED_FROM_P0"
@@ -329,6 +343,9 @@ class Container:
     doctor_service: DoctorService
     analytics_views: Any
     generation_store: Any
+    ensure_slots: Any
+    generate_package: Any
+    run_lanes: Any
     readiness_check: Callable[[], tuple[bool, int | None]]
     ingest_candidate: Any
     decide_candidate: Any
@@ -344,6 +361,7 @@ class Container:
     dispatch_outbox: Any
     publishing_policy: Any
     publish_lane: Any
+    jobs_lane: Any
     collect_metrics: Any | None
     backup_service: Any
     restore_service: Any
@@ -392,6 +410,15 @@ def build_container(settings: Any, *, metrics_source: Any | None = None) -> Cont
     worker_loop_adapter = import_module("growth_engine.adapters.inbound.workers.loop")
     publish_lane_adapter = import_module("growth_engine.adapters.inbound.workers.publish_lane")
     heartbeat_adapter = import_module("growth_engine.application.ops.heartbeat")
+    jobs_lane_adapter = import_module("growth_engine.adapters.inbound.workers.jobs_lane")
+    lanes_adapter = import_module("growth_engine.application.content.run_lanes")
+    ensure_slots_adapter = import_module("growth_engine.application.scheduling.ensure_slots")
+    reserve_target_adapter = import_module("growth_engine.application.scheduling.reserve_target")
+    generate_package_adapter = import_module("growth_engine.application.content.generate_package")
+    lane_store_adapter = import_module("growth_engine.adapters.outbound.persistence.sqlite.lane_store")
+    legacy_generator_adapter = import_module("growth_engine.adapters.outbound.legacy.generator_adapter")
+    legacy_fact_adapter = import_module("growth_engine.adapters.outbound.legacy.fact_source")
+    ingest_asset_adapter = import_module("growth_engine.application.media.ingest_asset")
     legacy_adapter = import_module("growth_engine.adapters.outbound.legacy.importer")
     backup_adapter = import_module("growth_engine.adapters.outbound.backup.sqlite_backup")
     restore_adapter = import_module("growth_engine.adapters.outbound.backup.restore")
@@ -418,10 +445,10 @@ def build_container(settings: Any, *, metrics_source: Any | None = None) -> Cont
         "growth_engine.adapters.outbound.persistence.sqlite.generation_store"
     )
     analytics_views = analytics_adapter.AnalyticsViews(uow_factory)
-    generation_store = generation_store_adapter.SqliteGenerationStore(uow_factory, _UuidIds())
-    candidate_store = candidate_store_adapter.SqliteCandidateStore(uow_factory)
     clock = _SystemClock()
     ids = _UuidIds()
+    generation_store = generation_store_adapter.SqliteGenerationStore(uow_factory, ids)
+    candidate_store = candidate_store_adapter.SqliteCandidateStore(uow_factory)
     channel_environment = "production" if settings.env.lower() == "production" else "test"
     token_issuer = _LazyCapabilityIssuer(settings.capability_keys)
     scheduler_store = scheduler_store_adapter.SqlitePublishSchedulerStore(
@@ -518,6 +545,90 @@ def build_container(settings: Any, *, metrics_source: Any | None = None) -> Cont
     if metrics_source is not None:
         collector_adapter = import_module("growth_engine.application.analytics.collect_metrics")
         collect_metrics = collector_adapter.CollectMetrics(uow_factory, metrics_source, ids, clock)
+
+    repo_root = Path(__file__).resolve().parents[1]
+    cadence_policy, budget_policy, cost_estimates = _load_generation_policies(repo_root)
+    ensure_slots = ensure_slots_adapter.EnsureSlots(generation_store, clock, ids)
+    lane_store = lane_store_adapter.SqliteRunLanesStore(
+        uow_factory,
+        ensure_slots,
+        cadence_policy,
+        environment=channel_environment,
+        timezone_name=cadence_policy.timezone,
+    )
+    lane_generation_store = generation_store_adapter.SqliteGenerationStore(
+        uow_factory,
+        ids,
+        reserve_drafts=False,
+    )
+    generator = legacy_generator_adapter.LegacyGeneratorAdapter(repo_root=repo_root)
+    fact_source = legacy_fact_adapter.LegacyFactSource(
+        project="venho_hotel", data_root=repo_root / "data" / "projects"
+    )
+    asset_ingestor = ingest_asset_adapter.IngestAsset(
+        uow_factory,
+        _LazyLocalMediaWriter(settings.media_root),
+        clock,
+        ids,
+    )
+    generate_package = generate_package_adapter.GeneratePackage(
+        lane_generation_store,
+        generator,
+        fact_source,
+        asset_ingestor,
+        clock,
+        ids,
+        budget_policy=budget_policy,
+        cost_estimates=cost_estimates,
+    )
+    package_factory = jobs_lane_adapter.GeneratePackageLaneFactory(
+        generate_package,
+        lane_store,
+        package_spec_hash=_generation_spec_hash(repo_root),
+    )
+    reserve_target = reserve_target_adapter.ReserveTarget(generation_store, clock, ids)
+    run_lanes = lanes_adapter.RunLanes(lane_store, package_factory, reserve_target, clock)
+
+    def report_jobs_error(task: Any, error: Exception) -> None:
+        now_ms = clock.now_ms()
+        incident_type = "JOBS_LANE_TASK_FAILED"
+        incident = import_module("growth_engine.domain.ops.incident").Incident(
+            id=ids.new_id(),
+            type=incident_type,
+            fingerprint=import_module("growth_engine.domain.ops.incident").incident_fingerprint(
+                incident_type, None, task.name
+            ),
+            channel_id=None,
+            ref=task.name,
+            severity=import_module("growth_engine.domain.ops.incident").IncidentSeverity.HIGH,
+            state=import_module("growth_engine.domain.ops.incident").IncidentState.OPEN,
+            first_seen_at_ms=now_ms,
+            last_seen_at_ms=now_ms,
+        )
+        with uow_factory().begin_immediate() as tx:
+            tx.incidents.open_or_touch(
+                incident,
+                details_json=json.dumps({"error_class": type(error).__name__}, separators=(",", ":")),
+            )
+        logging.getLogger("growth_engine.jobs").error(
+            "jobs lane task failed: task=%s error_type=%s", task.name, type(error).__name__
+        )
+
+    jobs_handlers = {
+        "ensure_slots": lambda: lane_store.ensure_slots(clock.now_ms(), horizon_days=14),
+        "weekly": lambda: run_lanes.run_weekly(horizon_days=14),
+        "fast": lambda: run_lanes.run_fast(horizon_days=14),
+        "replacement": lambda: run_lanes.run_replacement(horizon_days=14),
+    }
+    if collect_metrics is not None:
+        jobs_handlers["metrics"] = lambda: collect_metrics.execute(clock.now_ms())
+    jobs_tasks = jobs_lane_adapter.build_jobs_tasks(jobs_handlers)
+    jobs_loop = worker_loop_adapter.WorkerLoop(
+        jobs_tasks,
+        clock,
+        on_error=report_jobs_error,
+    )
+    jobs_lane = jobs_lane_adapter.JobsLane(jobs_loop)
     return Container(
         settings=settings,
         uow_factory=uow_factory,
@@ -532,6 +643,9 @@ def build_container(settings: Any, *, metrics_source: Any | None = None) -> Cont
         ),
         analytics_views=analytics_views,
         generation_store=generation_store,
+        ensure_slots=ensure_slots,
+        generate_package=generate_package,
+        run_lanes=run_lanes,
         readiness_check=readiness_check,
         ingest_candidate=ingest_adapter.IngestCandidate(candidate_store, clock, ids),
         decide_candidate=decide_adapter.DecideCandidate(candidate_store, clock, ids),
@@ -547,6 +661,7 @@ def build_container(settings: Any, *, metrics_source: Any | None = None) -> Cont
         dispatch_outbox=dispatch_outbox,
         publishing_policy=publishing_policy,
         publish_lane=publish_lane,
+        jobs_lane=jobs_lane,
         collect_metrics=collect_metrics,
         backup_service=backup_adapter.SqliteBackup(),
         restore_service=restore_adapter.RestoreBackup(),
@@ -555,3 +670,57 @@ def build_container(settings: Any, *, metrics_source: Any | None = None) -> Cont
 
 def _is_required(value: str) -> bool:
     return not value.strip() or _REQUIRED in value
+
+
+def _load_generation_policies(repo_root: Path) -> tuple[Any, Any, dict[str, int]]:
+    yaml = import_module("yaml")
+
+    project = repo_root / "config" / "projects" / "venho_hotel"
+    cadence = yaml.safe_load((project / "growth" / "cadence_policy.yaml").read_text(encoding="utf-8"))
+    budget = yaml.safe_load((project / "growth" / "budget_policy.yaml").read_text(encoding="utf-8"))
+    costs = yaml.safe_load((project / "growth" / "paid_call_costs.yaml").read_text(encoding="utf-8"))
+    weekday = {name: index for index, name in enumerate(("monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"))}
+    cadence_domain = import_module("growth_engine.domain.scheduling.cadence")
+
+    rules = tuple(
+        cadence_domain.CadenceRule(
+            weekday[str(item["day"]).casefold()], str(item["type"]), str(item["lane"])
+        )
+        for item in cadence["slots"]
+    )
+    cadence_policy = cadence_domain.CadencePolicy(
+        version=int(cadence["version"]),
+        project_id="venho_hotel",
+        timezone=str(cadence["timezone"]),
+        publish_time=str(cadence["publish_time"]),
+        rules=rules,
+    )
+    budget_policy = type("GrowthBudgetPolicy", (), {
+        "monthly_cap_minor": int(budget["monthly_cap_minor"]),
+        "currency": str(budget["currency"]),
+    })()
+    cost_estimates = {
+        key: int(costs[key])
+        for key in ("text_generation_minor", "image_generation_minor", "vision_qc_minor")
+    }
+    return cadence_policy, budget_policy, cost_estimates
+
+
+def _generation_spec_hash(repo_root: Path) -> str:
+    import hashlib
+
+    paths = (
+        "config/projects/venho_hotel/content/content_pillars.yaml",
+        "config/projects/venho_hotel/growth/cadence_policy.yaml",
+        "config/projects/venho_hotel/growth/model_policy.yaml",
+        "config/projects/venho_hotel/growth/paid_call_costs.yaml",
+        "config/projects/venho_hotel/growth_engine/channels.yaml",
+    )
+    digest = hashlib.sha256()
+    for relative in paths:
+        path = repo_root / relative
+        digest.update(relative.encode("utf-8"))
+        digest.update(b"\0")
+        digest.update(path.read_bytes())
+        digest.update(b"\0")
+    return digest.hexdigest()

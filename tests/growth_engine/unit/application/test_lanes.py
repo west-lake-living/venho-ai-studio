@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
+from types import SimpleNamespace
 from zoneinfo import ZoneInfo
 
 from growth_engine.adapters.inbound.workers.jobs_lane import build_jobs_tasks
@@ -13,6 +14,29 @@ from growth_engine.application.content.run_lanes import (
 from growth_engine.application.scheduling.reserve_target import TargetAlreadyReserved
 from growth_engine.domain.delivery.delivery import Delivery
 from growth_engine.domain.delivery.states import DeliveryState
+from typer.testing import CliRunner
+
+
+def test_worker_cli_dispatches_jobs_lane(monkeypatch):
+    from growth_engine.adapters.inbound.cli import main as cli_main
+
+    calls = []
+
+    class FakeLane:
+        def run_forever(self):
+            calls.append("jobs")
+            return 0
+
+    settings = SimpleNamespace(db_path="/tmp/test-growth.sqlite")
+    monkeypatch.setattr(cli_main.Settings, "from_env", lambda: settings)
+    monkeypatch.setattr(
+        "growth_engine.bootstrap.build_container",
+        lambda configured: SimpleNamespace(publish_lane=FakeLane(), jobs_lane=FakeLane()),
+    )
+    result = CliRunner().invoke(cli_main.app, ["worker", "--lane", "jobs"])
+
+    assert result.exit_code == 0
+    assert calls == ["jobs"]
 
 
 ICT = ZoneInfo("Asia/Ho_Chi_Minh")
@@ -37,7 +61,9 @@ def _ict_time(epoch_ms: int) -> str:
 
 def test_jobs_worker_runs_ict_cron_tasks_at_the_scheduled_times_for_a_week():
     clock = FakeClock(datetime(2026, 11, 1, 17, 0, tzinfo=timezone.utc))  # Mon 00:00 ICT
-    seen: dict[str, list[str]] = {"ensure_slots": [], "weekly": [], "fast": []}
+    seen: dict[str, list[str]] = {
+        "ensure_slots": [], "weekly": [], "fast": [], "replacement": []
+    }
     tasks = build_jobs_tasks(
         {
             name: (lambda key=name: seen[key].append(_ict_time(clock.now_ms())))
@@ -60,6 +86,8 @@ def test_jobs_worker_runs_ict_cron_tasks_at_the_scheduled_times_for_a_week():
     assert seen["weekly"] == ["Sun 20:00", "Sun 22:00"]
     assert "Mon 07:40" in seen["fast"] and "Mon 22:40" in seen["fast"]
     assert len(seen["fast"]) == 16 * 7
+    assert seen["replacement"][0] == "Mon 00:15"
+    assert len(seen["replacement"]) == 4 * 24 * 7
 
 
 class FakeLaneStore:
@@ -135,6 +163,7 @@ def test_fast_lane_skips_published_page_a_and_reserves_only_unprocessed_page_b()
         [
             _target("target-a", "fb_hanoi", state=DeliveryState.PUBLISHED, lane="regular"),
             _target("target-b", "fb_venho", lane="regular"),
+            _target("target-c", "ig_venho", state=DeliveryState.DRAFT, live_execution=True, lane="regular"),
         ]
     )
     packages = FakePackageFactory([LanePackage("package-1", "topic-new")])
@@ -143,6 +172,7 @@ def test_fast_lane_skips_published_page_a_and_reserves_only_unprocessed_page_b()
     result = _runner(store, packages, reserve, clock).run_fast(horizon_days=14)
 
     assert result.reserved_target_ids == ("target-b",)
+    assert result.skipped_target_ids == ("target-a", "target-c")
     assert reserve.calls == [("target-b", "package-1", "regular")]
     assert store.ensure_calls == []
 
