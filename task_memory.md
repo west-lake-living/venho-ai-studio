@@ -21,6 +21,9 @@
 ### 2026-11-05 — T0-04: shared Meta client
 - Moved the GET-only client implementation to `shared/meta/` and made the Growth Engine outbound Meta adapter a thin wrapper. Legacy packages can import the shared client without importing Growth Engine.
 - Tests used injected offline transport only; production token, API version, fields and metrics remain unverified.
+### 2026-11-05 — T0-01: legacy image output gate
+- Production MakeGatewayAdapter now fetches and validates the exact JPEG bytes before POST; any validation/fetch failure returns `GATEWAY_ERROR` so the dispatcher treats it as a failed send.
+- An injected POST transport keeps the existing offline adapter tests isolated unless an image fetcher is also injected. The normal production transport enforces the gate by default.
 
 ## 2026-11-04 — GC2-P1-T01 package và cấu hình
 

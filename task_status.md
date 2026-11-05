@@ -5644,3 +5644,9 @@ ComfyUI, GPU, provider or network call.
 **Files:** `shared/{__init__.py,meta/__init__.py,meta/graph_client.py}`, `growth_engine/adapters/outbound/meta/graph_client.py`, `tests/growth_engine/unit/adapters/outbound/meta/test_graph_client.py`, `task_status.md`, `task_memory.md`
 **Verify:** Meta adapter + architecture tests → 15 passed; network guard remains active; no API request.
 **DoD:** [x] legacy-safe shared client location; [x] v2 wrapper; [ ] production token/version/field probe awaits P0-T04.
+
+### GC2-T0-01 — Legacy output image gate (2026-11-05)
+**Status:** DONE — production Make dispatch validates the fetched JPEG before POST; failures return `GATEWAY_ERROR` for the existing alert path.
+**Files:** `publishing_gateway/output_image_gate.py`, `publishing_gateway/adapters/make_gateway.py`, `tests/test_output_image_gate.py`, `task_status.md`, `task_memory.md`
+**Verify:** output gate + Make adapter regression tests → 40 passed; `git diff --check` → PASS; no network request.
+**DoD:** [x] rejects wrong signature, EXIF rotation, unsupported ratio, decode/fetch errors and >5 MiB; [x] prevents Make POST on failed gate; [x] injected POST tests remain offline.

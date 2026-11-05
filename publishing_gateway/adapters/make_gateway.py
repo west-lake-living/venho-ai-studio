@@ -7,8 +7,10 @@ import re
 import time
 from typing import Any, Callable
 from urllib.parse import urlparse
+from urllib.request import urlopen
 
 from publishing_gateway.fallback_images import fallback_image_url
+from publishing_gateway.output_image_gate import MAX_IMAGE_BYTES, check_output_image
 from shared.http import HttpError, urllib_post
 
 
@@ -222,6 +224,7 @@ class MakeGatewayAdapter:
         webhook_url: str | None = None,
         webhook_secret: str | None = None,
         http_post: Callable[..., dict[str, Any]] | None = None,
+        image_fetch: Callable[[str], bytes] | None = None,
         # Well past the default 10s: with a Webhook response module the
         # scenario answers only after Facebook/Instagram have actually run,
         # which measured 6-8s per platform and is slower on retries.
@@ -233,6 +236,10 @@ class MakeGatewayAdapter:
         self.webhook_secret = webhook_secret
         self.timeout = timeout
         self._http_post = http_post or urllib_post
+        self._image_fetch = image_fetch or _fetch_output_image
+        # A custom POST transport is the existing offline test seam. Production
+        # construction uses the default transport and always enforces the gate.
+        self._enforce_output_image_gate = image_fetch is not None or http_post is None
         self._sleep = sleep
 
     def _post_with_retry(self, payload: dict, headers: dict | None) -> dict[str, Any]:
@@ -276,6 +283,15 @@ class MakeGatewayAdapter:
             image_url = fallback_image_url(command.get("dna_subject"), rotation_key=rotation_key)
         else:
             image_url = content["image_public_url"]
+        if self._enforce_output_image_gate:
+            image_errors = check_output_image(image_url, self._image_fetch)
+            if image_errors:
+                return {
+                    "status": "GATEWAY_ERROR",
+                    "command_id": publication_id,
+                    "published": False,
+                    "error": image_errors[0],
+                }
         payload = {
             "publication_id": publication_id,
             "idempotency_key": command.get("idempotency_key"),
@@ -309,3 +325,8 @@ class MakeGatewayAdapter:
             publication_id=publication_id,
             platform=command.get("platform"),
         )
+
+
+def _fetch_output_image(url: str) -> bytes:
+    with urlopen(url, timeout=15) as response:
+        return response.read(MAX_IMAGE_BYTES + 1)
