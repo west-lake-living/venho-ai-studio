@@ -16,6 +16,8 @@
 
 ### 2026-11-05 — P0-T07: close image SHA item
 - Removed the 07/11 image SHA from P0-T07 completion; v3.2 publishes that slot before cutover.
+### 2026-11-05 — P1-T01: CI gate
+- Marked P1-T01 DONE based on the committed workflow; it runs Growth Engine and architecture checks on pull request and configured `main` pushes. No push was made here.
 
 ## 2026-11-04 — GC2-P1-T01 package và cấu hình
 

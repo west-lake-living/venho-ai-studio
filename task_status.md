@@ -5632,3 +5632,9 @@ ComfyUI, GPU, provider or network call.
 **Files:** `docs/growth_engine/legacy_inventory.md`, `tests/growth_engine/fixtures/legacy/registry_samples.json`, `tests/growth_engine/fixtures/legacy/growth_db_samples.json`, `task_status.md`, `task_memory.md`
 **Verify:** registry 265 rows; SQLite 58 publishing slots; fixtures parse as JSON; `git diff --check` → PASS.
 **DoD:** [x] counts, state/schema exceptions and IG/Threads history documented; [x] 07/11 SHA is not required for P0-T07.
+
+### GC2-P1-T01 — CI gate confirmation (2026-11-05)
+**Status:** DONE — Growth Engine tests and architecture checks are configured in the push/PR workflow.
+**Files:** `.github/workflows/growth-tests.yml`, `task_status.md`, `task_memory.md`
+**Verify:** workflow inspection confirms `growth-engine-tests` runs `tests/growth_engine` and architecture tests on PR; push trigger is limited to `main`.
+**DoD:** [x] CI checks run automatically on configured pushes; [x] CI checks run on pull requests. No push was made in this session.
