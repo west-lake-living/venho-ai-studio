@@ -15,10 +15,12 @@ from .metrics import MetricRepository
 from .publishing import ExecutionRepository, ReceiptRepository
 from .scheduling import SlotRepository
 from .audit import AuditRepository
+from .budget import BudgetRepository
 
 __all__ = [
     "CandidateRepository",
     "AuditRepository",
+    "BudgetRepository",
     "ChannelRepository",
     "CommandRepository",
     "ControlsRepository",

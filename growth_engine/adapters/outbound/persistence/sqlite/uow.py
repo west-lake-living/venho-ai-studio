@@ -8,6 +8,7 @@ from typing import Any
 
 from growth_engine.adapters.outbound.persistence.sqlite.repositories import (
     AuditRepository,
+    BudgetRepository,
     CandidateRepository,
     ChannelRepository,
     CommandRepository,
@@ -215,6 +216,7 @@ class SqliteUnitOfWork:
         self.executions = ExecutionRepository(connection)
         self.receipts = ReceiptRepository(connection)
         self.audit = AuditRepository(connection)
+        self.budget = BudgetRepository(connection)
         self.jobs = JobRepository(connection)
         self.incidents = IncidentRepository(connection)
         self.controls = ControlsRepository(connection)

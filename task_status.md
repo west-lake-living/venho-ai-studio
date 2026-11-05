@@ -5735,6 +5735,14 @@ ComfyUI, GPU, provider or network call.
 **Verify:** focused SQLite factory → 1 passed; the command envelope is built with the persisted channel key and platform; no Make/network call.
 **DoD:** [x] Factory supplies route identity from SQLite rather than inferring it; [ ] MK-1…MK-11 evidence and TEST Page/IG run remain with Harry.
 **Giả định:** Test factory route identity is the channel row written in the isolated TEST database.
+
+### GC2-P4-T03 — SQLite generation and budget wiring (2026-11-05)
+**Status:** DONE — slot preparation, generation claim/finalization, DRAFT reservation, budget and incident writes use SQLite UoW.
+**Files:** `growth_engine/adapters/outbound/persistence/sqlite/{generation_store.py,uow.py}`, `growth_engine/adapters/outbound/persistence/sqlite/repositories/__init__.py`, `growth_engine/bootstrap.py`, `tests/growth_engine/integration/sqlite/test_generation_store.py`, `task_status.md`, `task_memory.md`
+**Verify:** VERIFY_DEV → 449 passed, 4 warnings; VERIFY_ARCH → 2 passed; real file SQLite covers 3 channels/slot, replay, parallel cap, UNKNOWN/no retry, and container wiring.
+**DoD:** [x] enabled channels create a target each; missing config opens an incident; generation claim and package/draft/jobs/audit/budget finalize atomically; timeout becomes UNKNOWN; replay returns original drafts.
+**INV/AC liên quan:** INV-01, INV-12; D01; §6.4, §7.10; P4-T03.
+**Giả định:** The provider, fact source, media ingestion and budget/cost policy are injected by the composition caller; production credentials and cost estimates remain REQUIRED_FROM_P0/configuration gates.
 **Files:** `tests/growth_engine/integration/sqlite/test_analytics_views_sqlite.py`, `task_status.md`, `task_memory.md`
 **Verify:** weekly analytics SQLite + collector/report tests → 14 passed; Facebook Hanoi, Facebook Ven Hồ and Instagram reach values remain separate.
 **DoD:** [x] `ig_venho` observations retain their own page/channel aggregate; [x] mock observations and out-of-week data remain excluded; [ ] real Meta observations remain gated.
