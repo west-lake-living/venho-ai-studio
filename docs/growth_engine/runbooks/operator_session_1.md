@@ -132,7 +132,7 @@ curl --config <(printf 'header = "CF-Access-Client-Id: %s"\nheader = "CF-Access-
 
 ## 5. Tạo scenario Make TEST và chạy MK-1…MK-11
 
-Trong Make, duplicate `VenHo Growth Agent-FB/IG` thành TEST; schedule off; chỉ gắn TEST account đã đối chiếu ID và scenario TEST route. Đối chiếu riêng `fb_hanoi` (`1124616474074140`), `fb_venho` (`803531149684177`) và `ig_venho` (`17841457936965829`); không dùng label thay ID. Làm theo [make_blueprint_v2.md](make_blueprint_v2.md), điền ma trận [make_capabilities.md](../make_capabilities.md) bằng History/module output thật đã khử bí mật.
+Trong Make, duplicate `VenHo Growth Agent-FB/IG` thành TEST; schedule off; chỉ gắn ba TEST destination đã đối chiếu ID. Không dùng ba production ID trong `channels.yaml` làm TEST destination, và không dùng label thay ID. Tạo một webhook TEST, một Router với đúng ba nhánh `fb_hanoi`, `fb_venho`, `ig_venho`, mỗi nhánh lọc theo `channel_key` cố định, fallback off. Làm theo [make_blueprint_v2.md](make_blueprint_v2.md), điền đủ MK-1…MK-11 trong [make_capabilities.md](../make_capabilities.md) bằng History/module output thật đã khử bí mật. Facebook dùng ảnh binary từ HTTP trong từng nhánh; Instagram dùng `media_url` ở trường image URL.
 
 Sau khi mọi gate được duyệt, thứ tự mở target production là `fb_hanoi` → `fb_venho` → `ig_venho`; chỉ mở target kế tiếp sau khi target trước có receipt/verify xác định. Trong phiên TEST này không bật production và không đăng thử công khai.
 
@@ -154,7 +154,7 @@ python3 scripts/growth_engine/send_test_command.py \
   --send --confirm-test-page-id "$GE_TEST_REMOTE_PAGE_ID"
 ```
 
-**Mong đợi:** chỉ đúng một route TEST chạy; ghi module output/receipt/post ID thật và kết quả từng MK check. Webhook ACK không phải bằng chứng bài đăng.
+**Mong đợi:** mỗi lệnh chỉ chạy đúng một route TEST; ghi module output/receipt/post ID hoặc media ID thật và kết quả đủ MK-1…MK-11. Webhook ACK không phải bằng chứng bài đăng.
 
 **Dừng:** Page/scenario ID mơ hồ, filter sai, một lệnh chạm production, module retry/resume đang bật, hoặc kết quả Facebook/Instagram không rõ. Không chạy lại module đăng; xử lý theo History/receipt.
 
@@ -202,15 +202,16 @@ ops/asus-server/growth-engine/restore-rehearsal.sh \
 
 **Dừng:** backup thiếu, identity không giải mã, target đã tồn tại, integrity/FK/media hash lỗi, hoặc control không DISABLED + global pause. Không chạy worker trên target restore rehearsal.
 
-## 8. T0-05/T0-06 timer gate
+## 8. Cài timer T0-05/T0-06
 
-Kiểm tra trạng thái unit/CLI hiện có trước khi thay đổi timer:
+Chỉ cài sau khi ba token đọc Meta đã nạp an toàn vào `growth-engine.env`, config candidate đã được probe và kiểm tra, và lệnh báo cáo chạy thành công ở chế độ operator. Hai lệnh legacy đọc `publication_registry.json`/config và ghi vào `~/venho/state/growth-reports/`; chúng không dùng DB Growth Engine v2.
 
 ```bash
-systemctl --user list-unit-files 'venho-growth-*.timer'
-venho-engine --help
+systemctl --user daemon-reload
+systemctl --user enable --now venho-growth-reconcile.timer venho-growth-insights.timer
+systemctl --user list-timers --all 'venho-growth-*'
 ```
 
-**Mong đợi:** `systemctl` chỉ hiển thị các legacy timers trong inventory. Growth Engine hiện có UoW logic cho reconcile/backfill nhưng chưa có CLI runner hoặc T0-05/T0-06 timer units.
+**Mong đợi:** cả hai timer hiện trạng thái enabled/active; lệnh chạy bằng legacy runtime `~/venho/growth-runtime/venho-ai-studio/.venv/bin/venho-analytics`. Reconcile quét 7 ngày; Insights chạy backfill rồi ghi báo cáo. Output chỉ nằm trong `~/venho/state/growth-reports/`.
 
-**Dừng:** không enable, sửa hoặc thay lịch legacy timer để giả lập T0-05/T0-06. Cần triển khai và review CLI runner cùng service/timer units trước khi cài lịch cho các use case này. Production giữ `DISABLED`.
+**Dừng:** nếu thiếu token/quyền Meta, lệnh báo lỗi, output không nằm ngoài git, hoặc timer gọi runtime/DB v2 thì dừng và chạy `systemctl --user disable --now venho-growth-reconcile.timer venho-growth-insights.timer`; lưu lỗi đã khử bí mật. Không sửa lịch legacy publish timers. Production v2 giữ `DISABLED`.

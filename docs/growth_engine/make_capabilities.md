@@ -16,7 +16,8 @@ Complete this section from the Make scenario and one recent successful History r
 | Scenario ID | `REQUIRED_FROM_P0` |
 | Observed at (ICT) | `REQUIRED_FROM_P0` |
 | Router branch names and order | `REQUIRED_FROM_P0` |
-| Filter expression on each branch | `REQUIRED_FROM_P0` |
+| Required branch keys/order | `fb_hanoi` → `fb_venho` → `ig_venho` (verify in Make) |
+| Filter expression on each branch | `channel_key = fb_hanoi` / `fb_venho` / `ig_venho` (exactly one per branch; verify in Make) |
 | Fallback route enabled | `REQUIRED_FROM_P0` |
 | Facebook/Instagram post module names | `REQUIRED_FROM_P0` |
 | Error handler path on each post module | `REQUIRED_FROM_P0` |
@@ -31,7 +32,7 @@ For the post ID, inspect the output bundle of the posting module itself. Record 
 
 - [ ] Duplicate `VenHo Growth Agent-FB/IG`; name the copy with a clear `TEST` suffix.
 - [ ] Confirm all three test destinations are test Page/IG accounts, not production accounts.
-- [ ] Confirm the TEST Router has one fixed `channel_key` filter per branch and fallback is off.
+- [ ] Confirm the TEST Router has exactly three branches (`fb_hanoi`, `fb_venho`, `ig_venho`), one fixed `channel_key` filter per branch, and fallback is off.
 - [ ] Use test-only credentials and a test-only webhook. Do not paste secrets into this file.
 - [ ] Ensure every test post is visibly labelled as a test and can be removed by the operator.
 - [ ] Disable scheduling on the TEST copy; use only a manually initiated test bundle after the test account is confirmed.
@@ -46,17 +47,17 @@ Fill **Result** with `PASS`, `FAIL`, or `NOT_RUN`; attach redacted evidence. Do 
 | MK-2 | Incomplete executions are disabled, or the runbook explicitly forbids resuming after the response step. | NOT_RUN | `REQUIRED_FROM_P0` | Disable storage or document and enforce the no-resume rule. |
 | MK-3 | Facebook/Instagram post modules have no automatic retry and no Break directive. | NOT_RUN | `REQUIRED_FROM_P0` | Remove automatic retry/Break; ambiguous outcomes must be reconciled. |
 | MK-4 | Each post module returns its real post/media ID in its output bundle. | NOT_RUN | Exact field: `REQUIRED_FROM_P0` | Remap from the module output; never use a mapping label as a value. |
-| MK-5 | Facebook post module receives the downloaded JPEG binary from the HTTP module. | NOT_RUN | `REQUIRED_FROM_P0` | Map the binary output; do not ask Facebook module to fetch an arbitrary URL. |
+| MK-5 | Both Facebook post modules receive their own downloaded JPEG binary; the Instagram module receives the signed image URL. | NOT_RUN | `REQUIRED_FROM_P0` | Map HTTP binary only to Facebook; map `media_url` to Instagram's image URL input. |
 | MK-6 | HTTP modules can send the required bearer and Cloudflare Access headers without exposing them in logs. | NOT_RUN | `REQUIRED_FROM_P0` | Keep production gate closed until proven. |
 | MK-7 | Errors proven to occur before publication are distinguished from ambiguous outcomes. | NOT_RUN | Actual redacted error/status: `REQUIRED_FROM_P0` | Add only observed classifications to `make_error_classes.yaml`; otherwise use `OUTCOME_UNKNOWN`. |
 | MK-8 | Operators know not to rerun a posting module manually; recovery starts from the first webhook module. | NOT_RUN | Runbook/evidence: `REQUIRED_FROM_P0` | Add and review the no-manual-rerun instruction. |
-| MK-9 | Router filters on the fixed `channel_key` for each route; fallback is off; one command reaches one route. | NOT_RUN | `REQUIRED_FROM_P0` | Correct filters and test each channel key independently. |
+| MK-9 | Router has exactly three routes filtered by fixed `channel_key`; fallback is off; one command reaches one route. | NOT_RUN | `REQUIRED_FROM_P0` | Correct all three filters and test each channel key independently. |
 | MK-10 | Instagram accepts the signed media URL and Meta can fetch it without receiving a Cloudflare Access login page. | NOT_RUN | Redacted result: `REQUIRED_FROM_P0` | Adjust only the TEST edge rule, then retest from Instagram. |
 | MK-11 | Instagram output includes the media ID and distinguishes container creation failure from publish failure. | NOT_RUN | Exact field/error evidence: `REQUIRED_FROM_P0` | Keep uncertain outcomes unknown; capture module-level evidence. |
 
 ## D. TEST cases to run after destinations and credentials are confirmed
 
-- [ ] One successful test per test channel; save module-level outputs and verify the returned ID on that test destination.
+- [ ] One successful test per `channel_key`; save module-level outputs and verify each returned ID on its mapped TEST destination.
 - [ ] Broken/non-JPEG image: verify the post module is not reached.
 - [ ] Invalid test credential: capture the exact observed error without saving the token.
 - [ ] Submit the same test command twice: verify the second attempt does not create another post.
