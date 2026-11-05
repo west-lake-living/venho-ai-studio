@@ -6351,3 +6351,7 @@ not in local venv; installed in CI).
 - Bound BudgetRepository into each SQLite UoW and composed a SqliteGenerationStore in build_container. EnsureSlots, ReserveTarget and GeneratePackage now share BEGIN IMMEDIATE transactions for channel targets, claims, budget, draft deliveries, jobs, incidents and audit.
 - Real SQLite tests create all three channel targets, replay one package without duplicates, serialize two generation claims against one budget cap, and prove timeout becomes UNKNOWN without a second provider call.
 - Provider/cost policy values remain injected; no real AI service, token or Meta capability was used.
+
+### 2026-11-05 — GC2-T0-01 VERIFY_LEGACY collection repair
+- Renamed the Growth-specific `test_output_image_gate.py` module to `test_gc2_output_image_gate.py`; pytest can now collect the legacy module with the same basename.
+- VERIFY_LEGACY completed with 79 failed node IDs, exactly matching the committed main baseline; 2081 passed and no new baseline regression was found. The optional `cv2`-dependent files remain excluded as specified in the baseline.

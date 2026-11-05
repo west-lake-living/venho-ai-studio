@@ -5743,6 +5743,12 @@ ComfyUI, GPU, provider or network call.
 **DoD:** [x] enabled channels create a target each; missing config opens an incident; generation claim and package/draft/jobs/audit/budget finalize atomically; timeout becomes UNKNOWN; replay returns original drafts.
 **INV/AC liên quan:** INV-01, INV-12; D01; §6.4, §7.10; P4-T03.
 **Giả định:** The provider, fact source, media ingestion and budget/cost policy are injected by the composition caller; production credentials and cost estimates remain REQUIRED_FROM_P0/configuration gates.
+
+### GC2-T0-01 — VERIFY_LEGACY collection-name repair (2026-11-05)
+**Status:** DONE — renamed the Growth test module to avoid colliding with the legacy `tests/test_output_image_gate.py`; legacy test behavior is unchanged.
+**Files:** `tests/growth_engine/unit/adapters/outbound/legacy/test_gc2_output_image_gate.py`, `task_status.md`, `task_memory.md`
+**Verify:** focused gate → 7 passed; VERIFY_DEV → 449 passed, 4 warnings; VERIFY_ARCH → 2 passed; VERIFY_LEGACY → 2081 passed, 79 failed, 8 skipped, 12 warnings; exact 79 failure node IDs match `docs/growth_engine/legacy_test_baseline.txt` (0 new, 0 missing); `git diff --check` → OK.
+**DoD:** [x] legacy pytest collection completes; [x] no new legacy failure relative to main baseline.
 **Files:** `tests/growth_engine/integration/sqlite/test_analytics_views_sqlite.py`, `task_status.md`, `task_memory.md`
 **Verify:** weekly analytics SQLite + collector/report tests → 14 passed; Facebook Hanoi, Facebook Ven Hồ and Instagram reach values remain separate.
 **DoD:** [x] `ig_venho` observations retain their own page/channel aggregate; [x] mock observations and out-of-week data remain excluded; [ ] real Meta observations remain gated.
