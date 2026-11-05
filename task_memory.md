@@ -6325,3 +6325,6 @@ not in local venv; installed in CI).
 ### 2026-11-05 — GC2-P5-T03 IG support
 - Authorize trước đây luôn dùng profile Facebook. Giờ chọn profile theo platform; Instagram variant phải đúng 4:5, JPEG và giới hạn byte/cạnh dài của profile.
 - Kiểm tra Instagram principal bằng race hai process trên DB file; không gọi Meta/Make.
+
+### 2026-11-05 — GC2-P5-T04 IG support
+- Receipt inbox already used provider-neutral `platform_post_id`; verified that synthetic IG media ID survives schema validation, multi-process duplicate receipt, SQLite apply and delivery persistence.

@@ -5697,3 +5697,10 @@ ComfyUI, GPU, provider or network call.
 **Verify:** authorize unit + real SQLite publish/receipt integration → 24 passed, 1 dependency warning; multiprocess IG race yields one authorization and one `ALREADY_AUTHORIZED`.
 **DoD:** [x] Instagram preflight chọn profile IG và chặn variant không 4:5; [x] principal `ig_test` được xác minh theo channel; [x] hai process cạnh tranh không cấp grant thứ hai.
 **Giả định:** 4:5 được kiểm tra bằng tỷ lệ nguyên chính xác trên variant đã duyệt.
+
+### GC2-P5-T04 — IG receipt media ID (2026-11-05)
+**Status:** DONE — Instagram `platform_post_id` (media ID) is deduplicated and applied independently through receipt inbox/UoW.
+**Files:** `tests/growth_engine/integration/sqlite/test_publish_scheduler_wiring.py`, `task_status.md`, `task_memory.md`
+**Verify:** receipt unit + SQLite publishing integration + contract → 28 passed, 1 dependency warning; two processes submit the same IG media-ID receipt and create one inbox/job; applying it preserves ID and permalink.
+**DoD:** [x] media ID is accepted as platform post identifier; [x] receipt dedupe/apply is durable; [x] page identity remains checked by existing receipt store.
+**Giả định:** Instagram's post identifier is supplied in the existing `platform_post_id` contract field; permalink remains optional provider output.

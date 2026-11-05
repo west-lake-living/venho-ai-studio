@@ -555,6 +555,50 @@ def test_two_processes_deduplicate_the_same_receipt(tmp_path: Path) -> None:
     assert tuple(counts) == (1, 1)
 
 
+def test_instagram_media_id_receipt_is_deduplicated_and_persisted(tmp_path: Path) -> None:
+    container, settings, lease, grant, _bearer, now_ms = _make_authorized_container(
+        tmp_path, channel_key="ig_test", platform=ChannelPlatform.INSTAGRAM
+    )
+    body = _make_receipt_body(lease, grant, now_ms)
+    body["platform_post_id"] = "ig-media-synthetic-123"
+    body["permalink"] = "https://www.instagram.com/p/synthetic/"
+
+    context = multiprocessing.get_context("spawn")
+    barrier = context.Barrier(2)
+    results = context.Queue()
+    processes = [
+        context.Process(
+            target=_receive_receipt_process_worker,
+            args=(settings.db_path, settings.media_root, body, barrier, results, "make-ig-test"),
+        )
+        for _ in range(2)
+    ]
+    for process in processes:
+        process.start()
+    outcomes = [results.get(timeout=30) for _ in processes]
+    for process in processes:
+        process.join(timeout=30)
+        assert process.exitcode == 0
+    results.close()
+    results.join_thread()
+    assert len({item[0] for item in outcomes}) == 1
+    assert sorted(item[1] for item in outcomes) == [False, True]
+
+    claim_now_ms = time.time_ns() // 1_000_000 + 1_000
+    claimed = container.receipt_store.claim_apply_jobs(claim_now_ms)
+    assert len(claimed) == 1
+    job_id, lease_token, receipt_id, correlation_id = claimed[0]
+    applied = container.apply_receipt.execute(receipt_id, correlation_id=correlation_id)
+    assert applied.processing_state == "APPLIED"
+    assert container.receipt_store.complete_apply_job(job_id, lease_token, at_ms=claim_now_ms)
+    with container.uow_factory().read_only() as tx:
+        delivery = tx.connection.execute(
+            "SELECT platform_post_id, permalink FROM deliveries WHERE id='delivery-sqlite'"
+        ).fetchone()
+    assert delivery["platform_post_id"] == "ig-media-synthetic-123"
+    assert delivery["permalink"] == "https://www.instagram.com/p/synthetic/"
+
+
 def test_sqlite_receipt_timeout_marks_unknown_once(tmp_path: Path) -> None:
     container, _settings, _lease, _grant, _bearer, now_ms = _make_authorized_container(tmp_path)
     with container.uow_factory().begin_immediate() as tx:
@@ -583,8 +627,18 @@ def test_sqlite_receipt_timeout_marks_unknown_once(tmp_path: Path) -> None:
     assert incidents == 1
 
 
-def _make_authorized_container(tmp_path: Path):
+def _make_authorized_container(
+    tmp_path: Path,
+    *,
+    channel_key: str = "fb_hanoi",
+    platform: ChannelPlatform = ChannelPlatform.FACEBOOK,
+):
     bearer = "synthetic-receipt-bearer"
+    channel_id = "channel-test-ig" if platform is ChannelPlatform.INSTAGRAM else "channel-test-fb"
+    remote_account_id = "ig-synthetic" if platform is ChannelPlatform.INSTAGRAM else "synthetic-page"
+    principal_id = "make-ig-test" if platform is ChannelPlatform.INSTAGRAM else "make-fb-hanoi"
+    route_ref = "GE_MAKE_WEBHOOK_URL_IG_TEST" if platform is ChannelPlatform.INSTAGRAM else "GE_MAKE_WEBHOOK_URL_PAGE_A"
+    route_key = "IG_TEST" if platform is ChannelPlatform.INSTAGRAM else "PAGE_A"
     now_ms = time.time_ns() // 1_000_000
     key_config = "receipt:" + base64.urlsafe_b64encode(b"t" * 32).decode().rstrip("=")
     settings = Settings(
@@ -593,8 +647,8 @@ def _make_authorized_container(tmp_path: Path):
         media_root=str(tmp_path / "receipt-media"),
         public_base_url="https://growth.example.test",
         capability_keys=key_config,
-        service_tokens=f"make-fb-hanoi:{hashlib.sha256(bearer.encode()).hexdigest()}",
-        make_webhook_urls={"PAGE_A": "https://hooks.example.test/route"},
+        service_tokens=f"{principal_id}:{hashlib.sha256(bearer.encode()).hexdigest()}",
+        make_webhook_urls={route_key: "https://hooks.example.test/route"},
     )
     container = build_container(settings)
     container.migration_service.run(Path(settings.db_path), check=False)
@@ -602,6 +656,11 @@ def _make_authorized_container(tmp_path: Path):
         container.uow_factory,
         deadline_at_ms=now_ms + 600_000,
         media_root=Path(settings.media_root),
+        channel_id=channel_id,
+        channel_key=channel_key,
+        platform=platform,
+        remote_account_id=remote_account_id,
+        route_ref=route_ref,
     )
     container.enqueue_due.execute(now_ms)
     lease = container.dispatch_store.claim_due(
@@ -616,8 +675,8 @@ def _make_authorized_container(tmp_path: Path):
             payload_hash=lease.payload_hash,
             media_report_http_status=200,
             media_report_content_type="image/jpeg",
-            principal_id="make-fb-hanoi",
-            principal_channel_key="fb_hanoi",
+            principal_id=principal_id,
+            principal_channel_key=channel_key,
             correlation_id="receipt-authorize-synthetic",
         )
     )
@@ -646,7 +705,9 @@ def _make_receipt_body(lease, grant, now_ms: int) -> dict[str, object]:
     }
 
 
-def _receive_receipt_process_worker(database_path, media_root, body, barrier, results) -> None:
+def _receive_receipt_process_worker(
+    database_path, media_root, body, barrier, results, issuer_id="make-fb-hanoi"
+) -> None:
     from growth_engine.application.publishing.receive_receipt import ReceiveReceiptCommand
 
     container = build_container(
@@ -660,7 +721,7 @@ def _receive_receipt_process_worker(database_path, media_root, body, barrier, re
     barrier.wait(timeout=20)
     result = container.receive_receipt.execute(
         ReceiveReceiptCommand(
-            issuer_id="make-fb-hanoi",
+            issuer_id=issuer_id,
             body=body,
             correlation_id="receipt-race-synthetic",
         )
