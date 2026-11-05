@@ -206,6 +206,18 @@ ops/asus-server/growth-engine/restore-rehearsal.sh \
 
 Chỉ cài sau khi ba token đọc Meta đã nạp an toàn vào `growth-engine.env`, config candidate đã được probe và kiểm tra, và lệnh báo cáo chạy thành công ở chế độ operator. Hai lệnh legacy đọc `publication_registry.json`/config và ghi vào `~/venho/state/growth-reports/`; chúng không dùng DB Growth Engine v2.
 
+Để backfill bài Page Ven Hồ Hotel cũ chưa có trong registry, tạo snapshot đối soát 90 ngày và chạy Insights ngay sau đó, trước khi snapshot 7 ngày kế tiếp ghi cùng ngày lịch:
+
+```bash
+venho-analytics reconcile-channels --days 90
+venho-analytics insights-backfill --days 90
+venho-analytics insights-report
+```
+
+**Mong đợi:** report reconcile có các dòng `fb_venho` riêng; `insights.db` nằm trong `~/venho/state/growth-reports/` và có metric đã xác minh.
+
+**Dừng:** nếu không đủ quyền đọc hoặc report có `UNAVAILABLE`, không đánh dấu bài là thiếu và không enable timer trước khi xử lý token/quyền.
+
 ```bash
 systemctl --user daemon-reload
 systemctl --user enable --now venho-growth-reconcile.timer venho-growth-insights.timer

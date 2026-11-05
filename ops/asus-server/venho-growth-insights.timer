@@ -1,0 +1,10 @@
+[Unit]
+Description=Collect Growth Insights and send weekly report Monday 08:00 ICT
+
+[Timer]
+OnCalendar=Mon *-*-* 08:00:00 Asia/Ho_Chi_Minh
+Persistent=true
+Unit=venho-growth-insights.service
+
+[Install]
+WantedBy=timers.target

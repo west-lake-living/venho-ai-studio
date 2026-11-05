@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+import sqlite3
 from pathlib import Path
 
 import typer
@@ -73,6 +74,51 @@ def reconcile_channels_cmd(
             send_telegram=send_telegram,
         )
     except (OSError, ValueError, KeyError) as exc:
+        typer.echo(json.dumps({"ok": False, "error": str(exc)}, ensure_ascii=False), err=True)
+        raise typer.Exit(code=1)
+    typer.echo(json.dumps({"ok": True, "report": str(output)}, ensure_ascii=False))
+
+
+@app.command("insights-backfill")
+def insights_backfill_cmd(
+    days: int = typer.Option(90, min=1, max=365),
+    project: str = typer.Option("venho_hotel"),
+    config_root: Path = typer.Option(Path("config/projects/venho_hotel")),
+    data_root: Path = typer.Option(Path("data/projects")),
+    reports_root: Path | None = typer.Option(None),
+) -> None:
+    """Collect configured, verified Meta metrics into the separate Track 0 SQLite file."""
+    from analytics_feedback.insights_backfill import backfill_insights
+
+    try:
+        result = backfill_insights(
+            days=days, project=project, config_root=config_root, data_root=data_root,
+            reports_root=reports_root, env=os.environ,
+        )
+    except (OSError, ValueError, KeyError, sqlite3.Error) as exc:
+        typer.echo(json.dumps({"ok": False, "error": str(exc)}, ensure_ascii=False), err=True)
+        raise typer.Exit(code=1)
+    typer.echo(json.dumps({"ok": True, **result}, ensure_ascii=False, sort_keys=True))
+
+
+@app.command("insights-report")
+def insights_report_cmd(
+    reports_root: Path | None = typer.Option(None),
+    send_telegram: bool = typer.Option(False, "--send-telegram"),
+) -> None:
+    """Build the weekly report from the external Track 0 insights database."""
+    from analytics_feedback.insights_backfill import insights_report
+
+    notifier = None
+    chat_id = os.environ.get("TELEGRAM_CHAT_ID")
+    if send_telegram and os.environ.get("TELEGRAM_BOT_TOKEN") and chat_id:
+        notifier = TelegramNotifier(bot_token=os.environ["TELEGRAM_BOT_TOKEN"])
+    try:
+        output = insights_report(
+            reports_root=reports_root, env=os.environ, send_telegram=send_telegram,
+            telegram_notifier=notifier, telegram_chat_id=chat_id,
+        )
+    except (OSError, ValueError, sqlite3.Error) as exc:
         typer.echo(json.dumps({"ok": False, "error": str(exc)}, ensure_ascii=False), err=True)
         raise typer.Exit(code=1)
     typer.echo(json.dumps({"ok": True, "report": str(output)}, ensure_ascii=False))
