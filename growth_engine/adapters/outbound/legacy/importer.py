@@ -48,6 +48,37 @@ class _RawRecord:
 
 def dry_run_import(source_dir: str | Path, database_path: str | Path, report_path: str | Path) -> str:
     """Import legacy evidence into an isolated v2 database and write a redacted report."""
+    return _import_records(
+        source_dir,
+        database_path,
+        report_path,
+        initialize_schema=True,
+        report_mode="dry-run",
+    )
+
+
+def apply_legacy_import(source_dir: str | Path, database_path: str | Path, report_path: str | Path) -> str:
+    """Apply an idempotent legacy delta to an existing, fully migrated v2 database."""
+    database = Path(database_path)
+    if not database.is_file():
+        raise LegacyImportError("legacy import apply target must be an existing database file")
+    return _import_records(
+        source_dir,
+        database,
+        report_path,
+        initialize_schema=False,
+        report_mode="apply",
+    )
+
+
+def _import_records(
+    source_dir: str | Path,
+    database_path: str | Path,
+    report_path: str | Path,
+    *,
+    initialize_schema: bool,
+    report_mode: str,
+) -> str:
     source = Path(source_dir)
     if not source.is_dir():
         raise LegacyImportError("legacy import source must be a directory")
@@ -59,7 +90,11 @@ def dry_run_import(source_dir: str | Path, database_path: str | Path, report_pat
 
     connection = connect(database)
     try:
-        MigrationRunner(MIGRATIONS).apply(connection, application_version="gc2-legacy-dry-run")
+        runner = MigrationRunner(MIGRATIONS)
+        if initialize_schema:
+            runner.apply(connection, application_version="gc2-legacy-dry-run")
+        else:
+            runner.check(connection)
         connection.execute("BEGIN IMMEDIATE")
         for record in records:
             if _already_imported(connection, record):
@@ -81,7 +116,7 @@ def dry_run_import(source_dir: str | Path, database_path: str | Path, report_pat
                 ),
             )
         connection.commit()
-        rendered = _render_report(connection, records)
+        rendered = _render_report(connection, records, mode=report_mode)
     except BaseException:
         if connection.in_transaction:
             connection.rollback()
@@ -95,11 +130,14 @@ def dry_run_import(source_dir: str | Path, database_path: str | Path, report_pat
 
 
 class LegacyImportDryRun:
-    """CLI service: migration and import always happen in a disposable DB."""
+    """CLI service for isolated dry-run and explicit delta-apply modes."""
 
     def run(self, source_dir: Path, report_path: Path) -> str:
         with tempfile.TemporaryDirectory(prefix="gc2-legacy-dry-run-") as directory:
             return dry_run_import(source_dir, Path(directory) / "legacy.sqlite", report_path)
+
+    def apply(self, source_dir: Path, database_path: Path, report_path: Path) -> str:
+        return apply_legacy_import(source_dir, database_path, report_path)
 
 
 def _load_source(source: Path) -> tuple[list[_RawRecord], dict[str, dict[str, Any]]]:
@@ -361,7 +399,12 @@ def _legacy_state(row: dict[str, Any], channel_key: str) -> tuple[str, str | Non
     return "LEGACY_UNVERIFIED", "LEGACY_STATE_UNMAPPED", None
 
 
-def _render_report(connection: sqlite3.Connection, current_records: list[_RawRecord]) -> str:
+def _render_report(
+    connection: sqlite3.Connection,
+    current_records: list[_RawRecord],
+    *,
+    mode: str,
+) -> str:
     before: Counter[tuple[str, str]] = Counter()
     after: Counter[tuple[str, str]] = Counter()
     issues: Counter[str] = Counter()
@@ -388,10 +431,13 @@ def _render_report(connection: sqlite3.Connection, current_records: list[_RawRec
                 channel_key = str(channel[0]) if channel else ""
             mismatches.append((record.source_name, record.source_key, channel_key or "—", issue))
 
+    if mode not in {"dry-run", "apply"}:
+        raise LegacyImportError("unknown legacy import report mode")
+    mode_label = "apply" if mode == "apply" else "dry-run"
     lines = [
-        "# GC2 legacy import dry-run",
+        f"# GC2 legacy import {mode_label}",
         "",
-        "Only a disposable v2 database was written. Source files were read-only; no approvals were recreated.",
+        f"{('The target v2 database was updated.' if mode == 'apply' else 'Only a disposable v2 database was written.')} Source files were read-only; no approvals were recreated.",
         "",
         f"- Raw rows in current source: {len(current_records)}",
         f"- Rows recorded in `legacy_imports`: {connection.execute('SELECT count(*) FROM legacy_imports').fetchone()[0]}",
@@ -405,7 +451,7 @@ def _render_report(connection: sqlite3.Connection, current_records: list[_RawRec
     ]
     for (source, status), count in sorted(before.items()):
         lines.append(f"| `{source}` | `{status}` | {count} |")
-    lines.extend(["", "## Source × state after mapping", "", "| Source | Dry-run state | Rows |", "|---|---|---:|"])
+    lines.extend(["", "## Source × state after mapping", "", f"| Source | {mode_label.title()} state | Rows |", "|---|---|---:|"])
     for (source, state), count in sorted(after.items()):
         lines.append(f"| `{source}` | `{state}` | {count} |")
     lines.extend(["", "## Issue codes", "", "| Issue code | Rows |", "|---|---:|"])

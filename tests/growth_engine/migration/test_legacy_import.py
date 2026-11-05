@@ -6,7 +6,7 @@ from pathlib import Path
 from typer.testing import CliRunner
 
 from growth_engine.adapters.inbound.cli.main import app
-from growth_engine.adapters.outbound.legacy.importer import dry_run_import
+from growth_engine.adapters.outbound.legacy.importer import LegacyImportDryRun, dry_run_import
 from growth_engine.adapters.outbound.persistence.sqlite.connection import connect
 from growth_engine.adapters.outbound.persistence.sqlite.migrator import MigrationRunner
 
@@ -204,7 +204,7 @@ def test_legacy_import_maps_channels_and_keeps_uncertain_posts_unverified(
         connection.close()
 
 
-def test_legacy_import_cli_is_dry_run_only_and_uses_injected_service(tmp_path: Path) -> None:
+def test_legacy_import_cli_routes_dry_run_and_apply_to_injected_service(tmp_path: Path) -> None:
     source, _ = _source_directory(tmp_path)
     report = tmp_path / "report.md"
 
@@ -216,6 +216,10 @@ def test_legacy_import_cli_is_dry_run_only_and_uses_injected_service(tmp_path: P
             self.call = (source_dir, report_path)
             return "dry-run complete"
 
+        def apply(self, source_dir: Path, database_path: Path, report_path: Path) -> str:
+            self.call = (source_dir, database_path, report_path)
+            return "apply complete"
+
     service = Service()
     result = CLI_RUNNER.invoke(
         app,
@@ -226,13 +230,70 @@ def test_legacy_import_cli_is_dry_run_only_and_uses_injected_service(tmp_path: P
     assert "dry-run complete" in result.output
     assert service.call == (source, report)
 
-    rejected = CLI_RUNNER.invoke(
+    applied = CLI_RUNNER.invoke(
         app,
-        ["legacy-import", "--source", str(source), "--report", str(report)],
+        [
+            "legacy-import", "--apply", "--source", str(source), "--target-db",
+            str(tmp_path / "target.sqlite"), "--report", str(report),
+        ],
         obj={"legacy_import_service": service},
     )
-    assert rejected.exit_code != 0
-    assert "only --dry-run" in rejected.output
+    assert applied.exit_code == 0
+    assert "apply complete" in applied.output
+    assert service.call == (source, tmp_path / "target.sqlite", report)
+
+    missing_target = CLI_RUNNER.invoke(
+        app,
+        ["legacy-import", "--apply", "--source", str(source), "--report", str(report)],
+        obj={"legacy_import_service": service},
+    )
+    assert missing_target.exit_code != 0
+    assert "--apply requires --target-db" in missing_target.output
+
+
+def test_legacy_import_apply_is_idempotent_on_synthetic_sqlite_fixture(tmp_path: Path) -> None:
+    source, expected_records = _source_directory(tmp_path)
+    database = tmp_path / "existing-v2.sqlite"
+    report = tmp_path / "apply-report.md"
+    connection = connect(database)
+    try:
+        MigrationRunner(MIGRATIONS).apply(connection, application_version="legacy-apply-integration")
+    finally:
+        connection.close()
+
+    service = LegacyImportDryRun()
+    first = service.apply(source, database, report)
+    first_raw_count = _count(database, "legacy_imports")
+    second = service.apply(source, database, report)
+
+    assert first_raw_count == expected_records
+    assert _count(database, "legacy_imports") == expected_records
+    assert _count(database, "deliveries") == 7
+    assert _count(database, "approval_decisions") == 0
+    assert _count(database, "outbox_commands") == 0
+    assert _count(database, "channels_enabled") == 0
+    assert "# GC2 legacy import apply" in first
+    assert "The target v2 database was updated." in first
+    assert "# GC2 legacy import apply" in second
+    assert report.read_text(encoding="utf-8") == second
+
+
+def test_legacy_import_apply_requires_existing_database(tmp_path: Path) -> None:
+    source, _ = _source_directory(tmp_path)
+    report = tmp_path / "apply-report.md"
+
+    result = CLI_RUNNER.invoke(
+        app,
+        [
+            "legacy-import", "--apply", "--source", str(source), "--target-db",
+            str(tmp_path / "missing.sqlite"), "--report", str(report),
+        ],
+        obj={"legacy_import_service": LegacyImportDryRun()},
+    )
+
+    assert result.exit_code != 0
+    assert "existing database file" in result.output
+    assert not (tmp_path / "missing.sqlite").exists()
 
 
 def _count(database: Path, table: str) -> int:

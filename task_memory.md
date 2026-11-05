@@ -6395,3 +6395,8 @@ not in local venv; installed in CI).
 - Extended the DRY_RUN checklist to compare three independent targets and their channel-specific approved variants; listed the two Page IDs and Instagram business account ID from the channel manifest.
 - Removed the stale claim that the `jobs` lane is unsupported. No DRY_RUN, worker, Telegram or external service ran; the DRY_RUN-only-persistence gate remains unverified.
 - Assumption: Instagram uses the 4:5 approved variant and retains an outcome separate from both Facebook Pages.
+
+### 2026-11-05 — GC2-P9-T03 importer apply on fixture
+- Added `legacy-import --apply --target-db` for an explicit existing SQLite target; verifies migrations without changing schema, inserts source/key/hash idempotently, keeps raw rows/issues, and does not recreate approvals.
+- Applied twice to the synthetic SQLite fixture: 5 importer tests passed; counts remained stable and no command/approval/channel enable was created. Updated cutover steps and target order; no production DB or external service was used.
+- Assumption: operator approves the dry-run report and target DB before an actual delta apply; production cutover remains DISABLED until the remaining gates pass.

@@ -24,6 +24,8 @@ class MigrationService(Protocol):
 class LegacyImportService(Protocol):
     def run(self, source_dir: Path, report_path: Path) -> str: ...
 
+    def apply(self, source_dir: Path, database_path: Path, report_path: Path) -> str: ...
+
 
 @app.callback()
 def main(ctx: typer.Context) -> None:
@@ -53,17 +55,33 @@ def migrate(
 def legacy_import(
     ctx: typer.Context,
     source: Path = typer.Option(..., "--source", help="Directory containing read-only legacy snapshots."),
-    report: Path = typer.Option(..., "--report", help="Markdown dry-run report output path."),
+    report: Path = typer.Option(..., "--report", help="Markdown import report output path."),
     dry_run: bool = typer.Option(False, "--dry-run", help="Import only into a disposable database."),
+    apply: bool = typer.Option(False, "--apply", help="Apply an approved delta to an existing migrated database."),
+    target_database: Path | None = typer.Option(
+        None,
+        "--target-db",
+        help="Existing, fully migrated SQLite target; required with --apply.",
+    ),
 ) -> None:
-    if not dry_run:
-        raise typer.BadParameter("legacy-import supports only --dry-run; apply mode is not available")
+    if dry_run == apply:
+        raise typer.BadParameter("choose exactly one of --dry-run or --apply")
+    if dry_run and target_database is not None:
+        raise typer.BadParameter("--target-db is only valid with --apply")
+    if apply and target_database is None:
+        raise typer.BadParameter("--apply requires --target-db for an existing migrated SQLite database")
     service = ctx.obj.get("legacy_import_service") if isinstance(ctx.obj, dict) else None
     if service is None:
         from growth_engine.bootstrap import build_container
 
         service = build_container(Settings.from_env()).legacy_import_service
-    typer.echo(service.run(source, report))
+    try:
+        if apply:
+            typer.echo(service.apply(source, target_database, report))
+        else:
+            typer.echo(service.run(source, report))
+    except ValueError as error:
+        raise typer.BadParameter(str(error)) from error
 
 
 @app.command()

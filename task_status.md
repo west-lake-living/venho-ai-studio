@@ -5573,12 +5573,12 @@ ComfyUI, GPU, provider or network call.
 **Giả định:** Facebook targets dùng ảnh đã duyệt còn Instagram dùng variant 4:5; evidence lưu nội bộ sau khi khử bí mật.
 
 ### GC2-P9-T03 — Cutover (2026-11-05)
-**Status:** PARTIAL — runbook tuần tự hoàn tất; cutover chưa chạy và importer `--apply` còn thiếu
-**Files:** `docs/growth_engine/runbooks/cutover.md`, `task_status.md`, `task_memory.md`
-**Verify:** các bước được đối chiếu §12.2/§12.3, mỗi bước có check, kết quả mong đợi và điểm dừng; `git diff --check` → OK. Không gọi server, Make, Meta hay timer.
-**DoD:** [x] checklist bảo trì, dừng/drain legacy, snapshot, mapping/import, epoch, BFF, Make, mở A rồi B và xác nhận authority đơn; [x] quy tắc rollback trước/sau grant; [ ] CLI importer chỉ có `--dry-run`, chưa có `--apply`; [ ] Harry chưa thực hiện gate cutover.
-**Rủi ro / việc để lại:** Không được bỏ qua điểm dừng import; production publish phải giữ DISABLED cho tới khi importer apply được review, các worker cần thiết hoạt động và mọi gate/evidence đạt.
-**Giả định:** tên timer legacy đối chiếu lại với `legacy_inventory.md` tại ngày thực hiện; Page ID phải lấy từ manifest/evidence đã xác minh.
+**Status:** PARTIAL — cutover runbook and importer `--apply` are ready; only the synthetic fixture was applied; production cutover remains Harry-gated.
+**Files:** `docs/growth_engine/runbooks/cutover.md`, `growth_engine/adapters/outbound/legacy/importer.py`, `growth_engine/adapters/inbound/cli/main.py`, `tests/growth_engine/migration/test_legacy_import.py`, `task_status.md`, `task_memory.md`
+**Verify:** legacy importer/CLI/file-SQLite integration → 5 passed; `git diff --check` → PASS. Apply was idempotent on the synthetic fixture; no production database, server, Make, Meta or timer was used.
+**DoD:** [x] ordered cutover steps with checks/stops; [x] explicit `--apply --target-db` only for existing migrated DB and source/key/hash idempotency; [x] dry-run/apply reports preserve raw rows and never recreate approvals; [x] cutover order is `fb_hanoi` → `fb_venho` → `ig_venho`; [ ] Harry approves and performs actual cutover.
+**Rủi ro / việc để lại:** Apply writes into the explicitly selected DB; operator must review the dry-run report and confirm target DB before use. Production stays DISABLED until all evidence and gates pass.
+**Giả định:** Apply relies on the target schema already being migrated and checked; a failed/partial apply is reconciled from `legacy_imports`, not by clearing rows.
 
 ### GC2-P9-T04 — Pilot LIVE_MANUAL (2026-11-05)
 **Status:** PARTIAL — checklist vận hành hằng ngày hoàn tất; pilot thực tế chưa mở
