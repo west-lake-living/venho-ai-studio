@@ -5,12 +5,10 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from growth_engine.adapters.outbound.analytics.sqlite_insights_repository import (
-    SQLiteInsightsRepository,
-)
 from growth_engine.adapters.outbound.persistence.sqlite.connection import connect
 from growth_engine.adapters.outbound.persistence.sqlite.migrator import MigrationRunner
-from growth_engine.adapters.outbound.persistence.sqlite.uow import SqliteUnitOfWork
+from growth_engine.bootstrap import build_container
+from growth_engine.settings import Settings
 from growth_engine.application.analytics.insights_backfill import (
     BackfillTarget,
     MetricDefinition,
@@ -66,8 +64,16 @@ def test_backfill_repository_uses_migrated_uow_and_replays_idempotently(tmp_path
         )
     finally:
         connection.close()
-    uow_factory = lambda: SqliteUnitOfWork(lambda: connect(database), sleep=lambda _: None)
-    repository = SQLiteInsightsRepository(uow_factory)
+    container = build_container(
+        Settings(
+            env="test",
+            db_path=str(database),
+            media_root=str(tmp_path / "media"),
+            public_base_url="https://growth.test.invalid",
+        )
+    )
+    uow_factory = container.uow_factory
+    repository = container.insights_repository
     target = BackfillTarget(
         channel_id="ig_venho",
         delivery_id="delivery-synthetic",

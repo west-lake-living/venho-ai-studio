@@ -5671,10 +5671,10 @@ ComfyUI, GPU, provider or network call.
 **Giả định:** incident mở là khóa dedupe; incident đã đóng có thể phát cảnh báo mới khi điều kiện lặp lại.
 
 ### GC2-T0-06 — SQLite UoW wiring backfill (2026-11-05)
-**Status:** PARTIAL — backfill repository now uses migrated SQLite/UoW; real Meta fixture and scheduled report delivery await P0-T04/host.
-**Files:** `growth_engine/adapters/outbound/analytics/sqlite_insights_repository.py`, `tests/growth_engine/unit/application/analytics/test_insights_backfill.py`, `tests/growth_engine/integration/sqlite/test_insights_backfill_wiring.py`, `task_status.md`, `task_memory.md`
-**Verify:** insight unit + file-SQLite integration → 6 passed; migration 0009, UoW, FK-enabled IG delivery seed, replay idempotency; `git diff --check` → PASS.
-**DoD:** [x] append/read use the shared migrated UoW; [x] replay remains idempotent on a real SQLite file; [ ] real collection/report schedule requires external Meta evidence and host timer.
+**Status:** PARTIAL — backfill repository is composed in bootstrap and tested through the real SQLite UoW; verified Meta config and scheduled report delivery remain gated.
+**Files:** `growth_engine/{bootstrap.py,adapters/outbound/analytics/sqlite_insights_repository.py}`, `tests/growth_engine/unit/application/analytics/test_insights_backfill.py`, `tests/growth_engine/integration/sqlite/test_insights_backfill_wiring.py`, `task_status.md`, `task_memory.md`
+**Verify:** insight + bootstrap composition integration → 6 passed; migration 0009, UoW, FK-enabled IG delivery seed, replay idempotency; no Meta call.
+**DoD:** [x] append/read use the shared migrated UoW and bootstrap; [x] replay remains idempotent on a real SQLite file; [ ] live collection/report schedule requires P0-T04 evidence and CLI/timer implementation.
 **Giả định:** legacy backfill observations retain their existing application DTO while persistence uses the canonical migration 0009 table.
 
 ### GC2-P5-T01 — IG enqueue eligibility (2026-11-05)

@@ -351,6 +351,7 @@ class Container:
     doctor_service: DoctorService
     analytics_views: Any
     channel_reconcile_store: Any
+    insights_repository: Any
     generation_store: Any
     review_store: Any
     review_data_reader: Any
@@ -474,6 +475,9 @@ def build_container(settings: Any, *, metrics_source: Any | None = None) -> Cont
     channel_reconcile_store_adapter = import_module(
         "growth_engine.adapters.outbound.persistence.sqlite.channel_reconcile_store"
     )
+    insights_repository_adapter = import_module(
+        "growth_engine.adapters.outbound.analytics.sqlite_insights_repository"
+    )
     generation_store_adapter = import_module(
         "growth_engine.adapters.outbound.persistence.sqlite.generation_store"
     )
@@ -503,6 +507,7 @@ def build_container(settings: Any, *, metrics_source: Any | None = None) -> Cont
     channel_reconcile_store = channel_reconcile_store_adapter.SqliteChannelReconcileStore(
         uow_factory, ids
     )
+    insights_repository = insights_repository_adapter.SQLiteInsightsRepository(uow_factory)
     project_config = Path(__file__).resolve().parents[1] / "config" / "projects" / "venho_hotel" / "growth_engine"
     notification_config = import_module("yaml").safe_load(
         (project_config / "notification_policy.yaml").read_text(encoding="utf-8")
@@ -797,6 +802,7 @@ def build_container(settings: Any, *, metrics_source: Any | None = None) -> Cont
         ),
         analytics_views=analytics_views,
         channel_reconcile_store=channel_reconcile_store,
+        insights_repository=insights_repository,
         generation_store=generation_store,
         review_store=review_store,
         review_data_reader=review_store,
