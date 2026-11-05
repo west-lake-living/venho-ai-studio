@@ -5664,10 +5664,10 @@ ComfyUI, GPU, provider or network call.
 **DoD:** [x] QC report and variant status commit atomically; [x] bytes/identity remain protected by existing migration trigger; no external validator/network used.
 
 ### GC2-T0-05 — SQLite wiring đối soát (2026-11-05)
-**Status:** PARTIAL — cảnh báo được ghi/dedupe qua UoW; legacy CLI, Telegram và timer vẫn chờ P0/host.
-**Files:** `growth_engine/adapters/outbound/persistence/sqlite/channel_reconcile_store.py`, `tests/growth_engine/integration/sqlite/test_channel_reconcile_wiring.py`, `task_status.md`, `task_memory.md`
-**Verify:** integration file-SQLite + unit reconcile → 6 passed; migration thật, UoW và incident repo; `git diff --check` → PASS.
-**DoD:** [x] kết quả cần cảnh báo tạo incident bền vững theo slot × channel × status; [x] lần lặp tăng occurrence mà không phát cảnh báo mới; [ ] thao tác legacy/Telegram/host chưa chạy.
+**Status:** PARTIAL — reconcile alert repository is composed in bootstrap and tested through the real SQLite UoW; Meta probe, report/Telegram CLI and schedule remain gated.
+**Files:** `growth_engine/{bootstrap.py,adapters/outbound/persistence/sqlite/channel_reconcile_store.py}`, `tests/growth_engine/integration/sqlite/test_channel_reconcile_wiring.py`, `task_status.md`, `task_memory.md`
+**Verify:** reconcile + bootstrap composition integration → 1 passed; migrated file SQLite, container UoW and incident repo; no Meta/Telegram call.
+**DoD:** [x] alert repository is exposed through bootstrap/UoW; [x] duplicate incidents touch occurrence count without repeated alert; [ ] real Meta collection, report/Telegram delivery and timer remain unrun.
 **Giả định:** incident mở là khóa dedupe; incident đã đóng có thể phát cảnh báo mới khi điều kiện lặp lại.
 
 ### GC2-T0-06 — SQLite UoW wiring backfill (2026-11-05)

@@ -6,10 +6,8 @@ from pathlib import Path
 
 from growth_engine.adapters.outbound.persistence.sqlite.connection import connect
 from growth_engine.adapters.outbound.persistence.sqlite.migrator import MigrationRunner
-from growth_engine.adapters.outbound.persistence.sqlite.uow import SqliteUnitOfWork
-from growth_engine.adapters.outbound.persistence.sqlite.channel_reconcile_store import (
-    SqliteChannelReconcileStore,
-)
+from growth_engine.bootstrap import build_container
+from growth_engine.settings import Settings
 from growth_engine.application.ops.channel_reconcile import (
     Channel,
     ChannelPost,
@@ -17,15 +15,6 @@ from growth_engine.application.ops.channel_reconcile import (
     ScheduledSlot,
     reconcile_channels,
 )
-
-
-class _Ids:
-    def __init__(self) -> None:
-        self.value = 0
-
-    def new_id(self) -> str:
-        self.value += 1
-        return f"reconcile-synthetic-{self.value}"
 
 
 class _EmptyReader:
@@ -45,7 +34,15 @@ def test_reconcile_alerts_are_deduped_in_migrated_sqlite_uow(tmp_path: Path) -> 
         ).apply(connection, application_version="synthetic-test")
     finally:
         connection.close()
-    uow_factory = lambda: SqliteUnitOfWork(lambda: connect(database), sleep=lambda _: None)
+    container = build_container(
+        Settings(
+            env="test",
+            db_path=str(database),
+            media_root=str(tmp_path / "media"),
+            public_base_url="https://growth.test.invalid",
+        )
+    )
+    uow_factory = container.uow_factory
     result = reconcile_channels(
         [ScheduledSlot("slot-synthetic", 1_800_000_000_000, "Approved synthetic caption")],
         [Channel("fb_hanoi", "page-synthetic", ("synthetic_id", "synthetic_caption"))],
@@ -54,7 +51,7 @@ def test_reconcile_alerts_are_deduped_in_migrated_sqlite_uow(tmp_path: Path) -> 
     )
     assert result[0].status is ChannelReconcileStatus.MISSING
 
-    store = SqliteChannelReconcileStore(uow_factory, _Ids())
+    store = container.channel_reconcile_store
     assert store.record_new_alerts(result, now_ms=1_800_000_001_000) == tuple(result)
     assert store.record_new_alerts(result, now_ms=1_800_000_002_000) == ()
 

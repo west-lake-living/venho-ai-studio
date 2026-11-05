@@ -350,6 +350,7 @@ class Container:
     legacy_import_service: Any
     doctor_service: DoctorService
     analytics_views: Any
+    channel_reconcile_store: Any
     generation_store: Any
     review_store: Any
     review_data_reader: Any
@@ -470,6 +471,9 @@ def build_container(settings: Any, *, metrics_source: Any | None = None) -> Cont
 
     uow_factory = lambda: uow_adapter.SqliteUnitOfWork(connection_factory)
     analytics_adapter = import_module("growth_engine.application.queries.analytics_views")
+    channel_reconcile_store_adapter = import_module(
+        "growth_engine.adapters.outbound.persistence.sqlite.channel_reconcile_store"
+    )
     generation_store_adapter = import_module(
         "growth_engine.adapters.outbound.persistence.sqlite.generation_store"
     )
@@ -496,6 +500,9 @@ def build_container(settings: Any, *, metrics_source: Any | None = None) -> Cont
     analytics_views = analytics_adapter.AnalyticsViews(uow_factory)
     clock = _SystemClock()
     ids = _UuidIds()
+    channel_reconcile_store = channel_reconcile_store_adapter.SqliteChannelReconcileStore(
+        uow_factory, ids
+    )
     project_config = Path(__file__).resolve().parents[1] / "config" / "projects" / "venho_hotel" / "growth_engine"
     notification_config = import_module("yaml").safe_load(
         (project_config / "notification_policy.yaml").read_text(encoding="utf-8")
@@ -789,6 +796,7 @@ def build_container(settings: Any, *, metrics_source: Any | None = None) -> Cont
             sqlite_version_error=connection_adapter.SQLiteVersionError,
         ),
         analytics_views=analytics_views,
+        channel_reconcile_store=channel_reconcile_store,
         generation_store=generation_store,
         review_store=review_store,
         review_data_reader=review_store,
