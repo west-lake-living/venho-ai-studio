@@ -164,12 +164,16 @@ class ReadOnlyGraphClient:
         self,
         object_id: str,
         metrics: Sequence[str],
-        period: str,
+        period: Optional[str] = None,
     ) -> dict[str, Any]:
-        if not period.strip():
-            raise ValueError("period must be supplied from verified configuration")
         path = f"{self._object_path(object_id)}/insights"
-        return self._get_json(path, {"metric": _fields_value(metrics), "period": period.strip()})
+        params = {"metric": _fields_value(metrics)}
+        if period is not None:
+            value = period.strip()
+            if not value:
+                raise ValueError("period must be omitted or supplied from verified configuration")
+            params["period"] = value
+        return self._get_json(path, params)
 
     def _object_path(self, object_id: str) -> str:
         value = object_id.strip()

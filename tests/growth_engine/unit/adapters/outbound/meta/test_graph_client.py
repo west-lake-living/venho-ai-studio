@@ -146,6 +146,17 @@ def test_get_insights_passes_requested_metrics_and_period_without_post_surface()
     assert transport.calls[0]["method"] == "GET"
 
 
+def test_get_insights_can_omit_period_for_media_level_candidate_metrics() -> None:
+    transport = FakeTransport([FakeResponse(200, {"data": [{"name": "metric_x", **_SYNTHETIC}]})])
+    client = _client(transport)
+
+    client.get_insights("media-1", ["metric_x"])
+
+    assert "metric=metric_x" in transport.calls[0]["url"]
+    assert "period=" not in transport.calls[0]["url"]
+    assert transport.calls[0]["method"] == "GET"
+
+
 @pytest.mark.parametrize("version", ["", "latest", "REQUIRED_FROM_P0"])
 def test_api_version_must_be_configured_and_pinned(version: str) -> None:
     with pytest.raises(ValueError):
