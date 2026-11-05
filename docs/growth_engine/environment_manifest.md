@@ -1,4 +1,4 @@
-# GC2 — Manifest đích (2 Facebook Page + Instagram production ID + 1 Page test)
+# GC2 — Manifest đích (2 Facebook Page + Instagram production ID + Facebook/Instagram TEST)
 
 > **Không ghi secret** vào file này (token, URL webhook, Client Secret). Chỉ ghi định danh và *tên* biến môi trường.
 > Sau khi điền, chạy: `python3 scripts/growth_engine/check_manifest_no_secrets.py` (phải trả 0) và
@@ -25,9 +25,9 @@ Không map bằng tên hiển thị; đổi tên Page không đổi channel; Pag
 | Ngày xác minh route | `null` — ID do Harry cung cấp, route chưa xác minh | `null` — ID do Harry cung cấp, route chưa xác minh |
 | Trạng thái | disabled | disabled |
 
-Instagram (chỉ định danh production; v2 không đăng IG): `ig_venho` → `instagram_business_account.id` `17841457936965829`; Graph API version/token chưa probe; channel disabled.
+Instagram là kênh đăng v2: `ig_venho` → `instagram_business_account.id` `17841457936965829`; Make route/connection và Graph API version/token chưa probe; channel disabled tới khi xác minh.
 
-## Test (Page test riêng + scenario test riêng)
+## Test (Page/Instagram test riêng + scenario test riêng)
 
 | Trường | Page test (`page_test`) |
 |---|---|
@@ -43,6 +43,8 @@ Instagram (chỉ định danh production; v2 không đăng IG): `ig_venho` → `
 | Ngày xác minh | REQUIRED_FROM_P0 |
 
 `publication_id` chứa `test` chỉ là lớp phụ; Page test và scenario test mới là cơ chế chính ngăn bài test lên Page thật.
+
+Instagram TEST dùng `ig_test`; account ID, scenario, connection, owner và ngày xác minh đều `REQUIRED_FROM_P0`. Không dùng `ig_venho` cho thử nghiệm có side effect.
 
 ## Cách Harry xác minh Page ID (không cần token)
 - Facebook → vào Page → *Giới thiệu / About* → *Minh bạch của Trang* → *Page ID*; hoặc URL `facebook.com/profile.php?id=<số>`.

@@ -5595,3 +5595,10 @@ ComfyUI, GPU, provider or network call.
 **DoD:** [x] thứ tự retire có check và điểm dừng; [x] ngăn bật lại legacy tự động sau production grant; [ ] Harry chưa phê duyệt; [ ] pilot, restore rehearsal và thay đổi host/app chưa thực hiện.
 **Rủi ro / việc để lại:** retire trước khi đủ pilot hoặc trước khi xác nhận authority đơn có thể làm gián đoạn hoặc đăng trùng. Checklist không phải bằng chứng legacy đã tắt.
 **Giả định:** danh sách chính xác timer/workflow đối chiếu với inventory/host hiện hành tại ngày được phê duyệt; chỉ tắt publisher legacy đã định danh.
+
+### GC2-P0-T02 — Instagram là kênh đăng v2 (2026-11-05)
+**Status:** PARTIAL — IG production/TEST được khai báo cho authorize, publish và receipt; route/connection/Graph API evidence còn chờ Harry.
+**Files:** `config/projects/venho_hotel/growth_engine/channels.yaml`, `docs/growth_engine/environment_manifest.md`, `task_status.md`, `task_memory.md`
+**Verify:** `check_manifest_no_secrets.py` → PASS; YAML parse → PASS; `ig_venho` ID giữ nguyên `17841457936965829`, channel production disabled.
+**DoD:** [x] `ig_venho` được khai báo là publishing channel v2; [x] scopes gồm authorize/receipt/media; [x] thêm `ig_test` fail-closed; [ ] Harry xác minh TEST account, Make route/connection và Graph capability.
+**Giả định:** IG dùng cùng caption mặc định và receipt contract với Facebook; ảnh đã duyệt chọn variant `instagram_photo_v1` 4:5.

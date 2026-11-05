@@ -1,5 +1,5 @@
 # GC2-P0-T02 — Danh mục Page đích. KHÔNG chứa secret (token/URL webhook nằm ở env, tham chiếu bằng tên).
-# ID production dưới đây do Harry cung cấp ngày 2026-11-04. Kênh giữ disabled cho đến khi
+# ID production dưới đây do Harry cung cấp ngày 2026-11-04. Các kênh giữ disabled cho đến khi
 # route/connection Make và Graph API capability được xác minh; null là cấu hình chưa cấp.
 # Không map bằng tên hiển thị: định danh đích là remote_page_id/remote_account_id.
 version: 1
@@ -46,16 +46,16 @@ channels:
     platform: instagram
     display_name: Ven Hồ Hotel Instagram
     remote_account_id: "17841457936965829"   # instagram_business_account.id
-    make_scenario_id: null                    # v2 không đăng Instagram
-    make_route_ref: null
+    make_scenario_id: null                    # chưa xác minh
+    make_route_ref: GE_MAKE_WEBHOOK_URL_IG_VENHO # tên biến môi trường, chưa cấu hình
     make_connection_ref: null
     graph_api_version: null                   # chưa probe ở P0-T04
     service_principal: make-ig
-    scopes: [media.read]
+    scopes: [executions.authorize, receipts.write, media.read]
     meta_read_token_ref: GE_META_READ_TOKEN_IG_VENHO
     caption_profile: default
     owner: null
-    verified_on: null                         # ID do Harry cung cấp; token chưa probe
+    verified_on: null                         # ID do Harry cung cấp; route/token chưa probe
     enabled: false
 
   # Page TEST riêng + scenario TEST riêng: mọi test có side effect chỉ chạy ở đây.
@@ -71,6 +71,23 @@ channels:
     service_principal: make-page-test
     scopes: [executions.authorize, receipts.write, media.read]
     meta_read_token_ref: GE_META_READ_TOKEN_PAGE_TEST
+    caption_profile: default
+    owner: REQUIRED_FROM_P0
+    verified_on: REQUIRED_FROM_P0
+    enabled: false
+
+  - channel_id: ig_test
+    environment: test
+    platform: instagram
+    display_name: REQUIRED_FROM_P0
+    remote_account_id: REQUIRED_FROM_P0
+    make_scenario_id: REQUIRED_FROM_P0
+    make_route_ref: GE_MAKE_WEBHOOK_URL_IG_TEST
+    make_connection_ref: REQUIRED_FROM_P0
+    graph_api_version: REQUIRED_FROM_P0
+    service_principal: make-ig-test
+    scopes: [executions.authorize, receipts.write, media.read]
+    meta_read_token_ref: GE_META_READ_TOKEN_IG_TEST
     caption_profile: default
     owner: REQUIRED_FROM_P0
     verified_on: REQUIRED_FROM_P0

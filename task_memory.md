@@ -6277,3 +6277,6 @@ not in local venv; installed in CI).
 - Wrote a gated retire checklist for legacy publish timers/workflows, read-only registry archive with SHA, VENHO OS v2-only configuration, operations docs and DR closure. Added post-grant forward-recovery and no-automatic-legacy-reactivation rules.
 - Documentation only: no host timer, GitHub workflow, registry JSON, VENHO OS setting, or DR system was changed. Harry approval and successful pilot/restore evidence remain required.
 - Assumption: operator identifies exact publisher units/workflows from the current host inventory before making any change.
+### 2026-11-05 — P0-T02: Instagram publishing channel
+- Corrected the earlier assumption: `ig_venho` is a v2 publishing target. Kept production and TEST channels disabled until route/account evidence exists.
+- Instagram publishes use authorize/receipt/media scopes and the existing 4:5 profile; never route TEST traffic to the production account.
