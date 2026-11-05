@@ -1,0 +1,84 @@
+# Candidate-only Meta Graph API read settings, based on the Meta Pages/Instagram API references.
+# P0-T04 must verify API version, each field/metric, permissions and account access with the read token.
+# Nothing in this file is a verified production capability.
+api_version: v26.0
+channels:
+  fb_hanoi:
+    platform: facebook
+    account_id: "1124616474074140"
+    post_id: "1124616474074140_122149744263351048"
+    token_env: GE_META_READ_TOKEN_FB_HANOI
+    collection_edge: posts
+    list_recent: false
+    recent_days: 7
+    max_pages: 3
+    post_fields:
+      - id
+      - created_time
+      - permalink_url
+      - message
+      - from
+      - full_picture
+      - shares
+      - reactions.summary(total_count).limit(0)
+      - comments.summary(total_count).limit(0)
+    metrics:
+      - name: post_media_view
+        period: lifetime
+      - name: post_total_media_view_unique
+        period: lifetime
+  fb_venho:
+    platform: facebook
+    account_id: "803531149684177"
+    token_env: GE_META_READ_TOKEN_FB_VENHO
+    collection_edge: posts
+    list_recent: true
+    recent_days: 7
+    max_pages: 3
+    post_fields:
+      - id
+      - created_time
+      - permalink_url
+      - message
+      - from
+      - full_picture
+      - shares
+      - reactions.summary(total_count).limit(0)
+      - comments.summary(total_count).limit(0)
+    metrics: []
+  ig_venho:
+    platform: instagram
+    account_id: "17841457936965829"
+    post_id: "18098055056408999"
+    token_env: GE_META_READ_TOKEN_IG_VENHO
+    collection_edge: media
+    list_recent: false
+    recent_days: 7
+    max_pages: 3
+    post_fields:
+      - id
+      - timestamp
+      - permalink
+      - caption
+      - media_type
+      - media_url
+      - owner
+      - username
+      - like_count
+      - comments_count
+    # IG media metrics candidate request omits period; the probe verifies whether the app accepts it.
+    metrics:
+      - name: reach
+        period: null
+      - name: likes
+        period: null
+      - name: comments
+        period: null
+      - name: shares
+        period: null
+      - name: saved
+        period: null
+      - name: total_interactions
+        period: null
+      - name: views
+        period: null

@@ -44,7 +44,7 @@ test "$(stat -c '%a' "$HOME/venho/secrets/growth-engine.env")" = 600
 grep -qx 'GE_ENV=production' "$HOME/venho/secrets/growth-engine.env"
 ```
 
-File cần các biến production mà `Settings` kiểm tra: DB/media/base URLs, capability/service tokens, Make route refs, Meta read tokens, Telegram bot/chat và public age recipient. Không dùng giá trị `REQUIRED_FROM_P0`.
+File cần các biến production mà `Settings` kiểm tra: DB/media/base URLs, capability/service tokens, Make route refs, Telegram bot/chat và public age recipient. Probe Track 0 đọc token từ `GE_META_READ_TOKEN_FB_HANOI`, `GE_META_READ_TOKEN_FB_VENHO`, `GE_META_READ_TOKEN_IG_VENHO`. Không dùng giá trị `REQUIRED_FROM_P0`.
 
 Tạo riêng file API TEST; DB và media phải nằm trong thư mục TEST riêng, không trỏ vào production:
 

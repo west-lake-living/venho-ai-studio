@@ -2195,8 +2195,8 @@ Mỗi card gồm: **Mục tiêu · Phụ thuộc · Đọc trước · Files · 
 #### GC2-P0-T04 — Probe đọc Meta (read-only)
 - **Mục tiêu:** Biết chắc đọc được bài + field nào với token hiện có, cho từng kênh (2 FB + IG).
 - **Phụ thuộc:** GC2-T0-04 (script dùng `shared.meta`).
-- **Files:** ★ `scripts/growth_engine/probe_meta_read.py` · ★ `docs/growth_engine/meta_capabilities.md` · ★ `tests/growth_engine/fixtures/meta/*.json`.
-- **Làm:** Script nhận `--page-id --post-id --api-version` + token qua env; chỉ GET; lọc token khỏi output; ghi response mẫu. Không chạy trong pytest.
+- **Files:** ★ `config/projects/venho_hotel/growth_engine/meta_probe_candidates.yaml` · ★ `scripts/growth_engine/probe_meta_read.py` · ★ `docs/growth_engine/meta_capabilities.md` · ★ `tests/growth_engine/fixtures/meta/*.json`.
+- **Làm:** `--channel` đọc account/post ID, API version, fields, metrics và period từ candidate config; chỉ read token lấy từ env. `fb_venho` dùng `--list-recent` qua edge `posts`. Mỗi metric gọi riêng; lỗi metric ghi `UNSUPPORTED` rồi tiếp tục. Lọc token khỏi output; pytest chỉ dùng fake transport, không gọi Meta thật.
 - **DoD:** Mỗi kênh có: version Graph API đã thử, quyền thực tế, field đọc được cho verify (existence, from/page, created_time, permalink, attachment) và danh sách metric khả dụng (cho P8).
 - **Gate:** 🔒 Harry cung cấp token đọc, chạy script.
 - **Ước lượng:** 0,5 ngày.

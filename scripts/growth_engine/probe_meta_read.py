@@ -6,64 +6,29 @@ import os
 import sys
 import time
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable, Mapping
+
+import yaml
 
 _REPOSITORY_ROOT = str(Path(__file__).resolve().parents[2])
 if _REPOSITORY_ROOT not in sys.path:
     sys.path.insert(0, _REPOSITORY_ROOT)
 
-from growth_engine.adapters.outbound.meta.graph_client import GraphClient, MetaGraphError
+from shared.meta.graph_client import MetaGraphError, ReadOnlyGraphClient
 
 
-_TOKEN_ENV_BY_CHANNEL = {
-    "fb_hanoi": "GE_META_READ_TOKEN_FB_HANOI",
-    "fb_venho": "GE_META_READ_TOKEN_FB_VENHO",
-    "ig_venho": "GE_META_READ_TOKEN_IG_VENHO",
-}
+DEFAULT_CANDIDATES = Path("config/projects/venho_hotel/growth_engine/meta_probe_candidates.yaml")
+DEFAULT_CHANNELS = Path("config/projects/venho_hotel/growth_engine/channels.yaml")
 
 
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Probe read-only Meta access for one configured Growth channel."
+        description="Read-only Meta capability probe; values come from the candidate config."
     )
-    parser.add_argument("--channel", choices=tuple(_TOKEN_ENV_BY_CHANNEL), required=True)
-    parser.add_argument(
-        "--page-id",
-        required=True,
-        help="Facebook Page ID or Instagram business account ID",
-    )
-    target = parser.add_mutually_exclusive_group(required=True)
-    target.add_argument("--post-id")
-    target.add_argument(
-        "--list-recent",
-        action="store_true",
-        help="List a bounded window of recent posts instead of probing a supplied post ID.",
-    )
-    parser.add_argument(
-        "--collection-edge",
-        help="Verified one-segment collection edge; required with --list-recent.",
-    )
-    parser.add_argument("--recent-days", type=int, default=7)
-    parser.add_argument("--max-pages", type=int, default=3)
-    parser.add_argument("--api-version", required=True)
-    parser.add_argument(
-        "--field",
-        action="append",
-        dest="fields",
-        required=True,
-        help="Candidate field from current documentation/config; repeat per field.",
-    )
-    parser.add_argument(
-        "--metric",
-        action="append",
-        dest="metrics",
-        default=[],
-        help="Candidate metric from current documentation/config; repeat per metric.",
-    )
-    parser.add_argument(
-        "--period",
-        help="Required when probing metrics; value must come from verified config.",
-    )
+    parser.add_argument("--channel", choices=("fb_hanoi", "fb_venho", "ig_venho"), required=True)
+    parser.add_argument("--list-recent", action="store_true", help="List recent posts using the configured edge.")
+    parser.add_argument("--candidates", type=Path, default=DEFAULT_CANDIDATES)
+    parser.add_argument("--channels", type=Path, default=DEFAULT_CHANNELS)
     return parser
 
 
@@ -77,98 +42,107 @@ def _redact(value: Any, token: str) -> Any:
     return value
 
 
-def _probe_object(client: GraphClient, object_id: str, fields: list[str]) -> list[dict[str, Any]]:
+def _load_config(channel_id: str, candidates_path: Path, channels_path: Path) -> tuple[dict[str, Any], str]:
+    candidates = yaml.safe_load(candidates_path.read_text(encoding="utf-8")) or {}
+    channels = yaml.safe_load(channels_path.read_text(encoding="utf-8")) or {}
+    candidate = (candidates.get("channels") or {}).get(channel_id)
+    configured_channel = next(
+        (row for row in channels.get("channels", []) if row.get("channel_id") == channel_id and row.get("environment") == "production"),
+        None,
+    )
+    if not isinstance(candidate, dict) or not isinstance(configured_channel, dict):
+        raise ValueError(f"Meta probe configuration is missing {channel_id}")
+    configured_account_id = configured_channel.get("remote_page_id") or configured_channel.get("remote_account_id")
+    if str(configured_account_id or "") != str(candidate.get("account_id") or ""):
+        raise ValueError(f"candidate account ID does not match channels.yaml for {channel_id}")
+    api_version = str(candidate.get("api_version") or candidates.get("api_version") or "")
+    if not api_version:
+        raise ValueError(f"candidate Graph API version is missing for {channel_id}")
+    return candidate, api_version
+
+
+def _field_probes(client: Any, object_id: str, fields: list[str]) -> list[dict[str, Any]]:
     probes: list[dict[str, Any]] = []
     for field in fields:
         try:
             response = client.get_object(object_id, [field])
-            probes.append(
-                {
-                    "field": field,
-                    "result": "READABLE" if field in response else "NOT_RETURNED",
-                    "value": response.get(field),
-                }
-            )
-        except MetaGraphError as exc:
-            probes.append(
-                {
-                    "field": field,
-                    "result": "ERROR",
-                    "error_class": exc.kind.value if exc.kind is not None else "UNCLASSIFIED",
-                    "http_status": exc.status,
-                }
-            )
+            probes.append({"field": field, "result": "READABLE" if field in response else "NOT_RETURNED", "value": response.get(field)})
+        except MetaGraphError as error:
+            probes.append({
+                "field": field,
+                "result": "ERROR",
+                "error_class": error.kind.value if error.kind is not None else "UNCLASSIFIED",
+                "http_status": error.status,
+            })
     return probes
 
 
-def run_probe(args: argparse.Namespace, environ: dict[str, str]) -> dict[str, Any]:
-    if args.metrics and not args.period:
-        raise ValueError("--period is required when --metric is used")
-    if args.list_recent:
-        if args.post_id:
-            raise ValueError("--post-id cannot be used with --list-recent")
-        if not isinstance(args.collection_edge, str) or not args.collection_edge.strip():
-            raise ValueError("--collection-edge is required with --list-recent")
-        if type(args.recent_days) is not int or not 1 <= args.recent_days <= 30:
-            raise ValueError("--recent-days must be between 1 and 30")
-        if type(args.max_pages) is not int or not 1 <= args.max_pages <= 10:
-            raise ValueError("--max-pages must be between 1 and 10")
-        if args.metrics:
-            raise ValueError("metric probes require --post-id")
-    elif not args.post_id:
-        raise ValueError("--post-id is required unless --list-recent is used")
-    token_env = _TOKEN_ENV_BY_CHANNEL[args.channel]
+def _recent_window(days: int) -> tuple[int, int]:
+    until_ms = time.time_ns() // 1_000_000
+    return until_ms - days * 24 * 60 * 60 * 1000, until_ms
+
+
+def run_probe(
+    args: argparse.Namespace,
+    environ: Mapping[str, str],
+    *,
+    client_factory: Callable[..., Any] = ReadOnlyGraphClient,
+) -> dict[str, Any]:
+    candidate, api_version = _load_config(args.channel, args.candidates, args.channels)
+    token_env = str(candidate.get("token_env") or "")
     token = environ.get(token_env, "").strip()
     if not token:
         raise ValueError(f"required environment variable {token_env} is empty")
-
-    # The edge is unused by these object/insights GETs; it is required only by
-    # the shared client constructor used for recent-post listing.
-    client = GraphClient(
-        api_version=args.api_version,
-        access_token=token,
-        collection_edge=args.collection_edge or "unused_for_object_probe",
-    )
+    account_id = str(candidate["account_id"])
+    fields = [str(value) for value in candidate.get("post_fields", [])]
+    if not fields or any(not field.strip() for field in fields):
+        raise ValueError(f"candidate post fields are missing for {args.channel}")
+    edge = str(candidate.get("collection_edge") or "")
+    client = client_factory(api_version=api_version, access_token=token, collection_edge=edge)
+    list_recent = bool(args.list_recent or candidate.get("list_recent"))
     result: dict[str, Any] = {
         "channel": args.channel,
-        "account_id": args.page_id,
-        "post_id": args.post_id,
-        "api_version": args.api_version,
-        "account_fields": _probe_object(client, args.page_id, args.fields),
-        "post_fields": [] if args.list_recent else _probe_object(client, args.post_id, args.fields),
+        "account_id": account_id,
+        "api_version": api_version,
+        "candidate_only": True,
+        "account_fields": _field_probes(client, account_id, ["id"]),
+        "post_fields": [],
         "metrics": [],
     }
-    if args.list_recent:
-        until_ms = time.time_ns() // 1_000_000
-        since_ms = until_ms - args.recent_days * 24 * 60 * 60 * 1000
+    if list_recent:
+        since_ms, until_ms = _recent_window(int(candidate.get("recent_days", 7)))
         result["recent_window_ms"] = {"since": since_ms, "until": until_ms}
         try:
             result["recent_posts"] = client.list_recent_posts(
-                args.page_id,
-                since_ms,
-                until_ms,
-                args.fields,
-                args.max_pages,
+                account_id, since_ms, until_ms, fields, int(candidate.get("max_pages", 3))
             )
-        except MetaGraphError as exc:
+        except MetaGraphError as error:
             result["recent_posts"] = {
                 "result": "ERROR",
-                "error_class": exc.kind.value if exc.kind is not None else "UNCLASSIFIED",
-                "http_status": exc.status,
+                "error_class": error.kind.value if error.kind is not None else "UNCLASSIFIED",
+                "http_status": error.status,
             }
-    for metric in args.metrics:
-        try:
-            value = client.get_insights(args.post_id, [metric], args.period)
-            result["metrics"].append({"metric": metric, "result": "READABLE", "response": value})
-        except MetaGraphError as exc:
-            result["metrics"].append(
-                {
-                    "metric": metric,
-                    "result": "ERROR",
-                    "error_class": exc.kind.value if exc.kind is not None else "UNCLASSIFIED",
-                    "http_status": exc.status,
-                }
-            )
+    else:
+        post_id = str(candidate.get("post_id") or "")
+        if not post_id:
+            raise ValueError(f"candidate sample post ID is missing for {args.channel}")
+        result["post_id"] = post_id
+        result["post_fields"] = _field_probes(client, post_id, fields)
+        for metric in candidate.get("metrics", []):
+            name = str(metric.get("name") or "")
+            period = metric.get("period")
+            try:
+                response = client.get_insights(post_id, [name], period)
+            except MetaGraphError as error:
+                result["metrics"].append({
+                    "metric": name,
+                    "period": period,
+                    "result": "UNSUPPORTED",
+                    "error_class": error.kind.value if error.kind is not None else "UNCLASSIFIED",
+                    "http_status": error.status,
+                })
+                continue
+            result["metrics"].append({"metric": name, "period": period, "result": "READABLE", "response": response})
     return _redact(result, token)
 
 
@@ -176,8 +150,8 @@ def main() -> int:
     args = _parser().parse_args()
     try:
         result = run_probe(args, dict(os.environ))
-    except (ValueError, MetaGraphError) as exc:
-        print(json.dumps({"ok": False, "error": str(exc)}, ensure_ascii=False), file=sys.stderr)
+    except (OSError, ValueError, MetaGraphError) as error:
+        print(json.dumps({"ok": False, "error": str(error)}, ensure_ascii=False), file=sys.stderr)
         return 2
     print(json.dumps({"ok": True, **result}, ensure_ascii=False, sort_keys=True))
     return 0
