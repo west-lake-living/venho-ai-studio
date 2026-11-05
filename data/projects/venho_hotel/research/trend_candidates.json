@@ -1110,5 +1110,128 @@
     "fast_lane": false,
     "verified_by_human": false,
     "scanned_at": "2026-11-04T12:18:35.418709+00:00"
+  },
+  {
+    "id": "event-undated-6337a38385",
+    "title": "The Windsor Collection giới thiệu chuỗi sự kiện private tại Ciputra Hà Nội",
+    "source_uri": "https://news.google.com/rss/articles/CBMingFBVV95cUxPQTRJVkFONjB1cWxsWU9ZU1ZaTUhVMEViWUZ0RVZWVnhSNm4zMTExellUNTZEUENZNFBGbFVmTnBYbENJUlA1OU9Ybk1QYS0wNXExNFM0Ni14Ykc1dERjMXFraGVTNlBFVGI5RjgyM0lfVnAtUWFPNWVUb3NERHRjdkEwNmRIR0VDQXdXaE5jdk9wNjFETmJNZnY2aWxodw?oc=5",
+    "source_name": "Vietnam.vn",
+    "published_at": "2026-11-04T01:55:08+00:00",
+    "snippet": "Vietnam.vn",
+    "relevance_hint": 0.0,
+    "collector": "google_news",
+    "query": "\"Hồ Tây\" sự kiện",
+    "geographic": "westlake",
+    "thematic": "lifestyle_culture",
+    "actionability": "adjacent",
+    "type": "cultural_event",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "culture_festival_positive"
+    ],
+    "is_event": true,
+    "event_name": "Chuỗi sự kiện private The Windsor Collection",
+    "event_start": null,
+    "event_end": null,
+    "venue": "Ciputra Hà Nội",
+    "westlake_area": true,
+    "sources": [
+      {
+        "title": "The Windsor Collection giới thiệu chuỗi sự kiện private tại Ciputra Hà Nội",
+        "source_uri": "https://news.google.com/rss/articles/CBMingFBVV95cUxPQTRJVkFONjB1cWxsWU9ZU1ZaTUhVMEViWUZ0RVZWVnhSNm4zMTExellUNTZEUENZNFBGbFVmTnBYbENJUlA1OU9Ybk1QYS0wNXExNFM0Ni14Ykc1dERjMXFraGVTNlBFVGI5RjgyM0lfVnAtUWFPNWVUb3NERHRjdkEwNmRIR0VDQXdXaE5jdk9wNjFETmJNZnY2aWxodw?oc=5",
+        "source_name": "Vietnam.vn",
+        "published_at": "2026-11-04T01:55:08+00:00"
+      }
+    ],
+    "source_count": 1,
+    "relevance_score": 0.6,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "fast_lane": false,
+    "verified_by_human": false,
+    "scanned_at": "2026-11-05T00:18:03.738733+00:00"
+  },
+  {
+    "id": "gnews-6343a2c70bf5ea7a",
+    "title": "Sen hồ Tây, đào Nhật Tân và quất Tứ Liên: Trục văn hóa và động lực phát triển của Thủ đô",
+    "source_uri": "https://news.google.com/rss/articles/CBMivAFBVV95cUxPd3ZNSzc2cWxhSnN1VmQxd3QtWE8xeGdFNFY1dU9PT04zdDJwSGFHclVPZFQ5bTdvNE8yQjhDU1AybEQ1bTBhV09EZVVkUzJ4VGZ4NF91UVhMVDA5TXBKYWpMZlIyVk5fWmdDSXZXdlpsNzNqanJ2X3E4Z1UzcTl6NFE1YXQwZ3lUSzNLZHU1SXF3RTI0YUVhUWUycGFvTTktV2ZHUUdyTDNHcWp6dTVTSmstNzBOc1pXWVdkUA?oc=5",
+    "source_name": "Tạp chí Người Hà Nội",
+    "published_at": "2026-11-03T11:35:00+00:00",
+    "snippet": "Tạp chí Người Hà Nội",
+    "relevance_hint": 0.0,
+    "collector": "google_news",
+    "query": "\"Hồ Tây\" festival",
+    "geographic": "westlake",
+    "thematic": "lifestyle_culture",
+    "actionability": "direct",
+    "type": "seasonal_nature",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "seasonal_weather_nature",
+      "culture_festival_positive"
+    ],
+    "is_event": false,
+    "event_name": null,
+    "event_start": null,
+    "event_end": null,
+    "venue": "Hồ Tây, Nhật Tân, Tứ Liên",
+    "westlake_area": true,
+    "sources": [
+      {
+        "title": "Sen hồ Tây, đào Nhật Tân và quất Tứ Liên: Trục văn hóa và động lực phát triển của Thủ đô",
+        "source_uri": "https://news.google.com/rss/articles/CBMivAFBVV95cUxPd3ZNSzc2cWxhSnN1VmQxd3QtWE8xeGdFNFY1dU9PT04zdDJwSGFHclVPZFQ5bTdvNE8yQjhDU1AybEQ1bTBhV09EZVVkUzJ4VGZ4NF91UVhMVDA5TXBKYWpMZlIyVk5fWmdDSXZXdlpsNzNqanJ2X3E4Z1UzcTl6NFE1YXQwZ3lUSzNLZHU1SXF3RTI0YUVhUWUycGFvTTktV2ZHUUdyTDNHcWp6dTVTSmstNzBOc1pXWVdkUA?oc=5",
+        "source_name": "Tạp chí Người Hà Nội",
+        "published_at": "2026-11-03T11:35:00+00:00"
+      }
+    ],
+    "source_count": 1,
+    "relevance_score": 0.6,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "fast_lane": false,
+    "verified_by_human": false,
+    "scanned_at": "2026-11-05T00:18:03.738733+00:00"
+  },
+  {
+    "id": "event-undated-015aa377e8",
+    "title": "Phường Tây Hồ triển khai kế hoạch tổ chức tuần lễ hưởng ứng Ngày Văn hóa Việt Nam năm 2026",
+    "source_uri": "https://tayho.hanoi.gov.vn/van-hoa-xa-hoi/phuong-tay-ho-trien-khai-ke-hoach-to-chuc-tuan-le-huong-ung-ngay-van-hoa-viet-nam-nam-2026-2697261103204436227.htm",
+    "source_name": "Cổng TTĐT phường Tây Hồ",
+    "published_at": null,
+    "snippet": "Cổng TTĐT phường Tây Hồ",
+    "relevance_hint": 0.0,
+    "collector": "official_page",
+    "geographic": "westlake",
+    "thematic": "lifestyle_culture",
+    "actionability": "direct",
+    "type": "cultural_event",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "culture_festival_positive"
+    ],
+    "is_event": true,
+    "event_name": "Tuần lễ hưởng ứng Ngày Văn hóa Việt Nam năm 2026 tại phường Tây Hồ",
+    "event_start": null,
+    "event_end": null,
+    "venue": "Phường Tây Hồ",
+    "westlake_area": true,
+    "sources": [
+      {
+        "title": "Phường Tây Hồ triển khai kế hoạch tổ chức tuần lễ hưởng ứng Ngày Văn hóa Việt Nam năm 2026",
+        "source_uri": "https://tayho.hanoi.gov.vn/van-hoa-xa-hoi/phuong-tay-ho-trien-khai-ke-hoach-to-chuc-tuan-le-huong-ung-ngay-van-hoa-viet-nam-nam-2026-2697261103204436227.htm",
+        "source_name": "Cổng TTĐT phường Tây Hồ",
+        "published_at": null
+      }
+    ],
+    "source_count": 1,
+    "relevance_score": 0.6,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "fast_lane": false,
+    "verified_by_human": false,
+    "scanned_at": "2026-11-05T00:18:03.738733+00:00"
   }
 ]
