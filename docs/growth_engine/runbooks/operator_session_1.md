@@ -220,6 +220,7 @@ venho-analytics insights-report
 
 ```bash
 systemctl --user daemon-reload
+install -d -m 700 "$HOME/venho/state/growth-reports"
 systemctl --user enable --now venho-growth-reconcile.timer venho-growth-insights.timer
 systemctl --user list-timers --all 'venho-growth-*'
 ```
