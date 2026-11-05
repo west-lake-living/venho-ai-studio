@@ -1,0 +1,11 @@
+[Unit]
+Description=Reconcile Growth channels Tue/Thu/Sat 10:30 and Sun 21:00 ICT
+
+[Timer]
+OnCalendar=Tue,Thu,Sat *-*-* 10:30:00 Asia/Ho_Chi_Minh
+OnCalendar=Sun *-*-* 21:00:00 Asia/Ho_Chi_Minh
+Persistent=true
+Unit=venho-growth-reconcile.service
+
+[Install]
+WantedBy=timers.target

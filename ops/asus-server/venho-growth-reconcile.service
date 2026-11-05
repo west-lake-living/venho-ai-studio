@@ -1,0 +1,17 @@
+[Unit]
+Description=Read-only reconcile of Growth publications across Meta channels
+After=network-online.target
+Wants=network-online.target
+OnFailure=venho-growth-alert@%n.service
+
+[Service]
+Type=oneshot
+EnvironmentFile=%h/venho/secrets/growth-engine.env
+Environment=GE_GROWTH_REPORTS_DIR=%h/venho/state/growth-reports
+WorkingDirectory=%h/venho/growth-runtime/venho-ai-studio
+ExecStart=%h/venho/growth-runtime/venho-ai-studio/.venv/bin/venho-analytics reconcile-channels --days 7 --send-telegram
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ReadWritePaths=%h/venho/state/growth-reports

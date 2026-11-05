@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 
 import typer
@@ -14,6 +15,7 @@ from analytics_feedback.performance_scorer import score_snapshot
 from analytics_feedback.report_generator import generate_report
 from analytics_feedback.sentiment_scorer import score_comments
 from analytics_feedback.stores import AdvisoryStore, AttributionEventStore, RawMetricsStore, ReportStore, ScoreStore, SnapshotStore
+from shared.notify.telegram import TelegramNotifier
 
 app = typer.Typer(help="Module 08 Analytics & Feedback Loop")
 
@@ -40,6 +42,40 @@ def collect(receipt: Path, data_root: Path = Path("data/projects"), dry_run: boo
         ReportStore(receipt_ref.project, data_root).save_markdown(f"report_{snapshot.snapshot_id}", report)
     typer.echo(f"Analytics package: {snapshot.package_id} / {snapshot.platform}")
     typer.echo(f"Score: {score.performance_label} ({score.relative_score})")
+
+
+@app.command("reconcile-channels")
+def reconcile_channels_cmd(
+    days: int = typer.Option(7, min=1, max=365),
+    project: str = typer.Option("venho_hotel"),
+    config_root: Path = typer.Option(Path("config/projects/venho_hotel")),
+    data_root: Path = typer.Option(Path("data/projects")),
+    reports_root: Path | None = typer.Option(None),
+    send_telegram: bool = typer.Option(False, "--send-telegram"),
+) -> None:
+    """Compare legacy publications with recent Meta posts; never opens the v2 DB."""
+    from analytics_feedback.channel_reconcile import reconcile_channels
+
+    notifier = None
+    chat_id = os.environ.get("TELEGRAM_CHAT_ID")
+    if send_telegram and os.environ.get("TELEGRAM_BOT_TOKEN") and chat_id:
+        notifier = TelegramNotifier(bot_token=os.environ["TELEGRAM_BOT_TOKEN"])
+    try:
+        output = reconcile_channels(
+            days=days,
+            project=project,
+            config_root=config_root,
+            data_root=data_root,
+            reports_root=reports_root,
+            env=os.environ,
+            telegram_notifier=notifier,
+            telegram_chat_id=chat_id,
+            send_telegram=send_telegram,
+        )
+    except (OSError, ValueError, KeyError) as exc:
+        typer.echo(json.dumps({"ok": False, "error": str(exc)}, ensure_ascii=False), err=True)
+        raise typer.Exit(code=1)
+    typer.echo(json.dumps({"ok": True, "report": str(output)}, ensure_ascii=False))
 
 
 @app.command()
