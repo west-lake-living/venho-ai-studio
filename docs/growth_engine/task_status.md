@@ -22,12 +22,14 @@
 
 ### GC2-T0-05 — Legacy channel reconciliation (2026-11-05)
 **Status:** PARTIAL
-**Commit:** `e96592a`
+**Commit:** `e96592a`, timer schedule correction `c52370f`
 **Files:** `analytics_feedback/channel_reconcile.py`, `analytics_feedback/cli.py`, `ops/asus-server/venho-growth-reconcile.{service,timer}`, `tests/test_legacy_channel_reconcile.py`
 **Verify:** targeted tests → 2 passed; VERIFY_LEGACY → 2116 passed, 79 baseline failures, 8 skipped, 0 new failures.
 **DoD:** [x] legacy registry/cadence read-only reconciliation [x] report outside Git [x] alert dedupe [ ] first real `fb_venho` report reviewed
 **INV/AC liên quan:** không ghi registry; không dùng DB v2
 **Rủi ro / việc để lại:** Requires read tokens and timer installation on server.
+
+The plan snapshot and code-delta table were refreshed to include the production channel IDs and current implementation state in `4ce6e9f`.
 
 ### GC2-T0-06 — Legacy Meta Insights backfill/report (2026-11-05)
 **Status:** PARTIAL
