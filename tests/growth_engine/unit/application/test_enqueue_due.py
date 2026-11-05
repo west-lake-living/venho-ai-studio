@@ -165,6 +165,7 @@ def make_candidate(
     scheduled_at_ms: int = 1_000,
     deadline_at_ms: int = 10_000,
     remote_account_id: str | None = None,
+    platform: ChannelPlatform = ChannelPlatform.FACEBOOK,
 ) -> EnqueueCandidate:
     channel_id = f"channel-{channel_key}"
     remote_id = remote_account_id or f"remote-{channel_key}"
@@ -181,7 +182,7 @@ def make_candidate(
         project_id="venho_hotel",
         environment="test",
         channel_key=channel_key,
-        platform=ChannelPlatform.FACEBOOK,
+        platform=platform,
         remote_account_id=remote_id,
         name=channel_key,
         enabled=True,
@@ -302,6 +303,20 @@ def test_paused_page_b_is_skipped_while_page_a_is_enqueued() -> None:
     assert result.enqueued_delivery_ids == ("delivery-a",)
     assert store.candidates["delivery-a"].delivery.state is DeliveryState.QUEUED
     assert store.candidates["delivery-b"].delivery.state is DeliveryState.APPROVED
+    assert len(store.commands) == 1
+
+
+def test_instagram_delivery_is_eligible_for_publish_command() -> None:
+    candidate = make_candidate(
+        "delivery-ig",
+        channel_key="ig_venho",
+        platform=ChannelPlatform.INSTAGRAM,
+    )
+    store = FakeStore(RuntimeControls(PublishMode.LIVE_MANUAL, "epoch-1"), [candidate])
+
+    result = EnqueueDue(store, FakeTokens(), FakeIds()).execute(2_000)
+
+    assert result.enqueued_delivery_ids == ("delivery-ig",)
     assert len(store.commands) == 1
 
 

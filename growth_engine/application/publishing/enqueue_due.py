@@ -193,7 +193,7 @@ def _eligible(candidate: EnqueueCandidate, now_ms: int, controls: RuntimeControl
         and not controls.global_pause
         and channel.enabled
         and not channel.paused
-        and channel.platform.value == "facebook"
+        and channel.platform.value in {"facebook", "instagram"}
         and config.channel_id == channel.id
         and payload.get("revision_id") == candidate.current_revision_id
         and payload.get("delivery_id") == delivery.id

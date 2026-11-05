@@ -6314,3 +6314,6 @@ not in local venv; installed in CI).
 ### 2026-11-05 — GC2-T0-06 SQLite wiring
 - Thay repository tự tạo schema/connection riêng bằng adapter dùng SQLite UoW và migration 0009; test file DB seed delivery IG tổng hợp.
 - Lặp cùng timestamp không thêm hàng; fixture gắn `_synthetic` và chưa gọi Meta.
+
+### 2026-11-05 — GC2-P5-T01 IG support
+- Mở eligibility của publish scheduler cho cả hai giá trị platform đã định nghĩa; test xác nhận target `ig_venho` tạo command bình thường.

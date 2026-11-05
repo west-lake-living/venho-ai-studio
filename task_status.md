@@ -5676,3 +5676,10 @@ ComfyUI, GPU, provider or network call.
 **Verify:** insight unit + file-SQLite integration → 6 passed; migration 0009, UoW, FK-enabled IG delivery seed, replay idempotency; `git diff --check` → PASS.
 **DoD:** [x] append/read use the shared migrated UoW; [x] replay remains idempotent on a real SQLite file; [ ] real collection/report schedule requires external Meta evidence and host timer.
 **Giả định:** legacy backfill observations retain their existing application DTO while persistence uses the canonical migration 0009 table.
+
+### GC2-P5-T01 — IG enqueue eligibility (2026-11-05)
+**Status:** DONE — enabled Instagram targets pass the same publish scheduler checks as Facebook.
+**Files:** `growth_engine/application/publishing/enqueue_due.py`, `tests/growth_engine/unit/application/test_enqueue_due.py`, `task_status.md`, `task_memory.md`
+**Verify:** enqueue scheduler tests → 8 passed; Instagram receives a durable publish command through the normal eligible path.
+**DoD:** [x] Instagram is no longer silently excluded after approval; Facebook pause/filter behavior remains covered.
+**Giả định:** the platform-specific media profile and verified route are enforced downstream at authorization/Make, while this scheduler keeps the same lifecycle rules.
