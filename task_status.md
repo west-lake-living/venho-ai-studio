@@ -5728,6 +5728,13 @@ ComfyUI, GPU, provider or network call.
 
 ### GC2-P8-T03 — IG analytics group riêng (2026-11-05)
 **Status:** PARTIAL — migrated SQLite weekly report returns an independent Instagram group; real Meta samples still await P0-T04.
+
+### GC2-P5-T05 — TEST factory envelope route identity repair (2026-11-05)
+**Status:** PARTIAL — synthetic TEST command factory now persists the exact channel key/platform; external Make TEST evidence remains human-gated.
+**Files:** `scripts/growth_engine/send_test_command.py`, `tests/growth_engine/integration/sqlite/test_test_command_factory.py`, `task_status.md`, `task_memory.md`
+**Verify:** focused SQLite factory → 1 passed; the command envelope is built with the persisted channel key and platform; no Make/network call.
+**DoD:** [x] Factory supplies route identity from SQLite rather than inferring it; [ ] MK-1…MK-11 evidence and TEST Page/IG run remain with Harry.
+**Giả định:** Test factory route identity is the channel row written in the isolated TEST database.
 **Files:** `tests/growth_engine/integration/sqlite/test_analytics_views_sqlite.py`, `task_status.md`, `task_memory.md`
 **Verify:** weekly analytics SQLite + collector/report tests → 14 passed; Facebook Hanoi, Facebook Ven Hồ and Instagram reach values remain separate.
 **DoD:** [x] `ig_venho` observations retain their own page/channel aggregate; [x] mock observations and out-of-week data remain excluded; [ ] real Meta observations remain gated.

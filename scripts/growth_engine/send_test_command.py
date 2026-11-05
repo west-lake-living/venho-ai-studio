@@ -395,7 +395,8 @@ def _create_test_command(environ: dict[str, str], output_path: Path) -> dict[str
             """SELECT c.id, c.delivery_id, c.revision_id, c.sequence_no, c.business_key,
                       c.payload_hash, c.dispatch_epoch, c.expires_at, c.next_attempt_at,
                       c.transport_attempts, c.signing_key_id, ch.id AS channel_id,
-                      ch.remote_account_id, mv.sha256 AS media_sha256
+                      ch.channel_key, ch.platform, ch.remote_account_id,
+                      mv.sha256 AS media_sha256
                FROM outbox_commands c JOIN deliveries d ON d.id=c.delivery_id
                JOIN channels ch ON ch.id=d.channel_id
                JOIN delivery_revisions r ON r.id=d.current_revision_id
@@ -421,6 +422,7 @@ def _create_test_command(environ: dict[str, str], output_path: Path) -> dict[str
     lease = DispatchLease(
         command=command, lease_token="test-factory-no-network-lease", environment="test",
         channel_id=row["channel_id"], remote_page_id=row["remote_account_id"],
+        channel_key=row["channel_key"], platform=row["platform"],
         payload_hash=row["payload_hash"], dispatch_epoch=row["dispatch_epoch"],
         route_ref=route_url, media_sha256=row["media_sha256"],
     )

@@ -6342,3 +6342,7 @@ not in local venv; installed in CI).
 
 ### 2026-11-05 — GC2-P8-T03 IG support
 - Expanded the real SQLite weekly-view fixture with an Instagram channel and independent reach observation; it remains separate from both Facebook pages.
+
+### 2026-11-05 — GC2-P5-T05 TEST factory route identity repair
+- The TEST envelope builder's DispatchLease contract gained `channel_key` and `platform` during IG support; the synthetic command factory had not selected/passed those values. It now reads both from the persisted channel row and passes them explicitly.
+- Focused factory integration passes without network access; TEST Make evidence remains a human gate.
