@@ -5763,6 +5763,13 @@ ComfyUI, GPU, provider or network call.
 **Verify:** revision/unit/bootstrap integration → 11 passed; VERIFY_DEV → 455 passed, 4 warnings; VERIFY_ARCH → 2 passed; `git diff --check` → OK. File-SQLite tests cover edit + REVOKE + notification/audit and reject an AUTHORIZED execution without writes.
 **DoD:** [x] APPROVED edit writes immutable revision and REVOKE then moves to IN_REVIEW; [x] revision guard rejects an AUTHORIZED execution; [x] review snapshot reads exact variant SHA and allowed actions; [x] UoW/adapter is exposed from bootstrap.
 **Giả định:** The preview URL builder remains supplied by the dashboard facade; P7-T01 composes that inbound facade and API operation. Notification uses durable `notify` job on the `publish` lane per §11.1.
+
+### GC2-P3-T05 — SQLite review workflows and reschedule (2026-11-05)
+**Status:** DONE — approval, reject, revoke, cancel and reschedule workflows are composed with SQLite/UoW transactions.
+**Files:** `growth_engine/adapters/outbound/persistence/sqlite/review_workflows.py`, `growth_engine/bootstrap.py`, `tests/growth_engine/integration/sqlite/test_review_workflows_sqlite.py`, `tests/growth_engine/integration/sqlite/test_generation_store.py`, `task_status.md`, `task_memory.md`
+**Verify:** workflow/unit/bootstrap integration → 18 passed; VERIFY_DEV → 460 passed, 4 warnings; VERIFY_ARCH → 2 passed; VERIFY_LEGACY → 2092 passed, 79 failed, 8 skipped, 12 warnings; all 79 failing node IDs match `docs/growth_engine/legacy_test_baseline.txt` (0 new, 0 missing); `git diff --check` → OK.
+**DoD:** [x] approval batch checks all items before writes, is idempotent and adds no publish command; [x] reject records its decision and atomically queues REVISE/NEW_TOPIC; [x] NEW_TOPIC supersedes and creates a same-target DRAFT; [x] revoke/cancel block AUTHORIZED; [x] reschedule revises approved deliveries and rejects any existing execution.
+**Giả định:** NEW_TOPIC temporarily points its DRAFT at the prior immutable package until the queued topic-generation job supplies the replacement package. Conflict responses are saved for idempotent replay.
 **Files:** `tests/growth_engine/integration/sqlite/test_analytics_views_sqlite.py`, `task_status.md`, `task_memory.md`
 **Verify:** weekly analytics SQLite + collector/report tests → 14 passed; Facebook Hanoi, Facebook Ven Hồ and Instagram reach values remain separate.
 **DoD:** [x] `ig_venho` observations retain their own page/channel aggregate; [x] mock observations and out-of-week data remain excluded; [ ] real Meta observations remain gated.

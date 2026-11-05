@@ -6365,3 +6365,8 @@ not in local venv; installed in CI).
 - Added a UoW-backed review adapter that re-reads context, matches QC by variant/caption/facts, applies immutable revision + revocation + delivery CAS + audit + `notify` job in one `BEGIN IMMEDIATE` transaction.
 - The same adapter reads `ReviewSnapshotData`; bootstrap now exposes the store/reader for P7's Dashboard API facade. The signed/full-size preview URL remains a facade-supplied builder.
 - Integration uses a migrated file SQLite DB with wholly synthetic channel/media/revision data; it verifies authorization races are rejected and snapshots return the selected variant SHA.
+
+### 2026-11-05 — GC2-P3-T05 SQLite review workflows
+- Added BEGIN IMMEDIATE/CAS persistence for whole-batch approvals with idempotency, rejection modes, D23 replacement delivery, revoke, cancel, and slot reschedule; audit, notification, and generation jobs are committed with their state changes.
+- Real file-SQLite integration verifies all-stale-batch rollback, success replay without publish commands, NEW_TOPIC replacement, ACKED command cancellation, and reschedule rejection when any execution exists.
+- VERIFY_LEGACY remained exactly at the main baseline: 79 same red node IDs, 0 new, 0 missing.
