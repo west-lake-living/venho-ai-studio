@@ -4,30 +4,30 @@
 
 So sánh kế hoạch Growth Engine v2 với lịch legacy trong 3–7 ngày liên tục. DRY_RUN chỉ tạo và lưu đề xuất vào DB v2; tuyệt đối không gửi command tới Make, không gọi module đăng Facebook/Instagram và không tạo bài công khai. Không chuyển publishing authority trong giai đoạn này.
 
-Runbook này là checklist, không phải bằng chứng đã chạy. Chỉ bắt đầu sau khi backend v2, job lane và chế độ DRY_RUN đã được triển khai, `doctor` đạt yêu cầu, và Harry xác nhận thời gian quan sát. Hiện `worker --lane jobs` chưa được hỗ trợ; không thể bắt đầu P9-T02 trên runtime hiện tại.
+Runbook này là checklist, không phải bằng chứng đã chạy. Chỉ bắt đầu sau khi backend v2, jobs lane và chế độ DRY_RUN đã được triển khai, `doctor` đạt yêu cầu, và Harry xác nhận thời gian quan sát. Jobs lane đã được compose; DRY_RUN mode và host gates vẫn phải được xác minh trước khi quan sát.
 
 ## Điều kiện trước khi bắt đầu
 
 - [ ] Có release v2 đã được deploy ở `DISABLED`; `venho-engine doctor` không có FAIL.
 - [ ] Jobs lane và DRY_RUN chỉ-ghi-DB hoạt động; test chứng minh không tạo command/outbox hoặc external side effect.
 - [ ] Lịch legacy và các nguồn dữ liệu được snapshot chỉ đọc; không có hai scheduler cùng quyền đăng.
-- [ ] Mapping rõ Page A `fb_hanoi` → `1124616474074140` và Page B `fb_venho` → `803531149684177`; không suy Page từ tên hiển thị.
+- [ ] Mapping rõ Hanoi `fb_hanoi` → `1124616474074140`, Ven Hồ `fb_venho` → `803531149684177`, Instagram `ig_venho` → business account `17841457936965829`; không suy channel từ tên hiển thị.
 - [ ] Có nơi lưu báo cáo đã lọc bí mật và Telegram digest được cấu hình; không ghi URL webhook, token, signed URL hoặc thông tin đăng nhập.
 - [ ] Ghi mốc bắt đầu/kết thúc, timezone `Asia/Ho_Chi_Minh`, release SHA và người vận hành.
 
 ## Chu trình hằng ngày
 
-1. Chụp danh sách slot legacy cho ngày quan sát ở chế độ chỉ đọc; ghi slot ID, giờ ICT, pillar/chủ đề, media SHA đã duyệt, và hai Page ID.
+1. Chụp danh sách slot legacy cho ngày quan sát ở chế độ chỉ đọc; ghi slot ID, giờ ICT, pillar/chủ đề, media SHA đã duyệt, và mapping riêng cho hai Facebook Page cùng Instagram account.
 2. Cho v2 sinh đề xuất DRY_RUN vào DB riêng. Xác nhận số bản ghi mới và trạng thái; dừng nếu thấy command có thể gửi, trạng thái LIVE, hoặc external mutation.
-3. Ghép slot theo ID nghiệp vụ; so lịch, chủ đề/pillar, media SHA, caption/revision và mapping riêng cho từng Page. Không gộp reach hay kết quả của hai Page.
+3. Ghép slot theo ID nghiệp vụ; so lịch, chủ đề/pillar, revision/caption và từng target độc lập. So từng Facebook Page với ảnh đã duyệt; so Instagram với revision và variant Instagram 4:5 đã duyệt. Không gộp target outcomes, reach hay kết quả giữa các kênh.
 4. Ghi mọi sai khác, thiếu dữ liệu và bằng chứng nguồn. Không tự sửa dữ liệu legacy hay đổi nội dung đã duyệt trong lúc đối chiếu.
 5. Gửi digest Telegram đã lọc bí mật: tổng slot, số khớp, số khác, số thiếu, Page mapping và liên kết nội bộ tới báo cáo.
 
 ## Bảng ghi nhận
 
-| Ngày (ICT) | Slot | Lịch | Chủ đề/pillar | SHA ảnh đã duyệt | Hanoi Page ID | Ven Hồ Page ID | Kết quả | Sai khác / evidence ref |
-|---|---|---|---|---|---|---|---|---|
-| YYYY-MM-DD |  |  |  |  | 1124616474074140 | 803531149684177 | PENDING |  |
+| Ngày (ICT) | Slot | Lịch | Chủ đề/pillar | Revision/variant | SHA ảnh đã duyệt | Hanoi Page ID | Ven Hồ Page ID | IG business ID | Kết quả | Sai khác / evidence ref |
+|---|---|---|---|---|---|---|---|---|---|---|
+| YYYY-MM-DD |  |  |  |  |  | 1124616474074140 | 803531149684177 | 17841457936965829 | PENDING |  |
 
 Evidence ref phải trỏ đến bản ghi/report nội bộ đã khử bí mật; không chép nội dung credential hoặc URL có chữ ký vào bảng.
 

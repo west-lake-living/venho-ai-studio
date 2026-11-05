@@ -6390,3 +6390,8 @@ not in local venv; installed in CI).
 - Added a first-session checklist with ordered copy/paste commands, expected results, stop points, private environment handling, TEST API, Make TEST, health/Telegram and restore rehearsal; linked it from the deploy README.
 - Jobs lane is now composed by GC2-P4-T04. The runbook stops at T0-05/T0-06 because the permitted task files contain no timer CLI/unit; no push, host command or deployment ran.
 - Assumption: ASUS uses Ubuntu/Debian and user systemd; operator confirms package and unit availability on the host.
+
+### 2026-11-05 — GC2-P9-T02 Instagram target mapping
+- Extended the DRY_RUN checklist to compare three independent targets and their channel-specific approved variants; listed the two Page IDs and Instagram business account ID from the channel manifest.
+- Removed the stale claim that the `jobs` lane is unsupported. No DRY_RUN, worker, Telegram or external service ran; the DRY_RUN-only-persistence gate remains unverified.
+- Assumption: Instagram uses the 4:5 approved variant and retains an outcome separate from both Facebook Pages.

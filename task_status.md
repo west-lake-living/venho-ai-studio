@@ -5567,10 +5567,10 @@ ComfyUI, GPU, provider or network call.
 ### GC2-P9-T02 — DRY_RUN song song 3–7 ngày (2026-11-05)
 **Status:** PARTIAL — runbook/checklist hoàn tất; chưa triển khai hoặc chạy quan sát DRY_RUN theo giới hạn task
 **Files:** `docs/growth_engine/runbooks/dry_run_parallel.md`, `task_status.md`, `task_memory.md`
-**Verify:** checklist đối chiếu với §12.2; `git diff --check` → OK. Không chạy DRY_RUN, worker, Telegram hay dịch vụ production.
-**DoD:** [x] tiêu chí song song 3–7 ngày và so sánh slot/chủ đề/ảnh SHA/mapping hai Page; [x] checklist digest và điều kiện dừng; [ ] runtime jobs lane/DRY_RUN chưa sẵn sàng và Harry chưa xác nhận vận hành.
-**Rủi ro / việc để lại:** CLI hiện từ chối `worker --lane jobs`; chưa có evidence runtime chứng minh DRY_RUN không phát sinh side effect. Giữ production DISABLED.
-**Giả định:** bảng mapping dùng Page ID đã khai báo trong `channels.yaml`; mọi evidence lưu ở kho nội bộ đã khử bí mật.
+**Verify:** checklist đối chiếu §12.2 và 3 publishing targets; `git diff --check` → OK. Không chạy DRY_RUN, worker, Telegram hay dịch vụ production.
+**DoD:** [x] tiêu chí 3–7 ngày; [x] slot/revision, hai Facebook Page, Instagram 4:5 variant, digest và điều kiện dừng; [x] jobs lane đã wired ở GC2-P4-T04; [ ] DRY_RUN mode, observation và Harry gate còn chờ.
+**Rủi ro / việc để lại:** Không có bằng chứng runtime DRY_RUN chỉ ghi DB; giữ production DISABLED cho tới khi mode/test và host gates đạt.
+**Giả định:** Facebook targets dùng ảnh đã duyệt còn Instagram dùng variant 4:5; evidence lưu nội bộ sau khi khử bí mật.
 
 ### GC2-P9-T03 — Cutover (2026-11-05)
 **Status:** PARTIAL — runbook tuần tự hoàn tất; cutover chưa chạy và importer `--apply` còn thiếu
