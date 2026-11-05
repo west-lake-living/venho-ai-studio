@@ -48,7 +48,7 @@ def _headers() -> dict[str, str]:
     return {"Authorization": "Bearer synthetic-dashboard-bearer"}
 
 
-def test_dashboard_routes_fail_closed_when_dashboard_service_is_not_composed(tmp_path: Path) -> None:
+def test_composed_dashboard_routes_fail_closed_when_sqlite_is_not_ready(tmp_path: Path) -> None:
     token = "synthetic-dashboard-bearer"
     settings = Settings(
         env="test",
@@ -61,7 +61,8 @@ def test_dashboard_routes_fail_closed_when_dashboard_service_is_not_composed(tmp
         "/api/growth/v2/channels", headers=_headers()
     )
     assert response.status_code == 503
-    assert response.json()["error"]["code"] == "ERR_GC2_DEPENDENCY_UNAVAILABLE"
+    assert response.json()["error"]["code"] == "ERR_GC2_DB_BUSY"
+    assert "items" not in response.json()
 
 
 def test_stale_revision_returns_412_and_preserves_if_match(tmp_path: Path) -> None:

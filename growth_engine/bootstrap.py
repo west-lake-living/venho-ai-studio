@@ -92,6 +92,14 @@ class _LazyLocalMediaWriter:
             self._store = module.LocalMediaStore(Path(self._media_root))
         return self._store.put_original(stream, max_bytes=max_bytes)
 
+    def open(self, object_key: str) -> Any:
+        if _is_required(self._media_root):
+            raise ValueError("configure GE_MEDIA_ROOT before reading generated images")
+        if self._store is None:
+            module = import_module("growth_engine.adapters.outbound.media.local_store")
+            self._store = module.LocalMediaStore(Path(self._media_root))
+        return self._store.open(object_key)
+
 
 MIGRATIONS = Path(__file__).parent / "adapters" / "outbound" / "persistence" / "sqlite" / "migrations"
 REQUIRED_CHANNELS = frozenset({"fb_hanoi", "fb_venho", "ig_venho"})
@@ -345,6 +353,7 @@ class Container:
     generation_store: Any
     review_store: Any
     review_data_reader: Any
+    dashboard_api: Any
     approve_group: Any
     reject_revision: Any
     revoke_approval: Any
@@ -355,6 +364,7 @@ class Container:
     run_lanes: Any
     readiness_check: Callable[[], tuple[bool, int | None]]
     ingest_candidate: Any
+    ingest_asset: Any
     decide_candidate: Any
     expire_candidates: Any
     enqueue_due: Any
@@ -434,6 +444,10 @@ def build_container(settings: Any, *, metrics_source: Any | None = None) -> Cont
     legacy_generator_adapter = import_module("growth_engine.adapters.outbound.legacy.generator_adapter")
     legacy_fact_adapter = import_module("growth_engine.adapters.outbound.legacy.fact_source")
     ingest_asset_adapter = import_module("growth_engine.application.media.ingest_asset")
+    upload_asset_adapter = import_module("growth_engine.application.media.upload_asset")
+    dashboard_asset_store_adapter = import_module(
+        "growth_engine.adapters.outbound.persistence.sqlite.dashboard_assets"
+    )
     legacy_adapter = import_module("growth_engine.adapters.outbound.legacy.importer")
     backup_adapter = import_module("growth_engine.adapters.outbound.backup.sqlite_backup")
     restore_adapter = import_module("growth_engine.adapters.outbound.backup.restore")
@@ -465,6 +479,15 @@ def build_container(settings: Any, *, metrics_source: Any | None = None) -> Cont
     review_workflows_adapter = import_module(
         "growth_engine.adapters.outbound.persistence.sqlite.review_workflows"
     )
+    dashboard_reads_adapter = import_module(
+        "growth_engine.adapters.outbound.persistence.sqlite.dashboard_reads"
+    )
+    dashboard_api_adapter = import_module("growth_engine.adapters.inbound.api.dashboard_facade")
+    slot_views_adapter = import_module("growth_engine.application.queries.slot_views")
+    incident_views_adapter = import_module("growth_engine.application.queries.incident_views")
+    review_snapshot_adapter = import_module("growth_engine.application.review.build_review_snapshot")
+    create_revision_adapter = import_module("growth_engine.application.review.create_revision")
+    controls_adapter = import_module("growth_engine.application.ops.controls")
     approve_group_adapter = import_module("growth_engine.application.review.approve_group")
     reject_revision_adapter = import_module("growth_engine.application.review.reject_revision")
     revoke_approval_adapter = import_module("growth_engine.application.review.revoke_approval")
@@ -650,6 +673,47 @@ def build_container(settings: Any, *, metrics_source: Any | None = None) -> Cont
         clock,
         ids,
     )
+    dashboard_reads = dashboard_reads_adapter.SqliteDashboardReads(
+        uow_factory,
+        environment=channel_environment,
+        now_ms=clock.now_ms,
+        media_store=_LazyLocalMediaWriter(settings.media_root),
+    )
+    slot_views = slot_views_adapter.GetSlotViews(dashboard_reads)
+    incident_views = incident_views_adapter.GetIncidentViews(dashboard_reads)
+    review_snapshot = review_snapshot_adapter.BuildReviewSnapshot(
+        review_store,
+        preview_url_builder=lambda sha: f"/api/growth/v2/assets/preview/{sha}",
+    )
+    create_revision = create_revision_adapter.CreateRevision(review_store, clock, ids)
+    controls = controls_adapter.ControlsUseCase(
+        uow_factory, clock, ids, environment=channel_environment
+    )
+    dashboard_asset_store = dashboard_asset_store_adapter.SqliteDashboardAssetUploadStore(
+        uow_factory
+    )
+    dashboard_upload_asset = upload_asset_adapter.UploadAsset(
+        asset_ingestor,
+        dashboard_asset_store,
+        ids=ids,
+        now_ms=clock.now_ms,
+    )
+    dashboard_api = dashboard_api_adapter.DashboardApi(
+        reads=dashboard_reads,
+        slot_views=slot_views,
+        incident_views=incident_views,
+        review_snapshot=review_snapshot,
+        create_revision=create_revision,
+        reschedule_slot=reschedule_slot,
+        approve_group=approve_group,
+        reject_revision=reject_revision,
+        revoke_approval=revoke_approval,
+        cancel_delivery=cancel_delivery,
+        decide_candidate=decide_adapter.DecideCandidate(candidate_store, clock, ids),
+        controls=controls,
+        upload_asset=dashboard_upload_asset,
+        clock=clock,
+    )
     generate_package = generate_package_adapter.GeneratePackage(
         lane_generation_store,
         generator,
@@ -728,6 +792,7 @@ def build_container(settings: Any, *, metrics_source: Any | None = None) -> Cont
         generation_store=generation_store,
         review_store=review_store,
         review_data_reader=review_store,
+        dashboard_api=dashboard_api,
         approve_group=approve_group,
         reject_revision=reject_revision,
         revoke_approval=revoke_approval,
@@ -738,6 +803,7 @@ def build_container(settings: Any, *, metrics_source: Any | None = None) -> Cont
         run_lanes=run_lanes,
         readiness_check=readiness_check,
         ingest_candidate=ingest_adapter.IngestCandidate(candidate_store, clock, ids),
+        ingest_asset=asset_ingestor,
         decide_candidate=decide_adapter.DecideCandidate(candidate_store, clock, ids),
         expire_candidates=expire_adapter.ExpireCandidates(candidate_store, clock),
         enqueue_due=enqueue_due,

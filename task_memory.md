@@ -6375,3 +6375,9 @@ not in local venv; installed in CI).
 - Implemented notification persistence/leases/retries on the existing `jobs` table; SQLite reminder readers reserve only current revisions and compute tomorrow's digest. Composed reminder/digest into `worker --lane jobs` and send dispatch into the publish worker.
 - Verified file-backed SQLite, retry through the `Notifications` service, stale revision cancellation, dedupe and conditional bootstrap schedules; all outbound behavior used fakes or remained unconfigured.
 - Production requires `GE_DASHBOARD_BASE_URL`, `GE_TELEGRAM_BOT_TOKEN`, and `GE_TELEGRAM_CHAT_ID`; no credentials or outbound request were used.
+
+### 2026-11-05 — GC2-P7-T01 Dashboard facade and SQLite readers
+- Composed `DashboardApi`, slot/incident query use cases, review snapshot, control/review mutations, SQLite Dashboard projections, preview reads and streamed asset upload in `build_container`.
+- Upload receipts are stored as durable jobs, and identical Idempotency-Key replays are fingerprint-checked. SQLite integration covers actual reads, stale ETag, all-or-nothing approval conflict, database outage, media persistence and upload replay.
+- VERIFY_DEV: 471 passed; VERIFY_ARCH: 2 passed; VERIFY_LEGACY: 2103 passed, 79 failed, 8 skipped; the 79 failed node IDs match the committed main baseline exactly. No network or provider call occurred.
+- Delivery reconcile/safe-retry routes remain fail-closed until their evidence-bound use cases are composed; no retry is available for UNKNOWN.

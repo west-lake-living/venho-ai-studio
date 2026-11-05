@@ -1,10 +1,13 @@
 from __future__ import annotations
 
+import errno
+import sqlite3
 from collections.abc import Mapping
 from typing import Any
 
 from fastapi import Request, Response
 
+from growth_engine.application.errors import ApplicationError
 from growth_engine.domain.kernel.errors import DomainError, ErrorCode
 
 
@@ -60,12 +63,14 @@ def invoke(
             if_match=if_match,
             idempotency_key=idempotency_key,
         )
-    except DomainError:
+    except (DomainError, ApplicationError):
         raise
     except Exception as error:
         code = getattr(error, "code", "")
-        if code == "ERR_GC2_DB_BUSY" or isinstance(error, (OSError, TimeoutError)):
+        if code == "ERR_GC2_DB_BUSY" or isinstance(error, (OSError, TimeoutError, sqlite3.Error)) or getattr(error, "errno", None) in {errno.EBUSY, errno.EAGAIN}:
             raise DomainError(ErrorCode.DB_BUSY, "Không đọc/ghi được cơ sở dữ liệu.") from error
+        if isinstance(error, ValueError):
+            raise DomainError(ErrorCode.VALIDATION, str(error)) from error
         raise DomainError(ErrorCode.DEPENDENCY_UNAVAILABLE, "Dashboard service chưa sẵn sàng.") from error
 
     body = getattr(result, "body", result)
