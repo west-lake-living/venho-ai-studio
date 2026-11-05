@@ -8,7 +8,7 @@ The existing Make scenario already has Facebook and Instagram routes. Replacing 
 
 ## Decision
 
-Keep one scenario and one Router for `fb_hanoi`, `fb_venho` and `ig_venho`. Each route filters on its fixed `channel_key` and `environment`; disable the fallback route. Give each route its own application bearer. Only the matching route may create a post.
+Keep one scenario and one Router for `fb_hanoi`, `fb_venho` and `ig_venho`. The shared filter validates the command schema and environment; each route filters on its fixed `channel_key`; disable the fallback route. Give each route its own application bearer. Only the matching route may create a post. Facebook routes fetch the signed image as binary before posting; the Instagram route passes the signed image URL to Instagram for Business.
 
 The v2 targets are Facebook Page *Ven Hồ Hotel Hanoi* (`1124616474074140`), Facebook Page *Ven Hồ Hotel* (ID still `REQUIRED_FROM_P0`) and Instagram business account `ig_venho` (ID still `REQUIRED_FROM_P0`). Threads remains history-only.
 

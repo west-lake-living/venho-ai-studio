@@ -3,12 +3,14 @@
 | Mục | Giá trị |
 |---|---|
 | **Mã kế hoạch** | `GC2` (Growth Content v2) |
-| **Phiên bản** | v1.1-CA — bản hợp nhất, tối ưu kiến trúc từ *Technical Spec & Plan v1.0* (04/11/2026) |
+| **Phiên bản** | v1.2-CA — bản hợp nhất, tối ưu kiến trúc từ *Technical Spec & Plan v1.0* (04/11/2026) |
 | **Ngày** | 04/11/2026 (Asia/Ho_Chi_Minh) |
 | **Đầu vào** | `GROWTH_CONTENT_V2_TECHNICAL_SPEC_AND_PLAN.md` v1.0 · `VENHO_GROWTH_AGENT_STATUS_REPORT_2026-11-04.md` · cấu trúc repo `west-lake-living/venho-ai-studio` @ `9ab0a22` (04/11/2026) |
-| **Trạng thái** | PROPOSED — chưa triển khai, chưa đổi production. Các quyết định §2 phải được Harry chốt trước khi chạy phase tương ứng |
+| **Trạng thái** | PROPOSED — chưa triển khai, chưa đổi production. Đã chốt 04/11: phương án C, 3 kênh, Make router (xem §2) |
 | **Người đọc chính** | AI Agent (Claude Code trong VS Code) + Harry (duyệt gate) |
 | **Vị trí lưu đề xuất trong repo** | `docs/growth_engine/GC2_MASTER_PLAN.md` |
+
+> **Thay đổi v1.2 (04/11/2026, Harry chốt):** (1) **phương án C** — v3.2 tiếp tục chạy và được thêm module *chỉ đọc* (Meta client dùng chung, đối soát 3 kênh, Insights cho bài đã đăng) trong lúc xây lõi v2; (2) **3 kênh**: Facebook *Ven Hồ Hotel Hanoi*, Facebook *Ven Hồ Hotel*, Instagram; (3) **dùng lại scenario Make có Router** hiện tại, đổi sang lọc theo `channel_key`. Chi tiết: §1.3 (O14–O16), §2, Track 0.
 
 > **Tên gọi.** "v2" là tên **đợt nâng cấp** này, không phải hạ phiên bản agent v3.1/v3.2. Code mới nằm trong package `growth_engine/` (xem ADR-03). Mọi ID trong tài liệu dùng tiền tố `GC2-`.
 
@@ -111,7 +113,15 @@ Growth Agent v3.2 đăng đúng giờ từ khi lên asus-server (21/10), nhưng 
 2. **Lỗi hỏng âm thầm** — hệ thống kiểm tra "bước đã chạy" chứ không kiểm tra "đầu ra trông thế nào" (ảnh xoay 04/11, ảnh dự phòng 2 tháng, ảnh phòng ngủ gắn bài cà phê).
 3. **Trạng thái trong JSON commit vào git** — nhiều tiến trình cùng ghi, phải có script gộp, skip-worktree, checkout Dashboard có thể kẹt.
 
-Thêm yêu cầu mới: đích đăng là **hai Facebook Page độc lập** (không phải FB + IG).
+**Hiện trạng kênh (Harry xác nhận 04/11/2026): 3 kênh.**
+
+| `channel_key` | Kênh | ID | Ghi chú |
+|---|---|---|---|
+| `fb_hanoi` | Facebook Page *Ven Hồ Hotel Hanoi* | `1124616474074140` | Đăng từ 08/2026; registry có 35 bài PUBLISHED: 32 post ID chuẩn, 1 ID dạng `pfbid…`, 2 ID giả |
+| `fb_venho` | Facebook Page *Ven Hồ Hotel* | xác minh ở P0-T02 | Thêm ngày 03/11/2026; bài đầu tiên 04/11 (bị xoá vì ảnh sai, Harry đăng lại tay) |
+| `ig_venho` | Instagram business | xác minh ở P0-T02 | Đăng đều từ 08/2026 (46 bài) |
+
+Make hiện dùng **Router rẽ cả hai nhánh Facebook** cho mỗi lệnh FB, nên registry chỉ ghi post ID của Page Hanoi — kết quả Page *Ven Hồ Hotel* không được hệ thống theo dõi. Ngoài ra 2 bài (10/08, 12/08) mang post ID giả `"3. Post ID"` (nhãn field Make) nhưng vẫn ở trạng thái PUBLISHED.
 
 ### 1.2. Giải pháp một câu
 
@@ -133,19 +143,23 @@ Một **Growth Engine** duy nhất trên server (Python, Clean Architecture) gi�
 | O8 | Không nói rõ bản nháp vào DB mới bằng cách nào | Thêm **Phase P4 — Generation bridge** (strangler quanh M02/M05/image options) | Đây là khoảng trống lớn nhất khi triển khai thật |
 | O9 | `can_retry` cho riêng nút retry | **`allowed_actions` do backend trả** cho mọi nút | UI không tự suy luận trạng thái (UX nhất quán, ít bug) |
 | O10 | Watchdog GitHub Actions hoặc Mac | **Dead-man switch** (healthchecks.io hoặc Mac Mini) | GitHub `schedule` đã trễ 4–7 giờ trong thực tế (báo cáo 04/11) |
-| O11 | 8 phase (P0–P7) | **10 phase (P0–P9) + Track 0**, 61 task card có `Files/Tests/DoD/Verify` | Task nhỏ, AI tự chạy được, Harry duyệt theo gate |
+| O11 | 8 phase (P0–P7) | **10 phase (P0–P9) + Track 0**, 64 task card có `Files/Tests/DoD/Verify` | Task nhỏ, AI tự chạy được, Harry duyệt theo gate |
 | O12 | `receipt_inbox.execution_id` có FK | **Không FK**, receipt lạ lưu `QUARANTINED` | Không bao giờ mất bằng chứng |
 | O13 | — | Mã lỗi chuẩn `ERR_GC2_*`, mã preflight `PF_*`, test chặn network, lệnh `venho-engine doctor` | DX: chẩn đoán bằng một lệnh tự chứa |
+| O14 | Mỗi Page một scenario Make | **Một scenario hiện có + Router**, mỗi nhánh = một kênh, lọc `channel_key` (ADR-09) | Dùng lại connection/cấu hình Harry đã làm; mỗi lệnh chỉ chạy đúng một nhánh |
+| O15 | Instagram không là đích v2 | **Giữ Instagram — 3 kênh** (Harry chốt 04/11) | IG đang đăng đều; thêm profile ảnh 4:5, nhánh router IG |
+| O16 | Đóng băng toàn bộ v3.2 tới cutover | **Phương án C**: đóng băng *lõi* v3.2, thêm module chỉ đọc (T0-04…T0-06) dùng chung code với v2 | Có số đo thật và đối soát 3 kênh sau ~1–2 tuần thay vì ~8 tuần |
 
 ### 1.4. Mốc phát hành
 
 | Mốc | Nội dung | Phase |
 |---|---|---|
 | **M0 — Sẵn sàng** | Inventory thật, quyết định §2 chốt, hợp đồng Make/Meta có fixture | P0 |
-| **M1 — Đăng an toàn** | 2 Page, duyệt đúng bytes, admission, receipt, xác minh, sự cố, Dashboard qua API, cutover | P1–P7, P9 |
+| **M0+ — Số đo sớm (v3.2)** | Đối soát 3 kênh hằng ngày, Insights thật cho bài đã đăng, báo cáo tuần | Track 0 |
+| **M1 — Đăng an toàn** | 3 kênh, duyệt đúng bytes, admission, receipt, xác minh, sự cố, Dashboard qua API, cutover | P1–P7, P9 |
 | **M2 — Đo lường thật** | Meta Insights theo Page, checkpoint 24h/72h/7d, báo cáo tuần | P8 |
 
-Ước lượng: **30–42 ngày kỹ thuật** (tổng các task card; chưa tính chờ quyền Meta, thời gian Harry duyệt và ≥ 14 ngày pilot). Cao hơn spec v1.0 (22–34) chủ yếu do Phase P4 generation bridge và test fault-injection chi tiết. Số này là ước lượng thiết kế, chốt lại sau P0.
+Ước lượng: **34–46 ngày kỹ thuật** (tổng các task card; chưa tính chờ quyền Meta, thời gian Harry duyệt và ≥ 14 ngày pilot). Cao hơn spec v1.0 (22–34) do Phase P4 generation bridge, test fault-injection, Instagram (+2–3 ngày) và Track 0 mở rộng (+3 ngày, nhưng P6/P8 giảm ~2 ngày nhờ dùng lại Meta client). Số này là ước lượng thiết kế, chốt lại sau P0.
 
 ---
 
@@ -155,15 +169,16 @@ Một **Growth Engine** duy nhất trên server (Python, Clean Architecture) gi�
 
 | ID | Câu hỏi | Mặc định đề xuất | Phương án khác | Chặn |
 |---|---|---|---|---|
-| **GC2-D00** | v2 đưa DB + API trên server làm authority duy nhất — gần với hướng Control Plane v4.x đã **tạm hoãn** (09/2026). Có mở lại qua L2 Governance? | **Đồng ý**, ghi DR mới "GC2 thay thế quyết định hoãn v4.x cho phần publishing" | Giữ v3.2, chỉ làm Track 0 + U1 analytics | P1 |
-| **GC2-D01** | Đích v2 = 2 Facebook Page. Instagram dừng ở cutover? | **Dừng IG tại cutover** (giữ dữ liệu lịch sử). Trước cutover, legacy vẫn đăng FB+IG như hiện tại | Giữ IG qua legacy song song → **vi phạm INV-10**, không khuyến nghị | P9 |
-| **GC2-D02** | Hai Page dùng chung nội dung? | Chung package + chung ảnh; caption theo `caption_profile` từng Page (mặc định giống nhau); **duyệt nhóm 1 chạm** cho cả slot | Caption riêng hoàn toàn (tăng chi phí AI + thời gian duyệt) | P4 |
+| **GC2-D00** | v2 đưa DB + API trên server làm authority duy nhất — gần với hướng Control Plane v4.x đã **tạm hoãn** (09/2026). Có mở lại qua L2 Governance? | ✅ **Chốt hướng 04/11** (phương án C có xây lõi v2); ghi DR chính thức "GC2 thay thế quyết định hoãn v4.x cho phần publishing" ở P0-T06 | Giữ v3.2, chỉ làm Track 0 + U1 analytics | P1 |
+| **GC2-D01** | Kênh đích v2 | ✅ **Chốt 04/11: 3 kênh** — `fb_hanoi` (*Ven Hồ Hotel Hanoi*, `1124616474074140`), `fb_venho` (*Ven Hồ Hotel*), `ig_venho` (Instagram). Threads chỉ giữ lịch sử | Bỏ IG (spec v1.0) | P0 |
+| **GC2-D02** | Các kênh dùng chung nội dung? | Chung package + chung ảnh gốc (khớp cách router đang đăng); FB giữ tỉ lệ, IG có variant 4:5 riêng; caption theo `caption_profile` từng kênh (mặc định giống nhau); **duyệt nhóm 1 chạm** cho cả 3 kênh | Caption riêng hoàn toàn (tăng chi phí AI + thời gian duyệt) | P4 |
 | **GC2-D03** | Giao thức admission với Make | **Single-gate** (ADR-04) | 2 bước claim + authorize như spec v1.0 | P5 |
 | **GC2-D04** | Vị trí code | Package `growth_engine/` top-level trong `venho-ai-studio` | `growth_orchestrator/v2/` | P1 |
 | **GC2-D05** | Facts (M01) và Trend candidates | Facts: chỉ snapshot vào package. Trend/research candidates: chuyển vào DB v2 | Chuyển cả facts (spec v1.0) — cần CR riêng cho M01 | P4 |
 | **GC2-D06** | Backup ngoài máy & watchdog | Archive mã hoá bằng `age` (khoá riêng giữ ngoài server) → thư mục Google Drive riêng; heartbeat → healthchecks.io | Backup sang Mac Mini qua Tailscale; watchdog bằng launchd trên Mac | P6 |
-| **GC2-D07** | v3.2 trong lúc xây v2 | **Đóng băng**: không `rollout-advance`, giữ `--allow-shadow` tới cutover; chỉ hotfix an toàn (Track 0) | Nâng stage v3.2 ngày 05/11 như báo cáo đề xuất | Track 0 |
+| **GC2-D07** | v3.2 trong lúc xây v2 | ✅ **Chốt 04/11: phương án C** — đóng băng *lõi* (dispatch, registry, rollout stage, `--allow-shadow`, `schedule`); **cho phép** module bổ sung chỉ đọc: T0-01, T0-04, T0-05, T0-06 | A: chỉ nâng cấp tại chỗ · B: đóng băng toàn bộ | Track 0 |
 | **GC2-D08** | Hostname cho Make/media | `growth-api.venhohotel.com` qua Cloudflare Tunnel; `/internal/*` dùng Access Service Token + bearer; `/media/publish/*` bypass Access + token ký | Dùng path dưới `os.venhohotel.com` | P5 |
+| **GC2-D09** | Cấu trúc scenario Make | ✅ **Chốt 04/11**: dùng scenario Router hiện có; mỗi nhánh lọc `channel_key`, không nhánh fallback, bearer riêng mỗi nhánh (ADR-09) | Mỗi kênh một scenario riêng | P5 |
 
 ### 2.1. ADR tóm tắt
 
@@ -173,10 +188,11 @@ Một **Growth Engine** duy nhất trên server (Python, Clean Architecture) gi�
 | **ADR-02 Authority** | Một service FastAPI (`growth-engine-api`) + 2 worker cùng release là nơi duy nhất ghi DB. Dashboard, Make, GitHub Actions đều đi qua HTTP | Hết checkout phụ, hết sync JSON | Dashboard gọi CLI ghi thẳng DB: hai checkout khác commit cùng ghi một DB → phá bất biến |
 | **ADR-03 Package** | `growth_engine/` top-level; chỉ `adapters/outbound/legacy/` được import code legacy | Có test kiến trúc tự động | `growth_orchestrator/v2/` dễ import nhầm module cũ |
 | **ADR-04 Admission** | Single-gate: `envelope → Make tải ảnh → POST authorize → (execute=true) → tạo bài → receipt`. Chỉ CAS đầu tiên trả `execute=true` | Execution chỉ có `AUTHORIZED/REPORTED/NO_SIDE_EFFECT/UNKNOWN` | 2 bước: thêm endpoint, trạng thái PREPARING, lease recovery |
-| **ADR-05 Media** | Media store local theo SHA-256, Make tải qua `GET /media/publish/{sha}.jpg?t=…` (token HMAC, hết hạn) rồi **upload binary** lên Facebook. Drive chỉ là nguồn nạp | Ảnh gửi đi luôn đúng bytes đã duyệt | Drive public URL: bytes có thể đổi dưới cùng ID |
-| **ADR-06 Machine auth** | Bearer riêng cho từng principal (`bff`, `make-page-a`, `make-page-b`, `research-ingest`), lưu dạng hash; scope hẹp. Capability token HMAC (stdlib) cho từng command | Rotate/revoke riêng từng principal | HMAC raw-body từ Make: chưa chứng minh Make làm được |
+| **ADR-05 Media** | Media store local theo SHA-256, phục vụ qua `GET /media/publish/{sha}.jpg?t=…` (token HMAC, hết hạn). **Facebook:** Make tải rồi upload binary. **Instagram:** Meta tự tải ảnh từ URL này, nên token phải còn hạn tới `execute_before + 30′` và route không qua trang login. Drive chỉ là nguồn nạp | Ảnh gửi đi luôn đúng bytes đã duyệt | Drive public URL: bytes có thể đổi dưới cùng ID |
+| **ADR-06 Machine auth** | Bearer riêng cho từng principal (`bff`, `make-fb-hanoi`, `make-fb-venho`, `make-ig`, `research-ingest`), lưu dạng hash; scope hẹp. Capability token HMAC (stdlib) cho từng command | Rotate/revoke riêng từng principal | HMAC raw-body từ Make: chưa chứng minh Make làm được |
 | **ADR-07 Deploy** | `~/venho/growth-engine/releases/<sha>` + symlink `current`, state ở `~/venho/state/growth-engine/`, `systemctl --user` | Deploy không đè DB/media/secrets | `/opt` + root |
 | **ADR-08 Worker lanes** | `growth-engine-worker@publish` (scheduler, outbox, timeout, verify, notify) và `@jobs` (generation, media, QC, lanes, metrics, backup) | Tick 09:00 không bị job AI chặn; chỉ lane `publish` có scheduler | 1 worker: job AI 3–5 phút làm lỡ cửa sổ |
+| **ADR-09 Make topology** | Một scenario (bản hiện có) + Router; mỗi nhánh = một kênh, filter `channel_key` + `environment`, **không** bật fallback route; mỗi nhánh có bearer riêng | Dùng lại connection; scenario bị tắt thì dừng cả 3 kênh (chấp nhận ở quy mô này) | Mỗi kênh một scenario: cách ly tốt hơn nhưng phải dựng lại |
 
 ---
 
@@ -184,7 +200,7 @@ Một **Growth Engine** duy nhất trên server (Python, Clean Architecture) gi�
 
 ### 3.1. Trong phạm vi v2
 
-- Hai Facebook Page có lịch, duyệt, kết quả, retry, analytics **riêng**.
+- **Ba kênh** (`fb_hanoi`, `fb_venho`, `ig_venho` — bảng ở §1.1) có lịch, duyệt, kết quả, retry, analytics **riêng**. Trong ví dụ/test, "Page A / Page B" nghĩa là hai kênh bất kỳ.
 - Một DB là nguồn trạng thái vận hành duy nhất (`growth_engine.db`).
 - Duyệt đúng **caption + bytes ảnh cuối + Page + thời điểm**.
 - Make chỉ tạo bài khi backend cấp quyền; webhook nhận ≠ được đăng.
@@ -194,7 +210,7 @@ Một **Growth Engine** duy nhất trên server (Python, Clean Architecture) gi�
 
 ### 3.2. Ngoài phạm vi bản đầu (non-goals)
 
-Tự duyệt nội dung · tự tối ưu chiến lược · thay Make bằng direct publishing · multi-region · video/carousel/Reels · viết lại Research/M02/M05/M03 · chuyển store Facts M01 · thư viện ảnh qua Drive (U5) · bỏ lựa chọn ảnh B (U8, quyết định sau khi có số đo M2). Instagram/Threads giữ dữ liệu lịch sử, không là đích v2.
+Tự duyệt nội dung · tự tối ưu chiến lược · thay Make bằng direct publishing · multi-region · video/carousel/Reels · viết lại Research/M02/M05/M03 · chuyển store Facts M01 · thư viện ảnh qua Drive (U5) · bỏ lựa chọn ảnh B (U8, quyết định sau khi có số đo M2). Threads giữ dữ liệu lịch sử, không là đích v2.
 
 ### 3.3. Bất biến (giữ nguyên từ spec v1.0)
 
@@ -266,7 +282,8 @@ flowchart TB
 | `growth_engine.application.*` | stdlib, `growth_engine.domain.*`, `growth_engine.application.*` | `growth_engine.adapters.*`, `growth_engine.bootstrap`, framework, legacy packages |
 | `growth_engine.adapters.inbound.*` | mọi lớp bên trong + `fastapi`, `pydantic`, `typer` | `growth_engine.adapters.outbound.*` (phải nhận qua container) |
 | `growth_engine.adapters.outbound.*` | mọi lớp bên trong + thư viện ngoài | `growth_engine.adapters.inbound.*` |
-| `growth_engine.adapters.outbound.legacy.*` | **chỗ duy nhất** được import `growth_orchestrator`, `publishing_gateway`, `validator_studio`, `content_studio`, `prompt_studio`, `research_engine`, `knowledge_studio`, `shared` | — |
+| `growth_engine.adapters.outbound.meta.*` | thêm `shared.meta` (Meta client dùng chung với v3.2, T0-04) | phần `shared` khác |
+| `growth_engine.adapters.outbound.legacy.*` | **chỗ duy nhất** (ngoại lệ: dòng trên) được import `growth_orchestrator`, `publishing_gateway`, `validator_studio`, `content_studio`, `prompt_studio`, `research_engine`, `knowledge_studio`, `shared` | — |
 | `growth_engine.bootstrap` | tất cả | — |
 | Legacy packages | — | **không** được import `growth_engine` |
 
@@ -368,7 +385,10 @@ class Notifier(Protocol):
 | Chính sách ngân sách | `shared/budget/ledger.py::BudgetPolicy`, `config/.../budget_policy.yaml` | Đọc cap; reserve/settle mới ở bảng `paid_calls` |
 | Lịch 4 bài/tuần | `config/projects/venho_hotel/growth/cadence_policy.yaml` (version 2) | Đọc chỉ-đọc; `policy_version = version + sha256(file)` |
 | Atomic claim ý tưởng | `shared/jobs/job_store.py` | Tham khảo; viết lại với epoch ms + fencing token |
-| `to_upload_jpeg`, `normalize_for_instagram` | `image_options.py`, `publishing_gateway/image_constraints.py` | **Không dùng** cho v2 (policy Facebook mới, EXIF xử lý một lần) |
+| `to_upload_jpeg`, `normalize_for_instagram` | `image_options.py`, `publishing_gateway/image_constraints.py` | **Không gọi trực tiếp**; hành vi pad 4:5 nền `#F7F4EF` là tham chiếu cho profile `instagram_photo_v1` (P3-T01) |
+| Scenario Make có Router (2 nhánh FB + IG) | Make (cấu hình hiện tại) | Giữ scenario + connection; đổi router sang lọc `channel_key` (ADR-09, P5-T05, P9-T03) |
+| Meta Graph read client | `shared/meta/` (mới ở T0-04) | P6-T01, P8-T02 bọc lại, không viết lại |
+| Insights + đối soát 3 kênh | `~/venho/state/growth-reports/` (T0-05, T0-06) | Import vào `metric_observations`/`legacy_imports` ở P9-T03 |
 | Fallback ảnh lúc dispatch | `publishing_gateway/adapters/make_gateway.py` | **Loại bỏ** trong v2 (vi phạm INV-08) |
 | Registry JSON / `growth_state_merge.py` | `publishing_gateway/publication_registry.py`, `ops/asus-server/` | Chỉ là **nguồn import** (P2-T07, P9-T03), sau đó archive |
 
@@ -385,13 +405,14 @@ flowchart LR
         OS["venho-os (Next.js) BFF"]
     end
     CF["Cloudflare Tunnel<br/>growth-api.venhohotel.com"]
-    MAKE_A["Make scenario Page A"]
-    MAKE_B["Make scenario Page B"]
-    FB_A["Facebook Page A"]
-    FB_B["Facebook Page B"]
+    MAKE["Make: 1 scenario<br/>Router lọc channel_key"]
+    FBH["FB · Ven Hồ Hotel Hanoi"]
+    FBV["FB · Ven Hồ Hotel"]
+    IGV["Instagram"]
     GH["GitHub Actions<br/>research cycle"]
     HC["Dead-man switch"]
     TG["Telegram"]
+    META["Meta Graph API"]
 
     OS -->|bearer bff| API
     API --- DB
@@ -399,14 +420,14 @@ flowchart LR
     WJ --- DB
     API --- MS
     WJ --- MS
-    WP -->|envelope| MAKE_A
-    WP -->|envelope| MAKE_B
-    MAKE_A -->|GET media · authorize · receipt| CF --> API
-    MAKE_B --> CF
-    MAKE_A --> FB_A
-    MAKE_B --> FB_B
+    WP -->|"1 envelope / kênh"| MAKE
+    MAKE -->|GET media · authorize · receipt| CF --> API
+    MAKE --> FBH
+    MAKE --> FBV
+    MAKE --> IGV
+    META -.->|IG tải ảnh qua URL ký| CF
     GH -->|research ingest| CF
-    WP -->|read post| META["Meta Graph API"]
+    WP -->|read post| META
     WJ -->|insights M2| META
     WP --> TG
     WP -->|heartbeat| HC
@@ -425,7 +446,7 @@ Luật topology:
 
 | Khái niệm | Định nghĩa | Bất biến chính |
 |---|---|---|
-| `Channel` | Một Facebook Page đích (logical ID nội bộ + `remote_page_id` đã xác minh) | `remote_page_id` không đổi; đổi Page = channel mới |
+| `Channel` | Một kênh đích: Facebook Page hoặc tài khoản Instagram business (`channel_key`, `platform`, `remote_account_id` đã xác minh) | Identity không đổi; đổi Page/tài khoản = channel mới |
 | `ChannelConfig` | Snapshot bất biến: route Make, Graph API version, capability, caption profile, `config_hash` | Không chứa token |
 | `Slot` | Một thời điểm nội dung theo lịch (vd T2 09:00 ICT) | Natural key `(project, local_date, local_time, lane)` |
 | `SlotTarget` | Một Page được yêu cầu đăng trong slot | `UNIQUE(slot, channel)` |
@@ -538,7 +559,7 @@ Payload nghiệp vụ `growth.publish.v2` (khoá trong approval):
   "delivery_id": "<uuid>",
   "revision_id": "<uuid>",
   "channel_id": "<uuid>",
-  "remote_page_id": "<verified-page-id>",
+  "remote_account_id": "<verified-account-id>",
   "channel_config_hash": "<sha256>",
   "caption": "<exact text incl. hashtags and final tracking URL>",
   "media": [{"sha256": "<sha256>", "mime": "image/jpeg", "width": 1536, "height": 1024}],
@@ -627,7 +648,7 @@ Frontend **chỉ** hiển thị hành động `enabled=true`; không tự suy lu
 
 ### 6.3. DDL tham chiếu (đã kiểm chứng)
 
-DDL dưới đây đã được nạp vào SQLite 3.53.1 và chạy bộ kiểm tra ràng buộc (§16.3): `foreign_key_check` rỗng, `integrity_check = ok`, 19 trường hợp vi phạm bị từ chối đúng, 2 trường hợp hợp lệ (safe-retry sau `NO_SIDE_EFFECT`, receipt lạ lưu `QUARANTINED`) được chấp nhận. **AI Agent copy nguyên văn từng khối vào file migration cùng tên.** Đây là ràng buộc tối thiểu; application vẫn phải thực thi §6.4.
+DDL dưới đây đã được nạp vào SQLite 3.53.1 và chạy bộ kiểm tra ràng buộc (§16.3): `foreign_key_check` rỗng, `integrity_check = ok`, 21 trường hợp vi phạm bị từ chối đúng, 2 trường hợp hợp lệ (safe-retry sau `NO_SIDE_EFFECT`, receipt lạ lưu `QUARANTINED`) được chấp nhận. **AI Agent copy nguyên văn từng khối vào file migration cùng tên.** Đây là ràng buộc tối thiểu; application vẫn phải thực thi §6.4.
 
 #### `0001_core.sql` — runtime controls, channels, slots, packages
 
@@ -643,20 +664,23 @@ CREATE TABLE runtime_controls (
   updated_at      INTEGER NOT NULL
 );
 
+-- 3 kênh v2: fb_hanoi, fb_venho (Facebook Page), ig_venho (Instagram business account).
 CREATE TABLE channels (
-  id              TEXT PRIMARY KEY,
-  project_id      TEXT NOT NULL,
-  environment     TEXT NOT NULL CHECK(environment IN ('test','production')),
-  platform        TEXT NOT NULL CHECK(platform = 'facebook'),
-  remote_page_id  TEXT NOT NULL,
-  name            TEXT NOT NULL,
-  enabled         INTEGER NOT NULL DEFAULT 0 CHECK(enabled IN (0,1)),
-  paused          INTEGER NOT NULL DEFAULT 0 CHECK(paused IN (0,1)),
-  created_at      INTEGER NOT NULL,
-  UNIQUE(environment, platform, remote_page_id)
+  id                TEXT PRIMARY KEY,
+  project_id        TEXT NOT NULL,
+  environment       TEXT NOT NULL CHECK(environment IN ('test','production')),
+  channel_key       TEXT NOT NULL,          -- 'fb_hanoi' | 'fb_venho' | 'ig_venho' (dùng cho filter router Make, tên env)
+  platform          TEXT NOT NULL CHECK(platform IN ('facebook','instagram')),
+  remote_account_id TEXT NOT NULL,          -- Facebook Page ID hoặc Instagram user ID, luôn TEXT
+  name              TEXT NOT NULL,
+  enabled           INTEGER NOT NULL DEFAULT 0 CHECK(enabled IN (0,1)),
+  paused            INTEGER NOT NULL DEFAULT 0 CHECK(paused IN (0,1)),
+  created_at        INTEGER NOT NULL,
+  UNIQUE(environment, platform, remote_account_id),
+  UNIQUE(environment, channel_key)
 );
 CREATE TRIGGER channel_identity_immutable
-BEFORE UPDATE OF project_id, environment, platform, remote_page_id ON channels
+BEFORE UPDATE OF project_id, environment, channel_key, platform, remote_account_id ON channels
 BEGIN SELECT RAISE(ABORT, 'channel_identity_is_immutable'); END;
 
 CREATE TABLE channel_configs (
@@ -729,6 +753,8 @@ CREATE TABLE package_facts (
   PRIMARY KEY(package_id, fact_key)
 );
 ```
+
+**Tên ID theo ranh giới code:** database/domain giữ `remote_account_id` chung cho Facebook và Instagram. Cấu hình đã có dùng `remote_page_id` cho hai Facebook Page và `remote_account_id` cho Instagram; adapter ánh xạ sang tên nội bộ, còn envelope Facebook của Make dùng `remote_page_id`. Giữ nguyên các tên/migration đã commit; xem [plan_code_deltas.md](plan_code_deltas.md).
 
 #### `0002_media_qc.sql` — media bất biến + QC
 
@@ -1278,7 +1304,7 @@ receive_receipt (HTTP handler, nhanh):
 3. Enqueue job apply_receipt trong cùng transaction. DB lỗi → 503 (Make retry module callback, KHÔNG retry module tạo bài).
 
 apply_receipt (job publish lane):
-4. Đối chiếu execution_id, grant_id, command_id, delivery_id, revision_id, channel_id, remote_page_id, payload_hash với DB.
+4. Đối chiếu execution_id, grant_id, command_id, delivery_id, revision_id, channel_id, remote_page_id (ánh xạ sang `remote_account_id` trong DB), payload_hash với DB.
    Lệch bất kỳ → QUARANTINED + incident; không đổi delivery.
 5. outcome:
    POST_CREATED        → kiểm platform_post_id (không rỗng, không placeholder kiểu "{{", "null", "test")
@@ -1338,7 +1364,7 @@ resolve_unknown(delivery_id, evidence, actor):
 
 > JSON Schema của mọi hợp đồng nằm ở `contracts/growth_engine/*.schema.json` kèm fixture `valid/` và `invalid/`. Đổi hợp đồng = tăng `schema_version`.
 
-### 8.1. Make (một scenario cố định cho mỗi Page)
+### 8.1. Make (một scenario, Router lọc theo `channel_key`)
 
 #### 8.1.1. Envelope backend → Make (`growth.command.v2`)
 
@@ -1350,7 +1376,9 @@ resolve_unknown(delivery_id, evidence, actor):
   "delivery_id": "<uuid>",
   "revision_id": "<uuid>",
   "channel_id": "<uuid>",
-  "remote_page_id": "<verified-page-id>",
+  "channel_key": "fb_hanoi",
+  "platform": "facebook",
+  "remote_page_id": "<verified-target-id>",
   "idempotency_key": "publish:<delivery>:<revision>:<sequence_no>",
   "payload_hash": "<sha256>",
   "dispatch_epoch": "<epoch>",
@@ -1360,11 +1388,11 @@ resolve_unknown(delivery_id, evidence, actor):
 }
 ```
 
-`command_token` = `v1.<base64url(claims_json)>.<base64url(HMAC-SHA256(kid_key, "v1." + base64url(claims_json)))>`, claims: `{iss:"growth-engine", aud:"make-route:<channel_id>", kid, cmd, rev, ch, ph, ep, exp}`. Khoá ở `GE_CAPABILITY_KEYS="kid1:<base64>,kid2:<base64>"` (khoá đầu dùng để ký; mọi khoá dùng để verify → rotate không gián đoạn). Không log token.
+`command_token` = `v1.<base64url(claims_json)>.<base64url(HMAC-SHA256(kid_key, "v1." + base64url(claims_json)))>`, claims: `{iss:"growth-engine", aud:"make-route:<channel_id>", kid, cmd, rev, ch, ph, ep, exp}`. Khoá ở `GE_CAPABILITY_KEYS="kid1:<base64>,kid2:<base64>"` (khoá đầu dùng để ký; mọi khoá dùng để verify → rotate không gián đoạn). Không log token. Token trong `media_url` hết hạn tại `execute_before_ms + 30 phút` (đủ cho Meta tải ảnh Instagram sau authorize).
 
 #### 8.1.2. Authorize
 
-`POST /internal/growth/v2/executions/authorize` — header `Authorization: Bearer <make-page-x>` (+ Cloudflare Access Service Token headers).
+`POST /internal/growth/v2/executions/authorize` — header `Authorization: Bearer <make-fb-hanoi | make-fb-venho | make-ig>` (+ Cloudflare Access Service Token headers).
 
 ```jsonc
 // request
@@ -1379,7 +1407,7 @@ resolve_unknown(delivery_id, evidence, actor):
   "reason": null,                      // ALREADY_AUTHORIZED | PAUSED | MEDIA_FETCH_FAILED | EPOCH_MISMATCH | WINDOW_CLOSED | PREFLIGHT_BLOCKED
   "execution_id": "<uuid>", "grant_id": "<uuid>",
   "grant_expires_at_ms": 1794189660000,
-  "remote_page_id": "<verified-page-id>",
+  "remote_page_id": "<verified-target-id>",
   "caption": "<exact caption>" }
 ```
 
@@ -1390,7 +1418,7 @@ resolve_unknown(delivery_id, evidence, actor):
   "event_id": "<grant_id>:POST_CREATED",
   "command_id": "<uuid>", "execution_id": "<uuid>", "grant_id": "<uuid>",
   "delivery_id": "<uuid>", "revision_id": "<uuid>", "channel_id": "<uuid>",
-  "remote_page_id": "<verified-page-id>", "payload_hash": "<sha256>",
+  "remote_page_id": "<verified-target-id>", "payload_hash": "<sha256>",
   "outcome": "POST_CREATED",           // POST_CREATED | REJECTED_NO_SIDE_EFFECT | OUTCOME_UNKNOWN
   "platform_post_id": "<string|null>",
   "permalink": "<https-url|null>",
@@ -1401,21 +1429,35 @@ resolve_unknown(delivery_id, evidence, actor):
 
 `event_id` xác định (`<grant_id>:<outcome>`) để Make retry module callback không sinh event mới.
 
-#### 8.1.4. Blueprint bắt buộc (mỗi Page một scenario)
+#### 8.1.4. Blueprint bắt buộc (một scenario, Router 3 nhánh)
 
 ```text
-[1] Custom webhook (route cố định cho Page X)
-[2] Filter: schema_version = growth.command.v2 AND environment = <env> AND channel_id = <channel X cố định>
-[3] HTTP "Make a request" GET {{media_url}} — trả binary, timeout 30s
-    Filter: status = 200 AND content-type = image/jpeg   (sai → kết thúc; outbox sẽ giao lại sau 5′)
-[4] HTTP POST /internal/growth/v2/executions/authorize  (bearer + CF service token)
-[5] Filter: execute = true AND now < grant_expires_at_ms
-[6] Facebook Pages — tạo photo post lên Page X cố định:
-      message = {{4.caption}}, ảnh = binary của [3]
-      Error handler → route [8]   (KHÔNG dùng Retry/Break; KHÔNG resume)
-[7] HTTP POST /internal/growth/v2/receipts  outcome=POST_CREATED, platform_post_id = ID từ output [6]
-[8] (error route) HTTP POST receipts  outcome theo bảng make_error_classes.yaml, mặc định OUTCOME_UNKNOWN
-[9] Webhook response (tuỳ chọn)
+[1] Custom webhook (một webhook cho cả 3 kênh) — Sequential processing BẬT
+[2] Filter chung: schema_version = growth.command.v2 AND environment = <env>
+[3] Router — mỗi nhánh có filter channel_key = <giá trị cố định>; KHÔNG bật fallback route
+    → mỗi lệnh chỉ chạy đúng MỘT nhánh
+
+  Nhánh fb_hanoi và nhánh fb_venho (cấu trúc giống nhau, Page cố định khác nhau):
+    [F1] HTTP "Make a request" GET {{media_url}} — binary, timeout 30s
+         Filter: status = 200 AND content-type = image/jpeg  (sai → dừng; outbox giao lại sau 5′)
+    [F2] HTTP POST /internal/growth/v2/executions/authorize  (bearer riêng của nhánh + CF service token)
+    [F3] Filter: execute = true AND now < grant_expires_at_ms
+    [F4] Facebook Pages — tạo photo post lên Page cố định của nhánh:
+           message = {{F2.caption}}, ảnh = binary của [F1]
+           Error handler → [F6]   (KHÔNG Retry/Break; KHÔNG resume)
+    [F5] HTTP POST /internal/growth/v2/receipts  outcome=POST_CREATED, platform_post_id = ID từ [F4]
+    [F6] (error route) HTTP POST receipts — outcome theo make_error_classes.yaml, mặc định OUTCOME_UNKNOWN
+
+  Nhánh ig_venho:
+    [I1] HTTP GET {{media_url}} — chỉ thăm dò URL tải được (filter 200 + image/jpeg)
+    [I2] HTTP POST authorize (bearer make-ig)
+    [I3] Filter: execute = true AND now < grant_expires_at_ms
+    [I4] Instagram for Business — tạo photo post: image URL = {{media_url}} (Meta tự tải), caption = {{I2.caption}}
+           Error handler → [I6]
+    [I5] HTTP POST receipts  outcome=POST_CREATED, platform_post_id = media ID từ [I4]
+    [I6] (error route) receipts — phân biệt lỗi tạo container (chưa đăng) và lỗi publish (không rõ) theo make_error_classes.yaml
+
+[4] Webhook response (tuỳ chọn)
 ```
 
 **Cấu hình scenario phải kiểm chứng ở P0-T03 / P5-T06 (ảnh chụp lưu vào `docs/growth_engine/make_capabilities.md`):**
@@ -1424,23 +1466,27 @@ resolve_unknown(delivery_id, evidence, actor):
 |---|---|---|
 | MK-1 | Sequential processing | Bật |
 | MK-2 | Allow storing of incomplete executions | Tắt (hoặc bật nhưng runbook cấm resume sau [4]) |
-| MK-3 | Auto-retry / Break directive trên module [6] | Không có |
-| MK-4 | Module [6] trả post ID trong output | Có — ghi tên field thật |
-| MK-5 | Module [6] nhận binary (không tự fetch URL) | Có |
+| MK-3 | Auto-retry / Break directive trên module [F4]/[I4] | Không có |
+| MK-4 | Module [F4]/[I4] trả post/media ID trong output | Có — ghi tên field thật (tránh lặp lỗi `"3. Post ID"`) |
+| MK-5 | Module Facebook [F4] nhận binary (không tự fetch URL) | Có |
 | MK-6 | HTTP module gửi được header tuỳ chỉnh (bearer + `CF-Access-Client-Id/Secret`) | Có |
-| MK-7 | Phân loại lỗi [6] chắc chắn "chưa tạo bài" | Liệt kê vào `make_error_classes.yaml`; không chắc → OUTCOME_UNKNOWN |
-| MK-8 | Operator không "Run once" lại module [6] thủ công | Ghi trong runbook; mọi chạy lại phải từ [1] |
+| MK-7 | Phân loại lỗi [F4]/[I4] chắc chắn "chưa tạo bài" | Liệt kê vào `make_error_classes.yaml`; không chắc → OUTCOME_UNKNOWN |
+| MK-8 | Operator không "Run once" lại module [F4]/[I4] thủ công | Ghi trong runbook; mọi chạy lại phải từ [1] |
+| MK-9 | Router: mỗi nhánh có filter `channel_key`, fallback route tắt | Mỗi lệnh chạy đúng 1 nhánh |
+| MK-10 | Module Instagram nhận image URL và Meta tải được `/media/publish/*` (không gặp Access login) | Có |
+| MK-11 | Module Instagram trả media ID; lỗi tạo container vs lỗi publish phân biệt được | Ghi vào `make_error_classes.yaml` |
 
 Không đạt MK-1…MK-6 → giữ production gate đóng (mode ≠ LIVE_MANUAL) tới khi có giải pháp đã chứng minh.
 
-#### 8.1.5. Manifest đích (mỗi Page, không secret)
+#### 8.1.5. Manifest đích (mỗi kênh, không secret)
 
 ```text
-channel_id → remote_page_id → tên Page → Make scenario ID → webhook route ref
+channel_id → remote_account_id → tên Page → Make scenario ID → webhook route ref
 → connection reference → Graph API version → principal + scopes → owner → ngày xác minh
+(ở đây `remote_account_id` là Page ID với Facebook, Instagram user ID với IG; "Make scenario ID" giống nhau cho 3 kênh, khác nhau ở tên nhánh router)
 ```
 
-Lưu ở `docs/growth_engine/environment_manifest.md` + `config/projects/venho_hotel/growth_engine/channels.yaml`. Không map bằng tên hiển thị. Test dùng **Page test riêng + scenario test riêng**; `publication_id chứa "test"` chỉ là lớp phụ.
+Lưu ở `docs/growth_engine/environment_manifest.md` + `config/projects/venho_hotel/growth_engine/channels.yaml`. Không map bằng tên hiển thị. Test dùng **Page/tài khoản test riêng + bản sao scenario router riêng**; `publication_id chứa "test"` chỉ là lớp phụ.
 
 ### 8.2. Pipeline ảnh (`adapters/outbound/media/pillow_processor.py`)
 
@@ -1468,7 +1514,17 @@ profiles:
     aspect_ratio: keep          # không ép 4:5 của Instagram
     background: "#F7F4EF"
     transform_version_includes: [profile, pillow_version, pillow_heif_version]
+  instagram_photo_v1:            # giữ hành vi v3.2: pad về 4:5
+    mime: image/jpeg
+    max_long_side_px: 2048
+    max_bytes: 5242880
+    jpeg_quality: 88
+    aspect_ratio: pad_4_5
+    background: "#F7F4EF"
+    transform_version_includes: [profile, pillow_version, pillow_heif_version]
 ```
+
+Một asset sinh **một variant cho mỗi profile**; revision của từng kênh trỏ variant của profile kênh đó (`channel_config.capability_json.media_profile`). Giới hạn thật của Instagram xác minh ở P0-T03.
 
 Quy tắc: ảnh không có EXIF nhưng pixel đã nằm ngang sai → máy **không** tự đoán; preview full-size bắt buộc trước duyệt + nút "Xoay" tạo variant mới. Đổi profile = `transform_version` mới = phải duyệt lại. Giới hạn của module Facebook trong Make xác minh ở P0-T03 trước khi khoá profile.
 
@@ -1477,8 +1533,9 @@ Quy tắc: ảnh không có EXIF nhưng pixel đã nằm ngang sai → máy **kh
 ### 8.3. Meta (đọc bài & số đo)
 
 - Graph API **version khoá** trong `channel_config.graph_api_version`; không dùng "latest".
-- Token đọc mỗi Page ở secrets (`GE_META_READ_TOKEN_<CHANNEL_KEY>`), không trong DB/manifest.
-- P0-T04 probe read-only trên một bài đã biết của mỗi Page → lưu response đã lọc làm fixture `tests/growth_engine/fixtures/meta/`.
+- Token đọc mỗi kênh ở secrets (`GE_META_READ_TOKEN_FB_HANOI`, `…_FB_VENHO`, `…_IG_VENHO`), không trong DB/manifest. Instagram đọc qua IG user ID; quyền insights của IG xác minh riêng.
+- Client HTTP dùng chung `shared/meta/` (T0-04), chỉ có phương thức GET.
+- P0-T04 probe read-only trên một bài đã biết của mỗi kênh → lưu response đã lọc làm fixture `tests/growth_engine/fixtures/meta/`.
 - Danh sách quyền/field **không chốt theo trí nhớ** — lấy từ tài liệu Meta hiện hành + probe thật ([Pages API](https://developers.facebook.com/docs/pages-api/)). Field không hỗ trợ → `UNAVAILABLE`, collector chạy tiếp metric khác.
 - M2 registry `config/projects/venho_hotel/growth_engine/metrics_registry.yaml`: tên nội bộ, provider field, scope, period, data lag, quyền cần, lý do unsupported.
 
@@ -1498,7 +1555,7 @@ Quy tắc: ảnh không có EXIF nhưng pixel đã nằm ngang sai → máy **kh
 | Method · Path | Chức năng | Quy tắc |
 |---|---|---|
 | `GET /channels` | Page đích + trạng thái kết nối | Không trả token/URL Make |
-| `GET /slots?from=&to=` | Lịch 2 Page | Projection + `attention_flags` + `as_of_ms` |
+| `GET /slots?from=&to=` | Lịch 3 kênh | Projection + `attention_flags` + `as_of_ms` |
 | `POST /slots/{id}/reschedule` | Đổi lịch có kiểm soát | `If-Match`; chưa target nào có execution; tạo revision mới |
 | `GET /deliveries?state=&channel_id=&cursor=` | Hàng đợi / lịch sử | Keyset pagination, `limit ≤ 50` |
 | `GET /deliveries/{id}/review` | Exact preview + `allowed_actions` | Trả revision_id, payload_hash, Page, artifact URL full-size, lịch, row_version, ETag |
@@ -1522,14 +1579,14 @@ Quy tắc: ảnh không có EXIF nhưng pixel đã nằm ngang sai → máy **kh
 
 | Path | Principal | Ghi chú |
 |---|---|---|
-| `POST /internal/growth/v2/executions/authorize` | `make-page-a`, `make-page-b` | §8.1.2 |
-| `POST /internal/growth/v2/receipts` | `make-page-a`, `make-page-b` | §8.1.3 |
+| `POST /internal/growth/v2/executions/authorize` | `make-fb-hanoi`, `make-fb-venho`, `make-ig` | §8.1.2 |
+| `POST /internal/growth/v2/receipts` | `make-fb-hanoi`, `make-fb-venho`, `make-ig` | §8.1.3 |
 | `POST /internal/growth/v2/research/ingest` | `research-ingest` (GitHub Actions) | Idempotent theo `(source, external_key, source_revision)` |
-| `GET /media/publish/{sha256}.jpg?t=` | token ký (không bearer) | Chỉ variant đã duyệt cho command còn hạn; `Cache-Control: private, no-store` |
+| `GET /media/publish/{sha256}.jpg?t=` | token ký (không bearer) | Chỉ variant đã duyệt cho command còn hạn; `Cache-Control: private, no-store`; Meta (Instagram) cũng tải qua route này |
 
 ### 9.3. Xác thực, phân quyền, chống lạm dụng
 
-- Principal: `bff` (scopes `dashboard:read`, `dashboard:write`, `operator`), `make-page-a/b` (`execution`, `receipt`, gắn channel), `research-ingest` (`ingest`). Bearer lưu **sha256** trong `GE_SERVICE_TOKENS`.
+- Principal: `bff` (scopes `dashboard:read`, `dashboard:write`, `operator`), `make-fb-hanoi` / `make-fb-venho` / `make-ig` (`execution`, `receipt`, mỗi principal gắn đúng 1 channel), `research-ingest` (`ingest`). Bearer lưu **sha256** trong `GE_SERVICE_TOKENS`.
 - Actor người dùng: BFF xác thực session Cloudflare Access, gửi `X-Venho-Actor` **kèm** bearer `bff`; backend chỉ tin header này khi principal là `bff`. BFF **xoá mọi header `X-Venho-*` do browser gửi** trước khi gắn header của mình. Thiếu session → BFF trả 401, không gửi `actor=unknown`.
 - API listen `127.0.0.1`; Cloudflare Tunnel chỉ mở `/internal/*` và `/media/publish/*`. Dashboard routes chỉ BFF nội bộ gọi.
 - Access policy: `/internal/*` = Service Token; `/media/publish/*` = bypass + token ký. Make không bao giờ nhận trang login HTML (kiểm ở P0-T05 và P7-T06).
@@ -1563,7 +1620,7 @@ Bảng mã lỗi đầy đủ ở §19.2.
 1. **Duyệt đúng thứ sẽ lên.** Ảnh hiển thị là artifact đã chuẩn hoá (full-size mở được), caption hiển thị đúng xuống dòng/emoji/hashtag/link cuối.
 2. **Một hành động chính mỗi thẻ.** Thanh hành động dính đáy màn hình; nút chính theo `allowed_actions`.
 3. **Không báo thành công giả.** Upload xong ≠ "đã cập nhật bài". Chỉ hiện "Đã duyệt" sau khi API trả 200; mutation lỗi giữ nguyên dữ liệu cũ + thông báo lỗi tiếng Việt từ `error.message`.
-4. **Page A / Page B luôn tách cột.** Một slot = một thẻ, bên trong 2 ô Page có trạng thái riêng.
+4. **Mỗi kênh một cột.** Một slot = một thẻ, bên trong 3 ô (FB Hanoi · FB Ven Hồ · IG) có trạng thái riêng.
 5. **Trạng thái nói bằng ngôn ngữ người vận hành**, màu chỉ là phụ (có icon + chữ; đủ tương phản).
 6. **Mất kết nối backend** → banner "Dữ liệu lúc HH:mm — đang mất kết nối", khoá mọi nút mutation; không quay về JSON local.
 
@@ -1591,11 +1648,11 @@ Bảng mã lỗi đầy đủ ở §19.2.
 
 | Màn | Nội dung | Ghi chú UX |
 |---|---|---|
-| **Lịch** (mặc định 14 ngày) | Thẻ slot: ngày/giờ ICT, chủ đề, 2 ô Page (nhãn + icon), cờ chú ý | Thẻ `NEEDS_ATTENTION` ghim lên đầu; lọc "Chờ tôi duyệt" |
-| **Duyệt** (`/growth/review/{delivery_id}` hoặc theo slot) | Ảnh full-width (chạm để xem 100%), nhãn nguồn ảnh (AI / Ảnh thật / Bạn tải lên / **Ảnh dự phòng**), caption, Page, giờ đăng, QC badge + `coverage_gaps`, facts + hạn | Nút **Duyệt cả 2 Page** (checkbox từng Page, mặc định tích cả hai) |
+| **Lịch** (mặc định 14 ngày) | Thẻ slot: ngày/giờ ICT, chủ đề, 3 ô kênh (nhãn + icon), cờ chú ý | Thẻ `NEEDS_ATTENTION` ghim lên đầu; lọc "Chờ tôi duyệt" |
+| **Duyệt** (`/growth/review/{delivery_id}` hoặc theo slot) | Ảnh full-width (chạm để xem 100%), nhãn nguồn ảnh (AI / Ảnh thật / Bạn tải lên / **Ảnh dự phòng**), caption, Page, giờ đăng, QC badge + `coverage_gaps`, facts + hạn | Nút **Duyệt cả 3 kênh** (checkbox từng kênh, mặc định tích tất cả); ô IG hiện đúng khung 4:5 của variant IG |
 | **Đổi ảnh** | Lựa chọn A/B/C/U → upload → "Đang xử lý…" (poll job) → preview variant mới → "Dùng ảnh này" | Sau khi chọn: trạng thái về "Chờ duyệt" và nói rõ "Cần duyệt lại" |
 | **Duyệt nhóm lỗi** | Danh sách item xung đột + lý do + nút "Mở lại bản mới" | Không tự duyệt bản mới nhất |
-| **Lịch sử** | Link bài thật, timeline (tạo → duyệt → gửi → cấp quyền → receipt → xác minh) | Page A thành công / Page B lỗi trình bày cạnh nhau |
+| **Lịch sử** | Link bài thật, timeline (tạo → duyệt → gửi → cấp quyền → receipt → xác minh) | Kênh thành công / kênh lỗi trình bày cạnh nhau |
 | **Sự cố & Đối soát** | Incident OPEN; UNKNOWN có form: dán link bài **hoặc** xác nhận "chưa tạo bài" + lý do | Không có nút "đăng lại luôn" |
 | **Điều khiển** | Mode hiện tại, epoch, Pause/Resume toàn cục và từng Page | Xác nhận 2 bước; nói rõ "Pause không huỷ lệnh đang chạy" |
 | **Analytics** (M2) | Theo Page, theo pillar, theo loại ảnh, kèm số mẫu | Thiếu số liệu: "Chưa lấy được" / "Không hỗ trợ", **không** hiển thị 0 |
@@ -1608,7 +1665,7 @@ Polling 15–30 s khi có item đang chờ, backoff khi tab ẩn; chưa cần we
 [REVIEW_NEEDED]
 🟡 Bài chờ duyệt — {Thứ} {dd/MM} {HH:mm}
 Chủ đề: {topic}
-Page: {page_a} · {page_b}
+Kênh: {channel_labels}
 Hạn duyệt: {deadline_review}
 👉 Duyệt: {review_link}
 
@@ -1617,17 +1674,17 @@ Hạn duyệt: {deadline_review}
 👉 {review_link}
 
 [PUBLISHED]
-✅ Đã đăng — {page} · {Thứ} {dd/MM} {HH:mm}
+✅ Đã đăng — {channel} · {Thứ} {dd/MM} {HH:mm}
 {permalink}
 Xác minh: {quality_label}
 
 [UNKNOWN]
-🔴 Chưa rõ kết quả đăng — {page} · {Thứ} {dd/MM}
+🔴 Chưa rõ kết quả đăng — {channel} · {Thứ} {dd/MM}
 Hệ thống KHÔNG tự đăng lại.
 👉 Đối soát: {reconcile_link}
 
 [BLOCKED]
-🟠 Bài bị giữ lại — {page} · {Thứ} {dd/MM}
+🟠 Bài bị giữ lại — {channel} · {Thứ} {dd/MM}
 Lý do: {pf_message_vi} ({pf_code})
 👉 {review_link}
 
@@ -1703,8 +1760,11 @@ Mỗi log JSON có `correlation_id, slot_id, delivery_id, revision_id, channel_i
 5. `PUBLISHED` cũ có post ID → `LEGACY_UNVERIFIED` (chờ verify), không tự nâng thành verified.
 6. `GATEWAY_ACCEPTED` cũ (6 dòng T8–T9) → verify; kết quả `PUBLISHED` (có bằng chứng) hoặc giữ `LEGACY_UNVERIFIED` với `issue_code=CLOSED_UNRESOLVED` + audit. Không bao giờ thành điều kiện retry.
 7. `APPROVED_SCHEDULED` cũ chỉ giữ approval nếu tái tạo **đúng** payload/hash ảnh/Page/lịch; thiếu → `IN_REVIEW`. Không tạo chữ ký duyệt thay Harry.
-8. Bản ghi Instagram/Threads → chỉ lưu `legacy_imports` (lịch sử), không tạo delivery v2.
-9. Idempotent theo `(source_name, source_key, raw_hash)`. Báo cáo dry-run: tổng dòng theo nguồn × trạng thái trước/sau, danh sách mismatch.
+8. Instagram → delivery của `ig_venho`. Threads → chỉ `legacy_imports` (lịch sử), không tạo delivery.
+9. Facebook trước 03/11/2026 → `fb_hanoi` (Page duy nhất lúc đó; post ID có tiền tố `1124616474074140`). Từ 03/11: `fb_hanoi` theo registry; `fb_venho` theo báo cáo đối soát T0-05 (`UNTRACKED`) → `LEGACY_UNVERIFIED`.
+10. 2 dòng post ID `"3. Post ID"` (10/08, 12/08) → `LEGACY_UNVERIFIED`, `issue_code=PLACEHOLDER_POST_ID`; tìm bài thật bằng dữ liệu T0-05.
+11. Bài đăng tay (vd 04/11) → chỉ `legacy_imports` (`source_name=manual_post`), không tạo delivery; số đo giữ trong báo cáo T0-06 với nhãn "đăng tay". Bài hệ thống đã bị xoá → `platform_visibility=DELETED`.
+12. Idempotent theo `(source_name, source_key, raw_hash)`. Báo cáo dry-run: tổng dòng theo nguồn × trạng thái trước/sau, danh sách mismatch.
 
 ### 12.2. Cutover tuần tự (`docs/growth_engine/runbooks/cutover.md`) 🔒
 
@@ -1714,10 +1774,10 @@ Mỗi log JSON có `correlation_id, slot_id, delivery_id, revision_id, channel_i
 4. Snapshot cuối + import delta; **không dual-write**.
 5. `bump_epoch` mới (không có trong bất kỳ backup nào); cấu hình service + `runtime_controls` cùng epoch.
 6. Chuyển BFF sang API v2 (`GROWTH_BACKEND=v2`); route cũ proxy hoặc trả 410.
-7. Đóng webhook legacy hoặc đổi scenario sang filter `schema_version = growth.command.v2`.
-8. `DRY_RUN` so sánh các slot sắp tới (đặc biệt mapping 2 Page).
-9. `LIVE_MANUAL`, bật Page A trước; quan sát receipt + verify đầu tiên; rồi bật Page B.
-10. Xác nhận chỉ còn **một** publishing authority (scheduler v2); JSON cũ → archive chỉ đọc; `growth-publish-scheduler.yml` trên GitHub giữ `workflow_dispatch` nhưng trỏ tới runbook v2 hoặc bị vô hiệu hoá.
+7. Sửa **scenario router hiện có**: bỏ rẽ cả hai nhánh FB, thêm filter `channel_key` cho từng nhánh (3 nhánh), filter chung chỉ nhận `schema_version = growth.command.v2` → lệnh legacy bị chặn.
+8. `DRY_RUN` so sánh các slot sắp tới (đặc biệt mapping 3 kênh).
+9. `LIVE_MANUAL`, bật `fb_hanoi` trước; quan sát receipt + verify đầu tiên; rồi `fb_venho`, cuối cùng `ig_venho`.
+10. Import `insights.db` (T0-06) vào `metric_observations`. Xác nhận chỉ còn **một** publishing authority (scheduler v2); JSON cũ → archive chỉ đọc; `growth-publish-scheduler.yml` trên GitHub giữ `workflow_dispatch` nhưng trỏ tới runbook v2 hoặc bị vô hiệu hoá.
 
 ### 12.3. Rollback
 
@@ -1746,7 +1806,7 @@ Mỗi log JSON có `correlation_id, slot_id, delivery_id, revision_id, channel_i
   growth-engine-worker@.service      # instance: publish | jobs
 ```
 
-`deploy-release.sh <git-sha>`: clone/checkout vào `releases/<sha>` → `uv sync --frozen --extra api --extra drive --extra gemini` trong release đó → `venho-engine migrate --check` → `venho-engine doctor --pre-switch` → đổi symlink → restart 3 unit → `doctor` lần 2 → lỗi thì trả symlink cũ. Không bao giờ chạy `uv run`/`uv sync` trong `~/venho/growth-runtime/venho-ai-studio`.
+`deploy-release.sh <git-sha>`: clone/checkout vào `releases/<sha>` → build bằng `UV_PYTHON_PREFERENCE=only-managed ~/.local/bin/uv sync --frozen --python 3.11 --extra api --extra drive --extra gemini` trong release đó → `venho-engine migrate --check` → `venho-engine doctor --pre-switch` → đổi symlink → restart API và hai worker (`publish`, `jobs`) → `doctor` lần 2 → lỗi thì trả symlink cũ. Không bao giờ chạy `uv run`/`uv sync` trong `~/venho/growth-runtime/venho-ai-studio`.
 
 ### 13.2. Backup nhất quán
 
@@ -1901,7 +1961,8 @@ venho-ai-studio/
 │   ├── growth/cadence_policy.yaml         ⛔ đọc chỉ-đọc
 │   ├── growth/budget_policy.yaml          ⛔ đọc chỉ-đọc
 │   └── growth_engine/                     ★
-│       ├── channels.yaml                  (P0-T02) Page A/B: logical id, remote_page_id, route ref, caption_profile
+│       ├── channels.yaml                  (P0-T02) 3 kênh fb_hanoi/fb_venho/ig_venho: channel_key, platform,
+│       │                                     remote_account_id, nhánh router, caption_profile, media_profile
 │       ├── publishing_policy.yaml         (P1-T05) window 30′, grant 60s, receipt grace 15′, backoff, max 8
 │       ├── media_policy.yaml              (P3-T01)
 │       ├── notification_policy.yaml       (P6-T03) mẫu tin, reminder T-24h/T-6h, digest 20:00
@@ -1910,7 +1971,7 @@ venho-ai-studio/
 │
 ├── docs/growth_engine/                    ★
 │   ├── GC2_MASTER_PLAN.md                 (tài liệu này)
-│   ├── adr/ADR-01…ADR-08.md               (P0-T06)
+│   ├── adr/ADR-01…ADR-09.md               (P0-T06)
 │   ├── environment_manifest.md            (P0-T02) không secret
 │   ├── make_capabilities.md               (P0-T03)
 │   ├── meta_capabilities.md               (P0-T04)
@@ -1918,7 +1979,16 @@ venho-ai-studio/
 │   ├── legacy_generation_seam.md          (P4-T01)
 │   └── runbooks/{make_blueprint_v2,unknown_reconcile,cutover,restore,pilot_daily_check}.md
 │
+├── shared/meta/                           ★ (T0-04) Meta Graph client CHỈ ĐỌC, dùng chung v3.2 + v2
+│   ├── __init__.py, graph_client.py, models.py
+├── analytics_feedback/                    (legacy M08 — chỉ THÊM file, không sửa luồng mock hiện có)
+│   ├── channel_reconcile.py               ★ (T0-05) đối soát 3 kênh
+│   ├── insights_backfill.py               ★ (T0-06) Insights thật → insights.db ngoài git
+│   └── cli.py                             ✎ (T0-05, T0-06) thêm lệnh reconcile-channels, insights-backfill, insights-report
+│
 ├── ops/asus-server/
+│   ├── venho-growth-reconcile.{service,timer}   ★ (T0-05)
+│   ├── venho-growth-insights.{service,timer}    ★ (T0-06)
 │   ├── growth-dispatch.sh                 ⛔ (trừ Track 0) legacy tới cutover
 │   └── growth-engine/                     ★
 │       ├── preflight-host.sh              (P0-T01) tự chứa, in JSON
@@ -1952,7 +2022,9 @@ venho-ai-studio/
 │   ├── e2e/test_two_pages_happy_path.py                                      (P5-T06)
 │   └── fixtures/{images,legacy,meta,make}/    # đã lọc secret
 │
-└── (legacy, không đổi trong GC2 trừ Track 0)
+├── tests/test_{output_image_gate,shared_meta_graph_client,channel_reconcile,insights_backfill}.py  ★ (T0, suite legacy)
+│
+└── (legacy, không đổi trong GC2 trừ các file Track 0 liệt kê ở trên)
     growth_orchestrator/ publishing_gateway/ analytics_feedback/ shared/ validator_studio/
     content_studio/ prompt_studio/ research_engine/ knowledge_studio/ controlled_rollout/ ⛔
 ```
@@ -1982,16 +2054,16 @@ venho-os/
 
 | Phase | Tên | Phụ thuộc | Đầu ra chính | Gate thoát | Ước lượng |
 |---|---|---|---|---|---|
-| **T0** | Giữ v3.2 an toàn | — | Cổng ảnh đầu ra cho legacy, đóng băng | Harry duyệt | 0,5–1 ngày |
-| **P0** | Inventory & hợp đồng | — | Manifest 2 Page, khả năng Make/Meta, preflight host, ADR | 🔒 G-P0: GC2-D00…D08 chốt | 1–2 ngày (+ chờ Harry) |
+| **T0** | v3.2 an toàn + số đo sớm (phương án C) | — | Cổng ảnh, Meta client dùng chung, đối soát 3 kênh, Insights | Harry duyệt từng task | 3–4 ngày |
+| **P0** | Inventory & hợp đồng | — | Manifest 3 kênh, khả năng Make/Meta, preflight host, ADR | 🔒 G-P0: GC2-D00…D09 chốt | 1–2 ngày (+ chờ Harry) |
 | **P1** | Domain core | P0 (GC2-D00, GC2-D04) | Domain thuần + ports, test kiến trúc | G-P1: test domain xanh | 3–4 ngày |
 | **P2** | Persistence & skeleton | P1 | Migrations, UoW, repos, API/CLI skeleton, import dry-run | G-P2: constraints + concurrency + import report | 4–5 ngày |
-| **P3** | Media & duyệt | P2 | Pipeline ảnh, media store, QC, revision, duyệt | G-P3: AC-03, AC-04, AC-05 (phần backend) | 3–4 ngày |
-| **P4** | Generation bridge | P3 | Bản nháp từ legacy vào DB mới, lanes, candidates | G-P4: weekly/fast-lane tạo revision đúng 2 Page | 4–5 ngày |
-| **P5** | Dispatch & admission | P3 (P4 song song được) | Scheduler, outbox, authorize, receipt, blueprint TEST | 🔒 G-P5: AC-02, 06, 07, 08, 09, 12 + Make test route | 4–6 ngày |
-| **P6** | Xác minh & vận hành | P5 | Verify, UNKNOWN, retry an toàn, sự cố, Telegram, backup | G-P6: AC-10, 11, 16 | 3–4 ngày |
+| **P3** | Media & duyệt | P2 | Pipeline ảnh (FB + IG), media store, QC, revision, duyệt | G-P3: AC-03, AC-04, AC-05 (phần backend) | 3,5–4,5 ngày |
+| **P4** | Generation bridge | P3 | Bản nháp từ legacy vào DB mới, lanes, candidates | G-P4: weekly/fast-lane tạo revision đúng 3 kênh | 4–5 ngày |
+| **P5** | Dispatch & admission | P3 (P4 song song được) | Scheduler, outbox, authorize, receipt, blueprint router TEST (3 nhánh) | 🔒 G-P5: AC-02, 06, 07, 08, 09, 12 + Make test | 5–7 ngày |
+| **P6** | Xác minh & vận hành | P5, T0-04 | Verify (bọc `shared.meta`), UNKNOWN, retry an toàn, sự cố, Telegram, backup | G-P6: AC-10, 11, 16 | 3–4 ngày |
 | **P7** | API Dashboard & venho-os | P5, P6 | Routers, OpenAPI, BFF, UI mobile | 🔒 G-P7: AC-13, 14 + kiểm trên iPhone | 4–5 ngày |
-| **P8** | Analytics thật (M2) | P6-T01, P0-T04 | Registry, collector, báo cáo | G-P8: AC-17 | 2–4 ngày |
+| **P8** | Analytics thật (M2) | P6-T01, P0-T04, T0-06 | Registry, collector (bọc `shared.meta`), báo cáo | G-P8: AC-17 | 1,5–3 ngày |
 | **P9** | Cutover & pilot | P1–P7 | Deploy, DRY_RUN, cutover, pilot ≥ 14 ngày | 🔒 G-P9: AC-01, 15, 18 | 2–3 ngày + quan sát |
 
 ```mermaid
@@ -2013,14 +2085,14 @@ flowchart LR
 
 | Tuần | Việc |
 |---|---|
-| 1 (05–08/11) | T0, P0, bắt đầu P1 |
-| 2 (09–15/11) | P1, P2 |
-| 3 (16–22/11) | P3, bắt đầu P4 |
-| 4 (23–29/11) | P4, P5 |
-| 5 (30/11–06/12) | P5 (Make TEST), P6 |
-| 6 (07–13/12) | P7, bắt đầu P8 |
-| 7 (14–20/12) | P9-T01/T02 (deploy DISABLED → DRY_RUN), P8 |
-| 8+ | Cutover → pilot ≥ 14 ngày → M1 đạt; M2 bật sau khi có ≥ 1 tuần bài đã xác minh |
+| 1 (05–08/11) | T0-01, T0-04, P0 |
+| 2 (09–15/11) | T0-05, T0-06 (báo cáo Insights đầu tiên), P1 |
+| 3 (16–22/11) | P2, bắt đầu P3 |
+| 4 (23–29/11) | P3, P4 |
+| 5 (30/11–06/12) | P5 (Make TEST 3 nhánh) |
+| 6 (07–13/12) | P6, bắt đầu P7 |
+| 7 (14–20/12) | P7, P8, P9-T01 (deploy DISABLED) |
+| 8+ | DRY_RUN → cutover → pilot ≥ 14 ngày → M1; M2 bật sau khi có ≥ 1 tuần bài v2 đã xác minh |
 
 > Đây là lịch thiết kế, chưa đo. Nếu P0 phát hiện Make không đạt MK-1…MK-6 hoặc Meta thiếu quyền đọc, lịch P5/P6/P8 sẽ dịch.
 
@@ -2030,10 +2102,12 @@ Mỗi card gồm: **Mục tiêu · Phụ thuộc · Đọc trước · Files · 
 
 ---
 
-### Track 0 — Giữ v3.2 an toàn trong lúc xây v2
+### Track 0 — v3.2: an toàn + số đo sớm (phương án C, Harry chốt 04/11)
+
+> Luật Track 0: chỉ **thêm** module, chỉ **đọc** dữ liệu legacy (ngoại lệ duy nhất: T0-01 thêm cổng chặn trước khi gửi Make — chỉ có thể *giữ bài lại*, không đổi nội dung bài); không sửa dispatch, registry, rollout stage, `growth-dispatch.sh`. Output ghi ngoài git (`~/venho/state/growth-reports/`). Mỗi task một PR vào `main`; Harry deploy theo quy trình hiện có (`ops/asus-server/README.md`). Chạy trên server bằng `.venv/bin/...` của runtime clone — **không** `uv run`.
 
 #### GC2-T0-01 — Cổng kiểm ảnh đầu ra cho dispatch legacy (U2 rút gọn) · *khuyến nghị, cần Harry duyệt*
-- **Mục tiêu:** Chặn lặp lại lỗi 04/11 (ảnh xoay/HTML/quá cỡ) trên pipeline v3.2 đang chạy, tới khi cutover.
+- **Mục tiêu:** Chặn lặp lại lỗi 04/11 (ảnh xoay/HTML/quá cỡ) trên pipeline v3.2 đang chạy, tới khi cutover. Một lệnh FB qua router đăng lên cả 2 Page, nên một lần kiểm bảo vệ cả 2 Page; lệnh IG kiểm riêng.
 - **Phụ thuộc:** Harry duyệt (GC2-D07).
 - **Đọc trước:** `publishing_gateway/adapters/make_gateway.py::MakeGatewayAdapter.send`, `growth_orchestrator/application/scheduled_dispatch.py`.
 - **Files:** ★ `publishing_gateway/output_image_gate.py` · ✎ `publishing_gateway/adapters/make_gateway.py` (gọi gate trước khi POST) · ★ `tests/test_output_image_gate.py`.
@@ -2045,14 +2119,49 @@ Mỗi card gồm: **Mục tiêu · Phụ thuộc · Đọc trước · Files · 
 
 #### GC2-T0-02 — Đóng băng v3.2 (không code)
 - **Mục tiêu:** Không thay đổi rủi ro trên legacy trong lúc xây v2.
-- **Làm:** Ghi vào `task_memory.md`: không `rollout-advance`; giữ `--allow-shadow`; không thêm `schedule` vào workflow publish; chỉ hotfix an toàn. Ghi rõ các quy tắc §18 vẫn hiệu lực.
-- **DoD:** Harry xác nhận GC2-D07.
+- **Làm:** Ghi vào `task_memory.md`: không `rollout-advance`; giữ `--allow-shadow`; không thêm `schedule` vào workflow publish; không sửa dispatch/registry; **được** thêm module chỉ đọc theo T0-01/T0-04/T0-05/T0-06. Ghi rõ các quy tắc §18 vẫn hiệu lực.
+- **DoD:** ✅ Harry xác nhận GC2-D07 = phương án C (04/11/2026).
 
 #### GC2-T0-03 — Việc vận hành tồn đọng (checklist cho Harry, không code)
-- [ ] Bài 04/11 (Phủ Tây Hồ, ảnh xoay): quyết định xoá + đăng lại tay hoặc để nguyên.
+- [x] Bài 04/11 (Phủ Tây Hồ, ảnh xoay): Harry đã xoá và đăng lại thủ công. Ghi link bài đã xoá và bài đăng tay theo từng kênh vào `docs/growth_engine/legacy_inventory.md#manual-posts` (không nhớ đủ cũng được — T0-05 sẽ phát hiện).
 - [ ] Xác nhận ảnh bài 07/11 đã thay (repo ghi commit `9ab0a22` "replace approved image for slot 2026-11-07 … lotus photo"); kiểm trên Dashboard ảnh hiển thị đúng chiều trước 09:00 07/11.
 - [ ] Hard-reload Dashboard, xác nhận ảnh A/B/C hiển thị sau sửa CSP (26/10).
 - [ ] Đẩy ~11 commit vn-stock trên `venho-os` server (PR `server/vn-stock-20261022` → main) — **chặn P7** nếu chưa làm.
+
+#### GC2-T0-04 — Meta Graph client chỉ đọc, dùng chung (`shared/meta/`)
+- **Mục tiêu:** Một client đọc Facebook/Instagram dùng cho Track 0 ngay và cho v2 (P6-T01, P8-T02) sau này.
+- **Phụ thuộc:** GC2-D07 (đã chốt).
+- **Files:** ★ `shared/meta/{__init__,graph_client,models}.py` · ★ `tests/test_shared_meta_graph_client.py` · ✎ `.env.example` (`VENHO_META_READ_TOKEN_FB_HANOI`, `…_FB_VENHO`, `…_IG_VENHO`, `VENHO_META_GRAPH_VERSION` — placeholder).
+- **Áp dụng cho repo hiện tại:** giữ `shared/meta/graph_client.py` và test adapter hiện có; lớp dùng chung là `ReadOnlyGraphClient`, còn Growth Engine bọc lại bằng `GraphClient`. Không tạo client thứ hai hoặc đổi tên/migration; chi tiết ở `plan_code_deltas.md`.
+- **Làm:** Dùng `shared/http.py` nếu phù hợp, transport tiêm được. Chỉ có GET: `get_object(id, fields)`, `list_recent_posts(account_id, since_ms, until_ms, fields, max_pages)`, `get_insights(object_id, metrics, period)`. Version Graph API bắt buộc truyền vào (không "latest"). Lỗi phân loại `AUTH | PERMISSION | NOT_FOUND | RATE_LIMIT | TRANSIENT`. Token không bao giờ xuất hiện trong log/exception/repr. Field cụ thể nhận từ tham số/config (chốt ở P0-T04), không hard-code theo trí nhớ.
+- **Tests:** transport giả + fixture: phân trang dừng đúng `max_pages`; 400/190 → AUTH, 10/200 → PERMISSION, 4/17/32 → RATE_LIMIT (mã lỗi Meta lấy từ fixture P0-T04; nếu chưa có thì test theo HTTP status); không có phương thức POST/DELETE (test kiểm API surface); token bị che trong `repr`.
+- **DoD:** `VERIFY_LEGACY` xanh, 0 network.
+- **Ước lượng:** 1 ngày.
+
+#### GC2-T0-05 — Đối soát 3 kênh hằng ngày (chỉ đọc)
+- **Mục tiêu:** Biết mỗi slot đã thật sự lên ở kênh nào — đặc biệt Page *Ven Hồ Hotel* mà registry không ghi.
+- **Phụ thuộc:** T0-04, P0-T02 (cần `channels.yaml` có ID 3 kênh), P0-T04.
+- **Files:** ★ `analytics_feedback/channel_reconcile.py` · ✎ `analytics_feedback/cli.py` (lệnh `reconcile-channels --days 7`) · ★ `ops/asus-server/venho-growth-reconcile.{service,timer}` · ★ `tests/test_channel_reconcile.py`.
+- **Làm:**
+  1. Đọc (không ghi) `publication_registry.json` — đọc lại tối đa 3 lần nếu JSON đang được ghi dở; đọc `config/projects/venho_hotel/growth_engine/channels.yaml`.
+  2. Với mỗi slot đăng trong N ngày × mỗi kênh: lấy bài trong khoảng `[09:00 − 10′, 09:00 + 3h]` ICT qua `list_recent_posts`; ghép theo post ID registry, nếu không có thì theo 80 ký tự đầu caption đã chuẩn hoá.
+  3. Phân loại: `TRACKED` (khớp registry) · `UNTRACKED` (có bài, registry không có — vd `fb_venho`) · `CAPTION_DIFF` (có bài nhưng caption khác — khả năng đăng tay) · `MISSING` (không có bài) · `DELETED` (registry có ID, Graph trả NOT_FOUND) · `PLACEHOLDER` (registry ghi ID giả như `"3. Post ID"`) · `UNAVAILABLE` (lỗi token/quyền — không kết luận).
+  4. Ghi JSON vào `~/venho/state/growth-reports/channel_reconcile/<YYYY-MM-DD>.json` (ngoài git). Telegram chỉ khi có `MISSING/DELETED/PLACEHOLDER/UNAVAILABLE` mới (dedupe theo slot × kênh × loại).
+  5. Timer: T2/T4/T6/T7 10:30 ICT + CN 21:00 quét 7 ngày; `ExecStart=%h/venho/growth-runtime/venho-ai-studio/.venv/bin/venho-analytics reconcile-channels --days 7`.
+- **Tests:** fixture đủ 7 loại; file trong `data/` không bị chạm (so mtime); lỗi Graph → `UNAVAILABLE`, không báo `MISSING`.
+- **DoD:** Harry nhận được báo cáo đầu tiên có dòng `fb_venho` cho slot 04/11.
+- **Gate:** 🔒 Harry cài timer trên server.
+- **Ước lượng:** 1 ngày.
+
+#### GC2-T0-06 — Insights thật cho bài đã đăng + báo cáo tuần (U1 rút gọn)
+- **Mục tiêu:** Dùng ngay 3 tháng dữ liệu (32 bài FB Hanoi hợp lệ, 46 bài IG, bài `fb_venho` từ T0-05) để biết chủ đề/ảnh nào hiệu quả.
+- **Phụ thuộc:** T0-04, P0-T04 (danh sách metric thật), T0-05 (cho `fb_venho`).
+- **Files:** ★ `analytics_feedback/insights_backfill.py` · ✎ `analytics_feedback/cli.py` (`insights-backfill`, `insights-report`) · ★ `ops/asus-server/venho-growth-insights.{service,timer}` · ★ `tests/test_insights_backfill.py`.
+- **Làm:** Ghi vào `~/venho/state/growth-reports/insights.db` bảng `metric_observations` **cùng cấu trúc migration 0009** (để P9-T03 import thẳng): `value_state`, `source=meta_graph`, `api_version`, `post_age_seconds`, checkpoint `adhoc` cho bài cũ. Bỏ qua bài `PLACEHOLDER`/`DELETED` (ghi lý do). **Không** thay `MockMetricsAdapter` trong luồng M08 hiện có — đây là collector song song. Báo cáo Telegram thứ Hai 08:00: theo kênh × pillar × loại ảnh (AI / ảnh thật / tải lên / dự phòng), kèm số mẫu; nhóm < 5 bài chỉ mô tả; bài đăng tay gắn nhãn "đăng tay".
+- **Tests:** thiếu ≠ 0 ≠ lỗi; chạy lại không nhân đôi (UNIQUE); không gộp reach giữa các kênh.
+- **DoD:** Báo cáo tuần đầu tiên gửi tới Harry.
+- **Gate:** 🔒 Harry cung cấp token đọc (có quyền insights) và cài timer.
+- **Ước lượng:** 1 ngày.
 
 ---
 
@@ -2067,27 +2176,28 @@ Mỗi card gồm: **Mục tiêu · Phụ thuộc · Đọc trước · Files · 
 - **Gate:** 🔒 Harry chạy trên server.
 - **Ước lượng:** 0,25 ngày.
 
-#### GC2-P0-T02 — Manifest 2 Page (không secret)
-- **Mục tiêu:** Định danh chắc chắn Page A/Page B và route Make tương ứng.
-- **Files:** ★ `docs/growth_engine/environment_manifest.md` (template) · ★ `config/projects/venho_hotel/growth_engine/channels.yaml` (giá trị `REQUIRED_FROM_P0`) · ★ `scripts/growth_engine/check_manifest_no_secrets.py`.
+#### GC2-P0-T02 — Manifest 3 kênh (không secret)
+- **Mục tiêu:** Định danh chắc chắn 3 kênh và nhánh router Make tương ứng.
+- **Files:** ★ `docs/growth_engine/environment_manifest.md` (template) · ★ `config/projects/venho_hotel/growth_engine/channels.yaml` (3 production mục; Facebook dùng `remote_page_id`, Instagram dùng `remote_account_id`; ID production đã được xác nhận) · ★ `scripts/growth_engine/check_manifest_no_secrets.py`.
 - **Làm:** Template theo §8.1.5 cho production + test; script quét manifest/channels.yaml tìm chuỗi giống token (`EAA…`, `Bearer`, độ dài > 40 ký tự base64) → exit 1.
-- **DoD:** Harry điền Page ID thật, tên Page, scenario ID; script trả 0.
+- **DoD:** ID 3 kênh, tên nhánh router và scenario ID được đối chiếu; script trả 0.
 - **Gate:** 🔒 Harry điền.
 - **Ước lượng:** 0,25 ngày (+ thời gian Harry).
 
 #### GC2-P0-T03 — Khảo sát khả năng Make trên route TEST
-- **Mục tiêu:** Xác nhận MK-1…MK-8 (§8.1.4) bằng bằng chứng.
+- **Mục tiêu:** Xác nhận MK-1…MK-11 (§8.1.4) bằng bằng chứng.
 - **Files:** ★ `docs/growth_engine/make_capabilities.md` · ★ `tests/growth_engine/fixtures/make/*.json` (output module đã lọc).
-- **Làm:** AI viết checklist từng bước cho Harry (vị trí menu, ảnh chụp cần lấy); Harry tạo scenario **TEST** trỏ vào **Page test**; ghi tên field post ID thật, lỗi mẫu khi ảnh hỏng/token sai, có thể gửi header tuỳ chỉnh hay không.
-- **DoD:** Bảng MK-1…MK-8 có cột "Kết quả" + bằng chứng. MK nào FAIL → ghi phương án.
+- **Làm:** (a) Ghi lại cấu hình **scenario router đang chạy** — chỉ xem/chụp, không sửa: module, filter từng nhánh, error handler, settings, field post ID đang map (nguồn gốc lỗi `"3. Post ID"`). (b) AI viết checklist từng bước cho Harry; Harry **nhân bản** scenario thành bản **TEST** trỏ vào Page/IG test, kiểm MK-1…MK-11; ghi tên field post ID thật, lỗi mẫu khi ảnh hỏng/token sai, có thể gửi header tuỳ chỉnh hay không.
+- **DoD:** Bảng MK-1…MK-11 có cột "Kết quả" + bằng chứng. MK nào FAIL → ghi phương án; chỉ TEST copy được thao tác.
 - **Gate:** 🔒 Harry thao tác Make.
 - **Ước lượng:** 0,5 ngày.
 
 #### GC2-P0-T04 — Probe đọc Meta (read-only)
-- **Mục tiêu:** Biết chắc đọc được bài + field nào với token hiện có, cho từng Page.
+- **Mục tiêu:** Biết chắc đọc được bài + field nào với token hiện có, cho từng kênh (2 FB + IG).
+- **Phụ thuộc:** GC2-T0-04 (script dùng `shared.meta`).
 - **Files:** ★ `scripts/growth_engine/probe_meta_read.py` · ★ `docs/growth_engine/meta_capabilities.md` · ★ `tests/growth_engine/fixtures/meta/*.json`.
 - **Làm:** Script nhận `--page-id --post-id --api-version` + token qua env; chỉ GET; lọc token khỏi output; ghi response mẫu. Không chạy trong pytest.
-- **DoD:** Mỗi Page có: version Graph API đã thử, quyền thực tế, field đọc được cho verify (existence, from/page, created_time, permalink, attachment) và danh sách metric khả dụng (cho P8).
+- **DoD:** Mỗi kênh có: version Graph API đã thử, quyền thực tế, field đọc được cho verify (existence, from/page, created_time, permalink, attachment) và danh sách metric khả dụng (cho P8).
 - **Gate:** 🔒 Harry cung cấp token đọc, chạy script.
 - **Ước lượng:** 0,5 ngày.
 
@@ -2100,9 +2210,9 @@ Mỗi card gồm: **Mục tiêu · Phụ thuộc · Đọc trước · Files · 
 - **Ước lượng:** 0,25 ngày.
 
 #### GC2-P0-T06 — Chốt quyết định & ADR
-- **Files:** ★ `docs/growth_engine/adr/ADR-01…ADR-08.md` · ✎ `task_memory.md`.
+- **Files:** ★ `docs/growth_engine/adr/ADR-01…ADR-09.md` · ✎ `task_memory.md`.
 - **Làm:** Chuyển §2 thành ADR (Context/Decision/Consequences/Alternatives); ghi DR mới cho GC2-D00 theo L2 Governance.
-- **DoD:** Harry đánh dấu chấp nhận từng GC2-D00…GC2-D08.
+- **DoD:** Harry đánh dấu chấp nhận từng GC2-D00…GC2-D09 (đã chốt 04/11: D00 hướng, D01, D07, D09; còn lại theo mặc định nếu Harry không đổi).
 - **Gate:** 🔒 G-P0.
 - **Ước lượng:** 0,25 ngày.
 
@@ -2188,7 +2298,7 @@ Mỗi card gồm: **Mục tiêu · Phụ thuộc · Đọc trước · Files · 
 
 #### GC2-P2-T02 — Migrations 0002–0006 + test ràng buộc
 - **Files:** ★ `migrations/0002_media_qc.sql … 0006_research.sql` (copy §6.3) · ★ `tests/growth_engine/integration/sqlite/test_constraints.py`.
-- **Làm:** Chuyển script kiểm chứng ở §16.3 thành pytest (21 case: 19 phải bị từ chối, 2 phải được chấp nhận).
+- **Làm:** Chuyển script kiểm chứng ở §16.3 thành pytest (23 case: 21 phải bị từ chối, 2 phải được chấp nhận).
 - **DoD:** `PRAGMA foreign_key_check` rỗng, `integrity_check = ok`.
 - **Ước lượng:** 0,5 ngày.
 
@@ -2218,8 +2328,8 @@ Mỗi card gồm: **Mục tiêu · Phụ thuộc · Đọc trước · Files · 
 
 #### GC2-P2-T07 — Legacy import dry-run
 - **Files:** ★ `growth_engine/adapters/outbound/legacy/importer.py` · ✎ `cli/main.py` (`legacy-import --dry-run --source <dir> --report <file>`) · ★ `tests/growth_engine/migration/test_legacy_import.py`.
-- **Làm:** Theo §12.1 bước 1–9, chế độ `--dry-run` ghi vào DB tạm + xuất báo cáo Markdown (đếm theo nguồn × trạng thái, mismatch, issue codes). Không có `--apply` ở task này.
-- **Tests:** fixture legacy (P0-T07): chạy 2 lần không tăng bản ghi; mọi dòng raw có trong `legacy_imports`; `GATEWAY_ACCEPTED` không thành PUBLISHED; IG/Threads không tạo delivery.
+- **Làm:** Theo §12.1 bước 1–12, đọc thêm báo cáo T0-05 nếu có; chế độ `--dry-run` ghi vào DB tạm + xuất báo cáo Markdown (đếm theo nguồn × trạng thái, mismatch, issue codes). Không có `--apply` ở task này.
+- **Tests:** fixture legacy (P0-T07): chạy 2 lần không tăng bản ghi; mọi dòng raw có trong `legacy_imports`; `GATEWAY_ACCEPTED` không thành PUBLISHED; FB trước 03/11 → `fb_hanoi`; IG → `ig_venho`; Threads không tạo delivery; `"3. Post ID"` → `LEGACY_UNVERIFIED` (`PLACEHOLDER_POST_ID`); bài đăng tay chỉ vào `legacy_imports`.
 - **Ước lượng:** 1 ngày.
 
 #### GC2-P2-T08 — Skeleton API, composition root, `doctor`
@@ -2235,8 +2345,8 @@ Mỗi card gồm: **Mục tiêu · Phụ thuộc · Đọc trước · Files · 
 
 #### GC2-P3-T01 — Pipeline ảnh & media store
 - **Files:** ★ `.../outbound/media/{pillow_processor,local_store}.py` · ★ `growth_engine/application/media/{ingest_asset,prepare_variant}.py` · ★ `config/.../growth_engine/media_policy.yaml` · ★ `tests/growth_engine/support/image_fixtures.py` · ★ `tests/growth_engine/integration/media/{test_pillow_pipeline,test_local_store}.py`.
-- **Làm:** Đúng §8.2. `image_fixtures.py` **sinh** ảnh test bằng Pillow (không commit ảnh thật): JPEG có EXIF orientation 1–8, PNG có alpha, HEIC (nếu `pillow-heif` có encoder; không có → skip có lý do), file cắt cụt, HTML đổi đuôi `.jpg`, ảnh 20000×20000 (bomb).
-- **Tests:** EXIF 1–8 → đầu ra đúng chiều (so pixel mốc), không còn tag orientation; HTML/cụt/bomb → REJECT có mã; cùng input → cùng sha trong cùng môi trường; ghi atomic (không có file dở khi lỗi giữa chừng).
+- **Làm:** Đúng §8.2, hai profile `facebook_photo_v1` và `instagram_photo_v1` (một asset → một variant mỗi profile). `image_fixtures.py` **sinh** ảnh test bằng Pillow (không commit ảnh thật): JPEG có EXIF orientation 1–8, PNG có alpha, HEIC (nếu `pillow-heif` có encoder; không có → skip có lý do), file cắt cụt, HTML đổi đuôi `.jpg`, ảnh 20000×20000 (bomb).
+- **Tests:** EXIF 1–8 → đầu ra đúng chiều (so pixel mốc), không còn tag orientation; variant IG đúng 4:5 với nền `#F7F4EF`; HTML/cụt/bomb → REJECT có mã; cùng input → cùng sha trong cùng môi trường; ghi atomic (không có file dở khi lỗi giữa chừng).
 - **DoD:** AC-03 (phần backend).
 - **Ước lượng:** 1 ngày.
 
@@ -2286,7 +2396,7 @@ Mỗi card gồm: **Mục tiêu · Phụ thuộc · Đọc trước · Files · 
 #### GC2-P4-T03 — `ensure_slots`, `reserve_target`, `generate_package`, ngân sách
 - **Files:** ★ `growth_engine/application/scheduling/{ensure_slots,reserve_target}.py` · ★ `growth_engine/application/content/generate_package.py` · ✎ `repositories/budget.py` · ★ `tests/growth_engine/unit/application/{test_ensure_slots,test_generate_package}.py`.
 - **Làm:** Đúng §7.10. `ensure_slots` tạo target cho **mọi channel enabled** của environment; channel chưa cấu hình → incident, không bỏ qua âm thầm. Reserve ngân sách atomic trong `BEGIN IMMEDIATE`.
-- **Tests:** 2 Page → 2 target/slot; chạy lại không trùng; 2 job song song không vượt cap; timeout sau paid call → job UNKNOWN, không gọi lại; fallback chỉ được chọn khi A và C đều không đạt, có nhãn.
+- **Tests:** 3 kênh enabled → 3 target/slot; chạy lại không trùng; 2 job song song không vượt cap; timeout sau paid call → job UNKNOWN, không gọi lại; fallback chỉ được chọn khi A và C đều không đạt, có nhãn.
 - **Ước lượng:** 1 ngày.
 
 #### GC2-P4-T04 — Worker lane `jobs` + lanes weekly / fast / replacement
@@ -2299,7 +2409,7 @@ Mỗi card gồm: **Mục tiêu · Phụ thuộc · Đọc trước · Files · 
 - **Files:** ★ `growth_engine/application/content/{ingest_candidate,decide_candidate,expire_candidates}.py` · ★ `.../outbound/legacy/trend_source.py` · ★ `.../api/routers/internal_research.py` · ★ `contracts/growth_engine/research_ingest.v2.schema.json` · ✎ `.github/workflows/growth-research-cycle.yml` · ★ `tests/growth_engine/unit/application/test_candidates.py`.
 - **Làm:** Upsert theo `(project, source, external_key, source_revision)`; nguồn đổi → revision candidate mới (quyết định cũ không tự áp); `expire_candidates` đóng sự kiện đã qua (xử lý 18 đề xuất tồn đọng); workflow GitHub gửi qua ingest API với bearer `research-ingest` thay vì commit JSON (giữ đường cũ tới cutover bằng cờ).
 - **Tests:** replay cùng payload → không trùng; sự kiện quá hạn → EXPIRED; prompt-injection trong payload chỉ là dữ liệu (không đổi policy/quyền).
-- **DoD:** G-P4 — FakeGenerator tạo được tuần đủ 8 slot × 2 Page ở `IN_REVIEW`.
+- **DoD:** G-P4 — FakeGenerator tạo được tuần đủ 8 slot × 3 kênh ở `IN_REVIEW` (IG trỏ variant 4:5).
 - **Ước lượng:** 0,75 ngày.
 
 ---
@@ -2330,17 +2440,17 @@ Mỗi card gồm: **Mục tiêu · Phụ thuộc · Đọc trước · Files · 
 - **Tests:** trùng event cùng hash → ACK cũ; cùng ID khác hash → 409 + incident; receipt sai Page/hash/grant → QUARANTINED (AC-08); placeholder post ID → không REPORTED; lỗi đến sau thành công → IGNORED_STALE (AC-10); quá `receipt_due_at` → UNKNOWN + incident; hai post ID khác nhau → incident nghi trùng, giữ ID đầu.
 - **Ước lượng:** 1 ngày.
 
-#### GC2-P5-T05 — Blueprint Make v2 trên route TEST 🔒
+#### GC2-P5-T05 — Blueprint router v2 trên scenario TEST 🔒
 - **Files:** ★ `docs/growth_engine/runbooks/make_blueprint_v2.md` · ★ `config/.../growth_engine/make_error_classes.yaml` · ★ `scripts/growth_engine/send_test_command.py`.
-- **Làm:** Runbook từng bước (module, mapping field, filter, error handler) theo §8.1.4 cho scenario **TEST**; `send_test_command.py` tạo command test trong môi trường `test` và gửi envelope; Harry chạy các kịch bản: thành công, ảnh 404, token sai, gửi trùng webhook 2 lần, tắt mạng giữa authorize và tạo bài (mô phỏng bằng filter dừng).
-- **DoD:** Mỗi kịch bản có kết quả + bằng chứng trong `make_capabilities.md`; số bài thực tạo trên Page test = số `execute=true`. **Chưa** đụng scenario production.
+- **Làm:** Runbook từng bước (module, mapping field, filter router, error handler) theo §8.1.4 cho **bản sao TEST** của scenario router hiện có; `send_test_command.py` tạo command test trong môi trường `test` và gửi envelope; Harry chạy các kịch bản: thành công, ảnh 404, token sai, gửi trùng webhook 2 lần, tắt mạng giữa authorize và tạo bài (mô phỏng bằng filter dừng), lệnh của `fb_hanoi` **không** kích hoạt nhánh khác, IG tải ảnh qua `/media/publish/*` thành công.
+- **DoD:** Mỗi kịch bản có kết quả + bằng chứng trong `make_capabilities.md`; số bài thực tạo trên Page/IG test = số `execute=true`. **Chưa** đụng scenario production (đổi router production ở P9-T03).
 - **Gate:** 🔒 Harry thao tác Make, G-P5 phần Make.
 - **Ước lượng:** 0,5 ngày AI + thời gian Harry.
 
-#### GC2-P5-T06 — Fault injection & e2e 2 Page
+#### GC2-P5-T06 — Fault injection & e2e 3 kênh
 - **Files:** ★ `tests/growth_engine/support/fake_make.py` · ★ `tests/growth_engine/fault/{test_crash_points,test_duplicate_webhook,test_lost_responses}.py` · ★ `tests/growth_engine/e2e/test_two_pages_happy_path.py`.
-- **Làm:** `FakeMake` mô phỏng blueprint §8.1.4 (đếm số lần "tạo bài" = mutation counter). Crash point bằng exception tiêm vào: sau commit outbox/trước gửi; sau gửi/trước ACK; sau authorize commit/trước response; sau tạo bài/trước receipt; giữa apply receipt.
-- **Tests:** mọi kịch bản mutation counter ≤ 1/delivery; Page A thành công + Page B lỗi → không gửi lại A (AC-09); mất response authorize → UNKNOWN, không cấp lần 2 (AC-06, AC-07).
+- **Làm:** `FakeMake` mô phỏng blueprint §8.1.4 gồm Router (đếm số lần "tạo bài" = mutation counter theo kênh). Crash point bằng exception tiêm vào: sau commit outbox/trước gửi; sau gửi/trước ACK; sau authorize commit/trước response; sau tạo bài/trước receipt; giữa apply receipt.
+- **Tests:** mọi kịch bản mutation counter ≤ 1/delivery; mỗi lệnh chỉ chạy 1 nhánh router; Page A thành công + Page B lỗi → không gửi lại A (AC-09); mất response authorize → UNKNOWN, không cấp lần 2 (AC-06, AC-07).
 - **DoD:** G-P5 — AC-02, 06, 07, 08, 09, 12 xanh.
 - **Ước lượng:** 1 ngày.
 
@@ -2349,8 +2459,8 @@ Mỗi card gồm: **Mục tiêu · Phụ thuộc · Đọc trước · Files · 
 ### P6 — Xác minh, UNKNOWN, sự cố, backup
 
 #### GC2-P6-T01 — Meta reader & `verify_publication`
-- **Files:** ★ `.../outbound/meta/{graph_client,platform_reader}.py` · ★ `growth_engine/application/verification/verify_publication.py` · ★ `tests/growth_engine/unit/application/test_verify_publication.py`.
-- **Làm:** Đúng §7.8; client khoá version từ channel config; field lấy từ `meta_capabilities.md` (P0-T04); job verify lần đầu T+5′, retry 15′/60′/6h.
+- **Files:** ★ `.../outbound/meta/platform_reader.py` (bọc `shared.meta` từ T0-04, không viết client mới) · ★ `growth_engine/application/verification/verify_publication.py` · ★ `tests/growth_engine/unit/application/test_verify_publication.py`.
+- **Làm:** Đúng §7.8 cho cả Facebook post và Instagram media; client khoá version từ channel config; field lấy từ `meta_capabilities.md` (P0-T04); job verify lần đầu T+5′, retry 15′/60′/6h.
 - **Tests:** dùng fixture P0-T04: EXISTS+MATCH → PUBLISHED; token hết hạn → giữ REPORTED_PUBLISHED + incident quyền (không coi là thất bại); NOT_FOUND xác định → UNKNOWN + CRITICAL; bài bị xoá sau verify → `platform_visibility=DELETED`, không tái đăng.
 - **Ước lượng:** 1 ngày.
 
@@ -2424,18 +2534,18 @@ Mỗi card gồm: **Mục tiêu · Phụ thuộc · Đọc trước · Files · 
 
 #### GC2-P8-T01 — Registry metric & migration 0009
 - **Files:** ★ `migrations/0009_metrics.sql` · ★ `growth_engine/domain/analytics/metric.py` · ★ `config/.../growth_engine/metrics_registry.yaml` · ★ `tests/growth_engine/unit/domain/test_metric_value_state.py`.
-- **Làm:** Registry từ `meta_capabilities.md`; `ValueState` VALUE/ZERO/NULL/UNAVAILABLE/ERROR; nhãn checkpoint chỉ đúng khi `post_age` nằm trong dung sai (vd 24h ± 2h), nếu không → `adhoc`.
+- **Làm:** Registry từ `meta_capabilities.md` + cấu hình T0-06; `ValueState` VALUE/ZERO/NULL/UNAVAILABLE/ERROR; nhãn checkpoint chỉ đúng khi `post_age` nằm trong dung sai (vd 24h ± 2h), nếu không → `adhoc`.
 - **Ước lượng:** 0,5 ngày.
 
 #### GC2-P8-T02 — Collector
-- **Files:** ★ `.../outbound/meta/metrics_source.py` · ★ `growth_engine/application/analytics/collect_metrics.py` · ✎ `jobs_lane.py` · ★ `tests/growth_engine/unit/application/test_collect_metrics.py`.
+- **Files:** ★ `.../outbound/meta/metrics_source.py` (bọc `shared.meta`) · ★ `growth_engine/application/analytics/collect_metrics.py` · ✎ `jobs_lane.py` · ★ `tests/growth_engine/unit/application/test_collect_metrics.py`.
 - **Làm:** Job key `(delivery_id, checkpoint, collector_version)`; rate limit theo Page; metric không hỗ trợ → UNAVAILABLE, chạy tiếp; production **cấm** `source=mock` (guard trong composition root).
 - **Tests:** thiếu ≠ 0 ≠ lỗi (AC-17); không cộng snapshot tích luỹ; collector lỗi không chặn lane publish.
 - **Ước lượng:** 1 ngày.
 
 #### GC2-P8-T03 — Báo cáo tuần & màn Analytics
 - **Files:** ★ `growth_engine/application/analytics/build_weekly_report.py` · ★ `growth_engine/application/queries/analytics_views.py` · ★ `.../api/routers/analytics.py` · venho-os: ★ màn Analytics.
-- **Làm:** So theo Page × pillar × loại ảnh, luôn kèm số mẫu; "tỷ lệ tương tác nội bộ" = `(reactions+comments+shares)/reach` khi đủ dữ liệu; nhóm < 5 bài chỉ mô tả, không so sánh; báo cáo tách **độ tin cậy vận hành** và **hiệu quả nội dung**; không gộp reach 2 Page.
+- **Làm:** So theo Page × pillar × loại ảnh, luôn kèm số mẫu; "tỷ lệ tương tác nội bộ" = `(reactions+comments+shares)/reach` khi đủ dữ liệu; nhóm < 5 bài chỉ mô tả, không so sánh; báo cáo tách **độ tin cậy vận hành** và **hiệu quả nội dung**; không gộp reach giữa các kênh; số liệu Track 0 (T0-06) được dùng làm nền so sánh.
 - **DoD:** G-P8 — AC-17.
 - **Ước lượng:** 1 ngày.
 
@@ -2445,31 +2555,31 @@ Mỗi card gồm: **Mục tiêu · Phụ thuộc · Đọc trước · Files · 
 
 #### GC2-P9-T01 — Công cụ deploy & systemd units
 - **Files:** ★ `ops/asus-server/growth-engine/{deploy-release.sh,growth-engine-api.service,growth-engine-worker@.service,README.md}`.
-- **Làm:** Đúng §13.1; unit dùng `EnvironmentFile=%h/venho/secrets/growth-engine.env`, `WorkingDirectory=%h/venho/growth-engine/current`, `Restart=on-failure`, `OnFailure=venho-growth-alert@%n.service` (tái dùng alert hiện có).
+- **Làm:** Đúng §13.1; build bằng `UV_PYTHON_PREFERENCE=only-managed ~/.local/bin/uv sync --frozen --python 3.11 --extra api --extra drive --extra gemini`. Unit dùng `EnvironmentFile=%h/venho/secrets/growth-engine.env`, `WorkingDirectory=%h/venho/growth-engine/current`, `Restart=on-failure`, `OnFailure=venho-growth-alert@%n.service` (tái dùng alert hiện có); bật worker instance `publish` và `jobs`.
 - **DoD:** Harry deploy ở mode `DISABLED`; `doctor` toàn PASS (trừ mục chờ cutover).
 - **Gate:** 🔒 Harry.
 - **Ước lượng:** 0,5 ngày.
 
 #### GC2-P9-T02 — DRY_RUN song song 3–7 ngày
-- **Làm:** v2 sinh bản nháp vào DB mới (không đăng), so với kế hoạch legacy: slot, chủ đề, ảnh, mapping 2 Page; báo cáo khác biệt hằng ngày qua Telegram.
+- **Làm:** v2 sinh bản nháp vào DB mới (không đăng), so với kế hoạch legacy: slot, chủ đề, ảnh, mapping 3 kênh; báo cáo khác biệt hằng ngày qua Telegram.
 - **DoD:** Không khác biệt chưa giải thích về lịch/mapping Page.
 - **Ước lượng:** 0,5 ngày AI + thời gian quan sát.
 
 #### GC2-P9-T03 — Cutover 🔒
 - **Files:** ★ `docs/growth_engine/runbooks/cutover.md` · ✎ `importer.py` (`--apply` cho delta).
-- **Làm:** Đúng §12.2 từng bước, mỗi bước có lệnh kiểm + kết quả mong đợi + cách dừng.
+- **Làm:** Đúng §12.2 từng bước (gồm đổi router production ở bước 7, import `insights.db` ở bước 10), mỗi bước có lệnh kiểm + kết quả mong đợi + cách dừng.
 - **DoD:** Một publishing authority duy nhất; import report khớp (AC-15).
 - **Gate:** 🔒 Harry thực hiện theo runbook.
 - **Ước lượng:** 0,5 ngày.
 
 #### GC2-P9-T04 — Pilot LIVE_MANUAL
 - **Files:** ★ `docs/growth_engine/runbooks/pilot_daily_check.md`.
-- **Làm:** Page A trước 1–2 slot → Page B; check hằng ngày (receipt, verify, incident, ảnh trên Page).
-- **DoD (G-P9):** ≥ 8 slot thực tế, ≥ 16 target outcome, ≥ 14 ngày; 0 trùng bài, 0 sai Page, 0 ảnh khác bản duyệt; mọi UNKNOWN xử lý theo runbook; đã có 1 restore rehearsal (AC-18). Thiếu mẫu do huỷ lịch → kéo dài pilot.
+- **Làm:** `fb_hanoi` trước 1–2 slot → `fb_venho` → `ig_venho`; check hằng ngày (receipt, verify, incident, ảnh trên từng kênh) — báo cáo T0-05 dùng làm đối chứng độc lập.
+- **DoD (G-P9):** ≥ 8 slot thực tế, ≥ 24 target outcome (8 × 3 kênh), ≥ 14 ngày; 0 trùng bài, 0 sai Page, 0 ảnh khác bản duyệt; mọi UNKNOWN xử lý theo runbook; đã có 1 restore rehearsal (AC-18). Thiếu mẫu do huỷ lịch → kéo dài pilot.
 - **Ước lượng:** quan sát ≥ 14 ngày.
 
 #### GC2-P9-T05 — Retire đường đăng legacy 🔒
-- **Làm:** Disable vĩnh viễn timer publish legacy; archive registry JSON (chỉ đọc); gỡ `GROWTH_BACKEND=legacy` khỏi venho-os; cập nhật `ops/asus-server/README.md`; ghi DR đóng.
+- **Làm:** Disable vĩnh viễn timer publish legacy (giữ hoặc gỡ timer T0-05/T0-06 tuỳ Harry — v2 đã có verify + metrics); archive registry JSON (chỉ đọc); gỡ `GROWTH_BACKEND=legacy` khỏi venho-os; cập nhật `ops/asus-server/README.md`; ghi DR đóng.
 - **Gate:** 🔒 Harry.
 - **Ước lượng:** 0,25 ngày.
 
@@ -2489,7 +2599,7 @@ Mỗi card gồm: **Mục tiêu · Phụ thuộc · Đọc trước · Files · 
 | Hợp đồng | `contract/` | JSON Schema, Make envelope/authorize/receipt, lỗi API, OpenAPI snapshot | `jsonschema`, FastAPI TestClient |
 | Fault injection | `fault/` | Crash ở mọi ranh giới commit/send/authorize/mutation/callback | `FakeMake`, exception tiêm |
 | Migration/restore | `migration/` | Import idempotent, đếm raw khớp; restore + epoch chặn replay | fixture legacy đã lọc |
-| E2E | `e2e/` | Một tuần 2 Page từ soạn → duyệt → đăng → verify | FakeClock + FakeMake + FakePlatformReader |
+| E2E | `e2e/` | Một tuần 3 kênh từ soạn → duyệt → đăng → verify | FakeClock + FakeMake + FakePlatformReader |
 
 Probe production chỉ **đọc** (P0-T04). Test có side effect dùng Page/scenario **test**. Pilot chỉ dùng nội dung đã duyệt.
 
@@ -2497,7 +2607,7 @@ Probe production chỉ **đọc** (P0-T04). Test có side effect dùng Page/scen
 
 | AC | Tiêu chí | Chứng minh ở |
 |---|---|---|
-| AC-01 | Hai Page ID/connection/route được kiểm chứng, không routing ngầm theo platform | P0-T02, P0-T03, P9-T03 |
+| AC-01 | Ba kênh (2 Page + IG): ID/connection/nhánh router được kiểm chứng, không routing ngầm theo platform | P0-T02, P0-T03, P9-T03 |
 | AC-02 | Một target không có hai delivery active; một delivery không có hai execution live | P2-T02, P2-T06, P5-T06 |
 | AC-03 | Ảnh EXIF 1–8, HEIC, file hỏng, ảnh không EXIF xử lý đúng | P3-T01 |
 | AC-04 | Preview, SHA đã duyệt và bytes vào Make cùng identity; không fallback ở dispatch | P3-T04, P5-T03, P5-T06 |
@@ -2518,10 +2628,10 @@ Probe production chỉ **đọc** (P0-T04). Test có side effect dùng Page/scen
 
 ### 16.3. Bằng chứng kiểm chứng DDL (đã chạy khi lập tài liệu)
 
-Chạy trên SQLite 3.53.1 (`PRAGMA foreign_keys=ON`), nạp 0001–0006 + 0009 → 26 bảng (+ `schema_migrations` do migrator tạo). Kết quả:
+Chạy lại cho v1.2 trên SQLite 3.53.1 (`PRAGMA foreign_keys=ON`), nạp 0001–0006 + 0009 → 26 bảng (+ `schema_migrations` do migrator tạo). Kết quả:
 
-- **Chấp nhận:** 1 slot × 2 Facebook Page → 2 delivery độc lập, mỗi cái có revision + approval riêng; execution mới sau khi execution trước được chứng minh `NO_SIDE_EFFECT`; receipt của execution lạ lưu `QUARANTINED`.
-- **Từ chối (19 case):** delivery active thứ hai cùng target · target/channel không khớp · sửa revision · approval sai hash · chọn revision của delivery khác · PUBLISHED thiếu post ID · SUPERSEDED mà active=1 · đổi `remote_page_id` · ghi đè bytes variant · command mở thứ hai cùng delivery · command có hash khác revision · execution live thứ hai cùng delivery (xuyên command) · execution khác delivery với command · receipt trùng event_id · trùng post ID trên cùng Page · incident OPEN trùng fingerprint · metric ZERO có giá trị ≠ 0 · sửa audit · target/channel lệch (FK).
+- **Chấp nhận:** 1 slot × 3 kênh (2 Facebook Page + Instagram) → 3 delivery độc lập, mỗi cái có revision + approval riêng; execution mới sau khi execution trước được chứng minh `NO_SIDE_EFFECT`; receipt của execution lạ lưu `QUARANTINED`.
+- **Từ chối (21 case):** delivery active thứ hai cùng target · target/channel không khớp · sửa revision · approval sai hash · chọn revision của delivery khác · PUBLISHED thiếu post ID · SUPERSEDED mà active=1 · đổi `remote_account_id` · platform không hỗ trợ (`threads`) · trùng `channel_key` · ghi đè bytes variant · command mở thứ hai cùng delivery · command có hash khác revision · execution live thứ hai cùng delivery (xuyên command) · execution khác delivery với command · receipt trùng event_id · trùng post ID trên cùng Page · incident OPEN trùng fingerprint · metric ZERO có giá trị ≠ 0 · sửa audit · target/channel lệch (FK).
 - `PRAGMA foreign_key_check` rỗng, `integrity_check = ok`.
 
 Kết quả này chỉ chứng minh DDL tham chiếu; không thay cho test concurrency, khả năng Make, quyền Meta hay pilot.
@@ -2532,7 +2642,7 @@ Kết quả này chỉ chứng minh DDL tham chiếu; không thay cho test concu
 
 | Mục trong báo cáo | Vấn đề | Xử lý trong GC2 |
 |---|---|---|
-| Điểm yếu 1 · U1 | Analytics mock | P8 (M2) |
+| Điểm yếu 1 · U1 | Analytics mock | T0-06 (ngay, chỉ đọc, 3 kênh) → P8 (M2) |
 | Điểm yếu 2 | Lỗi âm thầm, không kiểm đầu ra | T0-01 (tạm), P3 preflight ảnh, P5-T03 cổng authorize, P6-T01 verify, P6-T03 sự cố |
 | Điểm yếu 3 · U9 | Phụ thuộc duyệt đúng hạn | P6-T03 nhắc T-24h/T-6h + digest; P7-T04 duyệt nhóm 1 chạm trên iPhone. Tự duyệt: ngoài phạm vi |
 | Điểm yếu 4 · U10 | JSON-trong-git | P2 (DB duy nhất), P7-T03, P9-T03 |
@@ -2541,7 +2651,9 @@ Kết quả này chỉ chứng minh DDL tham chiếu; không thay cho test concu
 | Điểm yếu 7 · U11 | "shadow" khó hiểu | §11.2 DISABLED/DRY_RUN/LIVE_MANUAL; T0-02 giữ nguyên legacy tới cutover |
 | Điểm yếu 8 · U7 | QC có điểm mù | P3-T03 `compile_effective_qc_policy` + `coverage_gaps` |
 | Điểm yếu 9 · U12 | Một máy chủ | P6-T04 backup/restore, P6-T05 dead-man switch (chỉ cảnh báo) |
-| Vấn đề #1 | Bài 04/11 ảnh xoay | T0-03 (Harry quyết) |
+| Vấn đề #1 | Bài 04/11 ảnh xoay | Harry đã xoá + đăng tay; T0-03 ghi link, T0-05 tự phát hiện |
+| Mới (04/11) | Router rẽ cả 2 nhánh FB, registry chỉ ghi Page Hanoi | T0-05 (ngay); ADR-09 + P5-T05 + P9-T03 (sửa gốc) |
+| Mới (04/11) | 2 post ID giả `"3. Post ID"` (10/08, 12/08) | T0-05 phân loại `PLACEHOLDER`; P2-T07 import `LEGACY_UNVERIFIED`; MK-4 chặn lặp lại |
 | Vấn đề #2 | Ảnh 07/11 | Repo có commit `9ab0a22` thay ảnh; T0-03 + P0-T07 xác nhận |
 | Vấn đề #3 | `rollout-advance` 05/11 | GC2-D07: không nâng, đóng băng |
 | Vấn đề #5 · U6 | 18 trend chờ duyệt | P4-T05 `expire_candidates` |
