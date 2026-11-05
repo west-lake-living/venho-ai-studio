@@ -5669,3 +5669,10 @@ ComfyUI, GPU, provider or network call.
 **Verify:** integration file-SQLite + unit reconcile → 6 passed; migration thật, UoW và incident repo; `git diff --check` → PASS.
 **DoD:** [x] kết quả cần cảnh báo tạo incident bền vững theo slot × channel × status; [x] lần lặp tăng occurrence mà không phát cảnh báo mới; [ ] thao tác legacy/Telegram/host chưa chạy.
 **Giả định:** incident mở là khóa dedupe; incident đã đóng có thể phát cảnh báo mới khi điều kiện lặp lại.
+
+### GC2-T0-06 — SQLite UoW wiring backfill (2026-11-05)
+**Status:** PARTIAL — backfill repository now uses migrated SQLite/UoW; real Meta fixture and scheduled report delivery await P0-T04/host.
+**Files:** `growth_engine/adapters/outbound/analytics/sqlite_insights_repository.py`, `tests/growth_engine/unit/application/analytics/test_insights_backfill.py`, `tests/growth_engine/integration/sqlite/test_insights_backfill_wiring.py`, `task_status.md`, `task_memory.md`
+**Verify:** insight unit + file-SQLite integration → 6 passed; migration 0009, UoW, FK-enabled IG delivery seed, replay idempotency; `git diff --check` → PASS.
+**DoD:** [x] append/read use the shared migrated UoW; [x] replay remains idempotent on a real SQLite file; [ ] real collection/report schedule requires external Meta evidence and host timer.
+**Giả định:** legacy backfill observations retain their existing application DTO while persistence uses the canonical migration 0009 table.

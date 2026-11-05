@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import Mapping, Sequence
 
-from growth_engine.adapters.outbound.analytics.sqlite_insights_repository import SQLiteInsightsRepository
 from growth_engine.application.analytics.insights_backfill import (
     BackfillTarget,
     MetricDefinition,
@@ -106,15 +105,12 @@ def test_placeholder_and_deleted_targets_are_skipped_with_reasons() -> None:
     assert [item.reason for item in result.skipped] == ["PLACEHOLDER", "DELETED"]
 
 
-def test_sqlite_unique_key_makes_same_backfill_replay_idempotent(tmp_path) -> None:
+def test_same_timestamp_backfill_has_stable_observation_identity() -> None:
     reader = FakeMetricReader({"post-1": {"metric_x": MetricSample(MetricValueState.VALUE, 7)}})
     result = backfill_insights([_target("delivery-1")], _DEFINITIONS, reader, observed_at_ms=2_000_000)
-    repository = SQLiteInsightsRepository(tmp_path / "insights.db")
+    replay = backfill_insights([_target("delivery-1")], _DEFINITIONS, reader, observed_at_ms=2_000_000)
 
-    assert repository.append(result.observations) == 1
-    assert repository.append(result.observations) == 0
-    assert len(repository.load_all()) == 1
-    repository.close()
+    assert [row.id for row in replay.observations] == [row.id for row in result.observations]
 
 
 def test_weekly_report_keeps_channels_separate_and_marks_small_samples_descriptive() -> None:

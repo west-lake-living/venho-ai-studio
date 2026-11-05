@@ -6310,3 +6310,7 @@ not in local venv; installed in CI).
 ### 2026-11-05 — GC2-T0-05 SQLite wiring
 - Nối cảnh báo reconcile vào `incidents` qua UoW; fingerprint tách slot × channel × trạng thái, incident mở dedupe bền vững.
 - Test chạy migration trên file SQLite; external Graph/Telegram/legacy scheduler không được gọi.
+
+### 2026-11-05 — GC2-T0-06 SQLite wiring
+- Thay repository tự tạo schema/connection riêng bằng adapter dùng SQLite UoW và migration 0009; test file DB seed delivery IG tổng hợp.
+- Lặp cùng timestamp không thêm hàng; fixture gắn `_synthetic` và chưa gọi Meta.
