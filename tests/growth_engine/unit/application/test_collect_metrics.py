@@ -192,6 +192,25 @@ def test_meta_source_uses_latest_snapshot_without_summing_and_marks_missing_unav
     ]
 
 
+def test_meta_source_reads_instagram_media_metrics_by_media_id() -> None:
+    client = FakeGraphClient(
+        {"data": [{"name": "synthetic_reach", "values": [{"value": 17}]}]}
+    )
+    source = MetaMetricsSource(lambda _channel: client, now_ms=lambda: 7)
+    channel = ChannelConfigView(
+        "ig_venho", "ig-business-synthetic", "instagram", "v-synthetic"
+    )
+
+    result = source.fetch(
+        channel,
+        "ig-media-synthetic-123",
+        [_spec("reach", "synthetic_reach")],
+    )
+
+    assert result[0].value == 17
+    assert client.calls == [("ig-media-synthetic-123", ("synthetic_reach",), "day")]
+
+
 def test_meta_source_returns_zero_null_and_provider_errors_separately() -> None:
     client = FakeGraphClient(
         {

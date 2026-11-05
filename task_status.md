@@ -5718,3 +5718,10 @@ ComfyUI, GPU, provider or network call.
 **Verify:** verify-publication + Meta client tests → 21 passed; synthetic IG media ID/account match is read via GET-only Graph client.
 **DoD:** [x] provider-neutral post ID and account ID paths support Instagram media verification; [x] caption/media evidence stays config-driven; [ ] real fields, token and live results await P0-T04.
 **Giả định:** Meta capability config supplies platform-specific ID/owner paths; no Graph field name is inferred in code.
+
+### GC2-P8-T02 — IG metric collection by media ID (2026-11-05)
+**Status:** PARTIAL — collector accepts Instagram media IDs and channel config; production Meta capability/permissions still await P0-T04.
+**Files:** `tests/growth_engine/unit/application/test_collect_metrics.py`, `task_status.md`, `task_memory.md`
+**Verify:** collector tests → 8 passed; synthetic IG media ID is sent to the configured post-metric client without page-key substitution.
+**DoD:** [x] Instagram channel key/platform/account and post media ID flow through collector; [ ] actual provider metrics/fields require P0-T04.
+**Giả định:** post-scoped Instagram insights use the stored media ID as object identity; provider field names remain configurable.

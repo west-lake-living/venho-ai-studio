@@ -6336,3 +6336,6 @@ not in local venv; installed in CI).
 ### 2026-11-05 — GC2-P6-T01 IG support
 - PlatformReader now accepts a generic remote account ID and configured `platform_post_id_path`/`owner_account_id_path`, while retaining Facebook path aliases.
 - Synthetic IG media verify covers ID, account, caption and media presence using GET-only fake transport; provider fields remain REQUIRED_FROM_P0.
+
+### 2026-11-05 — GC2-P8-T02 IG support
+- Verified MetaMetricsSource reads a synthetic IG `media_id` using `ig_venho`'s configured account and platform; no provider field or network call was added.
