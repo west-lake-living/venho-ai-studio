@@ -5,16 +5,13 @@ import hashlib
 from pathlib import Path
 
 import pytest
-from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from growth_engine.adapters.inbound.api.errors import domain_error_handler
-from growth_engine.adapters.inbound.api.routers.media import router as media_router
+from growth_engine.adapters.inbound.api.app import create_app
 from growth_engine.adapters.outbound.media.local_store import LocalMediaStore
 from growth_engine.adapters.outbound.media.signed_urls import SignedMediaUrlIssuer
 from growth_engine.adapters.outbound.persistence.sqlite.connection import connect
 from growth_engine.bootstrap import build_container
-from growth_engine.domain.kernel.errors import DomainError
 from growth_engine.settings import Settings
 
 MIGRATIONS = Path("growth_engine/adapters/outbound/persistence/sqlite/migrations")
@@ -46,11 +43,8 @@ def media_client(tmp_path: Path) -> tuple[TestClient, SignedMediaUrlIssuer]:
     container = build_container(settings)
     container.migration_service.run(database_path, check=False)
     _seed_approved_command(database_path, settings.media_root)
-    app = FastAPI()
-    app.state.container = container
+    app = create_app(container)
     app.state.media_clock = _FixedClock()
-    app.add_exception_handler(DomainError, domain_error_handler)
-    app.include_router(media_router)
     issuer = SignedMediaUrlIssuer(settings.public_base_url, settings.capability_keys)
     return TestClient(app), issuer
 

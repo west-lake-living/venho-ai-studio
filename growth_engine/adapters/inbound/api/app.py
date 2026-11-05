@@ -8,6 +8,7 @@ from growth_engine.adapters.inbound.api.errors import (
 )
 from growth_engine.adapters.inbound.api.middleware import RequestMiddleware
 from growth_engine.adapters.inbound.api.routers.health import router as health_router
+from growth_engine.adapters.inbound.api.routers.media import router as media_router
 from growth_engine.adapters.inbound.api.routers.channels import router as channels_router
 from growth_engine.adapters.inbound.api.routers.slots import router as slots_router
 from growth_engine.adapters.inbound.api.routers.deliveries import router as deliveries_router
@@ -48,4 +49,5 @@ def create_app(container) -> FastAPI:
     app.include_router(internal_research_router)
     app.include_router(internal_executions_router)
     app.include_router(internal_receipts_router)
+    app.include_router(media_router)
     return app

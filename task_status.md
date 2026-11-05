@@ -5650,3 +5650,9 @@ ComfyUI, GPU, provider or network call.
 **Files:** `publishing_gateway/output_image_gate.py`, `publishing_gateway/adapters/make_gateway.py`, `tests/test_output_image_gate.py`, `task_status.md`, `task_memory.md`
 **Verify:** output gate + Make adapter regression tests → 40 passed; `git diff --check` → PASS; no network request.
 **DoD:** [x] rejects wrong signature, EXIF rotation, unsupported ratio, decode/fetch errors and >5 MiB; [x] prevents Make POST on failed gate; [x] injected POST tests remain offline.
+
+### GC2-P3-T02 — Mount signed media route (2026-11-05)
+**Status:** DONE — production API app mounts the signed media route and preserves `private, no-store` on the media response.
+**Files:** `growth_engine/adapters/inbound/api/{app,middleware}.py`, `tests/growth_engine/integration/media/test_signed_urls.py`, `task_status.md`, `task_memory.md`
+**Verify:** signed media app integration + architecture → 6 passed; database and media bytes use a real temporary SQLite file.
+**DoD:** [x] exact approved bytes and 403 cases are tested through the composed API app; [x] no-cache header survives middleware.

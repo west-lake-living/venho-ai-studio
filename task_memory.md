@@ -24,6 +24,9 @@
 ### 2026-11-05 — T0-01: legacy image output gate
 - Production MakeGatewayAdapter now fetches and validates the exact JPEG bytes before POST; any validation/fetch failure returns `GATEWAY_ERROR` so the dispatcher treats it as a failed send.
 - An injected POST transport keeps the existing offline adapter tests isolated unless an image fetcher is also injected. The normal production transport enforces the gate by default.
+### 2026-11-05 — P3-T02: signed media route composition
+- Mounted the media router in `create_app`; changed middleware to preserve the handler's cache policy on public signed-media paths while keeping `no-store` forced on private API paths.
+- Integration checks use the normal app, migrated temporary SQLite file and local media store; signature, expiry, traversal and exact hash behavior pass.
 
 ## 2026-11-04 — GC2-P1-T01 package và cấu hình
 

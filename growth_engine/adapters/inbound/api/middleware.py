@@ -28,7 +28,8 @@ class RequestMiddleware:
                 headers = [
                     (key, value)
                     for key, value in message.get("headers", [])
-                    if key.lower() not in {b"x-correlation-id", b"cache-control"}
+                    if key.lower() != b"x-correlation-id"
+                    and not (is_private_api and key.lower() == b"cache-control")
                 ]
                 headers.append((b"x-correlation-id", correlation_id.encode("ascii")))
                 if is_private_api:
