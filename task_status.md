@@ -5725,3 +5725,10 @@ ComfyUI, GPU, provider or network call.
 **Verify:** collector tests → 8 passed; synthetic IG media ID is sent to the configured post-metric client without page-key substitution.
 **DoD:** [x] Instagram channel key/platform/account and post media ID flow through collector; [ ] actual provider metrics/fields require P0-T04.
 **Giả định:** post-scoped Instagram insights use the stored media ID as object identity; provider field names remain configurable.
+
+### GC2-P8-T03 — IG analytics group riêng (2026-11-05)
+**Status:** PARTIAL — migrated SQLite weekly report returns an independent Instagram group; real Meta samples still await P0-T04.
+**Files:** `tests/growth_engine/integration/sqlite/test_analytics_views_sqlite.py`, `task_status.md`, `task_memory.md`
+**Verify:** weekly analytics SQLite + collector/report tests → 14 passed; Facebook Hanoi, Facebook Ven Hồ and Instagram reach values remain separate.
+**DoD:** [x] `ig_venho` observations retain their own page/channel aggregate; [x] mock observations and out-of-week data remain excluded; [ ] real Meta observations remain gated.
+**Giả định:** report grouping by channel ID is the canonical page boundary across Facebook and Instagram.

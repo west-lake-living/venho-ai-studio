@@ -21,19 +21,21 @@ def test_weekly_view_keeps_page_reach_separate_and_filters_mock_and_dates(tmp_pa
     migrations = Path("growth_engine/adapters/outbound/persistence/sqlite/migrations")
     with connect(database) as connection:
         MigrationRunner(migrations).apply(connection, application_version="synthetic-test")
-        for channel_id, key, name, account in (
-            ("channel-hanoi", "fb_hanoi", "Ven Hồ Hotel Hanoi", "page-hanoi-synthetic"),
-            ("channel-venho", "fb_venho", "Ven Hồ Hotel", "page-venho-synthetic"),
+        for channel_id, key, platform, name, account in (
+            ("channel-hanoi", "fb_hanoi", "facebook", "Ven Hồ Hotel Hanoi", "page-hanoi-synthetic"),
+            ("channel-venho", "fb_venho", "facebook", "Ven Hồ Hotel", "page-venho-synthetic"),
+            ("channel-ig", "ig_venho", "instagram", "Ven Hồ Hotel Instagram", "ig-account-synthetic"),
         ):
             connection.execute(
                 """INSERT INTO channels
                    (id, project_id, environment, channel_key, platform, remote_account_id, name, created_at)
-                   VALUES (?, 'venho_hotel', 'production', ?, 'facebook', ?, ?, 1)""",
-                (channel_id, key, account, name),
+                   VALUES (?, 'venho_hotel', 'production', ?, ?, ?, ?, 1)""",
+                (channel_id, key, platform, account, name),
             )
         for slot_id, channel_id, target_id, delivery_id, package_id, pillar, day, page_id, reach in (
             ("slot-a", "channel-hanoi", "target-a", "delivery-a", "package-a", "local_discovery", date(2026, 11, 2), "channel-hanoi", 100),
             ("slot-b", "channel-venho", "target-b", "delivery-b", "package-b", "food", date(2026, 11, 3), "channel-venho", 200),
+            ("slot-ig", "channel-ig", "target-ig", "delivery-ig", "package-ig", "local_discovery", date(2026, 11, 4), "channel-ig", 300),
         ):
             connection.execute(
                 """INSERT INTO slots
@@ -81,8 +83,10 @@ def test_weekly_view_keeps_page_reach_separate_and_filters_mock_and_dates(tmp_pa
     next_week = views.weekly(week_start="2026-11-09", checkpoint="7d")
 
     groups = {row["channel_id"]: row for row in report["groups"]}
+    assert set(groups) == {"channel-hanoi", "channel-venho", "channel-ig"}
     assert groups["channel-hanoi"]["content_effectiveness"]["reach"]["average"] == 100
     assert groups["channel-venho"]["content_effectiveness"]["reach"]["average"] == 200
+    assert groups["channel-ig"]["content_effectiveness"]["reach"]["average"] == 300
     assert groups["channel-hanoi"]["pillar"] == "local_discovery"
     assert groups["channel-venho"]["pillar"] == "food"
     assert next_week["groups"] == []
