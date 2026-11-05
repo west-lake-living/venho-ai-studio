@@ -6400,3 +6400,8 @@ not in local venv; installed in CI).
 - Added `legacy-import --apply --target-db` for an explicit existing SQLite target; verifies migrations without changing schema, inserts source/key/hash idempotently, keeps raw rows/issues, and does not recreate approvals.
 - Applied twice to the synthetic SQLite fixture: 5 importer tests passed; counts remained stable and no command/approval/channel enable was created. Updated cutover steps and target order; no production DB or external service was used.
 - Assumption: operator approves the dry-run report and target DB before an actual delta apply; production cutover remains DISABLED until the remaining gates pass.
+
+### 2026-11-05 — GC2-P9-T04 Instagram pilot targets
+- Updated pilot gates and daily records for the three independent targets, ordered Hanoi Facebook → Ven Hồ Facebook → Instagram. Required at least 8 slots, 24 outcomes and 14 days; Instagram verifies its 4:5 variant and media ID.
+- This is a checklist only: no LIVE_MANUAL, public post or pilot evidence was created.
+- Assumption: each slot targets all three channels; any cancelled/missing target reduces outcome count and extends the pilot.

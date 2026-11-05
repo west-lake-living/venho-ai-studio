@@ -5583,10 +5583,10 @@ ComfyUI, GPU, provider or network call.
 ### GC2-P9-T04 — Pilot LIVE_MANUAL (2026-11-05)
 **Status:** PARTIAL — checklist vận hành hằng ngày hoàn tất; pilot thực tế chưa mở
 **Files:** `docs/growth_engine/runbooks/pilot_daily_check.md`, `task_status.md`, `task_memory.md`
-**Verify:** checklist bao gồm Page A trước B, receipt/verify từng target, UNKNOWN, daily evidence và G-P9/AC-18; `git diff --check` → OK. Không bật LIVE_MANUAL, không đăng bài.
-**DoD:** [x] checklist theo slot và Page; [x] tiêu chí ≥8 slot/≥16 target/≥14 ngày, 0 duplicate/sai Page/sai ảnh, UNKNOWN xử lý, restore rehearsal; [ ] cutover và pilot thực tế còn chờ gates/operator.
+**Verify:** checklist bao gồm thứ tự `fb_hanoi` → `fb_venho` → `ig_venho`, receipt/verify target riêng, UNKNOWN handling, daily evidence và G-P9/AC-18; `git diff --check` → OK. Không bật LIVE_MANUAL, không đăng bài.
+**DoD:** [x] checklist theo slot và ba publishing targets; [x] tiêu chí ≥8 slot/≥24 outcomes/≥14 ngày, 0 duplicate/sai target/sai variant, UNKNOWN xử lý, restore rehearsal; [ ] cutover và pilot thực tế còn chờ gates/operator.
 **Rủi ro / việc để lại:** chưa có bằng chứng đăng/verify thực tế; dashboard/runtime integration và production capability gates còn thiếu. Không coi checklist là kết quả pilot.
-**Giả định:** cùng nội dung/ảnh giữa Page A/B nghĩa là cùng revision và SHA media, nhưng receipts, post IDs và verification độc lập.
+**Giả định:** hai Facebook Pages dùng cùng revision/approved Facebook variant; Instagram dùng variant 4:5 và có receipt/media ID độc lập.
 
 ### GC2-P9-T05 — Retire đường đăng legacy (2026-11-05)
 **Status:** PARTIAL — checklist retire và đóng DR hoàn tất; không retire hệ thống trong phạm vi task
