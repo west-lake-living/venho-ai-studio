@@ -72,17 +72,17 @@ The plan snapshot and code-delta table were refreshed to include the production 
 **Files:** `scripts/growth_engine/send_test_command.py`, `tests/growth_engine/integration/sqlite/test_test_command_factory.py`, `config/projects/venho_hotel/growth_engine/channels.yaml`, `docs/growth_engine/environment_manifest.md`, `docs/growth_engine/runbooks/{operator_session_1,make_blueprint_v2}.md`
 **Evidence:** Facebook TEST Page `Ven Hồ Growth Test`, ID `1363761820162798`, created in the Ven Ho Hotel Business portfolio. One TEST Facebook Page is shared across the two logical Facebook routes using separate TEST databases. The sender now emits the Router's three channel keys, checks the matching principal and refuses production destination IDs.
 **Verify:** SQLite factory + API authorize tests exercise all three TEST channel keys and wrong-channel rejection; VERIFY_DEV → 489 passed, 4 warnings; VERIFY_ARCH → 2 passed; manifest secret scan → OK. No public test post sent.
-**Outstanding:** Numeric Instagram TEST account ID, complete TEST/production environment, DNS/Cloudflare, Make TEST, 1Password backup copy, server deployment and restore rehearsal.
+**Outstanding:** Complete TEST/production environment, DNS/Cloudflare, Make TEST, 1Password backup copy, server deployment and restore rehearsal. The numeric Instagram TEST ID was added by K1 below.
 
 ### GC2 handoff H1 — review `6a5545a` against current operator facts (2026-11-06)
 **Status:** REVIEWED
-**Findings:** `6a5545a` matches the v1.2 TEST sender contract for `fb_hanoi`, `fb_venho`, and `ig_venho`; maps both Facebook keys to TEST Page `1363761820162798`; keeps TEST DB isolation; and rejects production destination IDs. Its recorded `Outstanding` line is stale: Instagram TEST is now reported converted and linked to the TEST Page. The current `ig_test.remote_account_id` remains `REQUIRED_FROM_P0` because no numeric TEST Instagram account ID was supplied in this handoff. The Make TEST scenario remains inactive and its router/posting path is not verified by a real run; MK evidence stays `NOT_RUN`.
+**Findings:** `6a5545a` matches the v1.2 TEST sender contract for `fb_hanoi`, `fb_venho`, and `ig_venho`; maps both Facebook keys to TEST Page `1363761820162798`; keeps TEST DB isolation; and rejects production destination IDs. At H1, `ig_test.remote_account_id` was still `REQUIRED_FROM_P0`; K1 below subsequently recorded the supplied ID `17841472240799413`. The Make TEST scenario remains inactive and its router/posting path is not verified by a real run; MK evidence stays `NOT_RUN`.
 **Verify:** source review of `6a5545a`, `channels.yaml`, sender/auth contract, and supplied Make observations; no external systems or network accessed.
 
 ### GC2 handoff H2 — TEST destination IDs and URL-ID warning (2026-11-06)
-**Status:** PARTIAL — Facebook TEST Graph API Page ID recorded; Instagram TEST link recorded, numeric ID remains `CHƯA XÁC MINH`.
+**Status:** PARTIAL as of H2 — superseded by K1, which records the Instagram TEST ID.
 **Files:** `config/projects/venho_hotel/growth_engine/channels.yaml`, `docs/growth_engine/environment_manifest.md`
-**Evidence:** Page TEST ID `1363761820162798`; the supplied `profile.php?id=61596076389732` value is explicitly documented as not being its Graph API Page ID. `@hanhpham1504` is reported linked to the TEST Page, but no numeric Instagram TEST ID was present to store. No production destination ID was used for TEST.
+**Evidence at H2:** Page TEST ID `1363761820162798`; the supplied `profile.php?id=61596076389732` value is explicitly documented as not being its Graph API Page ID. At that point, `@hanhpham1504` was reported linked to the TEST Page but its numeric Instagram ID had not been supplied. K1 later records the ID; no production destination ID was used for TEST.
 **Verify:** YAML/manifest source review; no external systems or network accessed.
 
 ### GC2 handoff H3 — Meta token environment mapping (2026-11-06)
@@ -118,14 +118,14 @@ The plan snapshot and code-delta table were refreshed to include the production 
 ### GC2 handoff H8 — synchronized status and remaining human gates (2026-11-06)
 **Status:** IN PROGRESS — repository preparation complete; external gates remain with Harry.
 **Files:** root `task_status.md`, `docs/growth_engine/task_status.md`
-**Human gates still open:** (1) finish production env (`GE_HEARTBEAT_URL`, Telegram bot/chat, the three Meta probe tokens plus PAGE_A/PAGE_B aliases) and the isolated TEST env; (2) record the numeric Instagram TEST ID; (3) choose a TEST hostname, configure Cloudflare Tunnel/Access, deploy/run TEST API on `8022`; (4) update Make TEST filters/responses, isolate posting modules while capturing webhook structure, then obtain Harry's approval before any public TEST post; (5) run TEST commands, record MK-1…MK-11, restore rehearsal, install T0-05/T0-06 timers; (6) copy the age identity to 1Password; (7) Harry reviews and pushes; (8) renew Instagram token before expiry and remove/pause Healthchecks `My First Check`. No external system was changed in this handoff.
+**Human gates still open:** (1) finish production env (`GE_HEARTBEAT_URL`, Telegram bot/chat, the three Meta probe tokens plus PAGE_A/PAGE_B aliases) and the isolated TEST env; (2) choose a TEST hostname, configure Cloudflare Tunnel/Access, deploy/run TEST API on `8022`; (3) update Make TEST filters/responses, isolate posting modules while capturing webhook structure, then obtain Harry's approval before any public TEST post; (4) run TEST commands, record MK-1…MK-11, restore rehearsal, install T0-05/T0-06 timers; (5) copy the age identity to 1Password; (6) Harry reviews and pushes; (7) renew Instagram token before expiry and remove/pause Healthchecks `My First Check`. Numeric Instagram TEST ID was subsequently recorded by K1. No external system was changed in this handoff.
 **Unresolved implementation constraint:** separate TEST bearer values can use the isolated TEST env file, but unique `*-test` principal names are not supported by the current fixed auth policy. TEST helper/config uses the existing one-channel principal labels; do not invent suffix names.
 **H1–H7 commits:** H1 `ca178a1`; H2 `a721b75`; H3 `05663d7`; H4 `9ada4c2`; H5 `b6abe9a`; H6 `d3cb731`; H7 `996cede`.
 **Final verify:** `VERIFY_DEV` → 490 passed, 4 warnings; `VERIFY_ARCH` → 2 passed; baseline `VERIFY_LEGACY` → 2131 passed, 79 failed, 8 skipped, 12 warnings. All 79 failing node IDs exactly match `legacy_test_baseline.txt`; 0 new failures. Manifest secret scan and `git diff --check` pass. No external systems or network calls.
 **H8 commit:** this record is committed as `GC2-HANDOFF-H8: synchronize status and gates`; SHA is reported in the handoff summary.
 
 ### GC2 handoff K1 — Instagram TEST account ID (2026-11-06)
-**Status:** DONE
+**Status:** DONE — không cần cập nhật ID trong lượt rà soát này; đã có trong cấu hình.
 **Commit:** `f916506`
 **Files:** `config/projects/venho_hotel/growth_engine/channels.yaml`, `docs/growth_engine/environment_manifest.md`
 **Evidence:** Set `ig_test.remote_account_id` to the supplied ID `17841472240799413` for `@hanhpham1504`, linked to TEST Page `1363761820162798`. Kept the production Instagram ID separate.
@@ -139,16 +139,37 @@ The plan snapshot and code-delta table were refreshed to include the production 
 **Verify:** documentation review; no Make, network or secret access.
 
 ### GC2 handoff K3 — safe Meta token transfer script (2026-11-06)
-**Status:** IN PROGRESS — local implementation and fake-transport tests; not run against Meta or server.
-**Commit:** pending
+**Status:** DONE — script and fake-transport tests complete; live Meta/server transfer remains an operator gate.
+**Commit:** `8bd2d50`
 **Files:** `ops/asus-server/growth-engine/push-meta-tokens.py`, `tests/growth_engine/test_push_meta_tokens.py`, `docs/growth_engine/runbooks/operator_session_1.md`
-**Verify:** `uv run --no-sync pytest -q tests/growth_engine/test_push_meta_tokens.py` → 4 passed; full VERIFY_DEV/VERIFY_ARCH/legacy baseline pending.
+**Verify:** focused fake-transport tests → 4 passed; final VERIFY_DEV → 494 passed; VERIFY_ARCH → 2 passed; VERIFY_LEGACY → 2135 passed, 79 baseline failures, 8 skipped, 12 warnings; 0 new failures.
 **Safety:** Page selection uses exact IDs; token input is hidden; no live credentials or remote operation were used in this work.
 
 ### GC2 handoff K4 — Make TEST blueprint import draft (2026-11-06)
 **Status:** BLOCKED — required export file is absent.
-**Commit:** pending
+**Commit:** `105a084`
 **Files:** `.gitignore`, `docs/growth_engine/task_status.md`
 **Finding:** `_incoming/make_test_export.json` was not present. No import blueprint was created or committed. Ignore rules protect both the export and import paths if supplied later.
 **Modules to add in Make TEST:** Facebook `F1–F6` on `fb_hanoi`; Facebook `F1–F6` on `fb_venho`; Instagram `I1–I6` on `ig_venho`; and a `Webhook response` after the receipt on the `fb_venho` branch. Apply the common schema/environment filter, three fixed channel-key Router filters, fallback Off, and branch-local Facebook image downloads per `make_blueprint_v2.md`.
 **Verify:** file-existence check only; no Make or network access.
+
+### GC2 handoff K5 — final status and operator gates (2026-11-06)
+**Status:** DONE — K1–K4 statuses and remaining human gates synchronized; K4 remains blocked pending the TEST export.
+**Commit:** this status-record commit; SHA reported in the final handoff.
+**K1–K5 summary (verification is on final repository HEAD):**
+
+| Task | Commit | Result | VERIFY_DEV / VERIFY_ARCH / legacy baseline |
+|---|---|---|---|
+| K1 | `f916506` | DONE — TEST Instagram ID recorded | 494 passed / 2 passed / 79 of 79 baseline failures, 0 new |
+| K2 | `1bef7fc` | DONE — legacy signature behavior documented; no Make edit | 494 passed / 2 passed / 79 of 79 baseline failures, 0 new |
+| K3 | `8bd2d50` | DONE — safe transfer script; fake transport only | 494 passed / 2 passed / 79 of 79 baseline failures, 0 new; focused 4 passed |
+| K4 | `105a084` | BLOCKED — missing `_incoming/make_test_export.json`; no blueprint fabricated | 494 passed / 2 passed / 79 of 79 baseline failures, 0 new |
+| K5 | current commit | DONE — status synchronized | 494 passed / 2 passed / 79 of 79 baseline failures, 0 new |
+
+**Verification commands:** `UV_OFFLINE=1 uv run --extra api --with pytest --with httpx pytest -q tests/growth_engine` → 494 passed, 4 warnings; `UV_OFFLINE=1 uv run --with pytest pytest -q tests/growth_engine/architecture` → 2 passed; the `VERIFY_LEGACY` command recorded in `legacy_test_baseline.txt` → 2135 passed, 79 failed, 8 skipped, 12 warnings. The 79 failing test IDs exactly match baseline; 0 new, 0 resolved.
+
+**Phát hiện:** K3 fake tests caught and fixed an ordering bug that treated the IG user token as missing before adding it to the variable map. H1/H2/H8 contained historical statements that the Instagram TEST ID was still missing; K1 supersedes those statements and closes that gate. K4 export was absent, so Make blueprint editing was not safe to perform. No remaining code/plan mismatch requiring a change was found in K1–K5.
+
+**Chưa xác minh:** live Meta `/me/accounts` response and token transfer; SSH host/remote file update; Make export structure, importability, placeholders and module references; TEST hostname, Cloudflare/Access and API; Make module outcomes; restore rehearsal; and timer installation. None was exercised.
+
+**Gates còn chờ Harry:** (1) choose TEST hostname, configure Cloudflare Tunnel/Access and service token, complete TEST env/API on port 8022; (2) fill production heartbeat, two Telegram values and five Meta token variables using the K3 script when ready; (3) send the sample payload to the TEST webhook, provide/import the TEST scenario export, capture MK-1…MK-11, run restore rehearsal, and install T0-05/T0-06 timers; (4) review and push the branch, copy the age identity to 1Password, and pause/delete Healthchecks `My First Check`.
