@@ -66,3 +66,10 @@ The plan snapshot and code-delta table were refreshed to include the production 
 **Verify:** focused → 27 passed; VERIFY_DEV → 486 passed, 4 warnings; VERIFY_ARCH → 2 passed.
 **DoD:** [x] `facebook_engagement` is `SUPPORTED` for `fb_hanoi` and `fb_venho`; [x] post-ID and `--list-recent` share the validated Facebook field list; [x] evidence is sanitized.
 **Rủi ro / việc để lại:** P0-T04b is complete. `fb_venho` internal engagement rate remains `DATA_INCOMPLETE` until matching `post_total_media_view_unique` denominators are collected.
+
+### GC2 operator session — TEST routing preparation (2026-11-06)
+**Status:** PARTIAL — local TEST sender and manifest preparation complete; live TEST and deployment gates remain open.
+**Files:** `scripts/growth_engine/send_test_command.py`, `tests/growth_engine/integration/sqlite/test_test_command_factory.py`, `config/projects/venho_hotel/growth_engine/channels.yaml`, `docs/growth_engine/environment_manifest.md`, `docs/growth_engine/runbooks/{operator_session_1,make_blueprint_v2}.md`
+**Evidence:** Facebook TEST Page `Ven Hồ Growth Test`, ID `1363761820162798`, created in the Ven Ho Hotel Business portfolio. One TEST Facebook Page is shared across the two logical Facebook routes using separate TEST databases. The sender now emits the Router's three channel keys, checks the matching principal and refuses production destination IDs.
+**Verify:** SQLite factory + API authorize tests exercise all three TEST channel keys and wrong-channel rejection; VERIFY_DEV → 489 passed, 4 warnings; VERIFY_ARCH → 2 passed; manifest secret scan → OK. No public test post sent.
+**Outstanding:** Instagram TEST business conversion and Page link; complete TEST/production environment, DNS/Cloudflare, Make TEST, 1Password backup copy, server deployment and restore rehearsal.

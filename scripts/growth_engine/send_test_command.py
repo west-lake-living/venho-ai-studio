@@ -29,6 +29,13 @@ from growth_engine.adapters.outbound.security.capability_tokens import (
 )
 from growth_engine.domain.kernel.hashing import canonical_json_bytes
 
+_TEST_TARGETS = {
+    "fb_hanoi": ("page_test", "facebook", "remote_page_id", "GE_TEST_REMOTE_PAGE_ID", "GE_MAKE_WEBHOOK_URL_PAGE_TEST"),
+    "fb_venho": ("page_test", "facebook", "remote_page_id", "GE_TEST_REMOTE_PAGE_ID", "GE_MAKE_WEBHOOK_URL_PAGE_TEST"),
+    "ig_venho": ("ig_test", "instagram", "remote_account_id", "GE_TEST_REMOTE_IG_ID", "GE_MAKE_WEBHOOK_URL_IG_TEST"),
+}
+_TEST_PRINCIPALS = {"fb_hanoi": "make-fb-hanoi", "fb_venho": "make-fb-venho", "ig_venho": "make-ig"}
+
 
 def _post_to_test_route(route_url: str, envelope: dict[str, Any]) -> tuple[str, int | None]:
     parsed = urlsplit(route_url)
@@ -88,8 +95,9 @@ def _parser() -> argparse.ArgumentParser:
         help="Send to the webhook variable referenced by the TEST channel manifest; dry run is the default.",
     )
     parser.add_argument(
-        "--confirm-test-page-id",
-        help="Must exactly match GE_TEST_REMOTE_PAGE_ID when --send is set.",
+        "--confirm-test-remote-id", "--confirm-test-page-id",
+        dest="confirm_test_page_id",
+        help="Must exactly match the configured TEST Page or Instagram account ID when --send is set.",
     )
     return parser
 
@@ -115,6 +123,8 @@ def _validate_test_envelope(
     *,
     expected_channel_id: str,
     expected_page_id: str,
+    expected_channel_key: str,
+    expected_platform: str,
     now_ms: int,
     tokens: CapabilityTokenManager,
 ) -> None:
@@ -135,7 +145,12 @@ def _validate_test_envelope(
             raise ValueError("TEST envelope is missing a required field.")
     if envelope.get("schema_version") != "growth.command.v2" or envelope.get("environment") != "test":
         raise ValueError("Only a growth.command.v2 envelope with environment=test is allowed.")
-    if envelope["channel_id"] != expected_channel_id or envelope["remote_page_id"] != expected_page_id:
+    if (
+        envelope["channel_id"] != expected_channel_id
+        or envelope["remote_page_id"] != expected_page_id
+        or envelope.get("channel_key") != expected_channel_key
+        or envelope.get("platform") != expected_platform
+    ):
         raise ValueError("TEST envelope channel or Page ID does not match the configured TEST destination.")
     if not re.fullmatch(r"[0-9a-f]{64}", envelope["payload_hash"]):
         raise ValueError("TEST envelope payload hash is invalid.")
@@ -172,15 +187,15 @@ def _validate_test_envelope(
         raise ValueError("TEST capability claims do not match the envelope.")
 
 
-def _test_destination_reference(expected_page_id: str) -> str:
-    test_channel = _test_channel_manifest(expected_page_id)
+def _test_destination_reference(expected_page_id: str, channel_key: str) -> str:
+    test_channel = _test_channel_manifest(expected_page_id, channel_key)
     route_reference = test_channel.get("make_route_ref")
-    if not isinstance(route_reference, str) or route_reference != "GE_MAKE_WEBHOOK_URL_PAGE_TEST":
+    if not isinstance(route_reference, str) or route_reference != _TEST_TARGETS[channel_key][4]:
         raise ValueError("TEST channel must use its dedicated TEST webhook variable.")
     return route_reference
 
 
-def _test_channel_manifest(expected_page_id: str) -> dict[str, Any]:
+def _test_channel_manifest(expected_page_id: str, channel_key: str) -> dict[str, Any]:
     try:
         import yaml
     except ImportError as error:
@@ -192,34 +207,54 @@ def _test_channel_manifest(expected_page_id: str) -> dict[str, Any]:
         raise ValueError("Verified TEST destination configuration is unavailable.") from error
     if not isinstance(configuration, dict) or not isinstance(configuration.get("channels"), list):
         raise ValueError("Growth channels configuration is invalid.")
+    manifest_key, platform, remote_field, _, _ = _TEST_TARGETS[channel_key]
     test_channels = [
         channel
         for channel in configuration["channels"]
         if isinstance(channel, dict)
-        and channel.get("channel_id") == "page_test"
+        and channel.get("channel_id") == manifest_key
         and channel.get("environment") == "test"
-        and channel.get("platform") == "facebook"
+        and channel.get("platform") == platform
     ]
     if len(test_channels) != 1:
-        raise ValueError("Exactly one TEST Facebook destination must be configured.")
+        raise ValueError("Exactly one matching TEST destination must be configured.")
     test_channel = test_channels[0]
+    production_ids = {
+        str(channel.get(field) or "")
+        for channel in configuration["channels"] if isinstance(channel, dict) and channel.get("environment") == "production"
+        for field in ("remote_page_id", "remote_account_id")
+    }
     if (
-        test_channel.get("remote_page_id") != expected_page_id
+        test_channel.get(remote_field) != expected_page_id
         or expected_page_id == "REQUIRED_FROM_P0"
+        or expected_page_id in production_ids
     ):
-        raise ValueError("TEST Page ID must match the verified page_test manifest entry.")
+        raise ValueError("TEST destination ID must match the test manifest and differ from production IDs.")
+    principals = test_channel.get("service_principals")
+    principal = principals.get(channel_key) if isinstance(principals, dict) else test_channel.get("service_principal")
+    if principal != _TEST_PRINCIPALS[channel_key]:
+        raise ValueError("TEST destination principal must match the selected channel key.")
     return test_channel
+
+
+def _test_target(environ: dict[str, str]) -> tuple[str, str, str, str]:
+    channel_key = environ.get("GE_TEST_CHANNEL_KEY", "").strip()
+    if channel_key not in _TEST_TARGETS:
+        raise ValueError("GE_TEST_CHANNEL_KEY must be fb_hanoi, fb_venho, or ig_venho.")
+    _, platform, _, remote_env, _ = _TEST_TARGETS[channel_key]
+    channel_id = environ.get("GE_TEST_CHANNEL_ID", "").strip()
+    remote_id = environ.get(remote_env, "").strip()
+    if not channel_id or channel_id == "REQUIRED_FROM_P0" or not remote_id or remote_id == "REQUIRED_FROM_P0":
+        raise ValueError("TEST channel UUID and remote destination ID must be verified before creating a command.")
+    return channel_key, platform, channel_id, remote_id
 
 
 def _create_test_command(environ: dict[str, str], output_path: Path) -> dict[str, object]:
     if environ.get("GE_ENV", "").strip().casefold() != "test":
         raise ValueError("--create-command requires GE_ENV=test.")
-    channel_id = environ.get("GE_TEST_CHANNEL_ID", "").strip()
-    page_id = environ.get("GE_TEST_REMOTE_PAGE_ID", "").strip()
-    if not channel_id or channel_id == "REQUIRED_FROM_P0" or not page_id or page_id == "REQUIRED_FROM_P0":
-        raise ValueError("TEST channel UUID and remote Page ID must be verified before creating a command.")
-    manifest = _test_channel_manifest(page_id)
-    route_reference = _test_destination_reference(page_id)
+    channel_key, platform, channel_id, page_id = _test_target(environ)
+    manifest = _test_channel_manifest(page_id, channel_key)
+    route_reference = _test_destination_reference(page_id, channel_key)
     graph_version = manifest.get("graph_api_version")
     if not isinstance(graph_version, str) or not graph_version.strip() or "REQUIRED_FROM_P0" in graph_version:
         raise ValueError("TEST Graph API version must be verified before creating a command.")
@@ -257,10 +292,10 @@ def _create_test_command(environ: dict[str, str], output_path: Path) -> dict[str
     settings = Settings.from_env(environ)
     if urlsplit(settings.public_base_url).scheme != "https":
         raise ValueError("GE_PUBLIC_BASE_URL must use HTTPS for a TEST command.")
-    route_url = settings.make_webhook_urls.get("PAGE_TEST", "").strip()
+    route_url = settings.make_webhook_urls.get(route_reference.removeprefix("GE_MAKE_WEBHOOK_URL_"), "").strip()
     parsed_route = urlsplit(route_url)
     if parsed_route.scheme != "https" or not parsed_route.hostname:
-        raise ValueError("GE_MAKE_WEBHOOK_URL_PAGE_TEST must be an HTTPS TEST route.")
+        raise ValueError(f"{route_reference} must be an HTTPS TEST route.")
 
     now_ms = time.time_ns() // 1_000_000
     ict_now = datetime.fromtimestamp(now_ms / 1000, ZoneInfo("Asia/Ho_Chi_Minh"))
@@ -290,8 +325,8 @@ def _create_test_command(environ: dict[str, str], output_path: Path) -> dict[str
         id=channel_id,
         project_id="venho_hotel",
         environment="test",
-        channel_key="page_test",
-        platform=ChannelPlatform.FACEBOOK,
+        channel_key=channel_key,
+        platform=ChannelPlatform.FACEBOOK if platform == "facebook" else ChannelPlatform.INSTAGRAM,
         remote_account_id=page_id,
         name=str(manifest.get("display_name") or "Growth TEST Page"),
         enabled=True,
@@ -349,7 +384,7 @@ def _create_test_command(environ: dict[str, str], output_path: Path) -> dict[str
     )
     with container.uow_factory().begin_immediate() as tx:
         existing = tx.connection.execute(
-            "SELECT id FROM channels WHERE environment='test' AND channel_key='page_test'"
+            "SELECT id FROM channels WHERE environment='test' AND channel_key=?", (channel_key,)
         ).fetchone()
         if existing is not None:
             raise ValueError("TEST channel already exists in this database; use an isolated TEST database.")
@@ -458,6 +493,8 @@ def _write_private_envelope(path: Path, envelope: dict[str, Any]) -> None:
 
 
 def run(args: argparse.Namespace, environ: dict[str, str]) -> dict[str, object]:
+    if environ.get("GE_ENV", "").strip().casefold() != "test":
+        raise ValueError("TEST command validation and sending require GE_ENV=test.")
     path = args.envelope_file or (
         Path(environ["GE_TEST_COMMAND_ENVELOPE_FILE"])
         if environ.get("GE_TEST_COMMAND_ENVELOPE_FILE")
@@ -470,17 +507,16 @@ def run(args: argparse.Namespace, environ: dict[str, str]) -> dict[str, object]:
         factory_result = _create_test_command(environ, path)
     if path is None:
         raise ValueError("Provide --envelope-file or GE_TEST_COMMAND_ENVELOPE_FILE.")
-    channel_id = environ.get("GE_TEST_CHANNEL_ID", "").strip()
-    page_id = environ.get("GE_TEST_REMOTE_PAGE_ID", "").strip()
-    if not channel_id or channel_id == "REQUIRED_FROM_P0" or not page_id or page_id == "REQUIRED_FROM_P0":
-        raise ValueError("TEST channel UUID and remote Page ID must be verified before sending.")
-    route_reference = _test_destination_reference(page_id)
+    channel_key, platform, channel_id, page_id = _test_target(environ)
+    route_reference = _test_destination_reference(page_id, channel_key)
     envelope = _read_private_envelope(path)
     tokens = CapabilityTokenManager(parse_key_ring(environ.get("GE_CAPABILITY_KEYS", "")))
     _validate_test_envelope(
         envelope,
         expected_channel_id=channel_id,
         expected_page_id=page_id,
+        expected_channel_key=channel_key,
+        expected_platform=platform,
         now_ms=time.time_ns() // 1_000_000,
         tokens=tokens,
     )
@@ -501,7 +537,7 @@ def run(args: argparse.Namespace, environ: dict[str, str]) -> dict[str, object]:
 
     confirm_id = args.confirm_test_page_id or ""
     if confirm_id != page_id:
-        raise ValueError("--send requires --confirm-test-page-id to match the verified TEST Page ID.")
+        raise ValueError("--send requires --confirm-test-remote-id to match the verified TEST destination ID.")
     route_url = environ.get(route_reference, "").strip()
     parsed_route = urlsplit(route_url)
     if (

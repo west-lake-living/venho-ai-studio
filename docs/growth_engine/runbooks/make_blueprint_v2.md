@@ -1,13 +1,14 @@
 # Make Growth Engine v2 — TEST runbook
 
-**Scope:** one copied TEST scenario with three verified TEST destinations and one Router. Do not edit or run the production scenario. `make_capabilities.md` remains `NOT_RUN` until Harry records evidence from the TEST copy.
+**Scope:** one copied TEST scenario with three logical TEST targets and one Router. Do not edit or run the production scenario. `make_capabilities.md` remains `NOT_RUN` until Harry records evidence from the TEST copy.
 
 No webhook URL, access token, credential, signed media URL or production Page ID belongs in this file. Redact module output and screenshots before saving them.
 
 ## Gate before opening Make
 
-- Confirm the TEST Facebook Pages and Instagram account are disposable TEST destinations and are distinct from all production IDs.
-- Map `fb_hanoi`, `fb_venho` and `ig_venho` to the three TEST destinations using verified IDs. Do not infer a destination from its display name.
+- Confirm the TEST Facebook Page and Instagram account are disposable TEST destinations and are distinct from all production IDs.
+- Map `fb_hanoi` and `fb_venho` to the verified Facebook TEST Page, and `ig_venho` to the verified Instagram TEST account. Do not infer a destination from its display name.
+- SQLite requires a unique remote account per platform and environment. When both Facebook branches use the same TEST Page, use a separate disposable TEST database and matching TEST API instance for each branch; never bind the other branch's command to the active API database. Instagram also uses an isolated TEST database.
 - Confirm the TEST channel UUIDs, remote IDs, scenario ID, webhook, connection references and bearer principals in the approved TEST manifest.
 - Ensure the Growth Engine has a migrated disposable TEST database with current approved deliveries, valid image variants and commands. The scenario must be disconnected from production Pages, Instagram and scheduling.
 - Keep credentials in Make connections or protected environment variables. Do not paste secrets into this runbook, screenshots or execution logs.
@@ -18,7 +19,7 @@ Duplicate `VenHo Growth Agent-FB/IG` as `TEST — Growth Engine v2`. Keep its sc
 
 1. **Custom webhook and common filter:** receive all three channels. Require `schema_version = growth.command.v2` and `environment = test` before the Router.
 2. **Router:** create exactly three branches, each with one fixed equality filter: `channel_key = fb_hanoi`, `channel_key = fb_venho`, or `channel_key = ig_venho`. Disable the fallback route. Each command must match exactly one branch.
-3. **Facebook branches (`fb_hanoi`, `fb_venho`):** use the same module sequence with a different fixed TEST Page and a different application bearer on each branch:
+3. **Facebook branches (`fb_hanoi`, `fb_venho`):** use the same verified TEST Page and module sequence, with a different application bearer on each branch:
    - **F1 — Fetch image:** HTTP GET the mapped `media_url`, return the binary body, timeout 30 seconds. Continue only for HTTP 200 and `content-type = image/jpeg`; otherwise stop before authorize.
    - **F2 — Authorize:** HTTP POST `/internal/growth/v2/executions/authorize` with that branch's bearer and Cloudflare Access headers. Map the command token, payload hash and actual media status/type.
    - **F3 — Grant filter:** continue only when `execute = true` and current time is earlier than `grant_expires_at_ms`. Do not resume an incomplete execution after authorize.
@@ -58,6 +59,6 @@ Keep production publishing below `LIVE_MANUAL` until MK-1…MK-6 pass. MK-7…MK
 
 ## Safe TEST command sender
 
-`scripts/growth_engine/send_test_command.py --create-command --envelope-file <private-path>` creates a synthetic slot → delivery → revision → approval → command in the isolated SQLite database selected by `GE_DB_PATH`. It requires `GE_ENV=test`, a verified TEST channel/Page ID, TEST-only webhook references and TEST secrets from the environment. The synthetic JPEG and caption are test data; the command stays local unless `--send` is also supplied. The private envelope is mode `0600`.
+`scripts/growth_engine/send_test_command.py --create-command --envelope-file <private-path>` creates a synthetic slot → delivery → revision → approval → command in the isolated SQLite database selected by `GE_DB_PATH`. Set `GE_TEST_CHANNEL_KEY` explicitly to `fb_hanoi`, `fb_venho` or `ig_venho`, and set a distinct `GE_TEST_CHANNEL_ID` for that branch. Facebook uses `GE_TEST_REMOTE_PAGE_ID`; Instagram uses `GE_TEST_REMOTE_IG_ID`. The matching TEST manifest entry, Graph version and TEST-only webhook reference must be verified. The synthetic JPEG and caption are test data; the command stays local unless `--send` is also supplied. The private envelope is mode `0600`.
 
-Before sending, the operator must verify the channel key, TEST destination ID, copied scenario, filters, route bearer and isolated TEST database. Only then may they run `--send --confirm-test-page-id <verified-test-id>`. The sender obtains the webhook from the TEST channel manifest and rejects placeholder configuration. Do not handcraft a token or bypass authorize. Use Make History, receipt state and the TEST destination to prove the result; webhook ACK alone is insufficient.
+Before sending, the operator must verify the channel key, TEST destination ID, copied scenario, filters, route bearer and isolated TEST database, and obtain Harry's approval for any public test post. Only then may they run `--send --confirm-test-remote-id <verified-test-id>`. The sender obtains the webhook from the TEST channel manifest, rejects production IDs and placeholder configuration, and checks the envelope's channel key and platform. Do not handcraft a token or bypass authorize. Use Make History, receipt state and the TEST destination to prove the result; webhook ACK alone is insufficient.

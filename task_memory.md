@@ -6417,3 +6417,8 @@ not in local venv; installed in CI).
 - The probe now validates the two Facebook engagement fields and uses one configured field list for post-ID and `--list-recent`; regression test covers both modes using the repository's actual Facebook candidate configuration.
 - P0-T04b is DONE. Matching `post_total_media_view_unique` data remains separately needed for `fb_venho` engagement-rate reporting.
 - Verification and commit are recorded in `docs/growth_engine/task_status.md`.
+
+### 2026-11-06 — GC2 operator session TEST routing preparation
+- Created Facebook TEST Page `Ven Hồ Growth Test` (ID `1363761820162798`) and recorded its verified ID; production targets remain separate.
+- TEST command factory now emits the selected `fb_hanoi`, `fb_venho` or `ig_venho` key, validates the corresponding TEST principal and rejects production IDs. Separate TEST databases are required for the two Facebook branches when they share one TEST Page.
+- SQLite/API tests cover all three branch identities and wrong-channel bearer rejection; VERIFY_DEV 489 passed, VERIFY_ARCH 2 passed. Live TEST and deployment remain pending.

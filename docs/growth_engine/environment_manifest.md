@@ -31,13 +31,13 @@ Instagram là kênh đăng v2: `ig_venho` → `instagram_business_account.id` `1
 
 | Trường | Page test (`page_test`) |
 |---|---|
-| Tên Page hiển thị | REQUIRED_FROM_P0 |
-| `remote_page_id` | REQUIRED_FROM_P0 |
+| Tên Page hiển thị | Ven Hồ Growth Test |
+| `remote_page_id` | `1363761820162798` |
 | Make scenario ID | REQUIRED_FROM_P0 |
 | Route ref (tên env) | `GE_MAKE_WEBHOOK_URL_PAGE_TEST` |
 | Make connection (tên) | REQUIRED_FROM_P0 |
 | Graph API version | REQUIRED_FROM_P0 |
-| Principal | `make-page-test` |
+| Principals | `make-fb-hanoi`, `make-fb-venho` (bearer TEST riêng cho từng nhánh) |
 | Env token đọc Meta (tên) | `GE_META_READ_TOKEN_PAGE_TEST` |
 | Owner | REQUIRED_FROM_P0 |
 | Ngày xác minh | REQUIRED_FROM_P0 |

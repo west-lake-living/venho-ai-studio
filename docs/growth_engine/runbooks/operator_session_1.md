@@ -1,6 +1,6 @@
 # Phiên vận hành Growth Engine — phiên 1
 
-**Trạng thái:** hướng dẫn chưa chạy. Tất cả URL, Page test, route Make, credentials và quyết định được Harry xác minh khi thực hiện. Không thay giá trị `REQUIRED_FROM_P0` bằng phỏng đoán.
+**Trạng thái:** phiên đã bắt đầu; Page Facebook TEST và healthcheck đã được tạo. URL, tài khoản Instagram TEST, route Make, credentials và các gate còn lại phải được xác minh khi thực hiện. Không thay giá trị `REQUIRED_FROM_P0` bằng phỏng đoán.
 
 **Meta read app:** VENHO Growth Read — App ID `1679968647246378` (Development). Không ghi Meta token vào runbook.
 
@@ -22,13 +22,13 @@ fi
 age --version
 ```
 
-Trên máy operator giữ private identity:
+Nếu `age` được cài riêng cho user tại `~/.local/bin`, thêm đường dẫn đó vào `PATH` của environment file và xác minh lệnh chạy được trong systemd user. Trên máy operator giữ private identity:
 
 ```bash
 mkdir -p -m 700 "$HOME/.config/age"
-age-keygen -o "$HOME/.config/age/growth-engine-backup.identity"
-chmod 600 "$HOME/.config/age/growth-engine-backup.identity"
-age-keygen -y "$HOME/.config/age/growth-engine-backup.identity" > "$HOME/.config/age/growth-engine-backup.recipient"
+test -e "$HOME/.config/age/venho-backup.key" || age-keygen -o "$HOME/.config/age/venho-backup.key"
+chmod 600 "$HOME/.config/age/venho-backup.key"
+age-keygen -y "$HOME/.config/age/venho-backup.key" > "$HOME/.config/age/growth-engine-backup.recipient"
 cat "$HOME/.config/age/growth-engine-backup.recipient"
 ```
 
@@ -140,11 +140,11 @@ curl --config <(printf 'header = "CF-Access-Client-Id: %s"\nheader = "CF-Access-
 
 ## 5. Tạo scenario Make TEST và chạy MK-1…MK-11
 
-Trong Make, duplicate `VenHo Growth Agent-FB/IG` thành TEST; schedule off; chỉ gắn ba TEST destination đã đối chiếu ID. Không dùng ba production ID trong `channels.yaml` làm TEST destination, và không dùng label thay ID. Tạo một webhook TEST, một Router với đúng ba nhánh `fb_hanoi`, `fb_venho`, `ig_venho`, mỗi nhánh lọc theo `channel_key` cố định, fallback off. Làm theo [make_blueprint_v2.md](make_blueprint_v2.md), điền đủ MK-1…MK-11 trong [make_capabilities.md](../make_capabilities.md) bằng History/module output thật đã khử bí mật. Facebook dùng ảnh binary từ HTTP trong từng nhánh; Instagram dùng `media_url` ở trường image URL.
+Trong Make, duplicate `VenHo Growth Agent-FB/IG` thành TEST; schedule off; gắn Page Facebook TEST đã đối chiếu ID cho hai nhánh Facebook và tài khoản Instagram TEST đã đối chiếu ID cho nhánh Instagram. Không dùng ba production ID trong `channels.yaml` làm TEST destination, và không dùng label thay ID. Do SQLite yêu cầu remote account duy nhất trong mỗi môi trường, mỗi nhánh dùng TEST DB riêng và API TEST phải trỏ đúng DB của lệnh trước khi thử. Tạo một webhook TEST, một Router với đúng ba nhánh `fb_hanoi`, `fb_venho`, `ig_venho`, mỗi nhánh lọc theo `channel_key` cố định, fallback off. Làm theo [make_blueprint_v2.md](make_blueprint_v2.md), điền đủ MK-1…MK-11 trong [make_capabilities.md](../make_capabilities.md) bằng History/module output thật đã khử bí mật. Facebook dùng ảnh binary từ HTTP trong từng nhánh; Instagram dùng `media_url` ở trường image URL.
 
 Sau khi mọi gate được duyệt, thứ tự mở target production là `fb_hanoi` → `fb_venho` → `ig_venho`; chỉ mở target kế tiếp sau khi target trước có receipt/verify xác định. Trong phiên TEST này không bật production và không đăng thử công khai.
 
-Tạo command TEST và private envelope (lệnh này không gửi webhook):
+Chọn `GE_TEST_CHANNEL_KEY` (`fb_hanoi`, `fb_venho`, hoặc `ig_venho`), `GE_TEST_CHANNEL_ID` riêng cho nhánh, TEST DB và đúng API TEST trước khi tạo command. Facebook dùng `GE_TEST_REMOTE_PAGE_ID`, Instagram dùng `GE_TEST_REMOTE_IG_ID`. Tạo command TEST và private envelope (lệnh này không gửi webhook):
 
 ```bash
 mkdir -p -m 700 "$HOME/.cache/growth-engine"
@@ -154,13 +154,15 @@ python3 scripts/growth_engine/send_test_command.py \
   --envelope-file "$HOME/.cache/growth-engine/test-envelope.json"
 ```
 
-Chỉ sau khi Page ID, TEST scenario, DB, filter và credentials đã được kiểm tra, Harry có thể gửi một lệnh đã xác nhận tới TEST Page:
+Chỉ sau khi destination ID, TEST scenario, DB, filter và credentials đã được kiểm tra, và Harry đã đồng ý đăng thử công khai, có thể gửi lệnh tới destination TEST:
 
 ```bash
 python3 scripts/growth_engine/send_test_command.py \
   --envelope-file "$HOME/.cache/growth-engine/test-envelope.json" \
-  --send --confirm-test-page-id "$GE_TEST_REMOTE_PAGE_ID"
+  --send --confirm-test-remote-id "$GE_TEST_REMOTE_PAGE_ID"
 ```
+
+Ví dụ trên dành cho Facebook. Với Instagram, dùng `GE_TEST_REMOTE_IG_ID` thay cho `GE_TEST_REMOTE_PAGE_ID`.
 
 **Mong đợi:** mỗi lệnh chỉ chạy đúng một route TEST; ghi module output/receipt/post ID hoặc media ID thật và kết quả đủ MK-1…MK-11. Webhook ACK không phải bằng chứng bài đăng.
 
@@ -196,14 +198,19 @@ mkdir -p -m 700 "$HOME/venho/state/growth-engine/backup-staging"
 venho-engine backup now --destination "$HOME/venho/state/growth-engine/backup-staging/growth-engine-restore-rehearsal.age"
 ```
 
-Chọn target chưa tồn tại và chạy trên host có binary `venho-engine` cùng identity operator đã cấp quyền đọc cục bộ:
+Chép **backup đã mã hóa** về Mac và chạy từ checkout GC2 trên Mac. Identity riêng giữ trên Mac; chọn target chưa tồn tại:
 
 ```bash
-export PATH="$HOME/venho/growth-engine/current/.venv/bin:$PATH"
+mkdir -p -m 700 "$HOME/venho/growth-engine-restore"
+test ! -e "$HOME/venho/growth-engine-restore/growth-engine-restore-rehearsal.age"
+scp asus-server:venho/state/growth-engine/backup-staging/growth-engine-restore-rehearsal.age \
+  "$HOME/venho/growth-engine-restore/growth-engine-restore-rehearsal.age"
+export PATH="$PWD/.venv/bin:$PATH"
+export GE_ENV=test
 ops/asus-server/growth-engine/restore-rehearsal.sh \
-  "$HOME/venho/state/growth-engine/backup-staging/growth-engine-restore-rehearsal.age" \
-  "$HOME/.config/age/growth-engine-backup.identity" \
-  "$HOME/venho/state/growth-engine-restore-<unique-suffix>"
+  "$HOME/venho/growth-engine-restore/growth-engine-restore-rehearsal.age" \
+  "$HOME/.config/age/venho-backup.key" \
+  "$HOME/venho/growth-engine-restore/rehearsal-<unique-suffix>"
 ```
 
 **Mong đợi:** `restore rehearsal passed: integrity, foreign keys, DISABLED and global pause`; target mới có DB/media đã kiểm tra, epoch cũ bị vô hiệu.

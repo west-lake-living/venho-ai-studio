@@ -62,13 +62,15 @@ channels:
   - channel_id: page_test
     environment: test
     platform: facebook
-    display_name: REQUIRED_FROM_P0
-    remote_page_id: REQUIRED_FROM_P0
+    display_name: Ven Hồ Growth Test
+    remote_page_id: "1363761820162798"
     make_scenario_id: REQUIRED_FROM_P0
     make_route_ref: GE_MAKE_WEBHOOK_URL_PAGE_TEST
     make_connection_ref: REQUIRED_FROM_P0
     graph_api_version: REQUIRED_FROM_P0
-    service_principal: make-page-test
+    service_principals:
+      fb_hanoi: make-fb-hanoi
+      fb_venho: make-fb-venho
     scopes: [executions.authorize, receipts.write, media.read]
     meta_read_token_ref: GE_META_READ_TOKEN_PAGE_TEST
     caption_profile: default
@@ -85,7 +87,7 @@ channels:
     make_route_ref: GE_MAKE_WEBHOOK_URL_IG_TEST
     make_connection_ref: REQUIRED_FROM_P0
     graph_api_version: REQUIRED_FROM_P0
-    service_principal: make-ig-test
+    service_principal: make-ig
     scopes: [executions.authorize, receipts.write, media.read]
     meta_read_token_ref: GE_META_READ_TOKEN_IG_TEST
     caption_profile: default
