@@ -51,3 +51,7 @@ output/
 
 # Large pinned identity models are provisioned out of band (see PROVENANCE.json).
 models/identity/**/*.onnx
+
+# Sensitive Make exports/import drafts contain hook and connection identifiers.
+/_incoming/make_test_export.json
+/_incoming/make_test_import.json

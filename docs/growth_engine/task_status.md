@@ -144,3 +144,11 @@ The plan snapshot and code-delta table were refreshed to include the production 
 **Files:** `ops/asus-server/growth-engine/push-meta-tokens.py`, `tests/growth_engine/test_push_meta_tokens.py`, `docs/growth_engine/runbooks/operator_session_1.md`
 **Verify:** `uv run --no-sync pytest -q tests/growth_engine/test_push_meta_tokens.py` → 4 passed; full VERIFY_DEV/VERIFY_ARCH/legacy baseline pending.
 **Safety:** Page selection uses exact IDs; token input is hidden; no live credentials or remote operation were used in this work.
+
+### GC2 handoff K4 — Make TEST blueprint import draft (2026-11-06)
+**Status:** BLOCKED — required export file is absent.
+**Commit:** pending
+**Files:** `.gitignore`, `docs/growth_engine/task_status.md`
+**Finding:** `_incoming/make_test_export.json` was not present. No import blueprint was created or committed. Ignore rules protect both the export and import paths if supplied later.
+**Modules to add in Make TEST:** Facebook `F1–F6` on `fb_hanoi`; Facebook `F1–F6` on `fb_venho`; Instagram `I1–I6` on `ig_venho`; and a `Webhook response` after the receipt on the `fb_venho` branch. Apply the common schema/environment filter, three fixed channel-key Router filters, fallback Off, and branch-local Facebook image downloads per `make_blueprint_v2.md`.
+**Verify:** file-existence check only; no Make or network access.
