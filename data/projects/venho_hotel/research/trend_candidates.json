@@ -1314,5 +1314,46 @@
     "fast_lane": false,
     "verified_by_human": false,
     "scanned_at": "2026-11-05T12:18:14.290952+00:00"
+  },
+  {
+    "id": "gnews-581b9b4caae63d65",
+    "title": "Làm sao để đến Ngõ 52 Đường Tô Ngọc Vân, Quận Tây Hồ bằng xe buýt hoặc tàu điện ngầm?",
+    "source_uri": "https://news.google.com/rss/articles/CBMimgJBVV95cUxQLW1KMWVxVGRFYUMtRlNEcHBiYzhMZUVBMnJyVnJoel9GODRRUWhDZHdDRVhWWDBsRk0wNHZ4QTc5enR6eTJPX3hyWVhyMUo2ZVQ0SHllVHd5YWM3OThWQnhtUmRwaTEzRm1lSjhIM3Q1ZzNpM3cxZUt0VnJjZ2lja2lUS0tmMmkyR1dhOVkyVDFsckVZZy1HU3NuTlJWUVB5TG80N2o5YXlucUdQV1F3WnRaV0VqQ0M1M0dPb2o4SkhmU2VzdUt5MVRKVUNJeGlIVk5BWVdtbGtMbks0ZHhtV1lYckN5dDRBRmZNVFZMT3QzWUNDc1pCbmFXekFDbU80cXJEaUxXanFpSTJESHJmeHEySWVKX29kOVE?oc=5",
+    "source_name": "Moovit",
+    "published_at": "2026-10-31T12:00:00+00:00",
+    "snippet": "Moovit",
+    "relevance_hint": 0.0,
+    "collector": "google_news",
+    "query": "\"Tây Hồ\" chợ hoa",
+    "geographic": "westlake",
+    "thematic": "travel_stay",
+    "actionability": "direct",
+    "type": "feature_story",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "travel_accommodation",
+      "hanoi_westlake_local"
+    ],
+    "is_event": false,
+    "event_name": null,
+    "event_start": null,
+    "event_end": null,
+    "venue": "Ngõ 52 Tô Ngọc Vân, Tây Hồ",
+    "westlake_area": true,
+    "sources": [
+      {
+        "title": "Làm sao để đến Ngõ 52 Đường Tô Ngọc Vân, Quận Tây Hồ bằng xe buýt hoặc tàu điện ngầm?",
+        "source_uri": "https://news.google.com/rss/articles/CBMimgJBVV95cUxQLW1KMWVxVGRFYUMtRlNEcHBiYzhMZUVBMnJyVnJoel9GODRRUWhDZHdDRVhWWDBsRk0wNHZ4QTc5enR6eTJPX3hyWVhyMUo2ZVQ0SHllVHd5YWM3OThWQnhtUmRwaTEzRm1lSjhIM3Q1ZzNpM3cxZUt0VnJjZ2lja2lUS0tmMmkyR1dhOVkyVDFsckVZZy1HU3NuTlJWUVB5TG80N2o5YXlucUdQV1F3WnRaV0VqQ0M1M0dPb2o4SkhmU2VzdUt5MVRKVUNJeGlIVk5BWVdtbGtMbks0ZHhtV1lYckN5dDRBRmZNVFZMT3QzWUNDc1pCbmFXekFDbU80cXJEaUxXanFpSTJESHJmeHEySWVKX29kOVE?oc=5",
+        "source_name": "Moovit",
+        "published_at": "2026-10-31T12:00:00+00:00"
+      }
+    ],
+    "source_count": 1,
+    "relevance_score": 1.0,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "fast_lane": false,
+    "verified_by_human": false,
+    "scanned_at": "2026-11-06T00:17:56.588539+00:00"
   }
 ]
