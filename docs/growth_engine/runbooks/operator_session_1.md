@@ -69,6 +69,16 @@ Với `GE_ENV=test`, `Settings` không tự bắt buộc biến production-only 
 
 Các tên Meta TEST `GE_META_READ_TOKEN_PAGE_TEST`/`GE_META_READ_TOKEN_IG_TEST` là tham chiếu manifest; chỉ điền nếu có tác vụ đọc Meta TEST đã được xác định. `Settings` không yêu cầu chúng cho API TEST.
 
+`GE_SERVICE_TOKENS` lưu các entry `principal:sha256`, không lưu bearer thô. `auth.py` băm `SHA256(bearer.strip().encode("utf-8"))`, hex thường, rồi so khớp constant-time. Tạo ba bearer TEST ngẫu nhiên, khác bearer production, mỗi bearer chỉ gắn một route (`make-fb-hanoi` → `fb_hanoi`, `make-fb-venho` → `fb_venho`, `make-ig` → `ig_venho`); tên principal được tái sử dụng giữa env files riêng vì đây là các tên duy nhất trong policy hiện tại. Đặt bearer tương ứng trong HTTP connection của nhánh Make TEST. Để lấy entry hash mà không echo bearer, chạy từng lệnh và nhập cùng bearer ở prompt ẩn; lệnh chỉ in `principal:hash`, không in bearer:
+
+```bash
+python3 scripts/growth_engine/hash_service_token.py --principal make-fb-hanoi
+python3 scripts/growth_engine/hash_service_token.py --principal make-fb-venho
+python3 scripts/growth_engine/hash_service_token.py --principal make-ig
+```
+
+Đưa ba entry hash vào `GE_SERVICE_TOKENS` trong TEST env file bằng mục “Nạp bí mật không lộ” bên dưới; không ghi bearer hoặc hash vào repo/log. Principal tên `make-fb-hanoi-test`/`make-fb-venho-test`/`make-ig-test` chưa có trong `_PRINCIPAL_POLICY` và sẽ không có scope/channel nếu tự đặt.
+
 Meta token lifecycle: biến Page trên server là Page access token lấy từ long-lived user token; không hết hạn theo thời gian nhưng có thể bị thu hồi. Instagram dùng long-lived user token khoảng 60 ngày; đặt nhắc gia hạn trước hạn. Không ghi giá trị token vào tài liệu/log.
 
 **Mong đợi:** cả hai file tồn tại với mode `600`; kiểm tra chỉ in quyền và `GE_ENV`, không in giá trị còn lại.
@@ -84,6 +94,19 @@ git status --short
 git rev-parse HEAD
 git push origin gc2/build-v1-2
 ```
+
+Trước deploy, **Harry/operator chạy migration trên production DB mới** từ một clone GC2 riêng ngoài `~/venho/growth-runtime/venho-ai-studio`. `deploy-release.sh` chỉ gọi `migrate --check`; CLI command `venho-engine migrate` mới áp migration. Từ thư mục gốc checkout GC2 đúng SHA, build cùng runtime đã pin rồi áp schema bằng env file production:
+
+```bash
+UV_PYTHON_PREFERENCE=only-managed "$HOME/.local/bin/uv" sync --frozen --python 3.11 --extra api --extra drive --extra gemini
+systemd-run --user --pipe --wait --collect \
+  --property="EnvironmentFile=$HOME/venho/secrets/growth-engine.env" \
+  --property="WorkingDirectory=$PWD" \
+  --setenv=GE_ENV=production \
+  "$PWD/.venv/bin/venho-engine" migrate
+```
+
+Lệnh `migrate` dùng đúng `GE_DB_PATH` của file production và áp migration; `venho-engine migrate --check` chỉ kiểm tra. Chạy sau khi DB path đã đối chiếu vào vùng state GC2 mới, và trước `deploy-release.sh`; không trỏ vào legacy DB. Không có migration operator/script nào khác trong repo.
 
 Ghi lại SHA được review, rồi trên cùng checkout chạy:
 
@@ -144,7 +167,7 @@ curl --config <(printf 'header = "CF-Access-Client-Id: %s"\nheader = "CF-Access-
 
 ## 5. Tạo scenario Make TEST và chạy MK-1…MK-11
 
-Trong Make, duplicate `VenHo Growth Agent-FB/IG` thành TEST; schedule off; gắn Page Facebook TEST đã đối chiếu ID cho hai nhánh Facebook và tài khoản Instagram TEST đã đối chiếu ID cho nhánh Instagram. Không dùng ba production ID trong `channels.yaml` làm TEST destination, và không dùng label thay ID. Do SQLite yêu cầu remote account duy nhất trong mỗi môi trường, mỗi nhánh dùng TEST DB riêng và API TEST phải trỏ đúng DB của lệnh trước khi thử. Tạo một webhook TEST, một Router với đúng ba nhánh `fb_hanoi`, `fb_venho`, `ig_venho`, mỗi nhánh lọc theo `channel_key` cố định, fallback off. Làm theo [make_blueprint_v2.md](make_blueprint_v2.md), điền đủ MK-1…MK-11 trong [make_capabilities.md](../make_capabilities.md) bằng History/module output thật đã khử bí mật. Facebook dùng ảnh binary từ HTTP trong từng nhánh; Instagram dùng `media_url` ở trường image URL.
+Trong Make, dùng bản copy TEST hiện có `VenHo Growth Agent TEST` (ID `6924867`), giữ Inactive/schedule OFF cho đến khi cấu hình xong; không sửa production `VenHo Growth Agent-FB/IG` (ID `5868920`). Hai module Facebook 3/12 cùng đích Page TEST `1363761820162798`; module Instagram 6 dùng `@hanhpham1504` (numeric account ID vẫn `CHƯA XÁC MINH`). Không dùng ba ID production làm TEST destination, và không dùng label thay ID. Do SQLite yêu cầu remote account duy nhất trong mỗi môi trường, mỗi nhánh dùng TEST DB riêng và API TEST phải trỏ đúng DB của lệnh trước khi thử. Cấu hình ba route `fb_hanoi` → Facebook 3, `ig_venho` → Instagram 6, `fb_venho` → Facebook 12 với filter `channel_key` cố định; fallback OFF; bỏ điều kiện `publication_id` không chứa `test`; thêm Webhook response sau receipt trên từng nhánh. Facebook dùng ảnh binary từ HTTP bên trong từng nhánh; Instagram map `image_url` từ `media_url`. Làm theo [make_blueprint_v2.md](make_blueprint_v2.md), điền MK-1…MK-11 trong [make_capabilities.md](../make_capabilities.md) chỉ bằng History/module output thật đã khử bí mật.
 
 Webhook TEST chưa có data structure. Payload mẫu [make_test_sample_payload.json](make_test_sample_payload.json) theo đúng JSON Schema `growth.command.v2`; envelope này **không có** `content`, `image_url` hoặc `publication_id`. `command_token` và `payload_hash` chỉ là giá trị tổng hợp để Make nhận tên/kiểu trường, không phải chữ ký hợp lệ; authorize sẽ từ chối nó. Không gửi mẫu khi đường đi tới module HTTP/đăng bài còn nối. Dùng đúng năm bước sau:
 

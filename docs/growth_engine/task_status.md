@@ -102,3 +102,9 @@ The plan snapshot and code-delta table were refreshed to include the production 
 **Files:** `docs/growth_engine/runbooks/make_test_sample_payload.json`, `docs/growth_engine/runbooks/operator_session_1.md`
 **Evidence:** Sample follows `contracts/growth_engine/command_envelope.v2.schema.json` with synthetic identity, hash, token shape and `.invalid` media host. The actual envelope schema has no `content`, `image_url`, or `publication_id`; Instagram maps its posting image URL from `media_url`, and caption is returned by authorize. The synthetic `command_token` satisfies only the JSON pattern and is not cryptographically valid. Runbook requires downstream modules disconnected before sending.
 **Verify:** JSON Schema validation; no webhook/network request or provider call.
+
+### GC2 handoff H6 — migration, service token hashing, TEST Settings (2026-11-06)
+**Status:** DONE — code facts documented; no server migration or secret operation performed.
+**Files:** `scripts/growth_engine/hash_service_token.py`, `tests/growth_engine/test_hash_service_token.py`, `docs/growth_engine/runbooks/operator_session_1.md`
+**Findings:** `venho-engine migrate` applies the SQLite migrations; deployment script only runs `migrate --check`. Bearers are SHA-256 hex of trimmed UTF-8 and auth maps fixed route principals to one channel each. TEST uses separate hashes in its isolated env file; suffix `-test` principal names are not in the auth policy and are not usable. API TEST/doctor requires DB path, media root, public base URL, capability keys, service-token mapping; optional prefixed settings, if set, must be filled. The test command factory has additional channel/destination/webhook/Graph-version requirements.
+**Verify:** `uv run --no-sync pytest -q tests/growth_engine/test_hash_service_token.py` → 1 passed; synthetic migrated TEST DB Settings/doctor → `Settings complete: PASS`, 10 checks, 0 FAIL. No server, secrets, or network accessed.
