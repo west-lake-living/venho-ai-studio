@@ -90,3 +90,9 @@ The plan snapshot and code-delta table were refreshed to include the production 
 **Files:** `docs/growth_engine/environment_manifest.md`, `docs/growth_engine/runbooks/operator_session_1.md`
 **Findings:** `PAGE_A` maps to `fb_hanoi`; `PAGE_B` maps to `fb_venho`; `IG_VENHO` maps to `ig_venho`. Probe uses `FB_HANOI`, `FB_VENHO`, `IG_VENHO`. `Settings` validates presence generically, not exact channel variable names. Production needs the three probe names plus PAGE_A/PAGE_B aliases for the existing manifest references; the paired names carry the same channel token.
 **Verify:** source review of `channels.yaml`, `meta_probe_candidates.yaml`, `Settings`, and production validation; no secret values read or written.
+
+### GC2 handoff H4 — Make UI observations and TEST blueprint (2026-11-06)
+**Status:** DOCS READY — no Make configuration changed; all MK evidence remains `NOT_RUN`.
+**Files:** `docs/growth_engine/runbooks/make_blueprint_v2.md`, `docs/growth_engine/make_capabilities.md`
+**Evidence:** Recorded production scenario `5868920` and inactive TEST copy `6924867` from the supplied Make UI observations. Documented platform/publication filters, missing `channel_key`, module/response placement, pre-Router image download, and required TEST mapping/filters/responses. No History/module output was supplied, so sequential/retry/output-field evidence remains `CHƯA XÁC MINH`.
+**Verify:** document review against §8.1.4 and supplied observations; no Make or network access.

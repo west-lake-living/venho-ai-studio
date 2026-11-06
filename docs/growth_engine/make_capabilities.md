@@ -1,39 +1,42 @@
 # Make router capability check — GC2-P0-T03
 
-**State:** checklist ready; no Make scenario was opened or changed in this run.
+**State:** production/TEST scenario inventory recorded from the Make UI observations supplied by Harry on 2026-11-06. This is configuration inventory only; no History run or MK test was executed for this handoff.
 
-**Scenario named in the request:** `VenHo Growth Agent-FB/IG`
+**Production scenario:** `VenHo Growth Agent-FB/IG` (ID `5868920`, Active; do not edit).
+**TEST scenario:** `VenHo Growth Agent TEST` (ID `6924867`, Inactive; TEST webhook has no data structure yet).
 **Test requirement:** use a copied scenario and test accounts only. Do not use live pages for capability tests.
 
 No webhook URL, access token, or credential belongs in this file. Store only redacted screenshots/output, and blur connection details before attaching evidence.
 
 ## A. Read-only inventory of the current scenario
 
-Complete this section from the Make scenario and one recent successful History run. Do not edit the production scenario during inventory.
+The values below are from the operator's Make UI observation, not a History run. Keep unspecified execution behavior/output fields `CHƯA XÁC MINH` until actual module History is reviewed. Do not edit production during inventory.
 
 | Item | Value/evidence |
 |---|---|
-| Scenario ID | `REQUIRED_FROM_P0` |
-| Observed at (ICT) | `REQUIRED_FROM_P0` |
-| Router branch names and order | `REQUIRED_FROM_P0` |
-| Required branch keys/order | `fb_hanoi` → `fb_venho` → `ig_venho` (verify in Make) |
-| Filter expression on each branch | `channel_key = fb_hanoi` / `fb_venho` / `ig_venho` (exactly one per branch; verify in Make) |
-| Fallback route enabled | `REQUIRED_FROM_P0` |
-| Facebook/Instagram post module names | `REQUIRED_FROM_P0` |
+| Scenario ID / observed at (ICT) | `5868920` / 06/11/2026; Active |
+| Router branches in current order | 1 Facebook Pages 3; 2 Instagram 6; 3 Facebook Pages 12 |
+| Required TEST channel mapping | `fb_hanoi` → Facebook Pages 3; `ig_venho` → Instagram 6; `fb_venho` → Facebook Pages 12 |
+| Production filter expression | FB branches: `platform = facebook` AND `publication_id` does not contain `test`; IG: `platform = instagram` AND `publication_id` does not contain `test`; no `channel_key` filter |
+| Fallback route enabled | Off on all three routes |
+| Facebook/Instagram post modules | Facebook Pages 3 and 12; Instagram 6 |
+| HTTP image module position | `Download a file` before Router; Instagram also receives the binary download although its post module uses a URL |
+| Webhook response modules | 8 on Facebook Pages 3 route; 7 on Instagram 6 route; none on Facebook Pages 12 route |
 | Error handler path on each post module | `REQUIRED_FROM_P0` |
-| Sequential processing | `REQUIRED_FROM_P0` |
-| Incomplete-execution setting | `REQUIRED_FROM_P0` |
-| Exact post/media ID output field | `REQUIRED_FROM_P0` |
-| Evidence from successful History run | redacted screenshot/export, no tokens or URLs |
+| Sequential processing / incomplete-execution setting | `CHƯA XÁC MINH` / `CHƯA XÁC MINH` |
+| Exact post/media ID output field | `CHƯA XÁC MINH` — requires module output bundle |
+| Evidence from successful History run | None supplied for this handoff; no MK run |
 
 For the post ID, inspect the output bundle of the posting module itself. Record the actual returned field name and a synthetic-looking redacted example. Do not record a UI label such as `3. Post ID` as if it were the returned ID.
 
 ## B. Prepare the TEST copy
 
-- [ ] Duplicate `VenHo Growth Agent-FB/IG`; name the copy with a clear `TEST` suffix.
-- [ ] Confirm all three test destinations are test Page/IG accounts, not production accounts.
-- [ ] Confirm the TEST Router has exactly three branches (`fb_hanoi`, `fb_venho`, `ig_venho`), one fixed `channel_key` filter per branch, and fallback is off.
-- [ ] Use test-only credentials and a test-only webhook. Do not paste secrets into this file.
+- [x] TEST copy exists as `VenHo Growth Agent TEST`, ID `6924867`, Inactive, with a separate webhook.
+- [x] Facebook modules 3 and 12 point to TEST Page `1363761820162798`; Instagram module 6 points to TEST account `@hanhpham1504` (its numeric ID is not present in this handoff).
+- [ ] TEST Router still needs the three fixed `channel_key` filters and fallback-off verification; inherited `publication_id`-does-not-contain-`test` conditions must be removed.
+- [ ] Add Webhook response after receipt on the Facebook module 12 route; confirm response modules on the other two routes.
+- [ ] Use test-only credentials and webhook. Do not paste secrets into this file.
+- [ ] Reposition/duplicate HTTP image download into each Facebook branch; map Instagram `image_url` from `media_url`.
 - [ ] Ensure every test post is visibly labelled as a test and can be removed by the operator.
 - [ ] Disable scheduling on the TEST copy; use only a manually initiated test bundle after the test account is confirmed.
 
