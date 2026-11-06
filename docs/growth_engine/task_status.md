@@ -72,9 +72,15 @@ The plan snapshot and code-delta table were refreshed to include the production 
 **Files:** `scripts/growth_engine/send_test_command.py`, `tests/growth_engine/integration/sqlite/test_test_command_factory.py`, `config/projects/venho_hotel/growth_engine/channels.yaml`, `docs/growth_engine/environment_manifest.md`, `docs/growth_engine/runbooks/{operator_session_1,make_blueprint_v2}.md`
 **Evidence:** Facebook TEST Page `Ven Hồ Growth Test`, ID `1363761820162798`, created in the Ven Ho Hotel Business portfolio. One TEST Facebook Page is shared across the two logical Facebook routes using separate TEST databases. The sender now emits the Router's three channel keys, checks the matching principal and refuses production destination IDs.
 **Verify:** SQLite factory + API authorize tests exercise all three TEST channel keys and wrong-channel rejection; VERIFY_DEV → 489 passed, 4 warnings; VERIFY_ARCH → 2 passed; manifest secret scan → OK. No public test post sent.
-**Outstanding:** Instagram TEST business conversion and Page link; complete TEST/production environment, DNS/Cloudflare, Make TEST, 1Password backup copy, server deployment and restore rehearsal.
+**Outstanding:** Numeric Instagram TEST account ID, complete TEST/production environment, DNS/Cloudflare, Make TEST, 1Password backup copy, server deployment and restore rehearsal.
 
 ### GC2 handoff H1 — review `6a5545a` against current operator facts (2026-11-06)
 **Status:** REVIEWED
 **Findings:** `6a5545a` matches the v1.2 TEST sender contract for `fb_hanoi`, `fb_venho`, and `ig_venho`; maps both Facebook keys to TEST Page `1363761820162798`; keeps TEST DB isolation; and rejects production destination IDs. Its recorded `Outstanding` line is stale: Instagram TEST is now reported converted and linked to the TEST Page. The current `ig_test.remote_account_id` remains `REQUIRED_FROM_P0` because no numeric TEST Instagram account ID was supplied in this handoff. The Make TEST scenario remains inactive and its router/posting path is not verified by a real run; MK evidence stays `NOT_RUN`.
 **Verify:** source review of `6a5545a`, `channels.yaml`, sender/auth contract, and supplied Make observations; no external systems or network accessed.
+
+### GC2 handoff H2 — TEST destination IDs and URL-ID warning (2026-11-06)
+**Status:** PARTIAL — Facebook TEST Graph API Page ID recorded; Instagram TEST link recorded, numeric ID remains `CHƯA XÁC MINH`.
+**Files:** `config/projects/venho_hotel/growth_engine/channels.yaml`, `docs/growth_engine/environment_manifest.md`
+**Evidence:** Page TEST ID `1363761820162798`; the supplied `profile.php?id=61596076389732` value is explicitly documented as not being its Graph API Page ID. `@hanhpham1504` is reported linked to the TEST Page, but no numeric Instagram TEST ID was present to store. No production destination ID was used for TEST.
+**Verify:** YAML/manifest source review; no external systems or network accessed.

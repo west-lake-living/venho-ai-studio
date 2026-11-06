@@ -59,6 +59,7 @@ channels:
     enabled: false
 
   # Page TEST riêng + scenario TEST riêng: mọi test có side effect chỉ chạy ở đây.
+  # Graph API Page ID là 1363761820162798. URL profile.php?id=61596076389732 không phải Page ID Graph.
   - channel_id: page_test
     environment: test
     platform: facebook
@@ -81,7 +82,8 @@ channels:
   - channel_id: ig_test
     environment: test
     platform: instagram
-    display_name: REQUIRED_FROM_P0
+    display_name: hanhpham1504
+    # Page TEST đã trả instagram_business_account.id qua Graph; số ID chưa được cung cấp trong handoff.
     remote_account_id: REQUIRED_FROM_P0
     make_scenario_id: REQUIRED_FROM_P0
     make_route_ref: GE_MAKE_WEBHOOK_URL_IG_TEST
