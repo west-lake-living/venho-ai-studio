@@ -1,13 +1,13 @@
 version: 2
-status: partial_p0_t04b_reprobe
+status: done_p0_t04b
 source: docs/growth_engine/meta_capabilities.md
-source_status: PARTIAL
+source_status: DONE
 checkpoint_tolerance_seconds: 7200
 capabilities:
   facebook_engagement:
     default: BLOCKED
     channels:
-      fb_hanoi: BLOCKED
+      fb_hanoi: SUPPORTED
       fb_venho: SUPPORTED
 metrics:
   # The current read probe verified these v27.0 Page post metrics.
@@ -23,7 +23,7 @@ metrics:
     period: lifetime
     availability: VERIFIED
     channels: [fb_hanoi, fb_venho]
-  # Enable reactions/comments only for the Page where the sanitized re-probe returned them.
+  # Reaction/comment access is verified on both Facebook Pages; shares retain the ZERO missing-value policy.
   - name: reactions_total
     provider_field: reactions.summary(total_count).limit(0)
     scope: post_field

@@ -6411,3 +6411,9 @@ not in local venv; installed in CI).
 ### 2026-11-05 — GC2-P9-T01 Instagram operator session
 - Listed all three TEST channel IDs and recorded the production ramp-up order after approval; the TEST session explicitly does not enable production or create a public post.
 - Verification remains document inspection and `git diff --check`; no Make or Meta access was used.
+
+### 2026-11-06 — GC2-P0-T04b Facebook engagement verified on both Pages
+- Sanitized operator-supplied v27.0 results confirm reactions/comments on five recent `fb_hanoi` posts; updated the safe fixture and enabled `facebook_engagement` for both verified Pages while keeping unknown channels blocked by default.
+- The probe now validates the two Facebook engagement fields and uses one configured field list for post-ID and `--list-recent`; regression test covers both modes using the repository's actual Facebook candidate configuration.
+- P0-T04b is DONE. Matching `post_total_media_view_unique` data remains separately needed for `fb_venho` engagement-rate reporting.
+- Verification and commit are recorded in `docs/growth_engine/task_status.md`.

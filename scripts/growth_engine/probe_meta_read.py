@@ -19,6 +19,10 @@ from shared.meta.graph_client import MetaGraphError, ReadOnlyGraphClient
 
 DEFAULT_CANDIDATES = Path("config/projects/venho_hotel/growth_engine/meta_probe_candidates.yaml")
 DEFAULT_CHANNELS = Path("config/projects/venho_hotel/growth_engine/channels.yaml")
+FACEBOOK_ENGAGEMENT_FIELDS = {
+    "reactions.summary(total_count).limit(0)",
+    "comments.summary(total_count).limit(0)",
+}
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -91,6 +95,15 @@ def _recent_window(days: int) -> tuple[int, int]:
     return until_ms - days * 24 * 60 * 60 * 1000, until_ms
 
 
+def _configured_post_fields(candidate: Mapping[str, Any], channel_id: str) -> list[str]:
+    fields = [str(value) for value in candidate.get("post_fields", [])]
+    if not fields or any(not field.strip() for field in fields):
+        raise ValueError(f"candidate post fields are missing for {channel_id}")
+    if channel_id.startswith("fb_") and not FACEBOOK_ENGAGEMENT_FIELDS.issubset(fields):
+        raise ValueError(f"Facebook candidate fields must include reactions and comments for {channel_id}")
+    return fields
+
+
 def run_probe(
     args: argparse.Namespace,
     environ: Mapping[str, str],
@@ -103,9 +116,8 @@ def run_probe(
     if not token:
         raise ValueError(f"required environment variable {token_env} is empty")
     account_id = str(candidate["account_id"])
-    fields = [str(value) for value in candidate.get("post_fields", [])]
-    if not fields or any(not field.strip() for field in fields):
-        raise ValueError(f"candidate post fields are missing for {args.channel}")
+    # Both fixed post-ID probes and --list-recent use this single validated field list.
+    fields = _configured_post_fields(candidate, args.channel)
     edge = str(candidate.get("collection_edge") or "")
     client = client_factory(api_version=api_version, access_token=token, collection_edge=edge)
     list_recent = bool(args.list_recent or candidate.get("list_recent"))

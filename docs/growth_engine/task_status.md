@@ -1,4 +1,4 @@
-# GC2 task status — 2026-11-05
+# GC2 task status — 2026-11-06
 
 `task_status.md` was absent on this branch at the start of the run. This file records the requested work from this run; human-only gates remain open where noted.
 
@@ -58,10 +58,11 @@ The plan snapshot and code-delta table were refreshed to include the production 
 **INV/AC liên quan:** read-only GET; no production write
 **Rủi ro / việc để lại:** Requires `GE_META_READ_TOKEN_FB_HANOI`, `GE_META_READ_TOKEN_FB_VENHO`, `GE_META_READ_TOKEN_IG_VENHO`.
 
-### GC2-P0-T04b — Facebook engagement re-probe (2026-11-05)
-**Status:** PARTIAL — reactions/comments are readable for `fb_venho`; `fb_hanoi` returned neither field in the sanitized sample and remains blocked.
-**Files:** `config/projects/venho_hotel/growth_engine/metrics_registry.yaml`, `docs/growth_engine/meta_capabilities.md`, `tests/fixtures/growth_engine/fb_engagement_probe_20261105.json`, `tests/growth_engine/unit/application/{analytics/test_metric_registry.py,test_collect_metrics.py}`, `tests/test_legacy_insights_backfill.py`, `docs/growth_engine/task_status.md`
-**Evidence:** sanitized probe report only; no tokens, URLs, captions, or image data persisted. `fb_venho` samples returned reactions/comments of 0/0, 0/0, and 1/0. `fb_hanoi` sample was `NOT_RETURNED` with no error code in this report; a prior probe recorded Meta code 10.
-**Verify:** focused → 23 passed; VERIFY_DEV → 485 passed, 4 warnings; VERIFY_ARCH → 2 passed.
-**DoD:** [x] per-page capability is fail-closed; [x] `fb_venho` fixture exercises the real observed counts; [ ] `fb_hanoi` re-probe and matching `fb_venho` view denominator remain outstanding.
-**Rủi ro / việc để lại:** `internal_engagement_rate` stays `DATA_INCOMPLETE` until the same `fb_venho` posts have `post_total_media_view_unique` collected; Hanoi engagement metrics remain unavailable.
+### GC2-P0-T04b — Facebook engagement re-probe (2026-11-06)
+**Status:** DONE
+**Commit:** `GC2-P0-T04b: fb_hanoi engagement supported`
+**Files:** `scripts/growth_engine/probe_meta_read.py`, `config/projects/venho_hotel/growth_engine/metrics_registry.yaml`, `docs/growth_engine/meta_capabilities.md`, `tests/fixtures/growth_engine/fb_engagement_probe_20261106.json`, probe and metric registry tests, `docs/growth_engine/task_status.md`
+**Evidence:** Sanitized v27.0 results supplied for five `fb_hanoi` posts; reactions/comments were readable on all five with totals `1/0`, `1/0`, `0/0`, `0/0`, and `2/0`. The probe validates Facebook engagement fields and uses the same configured list for post-ID and `--list-recent` modes. No tokens or private credentials were recorded.
+**Verify:** focused → 27 passed; VERIFY_DEV → 486 passed, 4 warnings; VERIFY_ARCH → 2 passed.
+**DoD:** [x] `facebook_engagement` is `SUPPORTED` for `fb_hanoi` and `fb_venho`; [x] post-ID and `--list-recent` share the validated Facebook field list; [x] evidence is sanitized.
+**Rủi ro / việc để lại:** P0-T04b is complete. `fb_venho` internal engagement rate remains `DATA_INCOMPLETE` until matching `post_total_media_view_unique` denominators are collected.

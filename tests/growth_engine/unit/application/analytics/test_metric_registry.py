@@ -7,28 +7,34 @@ import yaml
 from growth_engine.adapters.outbound.meta.metric_registry import load_metric_specs
 
 
-def test_registry_defaults_facebook_engagement_to_blocked() -> None:
+def test_registry_keeps_blocked_default_and_supports_fb_hanoi() -> None:
     path = Path("config/projects/venho_hotel/growth_engine/metrics_registry.yaml")
+    registry = yaml.safe_load(path.read_text(encoding="utf-8"))
 
+    assert registry["capabilities"]["facebook_engagement"]["default"] == "BLOCKED"
+    assert registry["capabilities"]["facebook_engagement"]["channels"] == {
+        "fb_hanoi": "SUPPORTED",
+        "fb_venho": "SUPPORTED",
+    }
     specs = load_metric_specs(path, "fb_hanoi")
 
     by_name = {spec.name: spec for spec in specs}
     assert set(by_name) == {
         "post_media_view", "post_total_media_view_unique", "reactions_total", "comments_total", "shares"
     }
-    assert by_name["reactions_total"].capability_state == "BLOCKED"
-    assert by_name["comments_total"].capability_state == "BLOCKED"
+    assert by_name["reactions_total"].capability_state == "SUPPORTED"
+    assert by_name["comments_total"].capability_state == "SUPPORTED"
     assert by_name["shares"].missing_value_state == "ZERO"
 
 
-def test_probed_facebook_engagement_is_enabled_only_for_fb_venho() -> None:
+def test_probed_facebook_engagement_is_enabled_for_both_pages() -> None:
     path = Path("config/projects/venho_hotel/growth_engine/metrics_registry.yaml")
 
     hanoi = {spec.name: spec for spec in load_metric_specs(path, "fb_hanoi")}
     venho = {spec.name: spec for spec in load_metric_specs(path, "fb_venho")}
 
-    assert hanoi["reactions_total"].capability_state == "BLOCKED"
-    assert hanoi["comments_total"].capability_state == "BLOCKED"
+    assert hanoi["reactions_total"].capability_state == "SUPPORTED"
+    assert hanoi["comments_total"].capability_state == "SUPPORTED"
     assert venho["reactions_total"].capability_state == "SUPPORTED"
     assert venho["comments_total"].capability_state == "SUPPORTED"
 

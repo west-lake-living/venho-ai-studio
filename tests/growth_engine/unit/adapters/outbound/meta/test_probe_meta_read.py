@@ -6,7 +6,7 @@ from pathlib import Path
 
 import yaml
 
-from scripts.growth_engine.probe_meta_read import _parser, run_probe
+from scripts.growth_engine.probe_meta_read import DEFAULT_CANDIDATES, _parser, run_probe
 from shared.meta.graph_client import MetaGraphError
 
 
@@ -17,8 +17,10 @@ class _FakeClient:
         self.collection_edge = collection_edge
         self.insight_calls = []
         self.list_calls = []
+        self.object_calls = []
 
     def get_object(self, object_id, fields):
+        self.object_calls.append((object_id, tuple(fields)))
         if fields == ["id"]:
             return {"id": object_id, "_synthetic": True}
         return {fields[0]: f"synthetic-{fields[0]}", "_synthetic": True}
@@ -41,11 +43,19 @@ def _write_yaml(path: Path, value) -> None:
 
 def _config(tmp_path: Path, *, channel_id: str, mode: str = "post"):
     account_id = {"fb_hanoi": "page-hanoi", "fb_venho": "page-venho", "ig_venho": "ig-account"}[channel_id]
+    post_fields = ["id", "message"]
+    if channel_id.startswith("fb_"):
+        post_fields.extend(
+            [
+                "reactions.summary(total_count).limit(0)",
+                "comments.summary(total_count).limit(0)",
+            ]
+        )
     candidate = {
         "api_version": "vTEST", "platform": "facebook" if channel_id.startswith("fb_") else "instagram",
         "account_id": account_id, "token_env": f"TOKEN_{channel_id}", "collection_edge": "posts",
         "list_recent": mode == "recent", "recent_days": 7, "max_pages": 2,
-        "post_fields": ["id", "message"], "metrics": [
+        "post_fields": post_fields, "metrics": [
             {"name": "metric_unavailable", "period": "lifetime"},
             {"name": "metric_readable", "period": None},
         ],
@@ -106,3 +116,27 @@ def test_probe_uses_posts_edge_for_fb_venho_list_recent(tmp_path: Path) -> None:
     assert result["recent_posts"][0]["id"] == "post-synthetic"
     assert client.list_calls[0][0] == "page-venho"
     assert client.list_calls[0][2] == 2
+
+
+def test_facebook_post_id_and_list_recent_use_the_same_engagement_field_list() -> None:
+    candidates = yaml.safe_load(DEFAULT_CANDIDATES.read_text(encoding="utf-8"))["channels"]
+    hanoi_fields = candidates["fb_hanoi"]["post_fields"]
+    venho_fields = candidates["fb_venho"]["post_fields"]
+    assert hanoi_fields == venho_fields
+    assert {
+        "reactions.summary(total_count).limit(0)",
+        "comments.summary(total_count).limit(0)",
+    }.issubset(hanoi_fields)
+
+    post_args = _parser().parse_args(["--channel", "fb_hanoi"])
+    recent_args = _parser().parse_args(["--channel", "fb_hanoi", "--list-recent"])
+    post_client = _FakeClient(api_version="v27.0", access_token="synthetic-token", collection_edge="posts")
+    recent_client = _FakeClient(api_version="v27.0", access_token="synthetic-token", collection_edge="posts")
+    environment = {"GE_META_READ_TOKEN_FB_HANOI": "synthetic-token"}
+
+    run_probe(post_args, environment, client_factory=lambda **kwargs: post_client)
+    run_probe(recent_args, environment, client_factory=lambda **kwargs: recent_client)
+
+    post_fields = [fields[0] for object_id, fields in post_client.object_calls if object_id == candidates["fb_hanoi"]["post_id"]]
+    recent_fields = list(recent_client.list_calls[0][1])
+    assert post_fields == recent_fields == hanoi_fields
