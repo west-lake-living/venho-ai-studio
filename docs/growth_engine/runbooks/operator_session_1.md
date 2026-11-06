@@ -140,6 +140,67 @@ curl --fail --silent --show-error http://127.0.0.1:8022/health/ready
 systemctl --user stop growth-engine-api-test.service
 ```
 
+### Nạp bí mật không lộ
+
+Trong shell Bash tương tác, dùng hàm dưới đây để thay đúng một biến trong environment file. Giá trị được đọc ẩn và truyền qua stdin tới Python, không thành đối số tiến trình; hàm từ chối shell xtrace và không in giá trị:
+
+```bash
+setenv() {
+  local name="$1" file="$2" value status
+  [[ "$-" != *x* ]] || { printf 'Tắt xtrace trước khi nạp bí mật.\n' >&2; return 2; }
+  [[ "$name" =~ ^GE_[A-Z0-9_]+$ && -f "$file" ]] || return 2
+  IFS= read -r -s -p "Giá trị cho ${name}: " value
+  printf '\n' >&2
+  printf '%s' "$value" | python3 -c '
+import os, re, sys, tempfile
+p, n = sys.argv[1:]
+v = sys.stdin.read()
+if not v or any(char in v for char in "\n\r\0"):
+    raise SystemExit("giá trị phải là một dòng không rỗng")
+with open(p, encoding="utf-8") as source:
+    lines = [line.rstrip("\n") for line in source if not re.match(r"^\s*" + re.escape(n) + r"\s*=", line)]
+lines.append(n + "=" + v)
+fd, temp_path = tempfile.mkstemp(dir=os.path.dirname(p) or ".")
+os.fchmod(fd, 0o600)
+with os.fdopen(fd, "w", encoding="utf-8") as target:
+    target.write("\n".join(lines) + "\n")
+os.replace(temp_path, p)
+os.chmod(p, 0o600)
+' "$file" "$name"
+  status=$?
+  unset value
+  chmod 600 "$file"
+  return "$status"
+}
+```
+
+Ví dụ gọi hàm (giá trị sẽ được hỏi ẩn, biến phải tồn tại trong file):
+
+```bash
+setenv GE_SERVICE_TOKENS "$HOME/venho/secrets/growth-engine-test.env"
+```
+
+Kiểm tra chỉ in tên biến, trạng thái và quyền file; không `cat`, `grep` giá trị hay `source` env file:
+
+```bash
+python3 - "$HOME/venho/secrets/growth-engine-test.env" <<'PY'
+import os, re, sys
+path = sys.argv[1]
+rows = {}
+for line in open(path, encoding="utf-8"):
+    match = re.match(r"^\s*(GE_[A-Z0-9_]+)\s*=(.*)$", line.rstrip("\n"))
+    if match:
+        rows[match.group(1)] = match.group(2).strip().strip("\"")
+for name in ("GE_ENV", "GE_DB_PATH", "GE_MEDIA_ROOT", "GE_PUBLIC_BASE_URL", "GE_CAPABILITY_KEYS", "GE_SERVICE_TOKENS", "GE_MAKE_WEBHOOK_URL_PAGE_TEST", "GE_MAKE_WEBHOOK_URL_IG_TEST"):
+    value = rows.get(name, "")
+    state = "TRONG" if not value else "PLACEHOLDER" if "REQUIRED_FROM_P0" in value else "DA_CO_GIA_TRI"
+    print(name, state)
+print("FILE_PERMISSION", oct(os.stat(path).st_mode & 0o777))
+PY
+```
+
+Thêm/bỏ tên trong danh sách status theo env file cần rà; giá trị không bao giờ được in.
+
 ## 4. Cấu hình Cloudflare hostname và Access cho TEST
 
 Harry cấu hình Tunnel/hostname TEST theo ADR-05/ADR-06: `/internal/*` dùng Access Service Token; `/media/publish/*` có Access Bypass nhưng vẫn yêu cầu signed capability. Không thay đổi hostname production ở bước này.

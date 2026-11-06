@@ -108,3 +108,9 @@ The plan snapshot and code-delta table were refreshed to include the production 
 **Files:** `scripts/growth_engine/hash_service_token.py`, `tests/growth_engine/test_hash_service_token.py`, `docs/growth_engine/runbooks/operator_session_1.md`
 **Findings:** `venho-engine migrate` applies the SQLite migrations; deployment script only runs `migrate --check`. Bearers are SHA-256 hex of trimmed UTF-8 and auth maps fixed route principals to one channel each. TEST uses separate hashes in its isolated env file; suffix `-test` principal names are not in the auth policy and are not usable. API TEST/doctor requires DB path, media root, public base URL, capability keys, service-token mapping; optional prefixed settings, if set, must be filled. The test command factory has additional channel/destination/webhook/Graph-version requirements.
 **Verify:** `uv run --no-sync pytest -q tests/growth_engine/test_hash_service_token.py` → 1 passed; synthetic migrated TEST DB Settings/doctor → `Settings complete: PASS`, 10 checks, 0 FAIL. No server, secrets, or network accessed.
+
+### GC2 handoff H7 — safe env-file entry and status check (2026-11-06)
+**Status:** DONE — runbook-only; no environment file was opened or changed.
+**Files:** `docs/growth_engine/runbooks/operator_session_1.md`
+**Evidence:** Added hidden `read -rs` input, one-variable replacement via stdin, mode `600`, xtrace guard, and a status command that prints only requested variable names, presence/placeholder state, and file mode.
+**Verify:** `bash -n` syntax check of the documented setter; synthetic-only review; no real env file or secret accessed.
