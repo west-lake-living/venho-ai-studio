@@ -50,7 +50,9 @@ test "$(stat -c '%a' "$HOME/venho/secrets/growth-engine.env")" = 600
 grep -qx 'GE_ENV=production' "$HOME/venho/secrets/growth-engine.env"
 ```
 
-File cần các biến production mà `Settings` kiểm tra: DB/media/base URLs, capability/service tokens, Make route refs, Telegram bot/chat và public age recipient. Probe Track 0 đọc token từ `GE_META_READ_TOKEN_FB_HANOI`, `GE_META_READ_TOKEN_FB_VENHO`, `GE_META_READ_TOKEN_IG_VENHO`. Không dùng giá trị `REQUIRED_FROM_P0`.
+Production `Settings` yêu cầu `GE_DB_PATH`, `GE_MEDIA_ROOT`, `GE_PUBLIC_BASE_URL`, `GE_DASHBOARD_BASE_URL`, `GE_CAPABILITY_KEYS`, `GE_SERVICE_TOKENS`, ít nhất một `GE_MAKE_WEBHOOK_URL_*`, ít nhất một `GE_META_READ_TOKEN_*`, `GE_TELEGRAM_BOT_TOKEN` và `GE_TELEGRAM_CHAT_ID`. Mọi biến Make/Meta/Telegram đã khai báo phải có giá trị không rỗng và không chứa `REQUIRED_FROM_P0`. `GE_AGE_RECIPIENT` cần cho backup, nhưng không được `Settings`/`doctor` kiểm tra; `GE_HEARTBEAT_URL` cũng không phải điều kiện settings hiện tại.
+
+Ánh xạ token Meta: `GE_META_READ_TOKEN_PAGE_A` ↔ `GE_META_READ_TOKEN_FB_HANOI` (`fb_hanoi`); `GE_META_READ_TOKEN_PAGE_B` ↔ `GE_META_READ_TOKEN_FB_VENHO` (`fb_venho`); `GE_META_READ_TOKEN_IG_VENHO` dùng cùng tên cho `ig_venho`. Điền hai alias mỗi Page với cùng Page access token để vừa thỏa tham chiếu manifest vừa chạy probe. Không ghi giá trị token vào runbook. Bảng chi tiết nằm trong [environment_manifest.md](../environment_manifest.md).
 
 Tạo riêng file API TEST; DB và media phải nằm trong thư mục TEST riêng, không trỏ vào production:
 
@@ -63,7 +65,9 @@ test "$(stat -c '%a' "$HOME/venho/secrets/growth-engine-test.env")" = 600
 grep -qx 'GE_ENV=test' "$HOME/venho/secrets/growth-engine-test.env"
 ```
 
-File TEST cần `GE_DB_PATH`, `GE_MEDIA_ROOT`, `GE_PUBLIC_BASE_URL` và các TEST credentials/refs sau khi chúng được xác minh. Không sao chép production token, webhook hoặc Page ID vào TEST.
+Với `GE_ENV=test`, `Settings` không tự bắt buộc biến production-only như Telegram, dashboard URL hay Meta token; `doctor` cần các giá trị không rỗng cho `GE_DB_PATH`, `GE_MEDIA_ROOT`, `GE_PUBLIC_BASE_URL`, `GE_CAPABILITY_KEYS`, `GE_SERVICE_TOKENS`. Các `GE_MAKE_WEBHOOK_URL_*`, `GE_META_READ_TOKEN_*` hoặc `GE_TELEGRAM_*` nào được khai báo cũng phải không rỗng/placeholder. Riêng `send_test_command.py --create-command` còn cần `GE_TEST_CHANNEL_KEY`, `GE_TEST_CHANNEL_ID`, ID đích đúng (`GE_TEST_REMOTE_PAGE_ID` hoặc `GE_TEST_REMOTE_IG_ID`), URL webhook TEST tương ứng; `channels.yaml` cần Graph API version đã xác minh. Mã API/publish TEST hiện không cần Meta read token. Không sao chép production bearer, webhook hay Page ID vào TEST.
+
+Các tên Meta TEST `GE_META_READ_TOKEN_PAGE_TEST`/`GE_META_READ_TOKEN_IG_TEST` là tham chiếu manifest; chỉ điền nếu có tác vụ đọc Meta TEST đã được xác định. `Settings` không yêu cầu chúng cho API TEST.
 
 Meta token lifecycle: biến Page trên server là Page access token lấy từ long-lived user token; không hết hạn theo thời gian nhưng có thể bị thu hồi. Instagram dùng long-lived user token khoảng 60 ngày; đặt nhắc gia hạn trước hạn. Không ghi giá trị token vào tài liệu/log.
 

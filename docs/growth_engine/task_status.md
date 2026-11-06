@@ -84,3 +84,9 @@ The plan snapshot and code-delta table were refreshed to include the production 
 **Files:** `config/projects/venho_hotel/growth_engine/channels.yaml`, `docs/growth_engine/environment_manifest.md`
 **Evidence:** Page TEST ID `1363761820162798`; the supplied `profile.php?id=61596076389732` value is explicitly documented as not being its Graph API Page ID. `@hanhpham1504` is reported linked to the TEST Page, but no numeric Instagram TEST ID was present to store. No production destination ID was used for TEST.
 **Verify:** YAML/manifest source review; no external systems or network accessed.
+
+### GC2 handoff H3 — Meta token environment mapping (2026-11-06)
+**Status:** DONE — repository mapping established; token values remain outside Git.
+**Files:** `docs/growth_engine/environment_manifest.md`, `docs/growth_engine/runbooks/operator_session_1.md`
+**Findings:** `PAGE_A` maps to `fb_hanoi`; `PAGE_B` maps to `fb_venho`; `IG_VENHO` maps to `ig_venho`. Probe uses `FB_HANOI`, `FB_VENHO`, `IG_VENHO`. `Settings` validates presence generically, not exact channel variable names. Production needs the three probe names plus PAGE_A/PAGE_B aliases for the existing manifest references; the paired names carry the same channel token.
+**Verify:** source review of `channels.yaml`, `meta_probe_candidates.yaml`, `Settings`, and production validation; no secret values read or written.

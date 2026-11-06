@@ -27,6 +27,18 @@ Không map bằng tên hiển thị; đổi tên Page không đổi channel; Pag
 
 Instagram là kênh đăng v2: `ig_venho` → `instagram_business_account.id` `17841457936965829`; Make route/connection và Graph API version/token chưa probe; channel disabled tới khi xác minh.
 
+### Ánh xạ Meta token production
+
+`channels.yaml` và probe hiện dùng hai họ tên biến cho cùng ba tài khoản. Giữ cả hai họ trong production environment file cho đến khi mã được thống nhất; mỗi cặp dưới đây phải nhận cùng Page/account token tương ứng:
+
+| `channels.yaml` tham chiếu | Kênh | Tên biến probe | Giá trị |
+|---|---|---|---|
+| `GE_META_READ_TOKEN_PAGE_A` | `fb_hanoi` / Page `1124616474074140` | `GE_META_READ_TOKEN_FB_HANOI` | Cùng token của Page Hanoi |
+| `GE_META_READ_TOKEN_PAGE_B` | `fb_venho` / Page `803531149684177` | `GE_META_READ_TOKEN_FB_VENHO` | Cùng token của Page Ven Hồ |
+| `GE_META_READ_TOKEN_IG_VENHO` | `ig_venho` / account `17841457936965829` | `GE_META_READ_TOKEN_IG_VENHO` | Cùng token dùng cho account Instagram |
+
+`Settings` đọc mọi biến có tiền tố `GE_META_READ_TOKEN_` và trong production chỉ yêu cầu có ít nhất một biến; nếu biến được khai báo thì từng giá trị không được rỗng hoặc chứa `REQUIRED_FROM_P0`. Nó không kiểm tra các tên biến riêng lẻ trong `channels.yaml`. Để thỏa manifest và probe, production file cần đủ cả năm tên production trong bảng ánh xạ (ba tên probe và hai alias PAGE_A/PAGE_B). TEST refs `GE_META_READ_TOKEN_PAGE_TEST` và `GE_META_READ_TOKEN_IG_TEST` thuộc environment TEST; chúng không phải các token probe production.
+
 ## Test (Page/Instagram test riêng + scenario test riêng)
 
 | Trường | Page test (`page_test`) |
