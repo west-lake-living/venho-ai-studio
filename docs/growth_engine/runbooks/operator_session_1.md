@@ -146,6 +146,28 @@ curl --config <(printf 'header = "CF-Access-Client-Id: %s"\nheader = "CF-Access-
 
 Trong Make, duplicate `VenHo Growth Agent-FB/IG` thành TEST; schedule off; gắn Page Facebook TEST đã đối chiếu ID cho hai nhánh Facebook và tài khoản Instagram TEST đã đối chiếu ID cho nhánh Instagram. Không dùng ba production ID trong `channels.yaml` làm TEST destination, và không dùng label thay ID. Do SQLite yêu cầu remote account duy nhất trong mỗi môi trường, mỗi nhánh dùng TEST DB riêng và API TEST phải trỏ đúng DB của lệnh trước khi thử. Tạo một webhook TEST, một Router với đúng ba nhánh `fb_hanoi`, `fb_venho`, `ig_venho`, mỗi nhánh lọc theo `channel_key` cố định, fallback off. Làm theo [make_blueprint_v2.md](make_blueprint_v2.md), điền đủ MK-1…MK-11 trong [make_capabilities.md](../make_capabilities.md) bằng History/module output thật đã khử bí mật. Facebook dùng ảnh binary từ HTTP trong từng nhánh; Instagram dùng `media_url` ở trường image URL.
 
+Webhook TEST chưa có data structure. Payload mẫu [make_test_sample_payload.json](make_test_sample_payload.json) theo đúng JSON Schema `growth.command.v2`; envelope này **không có** `content`, `image_url` hoặc `publication_id`. `command_token` và `payload_hash` chỉ là giá trị tổng hợp để Make nhận tên/kiểu trường, không phải chữ ký hợp lệ; authorize sẽ từ chối nó. Không gửi mẫu khi đường đi tới module HTTP/đăng bài còn nối. Dùng đúng năm bước sau:
+
+1. Xác nhận chỉ scenario TEST đang mở, schedule vẫn OFF; tạm ngắt toàn bộ module sau Custom webhook để không gọi HTTP hay đăng bài.
+2. Trên Custom webhook của TEST scenario, bấm **Redetermine data structure**.
+3. Trong terminal cục bộ chạy Python dưới đây; nhập webhook URL tại prompt ẩn, không dán URL vào lệnh hay chat. Chỉ HTTP status được in:
+   ```bash
+   python3 - <<'PY'
+   import getpass
+   from pathlib import Path
+   from urllib.request import Request, urlopen
+   url = getpass.getpass("TEST webhook URL (hidden): ")
+   body = Path("docs/growth_engine/runbooks/make_test_sample_payload.json").read_bytes()
+   request = Request(url, data=body, headers={"Content-Type": "application/json"}, method="POST")
+   with urlopen(request, timeout=20) as response:
+       print(f"HTTP {response.status}")
+   PY
+   ```
+4. Xác nhận Make nhận các trường envelope; không tính lần nhận mẫu là MK pass hoặc bằng chứng đăng.
+5. Chỉ nối lại module sau khi đã áp filter `channel_key`, route, authorize và response theo blueprint; chưa bật lịch TEST.
+
+Nếu webhook không thể nhận cấu trúc trước khi chạy module downstream, không gửi mẫu qua luồng đang nối; giữ scenario dừng và ghi gate chờ xử lý. Payload giả không thể dùng để kiểm tra authorize hay đăng bài.
+
 Sau khi mọi gate được duyệt, thứ tự mở target production là `fb_hanoi` → `fb_venho` → `ig_venho`; chỉ mở target kế tiếp sau khi target trước có receipt/verify xác định. Trong phiên TEST này không bật production và không đăng thử công khai.
 
 Chọn `GE_TEST_CHANNEL_KEY` (`fb_hanoi`, `fb_venho`, hoặc `ig_venho`), `GE_TEST_CHANNEL_ID` riêng cho nhánh, TEST DB và đúng API TEST trước khi tạo command. Facebook dùng `GE_TEST_REMOTE_PAGE_ID`, Instagram dùng `GE_TEST_REMOTE_IG_ID`. Tạo command TEST và private envelope (lệnh này không gửi webhook):

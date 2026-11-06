@@ -96,3 +96,9 @@ The plan snapshot and code-delta table were refreshed to include the production 
 **Files:** `docs/growth_engine/runbooks/make_blueprint_v2.md`, `docs/growth_engine/make_capabilities.md`
 **Evidence:** Recorded production scenario `5868920` and inactive TEST copy `6924867` from the supplied Make UI observations. Documented platform/publication filters, missing `channel_key`, module/response placement, pre-Router image download, and required TEST mapping/filters/responses. No History/module output was supplied, so sequential/retry/output-field evidence remains `CHƯA XÁC MINH`.
 **Verify:** document review against §8.1.4 and supplied observations; no Make or network access.
+
+### GC2 handoff H5 — TEST webhook structure sample (2026-11-06)
+**Status:** READY FOR OPERATOR — no webhook request sent.
+**Files:** `docs/growth_engine/runbooks/make_test_sample_payload.json`, `docs/growth_engine/runbooks/operator_session_1.md`
+**Evidence:** Sample follows `contracts/growth_engine/command_envelope.v2.schema.json` with synthetic identity, hash, token shape and `.invalid` media host. The actual envelope schema has no `content`, `image_url`, or `publication_id`; Instagram maps its posting image URL from `media_url`, and caption is returned by authorize. The synthetic `command_token` satisfies only the JSON pattern and is not cryptographically valid. Runbook requires downstream modules disconnected before sending.
+**Verify:** JSON Schema validation; no webhook/network request or provider call.

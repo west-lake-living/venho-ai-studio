@@ -1,0 +1,17 @@
+{
+  "schema_version": "growth.command.v2",
+  "environment": "test",
+  "command_id": "sample-command-fb-hanoi",
+  "delivery_id": "sample-delivery-fb-hanoi",
+  "revision_id": "sample-revision-fb-hanoi",
+  "channel_id": "sample-test-channel-fb-hanoi",
+  "channel_key": "fb_hanoi",
+  "platform": "facebook",
+  "remote_page_id": "1363761820162798",
+  "idempotency_key": "publish:sample-delivery-fb-hanoi:sample-revision-fb-hanoi:1",
+  "payload_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+  "dispatch_epoch": "sample-test-epoch",
+  "execute_before_ms": 1800000000000,
+  "media_url": "https://media.example.invalid/media/gc2-test.jpg",
+  "command_token": "v1.dGVzdA.c2ln"
+}
