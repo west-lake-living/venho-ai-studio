@@ -54,6 +54,16 @@ Production `Settings` yêu cầu `GE_DB_PATH`, `GE_MEDIA_ROOT`, `GE_PUBLIC_BASE_
 
 Ánh xạ token Meta: `GE_META_READ_TOKEN_PAGE_A` ↔ `GE_META_READ_TOKEN_FB_HANOI` (`fb_hanoi`); `GE_META_READ_TOKEN_PAGE_B` ↔ `GE_META_READ_TOKEN_FB_VENHO` (`fb_venho`); `GE_META_READ_TOKEN_IG_VENHO` dùng cùng tên cho `ig_venho`. Điền hai alias mỗi Page với cùng Page access token để vừa thỏa tham chiếu manifest vừa chạy probe. Không ghi giá trị token vào runbook. Bảng chi tiết nằm trong [environment_manifest.md](../environment_manifest.md).
 
+### Đẩy Meta read token từ Mac
+
+Sau khi token người dùng dài hạn đã được cấp đúng quyền và SSH alias `asus-server` hoạt động, chạy script từ checkout GC2 trên Mac. Script đọc token ẩn, chọn hai Page bằng Page ID, gửi token qua stdin của SSH và chỉ in tên biến cùng trạng thái:
+
+```bash
+python3 ops/asus-server/growth-engine/push-meta-tokens.py
+```
+
+Có thể chỉ định SSH host alias khác bằng `--host <alias>`. Script gọi Graph API v27.0 `/me/accounts?fields=id,name,access_token`; nếu thiếu một trong hai Page ID đã cấu hình thì dừng trước SSH. Sau khi hoàn tất, trên server chạy lệnh kiểm tra ở cuối mục này; kết quả chỉ được là `DA_CO_GIA_TRI` hoặc `PLACEHOLDER` theo tên biến, không hiển thị giá trị. Không chạy script trong môi trường có shell xtrace hoặc terminal recording.
+
 Tạo riêng file API TEST; DB và media phải nằm trong thư mục TEST riêng, không trỏ vào production:
 
 ```bash

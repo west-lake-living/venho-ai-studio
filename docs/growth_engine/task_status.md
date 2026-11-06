@@ -126,14 +126,21 @@ The plan snapshot and code-delta table were refreshed to include the production 
 
 ### GC2 handoff K1 — Instagram TEST account ID (2026-11-06)
 **Status:** DONE
-**Commit:** pending
+**Commit:** `f916506`
 **Files:** `config/projects/venho_hotel/growth_engine/channels.yaml`, `docs/growth_engine/environment_manifest.md`
 **Evidence:** Set `ig_test.remote_account_id` to the supplied ID `17841472240799413` for `@hanhpham1504`, linked to TEST Page `1363761820162798`. Kept the production Instagram ID separate.
 **Verify:** YAML parse and manifest secret scan; no external system accessed.
 
 ### GC2 handoff K2 — legacy Make signature and TEST replacement (2026-11-06)
 **Status:** DONE — documentation only; no Make scenario changed.
-**Commit:** pending
+**Commit:** `1bef7fc`
 **Files:** `docs/growth_engine/runbooks/make_blueprint_v2.md`, `docs/growth_engine/runbooks/retire_legacy.md`
 **Findings:** Recorded the signature filter placement and visible 64-character hex literal without copying its value; purpose is `CHƯA XÁC MINH`. TEST blueprint removes this legacy filter and uses the common `schema_version`/`environment` condition. Added the production cutover removal/rotation assessment and noted the reported Free plan limit of two active scenarios.
 **Verify:** documentation review; no Make, network or secret access.
+
+### GC2 handoff K3 — safe Meta token transfer script (2026-11-06)
+**Status:** IN PROGRESS — local implementation and fake-transport tests; not run against Meta or server.
+**Commit:** pending
+**Files:** `ops/asus-server/growth-engine/push-meta-tokens.py`, `tests/growth_engine/test_push_meta_tokens.py`, `docs/growth_engine/runbooks/operator_session_1.md`
+**Verify:** `uv run --no-sync pytest -q tests/growth_engine/test_push_meta_tokens.py` → 4 passed; full VERIFY_DEV/VERIFY_ARCH/legacy baseline pending.
+**Safety:** Page selection uses exact IDs; token input is hidden; no live credentials or remote operation were used in this work.
