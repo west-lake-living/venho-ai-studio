@@ -123,3 +123,10 @@ The plan snapshot and code-delta table were refreshed to include the production 
 **H1–H7 commits:** H1 `ca178a1`; H2 `a721b75`; H3 `05663d7`; H4 `9ada4c2`; H5 `b6abe9a`; H6 `d3cb731`; H7 `996cede`.
 **Final verify:** `VERIFY_DEV` → 490 passed, 4 warnings; `VERIFY_ARCH` → 2 passed; baseline `VERIFY_LEGACY` → 2131 passed, 79 failed, 8 skipped, 12 warnings. All 79 failing node IDs exactly match `legacy_test_baseline.txt`; 0 new failures. Manifest secret scan and `git diff --check` pass. No external systems or network calls.
 **H8 commit:** this record is committed as `GC2-HANDOFF-H8: synchronize status and gates`; SHA is reported in the handoff summary.
+
+### GC2 handoff K1 — Instagram TEST account ID (2026-11-06)
+**Status:** DONE
+**Commit:** pending
+**Files:** `config/projects/venho_hotel/growth_engine/channels.yaml`, `docs/growth_engine/environment_manifest.md`
+**Evidence:** Set `ig_test.remote_account_id` to the supplied ID `17841472240799413` for `@hanhpham1504`, linked to TEST Page `1363761820162798`. Kept the production Instagram ID separate.
+**Verify:** YAML parse and manifest secret scan; no external system accessed.

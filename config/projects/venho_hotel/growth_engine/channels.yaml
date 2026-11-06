@@ -83,8 +83,8 @@ channels:
     environment: test
     platform: instagram
     display_name: hanhpham1504
-    # Page TEST đã trả instagram_business_account.id qua Graph; số ID chưa được cung cấp trong handoff.
-    remote_account_id: REQUIRED_FROM_P0
+    # Instagram TEST account ID do Harry cung cấp; giữ dạng chuỗi, không dùng ID production.
+    remote_account_id: "17841472240799413"
     make_scenario_id: REQUIRED_FROM_P0
     make_route_ref: GE_MAKE_WEBHOOK_URL_IG_TEST
     make_connection_ref: REQUIRED_FROM_P0

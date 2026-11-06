@@ -58,7 +58,7 @@ Page TEST Graph API ID là `1363761820162798`. Cảnh báo: `61596076389732` tro
 
 `publication_id` chứa `test` chỉ là lớp phụ; Page test và scenario test mới là cơ chế chính ngăn bài test lên Page thật.
 
-Instagram TEST dùng tài khoản `@hanhpham1504`, đã được chuyển sang Business và liên kết với Page TEST. Theo kết quả Graph API được Harry cung cấp, Page TEST trả `instagram_business_account.id` và `username` của tài khoản này. Giá trị số của ID không có trong handoff hiện tại nên `ig_test.remote_account_id` vẫn `REQUIRED_FROM_P0` (**CHƯA XÁC MINH**); không thay bằng ID production `17841457936965829`. Scenario, connection, owner và ngày xác minh vẫn `REQUIRED_FROM_P0`. Không dùng `ig_venho` cho thử nghiệm có side effect.
+Instagram TEST dùng tài khoản `@hanhpham1504`, ID `17841472240799413`, đã được chuyển sang Business và liên kết với Page TEST `1363761820162798`. ID do Harry cung cấp; không thay bằng ID production `17841457936965829`. Scenario, connection, owner và ngày xác minh vẫn `REQUIRED_FROM_P0`. Không dùng `ig_venho` cho thử nghiệm có side effect.
 
 ## Cách Harry xác minh Page ID (không cần token)
 - Facebook → vào Page → *Giới thiệu / About* → *Minh bạch của Trang* → *Page ID*; hoặc URL `facebook.com/profile.php?id=<số>`.
