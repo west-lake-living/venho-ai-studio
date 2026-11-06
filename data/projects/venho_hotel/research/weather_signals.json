@@ -1,24 +1,6 @@
 {
-  "generated_at": "2026-11-05T07:40:10.568979",
+  "generated_at": "2026-11-06T03:17:58.420005",
   "signals": [
-    {
-      "rs_id": "RS-weather-2026-11-05",
-      "type": "weather",
-      "domain": "weather_signal",
-      "evidence_level": "R2-T",
-      "forecast_date": "2026-11-05",
-      "condition": "rain",
-      "temperature_range": [
-        25.1,
-        29.8
-      ],
-      "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
-      "matching_scenario_keys": [
-        "venho_lobby_cozy"
-      ],
-      "expires_at": "2026-11-07T07:40:10.563206",
-      "fact_key": null
-    },
     {
       "rs_id": "RS-weather-2026-11-06",
       "type": "weather",
@@ -27,14 +9,14 @@
       "forecast_date": "2026-11-06",
       "condition": "rain",
       "temperature_range": [
-        23.8,
-        29.4
+        23.5,
+        30.1
       ],
       "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
       "matching_scenario_keys": [
         "venho_lobby_cozy"
       ],
-      "expires_at": "2026-11-07T07:40:10.563206",
+      "expires_at": "2026-11-08T03:17:58.414878",
       "fact_key": null
     },
     {
@@ -45,14 +27,14 @@
       "forecast_date": "2026-11-07",
       "condition": "rain",
       "temperature_range": [
-        23.5,
-        29.3
+        22.9,
+        28.6
       ],
       "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
       "matching_scenario_keys": [
         "venho_lobby_cozy"
       ],
-      "expires_at": "2026-11-07T07:40:10.563206",
+      "expires_at": "2026-11-08T03:17:58.414878",
       "fact_key": null
     },
     {
@@ -63,14 +45,14 @@
       "forecast_date": "2026-11-08",
       "condition": "rain",
       "temperature_range": [
-        22.4,
-        29.6
+        22.3,
+        29.7
       ],
       "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
       "matching_scenario_keys": [
         "venho_lobby_cozy"
       ],
-      "expires_at": "2026-11-07T07:40:10.563206",
+      "expires_at": "2026-11-08T03:17:58.414878",
       "fact_key": null
     },
     {
@@ -81,14 +63,14 @@
       "forecast_date": "2026-11-09",
       "condition": "rain",
       "temperature_range": [
-        18.1,
-        22.8
+        17.9,
+        22.9
       ],
       "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
       "matching_scenario_keys": [
         "venho_lobby_cozy"
       ],
-      "expires_at": "2026-11-07T07:40:10.563206",
+      "expires_at": "2026-11-08T03:17:58.414878",
       "fact_key": null
     },
     {
@@ -99,14 +81,14 @@
       "forecast_date": "2026-11-10",
       "condition": "golden_sunset",
       "temperature_range": [
-        16.9,
-        23.0
+        18.0,
+        23.2
       ],
       "visual_opportunity": "Hoàng hôn vàng trên Hồ Tây — rooftop cuối ngày",
       "matching_scenario_keys": [
         "venho_rooftop_sunset"
       ],
-      "expires_at": "2026-11-07T07:40:10.563206",
+      "expires_at": "2026-11-08T03:17:58.414878",
       "fact_key": null
     },
     {
@@ -115,16 +97,34 @@
       "domain": "weather_signal",
       "evidence_level": "R2-T",
       "forecast_date": "2026-11-11",
-      "condition": "cold_snap",
+      "condition": "golden_sunset",
       "temperature_range": [
-        15.6,
-        23.9
+        16.2,
+        23.5
       ],
-      "visual_opportunity": "Trở lạnh — sảnh ấm, đèn vàng",
+      "visual_opportunity": "Hoàng hôn vàng trên Hồ Tây — rooftop cuối ngày",
       "matching_scenario_keys": [
-        "venho_lobby_cozy"
+        "venho_rooftop_sunset"
       ],
-      "expires_at": "2026-11-07T07:40:10.563206",
+      "expires_at": "2026-11-08T03:17:58.414878",
+      "fact_key": null
+    },
+    {
+      "rs_id": "RS-weather-2026-11-12",
+      "type": "weather",
+      "domain": "weather_signal",
+      "evidence_level": "R2-T",
+      "forecast_date": "2026-11-12",
+      "condition": "golden_sunset",
+      "temperature_range": [
+        16.2,
+        24.9
+      ],
+      "visual_opportunity": "Hoàng hôn vàng trên Hồ Tây — rooftop cuối ngày",
+      "matching_scenario_keys": [
+        "venho_rooftop_sunset"
+      ],
+      "expires_at": "2026-11-08T03:17:58.414878",
       "fact_key": null
     }
   ]
