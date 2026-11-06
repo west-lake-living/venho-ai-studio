@@ -1,5 +1,7 @@
 # VENHO AI STUDIO — Task Status
 
+Growth Engine v2 / GC2 status is tracked in [docs/growth_engine/task_status.md](docs/growth_engine/task_status.md).
+
 ### Growth 22/10/2026: đối soát slot, scorecard rollout, guest_voice hằng tháng, filter chữ ký Make
 
 **Status: 4/5 XONG + filter Make XONG (19:46) · panel Trend Radar đã lên Dashboard · rollout chưa đủ điều kiện (chờ đầu tháng 11)**

@@ -114,3 +114,12 @@ The plan snapshot and code-delta table were refreshed to include the production 
 **Files:** `docs/growth_engine/runbooks/operator_session_1.md`
 **Evidence:** Added hidden `read -rs` input, one-variable replacement via stdin, mode `600`, xtrace guard, and a status command that prints only requested variable names, presence/placeholder state, and file mode.
 **Verify:** `bash -n` syntax check of the documented setter; synthetic-only review; no real env file or secret accessed.
+
+### GC2 handoff H8 — synchronized status and remaining human gates (2026-11-06)
+**Status:** IN PROGRESS — repository preparation complete; external gates remain with Harry.
+**Files:** root `task_status.md`, `docs/growth_engine/task_status.md`
+**Human gates still open:** (1) finish production env (`GE_HEARTBEAT_URL`, Telegram bot/chat, the three Meta probe tokens plus PAGE_A/PAGE_B aliases) and the isolated TEST env; (2) record the numeric Instagram TEST ID; (3) choose a TEST hostname, configure Cloudflare Tunnel/Access, deploy/run TEST API on `8022`; (4) update Make TEST filters/responses, isolate posting modules while capturing webhook structure, then obtain Harry's approval before any public TEST post; (5) run TEST commands, record MK-1…MK-11, restore rehearsal, install T0-05/T0-06 timers; (6) copy the age identity to 1Password; (7) Harry reviews and pushes; (8) renew Instagram token before expiry and remove/pause Healthchecks `My First Check`. No external system was changed in this handoff.
+**Unresolved implementation constraint:** separate TEST bearer values can use the isolated TEST env file, but unique `*-test` principal names are not supported by the current fixed auth policy. TEST helper/config uses the existing one-channel principal labels; do not invent suffix names.
+**H1–H7 commits:** H1 `ca178a1`; H2 `a721b75`; H3 `05663d7`; H4 `9ada4c2`; H5 `b6abe9a`; H6 `d3cb731`; H7 `996cede`.
+**Final verify:** `VERIFY_DEV` → 490 passed, 4 warnings; `VERIFY_ARCH` → 2 passed; baseline `VERIFY_LEGACY` → 2131 passed, 79 failed, 8 skipped, 12 warnings. All 79 failing node IDs exactly match `legacy_test_baseline.txt`; 0 new failures. Manifest secret scan and `git diff --check` pass. No external systems or network calls.
+**H8 commit:** this record is committed as `GC2-HANDOFF-H8: synchronize status and gates`; SHA is reported in the handoff summary.

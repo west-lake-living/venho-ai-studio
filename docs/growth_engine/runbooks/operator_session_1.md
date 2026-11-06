@@ -174,7 +174,7 @@ os.chmod(p, 0o600)
 }
 ```
 
-Ví dụ gọi hàm (giá trị sẽ được hỏi ẩn, biến phải tồn tại trong file):
+Ví dụ gọi hàm (giá trị sẽ được hỏi ẩn; file phải tồn tại, biến có thể được thêm mới hoặc thay thế):
 
 ```bash
 setenv GE_SERVICE_TOKENS "$HOME/venho/secrets/growth-engine-test.env"
