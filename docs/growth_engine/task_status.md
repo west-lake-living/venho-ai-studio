@@ -130,3 +130,10 @@ The plan snapshot and code-delta table were refreshed to include the production 
 **Files:** `config/projects/venho_hotel/growth_engine/channels.yaml`, `docs/growth_engine/environment_manifest.md`
 **Evidence:** Set `ig_test.remote_account_id` to the supplied ID `17841472240799413` for `@hanhpham1504`, linked to TEST Page `1363761820162798`. Kept the production Instagram ID separate.
 **Verify:** YAML parse and manifest secret scan; no external system accessed.
+
+### GC2 handoff K2 — legacy Make signature and TEST replacement (2026-11-06)
+**Status:** DONE — documentation only; no Make scenario changed.
+**Commit:** pending
+**Files:** `docs/growth_engine/runbooks/make_blueprint_v2.md`, `docs/growth_engine/runbooks/retire_legacy.md`
+**Findings:** Recorded the signature filter placement and visible 64-character hex literal without copying its value; purpose is `CHƯA XÁC MINH`. TEST blueprint removes this legacy filter and uses the common `schema_version`/`environment` condition. Added the production cutover removal/rotation assessment and noted the reported Free plan limit of two active scenarios.
+**Verify:** documentation review; no Make, network or secret access.
