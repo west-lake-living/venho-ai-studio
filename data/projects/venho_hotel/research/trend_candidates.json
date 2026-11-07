@@ -1355,5 +1355,46 @@
     "fast_lane": false,
     "verified_by_human": false,
     "scanned_at": "2026-11-06T00:17:56.588539+00:00"
+  },
+  {
+    "id": "gnews-65d2c5535accddf7",
+    "title": "Khám phá \"thủ phủ\" hoa giấy ven dòng sông Đuống",
+    "source_uri": "https://news.google.com/rss/articles/CBMilwFBVV95cUxPN3U2RHVkOU00MURmajQ0dWFMaGJFN0pSV0t4cm9tdHJmTjZKeDQwcnI2YXlNcllqb2JlSFo0anplQTZELUhmckx0UE91dHhfbmFCNWdFbDZhamN5REFKTjhoSVNNTWYyMDU0Vks2M0hxb2tpaXB4WTd0UVZIT05kekZ0MFVhZHdod29vTUh6MzJuaGRVbzFz?oc=5",
+    "source_name": "nhipsonghanoi.hanoimoi.vn",
+    "published_at": "2026-11-06T06:26:00+00:00",
+    "snippet": "nhipsonghanoi.hanoimoi.vn",
+    "relevance_hint": 0.0,
+    "collector": "google_news",
+    "query": "\"Tây Hồ\" chợ hoa",
+    "geographic": "hanoi",
+    "thematic": "travel_stay",
+    "actionability": "direct",
+    "type": "seasonal_nature",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "seasonal_weather_nature",
+      "travel_accommodation"
+    ],
+    "is_event": false,
+    "event_name": null,
+    "event_start": null,
+    "event_end": null,
+    "venue": null,
+    "westlake_area": false,
+    "sources": [
+      {
+        "title": "Khám phá \"thủ phủ\" hoa giấy ven dòng sông Đuống",
+        "source_uri": "https://news.google.com/rss/articles/CBMilwFBVV95cUxPN3U2RHVkOU00MURmajQ0dWFMaGJFN0pSV0t4cm9tdHJmTjZKeDQwcnI2YXlNcllqb2JlSFo0anplQTZELUhmckx0UE91dHhfbmFCNWdFbDZhamN5REFKTjhoSVNNTWYyMDU0Vks2M0hxb2tpaXB4WTd0UVZIT05kekZ0MFVhZHdod29vTUh6MzJuaGRVbzFz?oc=5",
+        "source_name": "nhipsonghanoi.hanoimoi.vn",
+        "published_at": "2026-11-06T06:26:00+00:00"
+      }
+    ],
+    "source_count": 1,
+    "relevance_score": 0.7,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "fast_lane": false,
+    "verified_by_human": false,
+    "scanned_at": "2026-11-07T12:18:22.011645+00:00"
   }
 ]
