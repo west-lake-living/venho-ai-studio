@@ -1478,5 +1478,87 @@
     "fast_lane": false,
     "verified_by_human": false,
     "scanned_at": "2026-11-08T00:17:18.804486+00:00"
+  },
+  {
+    "id": "gnews-ee0017589d8e031d",
+    "title": "Góc hoa giấy rực rỡ bên đường tàu Hà Nội khiến nhiều người lưu luyến, check-in",
+    "source_uri": "https://news.google.com/rss/articles/CBMiogFBVV95cUxNM0ItXzdEd1RHNi1iNW4xZ3lrVHhiSjhaMHRrS2hKOGZoalhlRDhxNExURHZHV1MySmlDdEh5WldiNGlIcmMzd1JfUnpRV1htOXJTeFdRcnFmb2V6bENLLU1TRlJCaGlHUDhnQmpzcEpQNjZtU2RhU1hkVXZHbGZZQlkybEFxaHJvMW8wTFhKemw2R1BmMDJPMmxfN2gxcFpjM1E?oc=5",
+    "source_name": "Vietnam.vn",
+    "published_at": "2026-11-03T02:38:54+00:00",
+    "snippet": "Vietnam.vn",
+    "relevance_hint": 0.0,
+    "collector": "google_news",
+    "query": "\"Hồ Tây\" pháo hoa",
+    "geographic": "hanoi",
+    "thematic": "travel_stay",
+    "actionability": "direct",
+    "type": "lifestyle_trend",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "travel_accommodation",
+      "seasonal_weather_nature"
+    ],
+    "is_event": false,
+    "event_name": null,
+    "event_start": null,
+    "event_end": null,
+    "venue": "Phố đường tàu Hà Nội",
+    "westlake_area": false,
+    "sources": [
+      {
+        "title": "Góc hoa giấy rực rỡ bên đường tàu Hà Nội khiến nhiều người lưu luyến, check-in",
+        "source_uri": "https://news.google.com/rss/articles/CBMiogFBVV95cUxNM0ItXzdEd1RHNi1iNW4xZ3lrVHhiSjhaMHRrS2hKOGZoalhlRDhxNExURHZHV1MySmlDdEh5WldiNGlIcmMzd1JfUnpRV1htOXJTeFdRcnFmb2V6bENLLU1TRlJCaGlHUDhnQmpzcEpQNjZtU2RhU1hkVXZHbGZZQlkybEFxaHJvMW8wTFhKemw2R1BmMDJPMmxfN2gxcFpjM1E?oc=5",
+        "source_name": "Vietnam.vn",
+        "published_at": "2026-11-03T02:38:54+00:00"
+      }
+    ],
+    "source_count": 1,
+    "relevance_score": 0.7,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "fast_lane": false,
+    "verified_by_human": false,
+    "scanned_at": "2026-11-08T12:18:06.367269+00:00"
+  },
+  {
+    "id": "gnews-99ad92e49c27c61a",
+    "title": "Khám phá bãi lau trắng tinh khôi đẹp nhất Hà Nội",
+    "source_uri": "https://news.google.com/rss/articles/CBMimwFBVV95cUxOUUV1dTY3dVhjd2I2LVlGem5NdjVoV1BPUXJtTl9YNWZQQmdyQTEyRG9LVnVGcjVxbFFsaWJZbmwxSV84RDMwTnY4TWRCTXUwSWZEMkNjenBfS21zNExYNG1VSEp0aWlhNFptOXRBVEltZEZDVDBUM1Nvc2hEWmx3eWJJVE0xRU1ESDBSRmV2Xzlpbk9SVERwNXBGVQ?oc=5",
+    "source_name": "nhipsonghanoi.hanoimoi.vn",
+    "published_at": "2026-11-08T02:04:00+00:00",
+    "snippet": "nhipsonghanoi.hanoimoi.vn",
+    "relevance_hint": 0.0,
+    "collector": "google_news",
+    "query": "\"Tây Hồ\" chợ hoa",
+    "geographic": "hanoi",
+    "thematic": "travel_stay",
+    "actionability": "direct",
+    "type": "seasonal_nature",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "travel_accommodation",
+      "seasonal_weather_nature"
+    ],
+    "is_event": false,
+    "event_name": null,
+    "event_start": null,
+    "event_end": null,
+    "venue": "Hà Nội",
+    "westlake_area": false,
+    "sources": [
+      {
+        "title": "Khám phá bãi lau trắng tinh khôi đẹp nhất Hà Nội",
+        "source_uri": "https://news.google.com/rss/articles/CBMimwFBVV95cUxOUUV1dTY3dVhjd2I2LVlGem5NdjVoV1BPUXJtTl9YNWZQQmdyQTEyRG9LVnVGcjVxbFFsaWJZbmwxSV84RDMwTnY4TWRCTXUwSWZEMkNjenBfS21zNExYNG1VSEp0aWlhNFptOXRBVEltZEZDVDBUM1Nvc2hEWmx3eWJJVE0xRU1ESDBSRmV2Xzlpbk9SVERwNXBGVQ?oc=5",
+        "source_name": "nhipsonghanoi.hanoimoi.vn",
+        "published_at": "2026-11-08T02:04:00+00:00"
+      }
+    ],
+    "source_count": 1,
+    "relevance_score": 0.7,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "fast_lane": false,
+    "verified_by_human": false,
+    "scanned_at": "2026-11-08T12:18:06.367269+00:00"
   }
 ]
