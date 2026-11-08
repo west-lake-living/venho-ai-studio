@@ -1396,5 +1396,87 @@
     "fast_lane": false,
     "verified_by_human": false,
     "scanned_at": "2026-11-07T12:18:22.011645+00:00"
+  },
+  {
+    "id": "gnews-9e797ce5e2c6a047",
+    "title": "Lotte Mall Tây Hồ lập kỷ lục doanh thu, tính mở thêm trung tâm thương mại ở Việt Nam",
+    "source_uri": "https://news.google.com/rss/articles/CBMivwFBVV95cUxQd195Ui05enhJRWNPMTZLUTVWbE9DM3pCVVlsalBxQjN5ZHBIbno3Q2lFcDVZWGhmNzh1TUw4c3FNWVZBVXdRbVVQRjQtR0NqRTVYbFBodmV2RjVGMDNjQU12T01PT0xjOWhMdVVPS0pCeWgxblpzdmZ0TzNldzRGN2ZZU1M1RHlRdmRlaHprWjRNeVRWN21wZDJNdUM4RU1MWHJFeHJiZDJMQUg1S0xfNXR4ZjdaUlh1ZG5UYW5JUQ?oc=5",
+    "source_name": "VietnamFinance",
+    "published_at": "2026-11-03T01:00:00+00:00",
+    "snippet": "VietnamFinance",
+    "relevance_hint": 0.0,
+    "collector": "google_news",
+    "query": "\"Tây Hồ\" chợ hoa",
+    "geographic": "westlake",
+    "thematic": "lifestyle_culture",
+    "actionability": "direct",
+    "type": "lifestyle_trend",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "travel_accommodation",
+      "hanoi_westlake_local"
+    ],
+    "is_event": false,
+    "event_name": null,
+    "event_start": null,
+    "event_end": null,
+    "venue": "Lotte Mall Tây Hồ",
+    "westlake_area": true,
+    "sources": [
+      {
+        "title": "Lotte Mall Tây Hồ lập kỷ lục doanh thu, tính mở thêm trung tâm thương mại ở Việt Nam",
+        "source_uri": "https://news.google.com/rss/articles/CBMivwFBVV95cUxQd195Ui05enhJRWNPMTZLUTVWbE9DM3pCVVlsalBxQjN5ZHBIbno3Q2lFcDVZWGhmNzh1TUw4c3FNWVZBVXdRbVVQRjQtR0NqRTVYbFBodmV2RjVGMDNjQU12T01PT0xjOWhMdVVPS0pCeWgxblpzdmZ0TzNldzRGN2ZZU1M1RHlRdmRlaHprWjRNeVRWN21wZDJNdUM4RU1MWHJFeHJiZDJMQUg1S0xfNXR4ZjdaUlh1ZG5UYW5JUQ?oc=5",
+        "source_name": "VietnamFinance",
+        "published_at": "2026-11-03T01:00:00+00:00"
+      }
+    ],
+    "source_count": 1,
+    "relevance_score": 0.6,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "fast_lane": false,
+    "verified_by_human": false,
+    "scanned_at": "2026-11-08T00:17:18.804486+00:00"
+  },
+  {
+    "id": "gnews-996870dc306fe6cb",
+    "title": "Tổ hợp Lotte Mall Tây Hồ thu 740 triệu USD chỉ sau 3 năm hoạt động",
+    "source_uri": "https://news.google.com/rss/articles/CBMiogFBVV95cUxNeVh0cnI5ZEl1YTFuMExOMkNwOWxQS2tkQkxPTlVzT2I1TUcxVVhRWjlULTh4dHRsT3B5ejViRkhBTVFlcEt0NklPLXZpbWVkLVgtbnQtRF9fS3N3S3gxaWlJb3doYVEwQTY3WE9XMlRRUjRXbkcyY0djd3Vya3ZBdmRhNWlNU1NFQ0kzR2dLOTNFNU9fQ2FhV2FKQmxzY1NiYnc?oc=5",
+    "source_name": "Znews",
+    "published_at": "2026-11-03T10:11:08+00:00",
+    "snippet": "Znews",
+    "relevance_hint": 0.0,
+    "collector": "google_news",
+    "query": "\"Tây Hồ\" chợ hoa",
+    "geographic": "westlake",
+    "thematic": "lifestyle_culture",
+    "actionability": "direct",
+    "type": "feature_story",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "travel_accommodation",
+      "hanoi_westlake_local"
+    ],
+    "is_event": false,
+    "event_name": null,
+    "event_start": null,
+    "event_end": null,
+    "venue": "Lotte Mall Tây Hồ",
+    "westlake_area": true,
+    "sources": [
+      {
+        "title": "Tổ hợp Lotte Mall Tây Hồ thu 740 triệu USD chỉ sau 3 năm hoạt động",
+        "source_uri": "https://news.google.com/rss/articles/CBMiogFBVV95cUxNeVh0cnI5ZEl1YTFuMExOMkNwOWxQS2tkQkxPTlVzT2I1TUcxVVhRWjlULTh4dHRsT3B5ejViRkhBTVFlcEt0NklPLXZpbWVkLVgtbnQtRF9fS3N3S3gxaWlJb3doYVEwQTY3WE9XMlRRUjRXbkcyY0djd3Vya3ZBdmRhNWlNU1NFQ0kzR2dLOTNFNU9fQ2FhV2FKQmxzY1NiYnc?oc=5",
+        "source_name": "Znews",
+        "published_at": "2026-11-03T10:11:08+00:00"
+      }
+    ],
+    "source_count": 1,
+    "relevance_score": 0.6,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "fast_lane": false,
+    "verified_by_human": false,
+    "scanned_at": "2026-11-08T00:17:18.804486+00:00"
   }
 ]
