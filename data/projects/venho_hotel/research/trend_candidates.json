@@ -1320,8 +1320,10 @@
     "status": "needs_human_approval",
     "rejection_reason": null,
     "fast_lane": false,
-    "verified_by_human": false,
-    "scanned_at": "2026-11-05T12:18:14.290952+00:00"
+    "verified_by_human": true,
+    "scanned_at": "2026-11-05T12:18:14.290952+00:00",
+    "approved_by": "hpham1504@gmail.com",
+    "approved_at": "2026-11-09T04:05:52.886648+00:00"
   },
   {
     "id": "gnews-581b9b4caae63d65",
