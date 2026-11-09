@@ -1560,5 +1560,85 @@
     "fast_lane": false,
     "verified_by_human": false,
     "scanned_at": "2026-11-08T12:18:06.367269+00:00"
+  },
+  {
+    "id": "gnews-71f3240468774483",
+    "title": "Khoảng xanh bình yên nơi cửa ngõ Thủ đô",
+    "source_uri": "https://news.google.com/rss/articles/CBMib0FVX3lxTE1EMGdMdW9odVB0YjUtVlVyVmJhVnVXQzhYd1hEMXl1MUZyMFYyY1lCd0N6OGFJUHMzOXFSNHE4WTlSaWxJS1ptc0ZXbzVzVmRYQTRSQXpEWmJfdDVKdmxVNS1hWFo2SzdQU2g0clBZVQ?oc=5",
+    "source_name": "Vietnam.vn",
+    "published_at": "2026-11-07T01:45:37+00:00",
+    "snippet": "Vietnam.vn",
+    "relevance_hint": 0.0,
+    "collector": "google_news",
+    "query": "\"Tây Hồ\" ẩm thực",
+    "geographic": "hanoi",
+    "thematic": "travel_stay",
+    "actionability": "direct",
+    "type": "feature_story",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "travel_accommodation"
+    ],
+    "is_event": false,
+    "event_name": null,
+    "event_start": null,
+    "event_end": null,
+    "venue": "Hà Nội",
+    "westlake_area": false,
+    "sources": [
+      {
+        "title": "Khoảng xanh bình yên nơi cửa ngõ Thủ đô",
+        "source_uri": "https://news.google.com/rss/articles/CBMib0FVX3lxTE1EMGdMdW9odVB0YjUtVlVyVmJhVnVXQzhYd1hEMXl1MUZyMFYyY1lCd0N6OGFJUHMzOXFSNHE4WTlSaWxJS1ptc0ZXbzVzVmRYQTRSQXpEWmJfdDVKdmxVNS1hWFo2SzdQU2g0clBZVQ?oc=5",
+        "source_name": "Vietnam.vn",
+        "published_at": "2026-11-07T01:45:37+00:00"
+      }
+    ],
+    "source_count": 1,
+    "relevance_score": 0.7,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "fast_lane": false,
+    "verified_by_human": false,
+    "scanned_at": "2026-11-09T00:18:08.659968+00:00"
+  },
+  {
+    "id": "event-undated-b8664a2e59",
+    "title": "Phường Tây Hồ tích cực hưởng ứng Cuộc thi trực tuyến “Văn hóa từ mỗi hành động” năm 2026",
+    "source_uri": "https://tayho.hanoi.gov.vn/van-hoa-xa-hoi/phuong-tay-ho-tich-cuc-huong-ung-cuoc-thi-truc-tuyen-van-hoa-tu-moi-hanh-dong-nam-2026-2697261106223041907.htm",
+    "source_name": "Cổng TTĐT phường Tây Hồ",
+    "published_at": null,
+    "snippet": "Cổng TTĐT phường Tây Hồ",
+    "relevance_hint": 0.0,
+    "collector": "official_page",
+    "geographic": "westlake",
+    "thematic": "unrelated",
+    "actionability": "stretch",
+    "type": "cultural_event",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local"
+    ],
+    "is_event": true,
+    "event_name": "Cuộc thi trực tuyến “Văn hóa từ mỗi hành động” năm 2026",
+    "event_start": null,
+    "event_end": null,
+    "venue": "Phường Tây Hồ",
+    "westlake_area": true,
+    "sources": [
+      {
+        "title": "Phường Tây Hồ tích cực hưởng ứng Cuộc thi trực tuyến “Văn hóa từ mỗi hành động” năm 2026",
+        "source_uri": "https://tayho.hanoi.gov.vn/van-hoa-xa-hoi/phuong-tay-ho-tich-cuc-huong-ung-cuoc-thi-truc-tuyen-van-hoa-tu-moi-hanh-dong-nam-2026-2697261106223041907.htm",
+        "source_name": "Cổng TTĐT phường Tây Hồ",
+        "published_at": null
+      }
+    ],
+    "source_count": 1,
+    "relevance_score": 0.6,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "fast_lane": false,
+    "verified_by_human": false,
+    "scanned_at": "2026-11-09T00:18:08.659968+00:00"
   }
 ]
