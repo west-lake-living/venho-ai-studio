@@ -28052,13 +28052,13 @@
       "idempotency_key": "5b6d78d1459e54f1f1edd08e3b61b97b0fdc33d549758b10e6f259a6f6a39538",
       "platform": "facebook",
       "slot_id": "slot-2026-11-20-friday",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-11-03T03:49:01.833253+00:00",
-      "updated_at": "2026-11-03T03:49:01.982921+00:00",
+      "updated_at": "2026-11-09T04:10:13.643190+00:00",
       "content": {
         "title": "Nhận phòng lúc mười ba giờ, rồi thong thả sang chùa Trấn Quốc",
         "text": "Mười ba giờ, cửa phòng mở ra, nắng đã nằm sẵn trên tấm ga trắng.\n\nPhòng có dáng chữ nhật, gọn và dễ nhìn hết trong một lần đưa mắt. Ô cửa sổ chia thành bốn ô vuông, khung nhôm đen mảnh, đủ để ánh sáng tự nhiên vào gần như cả buổi chiều mà không cần bật thêm đèn.\n\nTường sơn xám nhạt, không treo tranh. Ban đầu nghe có vẻ trống, nhưng khi ngồi xuống mép giường thì hiểu: thứ đáng nhìn nhất đã nằm ngoài khung cửa rồi.\n\nGiường đôi, đầu giường gỗ nâu sẫm, rèm tối màu kéo gọn sang hai bên. Góc trong kê một chiếc bàn nhỏ có gương — chỗ để đặt máy ảnh, chìa khóa, vài thứ lặt vặt lấy ra từ vali.\n\nCất đồ xong thường cũng chỉ mất mươi phút. Và đó là lúc hợp nhất để ra ngoài: từ Nguyễn Đình Thi đi ra mặt hồ, chùa Trấn Quốc nằm không xa, đủ gần để đi bộ thong thả mà không cần nhìn đồng hồ.\n\nChiều ở đó khác hẳn buổi sáng. Ít người hơn, nắng xiên qua tán cây, mặt nước phía sau tháp sáng lên một chút rồi dịu lại.\n\nĐi hết một vòng, quay về phòng vẫn còn kịp ngồi bên cửa sổ trước khi trời tắt nắng. Mười hai phòng boutique sát Hồ Tây, nhịp của Ven Hồ Hotel vốn chậm như vậy.\n\nNếu bạn đang xếp lịch cho một chuyến Hà Nội sắp tới, nhắn tin cho Ven Hồ Hotel để xem phòng trống những ngày bạn dự định ở lại nhé.\n\n#VenHoHotelHanoi #HoTay #KhachSanViewHoTay #ChuaTranQuoc #NguyenDinhThi #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-friday-facebook-106cd02c",
@@ -28207,6 +28207,28 @@
           "score": 100,
           "verdict": "approve"
         }
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-11-09T04:10:13.606592+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-eb6a1de1-eb06-4766-98b2-359c4199edd1",
+        "content_package_id": "eb6a1de1-eb06-4766-98b2-359c4199edd1",
+        "copy_version_ids": [
+          "brief-friday-facebook-4473a647-content_studio"
+        ],
+        "asset_version_ids": [
+          "315ffa44-0b2b-40de-80f8-d89ba19358f4"
+        ],
+        "validation_snapshot_id": "2fa51ae181dda882717aa2a217494c7b48af7a503bd415ffd1a7cdcc215b6496",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-friday-facebook-4473a647@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-11-09T04:10:13.606621+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "501abefdea3aa69f6c928754b50dd25f9b91ef210a5c18c44dcd682a2f353eb3",
+        "checksum": "35e54271b04c88c6344070e7552216fd72d9912d028c101939ef0074c62eb5d7"
       }
     },
     {
@@ -28215,13 +28237,13 @@
       "idempotency_key": "5ac64d7938f90c8674a933ba1cccf477d7e1e3d67508d31f56a514fe17d3d49e",
       "platform": "instagram",
       "slot_id": "slot-2026-11-20-friday",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-11-03T03:49:31.399250+00:00",
-      "updated_at": "2026-11-03T03:49:31.486678+00:00",
+      "updated_at": "2026-11-09T04:10:13.643190+00:00",
       "content": {
         "title": "Nhận phòng lúc mười ba giờ, buổi chiều vẫn còn nguyên",
         "text": "Mười ba giờ, hành lý vừa đặt xuống sàn gỗ. Buổi chiều thì vẫn còn nguyên vẹn ở đó.\n\nPhòng ở Ven Hồ Hotel có dáng chữ nhật gọn gàng, tường xám nhạt và không treo tranh. Thứ chiếm chỗ nhiều nhất trên tường là ô cửa chia bốn ô vuông, khung nhôm đen mảnh, đủ để ánh sáng ban ngày tự lo phần trang trí.\n\nGa giường trắng, đầu giường gỗ, một chiếc bàn nhỏ kê sát tường. Rèm sẫm màu kéo sang một bên. Không có gì phải sắp xếp nhiều, nên cũng không có lý do gì để nán lại quá lâu trong phòng.\n\nRửa mặt, thay một đôi giày dễ đi, rồi ra khỏi Nguyễn Đình Thi. Men theo mép hồ một quãng là tới chùa Trấn Quốc, ngôi chùa cổ nằm ngay bên nước. Buổi chiều trong tuần thường vừa đủ vắng để đi chậm: ngước nhìn tháp gạch đỏ, nghe mùi nhang loãng trong gió hồ, rồi vòng lại một lượt sân chùa.\n\nLúc quay về, nắng đã hạ thấp xuống mặt nước. Nhận phòng đầu giờ chiều có cái hay như vậy, ngày đầu tiên ở Hà Nội không bị bắt đầu bằng việc chờ đợi.\n\nBạn đang tính ngày nào ở Hà Nội? Nhắn cho Ven Hồ Hotel để xem phòng trống cho lịch của mình nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #ChuaTranQuoc #KhachSanHoTay #NguyenDinhThi #HaNoi #HanoiTravel",
@@ -28372,6 +28394,28 @@
           "score": 100,
           "verdict": "approve"
         }
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-11-09T04:10:13.606592+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-06d48c25-16c6-4516-969b-fca8415c83bb",
+        "content_package_id": "06d48c25-16c6-4516-969b-fca8415c83bb",
+        "copy_version_ids": [
+          "brief-friday-instagram-ce9ddcb9-content_studio"
+        ],
+        "asset_version_ids": [
+          "315ffa44-0b2b-40de-80f8-d89ba19358f4"
+        ],
+        "validation_snapshot_id": "1ecd4f6f87ead3fb96ef1997c4350a98c8f3c742c5f6faf3019ef70bac627b7a",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-friday-instagram-ce9ddcb9@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-11-09T04:10:13.606730+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "75b54b4a1edfda1ff48f07d55aa129fa0e94ed87cc6a895a57f452aa537f981e",
+        "checksum": "e4b1ffbafb8ab1e1dcdf4dc85e721ff5f45b4d6d4a7b3672332781433d26c871"
       }
     },
     {
