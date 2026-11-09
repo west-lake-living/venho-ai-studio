@@ -1234,11 +1234,13 @@
     ],
     "source_count": 1,
     "relevance_score": 0.6,
-    "status": "needs_human_approval",
+    "status": "rejected",
     "rejection_reason": null,
     "fast_lane": false,
     "verified_by_human": false,
-    "scanned_at": "2026-11-05T00:18:03.738733+00:00"
+    "scanned_at": "2026-11-05T00:18:03.738733+00:00",
+    "rejected_by": "hpham1504@gmail.com",
+    "rejected_at": "2026-11-09T04:06:27.272673+00:00"
   },
   {
     "id": "gnews-0fddf5c2be9d84ad",
