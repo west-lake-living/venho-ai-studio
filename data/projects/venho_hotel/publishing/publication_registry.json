@@ -27371,7 +27371,7 @@
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-11-03T03:40:49.093842+00:00",
-      "updated_at": "2026-11-09T04:11:40.118806+00:00",
+      "updated_at": "2026-11-09T04:13:18.158510+00:00",
       "content": {
         "title": "Đường Thanh Niên sáng đầu tuần, nắng hanh và hàng cây",
         "text": "Sáng đầu tuần, đường Thanh Niên sáng rõ đến từng tán lá.\n\nTrời trong, không một gợn mây, nắng hanh khô đổ xuống mặt đường thành từng mảng vàng giữa bóng cây.\n\nHàng cây lâu năm hai bên đường đã quen với nhịp này: xe máy nối nhau đi làm, vài người đạp xe chậm hơn một chút, người đi bộ men theo lan can nhìn ra mặt nước. Một bên là Hồ Tây rộng, một bên là Trúc Bạch nhỏ hơn, lặng hơn. Vỉa hè gọn gàng, không bàn ghế bày ra, nên đoạn đường này sáng sớm thuộc về người đi bộ nhiều hơn.\n\nNhìn xa qua mặt hồ là những mái nhà thấp xen giữa vài khối nhà cao, ranh giới giữa phần Hà Nội cũ và phần Hà Nội mới cứ nằm cạnh nhau như vậy.\n\nNắng hanh cuối năm có cái dễ chịu riêng: đủ ấm để đi bộ lâu, đủ khô để không thấy ngột. Đi hết đường Thanh Niên rồi vòng về phía Nguyễn Đình Thi, mặt hồ mở ra rộng hơn, và buổi sáng đầu tuần bỗng không còn vội như lịch làm việc vẫn thường bắt đầu.\n\nVen Hồ Hotel nằm trên cung đường ven hồ đó, đủ gần để bạn bắt đầu một ngày bằng vài vòng đi bộ trước khi phố xá đông lên.\n\nNếu bạn đang chọn ngày cho một chuyến Hà Nội mùa này, nhắn cho Ven Hồ Hotel để xem phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #DuongThanhNien #KhachSanViewHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-monday-facebook-df63115d",
@@ -27384,7 +27384,7 @@
         ],
         "source_prompt_file": "data/projects/venho_hotel/prompts/content/OUTSIDE__facebook-n-ng-v-ng-hanh-kh-tr-i-d-i-tr-n-ng-thanh-ni-n-s-ng-u-tu-n__CONTENT_PROMPT_v1.0.json",
         "image_run_path": "data/projects/venho_hotel/growth/artifacts/daily-monday-n-ng-v-ng-hanh-kh-tr-i-d-i-tr-n-ng-thanh-ni-n-s-ng-u-tu-n/images/086cf90a-97de-41de-a6ba-0cb8d465c378",
-        "image_public_url": "https://drive.google.com/uc?export=download&id=1_mMKdNO9ftykA_uOguA0ikI4_tQy7ple",
+        "image_public_url": "https://drive.google.com/uc?export=download&id=1mf6nx7hfVTPIV-BplYZ59vkcemrcLFSO",
         "image_is_fallback": false,
         "image_fallback_reason": null,
         "tracking_url": "https://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-monday-facebook-df63115d",
@@ -27409,11 +27409,17 @@
             "url": "https://drive.google.com/uc?export=download&id=1nc_WYHkH8zRONWw8Y1Tgc0-oT0zJv-y2",
             "scenario": "venho_nguyen_dinh_thi_street",
             "source": "IMG_5139.jpeg"
+          },
+          {
+            "id": "U1",
+            "kind": "upload",
+            "url": "https://drive.google.com/uc?export=download&id=1mf6nx7hfVTPIV-BplYZ59vkcemrcLFSO",
+            "source": "upload.jpeg"
           }
         ],
-        "image_option_selected": "B",
+        "image_option_selected": "U1",
         "image_selected_by": "hpham1504@gmail.com",
-        "image_selected_at": "2026-11-09T04:11:40.085954+00:00"
+        "image_selected_at": "2026-11-09T04:13:18.125740+00:00"
       },
       "creative_brief_id": "brief-monday-facebook-415adb57",
       "package_snapshot": {
@@ -27421,9 +27427,7 @@
         "copy_version_ids": [
           "brief-monday-facebook-415adb57-content_studio"
         ],
-        "asset_version_ids": [
-          "04f377be-ef45-450f-865b-36ff989431a4"
-        ],
+        "asset_version_ids": [],
         "validation_snapshot_id": "eceb828f408aa9b7d022847345a160443f0439689300bc6d661a52e6990ac05a",
         "fact_version_ids": [],
         "brief_version_id": "brief-monday-facebook-415adb57@1"
@@ -27528,7 +27532,7 @@
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-11-03T03:41:17.441548+00:00",
-      "updated_at": "2026-11-09T04:11:40.214538+00:00",
+      "updated_at": "2026-11-09T04:13:18.282493+00:00",
       "content": {
         "title": "Sáng đầu tuần nắng hanh trên đường Thanh Niên",
         "text": "Đầu tuần, nắng hanh phủ một lớp vàng mỏng lên hàng cây đường Thanh Niên.\n\nTrời xanh, không một gợn mây. Nắng mùa này khô và nhẹ, chiếu qua tán lá già rồi rơi xuống mặt đường thành từng mảng sáng tối chạy dài theo chiều xe đi.\n\nMột bên là mặt hồ loang màu xám xanh. Một bên là những mái nhà cao thấp của thành phố, cái mới xen cái cũ, chẳng theo hàng lối nào nhưng nhìn lâu lại thấy quen.\n\nGần trưa, dòng người vẫn đều đặn qua lại. Có người đi bộ chậm dưới bóng cây, có người dừng xe bên lề chỉ để nhìn ra hồ một lúc rồi lại đi tiếp. Lối đi sạch, vỉa hè gọn, không ghế bàn, không gì níu chân ngoài khung cảnh.\n\nVen Hồ Hotel nằm trên đường Nguyễn Đình Thi, cùng một vòng hồ với Thanh Niên. Những buổi sáng trời trong như vậy, chỉ cần bước ra khỏi cửa là đã thấy Hồ Tây bắt đầu ngày mới.\n\nNếu bạn đang tính một kỳ nghỉ ngắn ở Hà Nội, nhắn Ven Hồ Hotel để xem phòng trống cho những ngày bạn định ghé nhé.\n\n#VenHoHotelHanoi #HoTay #DuongThanhNien #WestLakeHanoi #KhamPhaHoTay #KhachSanViewHoTay #NguyenDinhThi #HanoiTravel",
@@ -27544,7 +27548,7 @@
         ],
         "source_prompt_file": "data/projects/venho_hotel/prompts/content/OUTSIDE__instagram-n-ng-v-ng-hanh-kh-tr-i-d-i-tr-n-ng-thanh-ni-n-s-ng-u-tu-n__CONTENT_PROMPT_v1.0.json",
         "image_run_path": "data/projects/venho_hotel/growth/artifacts/daily-monday-n-ng-v-ng-hanh-kh-tr-i-d-i-tr-n-ng-thanh-ni-n-s-ng-u-tu-n/images/086cf90a-97de-41de-a6ba-0cb8d465c378",
-        "image_public_url": "https://drive.google.com/uc?export=download&id=1_mMKdNO9ftykA_uOguA0ikI4_tQy7ple",
+        "image_public_url": "https://drive.google.com/uc?export=download&id=1mf6nx7hfVTPIV-BplYZ59vkcemrcLFSO",
         "image_is_fallback": false,
         "image_fallback_reason": null,
         "tracking_url": "https://venhohotel.com/lien-he?utm_source=instagram&utm_medium=social&utm_content=pub-monday-instagram-6edb8ec1",
@@ -27569,11 +27573,17 @@
             "url": "https://drive.google.com/uc?export=download&id=1nc_WYHkH8zRONWw8Y1Tgc0-oT0zJv-y2",
             "scenario": "venho_nguyen_dinh_thi_street",
             "source": "IMG_5139.jpeg"
+          },
+          {
+            "id": "U1",
+            "kind": "upload",
+            "url": "https://drive.google.com/uc?export=download&id=1mf6nx7hfVTPIV-BplYZ59vkcemrcLFSO",
+            "source": "upload.jpeg"
           }
         ],
-        "image_option_selected": "B",
+        "image_option_selected": "U1",
         "image_selected_by": "hpham1504@gmail.com",
-        "image_selected_at": "2026-11-09T04:11:40.085954+00:00"
+        "image_selected_at": "2026-11-09T04:13:18.125740+00:00"
       },
       "creative_brief_id": "brief-monday-instagram-04e5e68c",
       "package_snapshot": {
@@ -27581,9 +27591,7 @@
         "copy_version_ids": [
           "brief-monday-instagram-04e5e68c-content_studio"
         ],
-        "asset_version_ids": [
-          "04f377be-ef45-450f-865b-36ff989431a4"
-        ],
+        "asset_version_ids": [],
         "validation_snapshot_id": "316fe7b7e1fd7c32430b243d99d42b14de607e75b54030c81d2b84a861111dde",
         "fact_version_ids": [],
         "brief_version_id": "brief-monday-instagram-04e5e68c@1"
