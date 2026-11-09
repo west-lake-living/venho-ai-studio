@@ -28476,13 +28476,13 @@
       "idempotency_key": "791ec4dd0c7a4bc77db4740e0b884ed2b41ff8772708542320e267001250b0ae",
       "platform": "facebook",
       "slot_id": "slot-2026-11-21-saturday",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-11-03T03:52:13.839529+00:00",
-      "updated_at": "2026-11-09T04:14:51.472455+00:00",
+      "updated_at": "2026-11-09T04:19:27.227382+00:00",
       "content": {
         "title": "Thu Hà Nội và 7 trải nghiệm nên thử một lần bên Hồ Tây",
         "text": "Thu Hà Nội không ồn ào. Nó đến bằng một cơn gió sớm trên mặt nước Hồ Tây, và người ta tự nhiên đi chậm lại.\n\nNếu bạn đang tính một chuyến Hà Nội mùa này, đây là 7 việc đáng để dành thời gian:\n\n1. Dậy sớm đi bộ một vòng ven hồ, khi mặt nước còn phẳng và phố chưa đông.\n\n2. Ngồi cà phê vỉa hè, gọi một ly nâu nóng và nhìn người qua lại — không vội đi đâu cả.\n\n3. Đạp xe dọc các con đường nhỏ khu Tây Hồ, rẽ đại vào một ngõ xem có gì.\n\n4. Ăn sáng kiểu Hà Nội: một bát phở, một đĩa bánh cuốn, ăn xong vẫn còn sớm.\n\n5. Ở lại ven hồ đến cuối chiều. Hoàng hôn Hồ Tây là thứ không cần sắp lịch, chỉ cần có mặt đúng lúc.\n\n6. Đi bộ đoạn Nguyễn Đình Thi khi đèn đường vừa bật, gió từ hồ thổi lên mát hơn hẳn trong phố.\n\n7. Buổi tối, về sớm một chút. Mùa thu Hà Nội đẹp cả ở phần nghỉ ngơi.\n\nVen Hồ Hotel nằm ngay trên Nguyễn Đình Thi, một khách sạn boutique nhỏ với sảnh gọn gàng, nền gạch nâu, nội thất gỗ sẫm và vài bức tranh treo tường. Không phô trương, nhưng đủ ấm để trở về sau một ngày đi bộ nhiều.\n\nNếu bạn đang chọn chỗ nghỉ gần Hồ Tây cho mùa thu này, nhắn tin cho Ven Hồ Hotel để xem phòng trống những ngày bạn định ở lại Hà Nội nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #ThuHaNoi #KhachSanHoTay #HanoiTravel\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-saturday-facebook-b604f255",
@@ -28636,6 +28636,26 @@
           "score": 100,
           "verdict": "approve"
         }
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-11-09T04:19:27.190717+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-f817c05c-9515-43cb-925f-0437c4a1a680",
+        "content_package_id": "f817c05c-9515-43cb-925f-0437c4a1a680",
+        "copy_version_ids": [
+          "brief-saturday-facebook-33d6349c-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "66a4ac3190fe47e1b0e8f0d59729678e02ac7ada14be4ee9b9172bd5871865be",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-saturday-facebook-33d6349c@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-11-09T04:19:27.190744+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "a38050925bdfc8412a04555676f7cae7571d94969bb00a99bce712cb4cba90c9",
+        "checksum": "e8962f5f8eb6e76ae825b08a551bdd72e662f1a7b982dce382ba8ccfe051097f"
       }
     },
     {
@@ -28644,13 +28664,13 @@
       "idempotency_key": "a69b0134c6bf949ec926db80cc42ff9da9d2129467cd0989a8620810c8b72740",
       "platform": "instagram",
       "slot_id": "slot-2026-11-21-saturday",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-11-03T03:52:46.892204+00:00",
-      "updated_at": "2026-11-09T04:14:51.560709+00:00",
+      "updated_at": "2026-11-09T04:19:27.227382+00:00",
       "content": {
         "title": "Thu Hà Nội và 7 trải nghiệm nên thử một lần quanh Hồ Tây",
         "text": "Thu Hà Nội hiếm khi đến ồn ào. Nó đến bằng một buổi sáng gió hơi lạnh trên mặt Hồ Tây, và người ta tự nhiên đi chậm lại.\n\n7 trải nghiệm đáng thử một lần, nếu mùa này bạn ghé Hà Nội:\n\n1. Dậy sớm, đi bộ một vòng ven hồ khi mặt nước còn mờ sương.\n\n2. Ghé chợ hoa Quảng An lúc trời chưa sáng hẳn, chỉ để xem người ta bó hoa và xếp lên xe.\n\n3. Ăn sáng kiểu Hà Nội: một bát phở nóng, rồi ngồi cà phê lâu hơn dự định.\n\n4. Mượn xe đạp, đi chậm qua mấy con đường nhỏ ven hồ mà không cần đích đến.\n\n5. Thắp một nén hương ở Phủ Tây Hồ vào ngày thường, khi còn vắng người.\n\n6. Thử bánh tôm Hồ Tây vào buổi chiều, lúc gió bắt đầu lên.\n\n7. Giữ lại cuối ngày cho hoàng hôn Hồ Tây. Đoạn đẹp nhất thường chỉ kéo dài mươi phút, nên đừng vội về.\n\nVen Hồ Hotel nằm trên Nguyễn Đình Thi, cách mặt hồ một đoạn đi bộ ngắn. Một khách sạn view Hồ Tây nhỏ, vừa tầm: cửa kính mở ra sảnh, quầy lễ tân gỗ nâu sẫm, nền gạch hoa văn tròn và vài bức tranh treo tường. Đủ gọn gàng để bạn cất đồ rồi đi tiếp, và đủ yên để quay về nghỉ sau một ngày dài.\n\nNếu bạn đang xếp lịch cho những ngày thu ở Hà Nội, nhắn tin cho Ven Hồ Hotel để xem phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #ThuHaNoi #KhamPhaHoTay #KhachSanHoTay #NguyenDinhThi #HanoiTravel",
@@ -28806,6 +28826,26 @@
           "score": 100,
           "verdict": "approve"
         }
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-11-09T04:19:27.190717+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-7d90dce0-3940-46a5-b476-7d0033b6a345",
+        "content_package_id": "7d90dce0-3940-46a5-b476-7d0033b6a345",
+        "copy_version_ids": [
+          "brief-saturday-instagram-0f07a6ab-content_studio"
+        ],
+        "asset_version_ids": [],
+        "validation_snapshot_id": "ed3413bb11f1fc7d1c074c992849ab611ea26e60418910326c8cbb5b3773ed7f",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-saturday-instagram-0f07a6ab@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-11-09T04:19:27.190870+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "f4d1ed9c4013c164fa77eecd2e8941fe4f5177c7785b7ef7db3704503480f474",
+        "checksum": "b45a78372103a766bee947e67f5adc1bbf067639896b8c68b34718d544ec63aa"
       }
     }
   ]
