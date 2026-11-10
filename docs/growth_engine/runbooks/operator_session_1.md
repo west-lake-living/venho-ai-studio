@@ -92,6 +92,42 @@ Meta token lifecycle: biến Page trên server là Page access token lấy từ 
 
 ## 3. Push branch đã review, deploy ở DISABLED và mở API TEST riêng
 
+### Đường API TEST độc lập trước production deploy — đã chạy 10/11/2026
+
+TEST đã chạy trước production deploy từ checkout `~/venho/gc2-src`, SHA `8ca8661`, bằng transient user unit `growth-engine-api-test-src`. Không dùng `growth-engine-api-test.service` ở giai đoạn này vì unit đó trỏ `~/venho/growth-engine/current`, đường dẫn chỉ có sau production deploy. Cổng TEST là `127.0.0.1:8023`; DB TEST migrate tới schema `9`.
+
+Harry xác nhận đã dùng `systemd-run --user` để tạo transient unit, chạy `venho-engine migrate` trên DB TEST và khởi động API tại cổng `8023`. Shell history với toàn bộ cờ không được cung cấp; block dưới đây là lệnh tái lập tương đương, giữ nguyên source checkout, env TEST, unit name và bind address:
+
+```bash
+cd "$HOME/venho/gc2-src"
+git rev-parse --short HEAD  # mong đợi 8ca8661
+systemd-run --user --pipe --wait --collect \
+  --property="EnvironmentFile=$HOME/venho/secrets/growth-engine-test.env" \
+  --property="WorkingDirectory=$HOME/venho/gc2-src" \
+  --setenv=GE_ENV=test \
+  "$HOME/venho/gc2-src/.venv/bin/venho-engine" migrate
+systemd-run --user --unit=growth-engine-api-test-src \
+  --property="EnvironmentFile=$HOME/venho/secrets/growth-engine-test.env" \
+  --property="WorkingDirectory=$HOME/venho/gc2-src" \
+  --setenv=GE_ENV=test \
+  "$HOME/venho/gc2-src/.venv/bin/venho-engine" api --host 127.0.0.1 --port 8023
+curl --silent --show-error --output /dev/null --write-out 'live=%{http_code}\n' http://127.0.0.1:8023/health/live
+curl --silent --show-error --output /dev/null --write-out 'ready=%{http_code}\n' http://127.0.0.1:8023/health/ready
+```
+
+Kết quả đã xác nhận: live `200`, ready `200`; `https://ge-test.venhohotel.com/internal/...` không có Access token trả `403`; `/media/publish` với token sai trả `403` từ API kèm `Cache-Control: private, no-store`. Probe public đã dùng URL media thử sai; không ghi signed URL vào runbook. Để tái kiểm tra an toàn, chỉ in status/header và dùng URL invalid tổng hợp:
+
+```bash
+curl --silent --show-error --max-redirs 0 --output /dev/null \
+  --write-out 'internal-without-access=%{http_code}\n' \
+  https://ge-test.venhohotel.com/internal/growth/v2/executions/authorize
+curl --silent --show-error --max-redirs 0 --dump-header - --output /dev/null \
+  'https://ge-test.venhohotel.com/media/publish/0000000000000000000000000000000000000000000000000000000000000000.jpg?t=invalid' \
+  | awk 'BEGIN{IGNORECASE=1} /^HTTP\// || /^Cache-Control:/ {gsub("\\r", ""); print}'
+```
+
+Các lệnh trên ghi lại cách kiểm tra; không chạy chúng từ máy Mac khi chỉ đang sửa repo. Production deploy và `growth-engine-api-test.service` vẫn là bước riêng phía dưới, sau khi release path `~/venho/growth-engine/current` tồn tại.
+
 Trên checkout GC2 sạch, sau khi review các commit:
 
 ```bash

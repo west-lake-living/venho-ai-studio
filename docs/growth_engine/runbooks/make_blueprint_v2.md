@@ -83,6 +83,25 @@ Keep placeholders in a blueprint draft; supply values only in the Make TEST scen
 
 After blueprint import, Make may reset the scenario schedule to **Every 15 minutes**. Before running: set it to **Immediately as data arrives**, save the scenario, then open HTTP module `25` (I1), confirm Method `GET` and no body, and click **Save** on that module. Recheck sequential processing remains enabled and no Webhook response modules were added.
 
+### Create a private import file for Make TEST
+
+After the server bearer handoff is copied to the Mac, fill credentials only into the ignored output file. The script reads the three bearer assignments from the exact mode-600 format produced by `setup-test-env.sh`, prompts for Cloudflare Access Client ID and Secret with hidden input, validates route filters and every `/internal` module, and prints replacement counts only:
+
+```bash
+umask 077
+scp asus-server:~/venho/secrets/growth-engine-test.make-bearers.tmp _incoming/growth-engine-test.make-bearers.tmp
+chmod 600 _incoming/growth-engine-test.make-bearers.tmp
+python3 scripts/growth_engine/fill_make_test_secrets.py
+```
+
+The output is `_incoming/make_test_import.secret.json` with mode `600`. It contains live TEST credentials, so import it only into scenario `6924867`, never print it, attach it, commit it, or use it for production. After Make has stored the TEST credentials, remove local bearer handoff and secret import files when no longer needed:
+
+```bash
+rm -f _incoming/growth-engine-test.make-bearers.tmp _incoming/make_test_import.secret.json
+```
+
+The script refuses unresolved `__SET_IN_MAKE_*__` markers, a remaining `set-in-make.invalid` host, mismatched route bearers, or missing Access headers. Run the normal static checker on the placeholder blueprint before filling secrets; do not run it on the credential-filled file because the intentional TEST URL and credentials are real values.
+
 Do not assume that Make masks values in blueprint exports, history or error logs. Confirm the storage and redaction behavior before entering credentials.
 
 The HTTP module's **Authentication type = API key** may be an alternative protected bearer configuration. This option and its masking/export behavior are **CHƯA XÁC MINH**; the draft keeps bearer as an explicit placeholder in the custom `Authorization` header.
