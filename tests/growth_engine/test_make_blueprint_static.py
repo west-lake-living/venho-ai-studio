@@ -75,6 +75,15 @@ def test_rejects_missing_or_forward_mapping_source() -> None:
     assert "mapping_source_missing_or_forward" in validate_blueprint(document).errors
 
 
+def test_rejects_facebook_post_id_alias_when_module_output_is_id() -> None:
+    document = valid_blueprint()
+    route_flow = document["flow"][1]["routes"][0]["flow"]
+    route_flow.insert(0, {"id": 3, "module": "facebook-pages:CreatePostWithPhotos", "mapper": {}})
+    route_flow[1]["mapper"]["jsonStringBodyContent"] = '{"platform_post_id":"{{3.post_id}}"}'
+
+    assert "facebook_receipt_must_use_module_id" in validate_blueprint(document).errors
+
+
 def test_rejects_real_url_and_token_like_literal_without_echoing_values() -> None:
     document = valid_blueprint()
     document["flow"][1]["routes"][0]["flow"][0]["mapper"]["url"] = (

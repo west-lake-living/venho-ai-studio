@@ -201,7 +201,7 @@ def _authorize_body(media_id: int) -> dict[str, Any]:
         "payload_hash": _field("2.payload_hash"),
         "media_report": {
             "http_status": RawJson(_field(f"{media_id}.statusCode")),
-            "content_type": _field(f"{media_id}.headers.Content-Type"),
+            "content_type": _field(f"{media_id}.headers.content-type"),
         },
     }
 
@@ -211,7 +211,7 @@ def _media_filter(media_id: int, name: str) -> dict[str, Any]:
         name,
         [
             _condition(_field(f"{media_id}.statusCode"), "number:equal", "200"),
-            _condition(_field(f"{media_id}.headers.Content-Type"), "text:equal", "image/jpeg"),
+            _condition(_field(f"{media_id}.headers.content-type"), "text:equal", "image/jpeg"),
         ],
     )
 
@@ -235,7 +235,7 @@ def _receipt_request(
     outcome: str,
     principal: str,
     y: int,
-    post_id_ref: str | None,
+    platform_id_ref: str | None,
 ) -> dict[str, Any]:
     return _request(
         template,
@@ -243,7 +243,7 @@ def _receipt_request(
         method="POST",
         url=f"{PLACEHOLDER_BASE}/internal/growth/v2/receipts",
         principal=principal,
-        body=_receipt_body(authorize_id, outcome, platform_post_id=post_id_ref),
+        body=_receipt_body(authorize_id, outcome, platform_post_id=platform_id_ref),
         parse_response=True,
         x=1160,
         y=y,
@@ -410,27 +410,27 @@ def prepare_blueprint(document: dict[str, Any]) -> dict[str, Any]:
     # Success receipts follow posting; error receipts are conservative and never retry/resume the post.
     f5_hanoi = _receipt_request(
         request_template, module_id=17, authorize_id=16, outcome="POST_CREATED",
-        principal="FB_HANOI", y=fb1_y, post_id_ref="3.post_id",
+        principal="FB_HANOI", y=fb1_y, platform_id_ref="3.id",
     )
     f5_venho = _receipt_request(
         request_template, module_id=22, authorize_id=21, outcome="POST_CREATED",
-        principal="FB_VENHO", y=fb2_y, post_id_ref="12.post_id",
+        principal="FB_VENHO", y=fb2_y, platform_id_ref="12.id",
     )
     i5_venho = _receipt_request(
         request_template, module_id=27, authorize_id=26, outcome="POST_CREATED",
-        principal="IG_VENHO", y=ig_y, post_id_ref="6.id",
+        principal="IG_VENHO", y=ig_y, platform_id_ref="6.id",
     )
     f6_hanoi = _receipt_request(
         request_template, module_id=18, authorize_id=16, outcome="OUTCOME_UNKNOWN",
-        principal="FB_HANOI", y=fb1_y + 130, post_id_ref=None,
+        principal="FB_HANOI", y=fb1_y + 130, platform_id_ref=None,
     )
     f6_venho = _receipt_request(
         request_template, module_id=23, authorize_id=21, outcome="OUTCOME_UNKNOWN",
-        principal="FB_VENHO", y=fb2_y + 130, post_id_ref=None,
+        principal="FB_VENHO", y=fb2_y + 130, platform_id_ref=None,
     )
     i6_venho = _receipt_request(
         request_template, module_id=28, authorize_id=26, outcome="OUTCOME_UNKNOWN",
-        principal="IG_VENHO", y=ig_y + 130, post_id_ref=None,
+        principal="IG_VENHO", y=ig_y + 130, platform_id_ref=None,
     )
     ignore1 = copy.deepcopy(ignore_template)
     ignore1["id"] = 19

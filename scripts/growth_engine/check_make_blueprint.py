@@ -49,6 +49,28 @@ def _strings(value: Any, *, skip_keys: frozenset[str] = frozenset()) -> Iterable
             yield from _strings(child, skip_keys=skip_keys)
 
 
+def _modules(flow: Any) -> Iterable[dict[str, Any]]:
+    if not isinstance(flow, list):
+        return
+    for node in flow:
+        if not isinstance(node, dict):
+            continue
+        yield node
+        routes = node.get("routes", [])
+        if isinstance(routes, list):
+            for route in routes:
+                if isinstance(route, dict):
+                    yield from _modules(route.get("flow"))
+        handlers = node.get("onerror", [])
+        if isinstance(handlers, list):
+            for handler in handlers:
+                if isinstance(handler, dict):
+                    if isinstance(handler.get("flow"), list):
+                        yield from _modules(handler["flow"])
+                    elif isinstance(handler.get("module"), str):
+                        yield handler
+
+
 def _secret_scan(value: Any) -> set[str]:
     categories: set[str] = set()
     for text in _strings(value):
@@ -161,6 +183,21 @@ def validate_blueprint(document: Any) -> CheckResult:
     errors.update(_secret_scan(document))
 
     _validate_flow(document["flow"], set(), set(), errors, counters)
+    modules_by_id = {
+        module["id"]: module
+        for module in _modules(document["flow"])
+        if isinstance(module.get("id"), int)
+    }
+    for module in modules_by_id.values():
+        for text in _strings(module):
+            for reference in MAPPING_RE.finditer(text):
+                source = modules_by_id.get(int(reference.group(1)))
+                if (
+                    source is not None
+                    and source.get("module") == "facebook-pages:CreatePostWithPhotos"
+                    and reference.group(2) == "post_id"
+                ):
+                    errors.add("facebook_receipt_must_use_module_id")
     return CheckResult(
         tuple(sorted(errors)),
         counters["modules"],

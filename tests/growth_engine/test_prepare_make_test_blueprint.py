@@ -153,6 +153,14 @@ def test_prepares_three_routes_with_local_media_authorize_and_receipts() -> None
     assert routes[2]["flow"][2]["mapper"]["photos"][0]["data"] == "{{20.data}}"
     assert routes[0]["flow"][2]["mapper"]["message"] == "{{16.data.caption}}"
     assert routes[1]["flow"][2]["mapper"]["image_url"] == "{{2.media_url}}"
+    assert '"platform_post_id":"{{3.id}}"' in routes[0]["flow"][3]["mapper"]["jsonStringBodyContent"]
+    assert '"platform_post_id":"{{12.id}}"' in routes[2]["flow"][3]["mapper"]["jsonStringBodyContent"]
+    assert "{{3.post_id}}" not in json.dumps(prepared)
+    assert "{{12.post_id}}" not in json.dumps(prepared)
+    assert "headers.content-type" in routes[0]["flow"][1]["mapper"]["jsonStringBodyContent"]
+    assert "headers.content-type" in routes[1]["flow"][1]["mapper"]["jsonStringBodyContent"]
+    assert "headers.content-type" in routes[0]["flow"][1]["filter"]["conditions"][0][1]["a"]
+    assert "headers.content-type" in routes[1]["flow"][1]["filter"]["conditions"][0][1]["a"]
     assert prepared["flow"][1]["filter"] == source["flow"][1]["filter"]
     assert source["flow"][2]["routes"][0]["flow"][1]["mapper"]["body"].startswith("https://")
     assert all("https://" not in module["mapper"]["body"] for module in (routes[0]["flow"][4], routes[1]["flow"][4]))

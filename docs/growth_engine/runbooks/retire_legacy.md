@@ -2,6 +2,15 @@
 
 **Trạng thái:** checklist chuẩn bị; không có timer, registry, BFF hoặc workflow nào bị thay đổi trong task này. Đây là thao tác có ảnh hưởng vận hành, chỉ làm sau quyết định của Harry.
 
+## Phát hiện từ Make History production — 09/11/2026
+
+Nguồn: Harry đọc trực tiếp History của production scenario `5868920`; thao tác chỉ đọc, không chỉnh Make.
+
+- Một payload Facebook đã khớp cả module đăng Facebook Pages `3` và `12`, nên đăng lên cả hai Page trong cùng lượt chạy.
+- Nhánh Instagram production dùng URL Google Drive thay vì signed media URL của Growth Engine.
+
+**Đề xuất retire/cutover:** giữ hai phát hiện này làm bằng chứng cho rủi ro route Facebook legacy và khác biệt đường ảnh Instagram; xác minh từng target/outcome trước khi tắt legacy. Không sửa scenario production trong task này.
+
 ## Gate trước khi retire
 
 - [ ] Harry phê duyệt retire sau khi P9-T04 đạt đầy đủ G-P9/AC-18: ≥8 slot, ≥16 target outcomes, ≥14 ngày; không duplicate/sai Page/sai ảnh; mọi UNKNOWN đã xử lý.

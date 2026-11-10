@@ -193,3 +193,13 @@ The plan snapshot and code-delta table were refreshed to include the production 
 **Verify:** focused checker/generator tests → 9 passed; `VERIFY_DEV` → 503 passed, 4 warnings; `VERIFY_ARCH` → 2 passed; `VERIFY_LEGACY` → 2144 passed, 79 failed, 8 skipped, 12 warnings; all 79 failures match baseline, 0 new/0 resolved. Import JSON check → 23 modules, 3 routes, 106 mappings, secret scan clear.
 **CHƯA XÁC MINH:** Make importability; auth/receipt HTTP behavior; posting module ID output fields; HTTP response status/header field paths; grant-expiry expression syntax; API-key credential storage; error-handler Skip routing; scenario trigger/active state and all MK-1…MK-11.
 **Supersedes:** K4's prior `BLOCKED_SAFE` status above; the updated export supplied the missing HTTP request/error-handler template. No Make UI, server, network, or public post was used.
+
+### GC2 handoff K4 — apply production History output fields (2026-11-10)
+**Status:** DONE — refreshed the ignored TEST import draft using operator-supplied read-only module output evidence.
+**Commit:** `GC2-HANDOFF-K4: use verified post output ids` (SHA in handoff report).
+**Files:** `docs/growth_engine/runbooks/{make_blueprint_v2,retire_legacy}.md`, `scripts/growth_engine/prepare_make_test_blueprint.py`, checker/generator tests, `docs/growth_engine/task_status.md`. The ignored export/import remain uncommitted.
+**Mapping audit:** Facebook Pages modules `3/12` now map `{{3.id}}` / `{{12.id}}` verbatim to receipt `platform_post_id`; no Make mapping uses `post_id`. Instagram I5 remains `{{6.id}}`. No ID splitting was added in Make. The checker now rejects a Facebook module `.post_id` alias.
+**HTTP media fields:** F1/I1 filters and authorize media report now use numeric `statusCode` and lowercase `headers.content-type` per supplied History output.
+**Production record:** the two read-only findings were added only to `retire_legacy.md`; Make production was not edited.
+**Verify:** focused K4 checker/generator tests → 10 passed; `VERIFY_DEV` → 504 passed, 4 warnings; `VERIFY_ARCH` → 2 passed; `VERIFY_LEGACY` → 2145 passed, 79 failed, 8 skipped, 12 warnings; all 79 failures match baseline, 0 new/0 resolved. Import static check → 23 modules, 3 routes, 106 mappings, secret scan clear.
+**CHƯA XÁC MINH:** HTTP `Make a request` authorize/receipt output fields; `formatDate(now; "x")`; Skip behavior; Authentication type `API key`; Make import/runtime and MK-1…MK-11.

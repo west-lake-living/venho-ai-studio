@@ -24,7 +24,9 @@ Nguồn: trạng thái giao diện do Harry cung cấp sau khi chỉnh tay; chư
 - HTTP 14 trong export có header `Authorization` và `CF-Access-Client-Id`; draft thêm `CF-Access-Client-Secret` placeholder theo ADR-06. `Authentication type = API key` là phương án có thể khảo sát để giữ bearer, nhưng hiện **CHƯA XÁC MINH**; draft chỉ dùng custom `Authorization` header placeholder.
 - Hai URL literal di sản production nằm ở `mapper.body` của Webhook response modules `7` và `8`. Không ghi hoặc sao chép giá trị; draft thay body bằng ACK nhỏ sau receipt. Đề xuất bỏ các URL literal này khỏi Make TEST.
 - Import draft K4 giữ filter/common data, thứ tự route, connections và targets TEST. Chuỗi module: `fb_hanoi` `4 → 16 → 3 → 17 → 8`, error `18 → 19`; `ig_venho` `25 → 26 → 6 → 27 → 7`, error `28 → 29`; `fb_venho` `20 → 21 → 12 → 22 → 13`, error `23 → 24`. IDs `14/15` khỏi vị trí mẫu; IDs mới bắt đầu từ `16`.
-- K4 chưa chạy scenario và không có bằng chứng MK-1…MK-11. Export không khai báo output schema cho module đăng. Draft dự kiến map Facebook post ID từ `post_id`, Instagram media ID từ `id`; field names này **CHƯA XÁC MINH**. `statusCode`/`headers.Content-Type` và biểu thức `formatDate(now; "x")` cho grant expiry cũng cần xác nhận trong Make History/UI.
+- History production `5868920`, run `09/11/2026` (Harry cung cấp, chỉ đọc) xác nhận Facebook Pages `3/12` trả `id` dạng `<page_id>_<post_id>` và không có `post_id`; draft map nguyên `id` vào `platform_post_id`, không tách trong Make. Instagram module `6` trả `id` media.
+- History xác nhận HTTP `Download a file` trả `data`, `headers` với key chữ thường như `content-type`, `statusCode` dạng number, `fileName` và `fileSize`. F1/I1 filter dùng `statusCode = 200` AND `headers.content-type = image/jpeg`.
+- K4 chưa chạy scenario và không có bằng chứng MK-1…MK-11. Vẫn **CHƯA XÁC MINH**: output cụ thể của HTTP `Make a request` authorize/receipt, cú pháp `formatDate(now; "x")`, hành vi Skip trong error handler và Authentication type `API key`.
 
 ## Gate before opening Make
 
@@ -46,13 +48,13 @@ Use the existing copy `VenHo Growth Agent TEST` (ID `6924867`); do not duplicate
    - **F2 — Authorize:** HTTP POST `/internal/growth/v2/executions/authorize` with that branch's bearer and Cloudflare Access headers. Map the command token, payload hash and actual media status/type.
    - **F3 — Grant filter:** continue only when `execute = true` and current time is earlier than `grant_expires_at_ms`. Do not resume an incomplete execution after authorize.
    - **F4 — Facebook photo post:** use the branch's fixed TEST Page; map `message` from F2 `caption` and image from F1 binary. Do not map a URL or another branch's image.
-   - **F5 — Success receipt:** HTTP POST `/internal/growth/v2/receipts` with the original identities, `outcome = POST_CREATED`, the actual post ID output from F4, the permalink when available and `event_id = <grant_id>:POST_CREATED`.
+   - **F5 — Success receipt:** HTTP POST `/internal/growth/v2/receipts` with the original identities, `outcome = POST_CREATED`, Facebook Pages `id` mapped verbatim to `platform_post_id`, the permalink when available and `event_id = <grant_id>:POST_CREATED`. Do not extract the suffix in Make; split server-side only if the domain needs the plain post ID.
    - **F6 — Error receipt:** do not retry, Break or Resume F4. Use `REJECTED_NO_SIDE_EFFECT` only for a verified error class in `make_error_classes.yaml`; otherwise send `OUTCOME_UNKNOWN`. Redact provider text and URLs. Follow F6 with the exported `Ignore` directive (shown as **Skip**): it records the error receipt, then drops the failed bundle without retry/resume. Verify in TEST that the success receipt is not reached after this handler.
 4. **Instagram branch (`ig_venho` → module 6):** use the linked TEST Instagram account and its route bearer. Map the image URL directly from `media_url`; do not map the binary from HTTP:
    - **I1 — URL check:** HTTP GET `media_url` to confirm the signed URL is reachable and returns HTTP 200 with `image/jpeg`. This binary is not mapped to the Instagram posting module.
    - **I2 — Authorize** and **I3 — grant filter:** use the same authorization and expiry conditions as the Facebook branches.
    - **I4 — Instagram photo post:** map `image_url = media_url` and `caption = I2.caption`; Meta fetches the image from the signed URL. Ensure the URL remains usable through `execute_before_ms + 30 minutes` and does not encounter a Cloudflare Access login page.
-   - **I5 — Success receipt:** send `POST_CREATED` with the media ID returned by I4 and `event_id = <grant_id>:POST_CREATED`.
+   - **I5 — Success receipt:** map Instagram module `id` (media ID) to `platform_post_id` with `outcome = POST_CREATED` and `event_id = <grant_id>:POST_CREATED`.
    - **I6 — Error receipt:** distinguish a verified container-creation failure from a publish-stage/ambiguous failure; the latter is `OUTCOME_UNKNOWN`. Never retry or resume I4. Follow I6 with the `Ignore` (**Skip**) directive for the same no-retry/no-resume reason; verify error-path routing in TEST.
 5. **Webhook response:** add one response module to each of the three TEST branches, after that branch's receipt module. Send a small acknowledgement only after the receipt returns. A webhook ACK does not prove a post was created or verified.
 
