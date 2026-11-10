@@ -4,13 +4,23 @@
 
 No webhook URL, access token, credential, signed media URL or production Page ID belongs in this file. Redact module output and screenshots before saving them.
 
-## Quan sát production và TEST — 06/11/2026
+## Quan sát production — 06/11/2026
 
 Nguồn: cấu hình giao diện Make do Harry cung cấp; **chưa có run MK và chưa có kiểm chứng độc lập từ History**. Production scenario `VenHo Growth Agent-FB/IG` (ID `5868920`) đang Active, không được sửa. Router có thứ tự hiện tại: Facebook Pages module 3, Instagram module 6, Facebook Pages module 12. Nhánh 1 và 3 dùng cùng filter `platform = facebook` AND `publication_id` không chứa `test`; Instagram dùng `platform = instagram` AND `publication_id` không chứa `test`. Cả ba fallback Off. Các filter chưa xét `channel_key`, nên một payload Facebook có thể chạy cả hai nhánh Page. HTTP `Download a file` nằm trước Router; Instagram cũng tải binary dù module đăng Instagram dùng URL. Webhook response module 8 nằm ở nhánh 1, module 7 ở nhánh Instagram; nhánh module 12 chưa có response.
 
 Filter `Venho signature` nằm trên liên kết Custom webhook → HTTP ở production và TEST. Theo quan sát do Harry cung cấp, filter so sánh header `x-venho-signature` với kết quả `sha256(publication_id : idempotency_key : <fixed 64-character hex literal>)`. Không lưu hay sao chép literal đó. Bản chất của literal (muối hay bí mật dùng chung) là **CHƯA XÁC MINH**. Hợp đồng v2 không dùng filter này: API authorize kiểm tra bearer theo route cùng `command_token` có chữ ký; filter chung dùng `schema_version` và `environment`.
 
-TEST scenario `VenHo Growth Agent TEST` (ID `6924867`) đang Inactive, webhook riêng nhưng chưa có data structure. Module Facebook 3 và 12 trỏ Page TEST `1363761820162798`; Instagram 6 trỏ `@hanhpham1504` (ID `17841472240799413`). Scenario TEST hiện vẫn kế thừa filter chữ ký production, các filter Router chưa xét `channel_key`, và chưa có Webhook response ở nhánh module 12. Chưa chạy scenario TEST. Sequential processing, retry/error handlers, output ID fields và mọi MK-1…MK-11 vẫn **CHƯA XÁC MINH**.
+## Quan sát scenario TEST — 10/11/2026
+
+Nguồn: trạng thái giao diện do Harry cung cấp sau khi chỉnh tay; chưa có kiểm chứng độc lập từ Make History. Giữ nguyên các thay đổi này, không dựng lại.
+
+- Scenario TEST `VenHo Growth Agent TEST` (ID `6924867`): Webhook module `2` có data structure 15 trường; các mapping lấy dữ liệu lệnh dùng `{{2.<field>}}`.
+- Filter Webhook → HTTP `v2 TEST common`: `schema_version = growth.command.v2` AND `environment = test`. Filter `Venho signature` đã được gỡ.
+- Router module `5`, fallback Off cả ba nhánh: `fb_hanoi` → Facebook Pages `3` → Webhook response `8`; `ig_venho` → Instagram `6` → Webhook response `7`; `fb_venho` → Facebook Pages `12` → Webhook response `13`.
+- HTTP tải ảnh module `4` vẫn nằm trước Router. Việc cần làm cho K4 là đưa một HTTP GET `media_url` vào từng nhánh Facebook và map binary của từng HTTP riêng vào module Facebook cùng nhánh. Nhánh Instagram dùng URL `media_url` trực tiếp.
+- Bản export có URL literal trong mapper body của hai Webhook response hiện hữu. Không sao chép URL đó vào import/log/báo cáo; response draft cần là ACK nhỏ sau receipt.
+- Không thay filter, connection, Page/Instagram ID đích TEST hiện có. Giữ nguyên cấu hình scenario khác; trigger/active state không được xác nhận trong lần rà soát này.
+- K4 chưa chạy scenario và không có bằng chứng MK-1…MK-11. Export chỉ có mẫu HTTP `Download a file`; không có mẫu module HTTP request cho authorize/receipt hoặc cấu trúc error handler. Vì vậy không tự tạo các module F2–F6/I2–I6 bằng cấu trúc phỏng đoán.
 
 ## Gate before opening Make
 
@@ -23,11 +33,10 @@ TEST scenario `VenHo Growth Agent TEST` (ID `6924867`) đang Inactive, webhook r
 
 ## Scenario construction
 
-Use the existing inactive copy `VenHo Growth Agent TEST` (ID `6924867`); do not duplicate or edit production. Keep TEST schedule off. Use its TEST webhook and one Router with three branches. Match §8.1.4 of `GC2_MASTER_PLAN.md`, with the following TEST-specific branch assignments:
+Use the existing copy `VenHo Growth Agent TEST` (ID `6924867`); do not duplicate or edit production. Keep the current webhook data structure, common filter, Router filters, branch order, connections and TEST destinations listed above. Keep TEST schedule off outside an approved test window. Match §8.1.4 of `GC2_MASTER_PLAN.md`, with the following TEST-specific branch assignments:
 
-1. **Custom webhook and common filter:** receive all three channels. Require `schema_version = growth.command.v2` and `environment = test` before the Router.
-   - Remove the inherited `Venho signature` filter from the TEST webhook → HTTP link; this v2 path does not use that legacy signature check.
-2. **Router:** configure three fixed equality filters and no fallback: branch 1 `channel_key = fb_hanoi` → Facebook Pages module 3; branch 2 `channel_key = ig_venho` → Instagram module 6; branch 3 `channel_key = fb_venho` → Facebook Pages module 12. Remove the inherited `publication_id`-does-not-contain-`test` condition from all TEST routes. Each command must match exactly one branch.
+1. **Custom webhook and common filter:** retain module `2` and the existing 15-field data structure. The filter before the Router requires `schema_version = growth.command.v2` and `environment = test`; the old `Venho signature` filter is removed. Payload mapping references use module `2`.
+2. **Router:** retain module `5`, the fixed equality filters and no fallback: branch 1 `channel_key = fb_hanoi` → Facebook Pages module `3`; branch 2 `channel_key = ig_venho` → Instagram module `6`; branch 3 `channel_key = fb_venho` → Facebook Pages module `12`. Each command must match exactly one branch.
 3. **Facebook branches (`fb_hanoi` → module 3, `fb_venho` → module 12):** both use verified TEST Page `1363761820162798` and a distinct route bearer. Put a separate HTTP GET `media_url` download inside each branch (duplicate the existing HTTP module or move it into each route); each Facebook module must receive the binary from its own branch's HTTP output:
    - **F1 — Fetch image:** HTTP GET the mapped `media_url`, return the binary body, timeout 30 seconds. Continue only for HTTP 200 and `content-type = image/jpeg`; otherwise stop before authorize.
    - **F2 — Authorize:** HTTP POST `/internal/growth/v2/executions/authorize` with that branch's bearer and Cloudflare Access headers. Map the command token, payload hash and actual media status/type.
@@ -42,6 +51,23 @@ Use the existing inactive copy `VenHo Growth Agent TEST` (ID `6924867`); do not 
    - **I5 — Success receipt:** send `POST_CREATED` with the media ID returned by I4 and `event_id = <grant_id>:POST_CREATED`.
    - **I6 — Error receipt:** distinguish a verified container-creation failure from a publish-stage/ambiguous failure; the latter is `OUTCOME_UNKNOWN`. Never retry or resume I4.
 5. **Webhook response:** add one response module to each of the three TEST branches, after that branch's receipt module. Send a small acknowledgement only after the receipt returns. A webhook ACK does not prove a post was created or verified.
+
+### Credentials for TEST HTTP modules
+
+Keep placeholders in a blueprint draft; supply values only in the Make TEST scenario after import. Never put a production value in this table or in an import file.
+
+| Placeholder | Make field/use | Storage behavior in Make |
+|---|---|---|
+| `__SET_IN_MAKE_BASE_URL_TEST__` | TEST base URL for authorize and receipt HTTP modules | **CHƯA XÁC MINH**; verify the supported protected field/connection before storing a value. |
+| `__SET_IN_MAKE_BEARER_FB_HANOI__` | Bearer credential for the `fb_hanoi` authorize/receipt modules | **CHƯA XÁC MINH**; verify the supported protected field/connection before storing a value. |
+| `__SET_IN_MAKE_BEARER_FB_VENHO__` | Bearer credential for the `fb_venho` authorize/receipt modules | **CHƯA XÁC MINH**; verify the supported protected field/connection before storing a value. |
+| `__SET_IN_MAKE_BEARER_IG_VENHO__` | Bearer credential for the `ig_venho` authorize/receipt modules | **CHƯA XÁC MINH**; verify the supported protected field/connection before storing a value. |
+| `__SET_IN_MAKE_ACCESS_CLIENT_ID__` | `CF-Access-Client-Id` header on internal HTTP calls | **CHƯA XÁC MINH**; verify the supported protected field/connection before storing a value. |
+| `__SET_IN_MAKE_ACCESS_CLIENT_SECRET__` | `CF-Access-Client-Secret` header on internal HTTP calls | **CHƯA XÁC MINH**; verify the supported protected field/connection before storing a value. |
+
+Do not assume that Make masks values in blueprint exports, history or error logs. Confirm the storage and redaction behavior before entering credentials.
+
+Before importing a generated draft, run `python3 scripts/growth_engine/check_make_blueprint.py _incoming/make_test_import.json`. The checker reports structural counts and error categories only; a passing result does not prove that Make will import the blueprint or that a TEST run is safe.
 
 For Make Free, the scenario limit reported by Harry is **two active scenarios maximum**. Keep the TEST copy inactive outside its test window; before activating it, confirm the account will not exceed the two-scenario limit. This is an operator-provided plan fact and has not been independently verified in Make.
 
