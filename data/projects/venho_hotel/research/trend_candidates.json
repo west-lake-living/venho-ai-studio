@@ -1668,5 +1668,86 @@
     "scanned_at": "2026-11-09T00:18:08.659968+00:00",
     "rejected_by": "hpham1504@gmail.com",
     "rejected_at": "2026-11-09T04:06:18.496738+00:00"
+  },
+  {
+    "id": "gnews-7edb9e222a64f508",
+    "title": "Có gì tại showroom Bose vừa khai trương ở Lotte Tây Hồ?",
+    "source_uri": "https://news.google.com/rss/articles/CBMimAFBVV95cUxON1BuQzJPaFdOUUpabWxDX3gxN19jZGpwMTR1bVlWbGRHeDVEV2o5TEZwUEVzM0paREZjM2FEZjc3THlLeHZpc2Y4dXVUUXJRUE9lQVBtRkU5U0lGMzd6WWZiRVhKUFhiS2lsNTZ0bHh5MkRYcmY5ZG9jS0NVQkxKTGI3SkZiUVp4ellFa01rVHFGdTVlanQzdQ?oc=5",
+    "source_name": "CafeF",
+    "published_at": "2026-11-09T11:34:08+00:00",
+    "snippet": "CafeF",
+    "relevance_hint": 0.0,
+    "collector": "google_news",
+    "query": "\"Tây Hồ\" chợ hoa",
+    "geographic": "westlake",
+    "thematic": "lifestyle_culture",
+    "actionability": "direct",
+    "type": "lifestyle_trend",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local"
+    ],
+    "is_event": false,
+    "event_name": null,
+    "event_start": null,
+    "event_end": null,
+    "venue": "Lotte Mall Tây Hồ",
+    "westlake_area": true,
+    "sources": [
+      {
+        "title": "Có gì tại showroom Bose vừa khai trương ở Lotte Tây Hồ?",
+        "source_uri": "https://news.google.com/rss/articles/CBMimAFBVV95cUxON1BuQzJPaFdOUUpabWxDX3gxN19jZGpwMTR1bVlWbGRHeDVEV2o5TEZwUEVzM0paREZjM2FEZjc3THlLeHZpc2Y4dXVUUXJRUE9lQVBtRkU5U0lGMzd6WWZiRVhKUFhiS2lsNTZ0bHh5MkRYcmY5ZG9jS0NVQkxKTGI3SkZiUVp4ellFa01rVHFGdTVlanQzdQ?oc=5",
+        "source_name": "CafeF",
+        "published_at": "2026-11-09T11:34:08+00:00"
+      }
+    ],
+    "source_count": 1,
+    "relevance_score": 0.6,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "fast_lane": false,
+    "verified_by_human": false,
+    "scanned_at": "2026-11-10T12:18:32.862855+00:00"
+  },
+  {
+    "id": "gnews-b91f4526e153f20f",
+    "title": "KHÁM PHÁ VIỆT NAM| TẬP 04 | CẦU NHẬT TÂN",
+    "source_uri": "https://news.google.com/rss/articles/CBMiQEFVX3lxTE5zdlZiQUw3QUlUeENEYXR1RThTWjhtWTF4ZFlwS1U4Z0hOMDBUWTJsVU1OWjVMbHY0dnhncmVubGU?oc=5",
+    "source_name": "VTVgo",
+    "published_at": "2026-11-09T00:00:00+00:00",
+    "snippet": "VTVgo",
+    "relevance_hint": 0.0,
+    "collector": "google_news",
+    "query": "\"Nhật Tân\" hoa đào",
+    "geographic": "westlake",
+    "thematic": "travel_stay",
+    "actionability": "adjacent",
+    "type": "feature_story",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "travel_accommodation",
+      "hanoi_westlake_local"
+    ],
+    "is_event": false,
+    "event_name": null,
+    "event_start": null,
+    "event_end": null,
+    "venue": "Cầu Nhật Tân",
+    "westlake_area": true,
+    "sources": [
+      {
+        "title": "KHÁM PHÁ VIỆT NAM| TẬP 04 | CẦU NHẬT TÂN",
+        "source_uri": "https://news.google.com/rss/articles/CBMiQEFVX3lxTE5zdlZiQUw3QUlUeENEYXR1RThTWjhtWTF4ZFlwS1U4Z0hOMDBUWTJsVU1OWjVMbHY0dnhncmVubGU?oc=5",
+        "source_name": "VTVgo",
+        "published_at": "2026-11-09T00:00:00+00:00"
+      }
+    ],
+    "source_count": 1,
+    "relevance_score": 0.6,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "fast_lane": false,
+    "verified_by_human": false,
+    "scanned_at": "2026-11-10T12:18:32.862855+00:00"
   }
 ]
