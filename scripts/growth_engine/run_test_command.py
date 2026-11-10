@@ -4,6 +4,9 @@
 from __future__ import annotations
 
 import getpass
+import hashlib
+import hmac
+import http.client
 import json
 import os
 import re
@@ -16,7 +19,7 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable
-from urllib.parse import quote, urlsplit
+from urllib.parse import parse_qsl, quote, urlsplit
 from uuid import UUID, uuid4
 
 
@@ -35,6 +38,8 @@ VALID_RECEIPT_STATES = {"RECEIVED", "APPLIED", "QUARANTINED", "IGNORED_STALE", "
 VALID_OUTCOMES = {"POST_CREATED", "REJECTED_NO_SIDE_EFFECT", "OUTCOME_UNKNOWN"}
 VALID_FAILED_STEPS = {"FETCH_MEDIA", "AUTHORIZE", "CREATE_POST"}
 FACEBOOK_POST_ID_RE = re.compile(r"^1363761820162798_[0-9]{1,40}$")
+MEDIA_PATH_RE = re.compile(r"^/media/publish/([0-9a-f]{64})\.jpg$")
+MAX_MEDIA_BYTES = 5 * 1024 * 1024
 
 
 class RunTestError(Exception):
@@ -269,6 +274,89 @@ def _read_envelope_summary(path: Path, expected_channel_id: str) -> dict[str, An
     }
 
 
+def _read_envelope_media_url(path: Path, public_base_url: str) -> str:
+    if path.is_symlink() or not path.is_file():
+        raise RunTestError("test_envelope_file_unavailable")
+    if stat.S_IMODE(path.stat().st_mode) != 0o600:
+        raise RunTestError("test_envelope_file_must_be_mode_600")
+    try:
+        envelope = json.loads(path.read_text(encoding="utf-8"))
+        media_url = envelope["media_url"]
+        parsed = urlsplit(media_url)
+        public = urlsplit(public_base_url)
+        query = parse_qsl(parsed.query, keep_blank_values=True, strict_parsing=True)
+    except (OSError, UnicodeError, json.JSONDecodeError, KeyError, TypeError, ValueError) as error:
+        raise RunTestError("test_envelope_media_url_invalid") from error
+    match = MEDIA_PATH_RE.fullmatch(parsed.path) if isinstance(media_url, str) else None
+    valid_token = len(query) == 1 and query[0][0] == "t" and len(query[0][1].split(".")) == 5
+    if (
+        not isinstance(media_url, str)
+        or not match
+        or not valid_token
+        or parsed.scheme != "https"
+        or parsed.netloc != public.netloc
+        or public.scheme != "https"
+        or parsed.username
+        or parsed.password
+        or parsed.fragment
+    ):
+        raise RunTestError("test_envelope_media_url_invalid")
+    return media_url
+
+
+def check_local_media_url(
+    media_url: str,
+    public_base_url: str,
+    *,
+    connection_factory: Callable[..., Any] = http.client.HTTPConnection,
+) -> None:
+    """Fetch the signed TEST media directly from the local API without printing its URL."""
+    try:
+        parsed = urlsplit(media_url)
+        public = urlsplit(public_base_url)
+        match = MEDIA_PATH_RE.fullmatch(parsed.path)
+        query = parse_qsl(parsed.query, keep_blank_values=True, strict_parsing=True)
+        if (
+            not match
+            or parsed.scheme != "https"
+            or parsed.netloc != public.netloc
+            or public.scheme != "https"
+            or parsed.username
+            or parsed.password
+            or parsed.fragment
+            or len(query) != 1
+            or query[0][0] != "t"
+            or len(query[0][1].split(".")) != 5
+        ):
+            raise RunTestError("test_media_preflight_failed")
+        request_target = parsed.path + "?" + parsed.query
+        connection = connection_factory("127.0.0.1", 8023, timeout=15)
+        try:
+            connection.request("GET", request_target, headers={"Host": public.netloc})
+            response = connection.getresponse()
+            content_type = response.getheader("Content-Type", "").split(";", 1)[0].strip().casefold()
+            cache_control = {
+                directive.strip().casefold()
+                for directive in response.getheader("Cache-Control", "").split(",")
+            }
+            body = response.read(MAX_MEDIA_BYTES + 1)
+            if (
+                response.status != 200
+                or content_type != "image/jpeg"
+                or not {"private", "no-store"}.issubset(cache_control)
+                or not body
+                or len(body) > MAX_MEDIA_BYTES
+                or not hmac.compare_digest(hashlib.sha256(body).hexdigest(), match.group(1))
+            ):
+                raise RunTestError("test_media_preflight_failed")
+        finally:
+            connection.close()
+    except RunTestError:
+        raise
+    except (OSError, http.client.HTTPException, TypeError, ValueError) as error:
+        raise RunTestError("test_media_preflight_failed") from error
+
+
 def _run_send_cli(
     repo_root: Path,
     envelope_path: Path,
@@ -401,6 +489,7 @@ def run_first_command(
     runner: Callable[..., subprocess.CompletedProcess[str]] = subprocess.run,
     sleep: Callable[[float], None] = time.sleep,
     monotonic: Callable[[], float] = time.monotonic,
+    media_preflight: Callable[[str, str], None] = check_local_media_url,
     emit: Callable[[str], None] = print,
     database_wait_seconds: int = 120,
 ) -> int:
@@ -443,7 +532,14 @@ def run_first_command(
                 runner=runner,
             )
         envelope_summary = _read_envelope_summary(envelope_path, values["GE_TEST_CHANNEL_ID"])
+        media_url = _read_envelope_media_url(envelope_path, values["GE_PUBLIC_BASE_URL"])
         _emit_summary(envelope_summary, emit)
+        try:
+            media_preflight(media_url, values["GE_PUBLIC_BASE_URL"])
+        except RunTestError:
+            emit("media_preflight=FAIL")
+            raise
+        emit("media_preflight=PASS")
 
         if input_fn("Gõ ACTIVE để xác nhận scenario TEST đang Active; Enter khác để dừng: ") != "ACTIVE":
             emit("Chưa xác nhận scenario Active; không gửi webhook. Envelope TEST mode 600 được giữ lại.")

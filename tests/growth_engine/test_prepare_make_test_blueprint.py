@@ -138,6 +138,7 @@ def test_prepares_three_routes_with_local_media_authorize_and_receipts() -> None
 
     assert result.errors == ()
     assert result.route_count == 3
+    assert result.module_count == 23
     assert prepared["metadata"]["instant"] is True
     assert prepared["metadata"]["scenario"]["sequential"] is True
     assert all(module["module"] != "gateway:WebhookRespond" for module in _all_modules(prepared))
@@ -152,6 +153,14 @@ def test_prepares_three_routes_with_local_media_authorize_and_receipts() -> None
     assert [module["id"] for module in routes[0]["flow"][2]["onerror"]] == [18, 19]
     assert [module["id"] for module in routes[1]["flow"][2]["onerror"]] == [28, 29]
     assert [module["id"] for module in routes[2]["flow"][2]["onerror"]] == [23, 24]
+    assert [module["id"] for module in routes[0]["flow"][0]["onerror"]] == [30]
+    assert [module["id"] for module in routes[1]["flow"][0]["onerror"]] == [32]
+    assert [module["id"] for module in routes[2]["flow"][0]["onerror"]] == [31]
+    assert all(
+        module["module"] == "builtin:Ignore"
+        for route in routes
+        for module in route["flow"][0]["onerror"]
+    )
     assert routes[0]["flow"][2]["mapper"]["photos"][0]["data"] == "{{4.data}}"
     assert routes[2]["flow"][2]["mapper"]["photos"][0]["data"] == "{{20.data}}"
     assert routes[0]["flow"][2]["mapper"]["message"] == "{{16.data.caption}}"

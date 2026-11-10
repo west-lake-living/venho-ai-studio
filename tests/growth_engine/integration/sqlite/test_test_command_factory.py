@@ -8,6 +8,7 @@ import sqlite3
 import stat
 import time
 from pathlib import Path
+from urllib.parse import urlsplit
 
 import pytest
 import yaml
@@ -99,6 +100,7 @@ def test_factory_persists_test_chain_and_private_envelope(tmp_path: Path, monkey
         chain = connection.execute(
             """SELECT s.id AS slot_id, d.id AS delivery_id, d.state,
                       r.id AS revision_id, a.id AS approval_id, c.id AS command_id,
+                      c.state AS outbox_state,
                       ch.environment, ch.channel_key
                   FROM slots s JOIN slot_targets st ON st.slot_id=s.id
                JOIN channels ch ON ch.id=st.channel_id
@@ -115,11 +117,19 @@ def test_factory_persists_test_chain_and_private_envelope(tmp_path: Path, monkey
         assert chain["delivery_id"] == result["delivery_id"]
         assert chain["revision_id"] == result["revision_id"]
         assert chain["command_id"] == result["command_id"]
+        assert chain["outbox_state"] == "PENDING"
         assert chain["approval_id"]
     finally:
         connection.close()
 
     client = TestClient(create_app(build_container(Settings.from_env(environ))))
+    media_url = urlsplit(envelope["media_url"])
+    media_response = client.get(f"{media_url.path}?{media_url.query}")
+    assert media_response.status_code == 200
+    assert media_response.content
+    assert media_response.headers["content-type"] == "image/jpeg"
+    assert media_response.headers["cache-control"] == "private, no-store"
+
     body = {
             "schema_version": "growth.authorize.v2",
             "command_token": envelope["command_token"],

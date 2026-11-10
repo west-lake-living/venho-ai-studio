@@ -212,6 +212,22 @@ def validate_blueprint(document: Any) -> CheckResult:
         if isinstance(module.get("id"), int)
     }
     for module in modules_by_id.values():
+        mapper = module.get("mapper")
+        is_media_fetch = module.get("module") == "http:DownloadFile" or (
+            module.get("module") == "http:MakeRequest"
+            and isinstance(mapper, dict)
+            and mapper.get("method") == "get"
+            and mapper.get("url") == "{{2.media_url}}"
+        )
+        if is_media_fetch:
+            handlers = module.get("onerror")
+            if (
+                not isinstance(handlers, list)
+                or len(handlers) != 1
+                or not isinstance(handlers[0], dict)
+                or handlers[0].get("module") != "builtin:Ignore"
+            ):
+                errors.add("media_fetch_error_must_terminate_with_ignore")
         for text in _strings(module):
             for reference in MAPPING_RE.finditer(text):
                 source = modules_by_id.get(int(reference.group(1)))

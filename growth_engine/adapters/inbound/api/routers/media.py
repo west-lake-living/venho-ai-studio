@@ -94,7 +94,7 @@ def _command_still_references_variant(row: Any, sha256: str, exp_ms: int, now_ms
     maximum_expiry_ms = command_expiry_ms + _MEDIA_TTL_GRACE_MS
     return all(
         (
-            row["command_state"] in {"DELIVERING", "ACKED", "AUTHORIZED"},
+            row["command_state"] in {"PENDING", "DELIVERING", "ACKED", "AUTHORIZED"},
             row["delivery_state"] not in {"BLOCKED", "FAILED_FINAL", "EXPIRED", "CANCELLED", "SUPERSEDED"},
             bool(row["active"]),
             row["revision_id"] == row["command_revision_id"] == row["current_revision_id"],

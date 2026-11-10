@@ -13,6 +13,7 @@ Facebook modules in Make need the approved JPEG bytes. Instagram for Business gi
 - Publish only `/internal/*` and `/media/publish/*` through the tunnel.
 - Apply Cloudflare Access Service Token policy to `/internal/*`. The application also requires a principal-specific bearer and scope for each operation.
 - Apply Access **Bypass** to `/media/publish/*`; this only bypasses Cloudflare Access. The media handler still verifies the signed `t` capability, expiry, approved variant and SHA-256. Invalid/expired capabilities return 403 JSON. Successful responses use `Content-Type: image/jpeg` and `Cache-Control: private, no-store`.
+- Make fetches F1/I1 media before calling authorize. Therefore `/media/publish/*` must serve an unexpired `PENDING` command when its current delivery revision remains active, approved, hash-matched and QC-passed; it must not require an authorization execution to exist yet. The existing signed URL, command deadline/grace, current approval/revision and exact-variant SHA checks still apply.
 - Do not route Dashboard or other browser paths through the machine endpoint policy. Do not expose the origin directly.
 
 Under GC2-D02, both Facebook Pages use the same approved source image bytes; Instagram uses its own approved 4:5 media variant. Captions follow the channel's `caption_profile` (defaulting to the same caption) and remain covered by the one grouped approval.

@@ -35,6 +35,7 @@ For the post ID, inspect the output bundle of the posting module itself. Record 
 - [x] Facebook modules 3 and 12 point to TEST Page `1363761820162798`; Instagram module 6 points to TEST account `@hanhpham1504` (its numeric ID is not present in this handoff).
 - [x] TEST Router has the three fixed `channel_key` filters and fallback Off, per the 2026-11-10 operator observation; inherited `publication_id` conditions were removed.
 - [x] Do not add Webhook response modules while sequential processing is enabled; Make reports they are unsupported in this mode.
+- [x] Generated F1/I1 modules use one `Ignore` error handler for fetch failures; this is static blueprint evidence, not yet verified in Make History.
 - [ ] Use test-only credentials and webhook. Do not paste secrets into this file.
 - [ ] Reposition/duplicate HTTP image download into each Facebook branch; map Instagram `image_url` from `media_url`.
 - [ ] Ensure every test post is visibly labelled as a test and can be removed by the operator.
@@ -57,6 +58,7 @@ Fill **Result** with `PASS`, `FAIL`, or `NOT_RUN`; use `CONFIGURED — chờ b�
 | MK-9 | Router has exactly three routes filtered by fixed `channel_key`; fallback is off; one command reaches one route. | NOT_RUN | `REQUIRED_FROM_P0` | Correct all three filters and test each channel key independently. |
 | MK-10 | Instagram accepts the signed media URL and Meta can fetch it without receiving a Cloudflare Access login page. | NOT_RUN | Redacted result: `REQUIRED_FROM_P0` | Adjust only the TEST edge rule, then retest from Instagram. |
 | MK-11 | Instagram output includes the media ID and distinguishes container creation failure from publish failure. | NOT_RUN | Exact field/error evidence: `REQUIRED_FROM_P0` | Keep uncertain outcomes unknown; capture module-level evidence. |
+| MK-12 | Each media fetch (both Facebook F1 modules and Instagram I1) catches HTTP errors with one `Ignore`; no authorize/post module runs and the error does not disable the scenario. | CONFIGURED — chờ bằng chứng run | Generator/checker require one terminal `Ignore`; Harry observed an unhandled F1 403 disable the TEST scenario. Runtime routing and active state must be rechecked after re-import. | Re-import the updated TEST blueprint; inject/observe a fetch failure on TEST and confirm the branch stops before authorize, does not retry, and Make does not disable the scenario because of that fetch error. |
 
 ## D. TEST cases to run after destinations and credentials are confirmed
 

@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import json
 
+import pytest
+
 from scripts.growth_engine.check_make_blueprint import main, validate_blueprint
 
 
@@ -102,6 +104,27 @@ def test_rejects_webhook_responder_with_sequential_processing() -> None:
     )
 
     assert "webhook_response_not_supported_with_sequential_processing" in validate_blueprint(document).errors
+
+
+@pytest.mark.parametrize(
+    ("module_type", "mapper"),
+    [
+        ("http:DownloadFile", {"url": "{{2.media_url}}"}),
+        ("http:MakeRequest", {"url": "{{2.media_url}}", "method": "get"}),
+    ],
+)
+def test_media_fetch_requires_ignore_error_handler(module_type: str, mapper: dict) -> None:
+    document = valid_blueprint()
+    route_flow = document["flow"][1]["routes"][0]["flow"]
+    fetch = {"id": 10, "module": module_type, "mapper": mapper}
+    ignore = {"id": 11, "module": "builtin:Ignore", "mapper": {}}
+    fetch["onerror"] = [ignore]
+    route_flow.insert(0, fetch)
+
+    assert "media_fetch_error_must_terminate_with_ignore" not in validate_blueprint(document).errors
+
+    fetch.pop("onerror")
+    assert "media_fetch_error_must_terminate_with_ignore" in validate_blueprint(document).errors
 
 
 def test_rejects_facebook_post_id_alias_when_module_output_is_id() -> None:

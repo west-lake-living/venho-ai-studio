@@ -451,6 +451,19 @@ def prepare_blueprint(document: dict[str, Any]) -> dict[str, Any]:
     posts[2]["onerror"] = [f6_venho, ignore2]
     posts[1]["onerror"] = [i6_venho, ignore_ig]
 
+    # Media fetch happens before authorize; Ignore must end a failed bundle without retrying or continuing to authorize.
+    f1_ignore_hanoi = copy.deepcopy(ignore_template)
+    f1_ignore_hanoi["id"] = 30
+    f1_ignore_venho = copy.deepcopy(ignore_template)
+    f1_ignore_venho["id"] = 31
+    i1_ignore = copy.deepcopy(ignore_template)
+    i1_ignore["id"] = 32
+    _position(f1_ignore_hanoi, 760, fb1_y - 130)
+    _position(f1_ignore_venho, 760, fb2_y - 130)
+    _position(i1_ignore, 760, ig_y - 130)
+    fb1_image["onerror"] = [f1_ignore_hanoi]
+    fb2_image["onerror"] = [f1_ignore_venho]
+
     # The I1 request validates the URL without mapping its binary into Instagram.
     i1 = _request(
         request_template,
@@ -464,6 +477,7 @@ def prepare_blueprint(document: dict[str, Any]) -> dict[str, Any]:
         y=ig_y,
         filter_value=route_filters[1],
     )
+    i1["onerror"] = [i1_ignore]
 
     # Sequential processing does not support explicit Webhook response modules.
     routes[0]["flow"] = [fb1_image, auth1, posts[0], f5_hanoi]

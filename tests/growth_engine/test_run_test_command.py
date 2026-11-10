@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import hashlib
 import json
 import os
 import sqlite3
@@ -23,6 +24,14 @@ FAKE_CAPABILITY_KEY = "test-key:fake-capability-key"
 FAKE_SERVICE_TOKENS = "make-fb-hanoi:" + "a" * 64
 COMMAND_ID = "11111111-1111-4111-8111-111111111111"
 POST_ID = "1363761820162798_998877665544"
+FAKE_MEDIA_SHA = "a" * 64
+FAKE_MEDIA_URL = (
+    "https://ge-test.venhohotel.com/media/publish/"
+    + FAKE_MEDIA_SHA
+    + ".jpg?t=v1.test-kid."
+    + COMMAND_ID
+    + ".1900000000000.signature"
+)
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
@@ -173,6 +182,159 @@ def test_child_environment_drops_inherited_production_values(tmp_path: Path) -> 
     assert child["GE_DB_PATH"] != "/prod/db"
 
 
+def test_local_media_preflight_uses_loopback_and_checks_image_hash_headers() -> None:
+    body = b"\xff\xd8\xffsynthetic-image"
+    digest = hashlib.sha256(body).hexdigest()
+    token = f"v1.test-kid.{COMMAND_ID}.1900000000000.signature"
+    media_url = f"https://ge-test.venhohotel.com/media/publish/{digest}.jpg?t={token}"
+    observed: dict[str, object] = {}
+
+    class Response:
+        status = 200
+
+        @staticmethod
+        def getheader(name: str, default: str = "") -> str:
+            return {
+                "Content-Type": "image/jpeg",
+                "Cache-Control": "private, no-store",
+            }.get(name, default)
+
+        def read(self, _limit: int) -> bytes:
+            return body
+
+    class Connection:
+        def __init__(self, host: str, port: int, *, timeout: int) -> None:
+            observed.update(host=host, port=port, timeout=timeout)
+
+        def request(self, method: str, target: str, *, headers: dict[str, str]) -> None:
+            observed.update(method=method, target=target, headers=headers)
+
+        @staticmethod
+        def getresponse() -> Response:
+            return Response()
+
+        def close(self) -> None:
+            observed["closed"] = True
+
+    RUNNER.check_local_media_url(
+        media_url,
+        "https://ge-test.venhohotel.com",
+        connection_factory=Connection,
+    )
+
+    assert observed["host"] == "127.0.0.1"
+    assert observed["port"] == 8023
+    assert observed["method"] == "GET"
+    assert f"t={token}" in observed["target"]
+    assert observed["headers"] == {"Host": "ge-test.venhohotel.com"}
+    assert observed["closed"] is True
+
+
+@pytest.mark.parametrize(
+    ("status", "content_type", "cache_control", "response_body"),
+    [
+        (403, "application/json", "private, no-store", b"private error response"),
+        (200, "text/html", "private, no-store", b"synthetic image bytes"),
+        (200, "image/jpeg", "public, max-age=300", b"synthetic image bytes"),
+        (200, "image/jpeg", "private, no-store", b"different image bytes"),
+    ],
+)
+def test_local_media_preflight_rejects_error_or_unverified_response(
+    status: int,
+    content_type: str,
+    cache_control: str,
+    response_body: bytes,
+) -> None:
+    expected_body = b"synthetic image bytes"
+    digest = hashlib.sha256(expected_body).hexdigest()
+    token = f"v1.test-kid.{COMMAND_ID}.1900000000000.signature"
+    media_url = f"https://ge-test.venhohotel.com/media/publish/{digest}.jpg?t={token}"
+
+    class Response:
+        def getheader(self, name: str, default: str = "") -> str:
+            return {"Content-Type": content_type, "Cache-Control": cache_control}.get(name, default)
+
+        def __init__(self) -> None:
+            self.status = status
+
+        def read(self, _limit: int) -> bytes:
+            return response_body
+
+    class Connection:
+        def __init__(self, _host: str, _port: int, *, timeout: int) -> None:
+            assert timeout == 15
+
+        @staticmethod
+        def request(_method: str, _target: str, *, headers: dict[str, str]) -> None:
+            assert headers == {"Host": "ge-test.venhohotel.com"}
+
+        @staticmethod
+        def getresponse() -> Response:
+            return Response()
+
+        @staticmethod
+        def close() -> None:
+            return None
+
+    with pytest.raises(RUNNER.RunTestError) as error:
+        RUNNER.check_local_media_url(
+            media_url,
+            "https://ge-test.venhohotel.com",
+            connection_factory=Connection,
+        )
+    assert str(error.value) == "test_media_preflight_failed"
+    assert token not in str(error.value)
+
+
+def test_media_preflight_failure_stops_before_confirmation_and_send(tmp_path: Path) -> None:
+    home = _home(tmp_path)
+    repo = _repo(home)
+    _create_db_schema(home / "venho/state/growth-engine-test/growth_engine.db")
+    prompts: list[str] = []
+    outputs: list[str] = []
+    calls: list[list[str]] = []
+
+    def fake_runner(args, *, cwd, env, **kwargs):
+        calls.append(args)
+        envelope_path = Path(args[args.index("--envelope-file") + 1])
+        envelope_path.write_text(
+            json.dumps(
+                {
+                    "command_id": COMMAND_ID,
+                    "channel_key": "fb_hanoi",
+                    "channel_id": env["GE_TEST_CHANNEL_ID"],
+                    "remote_page_id": "1363761820162798",
+                    "execute_before_ms": 1_900_000_000_000,
+                    "media_url": FAKE_MEDIA_URL,
+                }
+            ),
+            encoding="utf-8",
+        )
+        envelope_path.chmod(0o600)
+        return subprocess.CompletedProcess(args, 0, json.dumps({"network_request_sent": False}), "")
+
+    def fail_media_preflight(_media_url: str, _public_base_url: str) -> None:
+        raise RUNNER.RunTestError("test_media_preflight_failed")
+
+    with pytest.raises(RUNNER.RunTestError, match="test_media_preflight_failed"):
+        RUNNER.run_first_command(
+            home=home,
+            repo_root=repo,
+            input_fn=lambda prompt: (prompts.append(prompt), "GUI")[1],
+            secret_input=lambda _prompt: FAKE_WEBHOOK,
+            runner=fake_runner,
+            media_preflight=fail_media_preflight,
+            emit=outputs.append,
+        )
+
+    assert len(calls) == 1
+    assert "--create-command" in calls[0]
+    assert "--send" not in calls[0]
+    assert prompts == []
+    assert "media_preflight=FAIL" in outputs
+    assert FAKE_MEDIA_URL not in "\n".join(outputs)
+
+
 def test_run_requires_active_and_gui_before_fake_send_and_reports_db_receipt(tmp_path: Path) -> None:
     home = _home(tmp_path)
     repo = _repo(home)
@@ -196,7 +358,7 @@ def test_run_requires_active_and_gui_before_fake_send_and_reports_db_receipt(tmp
                 "remote_page_id": "1363761820162798",
                 "execute_before_ms": 1_900_000_000_000,
                 "command_token": "fake-private-token-value",
-                "media_url": "https://ge-test.venhohotel.com/fake-private-signed-url",
+                "media_url": FAKE_MEDIA_URL,
             }
             envelope_path.write_text(json.dumps(envelope), encoding="utf-8")
             envelope_path.chmod(0o600)
@@ -232,8 +394,16 @@ def test_run_requires_active_and_gui_before_fake_send_and_reports_db_receipt(tmp
         )
 
     answers = iter(["ACTIVE", "GUI"])
+    media_checks: list[str] = []
+
+    def media_preflight(url: str, public_base_url: str) -> None:
+        assert url == FAKE_MEDIA_URL
+        assert public_base_url == "https://ge-test.venhohotel.com"
+        assert prompts == []
+        media_checks.append("PASS")
 
     def fake_input(prompt: str) -> str:
+        assert media_checks == ["PASS"]
         prompts.append(prompt)
         return next(answers)
 
@@ -245,6 +415,7 @@ def test_run_requires_active_and_gui_before_fake_send_and_reports_db_receipt(tmp
         runner=fake_runner,
         sleep=lambda _seconds: None,
         monotonic=lambda: 10.0,
+        media_preflight=media_preflight,
         emit=outputs.append,
         database_wait_seconds=0,
     )
@@ -258,7 +429,8 @@ def test_run_requires_active_and_gui_before_fake_send_and_reports_db_receipt(tmp
     assert "outcome=POST_CREATED" in outputs
     assert f"platform_post_id={POST_ID}" in outputs
     assert "failed_step=NONE" in outputs
-    for secret in (FAKE_WEBHOOK, FAKE_CAPABILITY_KEY, FAKE_SERVICE_TOKENS, "fake-private-token-value", "fake-private-signed-url"):
+    assert "media_preflight=PASS" in outputs
+    for secret in (FAKE_WEBHOOK, FAKE_CAPABILITY_KEY, FAKE_SERVICE_TOKENS, "fake-private-token-value", FAKE_MEDIA_URL):
         assert secret not in "\n".join(outputs)
 
 
@@ -279,6 +451,7 @@ def test_nonmatching_confirmation_never_invokes_send(tmp_path: Path, answers: li
                     "channel_id": env["GE_TEST_CHANNEL_ID"],
                     "remote_page_id": "1363761820162798",
                     "execute_before_ms": 1_900_000_000_000,
+                    "media_url": FAKE_MEDIA_URL,
                 }
             ),
             encoding="utf-8",
@@ -294,6 +467,7 @@ def test_nonmatching_confirmation_never_invokes_send(tmp_path: Path, answers: li
         input_fn=lambda prompt: (prompts.append(prompt), next(answers_iterator))[1],
         secret_input=lambda _prompt: "https://hook.eu1.make.com/fake-path",
         runner=fake_runner,
+        media_preflight=lambda _media_url, _public_base_url: None,
         emit=lambda _line: None,
         database_wait_seconds=0,
     )

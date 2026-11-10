@@ -319,6 +319,8 @@ Sau khi mọi gate được duyệt, thứ tự mở target production là `fb_h
 
 Trạng thái Harry xác nhận 10/11/2026: Make TEST import thành công với 20 module; scenario `6924867` vẫn Inactive. API TEST đang chạy bằng transient unit `growth-engine-api-test-src` trên `127.0.0.1:8023`, env `~/venho/secrets/growth-engine-test.env`. Harry xác nhận Graph API `v27.0` từ Graph API Explorer của Meta app đang dùng; manifest TEST đã ghi scenario, graph version, owner và ngày xác minh. Connection tham chiếu bằng tên `Ven Ho Hotel Hanoi (Ha Pham)`; ID số chưa xác minh. Runner chỉ cần route ref, Page ID, principal, Graph API version và TEST runtime env; không đọc scenario/connection ref/owner.
 
+Sau khi cập nhật checkout server có sửa đổi media handler, restart transient unit `growth-engine-api-test-src` để process nạp code mới. Sửa đổi này không cần DB migration.
+
 Sau khi cập nhật checkout server để có commit chứa manifest và wrapper này, chạy từ `~/venho/gc2-src`:
 
 ```bash
@@ -327,7 +329,9 @@ bash ops/asus-server/growth-engine/run-test-command.sh
 
 Wrapper hỏi ẩn TEST webhook URL rồi idempotently đặt `GE_TEST_CHANNEL_KEY=fb_hanoi`, một UUID chuẩn trong `GE_TEST_CHANNEL_ID`, `GE_TEST_REMOTE_PAGE_ID=1363761820162798` và `GE_MAKE_WEBHOOK_URL_PAGE_TEST`. UUID được sinh một lần nếu thiếu và được giữ nguyên khi chạy lại; `page_test` trong manifest là khóa tra cấu hình, không phải giá trị channel UUID. Wrapper từ chối env không phải TEST, target khác, webhook không khớp giá trị đã lưu hoặc DB/media path ngoài TEST. Không đụng file backup `.bak-20261110102217`.
 
-Wrapper chạy `send_test_command.py --create-command` và in channel key, Page ID, command ID, thời hạn execute. Vì scenario hiện Inactive, trước khi tiếp tục Harry phải bật đúng scenario TEST trong Make; wrapper yêu cầu gõ `ACTIVE`, rồi yêu cầu chính xác `GUI` tại prompt **“Gõ GUI để gửi lệnh đăng thử lên Page TEST”**. Chỉ sau cả hai xác nhận mới chạy `--send --confirm-test-remote-id 1363761820162798`. Nếu không xác nhận, không gửi; private envelope mode `600` được giữ lại để tránh tạo command khác.
+Sau khi tạo command, wrapper tự GET signed media URL qua `http://127.0.0.1:8023` trước khi hỏi `ACTIVE` hoặc `GUI`. Nó yêu cầu HTTP 200, `image/jpeg`, `Cache-Control: private, no-store`, body khớp SHA trong path và không in URL/token. Nếu check thất bại thì dừng trước cả hai xác nhận, không gửi webhook.
+
+Vì scenario hiện Inactive, trước khi tiếp tục Harry phải bật đúng scenario TEST trong Make; wrapper yêu cầu gõ `ACTIVE`, rồi yêu cầu chính xác `GUI` tại prompt **“Gõ GUI để gửi lệnh đăng thử lên Page TEST”**. Chỉ sau khi media preflight đạt và cả hai xác nhận mới chạy `--send --confirm-test-remote-id 1363761820162798`. Nếu không xác nhận, không gửi; private envelope mode `600` được giữ lại để tránh tạo command khác.
 
 Sau khi gửi, wrapper đọc DB TEST ở chế độ chỉ đọc tối đa 120 giây rồi in command/execution/receipt state, outcome, `platform_post_id` và `failed_step`. Không in webhook URL, capability token hay media URL; không tự gửi lại khi trạng thái không rõ.
 
