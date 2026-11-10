@@ -1,0 +1,22 @@
+[Unit]
+Description=Ven Ho Growth Engine API (TEST)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+EnvironmentFile=%h/venho/secrets/growth-engine-test.env
+Environment=GE_ENV=test
+WorkingDirectory=%h/venho/growth-engine/current
+ExecStart=%h/venho/growth-engine/current/.venv/bin/venho-engine api --host 127.0.0.1 --port 8023
+Restart=on-failure
+RestartSec=5s
+TimeoutStopSec=60s
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ReadWritePaths=%h/venho/state/growth-engine-test
+
+[Install]
+WantedBy=default.target

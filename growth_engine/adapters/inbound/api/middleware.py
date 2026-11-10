@@ -22,6 +22,7 @@ class RequestMiddleware:
         scope.setdefault("state", {})["correlation_id"] = correlation_id
         path = str(scope.get("path", ""))
         is_private_api = path.startswith(("/api/", "/internal/"))
+        is_publish_media = path == "/media/publish" or path.startswith("/media/publish/")
 
         async def send_with_metadata(message: dict[str, Any]) -> None:
             if message.get("type") == "http.response.start":
@@ -29,11 +30,13 @@ class RequestMiddleware:
                     (key, value)
                     for key, value in message.get("headers", [])
                     if key.lower() != b"x-correlation-id"
-                    and not (is_private_api and key.lower() == b"cache-control")
+                    and not ((is_private_api or is_publish_media) and key.lower() == b"cache-control")
                 ]
                 headers.append((b"x-correlation-id", correlation_id.encode("ascii")))
                 if is_private_api:
                     headers.append((b"cache-control", b"no-store"))
+                elif is_publish_media:
+                    headers.append((b"cache-control", b"private, no-store"))
                 message = {**message, "headers": headers}
             await send(message)
 

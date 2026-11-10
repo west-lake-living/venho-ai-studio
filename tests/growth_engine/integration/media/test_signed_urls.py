@@ -6,8 +6,11 @@ from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
+from fastapi import FastAPI
 
 from growth_engine.adapters.inbound.api.app import create_app
+from growth_engine.adapters.inbound.api.errors import unhandled_error_handler
+from growth_engine.adapters.inbound.api.middleware import RequestMiddleware
 from growth_engine.adapters.outbound.media.local_store import LocalMediaStore
 from growth_engine.adapters.outbound.media.signed_urls import SignedMediaUrlIssuer
 from growth_engine.adapters.outbound.persistence.sqlite.connection import connect
@@ -82,7 +85,42 @@ def test_invalid_signed_media_requests_return_403_json(
 
     assert response.status_code == 403
     assert response.headers["content-type"].startswith("application/json")
+    assert response.headers["cache-control"] == "private, no-store"
     assert response.json()["error"]["code"] == "ERR_GC2_CAPABILITY_INVALID"
+
+
+@pytest.mark.parametrize(
+    ("method", "path", "status"),
+    [("GET", "/media/publish", 403), ("POST", "/media/publish/not-an-image.jpg", 405)],
+)
+def test_media_route_mismatch_responses_are_not_cached(
+    media_client: tuple[TestClient, SignedMediaUrlIssuer],
+    method: str,
+    path: str,
+    status: int,
+) -> None:
+    client, _issuer = media_client
+
+    response = client.request(method, path)
+
+    assert response.status_code == status
+    assert response.headers["cache-control"] == "private, no-store"
+
+
+def test_unhandled_media_error_response_is_not_cached() -> None:
+    app = FastAPI()
+    app.add_middleware(RequestMiddleware)
+    app.add_exception_handler(Exception, unhandled_error_handler)
+
+    @app.get("/media/publish/failure.jpg")
+    def fail() -> None:
+        raise RuntimeError("synthetic media failure")
+
+    client = TestClient(app, raise_server_exceptions=False)
+    response = client.get("/media/publish/failure.jpg")
+
+    assert response.status_code == 500
+    assert response.headers["cache-control"] == "private, no-store"
 
 
 def _seed_approved_command(database_path: Path, media_root: str) -> None:

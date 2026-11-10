@@ -64,34 +64,29 @@ python3 ops/asus-server/growth-engine/push-meta-tokens.py
 
 Có thể chỉ định SSH host alias khác bằng `--host <alias>`. Script gọi Graph API v27.0 `/me/accounts?fields=id,name,access_token`; nếu thiếu một trong hai Page ID đã cấu hình thì dừng trước SSH. Sau khi hoàn tất, trên server chạy lệnh kiểm tra ở cuối mục này; kết quả chỉ được là `DA_CO_GIA_TRI` hoặc `PLACEHOLDER` theo tên biến, không hiển thị giá trị. Không chạy script trong môi trường có shell xtrace hoặc terminal recording.
 
-Tạo riêng file API TEST; DB và media phải nằm trong thư mục TEST riêng, không trỏ vào production:
+Tạo riêng file API TEST và bộ bearer TEST từ checkout GC2 đã review trên server. Script không đọc/sửa env production; khi chạy lần đầu nó tạo DB/media path tách biệt, khoá capability mới và ba bearer có principal policy hợp lệ:
 
 ```bash
-umask 077
-install -m 600 /dev/null "$HOME/venho/secrets/growth-engine-test.env"
-${EDITOR:-vi} "$HOME/venho/secrets/growth-engine-test.env"
-chmod 600 "$HOME/venho/secrets/growth-engine-test.env"
-test "$(stat -c '%a' "$HOME/venho/secrets/growth-engine-test.env")" = 600
-grep -qx 'GE_ENV=test' "$HOME/venho/secrets/growth-engine-test.env"
+bash ops/asus-server/growth-engine/setup-test-env.sh
+```
+
+Script tạo `~/venho/secrets/growth-engine-test.env` và file bàn giao bearer `~/venho/secrets/growth-engine-test.make-bearers.tmp`, đều mode `600`; thư mục secret/state mode `700`. Env giữ `GE_SERVICE_TOKENS` dạng SHA-256, không có bearer thô. Chép ba bearer từ file tạm vào HTTP modules Make TEST rồi xóa file đó. Không `cat` file, dán bearer vào terminal lệnh, Git hay chat. Chạy lại script không xoay key/token và không tạo lại file bàn giao đã xóa.
+
+Sau khi chép đủ ba bearer vào Make TEST, xóa file plaintext:
+
+```bash
+rm -f "$HOME/venho/secrets/growth-engine-test.make-bearers.tmp"
 ```
 
 Với `GE_ENV=test`, `Settings` không tự bắt buộc biến production-only như Telegram, dashboard URL hay Meta token; `doctor` cần các giá trị không rỗng cho `GE_DB_PATH`, `GE_MEDIA_ROOT`, `GE_PUBLIC_BASE_URL`, `GE_CAPABILITY_KEYS`, `GE_SERVICE_TOKENS`. Các `GE_MAKE_WEBHOOK_URL_*`, `GE_META_READ_TOKEN_*` hoặc `GE_TELEGRAM_*` nào được khai báo cũng phải không rỗng/placeholder. Riêng `send_test_command.py --create-command` còn cần `GE_TEST_CHANNEL_KEY`, `GE_TEST_CHANNEL_ID`, ID đích đúng (`GE_TEST_REMOTE_PAGE_ID` hoặc `GE_TEST_REMOTE_IG_ID`), URL webhook TEST tương ứng; `channels.yaml` cần Graph API version đã xác minh. Mã API/publish TEST hiện không cần Meta read token. Không sao chép production bearer, webhook hay Page ID vào TEST.
 
 Các tên Meta TEST `GE_META_READ_TOKEN_PAGE_TEST`/`GE_META_READ_TOKEN_IG_TEST` là tham chiếu manifest; chỉ điền nếu có tác vụ đọc Meta TEST đã được xác định. `Settings` không yêu cầu chúng cho API TEST.
 
-`GE_SERVICE_TOKENS` lưu các entry `principal:sha256`, không lưu bearer thô. `auth.py` băm `SHA256(bearer.strip().encode("utf-8"))`, hex thường, rồi so khớp constant-time. Tạo ba bearer TEST ngẫu nhiên, khác bearer production, mỗi bearer chỉ gắn một route (`make-fb-hanoi` → `fb_hanoi`, `make-fb-venho` → `fb_venho`, `make-ig` → `ig_venho`); tên principal được tái sử dụng giữa env files riêng vì đây là các tên duy nhất trong policy hiện tại. Đặt bearer tương ứng trong HTTP connection của nhánh Make TEST. Để lấy entry hash mà không echo bearer, chạy từng lệnh và nhập cùng bearer ở prompt ẩn; lệnh chỉ in `principal:hash`, không in bearer:
-
-```bash
-python3 scripts/growth_engine/hash_service_token.py --principal make-fb-hanoi
-python3 scripts/growth_engine/hash_service_token.py --principal make-fb-venho
-python3 scripts/growth_engine/hash_service_token.py --principal make-ig
-```
-
-Đưa ba entry hash vào `GE_SERVICE_TOKENS` trong TEST env file bằng mục “Nạp bí mật không lộ” bên dưới; không ghi bearer hoặc hash vào repo/log. Principal tên `make-fb-hanoi-test`/`make-fb-venho-test`/`make-ig-test` chưa có trong `_PRINCIPAL_POLICY` và sẽ không có scope/channel nếu tự đặt.
+`GE_SERVICE_TOKENS` lưu các entry `principal:sha256`, không lưu bearer thô. `auth.py` băm `SHA256(bearer.strip().encode("utf-8"))`, hex thường, rồi so khớp constant-time. Script dùng đúng principal `make-fb-hanoi` → `fb_hanoi`, `make-fb-venho` → `fb_venho`, `make-ig` → `ig_venho`; không tự đặt principal mới.
 
 Meta token lifecycle: biến Page trên server là Page access token lấy từ long-lived user token; không hết hạn theo thời gian nhưng có thể bị thu hồi. Instagram dùng long-lived user token khoảng 60 ngày; đặt nhắc gia hạn trước hạn. Không ghi giá trị token vào tài liệu/log.
 
-**Mong đợi:** cả hai file tồn tại với mode `600`; kiểm tra chỉ in quyền và `GE_ENV`, không in giá trị còn lại.
+**Mong đợi:** TEST env có mode `600`; file bàn giao bearer có mode `600` cho tới khi được chép vào Make rồi xóa. Kiểm tra chỉ in quyền và `GE_ENV`, không in giá trị còn lại.
 
 **Dừng:** thiếu secret/route TEST, giá trị placeholder còn trong production file, DB path trùng nhau hoặc mode khác `600` thì không deploy.
 
@@ -124,31 +119,64 @@ Ghi lại SHA được review, rồi trên cùng checkout chạy:
 bash ops/asus-server/growth-engine/deploy-release.sh <reviewed-git-sha>
 ```
 
-Script yêu cầu production DB đã ở schema mục tiêu và runtime control `production` đã là `DISABLED`; script không migrate DB. Sau khi deploy, mở API TEST dùng đúng release hiện hành nhưng env file/DB TEST riêng:
+Script yêu cầu production DB đã ở schema mục tiêu và runtime control `production` đã là `DISABLED`; script không migrate DB. Sau deploy, cài user unit API TEST, chạy migration vào DB TEST riêng, rồi start service:
 
 ```bash
-systemd-run --user --unit=growth-engine-api-test --collect \
+install -d -m 700 "$HOME/.config/systemd/user"
+install -m 644 ops/asus-server/growth-engine/growth-engine-api-test.service "$HOME/.config/systemd/user/"
+systemctl --user daemon-reload
+systemd-run --user --pipe --wait --collect \
   --property="EnvironmentFile=$HOME/venho/secrets/growth-engine-test.env" \
   --property="WorkingDirectory=$HOME/venho/growth-engine/current" \
   --setenv=GE_ENV=test \
-  "$HOME/venho/growth-engine/current/.venv/bin/venho-engine" \
-  api --host 127.0.0.1 --port 8022
+  "$HOME/venho/growth-engine/current/.venv/bin/venho-engine" migrate
+systemctl --user start growth-engine-api-test.service
 ```
 
 Kiểm tra TEST API:
 
 ```bash
-curl --fail --silent --show-error http://127.0.0.1:8022/health/live
-curl --fail --silent --show-error http://127.0.0.1:8022/health/ready
+curl --fail --silent --show-error http://127.0.0.1:8023/health/live
+curl --fail --silent --show-error http://127.0.0.1:8023/health/ready
 ```
 
-**Mong đợi:** deploy báo đúng release SHA đang hoạt động, `doctor` PASS, production mode vẫn `DISABLED`; TEST API trả `live` và `ready` trên loopback cổng `8022` với DB TEST.
+**Mong đợi:** deploy báo đúng release SHA đang hoạt động, `doctor` PASS, production mode vẫn `DISABLED`; TEST API trả `live` và `ready` trên loopback cổng `8023` với DB TEST.
 
 **Dừng:** source checkout bẩn, SHA chưa có trên origin, migration/doctor không PASS, production chưa `DISABLED`, hoặc TEST API không ready. Deploy script tự rollback khi health/doctor sau switch lỗi. Dừng API TEST bằng:
 
 ```bash
 systemctl --user stop growth-engine-api-test.service
 ```
+
+Xác nhận Access/tunnel từ shell có sẵn `CF_ACCESS_CLIENT_ID` và `CF_ACCESS_CLIENT_SECRET`. Không bật xtrace. GET tới route POST-only phải qua Cloudflare/tunnel và tới ứng dụng, nơi kết quả dự kiến là `405`; thiếu/không hợp lệ service token phải dừng ở Cloudflare `403` hoặc login denial. Header được đọc từ env/config manager và không in giá trị:
+
+```bash
+[[ "$-" != *x* ]] || { printf 'Tắt xtrace trước khi gửi Access headers.\n' >&2; exit 2; }
+: "${CF_ACCESS_CLIENT_ID:?missing CF_ACCESS_CLIENT_ID}"
+: "${CF_ACCESS_CLIENT_SECRET:?missing CF_ACCESS_CLIENT_SECRET}"
+probe_status="$(curl --config <(printf 'header = "CF-Access-Client-Id: %s"\nheader = "CF-Access-Client-Secret: %s"\n' \
+  "$CF_ACCESS_CLIENT_ID" "$CF_ACCESS_CLIENT_SECRET") \
+  --silent --show-error --max-redirs 0 --output /dev/null --write-out '%{http_code}' \
+  --request GET https://ge-test.venhohotel.com/internal/growth/v2/executions/authorize)"
+printf 'Access/tunnel probe: HTTP %s\n' "$probe_status"
+test "$probe_status" = 405
+```
+
+Xác nhận `/media/publish` bypass Access nhưng không cache phản hồi lỗi. Lệnh sau chỉ in status và Cache-Control, không in body:
+
+```bash
+headers_file="$(mktemp)"
+trap 'rm -f "$headers_file"' EXIT
+media_status="$(curl --silent --show-error --max-redirs 0 --dump-header "$headers_file" \
+  --output /dev/null --write-out '%{http_code}' \
+  'https://ge-test.venhohotel.com/media/publish/0000000000000000000000000000000000000000000000000000000000000000.jpg?t=invalid')"
+printf 'Invalid media probe: HTTP %s\n' "$media_status"
+awk 'BEGIN{IGNORECASE=1} /^Cache-Control:/ {gsub("\r", ""); print}' "$headers_file"
+rm -f "$headers_file"
+trap - EXIT
+```
+
+Sau khi có signed TEST media URL hợp lệ được giữ kín trong `GE_TEST_MEDIA_URL`, lặp lại lệnh `curl` với biến này: kết quả cần là HTTP `200` và `Cache-Control: private, no-store`. Không echo hay dán signed URL.
 
 ### Nạp bí mật không lộ
 
@@ -184,11 +212,7 @@ os.chmod(p, 0o600)
 }
 ```
 
-Ví dụ gọi hàm (giá trị sẽ được hỏi ẩn; file phải tồn tại, biến có thể được thêm mới hoặc thay thế):
-
-```bash
-setenv GE_SERVICE_TOKENS "$HOME/venho/secrets/growth-engine-test.env"
-```
+Chỉ dùng hàm này cho biến TEST bổ sung sau khi xác định lệnh nào sẽ đọc biến đó. Không dùng để thay `GE_SERVICE_TOKENS` hoặc `GE_CAPABILITY_KEYS` mà `setup-test-env.sh` đã tạo.
 
 Kiểm tra chỉ in tên biến, trạng thái và quyền file; không `cat`, `grep` giá trị hay `source` env file:
 
@@ -213,36 +237,27 @@ Thêm/bỏ tên trong danh sách status theo env file cần rà; giá trị khô
 
 ## 4. Cấu hình Cloudflare hostname và Access cho TEST
 
-Harry cấu hình Tunnel/hostname TEST theo ADR-05/ADR-06: `/internal/*` dùng Access Service Token; `/media/publish/*` có Access Bypass nhưng vẫn yêu cầu signed capability. Không thay đổi hostname production ở bước này.
+Đã xác minh 10/11/2026: hostname `https://ge-test.venhohotel.com` dùng tunnel locally-managed `venho-n8n` (`/etc/cloudflared/config.yml` trên server). Ingress `^/(internal|media/publish)/` proxy tới `http://localhost:8023`; path khác trả 404. Access app `growth-engine-test-internal` bảo vệ `/internal` bằng Service Auth token có tên `make-growth-engine-test`; `/media/publish` bypass Access nhưng vẫn cần signed capability. Không thay đổi hostname production ở bước này. Tất cả response `/media/publish` phải có `Cache-Control: private, no-store`.
 
-Từ máy ngoài, với `GE_TEST_HOST` là hostname TEST đã được xác minh, thử endpoint authorize bằng body rỗng và không có Access headers:
+Từ máy ngoài, thử endpoint authorize không có Access headers; Cloudflare phải chặn request:
 
 ```bash
 curl --silent --show-error --include --max-time 10 \
-  "https://${GE_TEST_HOST}/internal/growth/v2/executions/authorize" \
+  https://ge-test.venhohotel.com/internal/growth/v2/executions/authorize \
   -H 'Content-Type: application/json' --data '{}'
 ```
 
-Sau đó dùng hai Access TEST secrets đã nạp an toàn vào shell/credential manager để xác nhận request qua được Access nhưng vẫn bị ứng dụng từ chối vì thiếu bearer:
-
-```bash
-curl --config <(printf 'header = "CF-Access-Client-Id: %s"\nheader = "CF-Access-Client-Secret: %s"\n' "$CF_ACCESS_TEST_CLIENT_ID" "$CF_ACCESS_TEST_CLIENT_SECRET") \
-  --silent --show-error --include --max-time 10 \
-  "https://${GE_TEST_HOST}/internal/growth/v2/executions/authorize" \
-  -H 'Content-Type: application/json' --data '{}'
-```
-
-**Mong đợi:** không Access headers bị edge chặn trước application; Access hợp lệ nhưng thiếu bearer bị application trả 401 JSON. Ghi chính xác status/content type và evidence đã khử bí mật vào ADR-05/ADR-06.
+Sau đó dùng probe GET ở bước 3 với `CF_ACCESS_CLIENT_ID` và `CF_ACCESS_CLIENT_SECRET` trong environment. **Mong đợi:** thiếu Access bị edge chặn; Access hợp lệ qua tunnel và tới ứng dụng, nơi route POST-only trả 405. Probe này không gửi bearer/body và không sửa dữ liệu.
 
 **Dừng:** login redirect không rõ nguồn, request không bị edge bảo vệ, hoặc không phân biệt được edge denial với application 401. Chưa đạt thì không nối Make TEST.
 
 ## 5. Tạo scenario Make TEST và chạy MK-1…MK-11
 
-Trong Make, dùng bản copy TEST hiện có `VenHo Growth Agent TEST` (ID `6924867`), giữ Inactive/schedule OFF cho đến khi cấu hình xong; không sửa production `VenHo Growth Agent-FB/IG` (ID `5868920`). Hai module Facebook 3/12 cùng đích Page TEST `1363761820162798`; module Instagram 6 dùng `@hanhpham1504` (numeric account ID vẫn `CHƯA XÁC MINH`). Không dùng ba ID production làm TEST destination, và không dùng label thay ID. Do SQLite yêu cầu remote account duy nhất trong mỗi môi trường, mỗi nhánh dùng TEST DB riêng và API TEST phải trỏ đúng DB của lệnh trước khi thử. Cấu hình ba route `fb_hanoi` → Facebook 3, `ig_venho` → Instagram 6, `fb_venho` → Facebook 12 với filter `channel_key` cố định; fallback OFF; bỏ điều kiện `publication_id` không chứa `test`; thêm Webhook response sau receipt trên từng nhánh. Facebook dùng ảnh binary từ HTTP bên trong từng nhánh; Instagram map `image_url` từ `media_url`. Làm theo [make_blueprint_v2.md](make_blueprint_v2.md), điền MK-1…MK-11 trong [make_capabilities.md](../make_capabilities.md) chỉ bằng History/module output thật đã khử bí mật.
+Trong Make, dùng bản copy TEST hiện có `VenHo Growth Agent TEST` (ID `6924867`), giữ Inactive cho đến khi cấu hình xong và dùng trigger Immediately as data arrives; không sửa production `VenHo Growth Agent-FB/IG` (ID `5868920`). Webhook TEST có data structure 15 trường. Hai module Facebook 3/12 cùng đích Page TEST `1363761820162798`; module Instagram 6 dùng `@hanhpham1504` (numeric account ID vẫn `CHƯA XÁC MINH`). Không dùng ba ID production làm TEST destination, và không dùng label thay ID. Do SQLite yêu cầu remote account duy nhất trong mỗi môi trường, mỗi nhánh dùng TEST DB riêng và API TEST phải trỏ đúng DB của lệnh trước khi thử. Cấu hình ba route `fb_hanoi` → Facebook 3, `ig_venho` → Instagram 6, `fb_venho` → Facebook 12 với filter `channel_key` cố định; fallback OFF; bỏ điều kiện `publication_id` không chứa `test`; bật sequential processing và không thêm Webhook response modules. Facebook dùng ảnh binary từ HTTP bên trong từng nhánh; Instagram map `image_url` từ `media_url`. Sau import, đặt lại lịch về Immediately as data arrives và mở+Save HTTP 25. Làm theo [make_blueprint_v2.md](make_blueprint_v2.md), điền MK-1…MK-11 trong [make_capabilities.md](../make_capabilities.md) chỉ bằng History/module output thật đã khử bí mật.
 
-Webhook TEST chưa có data structure. Payload mẫu [make_test_sample_payload.json](make_test_sample_payload.json) theo đúng JSON Schema `growth.command.v2`; envelope này **không có** `content`, `image_url` hoặc `publication_id`. `command_token` và `payload_hash` chỉ là giá trị tổng hợp để Make nhận tên/kiểu trường, không phải chữ ký hợp lệ; authorize sẽ từ chối nó. Không gửi mẫu khi đường đi tới module HTTP/đăng bài còn nối. Dùng đúng năm bước sau:
+Webhook TEST có data structure 15 trường. Payload mẫu [make_test_sample_payload.json](make_test_sample_payload.json) theo đúng JSON Schema `growth.command.v2`; envelope này **không có** `content`, `image_url` hoặc `publication_id`. `command_token` và `payload_hash` chỉ là giá trị tổng hợp để Make nhận tên/kiểu trường, không phải chữ ký hợp lệ; authorize sẽ từ chối nó. Không gửi mẫu khi đường đi tới module HTTP/đăng bài còn nối. Dùng đúng năm bước sau:
 
-1. Xác nhận chỉ scenario TEST đang mở, schedule vẫn OFF; tạm ngắt toàn bộ module sau Custom webhook để không gọi HTTP hay đăng bài.
+1. Xác nhận chỉ scenario TEST đang mở, scenario đang Inactive và trigger đặt Immediately as data arrives; tạm ngắt toàn bộ module sau Custom webhook để không gọi HTTP hay đăng bài.
 2. Trên Custom webhook của TEST scenario, bấm **Redetermine data structure**.
 3. Trong terminal cục bộ chạy Python dưới đây; nhập webhook URL tại prompt ẩn, không dán URL vào lệnh hay chat. Chỉ HTTP status được in:
    ```bash

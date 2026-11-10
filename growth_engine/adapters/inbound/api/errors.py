@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Mapping
 
 from fastapi import Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, PlainTextResponse
 
 from growth_engine.adapters.inbound.api.schemas.common import ApiErrorEnvelope
 from growth_engine.application.errors import ApplicationError
@@ -65,6 +65,15 @@ async def domain_error_handler(request: Request, error: DomainError) -> JSONResp
 
 async def application_error_handler(request: Request, error: ApplicationError) -> JSONResponse:
     return _error_response(request, error.code, error.message, error.details)
+
+
+async def unhandled_error_handler(request: Request, error: Exception) -> PlainTextResponse:
+    del error
+    headers = {}
+    path = request.url.path
+    if path == "/media/publish" or path.startswith("/media/publish/"):
+        headers["Cache-Control"] = "private, no-store"
+    return PlainTextResponse("Internal Server Error", status_code=500, headers=headers)
 
 
 def _error_response(

@@ -1,9 +1,9 @@
 # Make router capability check — GC2-P0-T03
 
-**State:** production/TEST scenario inventory comes from operator UI observations. On 2026-11-10, MK-1 was observed on the TEST copy; other capability tests and History outcomes remain unrun.
+**State:** production/TEST scenario inventory comes from operator UI observations. MK-1 is configured on the TEST copy; run evidence is pending. Other capability tests and History outcomes remain unrun.
 
 **Production scenario:** `VenHo Growth Agent-FB/IG` (ID `5868920`, Active; do not edit).
-**TEST scenario:** `VenHo Growth Agent TEST` (ID `6924867`, Inactive; TEST webhook has no data structure yet).
+**TEST scenario:** `VenHo Growth Agent TEST` (ID `6924867`, Inactive; TEST webhook data structure has 15 fields).
 **Test requirement:** use a copied scenario and test accounts only. Do not use live pages for capability tests.
 
 No webhook URL, access token, or credential belongs in this file. Store only redacted screenshots/output, and blur connection details before attaching evidence.
@@ -42,11 +42,11 @@ For the post ID, inspect the output bundle of the posting module itself. Record 
 
 ## C. Capability evidence matrix
 
-Fill **Result** with `PASS`, `FAIL`, or `NOT_RUN`; attach redacted evidence. Do not infer a pass from a module label or from a webhook 2xx response.
+Fill **Result** with `PASS`, `FAIL`, or `NOT_RUN`; use `CONFIGURED — chờ bằng chứng run` for a selected setting whose execution evidence is pending. Attach redacted evidence. Do not infer a pass from a module label or from a webhook 2xx response.
 
 | ID | Check on TEST copy | Result | Evidence / exact observed value | Remediation if FAIL |
 |---|---|---|---|---|
-| MK-1 | Sequential processing is enabled. | PASS | Make TEST displayed “Responder is not supported when scenario is configured for sequential processing”; Harry selected sequential processing on 2026-11-10. Explicit Webhook response modules are omitted from the import draft. | Keep sequential processing enabled; do not add Webhook response modules. |
+| MK-1 | Sequential processing is enabled. | CONFIGURED — chờ bằng chứng run | Harry selected sequential processing after Make warned that responders are unsupported in this mode on 2026-11-10. Import/runtime evidence is pending. | Keep sequential processing enabled; do not add Webhook response modules. |
 | MK-2 | Incomplete executions are disabled, or the runbook explicitly forbids resuming after the response step. | NOT_RUN | `REQUIRED_FROM_P0` | Disable storage or document and enforce the no-resume rule. |
 | MK-3 | Facebook/Instagram post modules have no automatic retry and no Break directive. | NOT_RUN | `REQUIRED_FROM_P0` | Remove automatic retry/Break; ambiguous outcomes must be reconciled. |
 | MK-4 | Each post module returns its real post/media ID in its output bundle. | NOT_RUN | Exact field: `REQUIRED_FROM_P0` | Remap from the module output; never use a mapping label as a value. |

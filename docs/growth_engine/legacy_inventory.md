@@ -17,14 +17,14 @@ Nguồn: `ops/asus-server/growth-engine/preflight-host.sh`, Harry chạy trên a
 | `age` | **không có** | Cần cài trước P6 (backup mã hoá, GC2-D06) |
 | `STATE_DIR` `~/venho/state/growth-engine` | chưa tồn tại | Tạo ở P2/P9 |
 
-Cổng đang nghe: 22, 53, 3000, 3099, 4321, 5678, 8000, 8011, 8020, 8022, 8043, 8088, 8642, 8787, 8843, 9098, 20241, và các cổng cao.
-**Cổng trống đề xuất cho `growth-engine-api`: 8021** (dự phòng 8023, 8024). Tránh 8020/8022 (đang dùng) và 8011 (đã bị spec v1.0 cảnh báo, chủ sở hữu chưa xác minh).
+Ngày 10/11/2026, Harry xác nhận: production `growth-engine-api` dùng loopback `8021`; `hotel-concierge-api` đang dùng `8022`; API Growth TEST dùng `127.0.0.1:8023`.
+Danh sách cổng đang nghe ghi ngày 05/11: 22, 53, 3000, 3099, 4321, 5678, 8000, 8011, 8020, 8022, 8043, 8088, 8642, 8787, 8843, 9098, 20241, và các cổng cao. Khuyến nghị cũ dùng `8023` dự phòng đã được thay bởi API TEST.
 
 ### Việc phát sinh
 - [ ] Chạy lại bản script mới (`ssh <host> 'bash -s' < preflight-host.sh`) để ghi thêm `python_uv` (kết quả 05/11 là bản script cũ, chưa có khoá này).
 - [ ] Cài `age` trên server trước P6.
 - [ ] Ghi vào ADR-01: service GC2 chạy bằng venv runtime riêng (Python 3.11, SQLite 3.53.1); `doctor` phải kiểm `sqlite3.sqlite_version` của đúng interpreter đó.
-- [ ] Xác minh chủ sở hữu cổng 8011 và 8020/8022 nếu cần dùng dải khác.
+- [ ] Xác minh chủ sở hữu cổng 8011 và 8020 nếu cần dùng dải khác; 8022 và 8023 đã thuộc các dịch vụ hiện hữu nêu trên.
 
 ## Dữ liệu legacy
 
