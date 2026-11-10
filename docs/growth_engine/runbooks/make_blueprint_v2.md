@@ -20,7 +20,11 @@ Nguồn: trạng thái giao diện do Harry cung cấp sau khi chỉnh tay; chư
 - HTTP tải ảnh module `4` vẫn nằm trước Router. Việc cần làm cho K4 là đưa một HTTP GET `media_url` vào từng nhánh Facebook và map binary của từng HTTP riêng vào module Facebook cùng nhánh. Nhánh Instagram dùng URL `media_url` trực tiếp.
 - Bản export có URL literal trong mapper body của hai Webhook response hiện hữu. Không sao chép URL đó vào import/log/báo cáo; response draft cần là ACK nhỏ sau receipt.
 - Không thay filter, connection, Page/Instagram ID đích TEST hiện có. Giữ nguyên cấu hình scenario khác; trigger/active state không được xác nhận trong lần rà soát này.
-- K4 chưa chạy scenario và không có bằng chứng MK-1…MK-11. Export chỉ có mẫu HTTP `Download a file`; không có mẫu module HTTP request cho authorize/receipt hoặc cấu trúc error handler. Vì vậy không tự tạo các module F2–F6/I2–I6 bằng cấu trúc phỏng đoán.
+- Export mới có HTTP request module `14` và directive `Skip` module `15` trong error handler của Facebook Pages `3`. HTTP request là `POST`, body JSON string có mapping lệnh và hai header placeholders. Draft dùng cấu trúc module này làm template, xóa 14/15 khỏi vị trí mẫu, rồi cấp ID mới từ 16.
+- HTTP 14 trong export có header `Authorization` và `CF-Access-Client-Id`; draft thêm `CF-Access-Client-Secret` placeholder theo ADR-06. `Authentication type = API key` là phương án có thể khảo sát để giữ bearer, nhưng hiện **CHƯA XÁC MINH**; draft chỉ dùng custom `Authorization` header placeholder.
+- Hai URL literal di sản production nằm ở `mapper.body` của Webhook response modules `7` và `8`. Không ghi hoặc sao chép giá trị; draft thay body bằng ACK nhỏ sau receipt. Đề xuất bỏ các URL literal này khỏi Make TEST.
+- Import draft K4 giữ filter/common data, thứ tự route, connections và targets TEST. Chuỗi module: `fb_hanoi` `4 → 16 → 3 → 17 → 8`, error `18 → 19`; `ig_venho` `25 → 26 → 6 → 27 → 7`, error `28 → 29`; `fb_venho` `20 → 21 → 12 → 22 → 13`, error `23 → 24`. IDs `14/15` khỏi vị trí mẫu; IDs mới bắt đầu từ `16`.
+- K4 chưa chạy scenario và không có bằng chứng MK-1…MK-11. Export không khai báo output schema cho module đăng. Draft dự kiến map Facebook post ID từ `post_id`, Instagram media ID từ `id`; field names này **CHƯA XÁC MINH**. `statusCode`/`headers.Content-Type` và biểu thức `formatDate(now; "x")` cho grant expiry cũng cần xác nhận trong Make History/UI.
 
 ## Gate before opening Make
 
@@ -43,13 +47,13 @@ Use the existing copy `VenHo Growth Agent TEST` (ID `6924867`); do not duplicate
    - **F3 — Grant filter:** continue only when `execute = true` and current time is earlier than `grant_expires_at_ms`. Do not resume an incomplete execution after authorize.
    - **F4 — Facebook photo post:** use the branch's fixed TEST Page; map `message` from F2 `caption` and image from F1 binary. Do not map a URL or another branch's image.
    - **F5 — Success receipt:** HTTP POST `/internal/growth/v2/receipts` with the original identities, `outcome = POST_CREATED`, the actual post ID output from F4, the permalink when available and `event_id = <grant_id>:POST_CREATED`.
-   - **F6 — Error receipt:** do not retry, Break or Resume F4. Use `REJECTED_NO_SIDE_EFFECT` only for a verified error class in `make_error_classes.yaml`; otherwise send `OUTCOME_UNKNOWN`. Redact provider text and URLs.
+   - **F6 — Error receipt:** do not retry, Break or Resume F4. Use `REJECTED_NO_SIDE_EFFECT` only for a verified error class in `make_error_classes.yaml`; otherwise send `OUTCOME_UNKNOWN`. Redact provider text and URLs. Follow F6 with the exported `Ignore` directive (shown as **Skip**): it records the error receipt, then drops the failed bundle without retry/resume. Verify in TEST that the success receipt is not reached after this handler.
 4. **Instagram branch (`ig_venho` → module 6):** use the linked TEST Instagram account and its route bearer. Map the image URL directly from `media_url`; do not map the binary from HTTP:
    - **I1 — URL check:** HTTP GET `media_url` to confirm the signed URL is reachable and returns HTTP 200 with `image/jpeg`. This binary is not mapped to the Instagram posting module.
    - **I2 — Authorize** and **I3 — grant filter:** use the same authorization and expiry conditions as the Facebook branches.
    - **I4 — Instagram photo post:** map `image_url = media_url` and `caption = I2.caption`; Meta fetches the image from the signed URL. Ensure the URL remains usable through `execute_before_ms + 30 minutes` and does not encounter a Cloudflare Access login page.
    - **I5 — Success receipt:** send `POST_CREATED` with the media ID returned by I4 and `event_id = <grant_id>:POST_CREATED`.
-   - **I6 — Error receipt:** distinguish a verified container-creation failure from a publish-stage/ambiguous failure; the latter is `OUTCOME_UNKNOWN`. Never retry or resume I4.
+   - **I6 — Error receipt:** distinguish a verified container-creation failure from a publish-stage/ambiguous failure; the latter is `OUTCOME_UNKNOWN`. Never retry or resume I4. Follow I6 with the `Ignore` (**Skip**) directive for the same no-retry/no-resume reason; verify error-path routing in TEST.
 5. **Webhook response:** add one response module to each of the three TEST branches, after that branch's receipt module. Send a small acknowledgement only after the receipt returns. A webhook ACK does not prove a post was created or verified.
 
 ### Credentials for TEST HTTP modules
@@ -58,7 +62,7 @@ Keep placeholders in a blueprint draft; supply values only in the Make TEST scen
 
 | Placeholder | Make field/use | Storage behavior in Make |
 |---|---|---|
-| `__SET_IN_MAKE_BASE_URL_TEST__` | TEST base URL for authorize and receipt HTTP modules | **CHƯA XÁC MINH**; verify the supported protected field/connection before storing a value. |
+| `https://set-in-make.invalid` | TEST base URL placeholder host for authorize and receipt HTTP modules; Make requires an `https://` URL shape | **CHƯA XÁC MINH**; replace only in the TEST scenario after confirming the protected field/connection. |
 | `__SET_IN_MAKE_BEARER_FB_HANOI__` | Bearer credential for the `fb_hanoi` authorize/receipt modules | **CHƯA XÁC MINH**; verify the supported protected field/connection before storing a value. |
 | `__SET_IN_MAKE_BEARER_FB_VENHO__` | Bearer credential for the `fb_venho` authorize/receipt modules | **CHƯA XÁC MINH**; verify the supported protected field/connection before storing a value. |
 | `__SET_IN_MAKE_BEARER_IG_VENHO__` | Bearer credential for the `ig_venho` authorize/receipt modules | **CHƯA XÁC MINH**; verify the supported protected field/connection before storing a value. |
@@ -67,7 +71,11 @@ Keep placeholders in a blueprint draft; supply values only in the Make TEST scen
 
 Do not assume that Make masks values in blueprint exports, history or error logs. Confirm the storage and redaction behavior before entering credentials.
 
+The HTTP module's **Authentication type = API key** may be an alternative protected bearer configuration. This option and its masking/export behavior are **CHƯA XÁC MINH**; the draft keeps bearer as an explicit placeholder in the custom `Authorization` header.
+
 Before importing a generated draft, run `python3 scripts/growth_engine/check_make_blueprint.py _incoming/make_test_import.json`. The checker reports structural counts and error categories only; a passing result does not prove that Make will import the blueprint or that a TEST run is safe.
+
+To recreate the ignored draft from the protected export, run `umask 077` followed by `python3 scripts/growth_engine/prepare_make_test_blueprint.py`. The helper refuses unsupported export shapes and never prints blueprint values. The TEST API host remains the reserved placeholder `https://set-in-make.invalid` until replaced in Make.
 
 For Make Free, the scenario limit reported by Harry is **two active scenarios maximum**. Keep the TEST copy inactive outside its test window; before activating it, confirm the account will not exceed the two-scenario limit. This is an operator-provided plan fact and has not been independently verified in Make.
 

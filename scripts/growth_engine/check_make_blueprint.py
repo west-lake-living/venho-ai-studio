@@ -10,6 +10,7 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable
+from urllib.parse import urlsplit
 
 
 MAPPING_RE = re.compile(r"\{\{\s*(\d+)\.([A-Za-z_][A-Za-z0-9_.-]*)")
@@ -52,7 +53,12 @@ def _secret_scan(value: Any) -> set[str]:
     categories: set[str] = set()
     for text in _strings(value):
         for url in URL_RE.findall(text):
-            if "__SET_IN_MAKE_" not in url:
+            host = (urlsplit(url).hostname or "").lower()
+            placeholder_host = (
+                host == "set-in-make.invalid"
+                or (host.startswith("__set_in_make_") and host.endswith("__"))
+            )
+            if not placeholder_host:
                 categories.add("literal_url")
         for match in SIGNED_QUERY_RE.finditer(text):
             query_value = match.group(1)

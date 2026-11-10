@@ -52,6 +52,15 @@ def test_accepts_unique_ids_prior_mappings_and_placeholder_credentials() -> None
     assert result.mapping_count == 2
 
 
+def test_accepts_reserved_invalid_placeholder_host() -> None:
+    document = valid_blueprint()
+    document["flow"][1]["routes"][0]["flow"][0]["mapper"]["url"] = (
+        "https://set-in-make.invalid/internal/growth/v2/receipts"
+    )
+
+    assert validate_blueprint(document).errors == ()
+
+
 def test_rejects_duplicate_ids() -> None:
     document = valid_blueprint()
     document["flow"].append({"id": 2, "module": "gateway:WebhookRespond"})
