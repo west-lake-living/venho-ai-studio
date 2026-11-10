@@ -355,7 +355,7 @@ Nếu webhook không thể nhận cấu trúc trước khi chạy module downstr
 
 Sau khi mọi gate được duyệt, thứ tự mở target production là `fb_hanoi` → `fb_venho` → `ig_venho`; chỉ mở target kế tiếp sau khi target trước có receipt/verify xác định. Trong phiên TEST này không bật production; bài thử công khai chỉ được gửi tới Page TEST sau xác nhận `GUI` bên dưới.
 
-### Lượt đăng TEST đầu tiên — fb_hanoi
+### Runner TEST — fb_hanoi
 
 Trạng thái Harry xác nhận 10/11/2026: Make TEST import thành công với 20 module; scenario `6924867` vẫn Inactive. API TEST đang chạy bằng transient unit `growth-engine-api-test-src` trên `127.0.0.1:8023`, env `~/venho/secrets/growth-engine-test.env`. Harry xác nhận Graph API `v27.0` từ Graph API Explorer của Meta app đang dùng; manifest TEST đã ghi scenario, graph version, owner và ngày xác minh. Connection tham chiếu bằng tên `Ven Ho Hotel Hanoi (Ha Pham)`; ID số chưa xác minh. Runner chỉ cần route ref, Page ID, principal, Graph API version và TEST runtime env; không đọc scenario/connection ref/owner.
 
@@ -373,7 +373,46 @@ Sau khi tạo command, wrapper tự GET signed media URL qua `http://127.0.0.1:8
 
 Vì scenario hiện Inactive, trước khi tiếp tục Harry phải bật đúng scenario TEST trong Make; wrapper yêu cầu gõ `ACTIVE`, rồi yêu cầu chính xác `GUI` tại prompt **“Gõ GUI để gửi lệnh đăng thử lên Page TEST”**. Chỉ sau khi media preflight đạt và cả hai xác nhận mới chạy `--send --confirm-test-remote-id 1363761820162798`. Nếu không xác nhận, không gửi; private envelope mode `600` được giữ lại để tránh tạo command khác.
 
-Sau khi gửi, wrapper đọc DB TEST ở chế độ chỉ đọc tối đa 120 giây rồi in command/execution/receipt state, outcome, `platform_post_id` và `failed_step`. Không in webhook URL, capability token hay media URL; không tự gửi lại khi trạng thái không rõ.
+Sau khi gửi, wrapper đọc DB TEST ở chế độ chỉ đọc tối đa 120 giây, tiếp tục chờ khi receipt còn `RECEIVED`, rồi in command/execution/`receipt_inbox.processing_state`, outcome, `platform_post_id` và `failed_step`. Không in webhook URL, capability token hay media URL; không tự gửi lại khi trạng thái không rõ. Nếu hết hạn khi receipt vẫn `RECEIVED`, dùng lệnh one-shot bên dưới.
+
+### Áp receipt TEST một lần sau Make History
+
+Lượt TEST 3 của Harry (10/11/2026 22:33 ICT, `fb_hanoi`) đã đăng thành công trên Page TEST: History chạy webhook → F1 HTTP 4 (`200 image/jpeg`) → authorize HTTP 16 → Facebook Pages 3 → receipt HTTP 17 trong 5 operations/8 giây. Post ID do Make trả về là `1363761820162798_122106835935535879`. Hai nhánh `ig_venho` và `fb_venho` bị filter. DB xác nhận command `cd73c43a-1a28-4922-bd4d-29aeaf6d665d` có execution `AUTHORIZED`, external outcome `None`, receipt `RECEIVED`, delivery chưa được cập nhật — API nhận receipt nhưng TEST không chạy worker.
+
+Sau khi cập nhật `~/venho/gc2-src` tới commit có lệnh `apply-test-receipts`, xử lý tối đa một batch job receipt bằng transient unit riêng. Lệnh bị giới hạn vào `GE_ENV=test` và DB nằm dưới TEST state; nó không chạy scheduler, dispatch, timeout watcher hay jobs lane:
+
+```bash
+cd "$HOME/venho/gc2-src"
+systemd-run --user --pipe --wait --collect \
+  --unit=growth-engine-test-receipts \
+  --property="EnvironmentFile=$HOME/venho/secrets/growth-engine-test.env" \
+  --property="WorkingDirectory=$HOME/venho/gc2-src" \
+  --setenv=GE_ENV=test \
+  "$HOME/venho/gc2-src/.venv/bin/venho-engine" apply-test-receipts
+```
+
+Mong đợi `receipt_jobs claimed=1 completed=1 failed=0`. Lệnh không restart API TEST; nó mở cùng TEST DB, claim job `apply_receipt`, áp receipt và kết thúc. Nếu `claimed=0`, kiểm tra DB path/unit đang dùng có trùng API TEST trước đó không; không chạy lại module Facebook trong Make.
+
+Kiểm tra execution, receipt, outcome và đối chiếu platform post ID với giá trị từ Make History:
+
+```bash
+sqlite3 -header -column "$HOME/venho/state/growth-engine-test/growth_engine.db" <<'SQL'
+SELECT c.id AS command_id,
+       e.state AS execution_state,
+       i.processing_state AS receipt_inbox_state,
+       json_extract(i.body_json, '$.outcome') AS outcome,
+       d.platform_post_id AS platform_post_id,
+       CASE WHEN d.platform_post_id = json_extract(i.body_json, '$.platform_post_id')
+            THEN 'MATCH' ELSE 'MISMATCH' END AS post_id_check
+FROM outbox_commands c
+JOIN executions e ON e.command_id = c.id
+JOIN deliveries d ON d.id = e.delivery_id
+JOIN receipt_inbox i ON json_extract(i.body_json, '$.command_id') = c.id
+WHERE c.id = 'cd73c43a-1a28-4922-bd4d-29aeaf6d665d';
+SQL
+```
+
+Mong đợi `execution_state=REPORTED`, `receipt_inbox_state=APPLIED`, `outcome=POST_CREATED`, `platform_post_id=1363761820162798_122106835935535879`, `post_id_check=MATCH`. Đây là receipt report, chưa phải bước verify bài trên Meta.
 
 Chọn `GE_TEST_CHANNEL_KEY` (`fb_hanoi`, `fb_venho`, hoặc `ig_venho`), `GE_TEST_CHANNEL_ID` riêng cho nhánh, TEST DB và đúng API TEST trước khi tạo command. Facebook dùng `GE_TEST_REMOTE_PAGE_ID`, Instagram dùng `GE_TEST_REMOTE_IG_ID`. Tạo command TEST và private envelope (lệnh này không gửi webhook):
 

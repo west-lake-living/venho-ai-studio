@@ -1,6 +1,6 @@
 # Make Growth Engine v2 — TEST runbook
 
-**Scope:** one copied TEST scenario with three logical TEST targets and one Router. Do not edit or run the production scenario. MK-1 is configured; run evidence is pending. Other capability checks remain unrun.
+**Scope:** one copied TEST scenario with three logical TEST targets and one Router. Do not edit or run the production scenario. MK-1 is CONFIGURED. Run 3 proves the `fb_hanoi` path end-to-end; remaining capability checks are listed in `make_capabilities.md`.
 
 No webhook URL, access token, credential, signed media URL or production Page ID belongs in this file. Redact module output and screenshots before saving them.
 
@@ -55,6 +55,12 @@ Generator hiện thêm `Ignore` error handler riêng cho cả hai F1 Facebook v�
 Theo History do Harry cung cấp, command `76b7ca61-a7d9-4dd9-82a0-dd425030324e` chọn đúng nhánh `fb_hanoi`. F1/HTTP 4 trả `statusCode=200`, `headers.content-type=image/jpeg`, `cache-control=private,no-store`, `cf-cache-status=BYPASS`; output còn có `fileName`, `fileSize` và binary `data`. Filter `F1 image valid` chặn trước authorize vì mapping `{{4.headers.content-type}}` bị Make parse thành phép trừ `4.headers.content - type`. Không authorize và không có bài đăng.
 
 Generator đã đổi mapping thành ``{{4.headers.`content-type`}}`` cho filter F1/I1 và `media_report.content_type` trong request authorize. Checker/test từ chối mọi mapping có segment dấu `-` không bọc backtick. Cần tái import blueprint đã tạo lại và xem History lượt kế tiếp; lượt này xác nhận media PENDING và cache behavior, không xác nhận authorize/post. MK-5 và MK-9 có bằng chứng một phần.
+
+## Lượt TEST 3 — 10/11/2026 22:33 ICT
+
+Theo Make History và DB TEST do Harry cung cấp, command `cd73c43a-1a28-4922-bd4d-29aeaf6d665d` đi đúng Router branch `fb_hanoi`; hai branch `ig_venho` và `fb_venho` bị filter. History hoàn tất webhook → F1 HTTP 4 (`200 image/jpeg`) → authorize HTTP 16 → Facebook Pages 3 → receipt HTTP 17: 5 operations trong 8 giây. Facebook output `id=1363761820162798_122106835935535879` trên Page TEST. Đây là lần chạy TEST công khai đã được Harry xác nhận, không phải production post.
+
+Lúc Harry đọc DB, command/execution ở `AUTHORIZED`, external outcome `None`, và `receipt_inbox.processing_state=RECEIVED`; chưa có worker TEST chạy nên receipt chưa áp dụng. Chạy lệnh `venho-engine apply-test-receipts` theo runbook `operator_session_1.md` sau khi cập nhật source checkout; lệnh one-shot chỉ xử lý receipt job trong DB TEST và không bật scheduler/dispatch. Sau đó đối chiếu execution `REPORTED`, receipt `APPLIED`, outcome `POST_CREATED` và `platform_post_id` khớp ID Make. MK-4/6 PASS cho path đã chạy; MK-5 PASS cho Hanoi path; MK-9 PASS cho một command chọn đúng một trong ba branch. `fb_venho` và IG vẫn cần lượt riêng để xác minh mapping từng đích.
 
 ## Gate before opening Make
 

@@ -155,6 +155,30 @@ def worker(
     raise typer.Exit(code=worker_lane.run_forever())
 
 
+@app.command("apply-test-receipts")
+def apply_test_receipts() -> None:
+    """Apply one batch of due receipts from the isolated TEST database only."""
+    settings = Settings.from_env()
+    if settings.env.casefold() != "test":
+        raise typer.BadParameter("apply-test-receipts requires GE_ENV=test")
+    test_state = (Path.home() / "venho/state/growth-engine-test").resolve()
+    try:
+        Path(settings.db_path).expanduser().resolve().relative_to(test_state)
+    except ValueError as error:
+        raise typer.BadParameter(
+            "GE_DB_PATH must be inside the isolated TEST state directory"
+        ) from error
+    from growth_engine.bootstrap import build_container
+
+    container = build_container(settings)
+    result = container.process_receipt_jobs.execute()
+    typer.echo(
+        f"receipt_jobs claimed={result.claimed} completed={result.completed} failed={result.failed}"
+    )
+    if result.failed:
+        raise typer.Exit(code=1)
+
+
 @backup_cli.command("now")
 def backup_now(
     ctx: typer.Context,

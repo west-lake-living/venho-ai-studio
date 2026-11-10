@@ -39,6 +39,72 @@ def test_worker_cli_dispatches_jobs_lane(monkeypatch):
     assert calls == ["jobs"]
 
 
+def test_test_receipt_cli_runs_only_one_receipt_batch(monkeypatch, tmp_path):
+    from growth_engine.adapters.inbound.cli import main as cli_main
+
+    (tmp_path / "venho/state/growth-engine-test").mkdir(parents=True)
+    database = tmp_path / "venho/state/growth-engine-test/growth_engine.db"
+    settings = SimpleNamespace(env="test", db_path=str(database))
+    calls = []
+    monkeypatch.setattr(cli_main.Path, "home", lambda: tmp_path)
+    monkeypatch.setattr(cli_main.Settings, "from_env", lambda: settings)
+    monkeypatch.setattr(
+        "growth_engine.bootstrap.build_container",
+        lambda configured: SimpleNamespace(
+            process_receipt_jobs=SimpleNamespace(
+                execute=lambda: (calls.append("receipt-batch") or SimpleNamespace(claimed=1, completed=1, failed=0))
+            ),
+            publish_lane=SimpleNamespace(run_forever=lambda: calls.append("scheduler")),
+            dispatch_outbox=SimpleNamespace(execute=lambda *_args: calls.append("dispatch")),
+        ),
+    )
+
+    result = CliRunner().invoke(cli_main.app, ["apply-test-receipts"])
+
+    assert result.exit_code == 0
+    assert "receipt_jobs claimed=1 completed=1 failed=0" in result.stdout
+    assert calls == ["receipt-batch"]
+
+
+def test_test_receipt_cli_refuses_non_test_environment(monkeypatch):
+    from growth_engine.adapters.inbound.cli import main as cli_main
+
+    monkeypatch.setattr(
+        cli_main.Settings,
+        "from_env",
+        lambda: SimpleNamespace(env="production", db_path="/tmp/prod.db"),
+    )
+    monkeypatch.setattr(
+        "growth_engine.bootstrap.build_container",
+        lambda _settings: (_ for _ in ()).throw(AssertionError("must not build production container")),
+    )
+
+    result = CliRunner().invoke(cli_main.app, ["apply-test-receipts"])
+
+    assert result.exit_code != 0
+    assert "requires GE_ENV=test" in result.output
+
+
+def test_test_receipt_cli_refuses_database_outside_test_state(monkeypatch, tmp_path):
+    from growth_engine.adapters.inbound.cli import main as cli_main
+
+    monkeypatch.setattr(cli_main.Path, "home", lambda: tmp_path)
+    monkeypatch.setattr(
+        cli_main.Settings,
+        "from_env",
+        lambda: SimpleNamespace(env="test", db_path=str(tmp_path / "production.db")),
+    )
+    monkeypatch.setattr(
+        "growth_engine.bootstrap.build_container",
+        lambda _settings: (_ for _ in ()).throw(AssertionError("must not build isolated container")),
+    )
+
+    result = CliRunner().invoke(cli_main.app, ["apply-test-receipts"])
+
+    assert result.exit_code != 0
+    assert "inside the isolated TEST state directory" in result.output
+
+
 ICT = ZoneInfo("Asia/Ho_Chi_Minh")
 
 

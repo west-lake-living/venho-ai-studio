@@ -460,6 +460,8 @@ def test_run_requires_active_and_gui_before_fake_send_and_reports_db_receipt(tmp
     assert f"command_id={COMMAND_ID}" in outputs
     assert "outcome=POST_CREATED" in outputs
     assert f"platform_post_id={POST_ID}" in outputs
+    assert "receipt_inbox.processing_state=APPLIED" in outputs
+    assert "receipt_wait=FINAL_STATE" in outputs
     assert "failed_step=NONE" in outputs
     assert "media_preflight=PASS" in outputs
     for secret in (FAKE_WEBHOOK, FAKE_CAPABILITY_KEY, FAKE_SERVICE_TOKENS, "fake-private-token-value", FAKE_MEDIA_URL):
@@ -516,6 +518,89 @@ def test_send_refusal_prints_safe_reason_without_waiting_or_echoing_child_reason
     assert "webhook_disposition=NOT_SENT" in outputs
     assert "receipt_wait=NOT_SENT; child refused before webhook request" in outputs
     assert not any("private bearer" in line or "example.invalid" in line for line in outputs)
+
+
+def test_wait_for_db_status_keeps_polling_received_receipt_until_applied(tmp_path: Path) -> None:
+    database = tmp_path / "growth_engine.db"
+    _create_db_schema(database)
+    with sqlite3.connect(database) as connection:
+        connection.execute("INSERT INTO deliveries VALUES ('delivery-test', NULL)")
+        connection.execute(
+            "INSERT INTO outbox_commands VALUES (?, 'AUTHORIZED', 'delivery-test')",
+            (COMMAND_ID,),
+        )
+        connection.execute(
+            "INSERT INTO executions VALUES ('execution-test', ?, 'delivery-test', 'AUTHORIZED', NULL, 'grant-test', 1)",
+            (COMMAND_ID,),
+        )
+        body = {"command_id": COMMAND_ID, "outcome": "POST_CREATED", "platform_post_id": POST_ID}
+        connection.execute(
+            "INSERT INTO receipt_inbox VALUES ('RECEIVED', ?, 1)", (json.dumps(body),)
+        )
+    sleeps: list[float] = []
+    clock = [10.0]
+
+    def advance(seconds: float) -> None:
+        sleeps.append(seconds)
+        clock[0] += seconds
+        with sqlite3.connect(database) as connection:
+            connection.execute("UPDATE receipt_inbox SET processing_state='APPLIED'")
+            connection.execute(
+                "UPDATE executions SET state='REPORTED', external_outcome='POST_CREATED'"
+            )
+            connection.execute("UPDATE deliveries SET platform_post_id=?", (POST_ID,))
+
+    status, timed_out = RUNNER.wait_for_db_status(
+        database,
+        COMMAND_ID,
+        timeout_seconds=20,
+        interval_seconds=2,
+        sleep=advance,
+        monotonic=lambda: clock[0],
+    )
+
+    assert sleeps == [2]
+    assert not timed_out
+    assert status["receipt_state"] == "APPLIED"
+    assert status["execution_state"] == "REPORTED"
+    assert status["outcome"] == "POST_CREATED"
+    assert status["platform_post_id"] == POST_ID
+
+
+def test_wait_for_db_status_times_out_with_received_state_visible(tmp_path: Path) -> None:
+    database = tmp_path / "growth_engine.db"
+    _create_db_schema(database)
+    with sqlite3.connect(database) as connection:
+        connection.execute("INSERT INTO deliveries VALUES ('delivery-test', NULL)")
+        connection.execute(
+            "INSERT INTO outbox_commands VALUES (?, 'AUTHORIZED', 'delivery-test')",
+            (COMMAND_ID,),
+        )
+        connection.execute(
+            "INSERT INTO executions VALUES ('execution-test', ?, 'delivery-test', 'AUTHORIZED', NULL, 'grant-test', 1)",
+            (COMMAND_ID,),
+        )
+        body = {"command_id": COMMAND_ID, "outcome": "POST_CREATED", "platform_post_id": POST_ID}
+        connection.execute(
+            "INSERT INTO receipt_inbox VALUES ('RECEIVED', ?, 1)", (json.dumps(body),)
+        )
+    clock = [0.0]
+
+    def advance(seconds: float) -> None:
+        clock[0] += seconds
+
+    status, timed_out = RUNNER.wait_for_db_status(
+        database,
+        COMMAND_ID,
+        timeout_seconds=3,
+        interval_seconds=1,
+        sleep=advance,
+        monotonic=lambda: clock[0],
+    )
+
+    assert timed_out
+    assert status["receipt_state"] == "RECEIVED"
+    assert status["execution_state"] == "AUTHORIZED"
 
 
 @pytest.mark.parametrize("answers", [["", "GUI"], ["ACTIVE", "gui"]])

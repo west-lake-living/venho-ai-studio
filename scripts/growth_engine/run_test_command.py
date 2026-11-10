@@ -35,6 +35,8 @@ SAFE_OS_ENV_KEYS = ("HOME", "PATH", "LANG", "LC_ALL", "LC_CTYPE", "TZ", "TMPDIR"
 VALID_COMMAND_STATES = {"PENDING", "DELIVERING", "ACKED", "AUTHORIZED", "CANCELLED", "EXPIRED"}
 VALID_EXECUTION_STATES = {"AUTHORIZED", "REPORTED", "NO_SIDE_EFFECT", "UNKNOWN"}
 VALID_RECEIPT_STATES = {"RECEIVED", "APPLIED", "QUARANTINED", "IGNORED_STALE", "TIMEOUT"}
+FINAL_RECEIPT_STATES = {"APPLIED", "QUARANTINED", "IGNORED_STALE", "TIMEOUT"}
+FINAL_EXECUTION_STATES = {"REPORTED", "NO_SIDE_EFFECT", "UNKNOWN"}
 VALID_OUTCOMES = {"POST_CREATED", "REJECTED_NO_SIDE_EFFECT", "OUTCOME_UNKNOWN"}
 VALID_FAILED_STEPS = {"FETCH_MEDIA", "AUTHORIZE", "CREATE_POST"}
 FACEBOOK_POST_ID_RE = re.compile(r"^1363761820162798_[0-9]{1,40}$")
@@ -489,7 +491,10 @@ def wait_for_db_status(
     deadline = monotonic() + timeout_seconds
     while True:
         status = read_db_status(database_path, command_id)
-        if status["receipt_state"] != "NOT_FOUND":
+        if (
+            status["receipt_state"] in FINAL_RECEIPT_STATES
+            or status["execution_state"] in FINAL_EXECUTION_STATES
+        ):
             return status, False
         remaining = deadline - monotonic()
         if remaining <= 0:
@@ -607,16 +612,16 @@ def run_first_command(
             )
         emit(f"command_state={status['command_state']}")
         emit(f"execution_state={status['execution_state']}")
-        emit(f"receipt_state={status['receipt_state']}")
+        emit(f"receipt_inbox.processing_state={status['receipt_state']}")
         emit(f"outcome={status['outcome']}")
         emit(f"platform_post_id={status['platform_post_id']}")
         emit(f"failed_step={status['failed_step']}")
         if refused_reason is not None:
             emit("receipt_wait=NOT_SENT; child refused before webhook request")
         elif timed_out:
-            emit("receipt_wait=TIMEOUT_120S; no resend was attempted")
+            emit(f"receipt_wait=TIMEOUT_{database_wait_seconds}S; no resend was attempted")
         else:
-            emit("receipt_wait=RECEIVED")
+            emit("receipt_wait=FINAL_STATE")
         return 0
     finally:
         try:

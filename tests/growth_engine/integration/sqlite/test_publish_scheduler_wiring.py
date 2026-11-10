@@ -492,17 +492,8 @@ def test_receipt_api_persists_full_sanitized_body_and_applies_from_sqlite(tmp_pa
     assert persisted["permalink"] == body["permalink"]
     assert apply_jobs == 1
 
-    claim_now_ms = time.time_ns() // 1_000_000 + 1_000
-    claimed = container.receipt_store.claim_apply_jobs(claim_now_ms)
-    assert len(claimed) == 1
-    job_id, lease_token, queued_receipt_id, correlation_id = claimed[0]
-    applied = container.apply_receipt.execute(
-        queued_receipt_id, correlation_id=correlation_id
-    )
-    assert applied.processing_state == "APPLIED"
-    assert container.receipt_store.complete_apply_job(
-        job_id, lease_token, at_ms=claim_now_ms
-    )
+    processed = container.process_receipt_jobs.execute()
+    assert (processed.claimed, processed.completed, processed.failed) == (1, 1, 0)
     with container.uow_factory().read_only() as tx:
         receipt = tx.connection.execute(
             "SELECT processing_state FROM receipt_inbox WHERE id=?", (receipt_id,)
@@ -584,13 +575,8 @@ def test_instagram_media_id_receipt_is_deduplicated_and_persisted(tmp_path: Path
     assert len({item[0] for item in outcomes}) == 1
     assert sorted(item[1] for item in outcomes) == [False, True]
 
-    claim_now_ms = time.time_ns() // 1_000_000 + 1_000
-    claimed = container.receipt_store.claim_apply_jobs(claim_now_ms)
-    assert len(claimed) == 1
-    job_id, lease_token, receipt_id, correlation_id = claimed[0]
-    applied = container.apply_receipt.execute(receipt_id, correlation_id=correlation_id)
-    assert applied.processing_state == "APPLIED"
-    assert container.receipt_store.complete_apply_job(job_id, lease_token, at_ms=claim_now_ms)
+    processed = container.process_receipt_jobs.execute()
+    assert (processed.claimed, processed.completed, processed.failed) == (1, 1, 0)
     with container.uow_factory().read_only() as tx:
         delivery = tx.connection.execute(
             "SELECT platform_post_id, permalink FROM deliveries WHERE id='delivery-sqlite'"
