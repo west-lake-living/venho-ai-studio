@@ -38,6 +38,10 @@ Nguồn: quan sát trực tiếp của Harry trong Make sau import. Không sửa
 - Harry chọn sequential processing sau cảnh báo `Responder is not supported when scenario is configured for sequential processing`. Draft đặt `metadata.scenario.sequential = true` và bỏ Webhook response `8`, `7`, `13`. Các nhánh kết thúc ở receipt tương ứng. MK-1 được ghi CONFIGURED, chờ bằng chứng run; chưa có History run.
 - Các quan sát trước đây về filter, ba route, Page/IG TEST đích, connection, caption `16.data.caption`, cùng module HTTP 4 trước Router vẫn được giữ làm bằng chứng người vận hành; không dựng lại cấu hình thủ công.
 
+## Xác nhận import TEST mới — 10/11/2026
+
+Harry xác nhận import `make_test_import.secret.json` thành công: 20 module, sequential processing bật, lịch **Immediately as data arrives**, và 9 request `/internal` có host TEST, bearer theo route cùng Cloudflare Access Client ID/Secret. File import bí mật đã xóa trên Mac và server. Scenario `6924867` hiện vẫn **Inactive**; chưa có lượt đăng/History xác minh.
+
 ## Gate before opening Make
 
 - Confirm the TEST Facebook Page and Instagram account are disposable TEST destinations and are distinct from all production IDs.

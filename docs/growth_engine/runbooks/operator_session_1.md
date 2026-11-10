@@ -313,7 +313,23 @@ Webhook TEST có data structure 15 trường. Payload mẫu [make_test_sample_pa
 
 Nếu webhook không thể nhận cấu trúc trước khi chạy module downstream, không gửi mẫu qua luồng đang nối; giữ scenario dừng và ghi gate chờ xử lý. Payload giả không thể dùng để kiểm tra authorize hay đăng bài.
 
-Sau khi mọi gate được duyệt, thứ tự mở target production là `fb_hanoi` → `fb_venho` → `ig_venho`; chỉ mở target kế tiếp sau khi target trước có receipt/verify xác định. Trong phiên TEST này không bật production và không đăng thử công khai.
+Sau khi mọi gate được duyệt, thứ tự mở target production là `fb_hanoi` → `fb_venho` → `ig_venho`; chỉ mở target kế tiếp sau khi target trước có receipt/verify xác định. Trong phiên TEST này không bật production; bài thử công khai chỉ được gửi tới Page TEST sau xác nhận `GUI` bên dưới.
+
+### Lượt đăng TEST đầu tiên — fb_hanoi
+
+Trạng thái Harry xác nhận 10/11/2026: Make TEST import thành công với 20 module; scenario `6924867` vẫn Inactive. API TEST đang chạy bằng transient unit `growth-engine-api-test-src` trên `127.0.0.1:8023`, env `~/venho/secrets/growth-engine-test.env`. Không dùng lệnh này trước khi `page_test.graph_api_version` trong `channels.yaml` được cấu hình thành version đã xác minh; checkout hiện tại vẫn có `REQUIRED_FROM_P0`, nên script sẽ từ chối trước khi đọc URL hoặc sửa env.
+
+Sau khi manifest gate được xử lý và commit chứa wrapper đã có trong `~/venho/gc2-src`, chạy từ checkout đó:
+
+```bash
+bash ops/asus-server/growth-engine/run-test-command.sh
+```
+
+Wrapper hỏi ẩn TEST webhook URL rồi idempotently đặt `GE_TEST_CHANNEL_KEY=fb_hanoi`, một UUID chuẩn trong `GE_TEST_CHANNEL_ID`, `GE_TEST_REMOTE_PAGE_ID=1363761820162798` và `GE_MAKE_WEBHOOK_URL_PAGE_TEST`. UUID được sinh một lần nếu thiếu và được giữ nguyên khi chạy lại; `page_test` trong manifest là khóa tra cấu hình, không phải giá trị channel UUID. Wrapper từ chối env không phải TEST, target khác, webhook không khớp giá trị đã lưu hoặc DB/media path ngoài TEST. Không đụng file backup `.bak-20261110102217`.
+
+Wrapper chạy `send_test_command.py --create-command` và in channel key, Page ID, command ID, thời hạn execute. Vì scenario hiện Inactive, trước khi tiếp tục Harry phải bật đúng scenario TEST trong Make; wrapper yêu cầu gõ `ACTIVE`, rồi yêu cầu chính xác `GUI` tại prompt **“Gõ GUI để gửi lệnh đăng thử lên Page TEST”**. Chỉ sau cả hai xác nhận mới chạy `--send --confirm-test-remote-id 1363761820162798`. Nếu không xác nhận, không gửi; private envelope mode `600` được giữ lại để tránh tạo command khác.
+
+Sau khi gửi, wrapper đọc DB TEST ở chế độ chỉ đọc tối đa 120 giây rồi in command/execution/receipt state, outcome, `platform_post_id` và `failed_step`. Không in webhook URL, capability token hay media URL; không tự gửi lại khi trạng thái không rõ.
 
 Chọn `GE_TEST_CHANNEL_KEY` (`fb_hanoi`, `fb_venho`, hoặc `ig_venho`), `GE_TEST_CHANNEL_ID` riêng cho nhánh, TEST DB và đúng API TEST trước khi tạo command. Facebook dùng `GE_TEST_REMOTE_PAGE_ID`, Instagram dùng `GE_TEST_REMOTE_IG_ID`. Tạo command TEST và private envelope (lệnh này không gửi webhook):
 
