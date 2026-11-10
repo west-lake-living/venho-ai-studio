@@ -23,6 +23,7 @@ FAKE_CAPABILITY_KEY = "test-key:fake-capability-key"
 FAKE_SERVICE_TOKENS = "make-fb-hanoi:" + "a" * 64
 COMMAND_ID = "11111111-1111-4111-8111-111111111111"
 POST_ID = "1363761820162798_998877665544"
+REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
 def _home(tmp_path: Path) -> Path:
@@ -98,6 +99,29 @@ def test_manifest_requires_verified_fb_hanoi_graph_version() -> None:
 
     with pytest.raises(RUNNER.RunTestError, match="test_fb_hanoi_graph_api_version_not_configured"):
         RUNNER.validate_manifest(manifest)
+
+
+def test_repository_manifest_fills_test_targets_and_leaves_production_graph_versions_null() -> None:
+    manifest = RUNNER.load_manifest(REPO_ROOT)
+    channels = {item["channel_id"]: item for item in manifest["channels"]}
+
+    assert channels["page_test"]["make_scenario_id"] == "6924867"
+    assert channels["page_test"]["remote_page_id"] == "1363761820162798"
+    assert channels["page_test"]["graph_api_version"] == "v27.0"
+    assert channels["page_test"]["owner"] == "Harry"
+    assert channels["page_test"]["verified_on"] == "2026-11-10"
+    assert channels["ig_test"]["make_scenario_id"] == "6924867"
+    assert channels["ig_test"]["remote_account_id"] == "17841472240799413"
+    assert channels["ig_test"]["graph_api_version"] == "v27.0"
+    assert channels["ig_test"]["owner"] == "Harry"
+    assert channels["ig_test"]["verified_on"] == "2026-11-10"
+    assert channels["page_test"]["make_connection_ref"] == "Ven Ho Hotel Hanoi (Ha Pham)"
+    assert channels["ig_test"]["make_connection_ref"] == "Ven Ho Hotel Hanoi (Ha Pham)"
+    assert all(
+        channel["graph_api_version"] is None
+        for channel in manifest["channels"]
+        if channel["environment"] == "production"
+    )
 
 
 def test_env_settings_are_idempotent_and_leave_backup_untouched(tmp_path: Path) -> None:

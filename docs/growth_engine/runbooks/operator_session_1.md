@@ -317,9 +317,9 @@ Sau khi mọi gate được duyệt, thứ tự mở target production là `fb_h
 
 ### Lượt đăng TEST đầu tiên — fb_hanoi
 
-Trạng thái Harry xác nhận 10/11/2026: Make TEST import thành công với 20 module; scenario `6924867` vẫn Inactive. API TEST đang chạy bằng transient unit `growth-engine-api-test-src` trên `127.0.0.1:8023`, env `~/venho/secrets/growth-engine-test.env`. Không dùng lệnh này trước khi `page_test.graph_api_version` trong `channels.yaml` được cấu hình thành version đã xác minh; checkout hiện tại vẫn có `REQUIRED_FROM_P0`, nên script sẽ từ chối trước khi đọc URL hoặc sửa env.
+Trạng thái Harry xác nhận 10/11/2026: Make TEST import thành công với 20 module; scenario `6924867` vẫn Inactive. API TEST đang chạy bằng transient unit `growth-engine-api-test-src` trên `127.0.0.1:8023`, env `~/venho/secrets/growth-engine-test.env`. Harry xác nhận Graph API `v27.0` từ Graph API Explorer của Meta app đang dùng; manifest TEST đã ghi scenario, graph version, owner và ngày xác minh. Connection tham chiếu bằng tên `Ven Ho Hotel Hanoi (Ha Pham)`; ID số chưa xác minh. Runner chỉ cần route ref, Page ID, principal, Graph API version và TEST runtime env; không đọc scenario/connection ref/owner.
 
-Sau khi manifest gate được xử lý và commit chứa wrapper đã có trong `~/venho/gc2-src`, chạy từ checkout đó:
+Sau khi cập nhật checkout server để có commit chứa manifest và wrapper này, chạy từ `~/venho/gc2-src`:
 
 ```bash
 bash ops/asus-server/growth-engine/run-test-command.sh

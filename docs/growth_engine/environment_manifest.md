@@ -45,20 +45,20 @@ Instagram là kênh đăng v2: `ig_venho` → `instagram_business_account.id` `1
 |---|---|
 | Tên Page hiển thị | Ven Hồ Growth Test |
 | `remote_page_id` | `1363761820162798` |
-| Make scenario ID | REQUIRED_FROM_P0 |
+| Make scenario ID | `6924867` — VenHo Growth Agent TEST |
 | Route ref (tên env) | `GE_MAKE_WEBHOOK_URL_PAGE_TEST` |
-| Make connection (tên) | REQUIRED_FROM_P0 |
-| Graph API version | REQUIRED_FROM_P0 |
+| Make connection (tên) | `Ven Ho Hotel Hanoi (Ha Pham)` — ID số CHƯA XÁC MINH; runner đăng thử không dùng trường này |
+| Graph API version | `v27.0` — Harry đọc từ Graph API Explorer của Meta app đang dùng ngày 2026-11-10 |
 | Principals | `make-fb-hanoi`, `make-fb-venho` (bearer TEST riêng cho từng nhánh) |
 | Env token đọc Meta (tên) | `GE_META_READ_TOKEN_PAGE_TEST` |
-| Owner | REQUIRED_FROM_P0 |
-| Ngày xác minh | REQUIRED_FROM_P0 |
+| Owner | Harry |
+| Ngày xác minh | 2026-11-10 |
 
 Page TEST Graph API ID là `1363761820162798`. Cảnh báo: `61596076389732` trong URL `facebook.com/profile.php?id=61596076389732` là định danh URL hồ sơ, **không phải** Graph API Page ID; không dùng giá trị đó làm `remote_page_id`.
 
 `publication_id` chứa `test` chỉ là lớp phụ; Page test và scenario test mới là cơ chế chính ngăn bài test lên Page thật.
 
-Instagram TEST dùng tài khoản `@hanhpham1504`, ID `17841472240799413`, đã được chuyển sang Business và liên kết với Page TEST `1363761820162798`. ID do Harry cung cấp; không thay bằng ID production `17841457936965829`. Scenario, connection, owner và ngày xác minh vẫn `REQUIRED_FROM_P0`. Không dùng `ig_venho` cho thử nghiệm có side effect.
+Instagram TEST dùng tài khoản `@hanhpham1504`, ID `17841472240799413`, đã được chuyển sang Business và liên kết với Page TEST `1363761820162798`. ID do Harry cung cấp; không thay bằng ID production `17841457936965829`. Kênh dùng scenario `6924867`, Graph API `v27.0` (Harry đọc trong Graph API Explorer của Meta app đang dùng ngày 2026-11-10), connection tên `Ven Ho Hotel Hanoi (Ha Pham)`, owner Harry và ngày xác minh 2026-11-10. ID số của connection Make CHƯA XÁC MINH; runner `fb_hanoi` không đọc `make_connection_ref`, nên không cần ID đó để tạo/gửi command TEST. Không dùng `ig_venho` cho thử nghiệm có side effect.
 
 ## Cách Harry xác minh Page ID (không cần token)
 - Facebook → vào Page → *Giới thiệu / About* → *Minh bạch của Trang* → *Page ID*; hoặc URL `facebook.com/profile.php?id=<số>`.

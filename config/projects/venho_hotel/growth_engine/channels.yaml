@@ -65,18 +65,18 @@ channels:
     platform: facebook
     display_name: Ven Hồ Growth Test
     remote_page_id: "1363761820162798"
-    make_scenario_id: REQUIRED_FROM_P0
+    make_scenario_id: "6924867"
     make_route_ref: GE_MAKE_WEBHOOK_URL_PAGE_TEST
-    make_connection_ref: REQUIRED_FROM_P0
-    graph_api_version: REQUIRED_FROM_P0
+    make_connection_ref: "Ven Ho Hotel Hanoi (Ha Pham)" # tên kết nối Make; ID số CHƯA XÁC MINH
+    graph_api_version: "v27.0" # Harry đọc từ Graph API Explorer của Meta app đang dùng ngày 2026-11-10
     service_principals:
       fb_hanoi: make-fb-hanoi
       fb_venho: make-fb-venho
     scopes: [executions.authorize, receipts.write, media.read]
     meta_read_token_ref: GE_META_READ_TOKEN_PAGE_TEST
     caption_profile: default
-    owner: REQUIRED_FROM_P0
-    verified_on: REQUIRED_FROM_P0
+    owner: Harry
+    verified_on: "2026-11-10"
     enabled: false
 
   - channel_id: ig_test
@@ -85,14 +85,14 @@ channels:
     display_name: hanhpham1504
     # Instagram TEST account ID do Harry cung cấp; giữ dạng chuỗi, không dùng ID production.
     remote_account_id: "17841472240799413"
-    make_scenario_id: REQUIRED_FROM_P0
+    make_scenario_id: "6924867"
     make_route_ref: GE_MAKE_WEBHOOK_URL_IG_TEST
-    make_connection_ref: REQUIRED_FROM_P0
-    graph_api_version: REQUIRED_FROM_P0
+    make_connection_ref: "Ven Ho Hotel Hanoi (Ha Pham)" # tên kết nối Make; ID số CHƯA XÁC MINH
+    graph_api_version: "v27.0" # Harry đọc từ Graph API Explorer của Meta app đang dùng ngày 2026-11-10
     service_principal: make-ig
     scopes: [executions.authorize, receipts.write, media.read]
     meta_read_token_ref: GE_META_READ_TOKEN_IG_TEST
     caption_profile: default
-    owner: REQUIRED_FROM_P0
-    verified_on: REQUIRED_FROM_P0
+    owner: Harry
+    verified_on: "2026-11-10"
     enabled: false

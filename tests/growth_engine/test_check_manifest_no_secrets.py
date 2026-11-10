@@ -49,10 +49,12 @@ def test_no_false_positive(line):
     assert rules(line) == set()
 
 
-def test_shipped_templates_are_clean_and_unfilled():
+def test_shipped_manifests_are_clean_and_only_production_documentation_has_gates():
     for f in mod.DEFAULT_FILES:
         assert mod.main([str(f)]) == 0
-        assert mod.main([str(f), "--require-filled"]) == 1  # chưa điền = chưa qua G-P0
+    docs_manifest, channels_manifest = mod.DEFAULT_FILES
+    assert mod.main([str(docs_manifest), "--require-filled"]) == 1  # còn gate production trong tài liệu
+    assert mod.main([str(channels_manifest), "--require-filled"]) == 0  # TEST đã điền; production dùng null
 
 
 def test_require_filled_passes_when_filled(tmp_path):
