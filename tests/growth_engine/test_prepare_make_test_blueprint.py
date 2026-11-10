@@ -173,10 +173,9 @@ def test_prepares_three_routes_with_local_media_authorize_and_receipts() -> None
     assert '"platform_post_id":"{{12.id}}"' in routes[2]["flow"][3]["mapper"]["jsonStringBodyContent"]
     assert "{{3.post_id}}" not in json.dumps(prepared)
     assert "{{12.post_id}}" not in json.dumps(prepared)
-    assert "headers.content-type" in routes[0]["flow"][1]["mapper"]["jsonStringBodyContent"]
-    assert "headers.content-type" in routes[1]["flow"][1]["mapper"]["jsonStringBodyContent"]
-    assert "headers.content-type" in routes[0]["flow"][1]["filter"]["conditions"][0][1]["a"]
-    assert "headers.content-type" in routes[1]["flow"][1]["filter"]["conditions"][0][1]["a"]
+    for route in routes:
+        assert "headers.`content-type`" in route["flow"][1]["mapper"]["jsonStringBodyContent"]
+        assert "headers.`content-type`" in route["flow"][1]["filter"]["conditions"][0][1]["a"]
     assert prepared["flow"][1]["filter"] == source["flow"][1]["filter"]
     assert source["flow"][2]["routes"][0]["flow"][1]["mapper"]["body"].startswith("https://")
 

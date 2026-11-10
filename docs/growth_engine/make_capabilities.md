@@ -1,6 +1,6 @@
 # Make router capability check — GC2-P0-T03
 
-**State:** production/TEST scenario inventory comes from operator UI observations. MK-1 is configured on the TEST copy; run evidence is pending. Other capability tests and History outcomes remain unrun.
+**State:** production/TEST scenario inventory comes from operator UI observations. MK-1 is configured; MK-5 and MK-9 have partial evidence from one TEST run. Other capability tests and History outcomes remain unrun.
 
 **Production scenario:** `VenHo Growth Agent-FB/IG` (ID `5868920`, Active; do not edit).
 **TEST scenario:** `VenHo Growth Agent TEST` (ID `6924867`, Inactive; TEST webhook data structure has 15 fields).
@@ -43,7 +43,7 @@ For the post ID, inspect the output bundle of the posting module itself. Record 
 
 ## C. Capability evidence matrix
 
-Fill **Result** with `PASS`, `FAIL`, or `NOT_RUN`; use `CONFIGURED — chờ bằng chứng run` for a selected setting whose execution evidence is pending. Attach redacted evidence. Do not infer a pass from a module label or from a webhook 2xx response.
+Fill **Result** with `PASS`, `PARTIAL`, `FAIL`, or `NOT_RUN`; use `CONFIGURED — chờ bằng chứng run` for a selected setting whose execution evidence is pending. Attach redacted evidence. Do not infer a pass from a module label or from a webhook 2xx response.
 
 | ID | Check on TEST copy | Result | Evidence / exact observed value | Remediation if FAIL |
 |---|---|---|---|---|
@@ -51,11 +51,11 @@ Fill **Result** with `PASS`, `FAIL`, or `NOT_RUN`; use `CONFIGURED — chờ b�
 | MK-2 | Incomplete executions are disabled, or the runbook explicitly forbids resuming after the response step. | NOT_RUN | `REQUIRED_FROM_P0` | Disable storage or document and enforce the no-resume rule. |
 | MK-3 | Facebook/Instagram post modules have no automatic retry and no Break directive. | NOT_RUN | `REQUIRED_FROM_P0` | Remove automatic retry/Break; ambiguous outcomes must be reconciled. |
 | MK-4 | Each post module returns its real post/media ID in its output bundle. | NOT_RUN | Exact field: `REQUIRED_FROM_P0` | Remap from the module output; never use a mapping label as a value. |
-| MK-5 | Both Facebook post modules receive their own downloaded JPEG binary; the Instagram module receives the signed image URL. | NOT_RUN | `REQUIRED_FROM_P0` | Map HTTP binary only to Facebook; map `media_url` to Instagram's image URL input. |
+| MK-5 | Both Facebook post modules receive their own downloaded JPEG binary; the Instagram module receives the signed image URL. | PARTIAL | TEST run 2 (10/11/2026 20:05 ICT), `fb_hanoi`: HTTP 4 output had `statusCode` (number), lowercase `headers.*` including `content-type`, plus `fileName`, `fileSize`, `data`; `cf-cache-status=BYPASS`. F1 returned 200 and `image/jpeg`, but the filter blocked because unquoted `content-type` parsed as subtraction. No authorize/post. This proves the observed F1 response shape only. | Re-import the corrected backtick mapping and review a later History run; then verify the second FB branch and IG separately. |
 | MK-6 | HTTP modules can send the required bearer and Cloudflare Access headers without exposing them in logs. | NOT_RUN | `REQUIRED_FROM_P0` | Keep production gate closed until proven. |
 | MK-7 | Errors proven to occur before publication are distinguished from ambiguous outcomes. | NOT_RUN | Actual redacted error/status: `REQUIRED_FROM_P0` | Add only observed classifications to `make_error_classes.yaml`; otherwise use `OUTCOME_UNKNOWN`. |
 | MK-8 | Operators know not to rerun a posting module manually; recovery starts from the first webhook module. | NOT_RUN | Runbook/evidence: `REQUIRED_FROM_P0` | Add and review the no-manual-rerun instruction. |
-| MK-9 | Router has exactly three routes filtered by fixed `channel_key`; fallback is off; one command reaches one route. | NOT_RUN | `REQUIRED_FROM_P0` | Correct all three filters and test each channel key independently. |
+| MK-9 | Router has exactly three routes filtered by fixed `channel_key`; fallback is off; one command reaches one route. | PARTIAL | TEST run 2 (10/11/2026 20:05 ICT): Router selected the intended `fb_hanoi` branch only. Other channel keys and fallback behavior remain unverified. | Test each route key in isolation and record the branch selected in History. |
 | MK-10 | Instagram accepts the signed media URL and Meta can fetch it without receiving a Cloudflare Access login page. | NOT_RUN | Redacted result: `REQUIRED_FROM_P0` | Adjust only the TEST edge rule, then retest from Instagram. |
 | MK-11 | Instagram output includes the media ID and distinguishes container creation failure from publish failure. | NOT_RUN | Exact field/error evidence: `REQUIRED_FROM_P0` | Keep uncertain outcomes unknown; capture module-level evidence. |
 | MK-12 | Each media fetch (both Facebook F1 modules and Instagram I1) catches HTTP errors with one `Ignore`; no authorize/post module runs and the error does not disable the scenario. | CONFIGURED — chờ bằng chứng run | Generator/checker require one terminal `Ignore`; Harry observed an unhandled F1 403 disable the TEST scenario. Runtime routing and active state must be rechecked after re-import. | Re-import the updated TEST blueprint; inject/observe a fetch failure on TEST and confirm the branch stops before authorize, does not retry, and Make does not disable the scenario because of that fetch error. |

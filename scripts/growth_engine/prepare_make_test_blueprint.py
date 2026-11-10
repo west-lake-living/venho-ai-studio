@@ -206,7 +206,7 @@ def _authorize_body(media_id: int) -> dict[str, Any]:
         "payload_hash": _field("2.payload_hash"),
         "media_report": {
             "http_status": RawJson(_field(f"{media_id}.statusCode")),
-            "content_type": _field(f"{media_id}.headers.content-type"),
+            "content_type": _field(f"{media_id}.headers.`content-type`"),
         },
     }
 
@@ -216,7 +216,7 @@ def _media_filter(media_id: int, name: str) -> dict[str, Any]:
         name,
         [
             _condition(_field(f"{media_id}.statusCode"), "number:equal", "200"),
-            _condition(_field(f"{media_id}.headers.content-type"), "text:equal", "image/jpeg"),
+            _condition(_field(f"{media_id}.headers.`content-type`"), "text:equal", "image/jpeg"),
         ],
     )
 

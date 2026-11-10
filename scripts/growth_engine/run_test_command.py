@@ -46,6 +46,28 @@ class RunTestError(Exception):
     """Safe-to-display operational error; never includes secret values."""
 
 
+class RunTestRefused(RunTestError):
+    """A child command refused before sending its TEST webhook."""
+
+    def __init__(self, reason: Any) -> None:
+        self.reason_code = _safe_refusal_reason(reason)
+        super().__init__(f"REFUSED reason={self.reason_code}")
+
+
+def _safe_refusal_reason(reason: Any) -> str:
+    if reason == "TEST channel already exists in this database; use an isolated TEST database.":
+        return "TEST_CHANNEL_ALREADY_EXISTS"
+    if isinstance(reason, str) and reason.startswith("Missing TEST runtime settings: "):
+        return "TEST_RUNTIME_SETTINGS_MISSING"
+    if reason == "TEST Graph API version must be verified before creating a command.":
+        return "TEST_GRAPH_API_VERSION_UNVERIFIED"
+    if reason == "TEST destination ID must match the test manifest and differ from production IDs.":
+        return "TEST_DESTINATION_ID_INVALID"
+    if reason == "TEST destination principal must match the selected channel key.":
+        return "TEST_DESTINATION_PRINCIPAL_INVALID"
+    return "REFUSED_UNCLASSIFIED"
+
+
 def _read_env_file(path: Path) -> tuple[list[str], dict[str, str]]:
     if path.is_symlink() or not path.is_file():
         raise RunTestError("test_env_file_unavailable")
@@ -390,9 +412,9 @@ def _run_send_cli(
         raise RunTestError("send_test_command_return_invalid") from error
     if not isinstance(summary, dict):
         raise RunTestError("send_test_command_return_invalid")
-    if result.returncode not in ({0, 1} if send else {0}):
-        raise RunTestError("send_test_command_refused")
     if summary.get("result") == "REFUSED":
+        raise RunTestRefused(summary.get("reason"))
+    if result.returncode not in ({0, 1} if send else {0}):
         raise RunTestError("send_test_command_refused")
     if send and summary.get("network_request_sent") is not True:
         raise RunTestError("send_test_command_not_sent")
@@ -548,6 +570,7 @@ def run_first_command(
             emit("Không gửi lệnh; envelope TEST mode 600 được giữ lại.")
             return 0
 
+        refused_reason: str | None = None
         try:
             send_result = _run_send_cli(
                 repo_root,
@@ -557,28 +580,40 @@ def run_first_command(
                 send=True,
                 runner=runner,
             )
+        except RunTestRefused as error:
+            refused_reason = error.reason_code
+            send_result = None
+            emit(f"result=REFUSED reason={refused_reason}")
         except RunTestError:
             # A malformed/ambiguous child response after GUI must be reconciled locally, never retried.
             send_result = None
         disposition = "UNKNOWN"
+        if refused_reason is not None:
+            disposition = "NOT_SENT"
         if send_result is not None:
             candidate = send_result.get("webhook_disposition")
             disposition = candidate if candidate in {"ACK", "RETRYABLE", "FATAL"} else "UNKNOWN"
         emit(f"webhook_disposition={disposition}")
-        status, timed_out = wait_for_db_status(
-            database_path,
-            envelope_summary["command_id"],
-            timeout_seconds=database_wait_seconds,
-            sleep=sleep,
-            monotonic=monotonic,
-        )
+        if refused_reason is not None:
+            status = read_db_status(database_path, envelope_summary["command_id"])
+            timed_out = False
+        else:
+            status, timed_out = wait_for_db_status(
+                database_path,
+                envelope_summary["command_id"],
+                timeout_seconds=database_wait_seconds,
+                sleep=sleep,
+                monotonic=monotonic,
+            )
         emit(f"command_state={status['command_state']}")
         emit(f"execution_state={status['execution_state']}")
         emit(f"receipt_state={status['receipt_state']}")
         emit(f"outcome={status['outcome']}")
         emit(f"platform_post_id={status['platform_post_id']}")
         emit(f"failed_step={status['failed_step']}")
-        if timed_out:
+        if refused_reason is not None:
+            emit("receipt_wait=NOT_SENT; child refused before webhook request")
+        elif timed_out:
             emit("receipt_wait=TIMEOUT_120S; no resend was attempted")
         else:
             emit("receipt_wait=RECEIVED")

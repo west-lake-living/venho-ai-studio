@@ -70,13 +70,53 @@ Tạo riêng file API TEST và bộ bearer TEST từ checkout GC2 đã review tr
 bash ops/asus-server/growth-engine/setup-test-env.sh
 ```
 
-Script tạo `~/venho/secrets/growth-engine-test.env` và file bàn giao bearer `~/venho/secrets/growth-engine-test.make-bearers.tmp`, đều mode `600`; thư mục secret/state mode `700`. Env giữ `GE_SERVICE_TOKENS` dạng SHA-256, không có bearer thô. Chép ba bearer từ file tạm vào HTTP modules Make TEST rồi xóa file đó. Không `cat` file, dán bearer vào terminal lệnh, Git hay chat. Chạy lại script không xoay key/token và không tạo lại file bàn giao đã xóa.
+Script tạo `~/venho/secrets/growth-engine-test.env` và file bàn giao bearer `~/venho/secrets/growth-engine-test.make-bearers.tmp`, đều mode `600`; thư mục secret/state mode `700`. Env giữ `GE_SERVICE_TOKENS` dạng SHA-256, không có bearer thô. Chép ba bearer vào HTTP modules Make TEST, nhưng giữ file handoff trên server ở mode `600` đến khi toàn bộ TEST phase kết thúc để có thể nạp lại sau lần import tiếp theo. Không `cat` file, dán bearer vào terminal lệnh, Git hay chat. Chạy lại script không xoay key/token và không tạo lại file bàn giao đã xóa.
 
-Sau khi chép đủ ba bearer vào Make TEST, xóa file plaintext:
+Chỉ xóa bản sao trên Mac sau mỗi lần import. Không xóa handoff trên server cho tới bước kết thúc TEST phase bên dưới.
+
+### Tạo lại TEST database khi môi trường đã có channel
+
+Nếu runner báo `TEST channel already exists in this database`, không chạy lại lệnh tạo command trên DB đó. Trước khi tạo lại TEST env hoặc reset channel, dừng API TEST, sao lưu DB SQLite cùng WAL/SHM và media, rồi để script tạo DB/media mới. Ví dụ:
+
+```bash
+systemctl --user stop growth-engine-api-test-src
+state="$HOME/venho/state/growth-engine-test"
+archive="$state/archive-$(date -u +%Y%m%dT%H%M%SZ)"
+install -d -m 700 "$archive"
+for file in "$state"/growth_engine.db*; do [[ ! -e "$file" ]] || mv -- "$file" "$archive/"; done
+[[ ! -d "$state/media" ]] || mv -- "$state/media" "$archive/media"
+install -d -m 700 "$state/media"
+```
+
+DB mới sẽ được migrate khi API TEST khởi động. Nếu chỉ cần DB/channel mới, giữ nguyên env và bearer hiện tại. Nếu cần tạo lại cả env/bearer, dùng quy trình độc lập sau; script sẽ phát bearer mới nên phải cập nhật Make bằng handoff mới:
+
+```bash
+systemctl --user stop growth-engine-api-test-src
+state="$HOME/venho/state/growth-engine-test"
+archive="$state/archive-env-$(date -u +%Y%m%dT%H%M%SZ)"
+install -d -m 700 "$archive" "$archive/secrets"
+for file in "$state"/growth_engine.db*; do [[ ! -e "$file" ]] || mv -- "$file" "$archive/"; done
+[[ ! -d "$state/media" ]] || mv -- "$state/media" "$archive/media"
+install -d -m 700 "$state/media"
+for file in "$HOME/venho/secrets/growth-engine-test.env" \
+            "$HOME/venho/secrets/growth-engine-test.make-bearers.tmp"; do
+  [[ ! -e "$file" ]] || mv -- "$file" "$archive/secrets/"
+done
+for file in "$archive/secrets"/*; do [[ ! -e "$file" ]] || chmod 600 "$file"; done
+bash ops/asus-server/growth-engine/setup-test-env.sh
+```
+
+Giữ các handoff đã archive ở mode `600` tới cuối TEST phase. Không xóa DB/media backup trước khi xác nhận TEST không cần khôi phục.
+
+Kết thúc TEST phase:
 
 ```bash
 rm -f "$HOME/venho/secrets/growth-engine-test.make-bearers.tmp"
+find "$HOME/venho/state/growth-engine-test" -path '*/secrets/growth-engine-test.make-bearers.tmp' -type f -delete
+test ! -e "$HOME/venho/secrets/growth-engine-test.make-bearers.tmp" && echo ABSENT
 ```
+
+`find` chỉ xóa file handoff plaintext đã archive trong TEST state; giữ `growth-engine-test.env` vì file này chỉ lưu hash bearer và khóa capability, không lưu bearer thô. Không xóa bản backup khác trước khi xác nhận không cần khôi phục.
 
 Với `GE_ENV=test`, `Settings` không tự bắt buộc biến production-only như Telegram, dashboard URL hay Meta token; `doctor` cần các giá trị không rỗng cho `GE_DB_PATH`, `GE_MEDIA_ROOT`, `GE_PUBLIC_BASE_URL`, `GE_CAPABILITY_KEYS`, `GE_SERVICE_TOKENS`. Các `GE_MAKE_WEBHOOK_URL_*`, `GE_META_READ_TOKEN_*` hoặc `GE_TELEGRAM_*` nào được khai báo cũng phải không rỗng/placeholder. Riêng `send_test_command.py --create-command` còn cần `GE_TEST_CHANNEL_KEY`, `GE_TEST_CHANNEL_ID`, ID đích đúng (`GE_TEST_REMOTE_PAGE_ID` hoặc `GE_TEST_REMOTE_IG_ID`), URL webhook TEST tương ứng; `channels.yaml` cần Graph API version đã xác minh. Mã API/publish TEST hiện không cần Meta read token. Không sao chép production bearer, webhook hay Page ID vào TEST.
 
@@ -86,7 +126,7 @@ Các tên Meta TEST `GE_META_READ_TOKEN_PAGE_TEST`/`GE_META_READ_TOKEN_IG_TEST` 
 
 Meta token lifecycle: biến Page trên server là Page access token lấy từ long-lived user token; không hết hạn theo thời gian nhưng có thể bị thu hồi. Instagram dùng long-lived user token khoảng 60 ngày; đặt nhắc gia hạn trước hạn. Không ghi giá trị token vào tài liệu/log.
 
-**Mong đợi:** TEST env có mode `600`; file bàn giao bearer có mode `600` cho tới khi được chép vào Make rồi xóa. Kiểm tra chỉ in quyền và `GE_ENV`, không in giá trị còn lại.
+**Mong đợi:** TEST env và file bàn giao bearer có mode `600`; giữ file handoff trên server tới khi kết thúc TEST phase. Kiểm tra chỉ in quyền và `GE_ENV`, không in giá trị còn lại.
 
 **Dừng:** thiếu secret/route TEST, giá trị placeholder còn trong production file, DB path trùng nhau hoặc mode khác `600` thì không deploy.
 

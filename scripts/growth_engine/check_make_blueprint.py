@@ -13,7 +13,7 @@ from typing import Any, Iterable
 from urllib.parse import urlsplit
 
 
-MAPPING_RE = re.compile(r"\{\{\s*(\d+)\.([A-Za-z_][A-Za-z0-9_.-]*)")
+MAPPING_RE = re.compile(r"\{\{\s*(\d+)\.([A-Za-z_][A-Za-z0-9_.`-]*)")
 URL_RE = re.compile(r"https?://[^\s\"'<>]+", re.IGNORECASE)
 SIGNED_QUERY_RE = re.compile(
     r"(?:access_token|api_key|authorization|signature|sig|token|x-amz-signature)\s*=\s*([^&#\s]+)",
@@ -47,6 +47,15 @@ def _strings(value: Any, *, skip_keys: frozenset[str] = frozenset()) -> Iterable
     elif isinstance(value, list):
         for child in value:
             yield from _strings(child, skip_keys=skip_keys)
+
+
+def _mapping_has_unquoted_hyphen(path: str) -> bool:
+    for segment in path.split("."):
+        if "-" not in segment:
+            continue
+        if not (segment.startswith("`") and segment.endswith("`") and segment.count("`") == 2):
+            return True
+    return False
 
 
 def _modules(flow: Any) -> Iterable[dict[str, Any]]:
@@ -126,6 +135,8 @@ def _validate_flow(
         for text in _strings(payload):
             for reference in MAPPING_RE.finditer(text):
                 counters["mappings"] += 1
+                if _mapping_has_unquoted_hyphen(reference.group(2)):
+                    errors.add("mapping_hyphen_must_be_backticked")
                 source_id = int(reference.group(1))
                 if source_id not in global_ids:
                     errors.add("mapping_source_missing_or_forward")
@@ -150,6 +161,8 @@ def _validate_flow(
                     for text in _strings(route_payload):
                         for reference in MAPPING_RE.finditer(text):
                             counters["mappings"] += 1
+                            if _mapping_has_unquoted_hyphen(reference.group(2)):
+                                errors.add("mapping_hyphen_must_be_backticked")
                             source_id = int(reference.group(1))
                             if source_id not in global_ids:
                                 errors.add("mapping_source_missing_or_forward")

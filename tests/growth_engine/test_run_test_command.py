@@ -286,6 +286,38 @@ def test_local_media_preflight_rejects_error_or_unverified_response(
     assert token not in str(error.value)
 
 
+def test_refused_child_command_reports_only_a_safe_reason_code(tmp_path: Path) -> None:
+    private_reason = "private bearer https://example.invalid/secret"
+
+    def fake_runner(args, **_kwargs):
+        return subprocess.CompletedProcess(
+            args,
+            2,
+            json.dumps({"result": "REFUSED", "reason": private_reason}),
+            "",
+        )
+
+    with pytest.raises(RUNNER.RunTestRefused) as error:
+        RUNNER._run_send_cli(
+            tmp_path,
+            tmp_path / "envelope.json",
+            {},
+            create=True,
+            send=False,
+            runner=fake_runner,
+        )
+
+    assert error.value.reason_code == "REFUSED_UNCLASSIFIED"
+    assert "REFUSED reason=REFUSED_UNCLASSIFIED" == str(error.value)
+    assert private_reason not in str(error.value)
+
+
+def test_refusal_reason_classifies_known_test_database_conflict() -> None:
+    reason = "TEST channel already exists in this database; use an isolated TEST database."
+
+    assert RUNNER._safe_refusal_reason(reason) == "TEST_CHANNEL_ALREADY_EXISTS"
+
+
 def test_media_preflight_failure_stops_before_confirmation_and_send(tmp_path: Path) -> None:
     home = _home(tmp_path)
     repo = _repo(home)
@@ -432,6 +464,58 @@ def test_run_requires_active_and_gui_before_fake_send_and_reports_db_receipt(tmp
     assert "media_preflight=PASS" in outputs
     for secret in (FAKE_WEBHOOK, FAKE_CAPABILITY_KEY, FAKE_SERVICE_TOKENS, "fake-private-token-value", FAKE_MEDIA_URL):
         assert secret not in "\n".join(outputs)
+
+
+def test_send_refusal_prints_safe_reason_without_waiting_or_echoing_child_reason(tmp_path: Path) -> None:
+    home = _home(tmp_path)
+    repo = _repo(home)
+    database = home / "venho/state/growth-engine-test/growth_engine.db"
+    _create_db_schema(database)
+    outputs: list[str] = []
+    calls: list[list[str]] = []
+
+    def fake_runner(args, *, env, **_kwargs):
+        calls.append(args)
+        envelope_path = Path(args[args.index("--envelope-file") + 1])
+        if "--create-command" in args:
+            envelope_path.write_text(
+                json.dumps({
+                    "command_id": COMMAND_ID,
+                    "channel_key": "fb_hanoi",
+                    "channel_id": env["GE_TEST_CHANNEL_ID"],
+                    "remote_page_id": "1363761820162798",
+                    "execute_before_ms": 1_900_000_000_000,
+                    "media_url": FAKE_MEDIA_URL,
+                }),
+                encoding="utf-8",
+            )
+            envelope_path.chmod(0o600)
+            return subprocess.CompletedProcess(args, 0, json.dumps({"result": "DRY_RUN_VALIDATED"}), "")
+        return subprocess.CompletedProcess(
+            args,
+            2,
+            json.dumps({"result": "REFUSED", "reason": "private bearer https://example.invalid/secret"}),
+            "",
+        )
+
+    answers = iter(["ACTIVE", "GUI"])
+    result = RUNNER.run_first_command(
+        home=home,
+        repo_root=repo,
+        input_fn=lambda _prompt: next(answers),
+        secret_input=lambda _prompt: FAKE_WEBHOOK,
+        runner=fake_runner,
+        media_preflight=lambda _url, _base: None,
+        emit=outputs.append,
+        database_wait_seconds=120,
+    )
+
+    assert result == 0
+    assert len(calls) == 2
+    assert "result=REFUSED reason=REFUSED_UNCLASSIFIED" in outputs
+    assert "webhook_disposition=NOT_SENT" in outputs
+    assert "receipt_wait=NOT_SENT; child refused before webhook request" in outputs
+    assert not any("private bearer" in line or "example.invalid" in line for line in outputs)
 
 
 @pytest.mark.parametrize("answers", [["", "GUI"], ["ACTIVE", "gui"]])

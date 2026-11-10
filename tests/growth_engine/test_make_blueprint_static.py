@@ -51,6 +51,22 @@ def test_accepts_unique_ids_prior_mappings_and_placeholder_credentials() -> None
     assert result.mapping_count == 1
 
 
+def test_accepts_backticked_hyphenated_mapping_key() -> None:
+    document = valid_blueprint()
+    request = document["flow"][1]["routes"][0]["flow"][0]
+    request["mapper"]["body"] = "{{2.headers.`content-type`}}"
+
+    assert "mapping_hyphen_must_be_backticked" not in validate_blueprint(document).errors
+
+
+def test_rejects_unquoted_hyphenated_mapping_key() -> None:
+    document = valid_blueprint()
+    request = document["flow"][1]["routes"][0]["flow"][0]
+    request["mapper"]["body"] = "{{2.headers.content-type}}"
+
+    assert "mapping_hyphen_must_be_backticked" in validate_blueprint(document).errors
+
+
 def test_accepts_reserved_invalid_placeholder_host() -> None:
     document = valid_blueprint()
     document["flow"][1]["routes"][0]["flow"][0]["mapper"]["url"] = (

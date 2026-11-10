@@ -52,7 +52,7 @@ if [[ -e "$ENV_FILE" ]]; then
   [[ "$(file_mode "$ENV_FILE")" == "600" ]] || fail "TEST env exists but is not mode 600; fix permissions before retrying"
   if [[ -e "$MAKE_BEARERS_FILE" ]]; then
     [[ "$(file_mode "$MAKE_BEARERS_FILE")" == "600" ]] || fail "Make bearer handoff exists but is not mode 600"
-    printf 'TEST env already exists; secrets were not rotated. Copy the private Make bearer handoff, then delete it: %s\n' "$MAKE_BEARERS_FILE"
+    printf 'TEST env already exists; secrets were not rotated. Keep the mode-600 Make bearer handoff on the server until the TEST phase is complete: %s\n' "$MAKE_BEARERS_FILE"
   else
     printf 'TEST env already exists; secrets were not rotated or recreated. Make bearer handoff is absent: %s\n' "$MAKE_BEARERS_FILE"
   fi
@@ -106,7 +106,7 @@ def write_private(path: Path, content: str) -> None:
     os.chmod(path, 0o600)
 
 write_private(env_path, "".join(f"{key}={value}\n" for key, value in environment.items()))
-handoff = "# Copy the bearer values into the matching Make TEST HTTP modules, then delete this file.\n"
+handoff = "# Copy bearer values into matching Make TEST HTTP modules. Keep this mode-600 file on the server until the TEST phase is complete.\n"
 handoff += "".join(f"{variable}={bearers[principal]}\n" for principal, variable in principals)
 write_private(handoff_path, handoff)
 PY
@@ -119,5 +119,5 @@ fi
 chmod 600 "$ENV_FILE" "$MAKE_BEARERS_FILE"
 
 printf 'Created TEST env (mode 600): %s\n' "$ENV_FILE"
-printf 'Created temporary Make bearer handoff (mode 600): %s\n' "$MAKE_BEARERS_FILE"
-printf 'Copy bearer values into Make TEST, then delete the handoff file. Reruns do not rotate or recreate secrets.\n'
+printf 'Created Make bearer handoff (mode 600): %s\n' "$MAKE_BEARERS_FILE"
+printf 'Keep the handoff on the server until the TEST phase is complete. Reruns do not rotate or recreate secrets.\n'

@@ -25,7 +25,7 @@ Nguồn: trạng thái giao diện do Harry cung cấp sau khi chỉnh tay; chư
 - Hai URL literal di sản production nằm ở `mapper.body` của Webhook response modules `7` và `8`. Không ghi hoặc sao chép giá trị; import draft tuần tự loại bỏ cả ba Webhook response module nên các URL đó không được mang sang.
 - Bản import K4 trước quyết định sequential có chuỗi `fb_hanoi` `4 → 16 → 3 → 17 → 8`, `ig_venho` `25 → 26 → 6 → 27 → 7`, `fb_venho` `20 → 21 → 12 → 22 → 13`; lỗi được ghi riêng. Chuỗi này được thay bằng draft mới không có responder trong mục kết quả import bên dưới.
 - History production `5868920`, run `09/11/2026` (Harry cung cấp, chỉ đọc) xác nhận Facebook Pages `3/12` trả `id` dạng `<page_id>_<post_id>` và không có `post_id`; draft map nguyên `id` vào `platform_post_id`, không tách trong Make. Instagram module `6` trả `id` media.
-- History xác nhận HTTP `Download a file` trả `data`, `headers` với key chữ thường như `content-type`, `statusCode` dạng number, `fileName` và `fileSize`. F1/I1 filter dùng `statusCode = 200` AND `headers.content-type = image/jpeg`.
+- History xác nhận HTTP `Download a file` trả `data`, `headers` với key chữ thường như `content-type`, `statusCode` dạng number, `fileName` và `fileSize`. Make mapping phải viết key có dấu gạch ngang bằng backtick, ví dụ ``{{4.headers.`content-type`}}``; nếu không Make hiểu dấu `-` như phép trừ. F1/I1 filter dùng `statusCode = 200` AND ``headers.`content-type` = image/jpeg``.
 - Trước lần import này K4 chưa chạy scenario và MK-1…MK-11 chưa được ghi. Sau quan sát import, MK-1 là **CONFIGURED — chờ bằng chứng run**, chưa phải PASS; vẫn **CHƯA XÁC MINH**: output cụ thể của HTTP `Make a request` authorize/receipt, cú pháp `formatDate(now; "x")`, hành vi Skip trong error handler và Authentication type `API key`.
 
 ## Kết quả import TEST — 10/11/2026
@@ -49,6 +49,12 @@ Harry cung cấp History/API log đã khử bí mật: command `ef36800e-41a9-45
 Tái hiện cục bộ bằng `send_test_command.py --create-command`: command mới ở `PENDING` và signed media GET trả 403. Media URL token là capability riêng 5 phần do `SignedMediaUrlIssuer` tạo (`v1`, key id, command id, expiry, HMAC); HMAC gắn với SHA-256 ảnh, command ID và expiry, không có audience claim. `command_token` dùng ở authorize là token khác, có audience `make-route:<channel_id>` cùng claims revision/channel/payload/dispatch epoch. Lỗi là kiểm tra trạng thái trong media handler loại `PENDING`, dù ảnh đã được duyệt/QC PASS; không phải do URL encoding hay dùng nhầm command token. Handler đã cho phép command `PENDING` còn hạn trong khi vẫn kiểm tra approval hiện hành, revision/hash, variant/QC và SHA.
 
 Generator hiện thêm `Ignore` error handler riêng cho cả hai F1 Facebook và I1 Instagram. Vì fetch chạy trước authorize, handler chỉ dừng bundle: không retry, không authorize và không có grant để gửi receipt. Blueprint đã import trước đó vẫn có 20 module và không có các handler mới; cần dựng/import blueprint cập nhật (23 module) vào scenario TEST rồi xác nhận trên Make. Giữ scenario inactive ngoài cửa sổ test.
+
+## Lượt TEST 2 — 10/11/2026 20:05 ICT
+
+Theo History do Harry cung cấp, command `76b7ca61-a7d9-4dd9-82a0-dd425030324e` chọn đúng nhánh `fb_hanoi`. F1/HTTP 4 trả `statusCode=200`, `headers.content-type=image/jpeg`, `cache-control=private,no-store`, `cf-cache-status=BYPASS`; output còn có `fileName`, `fileSize` và binary `data`. Filter `F1 image valid` chặn trước authorize vì mapping `{{4.headers.content-type}}` bị Make parse thành phép trừ `4.headers.content - type`. Không authorize và không có bài đăng.
+
+Generator đã đổi mapping thành ``{{4.headers.`content-type`}}`` cho filter F1/I1 và `media_report.content_type` trong request authorize. Checker/test từ chối mọi mapping có segment dấu `-` không bọc backtick. Cần tái import blueprint đã tạo lại và xem History lượt kế tiếp; lượt này xác nhận media PENDING và cache behavior, không xác nhận authorize/post. MK-5 và MK-9 có bằng chứng một phần.
 
 ## Gate before opening Make
 
@@ -89,9 +95,9 @@ Keep placeholders in a blueprint draft; supply values only in the Make TEST scen
 | Placeholder | Make field/use | Storage behavior in Make |
 |---|---|---|
 | `https://set-in-make.invalid` | Replace HTTP base with `https://ge-test.venhohotel.com` for `/internal/growth/v2/*` calls. | TEST host verified; protected credential storage remains **CHƯA XÁC MINH**. |
-| `__SET_IN_MAKE_BEARER_FB_HANOI__` | Replace with `GE_TEST_BEARER_FB_HANOI` from the mode-600 server handoff file. | Copy to `fb_hanoi` authorize/receipt modules; delete the handoff file after copying. |
-| `__SET_IN_MAKE_BEARER_FB_VENHO__` | Replace with `GE_TEST_BEARER_FB_VENHO` from the mode-600 server handoff file. | Copy to `fb_venho` authorize/receipt modules; delete the handoff file after copying. |
-| `__SET_IN_MAKE_BEARER_IG_VENHO__` | Replace with `GE_TEST_BEARER_IG` from the mode-600 server handoff file. | Copy to `ig_venho` authorize/receipt modules; delete the handoff file after copying. |
+| `__SET_IN_MAKE_BEARER_FB_HANOI__` | Replace with `GE_TEST_BEARER_FB_HANOI` from the mode-600 server handoff file. | Copy to `fb_hanoi` authorize/receipt modules; keep the server handoff through the TEST phase. |
+| `__SET_IN_MAKE_BEARER_FB_VENHO__` | Replace with `GE_TEST_BEARER_FB_VENHO` from the mode-600 server handoff file. | Copy to `fb_venho` authorize/receipt modules; keep the server handoff through the TEST phase. |
+| `__SET_IN_MAKE_BEARER_IG_VENHO__` | Replace with `GE_TEST_BEARER_IG` from the mode-600 server handoff file. | Copy to `ig_venho` authorize/receipt modules; keep the server handoff through the TEST phase. |
 | `__SET_IN_MAKE_ACCESS_CLIENT_ID__` | Replace with Access service token Client ID from the operator credential manager. | Do not put it in the API env file or repo. |
 | `__SET_IN_MAKE_ACCESS_CLIENT_SECRET__` | Replace with Access service token Client Secret from the operator credential manager. | Do not put it in the API env file or repo. |
 
@@ -108,11 +114,13 @@ chmod 600 _incoming/growth-engine-test.make-bearers.tmp
 python3 scripts/growth_engine/fill_make_test_secrets.py
 ```
 
-The output is `_incoming/make_test_import.secret.json` with mode `600`. It contains live TEST credentials, so import it only into scenario `6924867`, never print it, attach it, commit it, or use it for production. After Make has stored the TEST credentials, remove local bearer handoff and secret import files when no longer needed:
+The output is `_incoming/make_test_import.secret.json` with mode `600`. It contains live TEST credentials, so import it only into scenario `6924867`, never print it, attach it, commit it, or use it for production. Keep the source handoff on the server at mode `600` until the TEST phase ends so a later import can refill the credentials. After each import, remove only the Mac copies:
 
 ```bash
 rm -f _incoming/growth-engine-test.make-bearers.tmp _incoming/make_test_import.secret.json
 ```
+
+At the end of the TEST phase, after no more imports or re-fills are needed, remove the server handoff using the cleanup step in `operator_session_1.md` and verify that it is absent. Do not remove it after an individual Make import.
 
 The script refuses unresolved `__SET_IN_MAKE_*__` markers, a remaining `set-in-make.invalid` host, mismatched route bearers, or missing Access headers. Run the normal static checker on the placeholder blueprint before filling secrets; do not run it on the credential-filled file because the intentional TEST URL and credentials are real values.
 
