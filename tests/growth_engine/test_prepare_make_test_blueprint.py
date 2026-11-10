@@ -59,7 +59,7 @@ def source_blueprint() -> dict:
         "http:MakeRequest",
         mapper={
             "url": "https://set-in-make.invalid/template",
-            "method": "POST",
+            "method": "post",
             "headers": [
                 {"name": "Authorization", "value": "Bearer __SET_IN_MAKE_BEARER_TEMPLATE__"},
                 {"name": "CF-Access-Client-Id", "value": "__SET_IN_MAKE_ACCESS_CLIENT_ID__"},
@@ -108,7 +108,7 @@ def source_blueprint() -> dict:
     ]
     return {
         "name": "synthetic TEST scenario",
-        "metadata": {"scenario": {"sequential": True}},
+        "metadata": {"instant": True, "scenario": {"sequential": False}},
         "flow": [
             _module(2, "gateway:CustomWebHook", mapper={}, parameters={"hook": 1, "maxResults": 1}),
             download,
@@ -138,13 +138,16 @@ def test_prepares_three_routes_with_local_media_authorize_and_receipts() -> None
 
     assert result.errors == ()
     assert result.route_count == 3
+    assert prepared["metadata"]["instant"] is True
+    assert prepared["metadata"]["scenario"]["sequential"] is True
+    assert all(module["module"] != "gateway:WebhookRespond" for module in _all_modules(prepared))
     assert 14 not in {module["id"] for module in _all_modules(prepared)}
     assert 15 not in {module["id"] for module in _all_modules(prepared)}
     routes = prepared["flow"][1]["routes"]
     assert [[module["id"] for module in route["flow"]] for route in routes] == [
-        [4, 16, 3, 17, 8],
-        [25, 26, 6, 27, 7],
-        [20, 21, 12, 22, 13],
+        [4, 16, 3, 17],
+        [25, 26, 6, 27],
+        [20, 21, 12, 22],
     ]
     assert [module["id"] for module in routes[0]["flow"][2]["onerror"]] == [18, 19]
     assert [module["id"] for module in routes[1]["flow"][2]["onerror"]] == [28, 29]
@@ -153,6 +156,10 @@ def test_prepares_three_routes_with_local_media_authorize_and_receipts() -> None
     assert routes[2]["flow"][2]["mapper"]["photos"][0]["data"] == "{{20.data}}"
     assert routes[0]["flow"][2]["mapper"]["message"] == "{{16.data.caption}}"
     assert routes[1]["flow"][2]["mapper"]["image_url"] == "{{2.media_url}}"
+    assert routes[0]["flow"][1]["mapper"]["method"] == "post"
+    assert routes[0]["flow"][3]["mapper"]["method"] == "post"
+    assert routes[1]["flow"][0]["mapper"]["method"] == "get"
+    assert not {"contentType", "inputMethod", "jsonStringBodyContent"} & set(routes[1]["flow"][0]["mapper"])
     assert '"platform_post_id":"{{3.id}}"' in routes[0]["flow"][3]["mapper"]["jsonStringBodyContent"]
     assert '"platform_post_id":"{{12.id}}"' in routes[2]["flow"][3]["mapper"]["jsonStringBodyContent"]
     assert "{{3.post_id}}" not in json.dumps(prepared)
@@ -163,7 +170,6 @@ def test_prepares_three_routes_with_local_media_authorize_and_receipts() -> None
     assert "headers.content-type" in routes[1]["flow"][1]["filter"]["conditions"][0][1]["a"]
     assert prepared["flow"][1]["filter"] == source["flow"][1]["filter"]
     assert source["flow"][2]["routes"][0]["flow"][1]["mapper"]["body"].startswith("https://")
-    assert all("https://" not in module["mapper"]["body"] for module in (routes[0]["flow"][4], routes[1]["flow"][4]))
 
 
 def test_prepare_cli_writes_private_ignored_style_draft(tmp_path, capsys) -> None:

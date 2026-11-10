@@ -1,6 +1,6 @@
 # Make router capability check — GC2-P0-T03
 
-**State:** production/TEST scenario inventory recorded from the Make UI observations supplied by Harry on 2026-11-06. This is configuration inventory only; no History run or MK test was executed for this handoff.
+**State:** production/TEST scenario inventory comes from operator UI observations. On 2026-11-10, MK-1 was observed on the TEST copy; other capability tests and History outcomes remain unrun.
 
 **Production scenario:** `VenHo Growth Agent-FB/IG` (ID `5868920`, Active; do not edit).
 **TEST scenario:** `VenHo Growth Agent TEST` (ID `6924867`, Inactive; TEST webhook has no data structure yet).
@@ -25,7 +25,7 @@ The values below are from the operator's Make UI observation, not a History run.
 | Error handler path on each post module | `REQUIRED_FROM_P0` |
 | Sequential processing / incomplete-execution setting | `CHƯA XÁC MINH` / `CHƯA XÁC MINH` |
 | Exact post/media ID output field | `CHƯA XÁC MINH` — requires module output bundle |
-| Evidence from successful History run | None supplied for this handoff; no MK run |
+| Evidence from successful History run | None supplied; MK-1 setting observation is recorded in section C |
 
 For the post ID, inspect the output bundle of the posting module itself. Record the actual returned field name and a synthetic-looking redacted example. Do not record a UI label such as `3. Post ID` as if it were the returned ID.
 
@@ -33,12 +33,12 @@ For the post ID, inspect the output bundle of the posting module itself. Record 
 
 - [x] TEST copy exists as `VenHo Growth Agent TEST`, ID `6924867`, Inactive, with a separate webhook.
 - [x] Facebook modules 3 and 12 point to TEST Page `1363761820162798`; Instagram module 6 points to TEST account `@hanhpham1504` (its numeric ID is not present in this handoff).
-- [ ] TEST Router still needs the three fixed `channel_key` filters and fallback-off verification; inherited `publication_id`-does-not-contain-`test` conditions must be removed.
-- [ ] Add Webhook response after receipt on the Facebook module 12 route; confirm response modules on the other two routes.
+- [x] TEST Router has the three fixed `channel_key` filters and fallback Off, per the 2026-11-10 operator observation; inherited `publication_id` conditions were removed.
+- [x] Do not add Webhook response modules while sequential processing is enabled; Make reports they are unsupported in this mode.
 - [ ] Use test-only credentials and webhook. Do not paste secrets into this file.
 - [ ] Reposition/duplicate HTTP image download into each Facebook branch; map Instagram `image_url` from `media_url`.
 - [ ] Ensure every test post is visibly labelled as a test and can be removed by the operator.
-- [ ] Disable scheduling on the TEST copy; use only a manually initiated test bundle after the test account is confirmed.
+- [ ] Re-import the corrected blueprint and confirm the webhook remains immediate rather than displaying an interval schedule; keep the scenario inactive outside an approved test window.
 
 ## C. Capability evidence matrix
 
@@ -46,7 +46,7 @@ Fill **Result** with `PASS`, `FAIL`, or `NOT_RUN`; attach redacted evidence. Do 
 
 | ID | Check on TEST copy | Result | Evidence / exact observed value | Remediation if FAIL |
 |---|---|---|---|---|
-| MK-1 | Sequential processing is enabled. | NOT_RUN | `REQUIRED_FROM_P0` | Enable it, then capture the setting. |
+| MK-1 | Sequential processing is enabled. | PASS | Make TEST displayed “Responder is not supported when scenario is configured for sequential processing”; Harry selected sequential processing on 2026-11-10. Explicit Webhook response modules are omitted from the import draft. | Keep sequential processing enabled; do not add Webhook response modules. |
 | MK-2 | Incomplete executions are disabled, or the runbook explicitly forbids resuming after the response step. | NOT_RUN | `REQUIRED_FROM_P0` | Disable storage or document and enforce the no-resume rule. |
 | MK-3 | Facebook/Instagram post modules have no automatic retry and no Break directive. | NOT_RUN | `REQUIRED_FROM_P0` | Remove automatic retry/Break; ambiguous outcomes must be reconciled. |
 | MK-4 | Each post module returns its real post/media ID in its output bundle. | NOT_RUN | Exact field: `REQUIRED_FROM_P0` | Remap from the module output; never use a mapping label as a value. |

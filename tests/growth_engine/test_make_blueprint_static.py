@@ -8,6 +8,7 @@ from scripts.growth_engine.check_make_blueprint import main, validate_blueprint
 def valid_blueprint() -> dict:
     return {
         "name": "synthetic",
+        "metadata": {"instant": True, "scenario": {"sequential": True}},
         "flow": [
             {"id": 2, "module": "gateway:CustomWebHook", "mapper": {}},
             {
@@ -18,9 +19,10 @@ def valid_blueprint() -> dict:
                         "flow": [
                             {
                                 "id": 14,
-                                "module": "http:ActionSendData",
+                                "module": "http:MakeRequest",
                                 "mapper": {
                                     "url": "https://__SET_IN_MAKE_BASE_URL_TEST__/internal",
+                                    "method": "post",
                                     "headers": [
                                         {
                                             "name": "Authorization",
@@ -29,11 +31,6 @@ def valid_blueprint() -> dict:
                                     ],
                                     "body": "{{2.command_token}}",
                                 },
-                            },
-                            {
-                                "id": 15,
-                                "module": "gateway:WebhookRespond",
-                                "mapper": {"body": "{{14.data.id}}"},
                             },
                         ]
                     }
@@ -47,9 +44,9 @@ def test_accepts_unique_ids_prior_mappings_and_placeholder_credentials() -> None
     result = validate_blueprint(valid_blueprint())
 
     assert result.errors == ()
-    assert result.module_count == 4
+    assert result.module_count == 3
     assert result.route_count == 1
-    assert result.mapping_count == 2
+    assert result.mapping_count == 1
 
 
 def test_accepts_reserved_invalid_placeholder_host() -> None:
@@ -73,6 +70,38 @@ def test_rejects_missing_or_forward_mapping_source() -> None:
     document["flow"][0]["mapper"] = {"payload": "{{15.data}}"}
 
     assert "mapping_source_missing_or_forward" in validate_blueprint(document).errors
+
+
+def test_rejects_http_request_with_empty_method() -> None:
+    document = valid_blueprint()
+    request = document["flow"][1]["routes"][0]["flow"][0]
+    request["mapper"]["method"] = ""
+
+    assert "http_request_method_missing" in validate_blueprint(document).errors
+
+
+def test_rejects_http_method_with_noncanonical_case() -> None:
+    document = valid_blueprint()
+    request = document["flow"][1]["routes"][0]["flow"][0]
+    request["mapper"]["method"] = "POST"
+
+    assert "http_request_method_invalid_case" in validate_blueprint(document).errors
+
+
+def test_rejects_scheduled_scenario_instead_of_immediate_webhook() -> None:
+    document = valid_blueprint()
+    document["metadata"]["instant"] = False
+
+    assert "scenario_not_immediate" in validate_blueprint(document).errors
+
+
+def test_rejects_webhook_responder_with_sequential_processing() -> None:
+    document = valid_blueprint()
+    document["flow"][1]["routes"][0]["flow"].append(
+        {"id": 15, "module": "gateway:WebhookRespond", "mapper": {"body": "ack"}}
+    )
+
+    assert "webhook_response_not_supported_with_sequential_processing" in validate_blueprint(document).errors
 
 
 def test_rejects_facebook_post_id_alias_when_module_output_is_id() -> None:

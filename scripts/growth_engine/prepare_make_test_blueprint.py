@@ -152,9 +152,14 @@ def _request(
     request["id"] = module_id
     request.pop("onerror", None)
     request["mapper"]["url"] = url
-    request["mapper"]["method"] = method
+    # Make's exported HTTP blueprint serializes the method enum in lowercase.
+    request["mapper"]["method"] = method.lower()
     request["mapper"]["headers"] = _headers(principal) if principal else []
-    request["mapper"]["jsonStringBodyContent"] = _render_json(body) if body is not None else ""
+    if body is None:
+        for key in ("contentType", "inputMethod", "jsonStringBodyContent"):
+            request["mapper"].pop(key, None)
+    else:
+        request["mapper"]["jsonStringBodyContent"] = _render_json(body)
     request["mapper"]["parseResponse"] = parse_response
     request["mapper"]["timeout"] = "30"
     if filter_value is None:
@@ -250,20 +255,20 @@ def _receipt_request(
     )
 
 
-def _success_ack(response: dict[str, Any], receipt_id: int, x: int, y: int) -> None:
-    response["mapper"]["body"] = _render_json(
-        {
-            "schema_version": "growth.receipt.v2",
-            "receipt_id": _field(f"{receipt_id}.data.receipt_id"),
-            "accepted": RawJson(_field(f"{receipt_id}.data.accepted")),
-            "duplicate": RawJson(_field(f"{receipt_id}.data.duplicate")),
-        }
-    )
-    _position(response, x, y)
-
-
 def prepare_blueprint(document: dict[str, Any]) -> dict[str, Any]:
     result = copy.deepcopy(document)
+    source_metadata = document.get("metadata")
+    if not isinstance(source_metadata, dict) or source_metadata.get("instant") is not True:
+        raise PreparationError("source_not_immediate")
+    metadata = result.get("metadata")
+    if not isinstance(metadata, dict):
+        raise PreparationError("missing_scenario_metadata")
+    metadata["instant"] = source_metadata["instant"]
+    scenario_metadata = metadata.get("scenario")
+    if not isinstance(scenario_metadata, dict):
+        raise PreparationError("missing_scenario_settings")
+    scenario_metadata["sequential"] = True
+
     flow = result.get("flow")
     if not isinstance(flow, list) or len(flow) != 3:
         raise PreparationError("unexpected_root_flow")
@@ -278,7 +283,6 @@ def prepare_blueprint(document: dict[str, Any]) -> dict[str, Any]:
     routes = router["routes"]
     expected = [(3, 8), (6, 7), (12, 13)]
     posts: list[dict[str, Any]] = []
-    responses: list[dict[str, Any]] = []
     route_filters: list[dict[str, Any]] = []
     for route, (post_id, response_id) in zip(routes, expected):
         route_flow = route.get("flow")
@@ -293,7 +297,6 @@ def prepare_blueprint(document: dict[str, Any]) -> dict[str, Any]:
         if not isinstance(route_filter, dict):
             raise PreparationError("missing_channel_filter")
         posts.append(post)
-        responses.append(response)
         route_filters.append(copy.deepcopy(route_filter))
 
     if posts[0].get("module") != "facebook-pages:CreatePostWithPhotos":
@@ -462,14 +465,10 @@ def prepare_blueprint(document: dict[str, Any]) -> dict[str, Any]:
         filter_value=route_filters[1],
     )
 
-    # Reuse the current response modules, replace their inherited URL bodies with a receipt ACK.
-    _success_ack(responses[0], 17, 1360, fb1_y)
-    _success_ack(responses[1], 27, 1360, ig_y)
-    _success_ack(responses[2], 22, 1360, fb2_y)
-
-    routes[0]["flow"] = [fb1_image, auth1, posts[0], f5_hanoi, responses[0]]
-    routes[1]["flow"] = [i1, auth_ig, posts[1], i5_venho, responses[1]]
-    routes[2]["flow"] = [fb2_image, auth2, posts[2], f5_venho, responses[2]]
+    # Sequential processing does not support explicit Webhook response modules.
+    routes[0]["flow"] = [fb1_image, auth1, posts[0], f5_hanoi]
+    routes[1]["flow"] = [i1, auth_ig, posts[1], i5_venho]
+    routes[2]["flow"] = [fb2_image, auth2, posts[2], f5_venho]
 
     result["flow"] = [webhook, router]
     return result

@@ -182,10 +182,33 @@ def validate_blueprint(document: Any) -> CheckResult:
 
     errors.update(_secret_scan(document))
 
+    metadata = document.get("metadata")
+    if not isinstance(metadata, dict) or metadata.get("instant") is not True:
+        errors.add("scenario_not_immediate")
+    scenario = metadata.get("scenario") if isinstance(metadata, dict) else None
+    if not isinstance(scenario, dict) or scenario.get("sequential") is not True:
+        errors.add("sequential_processing_not_enabled")
+
     _validate_flow(document["flow"], set(), set(), errors, counters)
+    all_modules = list(_modules(document["flow"]))
+    for module in all_modules:
+        if module.get("module") == "http:MakeRequest":
+            mapper = module.get("mapper")
+            method = mapper.get("method") if isinstance(mapper, dict) else None
+            if not isinstance(method, str) or not method.strip():
+                errors.add("http_request_method_missing")
+            elif method != method.lower():
+                errors.add("http_request_method_invalid_case")
+            if isinstance(mapper, dict) and method == "get" and any(
+                key in mapper for key in ("contentType", "inputMethod", "jsonStringBodyContent")
+            ):
+                errors.add("http_get_must_not_have_body")
+        if scenario and scenario.get("sequential") is True and module.get("module") == "gateway:WebhookRespond":
+            errors.add("webhook_response_not_supported_with_sequential_processing")
+
     modules_by_id = {
         module["id"]: module
-        for module in _modules(document["flow"])
+        for module in all_modules
         if isinstance(module.get("id"), int)
     }
     for module in modules_by_id.values():

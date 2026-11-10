@@ -1,6 +1,6 @@
 # Make Growth Engine v2 — TEST runbook
 
-**Scope:** one copied TEST scenario with three logical TEST targets and one Router. Do not edit or run the production scenario. `make_capabilities.md` remains `NOT_RUN` until Harry records evidence from the TEST copy.
+**Scope:** one copied TEST scenario with three logical TEST targets and one Router. Do not edit or run the production scenario. MK-1 is recorded as PASS from Harry's 2026-11-10 UI observation; other capability checks remain unrun.
 
 No webhook URL, access token, credential, signed media URL or production Page ID belongs in this file. Redact module output and screenshots before saving them.
 
@@ -10,7 +10,7 @@ Nguồn: cấu hình giao diện Make do Harry cung cấp; **chưa có run MK v�
 
 Filter `Venho signature` nằm trên liên kết Custom webhook → HTTP ở production và TEST. Theo quan sát do Harry cung cấp, filter so sánh header `x-venho-signature` với kết quả `sha256(publication_id : idempotency_key : <fixed 64-character hex literal>)`. Không lưu hay sao chép literal đó. Bản chất của literal (muối hay bí mật dùng chung) là **CHƯA XÁC MINH**. Hợp đồng v2 không dùng filter này: API authorize kiểm tra bearer theo route cùng `command_token` có chữ ký; filter chung dùng `schema_version` và `environment`.
 
-## Quan sát scenario TEST — 10/11/2026
+## Quan sát scenario TEST trước lần import K4 — 10/11/2026
 
 Nguồn: trạng thái giao diện do Harry cung cấp sau khi chỉnh tay; chưa có kiểm chứng độc lập từ Make History. Giữ nguyên các thay đổi này, không dựng lại.
 
@@ -18,15 +18,25 @@ Nguồn: trạng thái giao diện do Harry cung cấp sau khi chỉnh tay; chư
 - Filter Webhook → HTTP `v2 TEST common`: `schema_version = growth.command.v2` AND `environment = test`. Filter `Venho signature` đã được gỡ.
 - Router module `5`, fallback Off cả ba nhánh: `fb_hanoi` → Facebook Pages `3` → Webhook response `8`; `ig_venho` → Instagram `6` → Webhook response `7`; `fb_venho` → Facebook Pages `12` → Webhook response `13`.
 - HTTP tải ảnh module `4` vẫn nằm trước Router. Việc cần làm cho K4 là đưa một HTTP GET `media_url` vào từng nhánh Facebook và map binary của từng HTTP riêng vào module Facebook cùng nhánh. Nhánh Instagram dùng URL `media_url` trực tiếp.
-- Bản export có URL literal trong mapper body của hai Webhook response hiện hữu. Không sao chép URL đó vào import/log/báo cáo; response draft cần là ACK nhỏ sau receipt.
+- Bản export có URL literal trong mapper body của hai Webhook response hiện hữu. Không sao chép URL đó vào import/log/báo cáo. Ý tưởng ACK draft trước đây bị thay thế bởi quyết định sequential processing ghi ở mục kết quả import bên dưới.
 - Không thay filter, connection, Page/Instagram ID đích TEST hiện có. Giữ nguyên cấu hình scenario khác; trigger/active state không được xác nhận trong lần rà soát này.
 - Export mới có HTTP request module `14` và directive `Skip` module `15` trong error handler của Facebook Pages `3`. HTTP request là `POST`, body JSON string có mapping lệnh và hai header placeholders. Draft dùng cấu trúc module này làm template, xóa 14/15 khỏi vị trí mẫu, rồi cấp ID mới từ 16.
 - HTTP 14 trong export có header `Authorization` và `CF-Access-Client-Id`; draft thêm `CF-Access-Client-Secret` placeholder theo ADR-06. `Authentication type = API key` là phương án có thể khảo sát để giữ bearer, nhưng hiện **CHƯA XÁC MINH**; draft chỉ dùng custom `Authorization` header placeholder.
-- Hai URL literal di sản production nằm ở `mapper.body` của Webhook response modules `7` và `8`. Không ghi hoặc sao chép giá trị; draft thay body bằng ACK nhỏ sau receipt. Đề xuất bỏ các URL literal này khỏi Make TEST.
-- Import draft K4 giữ filter/common data, thứ tự route, connections và targets TEST. Chuỗi module: `fb_hanoi` `4 → 16 → 3 → 17 → 8`, error `18 → 19`; `ig_venho` `25 → 26 → 6 → 27 → 7`, error `28 → 29`; `fb_venho` `20 → 21 → 12 → 22 → 13`, error `23 → 24`. IDs `14/15` khỏi vị trí mẫu; IDs mới bắt đầu từ `16`.
+- Hai URL literal di sản production nằm ở `mapper.body` của Webhook response modules `7` và `8`. Không ghi hoặc sao chép giá trị; import draft tuần tự loại bỏ cả ba Webhook response module nên các URL đó không được mang sang.
+- Bản import K4 trước quyết định sequential có chuỗi `fb_hanoi` `4 → 16 → 3 → 17 → 8`, `ig_venho` `25 → 26 → 6 → 27 → 7`, `fb_venho` `20 → 21 → 12 → 22 → 13`; lỗi được ghi riêng. Chuỗi này được thay bằng draft mới không có responder trong mục kết quả import bên dưới.
 - History production `5868920`, run `09/11/2026` (Harry cung cấp, chỉ đọc) xác nhận Facebook Pages `3/12` trả `id` dạng `<page_id>_<post_id>` và không có `post_id`; draft map nguyên `id` vào `platform_post_id`, không tách trong Make. Instagram module `6` trả `id` media.
 - History xác nhận HTTP `Download a file` trả `data`, `headers` với key chữ thường như `content-type`, `statusCode` dạng number, `fileName` và `fileSize`. F1/I1 filter dùng `statusCode = 200` AND `headers.content-type = image/jpeg`.
-- K4 chưa chạy scenario và không có bằng chứng MK-1…MK-11. Vẫn **CHƯA XÁC MINH**: output cụ thể của HTTP `Make a request` authorize/receipt, cú pháp `formatDate(now; "x")`, hành vi Skip trong error handler và Authentication type `API key`.
+- Trước lần import này K4 chưa chạy scenario và MK-1…MK-11 chưa được ghi. Sau quan sát import, MK-1 là PASS; vẫn **CHƯA XÁC MINH**: output cụ thể của HTTP `Make a request` authorize/receipt, cú pháp `formatDate(now; "x")`, hành vi Skip trong error handler và Authentication type `API key`.
+
+## Kết quả import TEST — 10/11/2026
+
+Nguồn: quan sát trực tiếp của Harry trong Make sau import. Không sửa scenario production.
+
+- Import làm giao diện HTTP hiển thị Method trống ở các request; so với module mẫu 14, blueprint lưu `mapper.method` bằng enum chữ thường (`post`). Generator trước đó ghi `POST`; đã đổi mọi HTTP request sang `post`/`get` theo định dạng export.
+- I1 (HTTP 25) là `get` và không gửi body. Generator bỏ `contentType`, `inputMethod` và `jsonStringBodyContent` khỏi mapper của I1 để không tạo body JSON rỗng.
+- UI sau import hiển thị lịch `Every 15 minutes`, trong khi export gốc có `metadata.instant = true`. Generator giữ `metadata.instant = true`; checker từ chối blueprint không còn trigger ngay khi webhook nhận dữ liệu. Cần xác nhận lại trên UI sau import mới.
+- Harry chọn sequential processing sau cảnh báo `Responder is not supported when scenario is configured for sequential processing`. Draft đặt `metadata.scenario.sequential = true` và bỏ Webhook response `8`, `7`, `13`. Các nhánh kết thúc ở receipt tương ứng. MK-1 được ghi PASS trong `make_capabilities.md`; chưa có History run.
+- Các quan sát trước đây về filter, ba route, Page/IG TEST đích, connection, caption `16.data.caption`, cùng module HTTP 4 trước Router vẫn được giữ làm bằng chứng người vận hành; không dựng lại cấu hình thủ công.
 
 ## Gate before opening Make
 
@@ -39,7 +49,7 @@ Nguồn: trạng thái giao diện do Harry cung cấp sau khi chỉnh tay; chư
 
 ## Scenario construction
 
-Use the existing copy `VenHo Growth Agent TEST` (ID `6924867`); do not duplicate or edit production. Keep the current webhook data structure, common filter, Router filters, branch order, connections and TEST destinations listed above. Keep TEST schedule off outside an approved test window. Match §8.1.4 of `GC2_MASTER_PLAN.md`, with the following TEST-specific branch assignments:
+Use the existing copy `VenHo Growth Agent TEST` (ID `6924867`); do not duplicate or edit production. Keep the current webhook data structure, common filter, Router filters, branch order, connections and TEST destinations listed above. Keep the scenario inactive outside an approved test window and preserve the immediate webhook trigger (`metadata.instant = true`); do not replace it with an interval schedule. Match §8.1.4 of `GC2_MASTER_PLAN.md`, with the following TEST-specific branch assignments:
 
 1. **Custom webhook and common filter:** retain module `2` and the existing 15-field data structure. The filter before the Router requires `schema_version = growth.command.v2` and `environment = test`; the old `Venho signature` filter is removed. Payload mapping references use module `2`.
 2. **Router:** retain module `5`, the fixed equality filters and no fallback: branch 1 `channel_key = fb_hanoi` → Facebook Pages module `3`; branch 2 `channel_key = ig_venho` → Instagram module `6`; branch 3 `channel_key = fb_venho` → Facebook Pages module `12`. Each command must match exactly one branch.
@@ -56,7 +66,7 @@ Use the existing copy `VenHo Growth Agent TEST` (ID `6924867`); do not duplicate
    - **I4 — Instagram photo post:** map `image_url = media_url` and `caption = I2.caption`; Meta fetches the image from the signed URL. Ensure the URL remains usable through `execute_before_ms + 30 minutes` and does not encounter a Cloudflare Access login page.
    - **I5 — Success receipt:** map Instagram module `id` (media ID) to `platform_post_id` with `outcome = POST_CREATED` and `event_id = <grant_id>:POST_CREATED`.
    - **I6 — Error receipt:** distinguish a verified container-creation failure from a publish-stage/ambiguous failure; the latter is `OUTCOME_UNKNOWN`. Never retry or resume I4. Follow I6 with the `Ignore` (**Skip**) directive for the same no-retry/no-resume reason; verify error-path routing in TEST.
-5. **Webhook response:** add one response module to each of the three TEST branches, after that branch's receipt module. Send a small acknowledgement only after the receipt returns. A webhook ACK does not prove a post was created or verified.
+5. **Webhook responses:** do not add explicit `Webhook response` modules while sequential processing is enabled. Make reports responders are unsupported with this setting. Each branch ends at its receipt request; the explicit webhook ACK is omitted.
 
 ### Credentials for TEST HTTP modules
 
@@ -81,7 +91,7 @@ To recreate the ignored draft from the protected export, run `umask 077` followe
 
 For Make Free, the scenario limit reported by Harry is **two active scenarios maximum**. Keep the TEST copy inactive outside its test window; before activating it, confirm the account will not exceed the two-scenario limit. This is an operator-provided plan fact and has not been independently verified in Make.
 
-Enable sequential processing. Disable incomplete-execution storage where possible; otherwise enforce the no-resume rule. Confirm every posting module has no automatic retry. Record only redacted module outputs and settings.
+Keep sequential processing enabled (MK-1 PASS). Preserve the immediate webhook trigger. Disable incomplete-execution storage where possible; otherwise enforce the no-resume rule. Do not add explicit Webhook response modules. Confirm every posting module has no automatic retry. Record only redacted module outputs and settings.
 
 ## Required TEST cases
 
