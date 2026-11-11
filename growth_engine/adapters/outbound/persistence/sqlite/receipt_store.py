@@ -283,6 +283,9 @@ class SqliteReceiptTransaction:
                 connection.execute("RELEASE apply_receipt")
                 return False
 
+        # AUTHORIZED is the terminal outbox/transport state: once the admission
+        # CAS wins, the command must never be delivered again. Receipt lifecycle
+        # is tracked independently by executions and deliveries.
         updated_receipt = connection.execute(
             """UPDATE receipt_inbox SET processing_state=?, quarantine_reason=?, applied_at=?
                WHERE id=? AND processing_state='RECEIVED'""",

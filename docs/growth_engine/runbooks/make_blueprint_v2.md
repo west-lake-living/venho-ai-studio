@@ -60,7 +60,7 @@ Generator đã đổi mapping thành ``{{4.headers.`content-type`}}`` cho filter
 
 Theo Make History và DB TEST do Harry cung cấp, command `cd73c43a-1a28-4922-bd4d-29aeaf6d665d` đi đúng Router branch `fb_hanoi`; hai branch `ig_venho` và `fb_venho` bị filter. History hoàn tất webhook → F1 HTTP 4 (`200 image/jpeg`) → authorize HTTP 16 → Facebook Pages 3 → receipt HTTP 17: 5 operations trong 8 giây. Facebook output `id=1363761820162798_122106835935535879` trên Page TEST. Đây là lần chạy TEST công khai đã được Harry xác nhận, không phải production post.
 
-Lúc Harry đọc DB, command/execution ở `AUTHORIZED`, external outcome `None`, và `receipt_inbox.processing_state=RECEIVED`; chưa có worker TEST chạy nên receipt chưa áp dụng. Chạy lệnh `venho-engine apply-test-receipts` theo runbook `operator_session_1.md` sau khi cập nhật source checkout; lệnh one-shot chỉ xử lý receipt job trong DB TEST và không bật scheduler/dispatch. Sau đó đối chiếu execution `REPORTED`, receipt `APPLIED`, outcome `POST_CREATED` và `platform_post_id` khớp ID Make. MK-4/6 PASS cho path đã chạy; MK-5 PASS cho Hanoi path; MK-9 PASS cho một command chọn đúng một trong ba branch. `fb_venho` và IG vẫn cần lượt riêng để xác minh mapping từng đích.
+DB snapshot đầu tiên có command/execution `AUTHORIZED`, external outcome `None`, receipt `RECEIVED`; worker TEST chưa chạy. Harry xác nhận ngày 11/11 `apply-test-receipts claimed=1 completed=1`, sau đó receipt `APPLIED`, execution `REPORTED`, outcome `POST_CREATED`, và `platform_post_id=1363761820162798_122106835935535879` khớp Make History. Outbox command vẫn `AUTHORIZED` đúng thiết kế; trạng thái này kết thúc việc giao lệnh, còn kết quả đăng được theo dõi riêng ở execution/receipt/delivery (xem §5.4 Master Plan). MK-4/6 PASS cho path đã chạy; MK-5 PASS cho Hanoi path; MK-9 PASS cho một command chọn đúng một trong ba branch. `fb_venho` và IG vẫn cần lượt riêng để xác minh mapping từng đích.
 
 ## Gate before opening Make
 
@@ -91,8 +91,23 @@ Use the existing copy `VenHo Growth Agent TEST` (ID `6924867`); do not duplicate
    - **I5 — Success receipt:** map Instagram module `id` (media ID) to `platform_post_id` with `outcome = POST_CREATED` and `event_id = <grant_id>:POST_CREATED`.
    - **I6 — Error receipt:** distinguish a verified container-creation failure from a publish-stage/ambiguous failure; the latter is `OUTCOME_UNKNOWN`. Never retry or resume I4. Follow I6 with the `Ignore` (**Skip**) directive for the same no-retry/no-resume reason; verify error-path routing in TEST.
 
-An F1/I1 fetch failure occurs before authorize, so there is no execution grant to receipt. Its error handler contains only `Ignore`; the route must end there, without entering F2/F3 (or I2/I3), and without retrying. This avoids Make's observed behavior of disabling the scenario after an unhandled 4xx from **Download a file**. Re-import the regenerated blueprint and verify this behavior on TEST before counting MK-12 as PASS.
+An F1/I1 fetch failure occurs before authorize, so there is no execution grant to receipt. Its error handler contains only `Ignore`; the route must end there, without entering F2/F3 (or I2/I3), and without retrying. This avoids Make's observed behavior of disabling the scenario after an unhandled 4xx from **Download a file**. Each of the three authorize HTTP modules also has a terminal `Ignore` handler so an invalid-token response cannot continue to Facebook/Instagram or disable the scenario. Re-import the regenerated 26-module blueprint and verify these behaviors on TEST before counting MK-12 as PASS.
 5. **Webhook responses:** do not add explicit `Webhook response` modules while sequential processing is enabled. Make reports responders are unsupported with this setting. Each branch ends at its receipt request; the explicit webhook ACK is omitted.
+
+### TEST run 3 closure and next cases — 2026-11-11
+
+Harry confirmed `apply-test-receipts claimed=1 completed=1`; receipt `APPLIED`, execution `REPORTED`, outcome `POST_CREATED`, and post ID `1363761820162798_122106835935535879` matched Make History. `outbox_commands.state=AUTHORIZED` is correct and terminal for transport; no `AUTHORIZED → COMPLETED` transition exists. The receipt updates execution/delivery separately.
+
+The next four runner cases are prepared but not run. Importing the regenerated 26-module blueprint is required before them, especially for invalid command-token handling. Run one at a time:
+
+```bash
+bash ops/asus-server/growth-engine/run-test-case.sh ig_venho
+bash ops/asus-server/growth-engine/run-test-case.sh duplicate
+bash ops/asus-server/growth-engine/run-test-case.sh broken-media
+bash ops/asus-server/growth-engine/run-test-case.sh bad-token
+```
+
+Each case gets a fresh TEST SQLite DB/channel UUID and private env, temporarily replaces only the TEST API on `127.0.0.1:8023`, and restores `growth-engine-api-test-src`. The runner checks signed media locally and requires `ACTIVE` then `GUI` before sending. The IG case targets `17841472240799413`; confirm I1 `200 image/jpeg`, Meta fetching the signed URL, Instagram output media `id`, and applied receipt. Duplicate replays the same envelope after the first receipt is applied; require `ALREADY_AUTHORIZED` and one post. `broken-media` corrupts only the TEST signed-media signature after the original URL preflight passes; require F1 → Ignore, no authorize/post, and scenario Active. `bad-token` corrupts only `command_token`; require `ERR_GC2_CAPABILITY_INVALID`, no post, and scenario Active. Runner outputs do not include URL/token; inspect Make History manually and record results in `make_capabilities.md`. Remove per-case DB/media/env files during final TEST cleanup.
 
 ### Credentials for TEST HTTP modules
 

@@ -532,6 +532,8 @@ Ghi chú bắt buộc:
 
 Hết 8 lượt mà chưa ACK → incident HIGH, command đứng PENDING tới khi EXPIRED; **không** tạo command mới.
 
+`AUTHORIZED` là trạng thái cuối của **outbox/transport command**: authorize CAS thắng thì command không được giao lại, kể cả sau khi receipt hoàn tất. Receipt chỉ chuyển `executions` (`AUTHORIZED → REPORTED/NO_SIDE_EFFECT/UNKNOWN`), `deliveries` và `receipt_inbox`; không có bước `outbox_commands.AUTHORIZED → COMPLETED`. Vì vậy command `AUTHORIZED` cùng execution `REPORTED` và receipt `APPLIED` là tổ hợp đúng theo thiết kế.
+
 ### 5.5. Projection trạng thái slot (không lưu cột riêng)
 
 `derive_slot_view(slot, targets, deliveries)` — hàm thuần, ưu tiên từ trên xuống:

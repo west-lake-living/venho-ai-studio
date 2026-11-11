@@ -498,6 +498,9 @@ def test_receipt_api_persists_full_sanitized_body_and_applies_from_sqlite(tmp_pa
         receipt = tx.connection.execute(
             "SELECT processing_state FROM receipt_inbox WHERE id=?", (receipt_id,)
         ).fetchone()
+        command = tx.connection.execute(
+            "SELECT state FROM outbox_commands WHERE id=?", (lease.command.id,)
+        ).fetchone()
         execution = tx.connection.execute(
             "SELECT state, external_outcome FROM executions WHERE delivery_id='delivery-sqlite'"
         ).fetchone()
@@ -508,6 +511,7 @@ def test_receipt_api_persists_full_sanitized_body_and_applies_from_sqlite(tmp_pa
             "SELECT count(*) FROM jobs WHERE kind='verify_publication'"
         ).fetchone()[0]
     assert receipt["processing_state"] == "APPLIED"
+    assert command["state"] == "AUTHORIZED"
     assert execution["state"] == "REPORTED"
     assert delivery["state"] == "REPORTED_PUBLISHED"
     assert delivery["platform_post_id"] == "post-synthetic-001"

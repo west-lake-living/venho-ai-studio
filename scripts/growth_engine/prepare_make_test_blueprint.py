@@ -394,6 +394,18 @@ def prepare_blueprint(document: dict[str, Any]) -> dict[str, Any]:
         filter_value=_media_filter(25, "I1 media URL valid"),
     )
 
+    # An authorize HTTP error means no grant was issued, so terminate this TEST route.
+    # This keeps deliberate invalid-token probes from disabling the copied scenario.
+    for module_id, auth, y in (
+        (33, auth1, fb1_y - 20),
+        (34, auth2, fb2_y - 20),
+        (35, auth_ig, ig_y - 20),
+    ):
+        ignore = copy.deepcopy(ignore_template)
+        ignore["id"] = module_id
+        _position(ignore, 960, y)
+        auth["onerror"] = [ignore]
+
     grant1 = _grant_filter(16, "F3 authorize grant valid")
     grant2 = _grant_filter(21, "F3 authorize grant valid")
     grant_ig = _grant_filter(26, "I3 authorize grant valid")

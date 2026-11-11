@@ -138,7 +138,7 @@ def test_prepares_three_routes_with_local_media_authorize_and_receipts() -> None
 
     assert result.errors == ()
     assert result.route_count == 3
-    assert result.module_count == 23
+    assert result.module_count == 26
     assert prepared["metadata"]["instant"] is True
     assert prepared["metadata"]["scenario"]["sequential"] is True
     assert all(module["module"] != "gateway:WebhookRespond" for module in _all_modules(prepared))
@@ -156,6 +156,9 @@ def test_prepares_three_routes_with_local_media_authorize_and_receipts() -> None
     assert [module["id"] for module in routes[0]["flow"][0]["onerror"]] == [30]
     assert [module["id"] for module in routes[1]["flow"][0]["onerror"]] == [32]
     assert [module["id"] for module in routes[2]["flow"][0]["onerror"]] == [31]
+    assert [module["id"] for module in routes[0]["flow"][1]["onerror"]] == [33]
+    assert [module["id"] for module in routes[1]["flow"][1]["onerror"]] == [35]
+    assert [module["id"] for module in routes[2]["flow"][1]["onerror"]] == [34]
     assert all(
         module["module"] == "builtin:Ignore"
         for route in routes
@@ -178,6 +181,20 @@ def test_prepares_three_routes_with_local_media_authorize_and_receipts() -> None
         assert "headers.`content-type`" in route["flow"][1]["filter"]["conditions"][0][1]["a"]
     assert prepared["flow"][1]["filter"] == source["flow"][1]["filter"]
     assert source["flow"][2]["routes"][0]["flow"][1]["mapper"]["body"].startswith("https://")
+
+
+def test_authorize_http_errors_end_in_ignore_without_post_or_receipt() -> None:
+    prepared = prepare_blueprint(source_blueprint())
+    routes = prepared["flow"][1]["routes"]
+
+    for route in routes:
+        authorize = route["flow"][1]
+        assert authorize["module"] == "http:MakeRequest"
+        assert [item["module"] for item in authorize["onerror"]] == ["builtin:Ignore"]
+        assert all(
+            item["module"] != "facebook-pages:CreatePostWithPhotos"
+            for item in authorize["onerror"]
+        )
 
 
 def test_prepare_cli_writes_private_ignored_style_draft(tmp_path, capsys) -> None:

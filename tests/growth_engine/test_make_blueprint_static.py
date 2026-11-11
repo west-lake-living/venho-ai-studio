@@ -143,6 +143,18 @@ def test_media_fetch_requires_ignore_error_handler(module_type: str, mapper: dic
     assert "media_fetch_error_must_terminate_with_ignore" in validate_blueprint(document).errors
 
 
+def test_authorize_request_requires_ignore_error_handler() -> None:
+    document = valid_blueprint()
+    request = document["flow"][1]["routes"][0]["flow"][0]
+    request["mapper"]["url"] = "https://set-in-make.invalid/internal/growth/v2/executions/authorize"
+    request["onerror"] = [{"id": 16, "module": "builtin:Ignore", "mapper": {}}]
+
+    assert "authorize_error_must_terminate_with_ignore" not in validate_blueprint(document).errors
+
+    request.pop("onerror")
+    assert "authorize_error_must_terminate_with_ignore" in validate_blueprint(document).errors
+
+
 def test_rejects_facebook_post_id_alias_when_module_output_is_id() -> None:
     document = valid_blueprint()
     route_flow = document["flow"][1]["routes"][0]["flow"]

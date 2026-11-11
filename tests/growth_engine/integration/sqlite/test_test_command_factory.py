@@ -162,3 +162,26 @@ def test_test_manifest_rejects_production_destination(tmp_path: Path, monkeypatc
     config.write_text(yaml.safe_dump(payload), encoding="utf-8")
     with pytest.raises(ValueError, match="principal must match"):
         send_test_command._test_channel_manifest("67890", "fb_hanoi")
+
+
+def test_intentional_test_mutations_change_only_the_selected_envelope_field() -> None:
+    original = {
+        "command_token": "valid-command-token",
+        "media_url": "https://ge-test.venhohotel.com/media/publish/" + "a" * 64 + ".jpg?t=v1.kid.command.expiry.signature",
+        "caption": "TEST caption",
+    }
+
+    broken_media = send_test_command._mutate_test_envelope(
+        original, corrupt_media=True, corrupt_command=False
+    )
+    bad_command = send_test_command._mutate_test_envelope(
+        original, corrupt_media=False, corrupt_command=True
+    )
+
+    assert original["command_token"] == "valid-command-token"
+    assert broken_media["command_token"] == original["command_token"]
+    assert broken_media["media_url"] != original["media_url"]
+    assert bad_command["media_url"] == original["media_url"]
+    assert bad_command["command_token"] != original["command_token"]
+    assert broken_media["caption"] == original["caption"]
+    assert bad_command["caption"] == original["caption"]

@@ -241,6 +241,19 @@ def validate_blueprint(document: Any) -> CheckResult:
                 or handlers[0].get("module") != "builtin:Ignore"
             ):
                 errors.add("media_fetch_error_must_terminate_with_ignore")
+        is_authorize = module.get("module") == "http:MakeRequest" and isinstance(mapper, dict) and (
+            isinstance(mapper.get("url"), str)
+            and mapper["url"].rstrip("/").endswith("/internal/growth/v2/executions/authorize")
+        )
+        if is_authorize:
+            handlers = module.get("onerror")
+            if (
+                not isinstance(handlers, list)
+                or len(handlers) != 1
+                or not isinstance(handlers[0], dict)
+                or handlers[0].get("module") != "builtin:Ignore"
+            ):
+                errors.add("authorize_error_must_terminate_with_ignore")
         for text in _strings(module):
             for reference in MAPPING_RE.finditer(text):
                 source = modules_by_id.get(int(reference.group(1)))

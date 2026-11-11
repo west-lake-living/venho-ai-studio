@@ -15,7 +15,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 from uuid import uuid4
-from urllib.parse import urlsplit
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 from zoneinfo import ZoneInfo
 
 
@@ -98,6 +98,17 @@ def _parser() -> argparse.ArgumentParser:
         "--confirm-test-remote-id", "--confirm-test-page-id",
         dest="confirm_test_page_id",
         help="Must exactly match the configured TEST Page or Instagram account ID when --send is set.",
+    )
+    mutations = parser.add_mutually_exclusive_group()
+    mutations.add_argument(
+        "--test-corrupt-media-url",
+        action="store_true",
+        help="TEST only: send a valid envelope with its media signature deliberately corrupted.",
+    )
+    mutations.add_argument(
+        "--test-corrupt-command-token",
+        action="store_true",
+        help="TEST only: send a valid envelope with an intentionally invalid command token.",
     )
     return parser
 
@@ -247,6 +258,35 @@ def _test_target(environ: dict[str, str]) -> tuple[str, str, str, str]:
     if not channel_id or channel_id == "REQUIRED_FROM_P0" or not remote_id or remote_id == "REQUIRED_FROM_P0":
         raise ValueError("TEST channel UUID and remote destination ID must be verified before creating a command.")
     return channel_key, platform, channel_id, remote_id
+
+
+def _mutate_test_envelope(envelope: dict[str, Any], *, corrupt_media: bool, corrupt_command: bool) -> dict[str, Any]:
+    if corrupt_media == corrupt_command:
+        raise ValueError("Choose exactly one intentional TEST envelope mutation.")
+    mutated = dict(envelope)
+    if corrupt_command:
+        mutated["command_token"] = "intentionally-invalid-test-command-token"
+        return mutated
+
+    media_url = mutated.get("media_url")
+    if not isinstance(media_url, str):
+        raise ValueError("TEST media URL is missing for the intentional failure case.")
+    parsed = urlsplit(media_url)
+    query = parse_qsl(parsed.query, keep_blank_values=True, strict_parsing=True)
+    token_values = [value for name, value in query if name == "t"]
+    if len(token_values) != 1:
+        raise ValueError("TEST media capability cannot be mutated safely.")
+    token_parts = token_values[0].split(".")
+    if len(token_parts) != 5 or not token_parts[-1]:
+        raise ValueError("TEST media capability shape is unexpected.")
+    signature = token_parts[-1]
+    token_parts[-1] = ("A" if signature[0] != "A" else "B") + signature[1:]
+    bad_token = ".".join(token_parts)
+    replaced = [(name, bad_token if name == "t" else value) for name, value in query]
+    mutated["media_url"] = urlunsplit(
+        (parsed.scheme, parsed.netloc, parsed.path, urlencode(replaced), parsed.fragment)
+    )
+    return mutated
 
 
 def _create_test_command(environ: dict[str, str], output_path: Path) -> dict[str, object]:
@@ -508,6 +548,10 @@ def run(args: argparse.Namespace, environ: dict[str, str]) -> dict[str, object]:
     if path is None:
         raise ValueError("Provide --envelope-file or GE_TEST_COMMAND_ENVELOPE_FILE.")
     channel_key, platform, channel_id, page_id = _test_target(environ)
+    corrupt_media = bool(getattr(args, "test_corrupt_media_url", False))
+    corrupt_command = bool(getattr(args, "test_corrupt_command_token", False))
+    if (corrupt_media or corrupt_command) and not args.send:
+        raise ValueError("Intentional envelope mutations are allowed only with --send in TEST.")
     route_reference = _test_destination_reference(page_id, channel_key)
     envelope = _read_private_envelope(path)
     tokens = CapabilityTokenManager(parse_key_ring(environ.get("GE_CAPABILITY_KEYS", "")))
@@ -549,7 +593,17 @@ def run(args: argparse.Namespace, environ: dict[str, str]) -> dict[str, object]:
     ):
         raise ValueError(f"{route_reference} must be a configured HTTPS TEST route.")
 
-    disposition, status = _post_to_test_route(route_url, envelope)
+    outbound_envelope = envelope
+    if corrupt_media or corrupt_command:
+        outbound_envelope = _mutate_test_envelope(
+            envelope,
+            corrupt_media=corrupt_media,
+            corrupt_command=corrupt_command,
+        )
+        summary["intentional_test_case"] = (
+            "broken_media_signature" if corrupt_media else "invalid_command_token"
+        )
+    disposition, status = _post_to_test_route(route_url, outbound_envelope)
     summary.update(
         {
             "network_request_sent": True,

@@ -377,7 +377,7 @@ Sau khi gửi, wrapper đọc DB TEST ở chế độ chỉ đọc tối đa 120
 
 ### Áp receipt TEST một lần sau Make History
 
-Lượt TEST 3 của Harry (10/11/2026 22:33 ICT, `fb_hanoi`) đã đăng thành công trên Page TEST: History chạy webhook → F1 HTTP 4 (`200 image/jpeg`) → authorize HTTP 16 → Facebook Pages 3 → receipt HTTP 17 trong 5 operations/8 giây. Post ID do Make trả về là `1363761820162798_122106835935535879`. Hai nhánh `ig_venho` và `fb_venho` bị filter. DB xác nhận command `cd73c43a-1a28-4922-bd4d-29aeaf6d665d` có execution `AUTHORIZED`, external outcome `None`, receipt `RECEIVED`, delivery chưa được cập nhật — API nhận receipt nhưng TEST không chạy worker.
+Lượt TEST 3 của Harry (10/11/2026 22:33 ICT, `fb_hanoi`) đã đăng thành công trên Page TEST: History chạy webhook → F1 HTTP 4 (`200 image/jpeg`) → authorize HTTP 16 → Facebook Pages 3 → receipt HTTP 17 trong 5 operations/8 giây. Post ID do Make trả về là `1363761820162798_122106835935535879`. Hai nhánh `ig_venho` và `fb_venho` bị filter. DB snapshot ban đầu cho thấy receipt `RECEIVED` trước khi có worker.
 
 Sau khi cập nhật `~/venho/gc2-src` tới commit có lệnh `apply-test-receipts`, xử lý tối đa một batch job receipt bằng transient unit riêng. Lệnh bị giới hạn vào `GE_ENV=test` và DB nằm dưới TEST state; nó không chạy scheduler, dispatch, timeout watcher hay jobs lane:
 
@@ -391,7 +391,7 @@ systemd-run --user --pipe --wait --collect \
   "$HOME/venho/gc2-src/.venv/bin/venho-engine" apply-test-receipts
 ```
 
-Mong đợi `receipt_jobs claimed=1 completed=1 failed=0`. Lệnh không restart API TEST; nó mở cùng TEST DB, claim job `apply_receipt`, áp receipt và kết thúc. Nếu `claimed=0`, kiểm tra DB path/unit đang dùng có trùng API TEST trước đó không; không chạy lại module Facebook trong Make.
+Kết quả Harry xác nhận ngày 11/11/2026: `receipt_jobs claimed=1 completed=1 failed=0`. Lệnh không restart API TEST; nó mở cùng TEST DB, claim job `apply_receipt`, áp receipt và kết thúc.
 
 Kiểm tra execution, receipt, outcome và đối chiếu platform post ID với giá trị từ Make History:
 
@@ -412,7 +412,27 @@ WHERE c.id = 'cd73c43a-1a28-4922-bd4d-29aeaf6d665d';
 SQL
 ```
 
-Mong đợi `execution_state=REPORTED`, `receipt_inbox_state=APPLIED`, `outcome=POST_CREATED`, `platform_post_id=1363761820162798_122106835935535879`, `post_id_check=MATCH`. Đây là receipt report, chưa phải bước verify bài trên Meta.
+Kết quả Harry xác nhận: `execution_state=REPORTED`, `receipt_inbox_state=APPLIED`, `outcome=POST_CREATED`, `platform_post_id=1363761820162798_122106835935535879`, `post_id_check=MATCH`. `outbox_commands.state=AUTHORIZED` là đúng: authorize kết thúc giao command; receipt cập nhật execution/delivery/inbox. Không có trạng thái `outbox_commands.COMPLETED`. Đây là receipt report, chưa phải bước verify bài trên Meta.
+
+### Bốn ca TEST tiếp theo
+
+Trước tiên import blueprint TEST mới 26 module; cần thiết để ba authorize HTTP request có `Ignore`, đồng thời giữ F1/I1 handlers. Sau khi kiểm tra lại 3 route, filter, đích/connection, credentials, sequential và Immediately, chạy từng lệnh riêng:
+
+```bash
+bash ops/asus-server/growth-engine/run-test-case.sh ig_venho
+bash ops/asus-server/growth-engine/run-test-case.sh duplicate
+bash ops/asus-server/growth-engine/run-test-case.sh broken-media
+bash ops/asus-server/growth-engine/run-test-case.sh bad-token
+```
+
+Runner tạo DB/channel TEST riêng, migrate, tạm thay API TEST trên `:8023`, kiểm media URL trên loopback và in tóm tắt không bí mật. Chỉ gửi khi người vận hành gõ chính xác `ACTIVE` rồi `GUI`; preflight thông thường không đạt thì dừng. Ca `broken-media` cố ý làm hỏng chữ ký signed URL TEST sau khi URL gốc đạt preflight. Mỗi ca poll tối đa 120 giây, áp receipt khi có, in riêng `outbox_commands.state`, execution và receipt, rồi khôi phục transient API gốc.
+
+- `ig_venho`: xác nhận I1 `200 image/jpeg`, Meta tải signed URL, output media ID và receipt `APPLIED`.
+- `duplicate`: gửi lại đúng envelope sau receipt đầu; History phải cho thấy `ALREADY_AUTHORIZED`, chỉ một execution/receipt/post.
+- `broken-media`: F1 → `Ignore`, không authorize/post, scenario vẫn Active.
+- `bad-token`: authorize từ chối `ERR_GC2_CAPABILITY_INVALID`, không module đăng, scenario vẫn Active.
+
+Gõ `PASS` tại prompt History chỉ khi đúng điều kiện; cập nhật từng MK trong `make_capabilities.md`. Xóa DB/media/env case riêng ở bước dọn cuối giai đoạn TEST.
 
 Chọn `GE_TEST_CHANNEL_KEY` (`fb_hanoi`, `fb_venho`, hoặc `ig_venho`), `GE_TEST_CHANNEL_ID` riêng cho nhánh, TEST DB và đúng API TEST trước khi tạo command. Facebook dùng `GE_TEST_REMOTE_PAGE_ID`, Instagram dùng `GE_TEST_REMOTE_IG_ID`. Tạo command TEST và private envelope (lệnh này không gửi webhook):
 
