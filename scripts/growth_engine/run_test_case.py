@@ -243,6 +243,63 @@ def _unit_active(unit: str, runner: Callable[..., subprocess.CompletedProcess[st
     return result.returncode == 0 and result.stdout.strip() == "active"
 
 
+def _restore_base_api(
+    *,
+    runner: Callable[..., subprocess.CompletedProcess[str]],
+    env_path: Path,
+    repo_root: Path,
+    sleep: Callable[[float], None],
+    monotonic: Callable[[], float],
+    ready: Callable[..., None] | None = None,
+) -> str | None:
+    """Restart an existing transient unit or recreate it if systemd unloaded it."""
+
+    def is_ready() -> bool:
+        try:
+            (ready or _wait_local_api)(timeout_seconds=30, sleep=sleep, monotonic=monotonic)
+            return True
+        except TestCaseError:
+            return False
+
+    reset = ["systemctl", "--user", "reset-failed", API_BASE_UNIT]
+    _run_process(reset, runner=runner, timeout=15)
+
+    restarted = _run_process(
+        ["systemctl", "--user", "restart", API_BASE_UNIT], runner=runner, timeout=30
+    )
+    if restarted.returncode == 0 and is_ready():
+        return "restart"
+
+    # systemd-run units can be unloaded when stopped, so `systemctl start` alone
+    # may have no unit definition to start. Recreate with the original TEST env.
+    _run_process(["systemctl", "--user", "stop", API_BASE_UNIT], runner=runner, timeout=20)
+    _run_process(reset, runner=runner, timeout=15)
+    command = [
+        "systemd-run",
+        "--user",
+        f"--unit={API_BASE_UNIT}",
+        f"--property=EnvironmentFile={env_path}",
+        f"--property=WorkingDirectory={repo_root}",
+        "--setenv=GE_ENV=test",
+        str(repo_root / ".venv/bin/venho-engine"),
+        "api",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        str(API_PORT),
+    ]
+    recreated = _run_process(command, runner=runner, timeout=30)
+    if recreated.returncode == 0 and is_ready():
+        return "transient-recreated"
+
+    started = _run_process(
+        ["systemctl", "--user", "start", API_BASE_UNIT], runner=runner, timeout=30
+    )
+    if started.returncode == 0 and is_ready():
+        return "start-existing"
+    return None
+
+
 def _wait_local_api(
     *, timeout_seconds: int, sleep: Callable[[float], None], monotonic: Callable[[], float]
 ) -> None:
@@ -470,7 +527,7 @@ def _operator_history_check(case_name: str, input_fn: Callable[[str], str]) -> b
         "broken-media": "Make History shows F1 error → Ignore, no authorize/post, and the scenario remains Active? Type PASS: ",
         "bad-token": "Make History shows authorize rejection → Ignore, no Facebook post, and the scenario remains Active? Type PASS: ",
     }
-    return input_fn(prompts[case_name]).strip() == "PASS"
+    return input_fn(prompts[case_name]).strip().upper() == "PASS"
 
 
 def run_case(
@@ -518,7 +575,6 @@ def run_case(
     envelope_path = run_root / "command.envelope.json"
     case_unit = f"growth-engine-api-test-{spec.name}-{run_id[:8]}"
     migration_unit = f"growth-engine-test-migrate-{run_id[:10]}"
-    base_was_active = False
     base_stopped = False
     case_api_started = False
     manual_result = False
@@ -733,19 +789,29 @@ def run_case(
                 _write_safe_result(result_file, outcome)
             except OSError:
                 emit("result_record=FAILED")
+        case_unit_stopped = True
         if case_api_started:
             stopped = _run_process(["systemctl", "--user", "stop", case_unit], runner=runner, timeout=30)
             if stopped.returncode != 0:
-                emit("test_api_restore=FAILED; case API stop failed")
+                _run_process(["systemctl", "--user", "stop", case_unit], runner=runner, timeout=30)
+                case_unit_stopped = not _unit_active(case_unit, runner)
+                if not case_unit_stopped:
+                    emit("test_api_restore=FAILED; case API unit is still active")
         if base_stopped:
-            restored = _run_process(["systemctl", "--user", "start", API_BASE_UNIT], runner=runner, timeout=30)
-            base_was_active = restored.returncode == 0
-            if base_was_active:
-                try:
-                    _wait_local_api(timeout_seconds=30, sleep=sleep, monotonic=monotonic)
-                except TestCaseError:
-                    base_was_active = False
-            emit(f"test_api_restore={'PASS' if base_was_active else 'FAILED'}")
+            if case_unit_stopped:
+                restore_method = _restore_base_api(
+                    runner=runner,
+                    env_path=base_env_path,
+                    repo_root=repo_root,
+                    sleep=sleep,
+                    monotonic=monotonic,
+                )
+                emit(
+                    "test_api_restore=PASS "
+                    f"method={restore_method}"
+                    if restore_method
+                    else "test_api_restore=FAILED; base API did not become ready after restart/recreate"
+                )
 
 
 def main(argv: list[str] | None = None) -> int:

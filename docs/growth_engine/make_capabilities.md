@@ -1,9 +1,9 @@
 # Make router capability check — GC2-P0-T03
 
-**State (2026-11-11):** TEST run 3 is closed: receipt job claimed 1/completed 1, receipt `APPLIED`, execution `REPORTED`, outcome `POST_CREATED`, and stored post ID matches Make History. `outbox_commands.state=AUTHORIZED` is correct and terminal for delivery; no transition to `COMPLETED` exists. MK-1 remains CONFIGURED; MK-4/5/6/9 have PASS evidence for the exercised `fb_hanoi` route. The four following cases are prepared but NOT_RUN.
+**State (2026-11-11):** TEST run 3 is closed and all four follow-up cases were confirmed in Make History. IG publish, duplicate replay, invalid command token and media-fetch error passed for the exercised routes. `outbox_commands.state=AUTHORIZED` remains the correct terminal transport state. MK-1 remains CONFIGURED; `fb_venho` and MK-11 remain unverified.
 
 **Production scenario:** `VenHo Growth Agent-FB/IG` (ID `5868920`, Active; do not edit).
-**TEST scenario:** `VenHo Growth Agent TEST` (ID `6924867`, Inactive; TEST webhook data structure has 15 fields).
+**TEST scenario:** `VenHo Growth Agent TEST` (ID `6924867`, Active after the 2026-11-11 tests; TEST webhook data structure has 15 fields).
 **Test requirement:** use a copied scenario and test accounts only. Do not use live pages for capability tests.
 
 No webhook URL, access token, or credential belongs in this file. Store only redacted screenshots/output, and blur connection details before attaching evidence.
@@ -31,15 +31,16 @@ For the post ID, inspect the output bundle of the posting module itself. Record 
 
 ## B. Prepare the TEST copy
 
-- [x] TEST copy exists as `VenHo Growth Agent TEST`, ID `6924867`, Inactive, with a separate webhook.
-- [x] Facebook modules 3 and 12 point to TEST Page `1363761820162798`; Instagram module 6 points to TEST account `@hanhpham1504` (its numeric ID is not present in this handoff).
+- [x] TEST copy exists as `VenHo Growth Agent TEST`, ID `6924867`, with a separate webhook.
+- [x] Facebook modules 3 and 12 point to TEST Page `1363761820162798`; Instagram module 6 points to TEST account `@hanhpham1504`, ID `17841472240799413`.
 - [x] TEST Router has the three fixed `channel_key` filters and fallback Off, per the 2026-11-10 operator observation; inherited `publication_id` conditions were removed.
 - [x] Do not add Webhook response modules while sequential processing is enabled; Make reports they are unsupported in this mode.
-- [x] Generated F1/I1 modules use one `Ignore` error handler for fetch failures; this is static blueprint evidence, not yet verified in Make History.
-- [ ] Use test-only credentials and webhook. Do not paste secrets into this file.
-- [ ] Reposition/duplicate HTTP image download into each Facebook branch; map Instagram `image_url` from `media_url`.
+- [x] Generated F1/I1 modules use one `Ignore` handler. Hanoi F1 error path was confirmed in Make History; I1 error path remains untested.
+- [x] TEST-only credentials and webhook were used; no values are stored here.
+- [x] Facebook HTTP media fetches are branch-local; Instagram I1 checks the signed URL and Instagram module 6 receives `media_url`.
 - [ ] Ensure every test post is visibly labelled as a test and can be removed by the operator.
-- [ ] Re-import the corrected blueprint and confirm the webhook remains immediate rather than displaying an interval schedule; keep the scenario inactive outside an approved test window.
+- [x] Updated 26-module blueprint was imported; successful webhook runs completed and the scenario remained Active after error-path tests.
+- [ ] Recheck the scenario's sequential/concurrency setting before production; MK-1 remains CONFIGURED because parallel behavior was not tested.
 
 ## C. Capability evidence matrix
 
@@ -48,43 +49,36 @@ Fill **Result** with `PASS`, `PARTIAL`, `FAIL`, or `NOT_RUN`; use `CONFIGURED �
 | ID | Check on TEST copy | Result | Evidence / exact observed value | Remediation if FAIL |
 |---|---|---|---|---|
 | MK-1 | Sequential processing is enabled. | CONFIGURED | TEST scenario 6924867 completed a webhook run; it processed five operations in 8 seconds. The run is consistent with sequential mode; setting remains recorded as configured from the Make UI observation on 2026-11-10. | Keep sequential processing enabled; do not add Webhook response modules. |
-| MK-2 | Incomplete executions are disabled, or the runbook explicitly forbids resuming after the response step. | NOT_RUN | Scenario setting not rechecked. Runbook requires no resume after authorize; duplicate replay alone does not prove the Make incomplete-execution setting. | Disable storage or document and enforce the no-resume rule. |
-| MK-3 | Facebook/Instagram post modules have no automatic retry and no Break directive. | NOT_RUN | Posting-module retry settings still need visual review; duplicate replay checks idempotency, not the module retry setting. | Remove automatic retry/Break; ambiguous outcomes must be reconciled. |
-| MK-4 | Each post module returns its real post/media ID in its output bundle. | PASS — exercised Facebook module 3 | Make History run 2026-11-10 22:33 ICT, command `cd73c43a-1a28-4922-bd4d-29aeaf6d665d`: Facebook Pages 3 output `id=1363761820162798_122106835935535879`. On 2026-11-11, `apply-test-receipts` claimed 1/completed 1; DB receipt is `APPLIED`, execution `REPORTED`, and DB `platform_post_id` matches the Make ID. | Keep receipt mapped verbatim from the module's `id`. |
-| MK-5 | The executed route passes the correct image to its post module (Facebook uses that route's downloaded JPEG; Instagram uses the signed image URL). | PASS — route `fb_hanoi` | Make History run 2026-11-10 22:33 ICT: HTTP 4/F1 returned `200 image/jpeg` with `private,no-store` and `cf-cache-status=BYPASS`; Facebook Pages 3 then created the TEST post. This proves the exercised Hanoi route. The `fb_venho` and Instagram branches were filtered out and their path-specific media mappings remain untested. | Run the same successful path once on `fb_venho` and `ig_venho` before treating those destinations as independently verified. |
-| MK-6 | HTTP modules can send the required bearer and Cloudflare Access headers without exposing them in logs. | PASS — exercised route | Make History run 2026-11-10 22:33 ICT: authorize HTTP 16 and receipt HTTP 17 both completed after F1, and the API accepted the receipt. The supplied evidence is redacted and contains no bearer or Access credential values. | Keep credentials in protected Make connection/headers; review future History for accidental values. |
-| MK-7 | Errors proven to occur before publication are distinguished from ambiguous outcomes. | NOT_RUN | Actual redacted error/status: `REQUIRED_FROM_P0` | Add only observed classifications to `make_error_classes.yaml`; otherwise use `OUTCOME_UNKNOWN`. |
-| MK-8 | Operators know not to rerun a posting module manually; recovery starts from the first webhook module. | NOT_RUN | Runbook/evidence: `REQUIRED_FROM_P0` | Add and review the no-manual-rerun instruction. |
-| MK-9 | Router has exactly three routes filtered by fixed `channel_key`; fallback is off; one command reaches one route. | PASS — exercised `fb_hanoi` command | Make History run 2026-11-10 22:33 ICT: Router entered the `fb_hanoi` branch; the `ig_venho` and `fb_venho` branches were stopped by their filters. Five operations completed in 8 seconds; no second posting route ran. The other route keys and fallback remain to be exercised. | Test each remaining route key in isolation and record its History branch. |
-| MK-10 | Instagram accepts the signed media URL and Meta can fetch it without receiving a Cloudflare Access login page. | NOT_RUN | Redacted result: `REQUIRED_FROM_P0` | Adjust only the TEST edge rule, then retest from Instagram. |
+| MK-2 | Incomplete executions are disabled, or the runbook explicitly forbids resuming after the response step. | PASS — replay stopped before post | 2026-11-11 10:03:46 ICT: replayed command returned `ALREADY_AUTHORIZED`; Facebook Pages 3 was filtered, with no second execution/receipt. Runbook forbids resume after authorize; Make storage setting itself was not rechecked. | Keep the no-resume rule and review storage setting before production. |
+| MK-3 | Facebook/Instagram post modules have no automatic retry and no Break directive. | PARTIAL — duplicate replay | 2026-11-11 10:03:46 ICT: three operations ended at the post-module filter; DB retained one execution/receipt and no second post. This proves replay did not repost, but the posting-module retry setting was not directly inspected or fault-injected. | Visually verify post-module retry/Break settings before production. |
+| MK-4 | Each post module returns its real post/media ID in its output bundle. | PASS — Facebook and Instagram paths | Duplicate-case Facebook ID `1363761820162798_122107375689535879`; Instagram media ID `18453049759135668` from 12:16:35 ICT. IG receipt/execution reached `APPLIED`/`REPORTED`; earlier Hanoi receipt also matched History. | Keep receipt mapped verbatim from each module's `id`. |
+| MK-5 | The executed route passes the correct image to its post module (Facebook uses that route's downloaded JPEG; Instagram uses the signed image URL). | PASS — `fb_hanoi` and `ig_venho` | Hanoi F1 returned `200 image/jpeg`; IG 12:16:35 ICT passed I1, then Instagram module 6 published after about 9.7 seconds. Meta fetched the signed URL. `fb_venho` remains untested. | Run the successful path once on `fb_venho`. |
+| MK-6 | HTTP modules can send the required bearer and Cloudflare Access headers without exposing them in logs. | PASS — Hanoi and IG paths | Authorize/receipt completed in both successful runs. History review did not open modules containing bearer or signed URL values. | Keep credentials protected; avoid opening or exporting secret-bearing module fields during review. |
+| MK-7 | Errors proven to occur before publication are distinguished from ambiguous outcomes. | PASS — media and authorize rejection | 11:32:45 F1 and 10:14:07 authorize errors were caught and ended at `Ignore`; neither reached a post module. | Keep pre-publication errors separate from ambiguous post outcomes. |
+| MK-8 | Operators know not to rerun a posting module manually; recovery starts from the first webhook module. | PASS — terminal error handling observed | Both error cases ended at `Ignore`; Make run status was Success and the scenario remained Active. No posting-module rerun occurred. | Continue recovery from a fresh webhook command only after reconciling execution/receipt. |
+| MK-9 | Router has exactly three routes filtered by fixed `channel_key`; fallback is off; one command reaches one route. | PARTIAL — two route keys exercised | Hanoi runs selected `fb_hanoi`; IG run selected `ig_venho`. Duplicate replay stopped at the Facebook module filter. `fb_venho` remains untested. | Run `fb_venho` in isolation before marking all-route behavior verified. |
+| MK-10 | Instagram accepts the signed media URL and Meta can fetch it without receiving a Cloudflare Access login page. | PASS — `ig_venho` | Make History 2026-11-11 12:16:35 ICT: I1/HTTP 25 succeeded, authorize 26, Instagram 6 returned media ID `18453049759135668` after about 9.7 seconds, receipt 27 completed; execution `REPORTED`, receipt `APPLIED`. | Preserve public signed-media access without Cloudflare Access on that path. |
 | MK-11 | Instagram output includes the media ID and distinguishes container creation failure from publish failure. | NOT_RUN | Exact field/error evidence: `REQUIRED_FROM_P0` | Keep uncertain outcomes unknown; capture module-level evidence. |
-| MK-12 | Each media fetch (both Facebook F1 modules and Instagram I1) catches HTTP errors with one `Ignore`; no authorize/post module runs and the error does not disable the scenario. | CONFIGURED — chờ bằng chứng run | Generator/checker require one terminal `Ignore`; Harry observed an unhandled F1 403 disable the TEST scenario. Runtime routing and active state must be rechecked after re-import. | Re-import the updated TEST blueprint; inject/observe a fetch failure on TEST and confirm the branch stops before authorize, does not retry, and Make does not disable the scenario because of that fetch error. |
+| MK-12 | Each media fetch (both Facebook F1 modules and Instagram I1) catches HTTP errors with one `Ignore`; no authorize/post module runs and the error does not disable the scenario. | PARTIAL | `fb_hanoi` F1 error at 11:32:45 ended at `Ignore`, no authorize/post, scenario Active. IG I1 success is proven; I1 error and `fb_venho` F1 error remain untested. | Exercise the remaining fetch handlers if needed before closing all route-level error checks. |
 
-## D. TEST cases to run after destinations and credentials are confirmed
+## D. TEST cases
 
-- [ ] One successful test per `channel_key`; save module-level outputs and verify each returned ID on its mapped TEST destination.
-- [ ] Broken/non-JPEG image: verify the post module is not reached.
-- [ ] Invalid test credential: capture the exact observed error without saving the token.
-- [ ] Submit the same test command twice: verify the second attempt does not create another post.
+- [ ] One successful test per `channel_key`; `fb_venho` remains outstanding.
+- [x] Broken signed-media URL: F1 `Ignore`; post module not reached. Non-JPEG decoding was not exercised.
+- [x] Invalid TEST command token: authorize error caught, then `Ignore`; post module not reached.
+- [x] Submit the same command twice: replay stopped before posting; no second execution, receipt or post.
 - [ ] Stop after authorize but before the post module: verify the route does not continue or auto-resume.
-- [ ] Send one test command per `channel_key`: verify only its matching route runs.
-- [ ] Instagram: verify image fetch succeeds and record separate container/publish outcomes.
+- [ ] Send one test command per `channel_key`; `fb_venho` route is still missing.
+- [x] Instagram image fetch and publish succeeded; container/publish failure behavior remains untested.
 
 | Case | Result | Evidence |
 |---|---|---|
 | Successful FB Hanoi test | PASS | Make History 22:33 ICT and applied TEST DB receipt: post ID `1363761820162798_122106835935535879`, outcome `POST_CREATED`, execution `REPORTED`, receipt `APPLIED`. |
-| Successful FB Ven Ho test | NOT_RUN | `REQUIRED_FROM_P0` |
-| Successful Instagram test | NOT_RUN | Runner `ig_venho`: isolated DB/channel; confirm I1, Meta signed-URL fetch, media ID and applied receipt. |
-| Invalid image / invalid test credential | NOT_RUN | Runner cases `broken-media` and `bad-token`; confirm no post and scenario remains Active. |
-| Duplicate command / interrupted execution | NOT_RUN | Runner `duplicate`: replay the same envelope; expect `ALREADY_AUTHORIZED` with no second post. |
+| Successful FB Ven Ho test | NOT_RUN | Route `fb_venho` has not been exercised. |
+| Successful Instagram test | PASS | History 12:16:35 ICT: media ID `18453049759135668`; execution `REPORTED`; receipt `APPLIED`. |
+| Invalid media / invalid command token | PASS | F1 11:32:45 → Ignore/no authorize/post; authorize 10:14:07 → caught error/Ignore/no Facebook module; scenario stayed Active. |
+| Duplicate command / interrupted execution | PASS — duplicate replay | History 10:03:33 posted once (`…_122107375689535879`), receipt APPLIED. Replay 10:03:46 ended with Facebook module filtered; DB had no second execution/receipt. |
 
-**Next TEST cases (each is one command and all remain NOT_RUN):**
+**Remaining TEST gaps:** successful `fb_venho`; Instagram container-creation versus publish-failure distinction (MK-11); visual review of incomplete-execution/retry settings and parallel-processing behavior (MK-1 remains CONFIGURED). MK-12 is partial because only the Hanoi F1 error handler was exercised.
 
-1. `bash ops/asus-server/growth-engine/run-test-case.sh ig_venho` — destination `17841472240799413`; confirm I1 returns `200 image/jpeg`, Meta fetches the signed URL, Instagram returns a media ID, and receipt reaches `APPLIED`.
-2. `bash ops/asus-server/growth-engine/run-test-case.sh duplicate` — send one approved TEST envelope, apply its receipt, then replay that exact envelope; confirm authorize reports `ALREADY_AUTHORIZED`, with one execution/receipt and one post.
-3. `bash ops/asus-server/growth-engine/run-test-case.sh broken-media` — first prove the original signed URL passes local preflight, then corrupt only its TEST media signature; confirm F1 ends at `Ignore`, without authorize/post, and the scenario remains Active. This tests an HTTP media-fetch failure, not image-format decoding.
-4. `bash ops/asus-server/growth-engine/run-test-case.sh bad-token` — keep media valid and corrupt only `command_token`; confirm authorize rejects it, no post module runs, and the scenario remains Active.
-
-Each invocation creates a fresh SQLite TEST database/channel UUID and private env file, temporarily replaces the API process on `127.0.0.1:8023`, then restores `growth-engine-api-test-src`. It requires exact `ACTIVE` and `GUI` confirmations before sending, polls and applies any received TEST receipt, and asks the operator to confirm Make History. The updated generated draft is 26 modules; reimport is required before these tests to install authorize `Ignore` handlers. Production is not edited.
-
-**Gate:** current PASS entries apply only to the tested `fb_hanoi` path; the FB Ven Ho and IG routes still need their own successful TEST runs. Keep production below `LIVE_MANUAL` until all destination-specific MK-1…MK-6 checks pass. MK-7…MK-11 and failure-mode outcomes remain unverified until TEST evidence is reviewed.
+**Gate:** production stays below `LIVE_MANUAL` until remaining target-specific and operational checks pass. `fb_venho` and MK-11 are still unverified.

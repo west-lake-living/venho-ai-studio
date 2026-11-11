@@ -94,20 +94,22 @@ Use the existing copy `VenHo Growth Agent TEST` (ID `6924867`); do not duplicate
 An F1/I1 fetch failure occurs before authorize, so there is no execution grant to receipt. Its error handler contains only `Ignore`; the route must end there, without entering F2/F3 (or I2/I3), and without retrying. This avoids Make's observed behavior of disabling the scenario after an unhandled 4xx from **Download a file**. Each of the three authorize HTTP modules also has a terminal `Ignore` handler so an invalid-token response cannot continue to Facebook/Instagram or disable the scenario. Re-import the regenerated 26-module blueprint and verify these behaviors on TEST before counting MK-12 as PASS.
 5. **Webhook responses:** do not add explicit `Webhook response` modules while sequential processing is enabled. Make reports responders are unsupported with this setting. Each branch ends at its receipt request; the explicit webhook ACK is omitted.
 
-### TEST run 3 closure and next cases — 2026-11-11
+### TEST run 3 closure and four follow-up cases — 2026-11-11
 
 Harry confirmed `apply-test-receipts claimed=1 completed=1`; receipt `APPLIED`, execution `REPORTED`, outcome `POST_CREATED`, and post ID `1363761820162798_122106835935535879` matched Make History. `outbox_commands.state=AUTHORIZED` is correct and terminal for transport; no `AUTHORIZED → COMPLETED` transition exists. The receipt updates execution/delivery separately.
 
-The next four runner cases are prepared but not run. Importing the regenerated 26-module blueprint is required before them, especially for invalid command-token handling. Run one at a time:
+All four follow-up Make History cases passed:
 
-```bash
-bash ops/asus-server/growth-engine/run-test-case.sh ig_venho
-bash ops/asus-server/growth-engine/run-test-case.sh duplicate
-bash ops/asus-server/growth-engine/run-test-case.sh broken-media
-bash ops/asus-server/growth-engine/run-test-case.sh bad-token
-```
+| Case (ICT) | Result |
+|---|---|
+| Duplicate 10:03:33 then replay 10:03:46 | First run posted one FB TEST post `…_122107375689535879`, receipt `APPLIED`. Replay reported `ALREADY_AUTHORIZED`; Facebook module 3 was filtered; DB had no second execution/receipt/post. |
+| Invalid command token 10:14:07 | Authorize HTTP 16 error caught → `Ignore`; no Facebook module; Make run Success and scenario remained Active. |
+| Broken signed-media URL 11:32:45 | F1/HTTP 4 error caught → `Ignore`; no authorize/post; scenario remained Active. This checks an HTTP media-capability error, not JPEG decoding. |
+| Instagram 12:16:35 | I1/25 → authorize/26 → Instagram/6 (~9.7s) → receipt/27; media ID `18453049759135668`; execution `REPORTED`, receipt `APPLIED`. |
 
-Each case gets a fresh TEST SQLite DB/channel UUID and private env, temporarily replaces only the TEST API on `127.0.0.1:8023`, and restores `growth-engine-api-test-src`. The runner checks signed media locally and requires `ACTIVE` then `GUI` before sending. The IG case targets `17841472240799413`; confirm I1 `200 image/jpeg`, Meta fetching the signed URL, Instagram output media `id`, and applied receipt. Duplicate replays the same envelope after the first receipt is applied; require `ALREADY_AUTHORIZED` and one post. `broken-media` corrupts only the TEST signed-media signature after the original URL preflight passes; require F1 → Ignore, no authorize/post, and scenario Active. `bad-token` corrupts only `command_token`; require `ERR_GC2_CAPABILITY_INVALID`, no post, and scenario Active. Runner outputs do not include URL/token; inspect Make History manually and record results in `make_capabilities.md`. Remove per-case DB/media/env files during final TEST cleanup.
+The runner previously printed `PENDING_REVIEW` when the operator typed `Pass`; it now accepts `PASS` without case sensitivity. It also restores the original TEST API by trying `systemctl restart`, recreating the transient unit with the original env when it has been unloaded, then falling back to `systemctl start`. Readiness on `127.0.0.1:8023` must return before reporting restoration success.
+
+Remaining TEST gaps are the `fb_venho` route, MK-1 parallel-processing verification, MK-11 container/publish failure distinction, and the I1/`fb_venho` F1 error handlers. Per-case DB/media/env files should be removed during final TEST cleanup after evidence has been saved.
 
 ### Credentials for TEST HTTP modules
 

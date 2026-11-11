@@ -111,12 +111,23 @@ Giữ các handoff đã archive ở mode `600` tới cuối TEST phase. Không x
 Kết thúc TEST phase:
 
 ```bash
+systemctl --user stop growth-engine-api-test-src
+systemctl --user is-active growth-engine-api-test-src || true
 rm -f "$HOME/venho/secrets/growth-engine-test.make-bearers.tmp"
 find "$HOME/venho/state/growth-engine-test" -path '*/secrets/growth-engine-test.make-bearers.tmp' -type f -delete
 test ! -e "$HOME/venho/secrets/growth-engine-test.make-bearers.tmp" && echo ABSENT
 ```
 
-`find` chỉ xóa file handoff plaintext đã archive trong TEST state; giữ `growth-engine-test.env` vì file này chỉ lưu hash bearer và khóa capability, không lưu bearer thô. Không xóa bản backup khác trước khi xác nhận không cần khôi phục.
+`find` chỉ xóa file handoff bearer plaintext đã archive trong TEST state. Giữ `growth-engine-test.env` nếu còn cần các ca TEST đang mở; file này không chứa bearer thô. Sau khi đã lưu JSON kết quả đã khử bí mật ra khỏi TEST state và quyết định không chạy thêm TEST, xóa env/DB/media từng ca:
+
+```bash
+find "$HOME/venho/secrets/growth-engine-test-cases" -maxdepth 1 -type f -name '*.env' -delete
+find "$HOME/venho/state/growth-engine-test/cases" -mindepth 1 -maxdepth 1 -type d -exec rm -rf -- {} +
+```
+
+Không xóa archive DB/media cũ trước khi xác nhận không cần khôi phục.
+
+Giữ các bài đăng TEST trên Facebook/Instagram trong thời gian đối chiếu History và lưu bằng chứng; không tự xóa. Sau khi review xong, Harry có thể xóa các bài thử trực tiếp trên hai tài khoản TEST nếu không cần làm hồ sơ.
 
 Với `GE_ENV=test`, `Settings` không tự bắt buộc biến production-only như Telegram, dashboard URL hay Meta token; `doctor` cần các giá trị không rỗng cho `GE_DB_PATH`, `GE_MEDIA_ROOT`, `GE_PUBLIC_BASE_URL`, `GE_CAPABILITY_KEYS`, `GE_SERVICE_TOKENS`. Các `GE_MAKE_WEBHOOK_URL_*`, `GE_META_READ_TOKEN_*` hoặc `GE_TELEGRAM_*` nào được khai báo cũng phải không rỗng/placeholder. Riêng `send_test_command.py --create-command` còn cần `GE_TEST_CHANNEL_KEY`, `GE_TEST_CHANNEL_ID`, ID đích đúng (`GE_TEST_REMOTE_PAGE_ID` hoặc `GE_TEST_REMOTE_IG_ID`), URL webhook TEST tương ứng; `channels.yaml` cần Graph API version đã xác minh. Mã API/publish TEST hiện không cần Meta read token. Không sao chép production bearer, webhook hay Page ID vào TEST.
 

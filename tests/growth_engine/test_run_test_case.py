@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import stat
 import sqlite3
+import subprocess
 import yaml
 
 from scripts.growth_engine import run_test_case as runner
@@ -111,3 +112,54 @@ def test_status_reports_outbox_authorized_separately_from_applied_receipt(tmp_pa
     assert status["receipt_state"] == "APPLIED"
     assert status["outcome"] == "POST_CREATED"
     assert status["platform_post_id"] == "1363761820162798_122106835935535879"
+
+
+def test_restore_recreates_transient_base_unit_when_systemd_unloaded_it(tmp_path) -> None:
+    commands: list[list[str]] = []
+
+    def fake_runner(command: list[str], **_: object) -> subprocess.CompletedProcess[str]:
+        commands.append(command)
+        if command[:3] == ["systemctl", "--user", "restart"]:
+            return subprocess.CompletedProcess(command, 5, "", "")
+        if command[:3] == ["systemctl", "--user", "stop"]:
+            return subprocess.CompletedProcess(command, 5, "", "")
+        return subprocess.CompletedProcess(command, 0, "", "")
+
+    method = runner._restore_base_api(
+        runner=fake_runner,
+        env_path=tmp_path / "growth-engine-test.env",
+        repo_root=tmp_path / "venho/gc2-src",
+        sleep=lambda _: None,
+        monotonic=lambda: 0.0,
+        ready=lambda **_: None,
+    )
+
+    assert method == "transient-recreated"
+    create = next(command for command in commands if command[0] == "systemd-run")
+    assert create[:3] == ["systemd-run", "--user", "--unit=growth-engine-api-test-src"]
+    assert any(str(tmp_path / "growth-engine-test.env") in arg for arg in create)
+
+
+def test_restore_restarts_loaded_base_unit(tmp_path) -> None:
+    commands: list[list[str]] = []
+
+    def fake_runner(command: list[str], **_: object) -> subprocess.CompletedProcess[str]:
+        commands.append(command)
+        return subprocess.CompletedProcess(command, 0, "", "")
+
+    method = runner._restore_base_api(
+        runner=fake_runner,
+        env_path=tmp_path / "growth-engine-test.env",
+        repo_root=tmp_path / "venho/gc2-src",
+        sleep=lambda _: None,
+        monotonic=lambda: 0.0,
+        ready=lambda **_: None,
+    )
+
+    assert method == "restart"
+    assert commands[1] == ["systemctl", "--user", "restart", "growth-engine-api-test-src"]
+    assert all(command[0] != "systemd-run" for command in commands)
+
+
+def test_history_confirmation_accepts_pass_case_insensitively() -> None:
+    assert runner._operator_history_check("bad-token", lambda _: "Pass")
