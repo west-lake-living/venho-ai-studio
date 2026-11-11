@@ -347,6 +347,7 @@ def test_publish_lane_ticks_enqueue_every_30s_and_expire_every_60s() -> None:
             "notifications": lambda: calls.append("notifications"),
             "apply_receipts": lambda: calls.append("apply-receipts"),
             "receipt_timeouts": lambda: calls.append("receipt-timeouts"),
+            "meta_token_expiry": lambda: calls.append("meta-token-expiry"),
         }
     )
     by_name = {task.name: task for task in tasks}
@@ -357,10 +358,12 @@ def test_publish_lane_ticks_enqueue_every_30s_and_expire_every_60s() -> None:
     assert by_name["notifications"].interval_s == 5
     assert by_name["apply-receipts"].interval_s == 5
     assert by_name["receipt-timeouts"].interval_s == 60
+    assert by_name["meta-token-expiry"].interval_s == 6 * 60 * 60
     by_name["enqueue-due"].fn()
     by_name["expire-overdue"].fn()
     by_name["dispatch-outbox"].fn()
     by_name["notifications"].fn()
     by_name["apply-receipts"].fn()
     by_name["receipt-timeouts"].fn()
-    assert calls == ["enqueue", "expire", "dispatch", "notifications", "apply-receipts", "receipt-timeouts"]
+    by_name["meta-token-expiry"].fn()
+    assert calls == ["enqueue", "expire", "dispatch", "notifications", "apply-receipts", "receipt-timeouts", "meta-token-expiry"]

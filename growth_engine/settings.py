@@ -23,6 +23,8 @@ class Settings(BaseModel):
     service_tokens: str = Field(default=_REQUIRED, repr=False)
     make_webhook_urls: dict[str, str] = Field(default_factory=dict, repr=False)
     meta_read_tokens: dict[str, str] = Field(default_factory=dict, repr=False)
+    meta_token_expiries: dict[str, str] = Field(default_factory=dict)
+    meta_data_access_expiries: dict[str, str] = Field(default_factory=dict)
     telegram: dict[str, str] = Field(default_factory=dict, repr=False)
     heartbeat_url: str = Field(default="", repr=False)
 
@@ -39,6 +41,8 @@ class Settings(BaseModel):
             service_tokens=source.get("GE_SERVICE_TOKENS", _REQUIRED),
             make_webhook_urls=_read_prefix(source, "GE_MAKE_WEBHOOK_URL_"),
             meta_read_tokens=_read_prefix(source, "GE_META_READ_TOKEN_"),
+            meta_token_expiries=_read_prefix(source, "GE_META_TOKEN_EXPIRY_"),
+            meta_data_access_expiries=_read_prefix(source, "GE_META_DATA_ACCESS_EXPIRY_"),
             telegram=_read_prefix(source, "GE_TELEGRAM_"),
             heartbeat_url=source.get("GE_HEARTBEAT_URL", ""),
         )

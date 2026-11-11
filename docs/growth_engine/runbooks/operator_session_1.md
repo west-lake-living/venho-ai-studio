@@ -135,7 +135,7 @@ Các tên Meta TEST `GE_META_READ_TOKEN_PAGE_TEST`/`GE_META_READ_TOKEN_IG_TEST` 
 
 `GE_SERVICE_TOKENS` lưu các entry `principal:sha256`, không lưu bearer thô. `auth.py` băm `SHA256(bearer.strip().encode("utf-8"))`, hex thường, rồi so khớp constant-time. Script dùng đúng principal `make-fb-hanoi` → `fb_hanoi`, `make-fb-venho` → `fb_venho`, `make-ig` → `ig_venho`; không tự đặt principal mới.
 
-Meta token lifecycle: biến Page trên server là Page access token lấy từ long-lived user token; không hết hạn theo thời gian nhưng có thể bị thu hồi. Instagram dùng long-lived user token khoảng 60 ngày; đặt nhắc gia hạn trước hạn. Không ghi giá trị token vào tài liệu/log.
+Meta token lifecycle: biến Page trên server là Page access token lấy từ long-lived user token; không hết hạn theo thời gian nhưng có thể bị thu hồi. Instagram dùng long-lived user token khoảng 60 ngày; ngày đang dự kiến hết hạn là 2027-01-10. Production doctor WARN trong 14 ngày cuối hoặc khi expiry metadata thiếu/sai; publish worker kiểm tra mỗi 6 giờ và enqueue Telegram notice một lần cho mỗi credential/date. Điền `GE_META_TOKEN_EXPIRY_IG_VENHO` và ngày chính xác từ Debugger vào `GE_META_DATA_ACCESS_EXPIRY_IG_VENHO`. Telegram production phải dùng bot `@venho_growth_alerts_bot`, không dùng `@Venhohotel_bot`. Không ghi token vào tài liệu/log.
 
 **Mong đợi:** TEST env và file bàn giao bearer có mode `600`; giữ file handoff trên server tới khi kết thúc TEST phase. Kiểm tra chỉ in quyền và `GE_ENV`, không in giá trị còn lại.
 

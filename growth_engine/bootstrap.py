@@ -5,6 +5,7 @@ import logging
 import random
 import sqlite3
 import sys
+import subprocess
 import tempfile
 import time
 from uuid import uuid4
@@ -106,6 +107,67 @@ REQUIRED_CHANNELS = frozenset({"fb_hanoi", "fb_venho", "ig_venho"})
 _REQUIRED = "REQUIRED_FROM_P0"
 
 
+def _publish_lock_owner_pids(lock_path: Path) -> tuple[int, ...] | None:
+    """Return Linux flock owner PIDs for this inode; None means ownership is unreadable."""
+    try:
+        stat_result = lock_path.stat()
+        device_inode = (
+            f"{os.major(stat_result.st_dev):02x}:"
+            f"{os.minor(stat_result.st_dev):02x}:{stat_result.st_ino}"
+        )
+        lines = Path("/proc/locks").read_text(encoding="ascii").splitlines()
+    except OSError:
+        return None
+    owners: list[int] = []
+    for line in lines:
+        fields = line.split()
+        if len(fields) < 6 or fields[1:4] != ["FLOCK", "ADVISORY", "WRITE"]:
+            continue
+        if fields[5] != device_inode:
+            continue
+        try:
+            owners.append(int(fields[4]))
+        except ValueError:
+            return None
+    return tuple(owners)
+
+
+def _systemd_publish_unit() -> tuple[str, int] | None:
+    unit = "growth-engine-worker@publish.service"
+    values: list[str] = []
+    for property_name in ("ActiveState", "MainPID"):
+        try:
+            result = subprocess.run(
+                ["systemctl", "--user", "show", "--property", property_name, "--value", unit],
+                capture_output=True,
+                text=True,
+                timeout=3,
+                check=False,
+            )
+        except (OSError, subprocess.SubprocessError):
+            return None
+        if result.returncode != 0:
+            return None
+        values.append(result.stdout.strip())
+    try:
+        return values[0], int(values[1])
+    except (IndexError, ValueError):
+        return None
+
+
+def _blocked_publish_lock_check(lock_path: Path) -> "DoctorCheck":
+    owners = _publish_lock_owner_pids(lock_path)
+    unit = _systemd_publish_unit()
+    if owners is None or unit is None:
+        return DoctorCheck("Publish lane instance", "WARN", "Lock đang được giữ nhưng chưa thể xác minh owner systemd.")
+    state, main_pid = unit
+    if len(owners) == 1 and state == "active" and main_pid > 0 and owners[0] == main_pid:
+        return DoctorCheck("Publish lane instance", "PASS", "Một growth-engine-worker@publish.service đang giữ lock đúng thiết kế.")
+    if not owners:
+        return DoctorCheck("Publish lane instance", "WARN", "Lock contention thoáng qua; chưa thấy owner trong /proc/locks.")
+    return DoctorCheck("Publish lane instance", "FAIL", "Publish lock không thuộc instance systemd growth-engine-worker@publish duy nhất.")
+
+
 @dataclass(frozen=True)
 class DoctorCheck:
     name: str
@@ -159,12 +221,14 @@ class DoctorService:
         migration_runner: Any,
         sqlite_version_check: Callable[[tuple[int, ...]], None],
         sqlite_version_error: type[Exception],
+        meta_token_expiry_monitor: Any | None = None,
     ) -> None:
         self.settings = settings
         self._connect = connect
         self._migration_runner = migration_runner
         self._sqlite_version_check = sqlite_version_check
         self._sqlite_version_error = sqlite_version_error
+        self._meta_token_expiry_monitor = meta_token_expiry_monitor
 
     def run(self, *, pre_switch: bool = False) -> DoctorReport:
         checks: list[DoctorCheck] = []
@@ -195,6 +259,10 @@ class DoctorService:
                 self._backup_check(),
             )
         )
+        if str(getattr(self.settings, "env", "")).lower() == "production":
+            checks.append(self._meta_token_expiry_check())
+            if self._meta_token_expiry_monitor is not None:
+                self._meta_token_expiry_monitor.execute()
         if connection_error and not any(check.status == "FAIL" for check in checks):
             checks.append(DoctorCheck("Database", "FAIL", "Không mở được cơ sở dữ liệu."))
         return DoctorReport(tuple(checks), pre_switch=pre_switch)
@@ -304,6 +372,17 @@ class DoctorService:
     def _clock_check() -> DoctorCheck:
         return DoctorCheck("Clock skew", "WARN", "Chưa có nguồn thời gian chuẩn để đo độ lệch.")
 
+    def _meta_token_expiry_check(self) -> DoctorCheck:
+        evaluate_expiry = import_module(
+            "growth_engine.application.ops.meta_token_expiry"
+        ).evaluate_meta_token_expiry
+        expiry = evaluate_expiry(
+            getattr(self.settings, "meta_token_expiries", {}),
+            getattr(self.settings, "meta_data_access_expiries", {}),
+            now_ms=time.time_ns() // 1_000_000,
+        )
+        return DoctorCheck("Meta token expiry", expiry.status, expiry.detail)
+
     def _publish_lock_check(self) -> DoctorCheck:
         if _is_required(self.settings.db_path):
             return DoctorCheck("Publish lane instance", "WARN", "Chưa xác định đường dẫn state.")
@@ -320,7 +399,7 @@ class DoctorService:
             finally:
                 os.close(descriptor)
         except BlockingIOError:
-            return DoctorCheck("Publish lane instance", "FAIL", "Đang có publish worker giữ lock.")
+            return _blocked_publish_lock_check(lock_path)
         except OSError:
             return DoctorCheck("Publish lane instance", "WARN", "Không kiểm tra được publish lock.")
         return DoctorCheck("Publish lane instance", "PASS", "Không có instance khác giữ lock.")
@@ -634,6 +713,20 @@ def build_container(settings: Any, *, metrics_source: Any | None = None) -> Cont
         settings.heartbeat_url,
         publish_lane_adapter.UrllibHeartbeatSender(),
     )
+    expiry_monitor_type = import_module(
+        "growth_engine.application.ops.meta_token_expiry"
+    ).MetaTokenExpiryMonitor
+    meta_token_expiry_monitor = expiry_monitor_type(
+        settings.meta_token_expiries,
+        settings.meta_data_access_expiries,
+        notification_queue,
+        clock.now_ms,
+    )
+    production_token_expiry_handler = (
+        {"meta_token_expiry": meta_token_expiry_monitor.execute}
+        if settings.env.lower() == "production"
+        else {}
+    )
     worker_tasks = publish_lane_adapter.build_publish_tasks(
         {
             "enqueue_due": lambda: enqueue_due.execute(clock.now_ms()),
@@ -644,6 +737,7 @@ def build_container(settings: Any, *, metrics_source: Any | None = None) -> Cont
             "database_health": readiness_check,
             "heartbeat": heartbeat.execute,
             **({"notifications": lambda: notifications.dispatch()} if notifications is not None else {}),
+            **production_token_expiry_handler,
         }
     )
     worker_loop = worker_loop_adapter.WorkerLoop(
@@ -801,6 +895,7 @@ def build_container(settings: Any, *, metrics_source: Any | None = None) -> Cont
             migration_runner=migration_runner_type,
             sqlite_version_check=connection_adapter.check_sqlite_version,
             sqlite_version_error=connection_adapter.SQLiteVersionError,
+            meta_token_expiry_monitor=meta_token_expiry_monitor,
         ),
         analytics_views=analytics_views,
         channel_reconcile_store=channel_reconcile_store,

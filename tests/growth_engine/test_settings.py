@@ -22,6 +22,8 @@ def test_settings_reads_static_and_channel_specific_environment_values() -> None
             "GE_SERVICE_TOKENS": "test-principal:test-hash",
             "GE_MAKE_WEBHOOK_URL_PAGE_A": "https://example.test/hook",
             "GE_META_READ_TOKEN_PAGE_A": "sample-meta-token",
+            "GE_META_TOKEN_EXPIRY_IG_VENHO": "2027-01-10",
+            "GE_META_DATA_ACCESS_EXPIRY_IG_VENHO": "2027-02-09",
             "GE_TELEGRAM_BOT_TOKEN": "sample-telegram-token",
         }
     )
@@ -31,6 +33,8 @@ def test_settings_reads_static_and_channel_specific_environment_values() -> None
     assert settings.media_root == "/tmp/growth-media"
     assert settings.make_webhook_urls == {"PAGE_A": "https://example.test/hook"}
     assert settings.meta_read_tokens == {"PAGE_A": "sample-meta-token"}
+    assert settings.meta_token_expiries == {"IG_VENHO": "2027-01-10"}
+    assert settings.meta_data_access_expiries == {"IG_VENHO": "2027-02-09"}
     assert settings.telegram == {"BOT_TOKEN": "sample-telegram-token"}
     assert "sample-meta-token" not in repr(settings)
     assert "sample-telegram-token" not in repr(settings)

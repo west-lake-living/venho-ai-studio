@@ -1,6 +1,6 @@
 # GC2 Stage B — production cutover
 
-**Trạng thái:** chỉ chuẩn bị quy trình; không chạy server, Make, Meta, Telegram, Healthchecks hoặc Cloudflare trong task này. Không đăng thử công khai. Mọi bước phát hành phải được thực hiện theo cửa sổ cutover và dừng tại gate nếu điều kiện không đạt.
+**Trạng thái:** production đã deploy ngày 11/11/2026 tại release `7eedfa3`, DB mới schema 9, controls `DISABLED` + `global_pause=1`, ba channel đã provision và disabled; API cùng hai worker đang active theo thông tin Harry cung cấp. Release hiện tại thiếu `[Install]`, nên các units active nhưng chưa enable tự khởi động sau reboot. Patch unit/doctor/token sắp tới cần deploy lại. Không chạy server, Make, Meta, Telegram, Healthchecks hoặc Cloudflare trong task sửa repo này; không đăng thử công khai.
 
 ## Trạng thái đã chốt
 
@@ -10,12 +10,14 @@
 - Bốn slot mỗi tuần vẫn là thứ Hai, Tư, Sáu, Bảy lúc 09:00 Asia/Ho_Chi_Minh. Mỗi slot Facebook tạo hai delivery/command độc lập (`fb_hanoi`, `fb_venho`), cùng caption/bytes ảnh đã duyệt; mỗi Page có receipt và verify riêng. Instagram có delivery/command riêng. Duyệt nhóm có thể duyệt cả hai Page Facebook và Instagram trong một batch, nhưng không dispatch bài.
 - Instagram production bắt buộc dùng signed media URL; ảnh phải là JPEG ≤8 MB, tỉ lệ 4:5–1.91:1. `instagram_photo_v1` hiện là JPEG ≤5 MiB, đúng 4:5.
 - API production unit bind `127.0.0.1:8021` theo `growth-engine-api.service` và host inventory. Concierge `8022`, TEST `8023`; không dùng hai cổng đó.
+- Telegram production phải dùng token của bot riêng `@venho_growth_alerts_bot`, không dùng `@Venhohotel_bot`.
+- Instagram Meta token là long-lived user token, dự kiến hết hạn khoảng `2027-01-10`; Data Access Expires khoảng 3 tháng sau ngày 11/11. Doctor giám sát hai ngày expiry độc lập; xác minh ngày chính xác trên Access Token Debugger.
 
 ## Gate trước khi bắt đầu
 
 1. Dùng release SHA đã review và push; checkout nguồn sạch. `deploy-release.sh` đòi checkout sạch và tự chạy `doctor --pre-switch`.
 2. Doctor production yêu cầu đủ Make webhook, Meta token, Telegram, DB/media, capability keys và service-token hashes. Vì vậy điền sẵn các secret cần thiết trước lần deploy đầu; bước 3 bên dưới là hoàn tất/đối chiếu rồi restart units.
-3. `channels.yaml` hiện còn metadata production chưa điền (`make_scenario_id`, `make_connection_ref`, `graph_api_version`, owner/ngày xác minh). Xác minh trên Make/Meta, điền manifest **trước bước 1**, rồi provision channel DB ở `DISABLED`. Doctor cần thấy đủ 3 channel/config để báo PASS đầy đủ.
+3. Metadata production trong `channels.yaml` đã được điền theo Make 5868920; ánh xạ Page name↔ID cần xác nhận bằng post ID của lượt production đầu. Ba channel và configs đã provision disabled.
 4. Dashboard cần Cloudflare DNS hostname `growth-api.venhohotel.com`, Access Service Auth app/token production và quyền operator trên VENHO OS. Những dashboard này không được thay đổi trong bước chuẩn bị này.
 5. `retire_legacy.md` có checklist gỡ filter `Venho signature` và xoay/retire literal hex. Chưa tắt publisher legacy khi chưa đạt các gate retire đã nêu.
 
@@ -51,6 +53,8 @@ ss -H -ltnp 'sport = :8021'
 **Quay lui:** chưa có thay đổi.
 
 ## 1. Migrate DB mới, khởi tạo DISABLED, deploy release
+
+Các lệnh dưới đây là quy trình bootstrap ban đầu. Trên server hiện tại, DB/schema 9, controls và channel rows đã tồn tại; **không tạo DB mới, không chạy lại bootstrap/provision**. Để nạp patch sau release `7eedfa3`, dùng checkout sạch tại SHA mới và chạy `deploy-release.sh <SHA>`; script chỉ chạy `migrate --check`, không có migration mới trong patch này. Unit được copy vào user systemd dir, daemon-reload rồi enable đúng cả ba units.
 
 Đường DB production phải nằm trong `~/venho/state/growth-engine/`, tách khỏi legacy. Media dùng `~/venho/state/growth-engine/media/`. Không chạy migrate trên `~/venho/growth-runtime/venho-ai-studio` hoặc legacy DB.
 
@@ -90,19 +94,23 @@ systemd-run --user --pipe --wait --collect \
 
 `initialize-production-controls.py` chỉ tạo hàng đầu tiên nếu chưa có; ghi audit; đặt `DISABLED` + `global_pause=1`; nếu thấy mode khác thì dừng, không ghi đè. Chạy lại sau deploy để xác minh vẫn fail-closed.
 
-Xác minh unit files rồi deploy đúng SHA:
+Deploy đúng SHA trước; deploy script cài unit files và tạo `current`, vì vậy chỉ xác minh unit sau khi release tồn tại:
 
 ```bash
-systemd-analyze --user verify \
-  ops/asus-server/growth-engine/growth-engine-api.service \
-  ops/asus-server/growth-engine/growth-engine-worker@.service
 git fetch origin gc2/build-v1-2
 read -r -p 'SHA đã review: ' REVIEWED_GIT_SHA
 [[ "$REVIEWED_GIT_SHA" =~ ^[0-9a-f]{40}$ ]]
 git cat-file -e "${REVIEWED_GIT_SHA}^{commit}"
 git merge-base --is-ancestor "$REVIEWED_GIT_SHA" origin/gc2/build-v1-2
 bash ops/asus-server/growth-engine/deploy-release.sh "$REVIEWED_GIT_SHA"
+systemd-analyze --user verify growth-engine-api.service \
+  growth-engine-worker@publish.service growth-engine-worker@jobs.service
+if [[ "$(loginctl show-user "$USER" -p Linger --value)" != "yes" ]]; then
+  sudo loginctl enable-linger "$USER"
+fi
+test "$(loginctl show-user "$USER" -p Linger --value)" = "yes"
 systemctl --user enable growth-engine-api.service growth-engine-worker@publish.service growth-engine-worker@jobs.service
+systemctl --user is-enabled growth-engine-api.service growth-engine-worker@publish.service growth-engine-worker@jobs.service
 systemctl --user is-active growth-engine-api.service growth-engine-worker@publish.service growth-engine-worker@jobs.service
 ```
 
@@ -119,9 +127,9 @@ systemd-run --user --pipe --wait --collect \
 ss -H -ltnp 'sport = :8021'
 ```
 
-**Mong đợi:** schema current, doctor PASS, API/worker units active; runtime `DISABLED`, global pause bật; API chỉ bind loopback 8021. Channel rows ban đầu đều disabled.
+**Mong đợi:** schema current, doctor không có FAIL, API/worker units active và enabled; `Linger=yes`; runtime `DISABLED`, global pause bật; API chỉ bind loopback 8021. Bootstrap ban đầu tạo channel rows disabled.
 
-**Dừng:** DB nằm ngoài state GC2 mới; doctor FAIL/WARN; controls không `DISABLED` + paused; API không ready hoặc bind sai port; unit/doctor không PASS.
+**Dừng:** ở bootstrap ban đầu, DB nằm ngoài state GC2 mới; doctor có FAIL; controls không `DISABLED` + paused; API không ready hoặc bind sai port; unit chưa enabled/active hoặc `Linger` chưa bật. Doctor WARN cần được giải quyết/ghi nhận trước khi mở kênh. `Publish lane instance` PASS khi lock owner là MainPID duy nhất của unit publish active; lock do PID khác giữ là FAIL.
 
 **Quay lui:** đặt mode `DISABLED` và global pause qua dashboard/API operator trước khi đổi release. `deploy-release.sh` tự rollback `current` nếu switch/healthcheck cùng lượt deploy lỗi. Nếu cần rollback sau deploy thành công, đặt `PREVIOUS_RELEASE` bằng chính đường dẫn đã ghi ở bước 0, kiểm tra nó nằm dưới thư mục releases, rồi atomic-switch và restart:
 
@@ -178,7 +186,11 @@ Từ Mac, nạp 5 Meta read token cho ba account production (hai Page aliases + 
 python3 ops/asus-server/growth-engine/push-meta-tokens.py --host asus-server
 ```
 
-Trên server điền `GE_TELEGRAM_BOT_TOKEN`, `GE_TELEGRAM_CHAT_ID`, `GE_HEARTBEAT_URL` từ secret store/Healthchecks; giữ `growth-engine.env` mode 600. Không gửi tin Telegram thử. Đối chiếu tên biến mà không in giá trị:
+Trên server điền `GE_TELEGRAM_BOT_TOKEN`, `GE_TELEGRAM_CHAT_ID`, `GE_HEARTBEAT_URL` từ secret store/Healthchecks; bot token phải thuộc `@venho_growth_alerts_bot`, không dùng `@Venhohotel_bot`. Giữ `growth-engine.env` mode 600. Không gửi tin Telegram thử.
+
+Thêm metadata expiry, không phải token: `GE_META_TOKEN_EXPIRY_IG_VENHO=2027-01-10` là ngày ước tính theo thông tin hiện có; `GE_META_DATA_ACCESS_EXPIRY_IG_VENHO=2027-02-09` là ước tính 90 ngày từ 11/11. Đối chiếu cả hai ngày với Access Token Debugger và sửa nếu khác. `doctor` trả WARN khi còn 14 ngày trở xuống hoặc metadata thiếu/sai. Worker publish kiểm tra mỗi 6 giờ và enqueue một Telegram notification bền vững cho mỗi loại expiry/ngày; notification dispatcher gửi qua bot production.
+
+Đối chiếu tên biến mà không in giá trị:
 
 ```bash
 python3 - "$HOME/venho/secrets/growth-engine.env" <<'PY'
@@ -187,6 +199,7 @@ from pathlib import Path
 required = {
     "GE_CAPABILITY_KEYS", "GE_SERVICE_TOKENS", "GE_PUBLIC_BASE_URL", "GE_DASHBOARD_BASE_URL",
     "GE_HEARTBEAT_URL", "GE_TELEGRAM_BOT_TOKEN", "GE_TELEGRAM_CHAT_ID",
+    "GE_META_TOKEN_EXPIRY_IG_VENHO", "GE_META_DATA_ACCESS_EXPIRY_IG_VENHO",
     "GE_META_READ_TOKEN_PAGE_A", "GE_META_READ_TOKEN_FB_HANOI", "GE_META_READ_TOKEN_PAGE_B",
     "GE_META_READ_TOKEN_FB_VENHO", "GE_META_READ_TOKEN_IG_VENHO",
     "GE_MAKE_WEBHOOK_URL_PAGE_A", "GE_MAKE_WEBHOOK_URL_PAGE_B", "GE_MAKE_WEBHOOK_URL_IG_VENHO",
@@ -207,7 +220,7 @@ PY
 
 Restart API/workers after env changes; run `doctor` again. Verify heartbeat after one healthy interval (60 s) and inspect only redacted status. Do not test by sending Telegram production message.
 
-**Mong đợi:** all required variable names pass; Meta token helper reports the five names configured; `doctor` PASS; heartbeat seen; no secret value displayed. Access Client ID/Secret are entered into Make, not this env file.
+**Mong đợi:** all required variable names pass; Meta token helper reports the five names configured; doctor reports expiry dates and warns inside the 14-day window; heartbeat seen; no secret value displayed. Access Client ID/Secret are entered into Make, not this env file.
 
 **Dừng:** thiếu bất kỳ biến nào, file mode khác 600, token/script error, doctor không PASS, heartbeat vắng hoặc notification worker lỗi.
 
@@ -313,7 +326,8 @@ Không xóa TEST DB/media/archive hoặc bài test cho tới khi evidence đư�
 | Meta read | `GE_META_READ_TOKEN_PAGE_A`, `GE_META_READ_TOKEN_FB_HANOI`, `GE_META_READ_TOKEN_PAGE_B`, `GE_META_READ_TOKEN_FB_VENHO`, `GE_META_READ_TOKEN_IG_VENHO` |
 | Make webhook refs | `GE_MAKE_WEBHOOK_URL_PAGE_A`, `GE_MAKE_WEBHOOK_URL_PAGE_B`, `GE_MAKE_WEBHOOK_URL_IG_VENHO` |
 | Make bearer | `GE_MAKE_BEARER_FB_HANOI`, `GE_MAKE_BEARER_FB_VENHO`, `GE_MAKE_BEARER_IG_VENHO` trong handoff mode 600; hash theo principal trong `GE_SERVICE_TOKENS` |
-| Runtime + alerts | `GE_CAPABILITY_KEYS`, `GE_TELEGRAM_BOT_TOKEN`, `GE_TELEGRAM_CHAT_ID`, `GE_HEARTBEAT_URL` |
+| Runtime + alerts | `GE_CAPABILITY_KEYS`, `GE_TELEGRAM_BOT_TOKEN` (bot `@venho_growth_alerts_bot`), `GE_TELEGRAM_CHAT_ID`, `GE_HEARTBEAT_URL` |
+| Meta expiry metadata | `GE_META_TOKEN_EXPIRY_IG_VENHO`, `GE_META_DATA_ACCESS_EXPIRY_IG_VENHO` (dates only; no token value) |
 | Make Access | `CF-Access-Client-Id`, `CF-Access-Client-Secret` nhập vào từng module `/internal`; không lưu trong repo |
 
 Không ghi URL webhook, token, signed URL, Access secret hoặc thông tin đăng nhập vào runbook/log/chat.

@@ -55,6 +55,8 @@ def build_publish_tasks(handlers: Mapping[str, LaneHandler]) -> tuple[PeriodicTa
         tasks.append(PeriodicTask("apply-receipts", handlers["apply_receipts"], interval_s=5))
     if "receipt_timeouts" in handlers:
         tasks.append(PeriodicTask("receipt-timeouts", handlers["receipt_timeouts"], interval_s=60))
+    if "meta_token_expiry" in handlers:
+        tasks.append(PeriodicTask("meta-token-expiry", handlers["meta_token_expiry"], interval_s=6 * 60 * 60))
     if "heartbeat" in handlers:
         if "database_health" not in handlers:
             raise ValueError("heartbeat requires a database_health handler")
