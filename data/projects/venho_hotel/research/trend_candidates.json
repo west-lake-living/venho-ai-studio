@@ -1749,5 +1749,46 @@
     "fast_lane": false,
     "verified_by_human": false,
     "scanned_at": "2026-11-10T12:18:32.862855+00:00"
+  },
+  {
+    "id": "gnews-93a77b8859512418",
+    "title": "Quán bánh rán gần 4 thập kỷ nổi tiếng khu Tây Hồ",
+    "source_uri": "https://news.google.com/rss/articles/CBMilgFBVV95cUxOb2trTDU1VFdTbVFoQWJkN0VJeE1NZjlwZS00bXZEWFNmWXZ3eXZ3YmdMY0d3MTFyaEw1ZlhKckRGYUxVdk1uYTJEWlM2RVEtRzgxTF9hcFpjR3RyMkN0SWlOUFg3LVdVRTZSYm55aHRhZXhHTUFPbUp3dXhsU09HTkZtb1Y1Y3lOOGpic2VLMGk4NmROWlE?oc=5",
+    "source_name": "VnExpress",
+    "published_at": "2026-11-10T15:52:16+00:00",
+    "snippet": "VnExpress",
+    "relevance_hint": 0.0,
+    "collector": "google_news",
+    "query": "\"Tây Hồ\" chợ hoa",
+    "geographic": "westlake",
+    "thematic": "food_local",
+    "actionability": "direct",
+    "type": "lifestyle_trend",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "food_culinary"
+    ],
+    "is_event": false,
+    "event_name": null,
+    "event_start": null,
+    "event_end": null,
+    "venue": "Khu Tây Hồ",
+    "westlake_area": true,
+    "sources": [
+      {
+        "title": "Quán bánh rán gần 4 thập kỷ nổi tiếng khu Tây Hồ",
+        "source_uri": "https://news.google.com/rss/articles/CBMilgFBVV95cUxOb2trTDU1VFdTbVFoQWJkN0VJeE1NZjlwZS00bXZEWFNmWXZ3eXZ3YmdMY0d3MTFyaEw1ZlhKckRGYUxVdk1uYTJEWlM2RVEtRzgxTF9hcFpjR3RyMkN0SWlOUFg3LVdVRTZSYm55aHRhZXhHTUFPbUp3dXhsU09HTkZtb1Y1Y3lOOGpic2VLMGk4NmROWlE?oc=5",
+        "source_name": "VnExpress",
+        "published_at": "2026-11-10T15:52:16+00:00"
+      }
+    ],
+    "source_count": 1,
+    "relevance_score": 0.8,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "fast_lane": false,
+    "verified_by_human": false,
+    "scanned_at": "2026-11-11T00:19:57.349111+00:00"
   }
 ]
