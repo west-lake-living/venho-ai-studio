@@ -183,6 +183,34 @@ def test_prepares_three_routes_with_local_media_authorize_and_receipts() -> None
     assert source["flow"][2]["routes"][0]["flow"][1]["mapper"]["body"].startswith("https://")
 
 
+def test_production_mode_targets_verified_accounts_and_filters_production_envelopes() -> None:
+    prepared = prepare_blueprint(source_blueprint(), environment="production")
+    result = validate_blueprint(prepared)
+    routes = prepared["flow"][1]["routes"]
+    fb_hanoi, ig_venho, fb_venho = routes
+
+    assert result.errors == ()
+    assert prepared["flow"][1]["filter"]["conditions"][0][1]["b"] == "production"
+    assert fb_hanoi["flow"][2]["mapper"]["page_id"] == "1124616474074140"
+    assert fb_venho["flow"][2]["mapper"]["page_id"] == "803531149684177"
+    assert ig_venho["flow"][2]["mapper"]["accountId"] == "17841457936965829"
+    assert [route["flow"][0]["filter"]["conditions"][0][0]["b"] for route in routes] == [
+        "fb_hanoi", "ig_venho", "fb_venho"
+    ]
+    assert all("https://set-in-make.invalid" in str(route["flow"]) for route in routes)
+
+
+def test_production_generation_rejects_unknown_destination_field() -> None:
+    source = source_blueprint()
+    source["flow"][2]["routes"][0]["flow"][0]["mapper"].pop("page_id")
+    try:
+        prepare_blueprint(source, environment="production")
+    except ValueError as error:
+        assert "destination_field" in str(error)
+    else:
+        raise AssertionError("production target must not be guessed")
+
+
 def test_authorize_http_errors_end_in_ignore_without_post_or_receipt() -> None:
     prepared = prepare_blueprint(source_blueprint())
     routes = prepared["flow"][1]["routes"]

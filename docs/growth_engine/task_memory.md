@@ -11,3 +11,7 @@
 - Harry confirmed that each Facebook slot should publish to both Ven Hồ Hotel Hanoi (`fb_hanoi`) and Ven Hồ Hotel (`fb_venho`). Use separate deliveries, commands, receipts and verification per Page; do not resend Hanoi to recover Ven Hồ.
 - The four-slot weekly cadence is unchanged. `EnsureSlots` creates each enabled channel target per slot; grouped approval can approve the two Facebook deliveries together with Instagram in one atomic batch without publishing.
 - Make TEST confirms Instagram cannot fetch public Google Drive files. Signed media URL is mandatory for production; `instagram_photo_v1` is JPEG, ≤5 MiB and exactly 4:5, within Make's stated ≤8 MB and 4:5–1.91:1 limits.
+
+### 2026-11-11 — MK-1 sequential TEST evidence
+- Two distinct `fb_hanoi` TEST webhook deliveries were sent 300 ms apart. Make History run 1 started 15:22:30 ICT and lasted 7 s; run 2 started 15:22:39 after run 1 ended and lasted 5 s.
+- Both distinct posts (`…_122107590483535879`, `…_122107590693535879`) had applied receipts. MK-1 is PASS. MK-1…MK-6 now satisfy the Make capability gate for `LIVE_MANUAL`; production remains DISABLED until the staged target checks pass.

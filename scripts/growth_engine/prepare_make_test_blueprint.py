@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Prepare an ignored Make TEST import draft from the operator's export."""
+"""Prepare an ignored Make import draft from the operator's scenario export."""
 
 from __future__ import annotations
 
@@ -21,8 +21,14 @@ except ModuleNotFoundError as error:
     from check_make_blueprint import validate_blueprint
 
 
-SOURCE = Path("_incoming/make_test_export.json")
-TARGET = Path("_incoming/make_test_import.json")
+SOURCE_BY_ENVIRONMENT = {
+    "test": Path("_incoming/make_test_export.json"),
+    "production": Path("_incoming/make_production_export.json"),
+}
+TARGET_BY_ENVIRONMENT = {
+    "test": Path("_incoming/make_test_import.json"),
+    "production": Path("_incoming/make_production_import.json"),
+}
 PLACEHOLDER_BASE = "https://set-in-make.invalid"
 ACCESS_ID = "__SET_IN_MAKE_ACCESS_CLIENT_ID__"
 ACCESS_SECRET = "__SET_IN_MAKE_ACCESS_CLIENT_SECRET__"
@@ -255,7 +261,49 @@ def _receipt_request(
     )
 
 
-def prepare_blueprint(document: dict[str, Any]) -> dict[str, Any]:
+def _common_filter(environment: str) -> dict[str, Any]:
+    label = "TEST" if environment == "test" else environment
+    return _make_filter("v2 " + label + " common", [
+        _condition(_field("2.schema_version"), "text:equal", "growth.command.v2"),
+        _condition(_field("2.environment"), "text:equal", environment),
+    ])
+
+
+def _channel_filter(channel_key: str) -> dict[str, Any]:
+    return _make_filter(
+        channel_key,
+        [_condition(_field("2.channel_key"), "text:equal", channel_key)],
+    )
+
+
+def _set_destination(module: dict[str, Any], *, platform: str, remote_id: str) -> None:
+    mapper = module.get("mapper")
+    if not isinstance(mapper, dict):
+        raise PreparationError("missing_post_mapper")
+    keys = ("page_id", "pageId") if platform == "facebook" else ("accountId", "account_id")
+    found = [key for key in keys if key in mapper]
+    if len(found) != 1:
+        raise PreparationError("unrecognized_destination_field")
+    mapper[found[0]] = remote_id
+
+
+DESTINATIONS = {
+    "test": {
+        "fb_hanoi": ("facebook", "1363761820162798"),
+        "ig_venho": ("instagram", "17841472240799413"),
+        "fb_venho": ("facebook", "1363761820162798"),
+    },
+    "production": {
+        "fb_hanoi": ("facebook", "1124616474074140"),
+        "ig_venho": ("instagram", "17841457936965829"),
+        "fb_venho": ("facebook", "803531149684177"),
+    },
+}
+
+
+def prepare_blueprint(document: dict[str, Any], *, environment: str = "test") -> dict[str, Any]:
+    if environment not in DESTINATIONS:
+        raise PreparationError("unsupported_environment")
     result = copy.deepcopy(document)
     source_metadata = document.get("metadata")
     if not isinstance(source_metadata, dict) or source_metadata.get("instant") is not True:
@@ -284,7 +332,9 @@ def prepare_blueprint(document: dict[str, Any]) -> dict[str, Any]:
     expected = [(3, 8), (6, 7), (12, 13)]
     posts: list[dict[str, Any]] = []
     route_filters: list[dict[str, Any]] = []
-    for route, (post_id, response_id) in zip(routes, expected):
+    for route, (post_id, response_id), channel_key in zip(
+        routes, expected, ("fb_hanoi", "ig_venho", "fb_venho")
+    ):
         route_flow = route.get("flow")
         if not isinstance(route_flow, list) or len(route_flow) != 2:
             raise PreparationError("unexpected_route_flow")
@@ -293,11 +343,8 @@ def prepare_blueprint(document: dict[str, Any]) -> dict[str, Any]:
             raise PreparationError("unexpected_route_module_order")
         if response.get("module") != "gateway:WebhookRespond":
             raise PreparationError("unexpected_response_module")
-        route_filter = post.get("filter")
-        if not isinstance(route_filter, dict):
-            raise PreparationError("missing_channel_filter")
         posts.append(post)
-        route_filters.append(copy.deepcopy(route_filter))
+        route_filters.append(_channel_filter(channel_key))
 
     if posts[0].get("module") != "facebook-pages:CreatePostWithPhotos":
         raise PreparationError("unexpected_facebook_module")
@@ -331,11 +378,12 @@ def prepare_blueprint(document: dict[str, Any]) -> dict[str, Any]:
     if not isinstance(mapper.get("jsonStringBodyContent"), str):
         raise PreparationError("missing_json_body_template")
 
-    common_filter = download.get("filter")
-    if not isinstance(common_filter, dict):
-        raise PreparationError("missing_common_filter")
-    router["filter"] = copy.deepcopy(common_filter)
+    router["filter"] = _common_filter(environment)
     del download["filter"]
+
+    for module, channel_key in zip(posts, ("fb_hanoi", "ig_venho", "fb_venho")):
+        platform, remote_id = DESTINATIONS[environment][channel_key]
+        _set_destination(module, platform=platform, remote_id=remote_id)
 
     request_template = copy.deepcopy(template_request)
     ignore_template = copy.deepcopy(template_ignore)
@@ -510,13 +558,16 @@ def _write_private(path: Path, document: dict[str, Any]) -> None:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--source", type=Path, default=SOURCE)
-    parser.add_argument("--output", type=Path, default=TARGET)
+    parser.add_argument("--environment", choices=tuple(SOURCE_BY_ENVIRONMENT), default="test")
+    parser.add_argument("--source", type=Path)
+    parser.add_argument("--output", type=Path)
     args = parser.parse_args(argv)
+    source_path = args.source or SOURCE_BY_ENVIRONMENT[args.environment]
+    output_path = args.output or TARGET_BY_ENVIRONMENT[args.environment]
 
     try:
-        source = json.loads(args.source.read_text(encoding="utf-8"))
-        prepared = prepare_blueprint(source)
+        source = json.loads(source_path.read_text(encoding="utf-8"))
+        prepared = prepare_blueprint(source, environment=args.environment)
     except (OSError, UnicodeError, json.JSONDecodeError):
         print("FAIL: source unavailable or invalid JSON")
         return 2
@@ -529,8 +580,8 @@ def main(argv: list[str] | None = None) -> int:
         print("FAIL: output validation (" + ", ".join(checked.errors) + ")")
         return 4
     try:
-        args.output.parent.mkdir(parents=True, exist_ok=True)
-        _write_private(args.output, prepared)
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        _write_private(output_path, prepared)
     except FileExistsError:
         print("FAIL: output already exists; refusing to overwrite")
         return 5
@@ -539,7 +590,7 @@ def main(argv: list[str] | None = None) -> int:
         return 6
 
     print(
-        "PASS: prepared ignored TEST draft; "
+        f"PASS: prepared ignored {args.environment} draft; "
         f"modules={checked.module_count}, routes={checked.route_count}, "
         f"mappings={checked.mapping_count}, secret_scan=clear, mode=600"
     )

@@ -1,14 +1,16 @@
 # Make router capability check — GC2-P0-T03
 
-**State (2026-11-11):** TEST run 3 and four follow-up cases passed in Make History. A later read-only Make inspection closed MK-3: no retry option on Facebook Pages 3/Instagram 6, every error path ends in Skip, and Store incomplete executions is No. The new two-command `sequential` case is prepared but not run; MK-1 remains CONFIGURED until its History ordering question passes. API restore is recorded by the runner and covered by systemd fakes. `fb_venho` and MK-11 remain unverified.
+**State (2026-11-11):** MK-1 through MK-6 are PASS. The sequential run confirmed queued processing in Make History; together these checks satisfy the capability gate for `LIVE_MANUAL`. This does not switch production runtime mode: it remains `DISABLED` until staged cutover. The `fb_venho` route is checked as that channel opens; MK-11 is checked while opening Instagram.
 
-**Production scenario:** `VenHo Growth Agent-FB/IG` (ID `5868920`, Active; do not edit).
+**Production scenario:** `VenHo Growth Agent-FB/IG` (ID `5868920`; edit only during approved production cutover).
 **TEST scenario:** `VenHo Growth Agent TEST` (ID `6924867`, Active after the 2026-11-11 tests; TEST webhook data structure has 15 fields).
 **Test requirement:** use a copied scenario and test accounts only. Do not use live pages for capability tests.
 
 No webhook URL, access token, or credential belongs in this file. Store only redacted screenshots/output, and blur connection details before attaching evidence.
 
 ## A. Read-only inventory of the current scenario
+
+**Historical snapshot:** this inventory records the 2026-11-06 pre-TEST production view. Its unverified entries are superseded by the TEST evidence matrix and current production cutover gates below; it is not the current blueprint specification.
 
 The values below are from the operator's Make UI observation, not a History run. Keep unspecified execution behavior/output fields `CHƯA XÁC MINH` until actual module History is reviewed. Do not edit production during inventory.
 
@@ -25,7 +27,7 @@ The values below are from the operator's Make UI observation, not a History run.
 | Error handler path on each post module | `REQUIRED_FROM_P0` |
 | Sequential processing / incomplete-execution setting | `CHƯA XÁC MINH` / `CHƯA XÁC MINH` |
 | Exact post/media ID output field | `CHƯA XÁC MINH` — requires module output bundle |
-| Evidence from successful History run | None supplied; MK-1 setting observation is recorded in section C |
+| Evidence from successful History run | None was supplied at the time of this snapshot; see current TEST evidence in section C |
 
 For the post ID, inspect the output bundle of the posting module itself. Record the actual returned field name and a synthetic-looking redacted example. Do not record a UI label such as `3. Post ID` as if it were the returned ID.
 
@@ -40,7 +42,7 @@ For the post ID, inspect the output bundle of the posting module itself. Record 
 - [x] Facebook HTTP media fetches are branch-local; Instagram I1 checks the signed URL and Instagram module 6 receives `media_url`.
 - [ ] Ensure every test post is visibly labelled as a test and can be removed by the operator.
 - [x] Updated 26-module blueprint was imported; successful webhook runs completed and the scenario remained Active after error-path tests.
-- [ ] Recheck the scenario's sequential/concurrency setting before production; MK-1 remains CONFIGURED because parallel behavior was not tested.
+- [x] Sequential/concurrency setting confirmed by the 2026-11-11 sequential History run: run 2 started after run 1 ended; MK-1 PASS.
 
 ## C. Capability evidence matrix
 
@@ -48,7 +50,7 @@ Fill **Result** with `PASS`, `PARTIAL`, `FAIL`, or `NOT_RUN`; use `CONFIGURED �
 
 | ID | Check on TEST copy | Result | Evidence / exact observed value | Remediation if FAIL |
 |---|---|---|---|---|
-| MK-1 | Sequential processing is enabled. | CONFIGURED | TEST scenario 6924867 completed a webhook run; it processed five operations in 8 seconds. The run is consistent with sequential mode; setting remains recorded as configured from the Make UI observation on 2026-11-10. | Keep sequential processing enabled; do not add Webhook response modules. |
+| MK-1 | Sequential processing is enabled. | PASS | 2026-11-11 15:22 ICT: two distinct `fb_hanoi` webhooks were sent 300 ms apart. Make History run 1 started 15:22:30 and lasted 7 s; run 2 started 15:22:39, after run 1 ended, and lasted 5 s. Two distinct posts (`…_122107590483535879`, `…_122107590693535879`) and two receipts were APPLIED. | Keep sequential processing enabled; do not add Webhook response modules. |
 | MK-2 | Incomplete executions are disabled, or the runbook explicitly forbids resuming after the response step. | PASS — replay stopped before post | 2026-11-11 10:03:46 ICT: replayed command returned `ALREADY_AUTHORIZED`; Facebook Pages 3 was filtered, with no second execution/receipt. Runbook forbids resume after authorize; Make storage setting itself was not rechecked. | Keep the no-resume rule and review storage setting before production. |
 | MK-3 | Facebook/Instagram post modules have no automatic retry and no Break directive; incomplete executions are not stored/resumed. | PASS — read-only Make inspection + duplicate replay | Claude inspected Make TEST on 2026-11-11: Facebook Pages 3 and Instagram 6 advanced settings show only Publish date (blank), with no retry option; every error route ends in Skip (“skips and discards the bundle… scenario run continues”), with no Retry/Break/Resume; Store incomplete executions = No. Separate duplicate History run confirmed one post only, replay filtered before Facebook. | Preserve Skip terminal handlers and Store incomplete executions = No. |
 | MK-4 | Each post module returns its real post/media ID in its output bundle. | PASS — Facebook and Instagram paths | Duplicate-case Facebook ID `1363761820162798_122107375689535879`; Instagram media ID `18453049759135668` from 12:16:35 ICT. IG receipt/execution reached `APPLIED`/`REPORTED`; earlier Hanoi receipt also matched History. | Keep receipt mapped verbatim from each module's `id`. |
@@ -71,7 +73,7 @@ Make's Instagram module accepts a JPEG no larger than 8 MB with aspect ratio fro
 
 - [ ] One successful test per `channel_key`; `fb_venho` remains outstanding.
 - [x] Broken signed-media URL: F1 `Ignore`; post module not reached. Non-JPEG decoding was not exercised.
-- [ ] Two different `fb_hanoi` deliveries, created in the same isolated TEST DB/channel, send back-to-back under one-second apart; expect two distinct Facebook posts and two applied receipts. Confirm in Make History that run two starts only after run one finishes.
+- [x] Two different `fb_hanoi` deliveries, created in the same isolated TEST DB/channel, sent 300 ms apart; two distinct Facebook posts and two applied receipts. Make History confirmed run two started only after run one finished (MK-1 PASS).
 - [x] Invalid TEST command token: authorize error caught, then `Ignore`; post module not reached.
 - [x] Submit the same command twice: replay stopped before posting; no second execution, receipt or post.
 - [ ] Stop after authorize but before the post module: verify the route does not continue or auto-resume.
@@ -86,6 +88,6 @@ Make's Instagram module accepts a JPEG no larger than 8 MB with aspect ratio fro
 | Invalid media / invalid command token | PASS | F1 11:32:45 → Ignore/no authorize/post; authorize 10:14:07 → caught error/Ignore/no Facebook module; scenario stayed Active. |
 | Duplicate command / interrupted execution | PASS — duplicate replay | History 10:03:33 posted once (`…_122107375689535879`), receipt APPLIED. Replay 10:03:46 ended with Facebook module filtered; DB had no second execution/receipt. |
 
-**Remaining TEST gaps:** successful `fb_venho`; the prepared two-command sequential-history case (MK-1); Instagram container-creation versus publish-failure distinction (MK-11); IG I1 and `fb_venho` F1 error handlers. MK-3 is PASS from the direct read-only settings/handler inspection.
+**Remaining TEST gaps:** successful `fb_venho`; Instagram container-creation versus publish-failure distinction (MK-11); IG I1 and `fb_venho` F1 error handlers. MK-1 is PASS from sequential Make History evidence.
 
-**Gate:** production stays below `LIVE_MANUAL` until remaining target-specific and operational checks pass. `fb_venho` and MK-11 are still unverified.
+**Gate:** MK-1…MK-6 pass, satisfying the Make capability prerequisite for `LIVE_MANUAL`. Production remains `DISABLED` during cutover preparation. Verify the `fb_venho` route as that channel opens and MK-11 as `ig_venho` opens.

@@ -1,6 +1,6 @@
 # Make Growth Engine v2 — TEST runbook
 
-**Scope:** one copied TEST scenario with three logical TEST targets and one Router. Do not edit or run the production scenario. MK-1 is CONFIGURED. Run 3 proves the `fb_hanoi` path end-to-end; remaining capability checks are listed in `make_capabilities.md`.
+**Scope:** TEST reference plus production cutover generator procedure. As of 2026-11-11, MK-1…MK-6 are PASS from TEST History and satisfy the capability gate for `LIVE_MANUAL`; production still remains `DISABLED` until cutover. Remaining route-specific checks are listed in `make_capabilities.md`.
 
 No webhook URL, access token, credential, signed media URL or production Page ID belongs in this file. Redact module output and screenshots before saving them.
 
@@ -157,7 +157,7 @@ To recreate the ignored draft from the protected export, run `umask 077` followe
 
 For Make Free, the scenario limit reported by Harry is **two active scenarios maximum**. Keep the TEST copy inactive outside its test window; before activating it, confirm the account will not exceed the two-scenario limit. This is an operator-provided plan fact and has not been independently verified in Make.
 
-Keep sequential processing enabled (MK-1 CONFIGURED — run evidence pending). Preserve the immediate webhook trigger. Disable incomplete-execution storage where possible; otherwise enforce the no-resume rule. Do not add explicit Webhook response modules. Confirm every posting module has no automatic retry. Record only redacted module outputs and settings.
+Keep sequential processing enabled (MK-1 PASS, confirmed by Make History 2026-11-11). Preserve the immediate webhook trigger. Disable incomplete-execution storage where possible; otherwise enforce the no-resume rule. Do not add explicit Webhook response modules. Confirm every posting module has no automatic retry. Record only redacted module outputs and settings.
 
 ## Required TEST cases
 

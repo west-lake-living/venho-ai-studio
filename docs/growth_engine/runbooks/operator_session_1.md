@@ -445,15 +445,11 @@ Runner mỗi lượt tạo DB/channel TEST riêng, kiểm media URL trên loopba
 
 Kết quả và giới hạn evidence đã được ghi trong `make_capabilities.md`. Không chạy lại bốn ca này. Xóa DB/media/env case riêng ở bước dọn cuối giai đoạn TEST.
 
-### Ca sequential cho MK-1 (chưa chạy)
+### Ca sequential cho MK-1 — PASS (11/11/2026)
 
-Không cần import lại blueprint. Xác nhận scenario TEST `6924867` đang Active và vẫn sequential + Immediately, rồi chạy:
+Không cần chạy lại hoặc import blueprint. Hai webhook `fb_hanoi` được gửi cách nhau 300 ms. Make History run 1 bắt đầu 15:22:30 ICT, chạy 7 giây; run 2 bắt đầu 15:22:39 ICT sau khi run 1 kết thúc, chạy 5 giây. Bài đăng khác nhau (`…_122107590483535879`, `…_122107590693535879`); cả hai receipt `APPLIED`. Kết luận MK-1 PASS: Make xử lý tuần tự.
 
-```bash
-bash ops/asus-server/growth-engine/run-test-case.sh sequential
-```
-
-Runner tạo hai command `fb_hanoi` trên cùng DB/channel TEST nhưng với slot, delivery, revision, approval và command khác nhau. Nó preflight cả hai signed media URL trước khi hỏi một lần `ACTIVE` rồi một lần `GUI`; sau đó gửi hai webhook liên tiếp, in timestamp ICT và yêu cầu chênh lệch dưới 1.000 ms. Runner poll tới 120 giây và áp receipt cho cả hai. Kỳ vọng: hai post ID khác nhau, hai execution `REPORTED`, hai receipt `APPLIED`; cuối cùng trả lời `PASS` chỉ khi Make History cho thấy **“run thứ hai bắt đầu sau khi run thứ nhất kết thúc?”**. Xác nhận API gốc đã trở lại qua `test_api_restore=PASS`.
+Lượt runner ghi `test_api_restore=PASS` sau khi transient API TEST được khôi phục và readiness trả 200.
 
 Chọn `GE_TEST_CHANNEL_KEY` (`fb_hanoi`, `fb_venho`, hoặc `ig_venho`), `GE_TEST_CHANNEL_ID` riêng cho nhánh, TEST DB và đúng API TEST trước khi tạo command. Facebook dùng `GE_TEST_REMOTE_PAGE_ID`, Instagram dùng `GE_TEST_REMOTE_IG_ID`. Tạo command TEST và private envelope (lệnh này không gửi webhook):
 

@@ -14,6 +14,14 @@ Nguồn: Harry đọc trực tiếp History của production scenario `5868920`;
 
 **Đề xuất retire/cutover:** không sửa Make production trong task này. Giữ bằng chứng về URL Drive làm gate bắt buộc: thay bằng signed media URL trước khi bật Instagram v2. Xác minh từng target/outcome trước khi tắt legacy; không resend Hanoi để xử lý lỗi riêng của Ven Hồ.
 
+## Gỡ filter chữ ký `Venho signature` và xoay literal hex
+
+Blueprint production v2 thay filter cũ bằng điều kiện chung `schema_version = growth.command.v2` AND `environment = production` trước Router; mỗi route lọc `channel_key`. Trước khi import, lưu export production cũ ở nơi riêng tư mode `600`. Không ghi literal hex vào export đã khử bí mật, log, issue hoặc báo cáo.
+
+Trong cùng change window, xác định mọi producer/consumer còn dùng literal 64 ký tự hex. Nếu nó được dùng như bí mật ký, coi như đã lộ: tạo giá trị mới bằng secret manager, cập nhật producer và verifier tương ứng, vô hiệu hóa giá trị cũ, rồi xác minh payload v2 qua History. Không xoay riêng một phía khi legacy sender vẫn cần giá trị cũ; khi đó dừng cutover và lập kế hoạch chuyển đồng bộ. Nếu không còn consumer hợp lệ, retire literal thay vì thay bằng một bí mật mới. Chỉ ghi tên biến/đường dẫn consumer, ngày và kết quả xác minh; không ghi giá trị.
+
+**Quay lui:** nếu phải import lại export cũ, giữ scenario Inactive và runtime `DISABLED` cho đến khi producer/filter cũ được khôi phục nhất quán. Không mở lại publisher legacy chỉ để xử lý một target lỗi.
+
 ## Gate trước khi retire
 
 - [ ] Harry phê duyệt retire sau khi P9-T04 đạt đầy đủ G-P9/AC-18: ≥8 slot, ≥16 target outcomes, ≥14 ngày; không duplicate/sai Page/sai ảnh; mọi UNKNOWN đã xử lý.
