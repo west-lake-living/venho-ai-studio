@@ -4995,3 +4995,26 @@ ComfyUI, GPU, provider or network call.
 - `measure-identity` now returns BLUR and FRAMING only (`identity-measurement-set-v1`, `humanGates: ["OCCLUSION"]`); occlusion is a Human HARD_GATE and a policy that names an automated occlusion algorithm is refused.
 - Removed `OCCLUSION_PROXY_V1` and its fixtures/xfail tests (proxy could not fail a covered eye/nose; face-parsing benchmark also rejected).
 - Calibration on A2/B01 unchanged (blur 1284.79 / 1319.12, ladder crosses at sigma 4, framing negatives FAIL). identity_restoration: 346 passed. Uncommitted.
+
+### GC2-T0-02 — Đóng băng v3.2 (2026-11-05)
+**Status:** DONE (Harry xác nhận GC2-D07 ngày 04/11/2026)
+**Files:** task_memory.md
+**Verify:** không code
+**INV/AC liên quan:** INV-10
+**Rủi ro / việc để lại:** clone cũ `venho-ai-studio` hỏng pack; GC2 làm ở `venho-ai-studio-gc2`.
+
+### GC2-P0-T01 — Script kiểm tra host tự chứa (2026-11-05)
+**Status:** DONE
+**Files:** ops/asus-server/growth-engine/preflight-host.sh, docs/growth_engine/legacy_inventory.md
+**Verify:** `bash -n` OK; chạy `bash -s -- <state> < script` từ cwd khác trên Mac → JSON hợp lệ, 3 khoá interpreter (`python_system/runtime/uv`) mỗi khoá có `sqlite_version`, WAL probe dùng thư mục tạm bị xoá (`created_dirs: []`). shellcheck chưa cài. Server (bản script cũ): runtime Python 3.11.16 / SQLite 3.53.1, WAL ok, linger yes, cổng trống 8021/8023/8024.
+**DoD:** [x] kết quả dán vào legacy_inventory.md#host · [ ] chạy lại bản mới để có `python_uv`
+**INV/AC liên quan:** ADR-01
+**Rủi ro / việc để lại:** Python hệ thống server SQLite 3.46.1 dưới ngưỡng; thiếu `age` (cần trước P6).
+
+### GC2-P0-T02 — Manifest 2 Page (2026-11-05)
+**Status:** DONE phần AI; chờ Harry điền
+**Files:** docs/growth_engine/environment_manifest.md, config/projects/venho_hotel/growth_engine/channels.yaml, scripts/growth_engine/check_manifest_no_secrets.py, tests/growth_engine/test_check_manifest_no_secrets.py
+**Verify:** `uv run --no-sync --with pytest --with python-dotenv pytest -q tests/growth_engine` → 17 passed, 0 network. Script mặc định → exit 0; `--require-filled` → exit 1 (còn REQUIRED_FROM_P0, đúng dự kiến).
+**DoD:** [ ] Harry điền Page ID thật, tên Page, scenario ID; script `--require-filled` trả 0
+**INV/AC liên quan:** AC-01
+**Rủi ro / việc để lại:** Thêm test ngoài mục Files của card (Harry yêu cầu rõ). conftest gốc cần `python-dotenv` nên lệnh verify phải có `--with python-dotenv` cho tới khi P1-T01 tạo conftest riêng.
