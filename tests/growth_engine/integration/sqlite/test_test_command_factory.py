@@ -20,6 +20,39 @@ from growth_engine.settings import Settings
 from scripts.growth_engine import send_test_command
 
 
+def test_webhook_start_callback_runs_immediately_before_request(monkeypatch) -> None:
+    events: list[str] = []
+
+    class Response:
+        status = 200
+
+    class Connection:
+        sock = None
+
+        def __init__(self, *_args, **_kwargs) -> None:
+            pass
+
+        def request(self, *_args, **_kwargs) -> None:
+            events.append("request")
+
+        def getresponse(self) -> Response:
+            return Response()
+
+        def close(self) -> None:
+            events.append("closed")
+
+    monkeypatch.setattr(send_test_command.http.client, "HTTPSConnection", Connection)
+
+    disposition, status = send_test_command._post_to_test_route(
+        "https://make.example.invalid/webhook",
+        {"schema_version": "growth.command.v2", "environment": "test"},
+        on_request_start=lambda: events.append("start-marker"),
+    )
+
+    assert (disposition, status) == ("ACK", 200)
+    assert events == ["start-marker", "request", "closed"]
+
+
 @pytest.mark.parametrize("channel_key", ["fb_hanoi", "fb_venho", "ig_venho"])
 def test_factory_persists_test_chain_and_private_envelope(tmp_path: Path, monkeypatch, channel_key: str) -> None:
     platform = "instagram" if channel_key == "ig_venho" else "facebook"
@@ -142,6 +175,37 @@ def test_factory_persists_test_chain_and_private_envelope(tmp_path: Path, monkey
     assert response.status_code == 200
     assert response.json()["execute"] is True
     assert response.json()["remote_page_id"] == page_id
+
+    second_path = tmp_path / "private" / "command-2.json"
+    second_args = argparse.Namespace(
+        envelope_file=second_path,
+        create_command=True,
+        send=False,
+        confirm_test_page_id=None,
+    )
+    second_result = send_test_command.run(second_args, environ)
+    second_envelope = json.loads(second_path.read_text(encoding="utf-8"))
+    assert second_result["channel_id"] == result["channel_id"]
+    assert second_result["delivery_id"] != result["delivery_id"]
+    assert second_result["command_id"] != result["command_id"]
+    assert second_envelope["channel_id"] == envelope["channel_id"]
+    assert second_envelope["delivery_id"] != envelope["delivery_id"]
+
+    connection = sqlite3.connect(database)
+    try:
+        assert connection.execute(
+            "SELECT count(*) FROM channels WHERE environment='test' AND channel_key=?", (channel_key,)
+        ).fetchone()[0] == 1
+        assert connection.execute(
+            "SELECT count(*) FROM deliveries WHERE channel_id=(SELECT id FROM channels WHERE environment='test' AND channel_key=?)",
+            (channel_key,),
+        ).fetchone()[0] == 2
+        assert connection.execute(
+            "SELECT count(DISTINCT c.delivery_id) FROM outbox_commands c JOIN deliveries d ON d.id=c.delivery_id WHERE d.channel_id=(SELECT id FROM channels WHERE environment='test' AND channel_key=?)",
+            (channel_key,),
+        ).fetchone()[0] == 2
+    finally:
+        connection.close()
 
 
 def test_test_manifest_rejects_production_destination(tmp_path: Path, monkeypatch) -> None:

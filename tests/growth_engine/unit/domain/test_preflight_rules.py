@@ -110,8 +110,10 @@ def test_media_value_objects_and_profile_values_match_plan() -> None:
     assert INSTAGRAM_PHOTO_V1.spec.aspect_ratio is AspectRatioPolicy.PAD_4_5
     assert FACEBOOK_PHOTO_V1.spec.max_long_side_px == 2048
     assert FACEBOOK_PHOTO_V1.spec.max_bytes == 5_242_880
+    assert INSTAGRAM_PHOTO_V1.spec.max_bytes <= 8_000_000
     assert FACEBOOK_PHOTO_V1.spec.jpeg_quality == 88
     assert FACEBOOK_PHOTO_V1.mime == "image/jpeg"
+    assert INSTAGRAM_PHOTO_V1.mime == "image/jpeg"
     assert FACEBOOK_PHOTO_V1.spec.background == "#F7F4EF"
     assert FACEBOOK_PHOTO_V1.spec.transform_version_includes == (
         "profile",

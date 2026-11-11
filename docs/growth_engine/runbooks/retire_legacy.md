@@ -8,14 +8,19 @@ Nguồn: Harry đọc trực tiếp History của production scenario `5868920`;
 
 - Một payload Facebook đã khớp cả module đăng Facebook Pages `3` và `12`, nên đăng lên cả hai Page trong cùng lượt chạy.
 - Nhánh Instagram production dùng URL Google Drive thay vì signed media URL của Growth Engine.
+- Từ module Instagram của Make: Instagram API không tải được file từ Google Drive, kể cả khi file được công khai. Production phải chuyển sang signed media URL của Growth Engine.
 
-**Đề xuất retire/cutover:** giữ hai phát hiện này làm bằng chứng cho rủi ro route Facebook legacy và khác biệt đường ảnh Instagram; xác minh từng target/outcome trước khi tắt legacy. Không sửa scenario production trong task này.
+**Quyết định Harry (11/11/2026):** đăng cùng một bài Facebook lên cả `Ven Hồ Hotel Hanoi` và `Ven Hồ Hotel` là chủ ý. Sau cutover một slot tạo hai command riêng (`fb_hanoi`, `fb_venho`), mỗi command có receipt/verify riêng. Hai module Facebook cùng chạy không còn được xem là lỗi legacy; v2 phải giữ hai target độc lập.
+
+**Đề xuất retire/cutover:** không sửa Make production trong task này. Giữ bằng chứng về URL Drive làm gate bắt buộc: thay bằng signed media URL trước khi bật Instagram v2. Xác minh từng target/outcome trước khi tắt legacy; không resend Hanoi để xử lý lỗi riêng của Ven Hồ.
 
 ## Gate trước khi retire
 
 - [ ] Harry phê duyệt retire sau khi P9-T04 đạt đầy đủ G-P9/AC-18: ≥8 slot, ≥16 target outcomes, ≥14 ngày; không duplicate/sai Page/sai ảnh; mọi UNKNOWN đã xử lý.
 - [ ] Restore rehearsal AC-18 đã có evidence; backup cuối kỳ, manifest media và checksum đã kiểm tra.
 - [ ] Có một publishing authority duy nhất là v2; hai Page đã hoạt động ổn định riêng; không còn execution/queue/grant legacy có thể đăng muộn.
+- [ ] Instagram production đã được chuyển từ Google Drive sang signed media URL; Make History chứng minh Meta tải đúng JPEG variant đã duyệt (JPG ≤ 8 MB, tỉ lệ 4:5–1.91:1).
+- [ ] Mỗi slot đủ điều kiện có hai delivery Facebook độc lập: Hanoi và Ven Hồ; mỗi target có command, receipt và verify riêng. Một target lỗi không phát lại target đã thành công.
 - [ ] Incidents, UNKNOWN, scheduled approvals và import deltas đã đóng/đối soát; bản lưu cần thiết đã được xác định.
 - [ ] Chuẩn bị kế hoạch rollback/forward recovery. Sau grant production, không khôi phục registry legacy làm authority.
 

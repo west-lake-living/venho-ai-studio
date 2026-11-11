@@ -7,6 +7,14 @@
 - **Acceptance state from v1.2:** D00, D01, D07 and D09 are confirmed 04/11/2026. D02–D06 and D08 use their stated plan defaults for this build, pending Harry's one-time review.
 - **Governance trace:** Recorded here because P0-T06 allows only ADR-01…09 and `task_memory.md`; if L2 requires a separate canonical decision-log entry, that artifact remains a follow-up.
 
+## 2026-11-11 — DR-GC2-D02 / Both Facebook Pages are intentional targets
+
+- **Decision by Harry:** every production Facebook post for a slot is intended for both `fb_hanoi` (Ven Hồ Hotel Hanoi) and `fb_venho` (Ven Hồ Hotel). v2 must create two independent delivery/command records and apply/verify each receipt separately; a Ven Hồ failure must never cause Hanoi to be posted again.
+- **Shared approved content:** the two Facebook targets use the same approved caption and exact Facebook image bytes. Instagram keeps its own approved JPEG variant.
+- **Cadence/slot check:** legacy `cadence_policy.yaml` remains Monday, Wednesday, Friday and Saturday (4 slots/week). `EnsureSlots` creates a target per enabled channel for every slot; three enabled channels therefore yield 4 slots and 12 independent targets/week (4 per Page and 4 for Instagram). Production channel entries remain disabled pending rollout gates.
+- **Grouped approval check:** `approve_group` accepts independent delivery items in one atomic batch and does not enqueue publication. Tests now cover both Facebook Pages plus Instagram in one approval group and four weekly slots across all three targets.
+- **Instagram media gate:** Make's module observation says public Google Drive files cannot be fetched by the Instagram API; production must use Growth Engine signed media URLs. `instagram_photo_v1` produces JPEG, caps output at 5 MiB (below Make's 8 MB ceiling), and pads to exact 4:5 within 4:5–1.91:1.
+
 ## 2026-11-04 — GC2-P0-T07 legacy inventory
 
 - Đọc `publication_registry.json` và `growth.db` read-only; registry có 265 rows, đúng báo cáo 04/11. DB có 58 `publishing_slots`; registry/DB lệch 5 slot cũ chỉ có ở registry.

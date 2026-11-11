@@ -2,8 +2,10 @@ from __future__ import annotations
 
 from contextlib import contextmanager
 from datetime import date
+from pathlib import Path
 
 import pytest
+import yaml
 
 from growth_engine.application.errors import ApplicationError
 from growth_engine.application.scheduling.ensure_slots import (
@@ -122,6 +124,45 @@ def test_ensure_slots_creates_target_for_each_enabled_page_and_is_idempotent():
     assert second.targets_created == 0
     assert len(store.slots) == 4
     assert len(store.targets) == 8
+
+
+def test_four_weekly_slots_create_both_facebook_targets_and_instagram_target():
+    store = FakeSlotStore(
+        [
+            ChannelAvailability("fb_hanoi", "venho_hotel", "production", enabled=True, configured=True),
+            ChannelAvailability("fb_venho", "venho_hotel", "production", enabled=True, configured=True),
+            ChannelAvailability("ig_venho", "venho_hotel", "production", enabled=True, configured=True),
+        ]
+    )
+
+    result = EnsureSlots(store, FakeClock(), SequentialIds()).execute(
+        _policy(),
+        start_date=date(2026, 11, 2),
+        horizon_days=7,
+        environment="production",
+        correlation_id="ensure-all-growth-channels",
+    )
+
+    assert result.slots_created == 4
+    assert result.targets_created == 12
+    assert len(store.slots) == 4
+    assert len(store.targets) == 12
+    for slot in store.slots.values():
+        target_channel_ids = {
+            target.channel_id for target in store.targets.values() if target.slot_id == slot.id
+        }
+        assert target_channel_ids == {"fb_hanoi", "fb_venho", "ig_venho"}
+
+
+def test_current_legacy_growth_cadence_remains_four_weekly_posts():
+    project_root = Path(__file__).resolve().parents[4]
+    policy = yaml.safe_load(
+        (project_root / "config/projects/venho_hotel/growth/cadence_policy.yaml").read_text(encoding="utf-8")
+    )
+
+    assert policy["timezone"] == "Asia/Ho_Chi_Minh"
+    assert [slot["day"] for slot in policy["slots"]] == ["monday", "wednesday", "friday", "saturday"]
+    assert len(policy["slots"]) == 4
 
 
 def test_ensure_slots_records_unconfigured_enabled_channel_instead_of_skipping_silently():

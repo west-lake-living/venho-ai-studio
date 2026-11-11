@@ -12,11 +12,14 @@ import stat
 import subprocess
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Callable
 from urllib.request import urlopen
 from uuid import uuid4
+from zoneinfo import ZoneInfo
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -69,6 +72,10 @@ CASES = {
     "bad-token": CaseSpec(
         "bad-token", "fb_hanoi", "facebook", "page_test", "1363761820162798",
         "GE_TEST_REMOTE_PAGE_ID", "GE_MAKE_WEBHOOK_URL_PAGE_TEST", "invalid_command_token",
+    ),
+    "sequential": CaseSpec(
+        "sequential", "fb_hanoi", "facebook", "page_test", "1363761820162798",
+        "GE_TEST_REMOTE_PAGE_ID", "GE_MAKE_WEBHOOK_URL_PAGE_TEST",
     ),
 }
 
@@ -391,6 +398,7 @@ def _call_sender(
     runner: Callable[..., subprocess.CompletedProcess[str]],
     create: bool = False,
     mutation: str | None = None,
+    send_start_marker: Path | None = None,
 ) -> dict[str, Any]:
     python = REPO_ROOT / ".venv/bin/python"
     args = [str(python), str(REPO_ROOT / "scripts/growth_engine/send_test_command.py"), "--envelope-file", str(envelope_path)]
@@ -398,6 +406,8 @@ def _call_sender(
         args.append("--create-command")
     else:
         args.extend(("--send", "--confirm-test-remote-id", spec.remote_id))
+        if send_start_marker is not None:
+            args.extend(("--send-start-marker", str(send_start_marker)))
         if mutation == "broken_media_signature":
             args.append("--test-corrupt-media-url")
         elif mutation == "invalid_command_token":
@@ -418,10 +428,43 @@ def _call_sender(
     return payload
 
 
+def _wait_send_start_marker(
+    path: Path,
+    *,
+    sleep: Callable[[float], None],
+    monotonic: Callable[[], float],
+    timeout_seconds: float = 10,
+) -> int:
+    deadline = monotonic() + timeout_seconds
+    while monotonic() < deadline:
+        try:
+            if path.is_file() and not path.is_symlink():
+                if stat.S_IMODE(path.stat().st_mode) != 0o600:
+                    raise TestCaseError("sequential_send_marker_permissions_invalid")
+                started_at_ms = int(path.read_text(encoding="ascii").strip())
+                if started_at_ms <= 0:
+                    raise ValueError
+                return started_at_ms
+        except (OSError, UnicodeError, ValueError) as error:
+            raise TestCaseError("sequential_send_marker_invalid") from error
+        sleep(min(0.01, max(0, deadline - monotonic())))
+    raise TestCaseError("sequential_first_webhook_did_not_start")
+
+
+def _format_ict_timestamp(timestamp_ms: int) -> str:
+    return datetime.fromtimestamp(timestamp_ms / 1000, ZoneInfo("Asia/Ho_Chi_Minh")).isoformat(
+        timespec="milliseconds"
+    ) + " ICT"
+
+
 def _run_apply_receipts(
-    *, env_path: Path, run_id: str, runner: Callable[..., subprocess.CompletedProcess[str]]
+    *,
+    env_path: Path,
+    run_id: str,
+    runner: Callable[..., subprocess.CompletedProcess[str]],
+    attempt: int = 1,
 ) -> bool:
-    result_unit = f"growth-engine-test-receipt-{run_id[:10]}"
+    result_unit = f"growth-engine-test-receipt-{run_id[:8]}-{attempt}"
     _systemd_transient(
         runner=runner,
         env_path=env_path,
@@ -430,6 +473,52 @@ def _run_apply_receipts(
         wait=True,
     )
     return True
+
+
+def _await_receipts(
+    *,
+    database_path: Path,
+    command_ids: list[str],
+    spec: CaseSpec,
+    env_path: Path,
+    run_id: str,
+    runner: Callable[..., subprocess.CompletedProcess[str]],
+    sleep: Callable[[float], None],
+    monotonic: Callable[[], float],
+    timeout_seconds: int = 120,
+) -> tuple[dict[str, dict[str, Any]], bool]:
+    deadline = monotonic() + timeout_seconds
+    applied_receipts: set[str] = set()
+    apply_attempt = 0
+    while True:
+        statuses = {
+            command_id: _read_status(database_path, command_id, spec)
+            for command_id in command_ids
+        }
+        pending = [
+            command_id for command_id, status in statuses.items()
+            if status["receipt_state"] == "RECEIVED" and command_id not in applied_receipts
+        ]
+        if pending:
+            apply_attempt += 1
+            _run_apply_receipts(
+                env_path=env_path,
+                run_id=run_id,
+                runner=runner,
+                attempt=apply_attempt,
+            )
+            applied_receipts.update(pending)
+            continue
+        if all(
+            status["receipt_state"] in FINAL_RECEIPTS
+            and status["execution_state"] in FINAL_EXECUTIONS
+            for status in statuses.values()
+        ):
+            return statuses, False
+        remaining = deadline - monotonic()
+        if remaining <= 0:
+            return statuses, True
+        sleep(min(2, remaining))
 
 
 def _await_receipt(
@@ -520,12 +609,28 @@ def _write_safe_result(path: Path, result: dict[str, Any]) -> None:
         os.fsync(stream.fileno())
 
 
+def _replace_safe_result(path: Path, result: dict[str, Any]) -> None:
+    safe = {key: value for key, value in result.items() if key not in {"webhook_url", "media_url", "token"}}
+    temporary = path.with_name(f".{path.name}.{uuid4().hex}.tmp")
+    descriptor = os.open(temporary, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8") as stream:
+            json.dump(safe, stream, ensure_ascii=False, sort_keys=True)
+            stream.write("\n")
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary, path)
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
 def _operator_history_check(case_name: str, input_fn: Callable[[str], str]) -> bool:
     prompts = {
         "ig_venho": "Make History confirms I1=200 image/jpeg, Meta fetched the signed URL, Instagram returned a media ID, and receipt completed? Type PASS: ",
         "duplicate": "Second Make History run shows authorize reason ALREADY_AUTHORIZED and no Facebook post module? Type PASS: ",
         "broken-media": "Make History shows F1 error → Ignore, no authorize/post, and the scenario remains Active? Type PASS: ",
         "bad-token": "Make History shows authorize rejection → Ignore, no Facebook post, and the scenario remains Active? Type PASS: ",
+        "sequential": "Make History: run thứ hai bắt đầu sau khi run thứ nhất kết thúc? Gõ PASS: ",
     }
     return input_fn(prompts[case_name]).strip().upper() == "PASS"
 
@@ -593,6 +698,7 @@ def run_case(
         "outcome": "NONE",
         "platform_post_id": "NONE",
         "history_confirmation": "PENDING",
+        "test_api_restore": "PENDING",
     }
 
     try:
@@ -637,7 +743,13 @@ def run_case(
             r"[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}", command_id
         ):
             raise TestCaseError("test_command_id_invalid")
+        delivery_id = created.get("delivery_id")
+        if not isinstance(delivery_id, str) or not re.fullmatch(
+            r"[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}", delivery_id
+        ):
+            raise TestCaseError("test_delivery_id_invalid")
         outcome["command_id"] = command_id
+        outcome["command_ids"] = [command_id]
         envelope = json.loads(envelope_path.read_text(encoding="utf-8"))
         media_url = envelope.get("media_url")
         if not isinstance(media_url, str):
@@ -646,11 +758,61 @@ def run_case(
             check_local_media_url(media_url, values["GE_PUBLIC_BASE_URL"])
         except RunTestError as error:
             raise TestCaseError("media_preflight_failed_no_webhook_sent") from error
+
+        sequential_commands: list[tuple[str, str, Path, int]] = [
+            (command_id, delivery_id, envelope_path, int(envelope["execute_before_ms"]))
+        ]
+        if spec.name == "sequential":
+            second_envelope_path = run_root / "command-2.envelope.json"
+            second_created = _call_sender(
+                env=child_env,
+                envelope_path=second_envelope_path,
+                spec=spec,
+                runner=runner,
+                create=True,
+            )
+            second_command_id = second_created.get("command_id")
+            second_delivery_id = second_created.get("delivery_id")
+            if not isinstance(second_command_id, str) or not re.fullmatch(
+                r"[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}", second_command_id
+            ):
+                raise TestCaseError("second_test_command_id_invalid")
+            if not isinstance(second_delivery_id, str) or not re.fullmatch(
+                r"[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}", second_delivery_id
+            ):
+                raise TestCaseError("second_test_delivery_id_invalid")
+            second_envelope = json.loads(second_envelope_path.read_text(encoding="utf-8"))
+            second_media_url = second_envelope.get("media_url")
+            if not isinstance(second_media_url, str):
+                raise TestCaseError("second_test_envelope_media_url_missing")
+            try:
+                check_local_media_url(second_media_url, values["GE_PUBLIC_BASE_URL"])
+            except RunTestError as error:
+                raise TestCaseError("second_media_preflight_failed_no_webhook_sent") from error
+            if (
+                second_command_id == command_id
+                or second_delivery_id == sequential_commands[0][1]
+                or second_envelope.get("channel_id") != envelope.get("channel_id")
+            ):
+                raise TestCaseError("sequential_commands_must_be_distinct_deliveries_on_same_channel")
+            sequential_commands.append(
+                (second_command_id, str(second_delivery_id or ""), second_envelope_path,
+                 int(second_envelope["execute_before_ms"]))
+            )
+            outcome["command_ids"] = [command_id, second_command_id]
+            outcome["delivery_ids"] = [sequential_commands[0][1], str(second_delivery_id)]
         emit(f"case={spec.name}")
         emit(f"channel_key={spec.channel_key}")
         emit(f"remote_id={spec.remote_id}")
         emit(f"command_id={command_id}")
+        emit(f"delivery_id={sequential_commands[0][1]}")
         emit("media_preflight=PASS")
+        if spec.name == "sequential":
+            second_command_id, second_delivery_id, _, second_deadline = sequential_commands[1]
+            emit(f"command_id_2={second_command_id}")
+            emit(f"delivery_id_2={second_delivery_id}")
+            emit(f"execute_before_2_ms={second_deadline}")
+            emit("media_preflight_2=PASS")
 
         if spec.mutation == "broken_media_signature":
             deliberately_broken = _mutate_test_envelope(
@@ -673,9 +835,96 @@ def run_case(
             "duplicate": "Gõ GUI để đăng một bài TEST rồi gửi lại đúng envelope một lần",
             "broken-media": "Gõ GUI để cố ý gửi media URL hỏng và kiểm tra F1 Ignore",
             "bad-token": "Gõ GUI để cố ý gửi command_token sai và kiểm tra authorize Ignore",
+            "sequential": "Gõ GUI để gửi liên tiếp hai command fb_hanoi TEST độc lập",
         }[spec.name]
         if input_fn(case_prompt).strip() != "GUI":
             emit("send=NOT_SENT; explicit GUI confirmation was not received")
+            return 0
+
+        if spec.name == "sequential":
+            first_marker = run_root / "webhook-1.started"
+            second_marker = run_root / "webhook-2.started"
+            with ThreadPoolExecutor(max_workers=1) as executor:
+                first_future = executor.submit(
+                    _call_sender,
+                    env=child_env,
+                    envelope_path=sequential_commands[0][2],
+                    spec=spec,
+                    runner=runner,
+                    send_start_marker=first_marker,
+                )
+                first_started_at_ms = _wait_send_start_marker(
+                    first_marker, sleep=sleep, monotonic=monotonic
+                )
+                second_sent = _call_sender(
+                    env=child_env,
+                    envelope_path=sequential_commands[1][2],
+                    spec=spec,
+                    runner=runner,
+                    send_start_marker=second_marker,
+                )
+                first_sent = first_future.result(timeout=60)
+            second_started_at_ms = _wait_send_start_marker(
+                second_marker, sleep=sleep, monotonic=monotonic
+            )
+            gap_ms = second_started_at_ms - first_started_at_ms
+            emit(f"webhook_1_sent_at={_format_ict_timestamp(first_started_at_ms)}")
+            emit(f"webhook_2_sent_at={_format_ict_timestamp(second_started_at_ms)}")
+            emit(f"webhook_gap_ms={gap_ms}")
+            emit(f"webhook_1_disposition={first_sent.get('webhook_disposition', 'UNKNOWN')}")
+            emit(f"webhook_2_disposition={second_sent.get('webhook_disposition', 'UNKNOWN')}")
+            gap_ok = 0 <= gap_ms < 1000
+            emit(f"webhooks_sent_less_than_1s_apart={'PASS' if gap_ok else 'FAIL'}")
+            statuses, timed_out = _await_receipts(
+                database_path=database_path,
+                command_ids=[sequential_commands[0][0], sequential_commands[1][0]],
+                spec=spec,
+                env_path=env_path,
+                run_id=run_id,
+                runner=runner,
+                sleep=sleep,
+                monotonic=monotonic,
+            )
+            if timed_out:
+                emit("receipt_wait=TIMEOUT_120S; no resend was attempted")
+            db_checks: list[bool] = []
+            post_ids: list[str] = []
+            for index, (one_command_id, one_delivery_id, _, _) in enumerate(sequential_commands, start=1):
+                status = statuses.get(one_command_id, {})
+                counts = _database_counts(database_path, one_command_id)
+                valid = (
+                    status.get("execution_state") == "REPORTED"
+                    and status.get("receipt_state") == "APPLIED"
+                    and status.get("outcome") == "POST_CREATED"
+                    and status.get("platform_post_id") not in {None, "NONE"}
+                    and counts == {"execution_count": 1, "receipt_count": 1}
+                )
+                db_checks.append(valid)
+                post_ids.append(str(status.get("platform_post_id", "NONE")))
+                emit(f"command_{index}_execution_state={status.get('execution_state', 'NONE')}")
+                emit(f"command_{index}_receipt_inbox.processing_state={status.get('receipt_state', 'NONE')}")
+                emit(f"command_{index}_delivery_id={one_delivery_id}")
+                emit(f"command_{index}_platform_post_id={status.get('platform_post_id', 'NONE')}")
+            db_result = (
+                all(db_checks)
+                and len(set(post_ids)) == 2
+                and first_sent.get("webhook_disposition") == "ACK"
+                and second_sent.get("webhook_disposition") == "ACK"
+            )
+            emit(f"two_distinct_posts_and_applied_receipts={'PASS' if db_result else 'FAIL'}")
+            manual_result = _operator_history_check(spec.name, input_fn)
+            emit(f"make_history_confirmation={'PASS' if manual_result else 'PENDING'}")
+            outcome.update({
+                "history_confirmation": "PASS" if manual_result else "PENDING",
+                "case_database_check": "PASS" if db_result else "FAIL",
+                "webhook_gap_ms": gap_ms,
+                "result": "PASS" if manual_result and db_result and gap_ok and not timed_out else "PENDING_REVIEW",
+                "command_ids": [item[0] for item in sequential_commands],
+                "delivery_ids": [item[1] for item in sequential_commands],
+                "platform_post_ids": post_ids,
+            })
+            emit(f"case_result={outcome['result']}")
+            _write_safe_result(run_root / "result.redacted.json", outcome)
             return 0
 
         sent = _call_sender(
@@ -783,12 +1032,6 @@ def run_case(
         return 0
     finally:
         result_file = run_root / "result.redacted.json"
-        if outcome["command_id"] != "NONE" and not result_file.exists():
-            outcome.setdefault("result", "INCOMPLETE")
-            try:
-                _write_safe_result(result_file, outcome)
-            except OSError:
-                emit("result_record=FAILED")
         case_unit_stopped = True
         if case_api_started:
             stopped = _run_process(["systemctl", "--user", "stop", case_unit], runner=runner, timeout=30)
@@ -806,12 +1049,31 @@ def run_case(
                     sleep=sleep,
                     monotonic=monotonic,
                 )
+                outcome["test_api_restore"] = "PASS" if restore_method else "FAILED"
+                if restore_method:
+                    outcome["test_api_restore_method"] = restore_method
                 emit(
                     "test_api_restore=PASS "
                     f"method={restore_method}"
                     if restore_method
                     else "test_api_restore=FAILED; base API did not become ready after restart/recreate"
                 )
+            else:
+                outcome["test_api_restore"] = "FAILED"
+        elif outcome["test_api_restore"] == "PENDING":
+            outcome["test_api_restore"] = "NOT_REQUIRED"
+        if outcome.get("result") == "PASS" and outcome["test_api_restore"] != "PASS":
+            outcome["result"] = "PENDING_REVIEW"
+            emit("case_result_after_restore=PENDING_REVIEW")
+        if outcome["command_id"] != "NONE":
+            outcome.setdefault("result", "INCOMPLETE")
+            try:
+                if result_file.exists():
+                    _replace_safe_result(result_file, outcome)
+                else:
+                    _write_safe_result(result_file, outcome)
+            except OSError:
+                emit("result_record=FAILED")
 
 
 def main(argv: list[str] | None = None) -> int:

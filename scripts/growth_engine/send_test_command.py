@@ -13,7 +13,7 @@ import sys
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 from uuid import uuid4
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 from zoneinfo import ZoneInfo
@@ -37,7 +37,12 @@ _TEST_TARGETS = {
 _TEST_PRINCIPALS = {"fb_hanoi": "make-fb-hanoi", "fb_venho": "make-fb-venho", "ig_venho": "make-ig"}
 
 
-def _post_to_test_route(route_url: str, envelope: dict[str, Any]) -> tuple[str, int | None]:
+def _post_to_test_route(
+    route_url: str,
+    envelope: dict[str, Any],
+    *,
+    on_request_start: Callable[[], None] | None = None,
+) -> tuple[str, int | None]:
     parsed = urlsplit(route_url)
     try:
         port = parsed.port or 443
@@ -51,6 +56,11 @@ def _post_to_test_route(route_url: str, envelope: dict[str, Any]) -> tuple[str, 
     except (TypeError, ValueError, UnicodeError) as error:
         raise ValueError("TEST webhook URL is invalid.") from error
     try:
+        if on_request_start is not None:
+            try:
+                on_request_start()
+            except OSError as error:
+                raise ValueError("TEST send start marker could not be written.") from error
         connection.request(
             "POST",
             target,
@@ -98,6 +108,12 @@ def _parser() -> argparse.ArgumentParser:
         "--confirm-test-remote-id", "--confirm-test-page-id",
         dest="confirm_test_page_id",
         help="Must exactly match the configured TEST Page or Instagram account ID when --send is set.",
+    )
+    parser.add_argument(
+        "--send-start-marker",
+        type=Path,
+        default=None,
+        help=argparse.SUPPRESS,
     )
     mutations = parser.add_mutually_exclusive_group()
     mutations.add_argument(
@@ -376,9 +392,40 @@ def _create_test_command(environ: dict[str, str], output_path: Path) -> dict[str
         make_route_ref=route_reference, graph_api_version=graph_version,
         capability={"_synthetic": True, "note": synthetic_note}, caption_profile="default",
     )
+    with container.uow_factory().read_only() as tx:
+        existing = tx.connection.execute(
+            """SELECT c.id AS channel_id, c.project_id, c.environment, c.channel_key,
+                      c.platform, c.remote_account_id, c.enabled, c.paused,
+                      cc.id AS config_id
+               FROM channels c
+               LEFT JOIN channel_configs cc ON cc.channel_id=c.id
+               WHERE c.environment='test' AND c.channel_key=?
+               ORDER BY cc.version DESC LIMIT 1""",
+            (channel_key,),
+        ).fetchone()
+        if existing is not None:
+            existing_channel = tx.channels.get_channel(existing["channel_id"])
+            existing_config = tx.channels.get_config(existing["config_id"]) if existing["config_id"] else None
+            if (
+                existing_channel is None
+                or existing_channel.id != channel.id
+                or existing_channel.project_id != channel.project_id
+                or existing_channel.environment != "test"
+                or existing_channel.channel_key != channel_key
+                or existing_channel.platform != channel.platform
+                or existing_channel.remote_account_id != page_id
+                or not existing_channel.enabled
+                or existing_channel.paused
+                or existing_config is None
+                or existing_config.make_route_ref != route_reference
+                or existing_config.graph_api_version != graph_version
+            ):
+                raise ValueError("Existing TEST channel does not match the configured target and route.")
+            channel = existing_channel
+            config = existing_config
     slot = Slot(
         ids["slot"], "venho_hotel", ict_now.date(), ict_now.strftime("%H:%M"),
-        "Asia/Ho_Chi_Minh", "test", "gc2-test-factory-v1", now_ms, deadline_at_ms,
+        "Asia/Ho_Chi_Minh", f"test-{ids['slot'][:8]}", "gc2-test-factory-v1", now_ms, deadline_at_ms,
     )
     target = SlotTarget(ids["target"], slot.id, channel.id)
     package = ContentPackage(
@@ -424,15 +471,20 @@ def _create_test_command(environ: dict[str, str], output_path: Path) -> dict[str
     )
     with container.uow_factory().begin_immediate() as tx:
         existing = tx.connection.execute(
-            "SELECT id FROM channels WHERE environment='test' AND channel_key=?", (channel_key,)
+            """SELECT c.id AS channel_id, cc.id AS config_id
+               FROM channels c LEFT JOIN channel_configs cc ON cc.channel_id=c.id
+               WHERE c.environment='test' AND c.channel_key=?
+               ORDER BY cc.version DESC LIMIT 1""",
+            (channel_key,),
         ).fetchone()
-        if existing is not None:
-            raise ValueError("TEST channel already exists in this database; use an isolated TEST database.")
         controls = tx.controls.get("test")
         if controls is not None and (controls.mode is not PublishMode.LIVE_MANUAL or controls.global_pause):
             raise ValueError("TEST runtime controls must already be LIVE_MANUAL and unpaused.")
-        tx.channels.save_channel(channel, created_at_ms=now_ms)
-        tx.channels.save_config(config, created_at_ms=now_ms)
+        if existing is None:
+            tx.channels.save_channel(channel, created_at_ms=now_ms)
+            tx.channels.save_config(config, created_at_ms=now_ms)
+        elif existing["channel_id"] != channel.id or existing["config_id"] != config.id:
+            raise ValueError("TEST channel changed while creating the command; use an isolated TEST database.")
         tx.slots.save_slot(slot, created_at_ms=now_ms)
         tx.slots.save_target(target)
         tx.packages.save(package)
@@ -535,6 +587,8 @@ def _write_private_envelope(path: Path, envelope: dict[str, Any]) -> None:
 def run(args: argparse.Namespace, environ: dict[str, str]) -> dict[str, object]:
     if environ.get("GE_ENV", "").strip().casefold() != "test":
         raise ValueError("TEST command validation and sending require GE_ENV=test.")
+    if getattr(args, "send_start_marker", None) is not None and not args.send:
+        raise ValueError("A TEST send start marker is only allowed with --send.")
     path = args.envelope_file or (
         Path(environ["GE_TEST_COMMAND_ENVELOPE_FILE"])
         if environ.get("GE_TEST_COMMAND_ENVELOPE_FILE")
@@ -603,13 +657,36 @@ def run(args: argparse.Namespace, environ: dict[str, str]) -> dict[str, object]:
         summary["intentional_test_case"] = (
             "broken_media_signature" if corrupt_media else "invalid_command_token"
         )
-    disposition, status = _post_to_test_route(route_url, outbound_envelope)
+    marker_path = getattr(args, "send_start_marker", None)
+    request_started_at_ms: int | None = None
+
+    def mark_request_start() -> None:
+        nonlocal request_started_at_ms
+        request_started_at_ms = time.time_ns() // 1_000_000
+        if marker_path is not None:
+            marker_target = Path(marker_path).expanduser()
+            marker_target.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+            temporary = marker_target.with_name(f".{marker_target.name}.{os.getpid()}.tmp")
+            descriptor = os.open(temporary, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+            try:
+                with os.fdopen(descriptor, "w", encoding="ascii") as marker:
+                    marker.write(f"{request_started_at_ms}\n")
+                    marker.flush()
+                    os.fsync(marker.fileno())
+                os.replace(temporary, marker_target)
+            finally:
+                temporary.unlink(missing_ok=True)
+
+    disposition, status = _post_to_test_route(
+        route_url, outbound_envelope, on_request_start=mark_request_start
+    )
     summary.update(
         {
             "network_request_sent": True,
             "webhook_disposition": disposition,
             "http_status": status,
             "post_verified": False,
+            "webhook_attempt_started_at_ms": request_started_at_ms,
         }
     )
     return summary

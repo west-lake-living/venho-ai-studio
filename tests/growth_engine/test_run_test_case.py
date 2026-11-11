@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import stat
 import sqlite3
 import subprocess
@@ -19,6 +20,10 @@ def test_case_matrix_uses_verified_ig_destination_and_fb_only_for_fault_cases() 
     assert runner.CASES["duplicate"].channel_key == "fb_hanoi"
     assert runner.CASES["broken-media"].mutation == "broken_media_signature"
     assert runner.CASES["bad-token"].mutation == "invalid_command_token"
+    sequential = runner.CASES["sequential"]
+    assert sequential.channel_key == "fb_hanoi"
+    assert sequential.remote_id == "1363761820162798"
+    assert sequential.mutation is None
 
 
 def test_case_environment_gets_fresh_db_channel_and_private_env_file(tmp_path) -> None:
@@ -163,3 +168,23 @@ def test_restore_restarts_loaded_base_unit(tmp_path) -> None:
 
 def test_history_confirmation_accepts_pass_case_insensitively() -> None:
     assert runner._operator_history_check("bad-token", lambda _: "Pass")
+    assert runner._operator_history_check("sequential", lambda _: "pass")
+
+
+def test_sequential_send_marker_and_ict_timestamp_are_safe_and_exact(tmp_path) -> None:
+    marker = tmp_path / "webhook.started"
+    marker.write_text("1794300000000\n", encoding="ascii")
+    marker.chmod(0o600)
+
+    assert runner._wait_send_start_marker(
+        marker, sleep=lambda _: None, monotonic=lambda: 0.0
+    ) == 1794300000000
+    assert runner._format_ict_timestamp(1794300000000).endswith(" ICT")
+
+
+def test_safe_result_can_be_updated_with_api_restore_status(tmp_path) -> None:
+    target = tmp_path / "result.redacted.json"
+    runner._write_safe_result(target, {"case": "sequential", "test_api_restore": "PENDING"})
+    runner._replace_safe_result(target, {"case": "sequential", "test_api_restore": "PASS"})
+
+    assert json.loads(target.read_text(encoding="utf-8"))["test_api_restore"] == "PASS"

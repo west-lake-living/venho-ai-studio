@@ -340,9 +340,9 @@ Sau đó dùng probe GET ở bước 3 với `CF_ACCESS_CLIENT_ID` và `CF_ACCES
 
 ## 5. Tạo scenario Make TEST và chạy MK-1…MK-11
 
-Trong Make, dùng bản copy TEST hiện có `VenHo Growth Agent TEST` (ID `6924867`), giữ Inactive cho đến khi cấu hình xong và dùng trigger Immediately as data arrives; không sửa production `VenHo Growth Agent-FB/IG` (ID `5868920`). Webhook TEST có data structure 15 trường. Hai module Facebook 3/12 cùng đích Page TEST `1363761820162798`; module Instagram 6 dùng `@hanhpham1504` (numeric account ID vẫn `CHƯA XÁC MINH`). Không dùng ba ID production làm TEST destination, và không dùng label thay ID. Do SQLite yêu cầu remote account duy nhất trong mỗi môi trường, mỗi nhánh dùng TEST DB riêng và API TEST phải trỏ đúng DB của lệnh trước khi thử. Cấu hình ba route `fb_hanoi` → Facebook 3, `ig_venho` → Instagram 6, `fb_venho` → Facebook 12 với filter `channel_key` cố định; fallback OFF; bỏ điều kiện `publication_id` không chứa `test`; bật sequential processing và không thêm Webhook response modules. Facebook dùng ảnh binary từ HTTP bên trong từng nhánh; Instagram map `image_url` từ `media_url`. Sau import, đặt lại lịch về Immediately as data arrives và mở+Save HTTP 25. Làm theo [make_blueprint_v2.md](make_blueprint_v2.md), điền MK-1…MK-11 trong [make_capabilities.md](../make_capabilities.md) chỉ bằng History/module output thật đã khử bí mật.
+Khi cấu hình ban đầu, dùng bản copy TEST `VenHo Growth Agent TEST` (ID `6924867`), giữ Inactive cho đến khi cấu hình xong, đặt trigger Immediately as data arrives và không sửa production `VenHo Growth Agent-FB/IG` (ID `5868920`). Trạng thái được Harry xác nhận 11/11/2026: TEST Active, sequential, Immediately; webhook có 15 trường. Facebook modules 3/12 cùng Page TEST `1363761820162798`; Instagram module 6 dùng `@hanhpham1504`, ID `17841472240799413`. Không dùng production ID làm TEST destination. Runner dùng DB/channel TEST riêng cho từng ca; ca `sequential` giữ cùng DB/channel cho hai delivery khác nhau. Router cố định `fb_hanoi` → Facebook 3, `ig_venho` → Instagram 6, `fb_venho` → Facebook 12; fallback OFF, không filter `publication_id`, không Webhook response khi sequential. Facebook tải ảnh binary bên trong từng nhánh; Instagram nhận signed `media_url`. Sau import, đặt lại lịch về Immediately as data arrives và mở+Save HTTP 25. Xem [make_blueprint_v2.md](make_blueprint_v2.md) và [make_capabilities.md](../make_capabilities.md) để đối chiếu evidence đã khử bí mật.
 
-Webhook TEST có data structure 15 trường. Payload mẫu [make_test_sample_payload.json](make_test_sample_payload.json) theo đúng JSON Schema `growth.command.v2`; envelope này **không có** `content`, `image_url` hoặc `publication_id`. `command_token` và `payload_hash` chỉ là giá trị tổng hợp để Make nhận tên/kiểu trường, không phải chữ ký hợp lệ; authorize sẽ từ chối nó. Không gửi mẫu khi đường đi tới module HTTP/đăng bài còn nối. Dùng đúng năm bước sau:
+Bootstrap webhook dưới đây đã hoàn tất ngày 10/11/2026. Chỉ lặp lại nếu Make phải redetermine data structure; ca `sequential` không cần gửi lại payload mẫu. Payload mẫu [make_test_sample_payload.json](make_test_sample_payload.json) theo đúng JSON Schema `growth.command.v2`; envelope này **không có** `content`, `image_url` hoặc `publication_id`. `command_token` và `payload_hash` chỉ là giá trị tổng hợp để Make nhận tên/kiểu trường, không phải chữ ký hợp lệ; authorize sẽ từ chối nó. Không gửi mẫu khi đường đi tới module HTTP/đăng bài còn nối. Nếu cần reset cấu trúc, dùng đúng năm bước sau:
 
 1. Xác nhận chỉ scenario TEST đang mở, scenario đang Inactive và trigger đặt Immediately as data arrives; tạm ngắt toàn bộ module sau Custom webhook để không gọi HTTP hay đăng bài.
 2. Trên Custom webhook của TEST scenario, bấm **Redetermine data structure**.
@@ -368,7 +368,7 @@ Sau khi mọi gate được duyệt, thứ tự mở target production là `fb_h
 
 ### Runner TEST — fb_hanoi
 
-Trạng thái Harry xác nhận 10/11/2026: Make TEST import thành công với 20 module; scenario `6924867` vẫn Inactive. API TEST đang chạy bằng transient unit `growth-engine-api-test-src` trên `127.0.0.1:8023`, env `~/venho/secrets/growth-engine-test.env`. Harry xác nhận Graph API `v27.0` từ Graph API Explorer của Meta app đang dùng; manifest TEST đã ghi scenario, graph version, owner và ngày xác minh. Connection tham chiếu bằng tên `Ven Ho Hotel Hanoi (Ha Pham)`; ID số chưa xác minh. Runner chỉ cần route ref, Page ID, principal, Graph API version và TEST runtime env; không đọc scenario/connection ref/owner.
+Lượt đầu ngày 10/11/2026 đã dùng import 20 module và scenario Inactive. Trạng thái sau ca TEST 11/11: scenario `6924867` Active với blueprint 26 module, sequential và Immediately. API TEST dùng transient unit `growth-engine-api-test-src` trên `127.0.0.1:8023`, env `~/venho/secrets/growth-engine-test.env`. TEST Graph API `v27.0` được Harry đọc từ Graph API Explorer; Make connection tham chiếu bằng tên `Ven Ho Hotel Hanoi (Ha Pham)` (ID số chưa xác minh). Runner chỉ cần route ref, Page ID, principal, Graph API version và TEST runtime env; không đọc connection ref/owner.
 
 Sau khi cập nhật checkout server có sửa đổi media handler, restart transient unit `growth-engine-api-test-src` để process nạp code mới. Sửa đổi này không cần DB migration.
 
@@ -382,7 +382,7 @@ Wrapper hỏi ẩn TEST webhook URL rồi idempotently đặt `GE_TEST_CHANNEL_K
 
 Sau khi tạo command, wrapper tự GET signed media URL qua `http://127.0.0.1:8023` trước khi hỏi `ACTIVE` hoặc `GUI`. Nó yêu cầu HTTP 200, `image/jpeg`, `Cache-Control: private, no-store`, body khớp SHA trong path và không in URL/token. Nếu check thất bại thì dừng trước cả hai xác nhận, không gửi webhook.
 
-Vì scenario hiện Inactive, trước khi tiếp tục Harry phải bật đúng scenario TEST trong Make; wrapper yêu cầu gõ `ACTIVE`, rồi yêu cầu chính xác `GUI` tại prompt **“Gõ GUI để gửi lệnh đăng thử lên Page TEST”**. Chỉ sau khi media preflight đạt và cả hai xác nhận mới chạy `--send --confirm-test-remote-id 1363761820162798`. Nếu không xác nhận, không gửi; private envelope mode `600` được giữ lại để tránh tạo command khác.
+Runner không tự bật/tắt scenario. Trước mỗi lượt, xác nhận đúng scenario TEST đang Active rồi gõ `ACTIVE`; tiếp theo xác nhận `GUI` tại prompt tương ứng. Chỉ sau khi media preflight đạt và cả hai xác nhận mới gửi. Nếu không xác nhận, webhook không được gửi; private envelope mode `600` được giữ lại để tránh tạo command khác.
 
 Sau khi gửi, wrapper đọc DB TEST ở chế độ chỉ đọc tối đa 120 giây, tiếp tục chờ khi receipt còn `RECEIVED`, rồi in command/execution/`receipt_inbox.processing_state`, outcome, `platform_post_id` và `failed_step`. Không in webhook URL, capability token hay media URL; không tự gửi lại khi trạng thái không rõ. Nếu hết hạn khi receipt vẫn `RECEIVED`, dùng lệnh one-shot bên dưới.
 
@@ -425,9 +425,9 @@ SQL
 
 Kết quả Harry xác nhận: `execution_state=REPORTED`, `receipt_inbox_state=APPLIED`, `outcome=POST_CREATED`, `platform_post_id=1363761820162798_122106835935535879`, `post_id_check=MATCH`. `outbox_commands.state=AUTHORIZED` là đúng: authorize kết thúc giao command; receipt cập nhật execution/delivery/inbox. Không có trạng thái `outbox_commands.COMPLETED`. Đây là receipt report, chưa phải bước verify bài trên Meta.
 
-### Bốn ca TEST tiếp theo
+### Bốn ca TEST follow-up (đã hoàn tất 11/11/2026)
 
-Trước tiên import blueprint TEST mới 26 module; cần thiết để ba authorize HTTP request có `Ignore`, đồng thời giữ F1/I1 handlers. Sau khi kiểm tra lại 3 route, filter, đích/connection, credentials, sequential và Immediately, chạy từng lệnh riêng:
+Blueprint 26 module đã được import trước các ca này. Bốn lượt đã hoàn tất; không chạy lại để tránh bài công khai trùng:
 
 ```bash
 bash ops/asus-server/growth-engine/run-test-case.sh ig_venho
@@ -436,14 +436,24 @@ bash ops/asus-server/growth-engine/run-test-case.sh broken-media
 bash ops/asus-server/growth-engine/run-test-case.sh bad-token
 ```
 
-Runner tạo DB/channel TEST riêng, migrate, tạm thay API TEST trên `:8023`, kiểm media URL trên loopback và in tóm tắt không bí mật. Chỉ gửi khi người vận hành gõ chính xác `ACTIVE` rồi `GUI`; preflight thông thường không đạt thì dừng. Ca `broken-media` cố ý làm hỏng chữ ký signed URL TEST sau khi URL gốc đạt preflight. Mỗi ca poll tối đa 120 giây, áp receipt khi có, in riêng `outbox_commands.state`, execution và receipt, rồi khôi phục transient API gốc.
+Runner mỗi lượt tạo DB/channel TEST riêng, kiểm media URL trên loopback, yêu cầu `ACTIVE` rồi `GUI`, poll/apply receipt và khôi phục API TEST gốc. Kết quả Make History đã ghi trong [make_capabilities.md](../make_capabilities.md): IG publish, duplicate, broken-media và bad-token đều PASS. `test_api_restore=PASS` phải xuất hiện sau mỗi lượt runner.
 
-- `ig_venho`: xác nhận I1 `200 image/jpeg`, Meta tải signed URL, output media ID và receipt `APPLIED`.
-- `duplicate`: gửi lại đúng envelope sau receipt đầu; History phải cho thấy `ALREADY_AUTHORIZED`, chỉ một execution/receipt/post.
-- `broken-media`: F1 → `Ignore`, không authorize/post, scenario vẫn Active.
-- `bad-token`: authorize từ chối `ERR_GC2_CAPABILITY_INVALID`, không module đăng, scenario vẫn Active.
+- `ig_venho`: PASS — I1 `200 image/jpeg`, Meta tải signed URL, media ID `18453049759135668`, receipt `APPLIED`.
+- `duplicate`: PASS — replay trả `ALREADY_AUTHORIZED`; một execution/receipt/post.
+- `broken-media`: PASS — F1 → `Ignore`, không authorize/post, scenario vẫn Active.
+- `bad-token`: PASS — authorize bị từ chối, không module đăng, scenario vẫn Active.
 
-Gõ `PASS` tại prompt History chỉ khi đúng điều kiện; cập nhật từng MK trong `make_capabilities.md`. Xóa DB/media/env case riêng ở bước dọn cuối giai đoạn TEST.
+Kết quả và giới hạn evidence đã được ghi trong `make_capabilities.md`. Không chạy lại bốn ca này. Xóa DB/media/env case riêng ở bước dọn cuối giai đoạn TEST.
+
+### Ca sequential cho MK-1 (chưa chạy)
+
+Không cần import lại blueprint. Xác nhận scenario TEST `6924867` đang Active và vẫn sequential + Immediately, rồi chạy:
+
+```bash
+bash ops/asus-server/growth-engine/run-test-case.sh sequential
+```
+
+Runner tạo hai command `fb_hanoi` trên cùng DB/channel TEST nhưng với slot, delivery, revision, approval và command khác nhau. Nó preflight cả hai signed media URL trước khi hỏi một lần `ACTIVE` rồi một lần `GUI`; sau đó gửi hai webhook liên tiếp, in timestamp ICT và yêu cầu chênh lệch dưới 1.000 ms. Runner poll tới 120 giây và áp receipt cho cả hai. Kỳ vọng: hai post ID khác nhau, hai execution `REPORTED`, hai receipt `APPLIED`; cuối cùng trả lời `PASS` chỉ khi Make History cho thấy **“run thứ hai bắt đầu sau khi run thứ nhất kết thúc?”**. Xác nhận API gốc đã trở lại qua `test_api_restore=PASS`.
 
 Chọn `GE_TEST_CHANNEL_KEY` (`fb_hanoi`, `fb_venho`, hoặc `ig_venho`), `GE_TEST_CHANNEL_ID` riêng cho nhánh, TEST DB và đúng API TEST trước khi tạo command. Facebook dùng `GE_TEST_REMOTE_PAGE_ID`, Instagram dùng `GE_TEST_REMOTE_IG_ID`. Tạo command TEST và private envelope (lệnh này không gửi webhook):
 

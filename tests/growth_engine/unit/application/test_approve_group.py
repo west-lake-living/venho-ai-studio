@@ -44,6 +44,29 @@ def test_batch_approval_is_idempotent_and_never_enqueues_publish_command() -> No
     assert store.commands == []
 
 
+def test_batch_can_approve_both_facebook_pages_and_instagram_as_independent_deliveries() -> None:
+    store = _ApprovalStore()
+    use_case = ApproveGroup(store, FakeClock(500))
+    items = (
+        ApprovalItem("fb-hanoi-delivery", "revision-hanoi", "a" * 64, 1),
+        ApprovalItem("fb-venho-delivery", "revision-venho", "b" * 64, 1),
+        ApprovalItem("ig-delivery", "revision-ig", "c" * 64, 1),
+    )
+
+    result = use_case.execute(
+        items,
+        actor="operator-1",
+        principal="bff",
+        idempotency_key="three-channel-group",
+    )
+
+    assert {approval.revision_id for approval in result.approvals} == {
+        "revision-hanoi", "revision-venho", "revision-ig"
+    }
+    assert len(result.approvals) == 3
+    assert store.commands == []
+
+
 def test_reusing_idempotency_key_with_different_batch_returns_mismatch() -> None:
     store = _ApprovalStore()
     use_case = ApproveGroup(store, FakeClock(500))
