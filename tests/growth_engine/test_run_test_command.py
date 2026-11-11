@@ -110,7 +110,7 @@ def test_manifest_requires_verified_fb_hanoi_graph_version() -> None:
         RUNNER.validate_manifest(manifest)
 
 
-def test_repository_manifest_fills_test_targets_and_leaves_production_graph_versions_null() -> None:
+def test_repository_manifest_fills_test_and_production_metadata() -> None:
     manifest = RUNNER.load_manifest(REPO_ROOT)
     channels = {item["channel_id"]: item for item in manifest["channels"]}
 
@@ -126,11 +126,19 @@ def test_repository_manifest_fills_test_targets_and_leaves_production_graph_vers
     assert channels["ig_test"]["verified_on"] == "2026-11-10"
     assert channels["page_test"]["make_connection_ref"] == "Ven Ho Hotel Hanoi (Ha Pham)"
     assert channels["ig_test"]["make_connection_ref"] == "Ven Ho Hotel Hanoi (Ha Pham)"
-    assert all(
-        channel["graph_api_version"] is None
-        for channel in manifest["channels"]
-        if channel["environment"] == "production"
-    )
+    production = {key: channels[key] for key in ("fb_hanoi", "fb_venho", "ig_venho")}
+    assert production["fb_hanoi"]["remote_page_id"] == "1124616474074140"
+    assert production["fb_venho"]["remote_page_id"] == "803531149684177"
+    assert production["ig_venho"]["remote_account_id"] == "17841457936965829"
+    for key, channel in production.items():
+        assert channel["make_scenario_id"] == "5868920"
+        assert channel["make_connection_ref"] == "Ven Ho Hotel Hanoi (Ha Pham)"
+        assert channel["graph_api_version"] == "v27.0"
+        assert channel["owner"] == "Harry"
+        assert channel["verified_on"] == "2026-11-11"
+        assert channel["enabled"] is False
+    assert production["fb_hanoi"]["display_name"] == "Ven Hồ Hotel Hanoi (Tây Hồ)"
+    assert production["fb_venho"]["display_name"] == "Ven Hồ Hotel (Hanoi)"
 
 
 def test_env_settings_are_idempotent_and_leave_backup_untouched(tmp_path: Path) -> None:

@@ -1,6 +1,8 @@
 # GC2-P0-T02 — Danh mục Page đích. KHÔNG chứa secret (token/URL webhook nằm ở env, tham chiếu bằng tên).
-# ID production dưới đây do Harry cung cấp ngày 2026-11-04. Các kênh giữ disabled cho đến khi
-# route/connection Make và Graph API capability được xác minh; null là cấu hình chưa cấp.
+# ID production do Harry cung cấp ngày 2026-11-04. Metadata Make được Claude xác minh chỉ đọc trên
+# scenario production 5868920 ngày 2026-11-11; graph_api_version do Harry đọc từ Graph API Explorer
+# cùng app. Make chỉ hiển thị tên đích; ánh xạ tên↔ID theo Graph /me/accounts ngày 2026-11-06.
+# Xác nhận lại ánh xạ bằng post ID của lượt production đầu tiên.
 # Không map bằng tên hiển thị: định danh đích là remote_page_id/remote_account_id.
 version: 1
 project: venho_hotel
@@ -10,52 +12,52 @@ channels:
   - channel_id: fb_hanoi
     environment: production
     platform: facebook
-    display_name: Ven Hồ Hotel Hanoi
-    remote_page_id: "1124616474074140"       # Facebook Page ID; giữ nguyên dạng TEXT
-    make_scenario_id: null                    # chưa xác minh
+    display_name: Ven Hồ Hotel Hanoi (Tây Hồ)
+    remote_page_id: "1124616474074140"       # module 3; xác nhận lại bằng post ID lượt production đầu
+    make_scenario_id: "5868920"
     make_route_ref: GE_MAKE_WEBHOOK_URL_PAGE_A   # TÊN biến môi trường, không phải URL
-    make_connection_ref: null                 # chưa xác minh; không phải token
-    graph_api_version: null                   # chưa probe ở P0-T04
+    make_connection_ref: "Ven Ho Hotel Hanoi (Ha Pham)" # tên connection Make; không phải token
+    graph_api_version: "v27.0" # Harry đọc từ Graph API Explorer cùng app
     service_principal: make-fb-hanoi
     scopes: [executions.authorize, receipts.write, media.read]
     meta_read_token_ref: GE_META_READ_TOKEN_PAGE_A   # TÊN biến môi trường
     caption_profile: default
-    owner: null
-    verified_on: null                         # ID do Harry cung cấp; route chưa xác minh
+    owner: Harry
+    verified_on: "2026-11-11"
     enabled: false
 
   - channel_id: fb_venho
     environment: production
     platform: facebook
-    display_name: Ven Hồ Hotel
+    display_name: Ven Hồ Hotel (Hanoi)
     remote_page_id: "803531149684177"
-    make_scenario_id: null
+    make_scenario_id: "5868920"
     make_route_ref: GE_MAKE_WEBHOOK_URL_PAGE_B
-    make_connection_ref: null
-    graph_api_version: null
+    make_connection_ref: "Ven Ho Hotel Hanoi (Ha Pham)"
+    graph_api_version: "v27.0" # Harry đọc từ Graph API Explorer cùng app
     service_principal: make-fb-venho
     scopes: [executions.authorize, receipts.write, media.read]
     meta_read_token_ref: GE_META_READ_TOKEN_PAGE_B
     caption_profile: default
-    owner: null
-    verified_on: null
+    owner: Harry
+    verified_on: "2026-11-11" # Make module 12; xác nhận lại bằng post ID lượt production đầu
     enabled: false
 
   - channel_id: ig_venho
     environment: production
     platform: instagram
     display_name: Ven Hồ Hotel Instagram
-    remote_account_id: "17841457936965829"   # instagram_business_account.id
-    make_scenario_id: null                    # chưa xác minh
+    remote_account_id: "17841457936965829"   # module 6; IG gắn Page Hanoi; xác nhận bằng post ID lượt đầu
+    make_scenario_id: "5868920"
     make_route_ref: GE_MAKE_WEBHOOK_URL_IG_VENHO # tên biến môi trường, chưa cấu hình
-    make_connection_ref: null
-    graph_api_version: null                   # chưa probe ở P0-T04
+    make_connection_ref: "Ven Ho Hotel Hanoi (Ha Pham)"
+    graph_api_version: "v27.0" # Harry đọc từ Graph API Explorer cùng app
     service_principal: make-ig
     scopes: [executions.authorize, receipts.write, media.read]
     meta_read_token_ref: GE_META_READ_TOKEN_IG_VENHO
     caption_profile: default
-    owner: null
-    verified_on: null                         # ID do Harry cung cấp; route/token chưa probe
+    owner: Harry
+    verified_on: "2026-11-11" # Make module 6; ID ánh xạ theo Graph /me/accounts 2026-11-06
     enabled: false
 
   # Page TEST riêng + scenario TEST riêng: mọi test có side effect chỉ chạy ở đây.
