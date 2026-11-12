@@ -131,6 +131,40 @@ def test_staged_enable_requires_live_manual_pause_and_route_order(tmp_path: Path
     assert [row[0] for row in actions] == ["enable", "enable", "enable"]
 
 
+def test_prepare_only_enables_hanoi_under_disabled_pause_and_leaves_other_channels_off(tmp_path: Path) -> None:
+    path = tmp_path / "growth_engine.db"
+    _db(path)
+    channels.provision(path, _manifest(), now_ms=100)
+    _controls(path, "DISABLED")
+
+    assert channels.set_enabled(path, "fb_hanoi", True, prepare_only=True, now_ms=200) == (
+        "channel=fb_hanoi enabled=1 preparation_only=1"
+    )
+    try:
+        channels.set_enabled(path, "fb_venho", True, prepare_only=True, now_ms=300)
+    except channels.ChannelSetupError:
+        pass
+    else:
+        raise AssertionError("prepare-only must be restricted to fb_hanoi")
+
+    connection = sqlite3.connect(path)
+    try:
+        rows = connection.execute(
+            "SELECT channel_key, enabled FROM channels WHERE environment='production' ORDER BY channel_key"
+        ).fetchall()
+        controls = connection.execute(
+            "SELECT publish_mode, global_pause FROM runtime_controls WHERE environment='production'"
+        ).fetchone()
+        actions = connection.execute(
+            "SELECT action FROM audit_events WHERE aggregate_type='channel' AND action='prepare_only_enable'"
+        ).fetchall()
+    finally:
+        connection.close()
+    assert rows == [("fb_hanoi", 1), ("fb_venho", 0), ("ig_venho", 0)]
+    assert controls == ("DISABLED", 1)
+    assert len(actions) == 1
+
+
 def test_refuses_unverified_ids_or_missing_connection_metadata(tmp_path: Path) -> None:
     path = tmp_path / "growth_engine.db"
     _db(path)

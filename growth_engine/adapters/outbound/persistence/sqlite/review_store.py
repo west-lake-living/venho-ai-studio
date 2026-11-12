@@ -269,6 +269,7 @@ class SqliteReviewStore:
                           r.payload_hash AS revision_hash, r.variant_id, v.id AS variant_found,
                           v.asset_id, v.transform_version, v.sha256, v.object_key, v.width,
                           v.height, v.mime, v.byte_size, v.qc_status, v.created_at AS variant_created_at,
+                          ma.metadata_json AS asset_metadata_json,
                           q.decision AS qc_decision,
                           EXISTS(SELECT 1 FROM executions e WHERE e.delivery_id=d.id
                             AND e.state IN ('AUTHORIZED','REPORTED','UNKNOWN')) AS live_execution,
@@ -281,6 +282,7 @@ class SqliteReviewStore:
                    LEFT JOIN channel_configs cc ON cc.channel_id=c.id
                    LEFT JOIN delivery_revisions r ON r.id=d.current_revision_id AND r.delivery_id=d.id
                    LEFT JOIN media_variants v ON v.id=r.variant_id
+                   LEFT JOIN media_assets ma ON ma.id=v.asset_id
                    LEFT JOIN qc_reports q ON q.id=r.qc_report_id
                    WHERE d.id=? ORDER BY cc.version DESC LIMIT 1""",
                 (delivery_id,),
@@ -333,7 +335,20 @@ class SqliteReviewStore:
                 deadline_at_ms=int(row["deadline_at"]),
                 variant=variant,
                 action_context=action_context,
+                image_label=_asset_label(row["asset_metadata_json"]),
             )
+
+
+def _asset_label(raw: str | None) -> str | None:
+    if not raw:
+        return None
+    try:
+        metadata = json.loads(raw)
+    except (TypeError, json.JSONDecodeError):
+        return None
+    if isinstance(metadata, dict) and metadata.get("option_id") == "FALLBACK":
+        return "Ảnh dự phòng"
+    return None
 
 
 def _variant(row: Any) -> MediaVariant:

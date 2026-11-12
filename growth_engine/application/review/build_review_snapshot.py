@@ -24,6 +24,7 @@ class ReviewSnapshot:
     deadline_at_ms: int | None
     preview_url: str | None
     preview_sha256: str | None
+    image_label: str | None
     allowed_actions: tuple[dict[str, object], ...]
 
 
@@ -89,6 +90,7 @@ class BuildReviewSnapshot:
             deadline_at_ms=data.deadline_at_ms,
             preview_url=preview_url,
             preview_sha256=preview_sha256,
+            image_label=data.image_label,
             allowed_actions=actions,
         )
 

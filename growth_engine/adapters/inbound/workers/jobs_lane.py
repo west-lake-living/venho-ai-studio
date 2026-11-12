@@ -16,6 +16,24 @@ from growth_engine.domain.kernel.hashing import canonical_json_bytes
 JobHandler = Callable[[], object]
 
 
+def gate_production_generation(
+    handler: JobHandler,
+    *,
+    environment: str,
+    controls_allow_generation: Callable[[], bool],
+) -> JobHandler:
+    """Fail closed for recurring production generation while paused/disabled.
+
+    Explicit content jobs remain available to the audited P4 preparation path.
+    """
+    def guarded() -> object:
+        if environment == "production" and not controls_allow_generation():
+            return {"skipped": "production_generation_controls"}
+        return handler()
+
+    return guarded
+
+
 def build_jobs_tasks(handlers: Mapping[str, JobHandler]) -> tuple[PeriodicTask, ...]:
     """Build the currently specified recurring jobs-lane schedule in ICT."""
     required = {"ensure_slots", "weekly", "fast"}
@@ -43,6 +61,8 @@ def build_jobs_tasks(handlers: Mapping[str, JobHandler]) -> tuple[PeriodicTask, 
     if "metrics" in handlers:
         # Keep analytics on the slower jobs lane; an exception is isolated by WorkerLoop.
         tasks.append(PeriodicTask("metrics-collector", handlers["metrics"], interval_s=15 * 60))
+    if "content_jobs" in handlers:
+        tasks.append(PeriodicTask("content-job-processor", handlers["content_jobs"], interval_s=10))
     return tuple(tasks)
 
 

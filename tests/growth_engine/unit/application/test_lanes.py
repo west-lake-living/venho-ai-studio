@@ -4,7 +4,10 @@ from datetime import datetime, timezone
 from types import SimpleNamespace
 from zoneinfo import ZoneInfo
 
-from growth_engine.adapters.inbound.workers.jobs_lane import build_jobs_tasks
+from growth_engine.adapters.inbound.workers.jobs_lane import (
+    build_jobs_tasks,
+    gate_production_generation,
+)
 from growth_engine.adapters.inbound.workers.loop import PeriodicTask, WorkerLoop
 from growth_engine.application.content.run_lanes import (
     LanePackage,
@@ -37,6 +40,76 @@ def test_worker_cli_dispatches_jobs_lane(monkeypatch):
 
     assert result.exit_code == 0
     assert calls == ["jobs"]
+
+
+def test_recurring_generation_is_blocked_fail_closed_in_disabled_production():
+    calls = []
+    allowed = {"value": False}
+    handler = gate_production_generation(
+        lambda: calls.append("generated"),
+        environment="production",
+        controls_allow_generation=lambda: allowed["value"],
+    )
+
+    assert handler() == {"skipped": "production_generation_controls"}
+    assert calls == []
+    allowed["value"] = True
+    assert handler() is None
+    assert calls == ["generated"]
+
+
+def test_recurring_generation_remains_enabled_outside_production():
+    calls = []
+    handler = gate_production_generation(
+        lambda: calls.append("generated"),
+        environment="test",
+        controls_allow_generation=lambda: False,
+    )
+
+    assert handler() is None
+    assert calls == ["generated"]
+
+
+def test_cutover_readiness_cli_uses_read_only_service_without_bootstrap(monkeypatch, tmp_path):
+    from growth_engine.adapters.inbound.cli import main as cli_main
+    from growth_engine.application.ops.cutover_readiness import CutoverReadinessResult
+
+    monkeypatch.setattr(
+        cli_main.Settings,
+        "from_env",
+        lambda: SimpleNamespace(db_path=str(tmp_path / "production.db")),
+    )
+    monkeypatch.setattr(
+        "growth_engine.application.ops.cutover_readiness.CutoverReadiness",
+        lambda _path: SimpleNamespace(
+            execute=lambda _date, _time: CutoverReadinessResult(
+                True,
+                "2026-11-20",
+                "09:00",
+                "delivery-synthetic",
+                "revision-synthetic",
+                "PASS",
+                (),
+                "1124616474074140",
+                "GE_MAKE_WEBHOOK_URL_PAGE_A",
+            )
+        ),
+    )
+    monkeypatch.setattr(
+        "growth_engine.bootstrap.build_container",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(
+            AssertionError("readiness command must not build the full application")
+        ),
+    )
+
+    result = CliRunner().invoke(
+        cli_main.app,
+        ["cutover-readiness", "--date", "2026-11-20", "--time", "09:00"],
+    )
+
+    assert result.exit_code == 0, result.output
+    assert '"mapping_dry_run": "PASS"' in result.output
+    assert '"mapping_target_id": "1124616474074140"' in result.output
 
 
 def test_test_receipt_cli_runs_only_one_receipt_batch(monkeypatch, tmp_path):

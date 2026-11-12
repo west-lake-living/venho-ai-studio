@@ -50,6 +50,7 @@ def test_dashboard_reads_compose_over_file_sqlite_and_redact_private_channel_con
     assert review.headers["etag"] == '"delivery:delivery-synthetic:4"'
     assert review.json()["payload_hash"] == revision.payload_hash
     assert review.json()["preview_sha256"] == revision.payload["media"][0]["sha256"]
+    assert review.json()["remote_account_id"] == "synthetic-page-id"
 
 
 def test_dashboard_mutation_forwards_stale_etag_and_batch_conflicts(tmp_path: Path) -> None:

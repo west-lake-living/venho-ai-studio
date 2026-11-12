@@ -19,6 +19,7 @@ class ReviewSnapshotData:
     deadline_at_ms: int | None
     variant: MediaVariant | None
     action_context: Mapping[str, object]
+    image_label: str | None = None
 
 
 class ReviewDataReader(Protocol):

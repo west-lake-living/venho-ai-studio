@@ -8,11 +8,13 @@ import sys
 import subprocess
 import tempfile
 import time
+from datetime import datetime
 from uuid import uuid4
 from dataclasses import dataclass
 from importlib import import_module
 from pathlib import Path
 from typing import Any, Callable
+from zoneinfo import ZoneInfo
 
 class _SystemClock:
     def now_ms(self) -> int:
@@ -92,6 +94,14 @@ class _LazyLocalMediaWriter:
             module = import_module("growth_engine.adapters.outbound.media.local_store")
             self._store = module.LocalMediaStore(Path(self._media_root))
         return self._store.put_original(stream, max_bytes=max_bytes)
+
+    def put_variant(self, data: bytes, sha256: str) -> str:
+        if _is_required(self._media_root):
+            raise ValueError("configure GE_MEDIA_ROOT before writing generated variants")
+        if self._store is None:
+            module = import_module("growth_engine.adapters.outbound.media.local_store")
+            self._store = module.LocalMediaStore(Path(self._media_root))
+        return self._store.put_variant(data, sha256)
 
     def open(self, object_key: str) -> Any:
         if _is_required(self._media_root):
@@ -222,6 +232,7 @@ class DoctorService:
         sqlite_version_check: Callable[[tuple[int, ...]], None],
         sqlite_version_error: type[Exception],
         meta_token_expiry_monitor: Any | None = None,
+        repo_root: Path | None = None,
     ) -> None:
         self.settings = settings
         self._connect = connect
@@ -229,6 +240,7 @@ class DoctorService:
         self._sqlite_version_check = sqlite_version_check
         self._sqlite_version_error = sqlite_version_error
         self._meta_token_expiry_monitor = meta_token_expiry_monitor
+        self._repo_root = (repo_root or Path(__file__).resolve().parents[1]).resolve()
 
     def run(self, *, pre_switch: bool = False) -> DoctorReport:
         checks: list[DoctorCheck] = []
@@ -247,6 +259,8 @@ class DoctorService:
                 checks.append(self._pragma_check(connection))
                 checks.append(self._schema_check(connection))
                 checks.append(self._channel_check(connection))
+                if str(getattr(self.settings, "env", "")).lower() == "production":
+                    checks.append(self._p4_provider_budget_check(connection))
             finally:
                 connection.close()
         checks.extend(
@@ -368,6 +382,70 @@ class DoctorService:
         detail = "Chưa cấu hình: " + ", ".join(missing) + "." if missing else "Không còn giá trị rỗng/REQUIRED_FROM_P0."
         return DoctorCheck("Settings complete", status, detail)
 
+    def _p4_provider_budget_check(self, connection: sqlite3.Connection) -> DoctorCheck:
+        try:
+            yaml = import_module("yaml")
+            growth_dir = self._repo_root / "config" / "projects" / "venho_hotel" / "growth"
+            model = yaml.safe_load((growth_dir / "model_policy.yaml").read_text(encoding="utf-8")) or {}
+            budget = yaml.safe_load((growth_dir / "budget_policy.yaml").read_text(encoding="utf-8")) or {}
+            costs = yaml.safe_load((growth_dir / "paid_call_costs.yaml").read_text(encoding="utf-8")) or {}
+        except (OSError, ValueError, TypeError):
+            return DoctorCheck("P4 provider and v2 budget", "FAIL", "Growth provider or budget policy could not be read.")
+
+        required_provider_policy = (
+            model.get("text_provider") == "anthropic"
+            and model.get("image_provider") == "openai"
+            and model.get("qc_provider") == "openai"
+        )
+        expected_keys = tuple(dict.fromkeys((
+            str(model.get("text_key_env", "ANTHROPIC_API_KEY")),
+            str(model.get("image_key_env", "OPENAI_API_KEY")),
+            str(model.get("qc_key_env", "OPENAI_API_KEY")),
+        )))
+        missing = tuple(name for name in expected_keys if not os.environ.get(name, "").strip())
+        try:
+            cap = int(budget["monthly_cap_minor"])
+            text_cost = int(costs["text_generation_minor"])
+            image_cost = int(costs["image_generation_minor"])
+            qc_cost = int(costs["vision_qc_minor"])
+            qc_calls = int(model.get("qc_calls_per_slot_max", 2))
+            image_calls = 1 + int(bool(model.get("image_alternatives_enabled", False)))
+            required_minor = text_cost + image_cost * image_calls + qc_cost * qc_calls
+            currency = str(budget["currency"])
+            if cap <= 0 or min(text_cost, image_cost, qc_cost) <= 0 or qc_calls < 1:
+                raise ValueError
+        except (KeyError, TypeError, ValueError):
+            return DoctorCheck("P4 provider and v2 budget", "FAIL", "P4 budget cap or cost estimates are invalid.")
+
+        now = datetime.now(ZoneInfo("Asia/Ho_Chi_Minh"))
+        period_key = now.strftime("%Y-%m")
+        try:
+            totals = connection.execute(
+                """SELECT COALESCE(SUM(CASE WHEN state IN ('RESERVED','UNKNOWN') THEN reserved_minor
+                                   WHEN state='SETTLED' THEN COALESCE(actual_minor,reserved_minor)
+                                   ELSE 0 END),0)
+                   FROM paid_calls WHERE period_key=? AND currency=?""",
+                (period_key, currency),
+            ).fetchone()
+            used_minor = int(totals[0])
+        except sqlite3.Error:
+            return DoctorCheck("P4 provider and v2 budget", "FAIL", "v2 paid-call ledger is unavailable.")
+        remaining_minor = max(0, cap - used_minor)
+        problems: list[str] = []
+        if not required_provider_policy:
+            problems.append("provider_policy_mismatch")
+        if missing:
+            problems.append("missing_keys=" + ",".join(missing))
+        if remaining_minor < required_minor:
+            problems.append(f"v2_budget_remaining={remaining_minor} {currency}; required_reserve={required_minor} {currency}")
+        if problems:
+            return DoctorCheck("P4 provider and v2 budget", "FAIL", "; ".join(problems))
+        return DoctorCheck(
+            "P4 provider and v2 budget",
+            "PASS",
+            f"legacy provider keys present by name ({', '.join(expected_keys)}); v2 monthly remaining {remaining_minor} {currency}; P4 reserve estimate {required_minor} {currency}.",
+        )
+
     @staticmethod
     def _clock_check() -> DoctorCheck:
         return DoctorCheck("Clock skew", "WARN", "Chưa có nguồn thời gian chuẩn để đo độ lệch.")
@@ -442,6 +520,11 @@ class Container:
     reschedule_slot: Any
     ensure_slots: Any
     generate_package: Any
+    prepare_variant: Any
+    evaluate_qc: Any
+    content_jobs_worker: Any
+    queue_slot_generation: Any
+    cutover_readiness: Any
     run_lanes: Any
     readiness_check: Callable[[], tuple[bool, int | None]]
     ingest_candidate: Any
@@ -469,7 +552,13 @@ class Container:
     restore_service: Any
 
 
-def build_container(settings: Any, *, metrics_source: Any | None = None) -> Container:
+def build_container(
+    settings: Any,
+    *,
+    metrics_source: Any | None = None,
+    clock: Any | None = None,
+    ids: Any | None = None,
+) -> Container:
     if (
         settings.env.lower() == "production"
         and metrics_source is not None
@@ -516,6 +605,13 @@ def build_container(settings: Any, *, metrics_source: Any | None = None) -> Cont
     publish_lane_adapter = import_module("growth_engine.adapters.inbound.workers.publish_lane")
     heartbeat_adapter = import_module("growth_engine.application.ops.heartbeat")
     jobs_lane_adapter = import_module("growth_engine.adapters.inbound.workers.jobs_lane")
+    content_jobs_adapter = import_module("growth_engine.adapters.inbound.workers.content_jobs")
+    queue_slot_adapter = import_module("growth_engine.application.content.queue_slot_generation")
+    prepare_variant_adapter = import_module("growth_engine.application.media.prepare_variant")
+    evaluate_qc_adapter = import_module("growth_engine.application.media.evaluate_qc")
+    cutover_readiness_adapter = import_module("growth_engine.application.ops.cutover_readiness")
+    pillow_processor_adapter = import_module("growth_engine.adapters.outbound.media.pillow_processor")
+    legacy_qc_adapter = import_module("growth_engine.adapters.outbound.legacy.qc_adapter")
     notifications_adapter = import_module("growth_engine.application.ops.notifications")
     reminders_adapter = import_module("growth_engine.application.ops.reminders")
     notification_queue_adapter = import_module(
@@ -595,8 +691,8 @@ def build_container(settings: Any, *, metrics_source: Any | None = None) -> Cont
             metrics_registry_path
         ),
     )
-    clock = _SystemClock()
-    ids = _UuidIds()
+    clock = clock or _SystemClock()
+    ids = ids or _UuidIds()
     channel_reconcile_store = channel_reconcile_store_adapter.SqliteChannelReconcileStore(
         uow_factory, ids
     )
@@ -771,13 +867,22 @@ def build_container(settings: Any, *, metrics_source: Any | None = None) -> Cont
         ids,
         reserve_drafts=False,
     )
-    generator = legacy_generator_adapter.LegacyGeneratorAdapter(repo_root=repo_root)
+    model_policy = import_module("yaml").safe_load(
+        (repo_root / "config" / "projects" / "venho_hotel" / "growth" / "model_policy.yaml").read_text(
+            encoding="utf-8"
+        )
+    ) or {}
+    generator = legacy_generator_adapter.LegacyGeneratorAdapter(
+        repo_root=repo_root,
+        image_alternatives_enabled=bool(model_policy.get("image_alternatives_enabled", False)),
+    )
     fact_source = legacy_fact_adapter.LegacyFactSource(
         project="venho_hotel", data_root=repo_root / "data" / "projects"
     )
+    media_store = _LazyLocalMediaWriter(settings.media_root)
     asset_ingestor = ingest_asset_adapter.IngestAsset(
         uow_factory,
-        _LazyLocalMediaWriter(settings.media_root),
+        media_store,
         clock,
         ids,
     )
@@ -785,7 +890,7 @@ def build_container(settings: Any, *, metrics_source: Any | None = None) -> Cont
         uow_factory,
         environment=channel_environment,
         now_ms=clock.now_ms,
-        media_store=_LazyLocalMediaWriter(settings.media_root),
+        media_store=media_store,
     )
     slot_views = slot_views_adapter.GetSlotViews(dashboard_reads)
     incident_views = incident_views_adapter.GetIncidentViews(dashboard_reads)
@@ -839,6 +944,48 @@ def build_container(settings: Any, *, metrics_source: Any | None = None) -> Cont
     )
     reserve_target = reserve_target_adapter.ReserveTarget(generation_store, clock, ids)
     run_lanes = lanes_adapter.RunLanes(lane_store, package_factory, reserve_target, clock)
+    prepare_variant = prepare_variant_adapter.PrepareVariant(
+        uow_factory,
+        media_store,
+        pillow_processor_adapter.PillowImageProcessor(),
+        clock,
+        ids,
+    )
+    qc_evaluator = legacy_qc_adapter.LegacyQcAdapter(
+        media_store,
+        base_dir=repo_root,
+        provider="openai",
+    )
+    evaluate_qc = evaluate_qc_adapter.EvaluateQc(
+        uow_factory,
+        qc_evaluator,
+        clock,
+        ids,
+        budget_policy=budget_policy,
+        cost_estimate_minor=cost_estimates["vision_qc_minor"],
+    )
+    content_jobs_worker = content_jobs_adapter.ContentJobsWorker(
+        uow_factory,
+        clock,
+        ids,
+        media_store,
+        package_factory,
+        reserve_target,
+        prepare_variant,
+        evaluate_qc,
+        create_revision,
+        pillow_processor_adapter.transform_version,
+        environment=channel_environment,
+    )
+    queue_slot_generation = queue_slot_adapter.QueueSlotGeneration(
+        uow_factory,
+        ensure_slots,
+        cadence_policy,
+        clock,
+        ids,
+        environment=channel_environment,
+    )
+    cutover_readiness = cutover_readiness_adapter.CutoverReadiness(settings.db_path)
 
     def report_jobs_error(task: Any, error: Exception) -> None:
         now_ms = clock.now_ms()
@@ -865,11 +1012,28 @@ def build_container(settings: Any, *, metrics_source: Any | None = None) -> Cont
             "jobs lane task failed: task=%s error_type=%s", task.name, type(error).__name__
         )
 
+    def production_controls_allow_generation() -> bool:
+        with uow_factory().read_only() as tx:
+            controls = tx.controls.get(channel_environment)
+        return bool(
+            controls is not None
+            and controls.mode.value != "DISABLED"
+            and not controls.global_pause
+        )
+
+    def recurring_generation(handler: Callable[[], Any]) -> Callable[[], Any]:
+        return jobs_lane_adapter.gate_production_generation(
+            handler,
+            environment=channel_environment,
+            controls_allow_generation=production_controls_allow_generation,
+        )
+
     jobs_handlers = {
-        "ensure_slots": lambda: lane_store.ensure_slots(clock.now_ms(), horizon_days=14),
-        "weekly": lambda: run_lanes.run_weekly(horizon_days=14),
-        "fast": lambda: run_lanes.run_fast(horizon_days=14),
-        "replacement": lambda: run_lanes.run_replacement(horizon_days=14),
+        "ensure_slots": recurring_generation(lambda: lane_store.ensure_slots(clock.now_ms(), horizon_days=14)),
+        "weekly": recurring_generation(lambda: run_lanes.run_weekly(horizon_days=14)),
+        "fast": recurring_generation(lambda: run_lanes.run_fast(horizon_days=14)),
+        "replacement": recurring_generation(lambda: run_lanes.run_replacement(horizon_days=14)),
+        "content_jobs": lambda: content_jobs_worker.process_once(limit=20),
     }
     if notifications is not None:
         jobs_handlers["daily_digest"] = lambda: reminders.enqueue_daily_digest(clock.now_ms())
@@ -896,6 +1060,7 @@ def build_container(settings: Any, *, metrics_source: Any | None = None) -> Cont
             sqlite_version_check=connection_adapter.check_sqlite_version,
             sqlite_version_error=connection_adapter.SQLiteVersionError,
             meta_token_expiry_monitor=meta_token_expiry_monitor,
+            repo_root=repo_root,
         ),
         analytics_views=analytics_views,
         channel_reconcile_store=channel_reconcile_store,
@@ -911,6 +1076,11 @@ def build_container(settings: Any, *, metrics_source: Any | None = None) -> Cont
         reschedule_slot=reschedule_slot,
         ensure_slots=ensure_slots,
         generate_package=generate_package,
+        prepare_variant=prepare_variant,
+        evaluate_qc=evaluate_qc,
+        content_jobs_worker=content_jobs_worker,
+        queue_slot_generation=queue_slot_generation,
+        cutover_readiness=cutover_readiness,
         run_lanes=run_lanes,
         readiness_check=readiness_check,
         ingest_candidate=ingest_adapter.IngestCandidate(candidate_store, clock, ids),

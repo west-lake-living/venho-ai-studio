@@ -180,7 +180,14 @@ def provision(db_path: str | Path, manifest_document: Any, *, now_ms: int | None
         connection.close()
 
 
-def set_enabled(db_path: str | Path, channel_key: str, enabled: bool, *, now_ms: int | None = None) -> str:
+def set_enabled(
+    db_path: str | Path,
+    channel_key: str,
+    enabled: bool,
+    *,
+    prepare_only: bool = False,
+    now_ms: int | None = None,
+) -> str:
     if channel_key not in EXPECTED or type(enabled) is not bool:
         raise ChannelSetupError("unknown production channel or invalid state")
     timestamp = time.time_ns() // 1_000_000 if now_ms is None else now_ms
@@ -205,12 +212,10 @@ def set_enabled(db_path: str | Path, channel_key: str, enabled: bool, *, now_ms:
             raise ChannelSetupError("production channel ID does not match the approved target")
         if enabled and (channel["config_count"] < 1 or channel["paused"]):
             raise ChannelSetupError("production channel lacks a config or is paused")
-        if bool(channel["enabled"]) == enabled:
+        if bool(channel["enabled"]) == enabled and not (enabled and prepare_only):
             connection.execute("COMMIT")
             return f"channel={channel_key} already_enabled={int(enabled)}"
         if enabled:
-            required_predecessors = {"fb_hanoi": (), "fb_venho": ("fb_hanoi",), "ig_venho": ("fb_hanoi", "fb_venho")}[channel_key]
-            required_disabled = {"fb_hanoi": ("fb_venho", "ig_venho"), "fb_venho": ("ig_venho",), "ig_venho": ()}[channel_key]
             states = {
                 str(row["channel_key"]): bool(row["enabled"])
                 for row in connection.execute(
@@ -219,16 +224,29 @@ def set_enabled(db_path: str | Path, channel_key: str, enabled: bool, *, now_ms:
             }
             if set(states) != set(EXPECTED):
                 raise ChannelSetupError("all three production channels must be provisioned before any enable")
-            if any(not states.get(key, False) for key in required_predecessors) or any(states.get(key, False) for key in required_disabled):
-                raise ChannelSetupError("production targets must open in order fb_hanoi, fb_venho, ig_venho")
-            if controls["publish_mode"] != "LIVE_MANUAL":
-                raise ChannelSetupError("set runtime mode LIVE_MANUAL while global pause remains active before enabling a target")
+            if prepare_only:
+                if controls["publish_mode"] != "DISABLED" or channel_key != "fb_hanoi":
+                    raise ChannelSetupError("prepare-only enable is allowed only for fb_hanoi while runtime is DISABLED")
+                if any(value for key, value in states.items() if key != "fb_hanoi"):
+                    raise ChannelSetupError("prepare-only requires fb_venho and ig_venho to remain disabled")
+            else:
+                required_predecessors = {"fb_hanoi": (), "fb_venho": ("fb_hanoi",), "ig_venho": ("fb_hanoi", "fb_venho")}[channel_key]
+                required_disabled = {"fb_hanoi": ("fb_venho", "ig_venho"), "fb_venho": ("ig_venho",), "ig_venho": ()}[channel_key]
+                if any(not states.get(key, False) for key in required_predecessors) or any(states.get(key, False) for key in required_disabled):
+                    raise ChannelSetupError("production targets must open in order fb_hanoi, fb_venho, ig_venho")
+                if controls["publish_mode"] != "LIVE_MANUAL":
+                    raise ChannelSetupError("set runtime mode LIVE_MANUAL while global pause remains active before enabling a target")
+        if bool(channel["enabled"]) == enabled:
+            connection.execute("COMMIT")
+            return f"channel={channel_key} already_enabled={int(enabled)}" + (" preparation_only=1" if enabled and prepare_only else "")
         before_state = {"channel_key": channel_key, "remote_id": expected_id, "enabled": bool(channel["enabled"])}
         next_state = {"channel_key": channel_key, "remote_id": expected_id, "enabled": enabled}
         connection.execute("UPDATE channels SET enabled=? WHERE id=?", (int(enabled), channel["id"]))
-        _append_audit(connection, action="enable" if enabled else "disable", aggregate_id=channel["id"], after=next_state, now_ms=timestamp, before=before_state)
+        action = "prepare_only_enable" if enabled and prepare_only else "enable" if enabled else "disable"
+        _append_audit(connection, action=action, aggregate_id=channel["id"], after=next_state,
+                      now_ms=timestamp, before=before_state)
         connection.execute("COMMIT")
-        return f"channel={channel_key} enabled={int(enabled)}"
+        return f"channel={channel_key} enabled={int(enabled)}" + (" preparation_only=1" if enabled and prepare_only else "")
     except Exception:
         if connection.in_transaction:
             connection.execute("ROLLBACK")
@@ -258,6 +276,7 @@ def main(argv: list[str] | None = None) -> int:
     group = state_parser.add_mutually_exclusive_group(required=True)
     group.add_argument("--enable", action="store_true")
     group.add_argument("--disable", action="store_true")
+    state_parser.add_argument("--prepare-only", action="store_true", help="Enable only fb_hanoi for content preparation under DISABLED + global pause.")
     args = parser.parse_args(argv)
     try:
         db_path = _production_db_path()
@@ -265,7 +284,9 @@ def main(argv: list[str] | None = None) -> int:
             document = yaml.safe_load(args.manifest.read_text(encoding="utf-8"))
             result = provision(db_path, document)
         else:
-            result = set_enabled(db_path, args.channel, args.enable)
+            if args.prepare_only and not args.enable:
+                raise ChannelSetupError("--prepare-only requires --enable")
+            result = set_enabled(db_path, args.channel, args.enable, prepare_only=args.prepare_only)
     except (OSError, UnicodeError, sqlite3.Error, ValueError, yaml.YAMLError):
         print("FAIL: production channel operation stopped; verify manifest, IDs, state and schema", file=sys.stderr)
         return 1

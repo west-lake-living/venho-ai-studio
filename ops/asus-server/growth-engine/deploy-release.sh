@@ -91,10 +91,9 @@ run_release_cli() {
   local release="$1"
   shift
   systemd-run --user --pipe --wait --collect \
-    --property="EnvironmentFile=$SECRETS_FILE" \
     --property="WorkingDirectory=$release" \
-    --setenv=GE_ENV=production \
-    "$release/.venv/bin/venho-engine" "$@"
+    --setenv="VENHO_GC2_RUNTIME_BIN=$release/.venv/bin/venho-engine" \
+    "$SOURCE_ROOT/ops/asus-server/growth-engine/run-with-legacy-provider-env.sh" "$@"
 }
 
 run_release_cli "$RELEASE_DIR" migrate --check

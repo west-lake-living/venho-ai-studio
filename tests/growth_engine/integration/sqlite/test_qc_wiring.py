@@ -9,7 +9,7 @@ from growth_engine.adapters.outbound.persistence.sqlite.uow import SqliteUnitOfW
 from growth_engine.application.dto import FactSnapshot, QcResult
 from growth_engine.application.media.evaluate_qc import EvaluateQc
 from growth_engine.domain.media.asset import MediaAsset, MediaVariant, VariantQcStatus
-from growth_engine.domain.media.qc import QcDecision
+from growth_engine.domain.media.qc import QcDecision, QcReport
 from tests.growth_engine.support.fakes import FakeClock, FakeQc, SeqIds
 
 
@@ -74,8 +74,34 @@ def test_evaluate_qc_atomically_persists_report_and_variant_status(tmp_path: Pat
         subject="outside",
     )
 
+    # A report under a newer/different ruleset must not satisfy this replay.
+    with uow.begin_immediate() as tx:
+        tx.qc.save(QcReport(
+            id="qc-different-ruleset",
+            variant_id=variant.id,
+            caption_hash=caption_hash,
+            ruleset_hash="1" * 64,
+            fact_snapshot_hash=facts_hash,
+            decision=QcDecision.FAIL,
+            coverage_gaps=(),
+            result_json='{"_synthetic":true}',
+            created_at_ms=1235,
+        ))
+    replay = EvaluateQc(
+        lambda: uow, evaluator, FakeClock(1236), SeqIds("qc-replay")
+    ).execute(
+        variant_id=variant.id,
+        caption="Synthetic caption",
+        facts=FactSnapshot({"_synthetic": True}, facts_hash),
+        project="venho_hotel",
+        subject="outside",
+    )
+
     with uow.read_only() as tx:
         stored_variant = tx.media.get_variant(variant.id)
         stored_report = tx.qc.get(report.id)
+        wrong_policy_report = tx.qc.get("qc-different-ruleset")
     assert stored_variant is not None and stored_variant.qc_status is VariantQcStatus.PASS
     assert stored_report is not None and stored_report.decision is QcDecision.PASS
+    assert wrong_policy_report is not None and wrong_policy_report.decision is QcDecision.FAIL
+    assert replay.id == report.id

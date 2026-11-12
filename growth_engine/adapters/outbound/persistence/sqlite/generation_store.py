@@ -193,6 +193,18 @@ class SqliteGenerationStore:
 
             snapshot = json.loads(package.source_snapshot_json)
             snapshot["captions_by_profile"] = dict(captions_by_profile)
+            asset_by_option = {str(item["option_id"]): item for item in asset_options}
+            snapshot["images"] = [
+                {
+                    **dict(image),
+                    "asset_id": str(asset_by_option[str(image.get("option_id"))]["asset_id"]),
+                    "sha256": str(asset_by_option[str(image.get("option_id"))]["sha256"]),
+                    "source_type": str(asset_by_option[str(image.get("option_id"))]["source_type"]),
+                    "label": asset_by_option[str(image.get("option_id"))].get("label"),
+                }
+                for image in snapshot.get("images", [])
+                if str(image.get("option_id")) in asset_by_option
+            ]
             persisted_package = ContentPackage(
                 id=package.id,
                 slot_id=package.slot_id,
@@ -215,24 +227,9 @@ class SqliteGenerationStore:
                     (package.id, fact.fact_key, fact.fact_revision, fact.text_hash,
                      fact.valid_until_ms, fact.source_ref),
                 )
-            for option in asset_options:
-                asset_id = str(option["asset_id"])
-                asset = tx.media.get_asset(asset_id)
-                if asset is None:
-                    raise RuntimeError("generated asset was not persisted before package completion")
-                job_id = self._ids.new_id()
-                self._save_job(
-                    tx,
-                    job_id=job_id,
-                    kind="prepare_variant",
-                    business_key=f"prepare-variant:{asset_id}",
-                    payload={"asset_id": asset_id, "option_id": option["option_id"]},
-                    now_ms=settled_at,
-                )
-
             targets = tx.connection.execute(
                 """SELECT st.id, st.channel_id, c.channel_key, c.platform, cc.id AS config_id,
-                          s.scheduled_at, s.deadline_at
+                          cc.caption_profile, s.scheduled_at, s.deadline_at
                    FROM slot_targets st
                    JOIN channels c ON c.id=st.channel_id
                    JOIN slots s ON s.id=st.slot_id
@@ -243,6 +240,29 @@ class SqliteGenerationStore:
             ).fetchall()
             if not targets:
                 raise RuntimeError("generation package has no enabled slot target")
+
+            required_profiles = sorted({
+                "instagram_photo_v1" if target["platform"] == "instagram" else "facebook_photo_v1"
+                for target in targets
+            })
+            for option in asset_options:
+                asset_id = str(option["asset_id"])
+                asset = tx.media.get_asset(asset_id)
+                if asset is None:
+                    raise RuntimeError("generated asset was not persisted before package completion")
+                for profile_name in required_profiles:
+                    self._save_job(
+                        tx,
+                        job_id=self._ids.new_id(),
+                        kind="prepare_variant",
+                        business_key=f"prepare-variant:{asset_id}:{profile_name}",
+                        payload={
+                            "asset_id": asset_id,
+                            "option_id": option["option_id"],
+                            "media_profile": profile_name,
+                        },
+                        now_ms=settled_at,
+                    )
             delivery_ids: list[str] = []
             for target in (targets if self._reserve_drafts else ()):
                 delivery_id = str(uuid4())
@@ -284,6 +304,7 @@ class SqliteGenerationStore:
                     business_key=f"assemble-revision:{delivery_id}:1",
                     payload={
                         "delivery_id": delivery_id,
+                        "package_id": package.id,
                         "channel_config_id": target["config_id"],
                         "channel_key": target["channel_key"],
                         "platform": target["platform"],
@@ -292,8 +313,9 @@ class SqliteGenerationStore:
                             if target["platform"] == "instagram"
                             else "facebook_photo_v1"
                         ),
+                        "caption_profile": target["caption_profile"] or "default",
                         "captions_by_profile": dict(captions_by_profile),
-                        "asset_option_ids": [item["option_id"] for item in asset_options],
+                        "asset_options": snapshot["images"],
                     },
                     now_ms=settled_at,
                 )
@@ -452,7 +474,7 @@ class _GenerationTransaction:
             "SELECT source_snapshot_json FROM content_packages WHERE id=?", (package_id,)
         ).fetchone()
         route = self.connection.execute(
-            """SELECT c.channel_key, c.platform, cc.id AS channel_config_id
+            """SELECT c.channel_key, c.platform, cc.id AS channel_config_id, cc.caption_profile
                FROM channels c LEFT JOIN channel_configs cc ON cc.channel_id=c.id
                WHERE c.id=? ORDER BY cc.version DESC LIMIT 1""",
             (target.channel_id,),
@@ -468,6 +490,7 @@ class _GenerationTransaction:
             business_key=f"assemble-revision:{delivery.id}:1",
             payload_json=_json({
                 "delivery_id": delivery.id,
+                "package_id": package_id,
                 "channel_config_id": route["channel_config_id"],
                 "channel_key": route["channel_key"],
                 "platform": route["platform"],
@@ -476,6 +499,7 @@ class _GenerationTransaction:
                     if route["platform"] == "instagram"
                     else "facebook_photo_v1"
                 ),
+                "caption_profile": route["caption_profile"] or "default",
                 "captions_by_profile": snapshot.get("captions_by_profile", {}),
                 "asset_options": image_options,
             }),

@@ -142,3 +142,18 @@ class QcRepository(SqliteRepository):
             result_json=row["result_json"],
             created_at_ms=row["created_at"],
         )
+
+    def find_matching(
+        self,
+        variant_id: str,
+        caption_hash: str,
+        fact_snapshot_hash: str,
+        ruleset_hash: str,
+    ) -> QcReport | None:
+        row = self.connection.execute(
+            """SELECT id FROM qc_reports
+               WHERE variant_id=? AND caption_hash=? AND fact_snapshot_hash=? AND ruleset_hash=?
+               ORDER BY created_at DESC, id DESC LIMIT 1""",
+            (variant_id, caption_hash, fact_snapshot_hash, ruleset_hash),
+        ).fetchone()
+        return None if row is None else self.get(str(row["id"]))

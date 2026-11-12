@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 from growth_engine.adapters.outbound.persistence.sqlite.connection import connect
 from growth_engine.adapters.outbound.persistence.sqlite.migrator import MigrationRunner
-from growth_engine.adapters.outbound.persistence.sqlite.review_store import SqliteReviewStore
+from growth_engine.adapters.outbound.persistence.sqlite.review_store import SqliteReviewStore, _asset_label
 from growth_engine.adapters.outbound.persistence.sqlite.uow import SqliteUnitOfWork
 from growth_engine.application.review.build_review_snapshot import BuildReviewSnapshot
 from growth_engine.application.review.create_revision import CreateRevision, RevisionDraft
@@ -222,3 +222,7 @@ def test_sqlite_revision_refuses_authorized_execution_without_writes(tmp_path: P
         "QUEUED", 4, "revision-a",
     )
 
+
+def test_review_store_labels_fallback_assets() -> None:
+    assert _asset_label('{"option_id":"FALLBACK"}') == "Ảnh dự phòng"
+    assert _asset_label('{"option_id":"A"}') is None

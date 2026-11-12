@@ -98,6 +98,25 @@ class DraftPackage:
 
 
 @dataclass(frozen=True)
+class JobDraft:
+    id: str
+    kind: str
+    lane: str
+    business_key: str
+    payload_json: str
+    state: str
+    run_at_ms: int
+    attempts: int = 0
+    max_attempts: int = 3
+    lease_owner: str | None = None
+    lease_token: str | None = None
+    lease_until_ms: int | None = None
+    last_error: str | None = None
+    created_at_ms: int = 0
+    updated_at_ms: int = 0
+
+
+@dataclass(frozen=True)
 class VariantView:
     variant_id: str
     sha256: str

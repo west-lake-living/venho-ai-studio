@@ -3,7 +3,6 @@ from __future__ import annotations
 import hashlib
 import json
 import math
-import os
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -258,7 +257,7 @@ class GeneratePackage:
         provider = getattr(self._generator, "image_provider", None)
         image_calls = 1 if not hasattr(self._generator, "image_provider") else 0
         if provider is not None and getattr(provider, "enabled", True):
-            image_calls = 1 + (1 if os.environ.get("GROWTH_IMAGE_ALTERNATIVES") == "1" else 0)
+            image_calls = 1 + int(bool(getattr(self._generator, "image_alternatives_enabled", False)))
         if image_calls and self._cost_estimates.get("image_generation_minor", 0) <= 0:
             raise ValueError("a positive image_generation_minor estimate is required when image generation is enabled")
         return text_cost + image_calls * self._cost_estimates.get("image_generation_minor", 0)
@@ -300,7 +299,11 @@ class GeneratePackage:
                     source_ref=source_ref,
                     source_revision=digest,
                     stream=stream,
-                    metadata={"option_id": option_id, "provenance": dict(provenance)},
+                    metadata={
+                        "option_id": option_id,
+                        "provenance": dict(provenance),
+                        **({"label": "Ảnh dự phòng"} if option_id == "FALLBACK" else {}),
+                    },
                 )
             asset_id = getattr(asset, "id", None)
             if not isinstance(asset_id, str) or not asset_id:

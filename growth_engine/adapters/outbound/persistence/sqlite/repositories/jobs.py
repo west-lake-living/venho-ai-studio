@@ -3,6 +3,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from dataclasses import dataclass
 
+from growth_engine.application.dto import JobDraft
 from growth_engine.adapters.outbound.persistence.sqlite.cas import claim_with_lease, complete_with_lease
 
 from ._base import SqliteRepository, canonical_json, parse_json
@@ -28,7 +29,7 @@ class JobRecord:
 
 
 class JobRepository(SqliteRepository):
-    def save(self, job: JobRecord) -> None:
+    def save(self, job: JobRecord | JobDraft) -> None:
         self.connection.execute(
             """INSERT INTO jobs
                (id, kind, lane, business_key, payload_json, state, attempts, max_attempts,
@@ -107,4 +108,26 @@ class JobRepository(SqliteRepository):
             job_id,
             lease_token,
             fields={"state": state, "last_error": last_error, "updated_at": updated_at_ms},
+        )
+
+    def defer(
+        self,
+        job_id: str,
+        lease_token: str,
+        *,
+        run_at_ms: int,
+        updated_at_ms: int,
+        last_error: str,
+    ) -> bool:
+        return complete_with_lease(
+            self.connection,
+            "jobs",
+            job_id,
+            lease_token,
+            fields={
+                "state": "PENDING",
+                "run_at": run_at_ms,
+                "last_error": last_error,
+                "updated_at": updated_at_ms,
+            },
         )

@@ -14,6 +14,8 @@ Nguồn: Harry đọc trực tiếp History của production scenario `5868920`;
 
 **DR Harry (12/11/2026):** ở T−0 chỉ **tạm dừng publisher legacy để chuyển quyền đăng sang v2**, giữ nguyên source code, registry và dữ liệu legacy; export backup scenario `5868920` trước khi import. Không xóa hoặc xoay literal hex ở bước tạm dừng; giữ nguyên trong backup và chỉ thay đổi sau quyết định retire riêng. Gate P9-T04 bên dưới (8 slot, 16 target outcomes, 14 ngày ổn định, restore rehearsal) chỉ bắt buộc cho **gỡ bỏ vĩnh viễn**, không chặn lần tạm dừng có thể đảo ngược. Rollback là import lại backup và khôi phục publisher legacy sau khi xác nhận v2 không còn run/queue/grant có thể đăng.
 
+**Cập nhật quyết định Harry (12/11/2026):** mốc T−0 cố định 16/11 đã hủy. Legacy vẫn là publisher duy nhất cho tới khi P4 PASS và Harry duyệt một bài `fb_hanoi` thật trên VENHO OS; sau đó mới chọn slot cutover gần nhất có ít nhất 48 giờ đệm. Tạm dừng legacy vẫn là thao tác đảo ngược được như DR bên trên; không xóa/đổi code, registry hoặc literal hex.
+
 Biện pháp bù trong thời gian chuyển tiếp: Make TEST MK-1…MK-6 đã PASS; mọi bài v2 chạy `LIVE_MANUAL` và phải được người có quyền duyệt từng bài; mỗi target có receipt + verify riêng; Telegram cảnh báo phải hoạt động. UNKNOWN hoặc thiếu receipt/verify thì pause và đối soát, không gửi lại target đã thành công.
 
 Signed media URL vẫn là gate trước khi bật Instagram v2. Xác minh từng target/outcome; không resend Hanoi để xử lý lỗi riêng của Ven Hồ.
@@ -28,7 +30,7 @@ Chỉ trong bước **gỡ bỏ vĩnh viễn** mới xác định mọi producer
 
 ## Gate trước khi gỡ bỏ vĩnh viễn
 
-Các gate dưới đây **không áp dụng** cho lần tạm dừng publisher ở T−0 ngày 16/11/2026. Chúng bắt buộc trước thao tác không còn duy trì đường quay về legacy: xóa/archival registry, vô hiệu hóa hoặc gỡ code/workflow, xoay/retire literal và đóng DR.
+Các gate dưới đây **không áp dụng** cho lần tạm dừng publisher ở T−0 đã được tính sau P4/approval. Chúng bắt buộc trước thao tác không còn duy trì đường quay về legacy: xóa/archival registry, vô hiệu hóa hoặc gỡ code/workflow, xoay/retire literal và đóng DR.
 
 - [ ] Harry phê duyệt retire sau khi P9-T04 đạt đầy đủ G-P9/AC-18: ≥8 slot, ≥16 target outcomes, ≥14 ngày; không duplicate/sai Page/sai ảnh; mọi UNKNOWN đã xử lý.
 - [ ] Restore rehearsal AC-18 đã có evidence; backup cuối kỳ, manifest media và checksum đã kiểm tra.

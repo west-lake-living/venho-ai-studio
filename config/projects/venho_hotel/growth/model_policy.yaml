@@ -1,9 +1,17 @@
 version: 1
-image_provider: mock
+text_provider: anthropic
+text_key_env: ANTHROPIC_API_KEY
+image_provider: openai
+image_key_env: OPENAI_API_KEY
 image_model: gpt-image-2
 default_quality: medium
 quality_routing:
   low: low
   medium: medium
   high: high
-text_provider: mock
+qc_provider: openai
+qc_key_env: OPENAI_API_KEY
+# Production P4 uses the same Anthropic/OpenAI credentials loaded by the legacy
+# publisher. Alternatives stay off for the bounded first production preparation.
+image_alternatives_enabled: false
+qc_calls_per_slot_max: 2

@@ -91,6 +91,7 @@ class DashboardApi:
                 "etag": snapshot.etag,
                 "channel_key": snapshot.channel_key,
                 "channel_name": snapshot.channel_name,
+                "remote_account_id": snapshot.remote_account_id,
                 "revision_id": snapshot.revision_id,
                 "payload_hash": snapshot.payload_hash,
                 "caption": snapshot.caption,
@@ -98,6 +99,7 @@ class DashboardApi:
                 "deadline_at_ms": snapshot.deadline_at_ms,
                 "preview_url": snapshot.preview_url,
                 "preview_sha256": snapshot.preview_sha256,
+                "image_label": snapshot.image_label,
                 "allowed_actions": list(snapshot.allowed_actions),
             }
         if operation == "job.get":

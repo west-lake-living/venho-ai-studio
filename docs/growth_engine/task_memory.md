@@ -20,3 +20,9 @@
 - Harry decided T−0 temporarily pauses legacy publishing only. Preserve code, registry, scenario export `5868920`, and the old hex literal; do not rotate/delete it during this transition. P9-T04’s 8-slot/16-outcome/14-day/restore gate applies to permanent removal only.
 - Compensating controls: MK-1…MK-6 PASS in TEST, `LIVE_MANUAL` with per-post approval, receipt + verify per target, and Telegram alerts.
 - Keep 2026-11-16 09:00 ICT only if production P4 passes by the evening of 14/11; otherwise use the 18/11 or 20/11 scheduled slot after P4 passes. Full record: [DR-GC2 reversible cutover](task_memory/decisions/DR-GC2-2026-11-12-reversible-cutover.md).
+
+### 2026-11-12 — DR update: cancel fixed 16/11 cutover; P4 gates first
+- Harry cancelled the fixed 2026-11-16 cutover. Legacy remains the sole publisher until P4 passes and Harry approves a real `fb_hanoi` delivery in VENHO OS.
+- After both conditions pass, select the nearest cadence slot at least 48 hours later; do not reserve a replacement date in advance.
+- P4 dry run may enable only Hanoi through the audited `--prepare-only` helper under `DISABLED` + global pause. Recurring generation lanes are gated in that state; only the explicitly queued content job runs. Publish dispatch remains fail-closed.
+- Harry selected reuse of the currently running legacy Anthropic/OpenAI providers and keys. The worker wrapper passes only those provider keys to v2; isolated production DB/media/controls/service-token settings remain from the GC2 env. V2 uses its separate monthly budget ledger.

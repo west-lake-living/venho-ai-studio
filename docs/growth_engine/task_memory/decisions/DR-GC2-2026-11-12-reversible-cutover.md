@@ -2,7 +2,7 @@
 
 **Decision owner:** Harry  
 **Date:** 2026-11-12 (ICT)  
-**Status:** DECIDED
+**Status:** DECIDED — schedule superseded 2026-11-12
 
 ## Decision
 
@@ -18,10 +18,10 @@ P9-T04’s ≥8 slots, ≥16 target outcomes, ≥14 stable days and restore rehe
 - Make TEST evidence MK-1 through MK-6 is PASS. Treat it as a technical control, not as a substitute for per-post approval or production verification.
 - Rollback may import the saved scenario export and resume legacy only after confirming v2 has no live run, queued grant or late execution that could publish the same slot/target.
 
-## Conditional schedule
+## Superseded schedule
 
-T−0 remains Monday 2026-11-16 at 09:00 ICT only if the production P4 dry run passes by the evening of 2026-11-14. Otherwise move the cutover to the scheduled slot on 2026-11-18 or 2026-11-20, after P4 passes. If P4 is not ready, leave the existing publisher in service and keep v2 non-dispatching.
+The prior fixed T−0 of 2026-11-16 at 09:00 ICT is cancelled. Legacy remains the sole publisher until P4 passes and Harry approves one real `fb_hanoi` delivery in VENHO OS. Only then choose the nearest cadence slot that starts at least 48 hours after both gates passed. Until that slot, keep legacy publishing and keep v2 non-dispatching. No replacement cutover date is reserved in advance.
 
 ## Record updates
 
-This decision supersedes any wording in the Stage B cutover notes that makes the P9-T04 permanent-retirement gate a prerequisite for a reversible pause. Permanent retirement remains blocked until its evidence is complete.
+This decision supersedes any wording in the Stage B cutover notes that makes the P9-T04 permanent-retirement gate a prerequisite for a reversible pause. It also supersedes the 16/11 conditional schedule. Permanent retirement remains blocked until its evidence is complete.

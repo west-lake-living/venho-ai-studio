@@ -70,6 +70,58 @@ def test_publish_scheduler_enqueues_and_expires_atomically_in_sqlite(tmp_path: P
     assert audit_count == 2
 
 
+def test_disabled_and_global_pause_block_scheduler_and_fake_make_when_channel_enabled(tmp_path: Path) -> None:
+    settings = Settings(
+        env="test",
+        db_path=str(tmp_path / "disabled-preparation.db"),
+        media_root=str(tmp_path / "media"),
+        public_base_url="https://growth.example.test",
+        capability_keys="synthetic:" + base64.urlsafe_b64encode(b"d" * 32).decode().rstrip("="),
+        make_webhook_urls={"PAGE_A": "https://make.example.test/fake"},
+    )
+    container = build_container(settings)
+    container.migration_service.run(Path(settings.db_path), check=False)
+    _seed_approved_delivery(container.uow_factory, deadline_at_ms=100_000)
+
+    # Seed a pending command while live, then exercise the production preparation
+    # controls against an already-existing outbox row.
+    container.enqueue_due.execute(2_000)
+    from growth_engine.application.ops.controls import ControlsUseCase
+    from tests.growth_engine.support.fakes import FakeClock, SeqIds
+
+    controls = ControlsUseCase(container.uow_factory, FakeClock(2_000), SeqIds("p4-disable"), environment="test")
+    controls.set_mode(PublishMode.DISABLED, actor="test-operator", correlation_id="disable-p4-test")
+    controls.pause(actor="test-operator", correlation_id="pause-p4-test")
+
+    class FakeMake:
+        def __init__(self) -> None:
+            self.calls = 0
+
+        def deliver(self, route_ref, envelope):
+            self.calls += 1
+            raise AssertionError("Make must not be called while DISABLED and paused")
+
+    fake_make = FakeMake()
+    container.dispatch_outbox._transport = fake_make
+    enqueue_result = container.enqueue_due.execute(3_000)
+    dispatch_result = container.dispatch_outbox.execute(3_000)
+
+    assert enqueue_result.skipped_reason == "MODE_NOT_LIVE_MANUAL"
+    assert dispatch_result.claimed_count == 0
+    assert fake_make.calls == 0
+    with container.uow_factory().read_only() as tx:
+        control = tx.controls.get("test")
+        command = tx.connection.execute(
+            "SELECT state FROM outbox_commands WHERE delivery_id='delivery-sqlite'"
+        ).fetchone()
+        channel = tx.connection.execute(
+            "SELECT enabled FROM channels WHERE id='channel-test-fb'"
+        ).fetchone()
+    assert control is not None and control.mode is PublishMode.DISABLED and control.global_pause
+    assert command["state"] == "PENDING"
+    assert channel["enabled"] == 1
+
+
 def test_dispatch_store_reissues_same_token_across_rotation_and_ack_redelivery(tmp_path: Path) -> None:
     old_key = base64.urlsafe_b64encode(b"o" * 32).decode().rstrip("=")
     new_key = base64.urlsafe_b64encode(b"n" * 32).decode().rstrip("=")

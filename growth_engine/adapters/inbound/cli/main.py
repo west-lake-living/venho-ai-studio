@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import time
+from datetime import date
 from importlib import import_module
 from pathlib import Path
 from typing import Protocol
@@ -153,6 +154,60 @@ def worker(
     container = build_container(settings)
     worker_lane = container.publish_lane if lane == "publish" else container.jobs_lane
     raise typer.Exit(code=worker_lane.run_forever())
+
+
+@app.command("prepare-slot")
+def prepare_slot(
+    local_date: str = typer.Option(..., "--date", help="Configured slot date in YYYY-MM-DD."),
+    channel: str = typer.Option("fb_hanoi", "--channel", help="P4 production preparation currently supports fb_hanoi."),
+) -> None:
+    """Queue a single P4 content-only slot while production publishing is disabled and paused."""
+    settings = Settings.from_env()
+    from growth_engine.bootstrap import build_container
+
+    try:
+        parsed_date = date.fromisoformat(local_date)
+        container = build_container(settings)
+        result = container.queue_slot_generation.execute(parsed_date, channel_key=channel)
+    except (ValueError, RuntimeError, OSError) as error:
+        typer.echo(json.dumps({"result": "BLOCKED", "reason": type(error).__name__}), err=True)
+        raise typer.Exit(code=1) from error
+    typer.echo(json.dumps({
+        "result": "QUEUED",
+        "slot_id": result.slot_id,
+        "job_id": result.job_id,
+        "state": result.state,
+        "replayed": result.replayed,
+    }, ensure_ascii=False, sort_keys=True))
+
+
+@app.command("cutover-readiness")
+def cutover_readiness(
+    local_date: str = typer.Option(..., "--date", help="Target slot date in YYYY-MM-DD."),
+    local_time: str = typer.Option("09:00", "--time", help="Target slot time in Asia/Ho_Chi_Minh."),
+) -> None:
+    """Read-only gate: approved fb_hanoi delivery and production mapping dry run."""
+    settings = Settings.from_env()
+    from growth_engine.application.ops.cutover_readiness import CutoverReadiness
+
+    try:
+        date.fromisoformat(local_date)
+        result = CutoverReadiness(settings.db_path).execute(local_date, local_time)
+    except (ValueError, OSError) as error:
+        typer.echo(json.dumps({"result": "FAIL", "reason": type(error).__name__}), err=True)
+        raise typer.Exit(code=1) from error
+    typer.echo(json.dumps({
+        "result": "PASS" if result.ready else "FAIL",
+        "slot": {"date": result.slot_date, "time": result.slot_time, "timezone": "Asia/Ho_Chi_Minh"},
+        "delivery_id": result.delivery_id,
+        "revision_id": result.revision_id,
+        "mapping_dry_run": result.mapping_dry_run,
+        "mapping_target_id": result.mapping_target_id,
+        "mapping_route_ref": result.mapping_route_ref,
+        "reasons": list(result.reasons),
+    }, ensure_ascii=False, sort_keys=True))
+    if not result.ready:
+        raise typer.Exit(code=1)
 
 
 @app.command("apply-test-receipts")

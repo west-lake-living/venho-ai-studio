@@ -2,7 +2,7 @@
 
 **Trạng thái theo xác nhận của Harry (11/11/2026):** production release `7eedfa3`; DB mới schema 9; runtime `DISABLED`, `global_pause=1`; ba channel tồn tại và `enabled=0`; API và hai worker active. `growth-api.venhohotel.com` đi qua Access app `growth-engine-production-internal` tới API loopback `127.0.0.1:8021`; `/internal` ngoài trả 403, `/media/publish` với token sai trả 403 cùng `Cache-Control: private, no-store`, đường dẫn khác trả 404. Service token Make `make-growth-engine-production` do Harry giữ.
 
-Quyết định Harry ngày 12/11/2026: T−0 chỉ **tạm dừng publisher legacy theo cách đảo ngược được**; giữ source code, registry và literal hex, export backup scenario `5868920` trước khi thay blueprint. P9-T04 áp dụng cho gỡ bỏ vĩnh viễn, không cho lần tạm dừng này. T−0 mục tiêu 16/11/2026 lúc 09:00 ICT chỉ giữ nếu P4 production dry run PASS trước tối 14/11; nếu không, chuyển sang slot 18/11 hoặc 20/11 sau khi P4 PASS. Commit `2cc9114` chứa fix `[Install]`, doctor lock và cảnh báo hạn token cùng công cụ bearer; server vẫn `7eedfa3` và cần deploy trước dry run. DB schema 9 đã đủ; không tạo DB hoặc migration mới.
+Quyết định Harry ngày 12/11/2026: T−0 chỉ **tạm dừng publisher legacy theo cách đảo ngược được**; giữ source code, registry và literal hex, export backup scenario `5868920` trước khi thay blueprint. P9-T04 áp dụng cho gỡ bỏ vĩnh viễn, không cho lần tạm dừng này. Quyết định Harry ngày 12/11 mới hơn: hủy lịch cutover cố định 16/11; legacy tiếp tục là publisher duy nhất cho đến khi P4 PASS và Harry duyệt một delivery `fb_hanoi` thật trên VENHO OS. Sau hai điều kiện đó, chọn slot cadence gần nhất còn cách thời điểm hoàn tất ít nhất 48 giờ; không giữ sẵn ngày thay thế. Server đang ở release `7eedfa3`; code P4 và provider check cần deploy trước lần dry run. DB schema 9 đã đủ; không tạo DB hoặc migration mới.
 
 ## Trạng thái đã chốt
 
@@ -22,23 +22,24 @@ Quyết định Harry ngày 12/11/2026: T−0 chỉ **tạm dừng publisher leg
 3. Metadata production trong `channels.yaml` đã được điền theo Make 5868920; ánh xạ Page name↔ID cần xác nhận bằng post ID của lượt production đầu. Ba channel và configs đã provision disabled.
 4. Cloudflare production edge đã được xác minh theo kết quả Harry nêu ở trên. Còn phải xác minh VENHO OS production đã deploy BFF/UI Growth v2, dùng `GROWTH_BACKEND=v2`, và group approval gọi đúng API production; chưa có bằng chứng deploy production.
 5. DR mới cho phép tạm dừng publisher legacy khi có export rollback, source/registry/literal được giữ nguyên, Make runs đã drain và không còn grant legacy đang sống. P9-T04 chỉ gate gỡ bỏ vĩnh viễn.
-6. Production DB hiện rỗng, nên chưa có slot, delivery, revision hoặc approval v2 sẵn sàng. P4 generation/worker và P3 review use cases đã được nối với SQLite trong code và kiểm thử tích hợp, nhưng chưa có production run; credentials/cost policy và VENHO OS v2 production path phải được xác nhận trước khi dùng.
-7. P4 dry run quyết định ngày: production phải đạt end-to-end generation trước tối 14/11, runtime giữ `DISABLED` + `global_pause=1`, không có bài đăng. Nếu không PASS, chọn slot 18/11 hoặc 20/11 và rebase các bước T−1/T−0 theo ngày mới. Gate P9-T04 không chặn lần chuyển tạm.
+6. Production DB hiện rỗng, nên chưa có slot, delivery, revision hoặc approval v2 sẵn sàng. Repo hiện có pipeline P4 và integration test giả lập; vẫn phải chứng minh provider thật, budget ledger, preview/approval VENHO OS production và lệnh readiness trên server.
+7. Trong dry run, giữ `DISABLED` + `global_pause=1`; chỉ bật Hanoi qua `--prepare-only`, queue đúng một slot, không Make/command/dispatch. P4 PASS chỉ sau khi Harry duyệt bài thật và `cutover-readiness` PASS. Ngày cutover được tính lại sau đó với tối thiểu 48 giờ đệm; 16/11 đã hủy. Gate P9-T04 không chặn lần tạm dừng legacy có thể đảo ngược.
 
 ## Nội dung v2 và legacy import — gate cho slot đầu
 
 Không coi bài `APPROVED_SCHEDULED` trong registry legacy là đã duyệt trong v2. Importer hiện tại giữ raw record/evidence, không tái tạo quyết định approval; các dòng legacy đã duyệt được chuyển sang `IN_REVIEW` với `APPROVAL_NOT_RESTORED`. Các dòng thiếu Page mapping/artifact/post ID được giữ `LEGACY_UNVERIFIED`. Importer mới được áp dụng trên synthetic fixture; phần mapping còn placeholder cho `fb_venho`/`ig_venho` và tạo channel legacy ở environment `test`, nên **không chạy `legacy-import --apply` vào DB production** trước khi có implementation production-safe và report được duyệt.
 
-Pipeline v2 **chưa có bằng chứng đã chạy tạo/duyệt nội dung trên production**. P4 generator/lanes và SQLite wiring cùng P3 review workflows có code và integration tests, nhưng DB production hiện rỗng; điều đó chưa chứng minh provider, media/QC và VENHO OS group approval production hoạt động. Cần xác minh VENHO OS v2 trước khi coi slot nào đã sẵn sàng.
+Pipeline v2 **chưa có bằng chứng đã chạy tạo/duyệt nội dung trên production**. Repo đã nối generator, variants, QC, ngân sách và review workflow, đồng thời có E2E giả lập chứng minh `DISABLED` không dispatch. Việc này chưa chứng minh provider thật, media/QC trên dữ liệu production hoặc VENHO OS approval. Chạy [P4 production dry run](p4_production_dry_run.md), rồi Harry duyệt bài `fb_hanoi` thật trên VENHO OS.
 
 Importer legacy không thể chuyển một bài `APPROVED_SCHEDULED` thành bài đã duyệt v2: approval không được khôi phục, trạng thái thành `IN_REVIEW`; mapping production của importer cũng chưa an toàn. Tạo delivery/revision mới trong v2 và duyệt lại trên VENHO OS v2.
 
-Đường tối thiểu để có delivery đã duyệt cho slot Hanoi đầu tiên (mục tiêu 16/11; có thể dời sang 18/11 hoặc 20/11) là:
+Đường tối thiểu để có delivery đã duyệt cho slot Hanoi đầu tiên là:
 
 1. Deploy/kiểm tra VENHO OS BFF và UI v2, provider/content settings, budget/cost limits, media storage và `jobs` worker. Giữ global pause ON.
-2. Chạy [p4_production_dry_run.md](p4_production_dry_run.md) ngày 13–14/11 khi runtime `DISABLED` + pause. Không bật channel, không gửi Make command, không dispatch. Giữ lịch 16/11 chỉ khi P4 PASS trước tối 14/11.
-3. Tại cửa sổ cutover, đặt runtime `LIVE_MANUAL`, giữ pause, bật riêng `fb_hanoi` theo `manage-production-channels.py`. Slot Hanoi đầu tiên chỉ cho phép Page Hanoi phát theo rollout đã chốt.
-4. Trên VENHO OS, duyệt riêng delivery `fb_hanoi`; tại slot đã duyệt bỏ pause, rồi chờ receipt và verify trước khi mở target kế. Trước slot lịch kế tiếp sau Hanoi, bật Ven Hồ + IG, tạo đủ ba target và duyệt nhóm cho slot đó.
+2. Chạy [p4_production_dry_run.md](p4_production_dry_run.md) khi runtime `DISABLED` + pause. Bật Hanoi bằng helper `--prepare-only`; queue đúng một slot. Không gửi Make command và không dispatch.
+3. Harry duyệt delivery Hanoi thật trên VENHO OS; chạy `cutover-readiness` cho đúng slot. Khi hai điều kiện đều PASS, tính slot cutover mới theo cadence với ít nhất 48 giờ đệm; không dùng ngày 16/11 đã hủy.
+4. Tại cửa sổ cutover, đặt runtime `LIVE_MANUAL`, giữ pause, bật riêng `fb_hanoi` theo `manage-production-channels.py`. Slot Hanoi đầu tiên chỉ cho phép Page Hanoi phát theo rollout đã chốt.
+5. Tại slot đã duyệt bỏ pause, rồi chờ receipt và verify trước khi mở target kế. Trước slot lịch kế tiếp sau Hanoi, bật Ven Hồ + IG, tạo đủ ba target và duyệt nhóm cho slot đó.
 
 `EnsureSlots` chỉ tạo target cho channel đang enabled. Nếu VENHO OS v2, provider, media/QC hoặc group approval chưa đạt, giữ pause và dời slot; không thay bằng approval legacy.
 
@@ -51,17 +52,17 @@ Nếu VENHO OS v2 chưa deploy hoặc generation không tạo đủ ba target, d
 | **A — tạm dừng có thể đảo ngược (đã chọn)** | Pause lịch/timer legacy; giữ code/registry/literal; backup scenario 5868920 rồi import v2 làm publisher đang hoạt động. Một authority tại từng thời điểm, mở kênh v2 theo slot. | Rủi ro kiểm soát bằng backup, drain runs/grants, `LIVE_MANUAL`, duyệt từng bài, receipt/verify từng target và Telegram. Rollback import backup sau khi v2 được pause và không còn grant/run có thể đăng. |
 | **B — giữ legacy route cho kênh chưa mở** | Chạy tạm hai luồng hoặc giữ route legacy riêng khi v2 đã chạy một phần. | Cao: legacy Facebook hiện có thể đăng một payload lên cả hai Page, nên mở Hanoi ở v2 còn để legacy hoạt động có thể đăng trùng Hanoi. Muốn an toàn phải tách route Page B/IG, lọc theo channel/slot và đối soát hai registry; IG legacy còn dùng Google Drive URL. Phức tạp hơn và chưa có evidence TEST cho cấu hình lai. |
 
-Harry đã chọn A theo DR đảo ngược được. Slot Hanoi đầu tiên là 16/11 nếu P4 PASS đúng hạn; nếu không, chọn slot 18/11 hoặc 20/11 và dời toàn bộ lịch T−1/T−0 theo ngày mới. `fb_venho` và `ig_venho` chỉ mở trước slot lịch kế tiếp sau khi Hanoi có receipt và verify PASS. Đây là rollout theo thứ tự; slot đầu không coi là đã đăng cả hai Facebook Page.
+Harry đã chọn A theo DR đảo ngược được. Ngày 16/11 cố định đã hủy. Sau khi P4 PASS và Harry duyệt Hanoi thật, chọn slot cadence gần nhất còn cách thời điểm đạt điều kiện ít nhất 48 giờ; không đặt ngày trước hai điều kiện này. `fb_venho` và `ig_venho` chỉ mở trước slot lịch kế tiếp sau khi Hanoi có receipt và verify PASS. Đây là rollout theo thứ tự; slot Hanoi đầu không coi là đã đăng cả hai Facebook Page.
 
 ## Lịch cutover theo giờ ICT
 
-### T−3 — thứ Sáu 13/11/2026: chuẩn bị delivery Hanoi
+### T−3 — sau khi bắt đầu P4: chuẩn bị delivery Hanoi
 
-- Deploy release SHA `2cc911484735eab1753263b7aafe57a339082aa3` và chạy [P4 production dry run](p4_production_dry_run.md). Trong toàn bộ lượt dry run giữ mode `DISABLED`, pause `1`, không enable channel, không thay Make, không dispatch.
+- Deploy release SHA đã push và chạy [P4 production dry run](p4_production_dry_run.md). Trong lượt dry run giữ mode `DISABLED`, pause `1`; chỉ bật `fb_hanoi` bằng helper `--prepare-only`. Không thay Make và không dispatch.
 - Kiểm tra VENHO OS BFF/UI v2, `GROWTH_BACKEND=v2`, quyền nhóm duyệt và provider/config P4. Chỉ tạo nội dung thật sau khi Harry chấp thuận chi phí API ở bước provider và có đường supported để hoàn tất P4.
-- T−0 16/11 chỉ giữ nếu P4 PASS trước tối 14/11; nếu không, ghi lịch mới 18/11 hoặc 20/11. Không áp P9-T04 cho thao tác tạm dừng.
+- Hủy mốc 16/11. Sau P4 PASS và Harry approval trên bài thật, chạy readiness rồi mới tính slot gần nhất cách điều kiện cuối ít nhất 48 giờ. Không áp P9-T04 cho thao tác tạm dừng.
 
-### T−1 — Chủ Nhật 15/11/2026 nếu giữ slot 16/11 (nếu dời, chuyển sang ngày trước slot mới)
+### T−1 — trước slot mới đã được tính
 
 - Trong Make scenario `5868920`, dùng **Copy blueprint to clipboard** cho bản backup legacy; lưu riêng tư thành `_incoming/make_production_export.json` mode 600, tính checksum, rồi xóa clipboard. Giữ file backup ngoài Git.
 - Tạo draft production từ export, chạy checker **trên draft chưa có secret**, rồi review số module/route/mapping. Kỳ vọng 26 module, 3 route, sequential bật, Immediately trigger, đúng destination IDs. Không chạy secret scanner trên file đã điền bearer vì nó cố ý báo token literal.
@@ -78,9 +79,9 @@ Harry đã chọn A theo DR đảo ngược được. Slot Hanoi đầu tiên l�
 - Chạy `fill_make_production_secrets.py` với Access production nhập ẩn. Script thay base URL bằng `https://growth-api.venhohotel.com`, bearer theo route, Access Client ID/Secret; ghi `_incoming/make_production_import.secret.json` mode 600 và chỉ in số lượng thay. Filler kiểm tra filter production, 9 internal modules, route/bearer khớp và không còn placeholder.
 - Giữ handoff trên server/Mac và file import secret tới khi các target của slot đầu và slot kế tiếp sau Hanoi đã đối soát xong.
 
-### T−0 — cửa sổ cutover, không đăng thử
+### T−0 — cửa sổ cutover đã đủ điều kiện, không đăng thử
 
-1. Xác nhận P4 đã PASS trước hạn; nếu không, dời sang slot 18/11 hoặc 20/11, không cutover ngày 16. Giữ runtime `DISABLED` + pause ON; backup scenario 5868920 có mode `600` và checksum, giữ code/registry/literal legacy.
+1. Xác nhận P4 PASS, Harry đã duyệt bài `fb_hanoi` thật trên VENHO OS, readiness PASS và slot cutover cách thời điểm đạt điều kiện cuối ít nhất 48 giờ. Nếu thiếu bất kỳ gate nào, legacy tiếp tục là publisher duy nhất và không chạy cutover. Giữ runtime `DISABLED` + pause ON; backup scenario 5868920 có mode `600` và checksum, giữ code/registry/literal legacy.
 2. Tạm dừng đúng timer/workflow chỉ đăng bài Growth legacy; không xóa code/data, không archive/xóa registry và không xoay hex. Drain/đợi hết legacy Make runs và grants; nếu còn run không xác định thì dừng.
 3. Import `_incoming/make_production_import.secret.json` vào scenario 5868920. Kiểm common filter `schema_version` + `environment=production`, Router filters/ID, routes theo thứ tự, connections, caption/image mappings, bearer theo principal, Access headers, error handlers và Page/IG destination.
 4. Đặt schedule **Immediately as data arrives** rồi Save scenario; bật **Sequential processing** và xác nhận lưu; mở HTTP 25 (I1), xác nhận GET/body rỗng và Save module. Chưa bật scenario nếu còn sai lệch.
@@ -355,7 +356,7 @@ Trước mở channel, VENHO OS phải hiển thị đúng 4 slot cùng 12 targe
 
 Ba channel/config records đã được provision disabled ở bước 1. `manage-production-channels.py set-enabled` chỉ cho phép mở nếu runtime `LIVE_MANUAL`, global pause đang bật, ID đúng, config có và thứ tự mở hợp lệ. Thực hiện trên dashboard operator:
 
-1. Trong dry run 13–14/11 giữ `DISABLED` + pause. Chỉ tại T−0 sau khi P4 PASS mới chuyển sang `LIVE_MANUAL`, vẫn giữ pause ON, rồi bật riêng `fb_hanoi` cho slot được chọn. Legacy publisher được tạm dừng sau khi export backup và drain runs/grants; không xóa code/registry/literal.
+1. Trong P4 dry run giữ `DISABLED` + pause. Chỉ tại T−0 đã tính sau P4 PASS, bài được Harry duyệt và đủ 48 giờ đệm mới chuyển sang `LIVE_MANUAL`, vẫn giữ pause ON, rồi bật riêng `fb_hanoi` cho slot được chọn. Legacy publisher được tạm dừng sau khi export backup và drain runs/grants; không xóa code/registry/literal.
 2. Mở `fb_hanoi`:
 
    ```bash
@@ -365,7 +366,7 @@ Ba channel/config records đã được provision disabled ở bước 1. `manag
      "$HOME/venho/gc2-src/ops/asus-server/growth-engine/manage-production-channels.py" set-enabled --channel fb_hanoi --enable
    ```
 
-   Khi còn pause, rà route, filter, Page ID `1124616474074140`, approved slot và ảnh. Tại 09:00 của slot Hanoi đầu tiên đã chọn (16/11 nếu P4 PASS đúng hạn, nếu không 18/11 hoặc 20/11) chỉ bỏ global pause theo lịch đã duyệt; đối chiếu Make History → receipt APPLIED → verify. Page `fb_venho` và IG chưa publish slot đầu theo staging decision.
+   Khi còn pause, rà route, filter, Page ID `1124616474074140`, approved slot và ảnh. Tại 09:00 của slot Hanoi đầu tiên đã chọn theo điều kiện 48 giờ, chỉ bỏ global pause theo lịch đã duyệt; đối chiếu Make History → receipt APPLIED → verify. Page `fb_venho` và IG chưa publish slot đầu theo staging decision.
 3. Sau khi Hanoi ổn, giữ/đặt pause ON. Trước generation cho slot lịch kế tiếp, bật `fb_venho` bằng lệnh tương tự, rà ID `803531149684177`; bật `ig_venho`, rà ID `17841457936965829`. Đảm bảo ba targets cùng tồn tại trước khi jobs lane tạo package, rồi group-approve slot đó. Resume đúng 09:00 và đối soát từng receipt.
 4. Lỗi ở Ven Hồ/IG được xử lý riêng theo route/receipt; không resend Hanoi. IG dùng signed URL; xác minh media ID và MK-11/container-publish evidence.
 

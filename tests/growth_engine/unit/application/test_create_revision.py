@@ -107,6 +107,25 @@ def test_review_snapshot_preview_sha_matches_exact_variant_and_includes_actions(
     assert {item["action"] for item in snapshot.allowed_actions} >= {"approve", "edit_caption", "replace_image"}
 
 
+def test_review_snapshot_preserves_fallback_image_label() -> None:
+    data = ReviewSnapshotData(
+        delivery=Delivery("delivery-1", DeliveryState.IN_REVIEW, row_version=7),
+        revision=_revision(),
+        channel_key="fb_hanoi",
+        channel_name="Ven Hồ Hotel Hanoi",
+        remote_account_id="page-synthetic",
+        scheduled_at_ms=100,
+        deadline_at_ms=200,
+        variant=_variant("variant-a", _SHA_A),
+        action_context={"revision_is_current": True, "no_execution_live": True},
+        image_label="Ảnh dự phòng",
+    )
+    snapshot = BuildReviewSnapshot(
+        _ReviewReader(data), preview_url_builder=lambda digest: f"https://preview.test/{digest}"
+    ).execute("delivery-1")
+    assert snapshot.image_label == "Ảnh dự phòng"
+
+
 class _RevisionStore:
     def __init__(self, context: RevisionContext) -> None:
         self.context = context

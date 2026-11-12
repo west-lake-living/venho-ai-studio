@@ -6,9 +6,8 @@ OnFailure=venho-growth-alert@%n.service
 
 [Service]
 Type=simple
-EnvironmentFile=%h/venho/secrets/growth-engine.env
 WorkingDirectory=%h/venho/growth-engine/current
-ExecStart=%h/venho/growth-engine/current/.venv/bin/venho-engine worker --lane %i
+ExecStart=%h/venho/growth-engine/current/ops/asus-server/growth-engine/run-with-legacy-provider-env.sh worker --lane %i
 Restart=on-failure
 RestartSec=5s
 TimeoutStopSec=60s

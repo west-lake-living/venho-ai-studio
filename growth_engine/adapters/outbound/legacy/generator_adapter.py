@@ -53,6 +53,7 @@ class LegacyGeneratorAdapter:
         reference_resolver: ReferenceAssetResolver | None = None,
         generator_fn: TextGenerator | None = None,
         image_provider: Any | None = None,
+        image_alternatives_enabled: bool | None = None,
         temp_root: Path | None = None,
     ) -> None:
         self.repo_root = Path(repo_root)
@@ -62,6 +63,11 @@ class LegacyGeneratorAdapter:
         self.reference_resolver = reference_resolver
         self.generator_fn = generator_fn or claude_social_generator
         self.image_provider = image_provider or gpt_image_provider_from_env(os.environ)
+        self.image_alternatives_enabled = (
+            os.environ.get("GROWTH_IMAGE_ALTERNATIVES") == "1"
+            if image_alternatives_enabled is None
+            else image_alternatives_enabled
+        )
         self.temp_root = Path(temp_root) if temp_root is not None else None
         self._temporary_directories: list[tempfile.TemporaryDirectory[str]] = []
 
@@ -266,7 +272,7 @@ class LegacyGeneratorAdapter:
             if option_a:
                 options.append(option_a)
 
-            if os.environ.get("GROWTH_IMAGE_ALTERNATIVES") == "1":
+            if self.image_alternatives_enabled:
                 alternative = alternate_scenario(scenario_key, candidates, registry)
                 if alternative:
                     option_b = self._generate_image_option(
@@ -349,6 +355,7 @@ class LegacyGeneratorAdapter:
             "source": "configured_image_provider",
             "provider": str(getattr(self.image_provider, "model", type(self.image_provider).__name__)),
             "scenario_key": scenario_key,
+            "dna_subject": scenario.dna_subject,
             "reference_asset_ids": list(scenario.reference_asset_ids),
             "prompt_sha256": hashlib.sha256(final_prompt.encode("utf-8")).hexdigest(),
             "image_sha256": hashlib.sha256(output_bytes).hexdigest(),
@@ -377,6 +384,7 @@ class LegacyGeneratorAdapter:
             "provenance": {
                 "source": "curated_reference_asset",
                 "scenario_key": scenario_key,
+            "dna_subject": self._scenario_registry(request.project_id).resolve(scenario_key).dna_subject,
                 "source_name": photo_path.name,
                 "image_sha256": hashlib.sha256(photo_bytes).hexdigest(),
                 "at_ms": request.at_ms,

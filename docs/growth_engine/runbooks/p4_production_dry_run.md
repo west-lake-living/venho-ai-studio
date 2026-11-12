@@ -1,167 +1,121 @@
-# P4 production dry run — không đăng bài
+# P4 production dry run — chuẩn bị bài, không dispatch
 
-**Cửa sổ:** 13–14/11/2026 ICT.  
-**Mục tiêu:** kiểm tra P4 trên production DB cho slot `2026-11-16 09:00 Asia/Ho_Chi_Minh`, chỉ target `fb_hanoi`; runtime phải luôn `DISABLED`, `global_pause=1`, không bật Make và không phát command. Không mở/in giá trị bí mật.
+**Mục tiêu:** tạo đúng một delivery `fb_hanoi` cho một slot cadence tương lai; chạy provider legacy thật dưới ngân sách v2 riêng; tạo variant, QC và bản nháp; Harry duyệt trên VENHO OS. Runtime luôn `DISABLED`, `global_pause=1`; không gọi Make, không tạo command đăng bài và không đăng công khai.
 
-## Trạng thái code cần biết trước
+**Ngày T−0 16/11/2026 đã hủy.** P4 dùng slot cadence được chọn sau khi kiểm tra lịch. Chỉ tính ngày cutover sau khi P4 PASS và Harry duyệt một delivery `fb_hanoi` thật trên VENHO OS; chọn slot gần nhất còn cách thời điểm cả hai điều kiện đạt ít nhất 48 giờ. Không tự khôi phục lịch cũ.
 
-Release cần deploy là `2cc911484735eab1753263b7aafe57a339082aa3`. Code hiện có jobs scheduler và `RunLanes`, nhưng inspection tại SHA này cho thấy ba gate P4 chưa được nối thành luồng có thể PASS:
+## Trạng thái triển khai
 
-1. Production channels đang `enabled=0`. `EnsureSlots` chỉ tạo target cho channel enabled; helper mở channel hiện yêu cầu `LIVE_MANUAL`, trái yêu cầu giữ `DISABLED`. Không bypass bằng SQL hoặc đổi runtime trong dry run.
-2. CLI không có lệnh one-shot `run-lanes`; jobs worker chạy lịch định kỳ. Lịch hiện có `ensure-slots` 00:10 ICT và fast lane mỗi giờ ở phút :40. Không khởi động transient worker thứ hai.
-3. Generation ghi `prepare_variant` và `assemble_revision` jobs vào DB, nhưng jobs worker hiện không có handlers xử lý các job này. `PrepareVariant`/QC evaluator cũng chưa được compose vào bootstrap/job lane. Do đó không thể chứng minh chuỗi generation → variant → QC → revision `IN_REVIEW` bằng release hiện tại.
+Code P4 có audited `prepare-only`, worker cho `generate_slot` → `prepare_variant` → `assemble_revision`/QC, review snapshot, ngân sách v2 riêng và lệnh chỉ đọc `cutover-readiness`. Test SQLite giả lập toàn luồng đã chứng minh approval không dispatch khi `DISABLED`. Đây chưa phải bằng chứng chạy provider thật, duyệt UI production hay P4 PASS.
 
-Các điểm trên có nghĩa P4 dry run **đang BLOCKED theo repo**, trước paid provider call. Không coi package/original image upload là PASS end-to-end. Nếu blocker được sửa bằng release mới trước cửa sổ chạy, lặp lại đúng các bước và chỉ dùng SHA đã review.
+Provider do Harry chọn là provider và key legacy đang chạy: `ANTHROPIC_API_KEY` và `OPENAI_API_KEY` từ `~/venho/secrets/growth.env`. Wrapper chỉ chuyển hai key này sang worker/doctor; DB, media root, capability, tokens và controls vẫn lấy từ `~/venho/secrets/growth-engine.env`. Không in giá trị hoặc chạy dưới `set -x`.
 
-## 1. Deploy release, giữ controls fail-closed
+## 1. Deploy và kiểm tra fail-closed
 
-Trên ASUS server, từ checkout sạch `~/venho/gc2-src`:
+Trên ASUS server, thay `<P4_SHA>` bằng commit đã push của lượt này:
 
 ```bash
 cd "$HOME/venho/gc2-src"
-git fetch origin gc2/build-v1-2
 git status --short
-git merge-base --is-ancestor 2cc911484735eab1753263b7aafe57a339082aa3 origin/gc2/build-v1-2
-bash ops/asus-server/growth-engine/deploy-release.sh 2cc911484735eab1753263b7aafe57a339082aa3
-systemd-analyze --user verify growth-engine-api.service growth-engine-worker@publish.service growth-engine-worker@jobs.service
+git fetch origin gc2/build-v1-2
+git merge-base --is-ancestor <P4_SHA> origin/gc2/build-v1-2
+bash ops/asus-server/growth-engine/deploy-release.sh <P4_SHA>
+systemctl --user is-enabled growth-engine-api.service growth-engine-worker@publish.service growth-engine-worker@jobs.service
+systemctl --user is-active growth-engine-api.service growth-engine-worker@publish.service growth-engine-worker@jobs.service
+loginctl show-user "$USER" -p Linger --value
+"$HOME/venho/growth-engine/current/ops/asus-server/growth-engine/run-with-legacy-provider-env.sh" doctor
 ```
 
-Kiểm tra linger, units, doctor và controls:
+**PASS:** checkout sạch; release đúng SHA; ba unit enabled/active; linger `yes`; doctor không `FAIL`; production controls đọc được là `DISABLED` + pause `1`; channel records đã map đúng.
+
+**FAIL/dừng:** doctor thiếu key/policy/ngân sách, bất kỳ `FAIL`, unit/linger chưa đúng hoặc controls khác yêu cầu. Chưa bật channel và chưa queue job. Doctor chỉ in tên biến key, provider và số dư ngân sách v2.
+
+## 2. Mở đúng một target ở chế độ chuẩn bị
+
+Đọc controls/channel trước khi đổi. Dùng helper audit, không chạy SQL sửa trạng thái:
 
 ```bash
-loginctl show-user "$USER" -p Linger --value
-systemctl --user enable growth-engine-api.service growth-engine-worker@publish.service growth-engine-worker@jobs.service
-systemctl --user is-active growth-engine-api.service growth-engine-worker@publish.service growth-engine-worker@jobs.service
 systemd-run --user --pipe --wait --collect \
   --property="EnvironmentFile=$HOME/venho/secrets/growth-engine.env" \
-  --property="WorkingDirectory=$HOME/venho/growth-engine/current" --setenv=GE_ENV=production \
-  "$HOME/venho/growth-engine/current/.venv/bin/venho-engine" doctor
+  --property="WorkingDirectory=$HOME/venho/growth-engine/current" \
+  "$HOME/venho/growth-engine/current/.venv/bin/python" \
+  "$HOME/venho/growth-engine/current/ops/asus-server/growth-engine/manage-production-channels.py" \
+  set-enabled --channel fb_hanoi --enable --prepare-only
 ```
 
-Nếu `Linger` chưa `yes`, bật bằng `sudo loginctl enable-linger "$USER"`, rồi kiểm tra lại. Đọc controls bằng truy vấn read-only ở Bước 3.
+Helper chỉ cho phép `fb_hanoi` Page `1124616474074140`, khi runtime `DISABLED`, global pause ON và hai channel còn lại tắt; audit ghi action `prepare_only_enable`. Đây là enable cho tạo nội dung, không cho publish.
 
-**PASS:** release đúng SHA; cả ba unit `active` và `enabled`; linger `yes`; doctor không có `FAIL` (WARN về expiry phải được xử lý theo runbook); production controls vẫn `DISABLED`, pause `1`.  
-**FAIL/dừng:** deploy rollback, doctor có `FAIL`, unit không active, linger sai hoặc controls đổi khỏi giá trị yêu cầu. Không khởi động P4.
+Trong trạng thái `DISABLED`, publish scheduler và authorize fail-closed; integration test chứng minh outbox không được claim và FakeMake nhận 0 lệnh dù Hanoi enabled. Jobs worker cũng chặn recurring slot/weekly/fast/replacement generation khi production đang DISABLED hoặc global pause. Nó vẫn xử lý `content_jobs` được queue rõ ràng bằng lệnh P4 ở bước kế tiếp.
 
-## 2. Kiểm provider, ngân sách và tên biến môi trường
+**PASS:** helper báo chỉ Hanoi enabled; `fb_venho`/`ig_venho` vẫn disabled; controls không đổi; publish worker vẫn active nhưng không dispatch.
 
-Không dùng `env`, `printenv`, `cat` hoặc shell tracing lên file secret. Lệnh sau chỉ in tên hai biến provider cần có và trạng thái `SET/MISSING`, không in giá trị:
+## 3. Chọn slot cadence và queue một lần
+
+Chọn ngày cadence tương lai đủ thời gian review, không chọn lại slot đã qua. Lịch hiện tại là Mon/Wed/Fri/Sat lúc 09:00 ICT. Ví dụ 20/11/2026:
 
 ```bash
-python3 - "$HOME/venho/secrets/growth-engine.env" <<'PY'
-import re, sys
-from pathlib import Path
-
-path = Path(sys.argv[1])
-values = {}
-for line in path.read_text(encoding="utf-8").splitlines():
-    match = re.match(r"^\s*([A-Z][A-Z0-9_]*)\s*=\s*(.*?)\s*$", line)
-    if match and not line.lstrip().startswith("#"):
-        values[match.group(1)] = match.group(2).strip().strip("\"'")
-for name in ("ANTHROPIC_API_KEY", "OPENAI_API_KEY"):
-    value = values.get(name, "")
-    present = bool(value) and "REQUIRED_FROM_P0" not in value and not value.startswith("YOUR_")
-    print(f"{name}: {'SET' if present else 'MISSING'}")
-PY
+"$HOME/venho/growth-engine/current/ops/asus-server/growth-engine/run-with-legacy-provider-env.sh" \
+  prepare-slot --date 2026-11-20 --channel fb_hanoi
 ```
 
-Biến bắt buộc theo adapter hiện tại: `ANTHROPIC_API_KEY` cho text (`claude_social_generator`) và `OPENAI_API_KEY` cho ảnh (`gpt-image-2`). Không in hoặc gửi token. `CLAUDE_CONTENT_MODEL` là tùy chọn; nếu chưa đặt thì code dùng default. Giữ `GROWTH_IMAGE_ALTERNATIVES` tắt để giới hạn chi phí lần thử.
+Lệnh idempotent: chạy lại trả cùng job cho cùng slot, không phát sinh generation thứ hai. Output chỉ có `slot_id`, `job_id`, trạng thái và `replayed`.
 
-Đọc policy (không phải secret) và đối chiếu thủ công với chi phí/API spend đã được duyệt:
+Jobs worker `growth-engine-worker@jobs` xử lý job đã queue; không chạy thêm worker thứ hai. Nó thực hiện generation → lưu asset gốc → `prepare_variant` Facebook JPEG → QC có ngân sách → `assemble_revision` thành `IN_REVIEW`. Mọi recurring generation lane khác đang bị gate ở controls hiện tại.
 
-```bash
-"$HOME/venho/growth-engine/current/.venv/bin/python" - <<'PY'
-from pathlib import Path
-import yaml
-root = Path("config/projects/venho_hotel/growth")
-model = yaml.safe_load((root / "model_policy.yaml").read_text())
-budget = yaml.safe_load((root / "budget_policy.yaml").read_text())
-costs = yaml.safe_load((root / "paid_call_costs.yaml").read_text())
-print("model_policy.text_provider:", model.get("text_provider"))
-print("model_policy.image_provider:", model.get("image_provider"))
-print("monthly_cap:", budget.get("monthly_cap_minor"), budget.get("currency"))
-for key in ("text_generation_minor", "image_generation_minor", "vision_qc_minor"):
-    print(key + ":", costs.get(key))
-PY
-```
+Với policy hiện tại, doctor cần đủ dự phòng tối đa cho một slot: text 5.000 + tối đa một ảnh 1.200 + tối đa hai lần QC 400 = **7.000 VND**. Ngân sách v2 tháng là 500.000 VND, độc lập ledger legacy. Generation và từng QC call reserve trước khi gọi provider, settle khi có kết quả; lỗi không xác định chuyển `UNKNOWN`, không retry tự động. Không tăng cap trong lần dry run.
 
-**PASS:** provider policy khớp implementation; cả hai API key hiện diện; monthly cap còn đủ cho lần chạy, gồm generation và QC.  
-**FAIL/dừng:** biến thiếu thì ghi đúng tên biến; policy hiện tại ghi `mock` trong khi adapter gọi Anthropic/OpenAI, nên mismatch cần xử lý trước khi gọi provider; cap không đủ cũng dừng. `vision_qc_minor` hiện chỉ có trong file cost policy, chưa được tính/settle bởi P4 generation flow đang compose.
-
-## 3. Slot 16/11, generation, variant và QC
-
-Nếu lịch T−0 được chuyển sang 18/11 hoặc 20/11, chạy lại P4 cho đúng ngày slot mới: cập nhật ngày trong truy vấn SQLite và màn hình lịch VENHO OS; không dùng lại delivery/approval gắn với slot 16/11.
-
-Kiểm trạng thái bằng SQLite read-only; chỉ in controls, channel flag và số lượng theo job kind/state:
+Kiểm trạng thái chỉ đọc, không in caption, path, token hoặc signed URL:
 
 ```bash
-"$HOME/venho/growth-engine/current/.venv/bin/python" - "$HOME/venho/state/growth-engine/growth_engine.db" <<'PY'
+python3 - "$HOME/venho/state/growth-engine/growth_engine.db" 2026-11-20 <<'PY'
 import sqlite3, sys
-path = sys.argv[1]
-db = sqlite3.connect(f"file:{path}?mode=ro", uri=True)
+db = sqlite3.connect(f"file:{sys.argv[1]}?mode=ro", uri=True)
 db.row_factory = sqlite3.Row
-control = db.execute("SELECT publish_mode, global_pause FROM runtime_controls WHERE environment='production'").fetchone()
-print("controls:", None if control is None else dict(control))
-for row in db.execute("SELECT channel_key, enabled FROM channels WHERE environment='production' ORDER BY channel_key"):
-    print("channel:", row["channel_key"], "enabled=", row["enabled"])
-for row in db.execute(
-    """SELECT s.id AS slot_id, s.local_date, s.local_time, c.channel_key,
-              p.id AS package_id, d.id AS delivery_id, d.state,
-              r.id AS revision_id, v.id AS variant_id, v.mime, v.byte_size,
-              v.qc_status AS variant_qc_status, q.decision AS qc_decision
-       FROM slots s JOIN slot_targets t ON t.slot_id=s.id
-       JOIN channels c ON c.id=t.channel_id
-       LEFT JOIN deliveries d ON d.target_id=t.id AND d.channel_id=c.id
-       LEFT JOIN content_packages p ON p.id=d.package_id
+for row in db.execute("SELECT publish_mode, global_pause FROM runtime_controls WHERE environment='production'"):
+    print("controls:", dict(row))
+for row in db.execute("SELECT channel_key, enabled, paused, remote_account_id FROM channels WHERE environment='production' ORDER BY channel_key"):
+    print("channel:", dict(row))
+for row in db.execute("""SELECT s.local_date, s.local_time, c.channel_key, c.remote_account_id,
+       d.state AS delivery_state, v.mime, v.width, v.height, v.byte_size, v.qc_status, q.decision AS qc_decision
+       FROM slots s JOIN slot_targets t ON t.slot_id=s.id JOIN channels c ON c.id=t.channel_id
+       LEFT JOIN deliveries d ON d.target_id=t.id AND d.active=1
        LEFT JOIN delivery_revisions r ON r.id=d.current_revision_id
-       LEFT JOIN media_variants v ON v.id=r.variant_id
-       LEFT JOIN qc_reports q ON q.id=r.qc_report_id
-       WHERE s.local_date='2026-11-16' AND c.environment='production'
-       ORDER BY c.channel_key"""
-):
-    print("slot_delivery:", dict(row))
-for row in db.execute("SELECT kind, state, count(*) AS n FROM jobs GROUP BY kind, state ORDER BY kind, state"):
-    print("jobs:", row["kind"], row["state"], row["n"])
-for table in ("outbox_commands", "executions"):
-    for row in db.execute(f"SELECT state, count(*) AS n FROM {table} GROUP BY state ORDER BY state"):
-        print(table + ":", row["state"], row["n"])
-for row in db.execute("SELECT state, count(*) AS n FROM paid_calls GROUP BY state ORDER BY state"):
-    print("paid_calls:", row["state"], row["n"])
+       LEFT JOIN media_variants v ON v.id=r.variant_id LEFT JOIN qc_reports q ON q.id=r.qc_report_id
+       WHERE s.local_date=? AND c.environment='production' ORDER BY c.channel_key""", (sys.argv[2],)):
+    print("target:", dict(row))
+for row in db.execute("SELECT kind, state, count(*) AS count FROM jobs GROUP BY kind, state ORDER BY kind, state"):
+    print("job:", dict(row))
+for row in db.execute("SELECT operation, state, reserved_minor, actual_minor FROM paid_calls ORDER BY created_at"):
+    print("paid_call:", dict(row))
 db.close()
 PY
-systemctl --user is-active growth-engine-worker@jobs.service
-journalctl --user -u growth-engine-worker@jobs.service --since '2026-11-13 00:00:00' --no-pager
 ```
 
-Lịch jobs worker là `ensure-slots` 00:10 ICT và fast lane mỗi giờ phút :40. Không chạy thêm `venho-engine worker --lane jobs` tạm thời: đó là scheduler chạy vô hạn, không phải one-shot. Nếu có supported runner ở release đã được sửa, chỉ dùng runner đó sau khi kiểm tra controls còn `DISABLED` + pause `1`; mỗi lần tạo chỉ được target `fb_hanoi` cho slot 16/11.
+**PASS:** một target `fb_hanoi` đúng Page ID, delivery `IN_REVIEW`, Facebook variant là JPEG đúng profile và QC `PASS`/`REVIEW`; jobs generation/variant/assembly hoàn tất; `paid_calls` generation/QC ở `SETTLED`; runtime vẫn `DISABLED` + pause `1`; không có outbox command/execution.
 
-Trạng thái bắt buộc cho chuỗi P4:
+**FAIL/dừng:** job `FAILED`/`UNKNOWN`, QC `FAIL`, mapping/variant sai, ledger `RESERVED` bất thường, controls thay đổi hoặc có dispatch artifact. Không retry job/provider có kết quả `UNKNOWN`; giữ legacy là publisher duy nhất.
 
-| Bước | PASS yêu cầu |
-|---|---|
-| Slot/target | Slot đúng `2026-11-16 09:00 ICT`; chỉ có target `fb_hanoi`, Page ID `1124616474074140`; không tạo target Ven Hồ/IG trong dry run. |
-| Generation | Một package được tạo; job generation `SUCCEEDED`; caption/facts có snapshot; budget reservation đã settle; không có job `UNKNOWN`. |
-| Original/variant | Asset gốc lưu được; job `prepare_variant` `SUCCEEDED`; JPEG variant có đúng profile Facebook và hash/metadata khớp. |
-| QC/revision | QC report gắn đúng variant, caption và fact snapshot; decision `PASS` hoặc `REVIEW` theo policy; job `assemble_revision` `SUCCEEDED`; delivery ở `IN_REVIEW`. |
-| Safety | Runtime vẫn `DISABLED`, `global_pause=1`; không có command `AUTHORIZED`, không có webhook/Make run, không có post công khai. |
+## 4. Harry duyệt bài thật trên VENHO OS
 
-**Dừng ngay** nếu target không tồn tại, channel disabled khiến `EnsureSlots` bỏ qua, bất kỳ job nào `PENDING`/`FAILED` quá thời gian xử lý dự kiến, budget `UNKNOWN`/exceeded, variant/QC/revision thiếu hoặc controls không còn fail-closed. Không chạy lại generation nếu paid-call/job state là `UNKNOWN`.
+Trong `os.venhohotel.com`, mở **Publishing → Growth Engine → Chờ duyệt** và chọn slot đã queue. Tài khoản operator cần quyền duyệt nhóm (`dashboard:write`). Màn review phải hiển thị:
 
-Với source hiện tại, `channels.enabled=0` làm slot target không được tạo; không được dùng `manage-production-channels.py set-enabled` vì script yêu cầu `LIVE_MANUAL`, và không được bypass bằng SQL. Ngoài ra worker chưa xử lý `prepare_variant`/`assemble_revision` và chưa compose QC. Vì thế Bước 3 **BLOCKED** cho đến khi có supported content-only production path và các job handlers này được nối. Không ghi PASS cho phần generation → QC chỉ vì worker đang active.
+- kênh `fb_hanoi`, Page ID `1124616474074140`, slot/ngày giờ ICT;
+- preview đúng variant JPEG, caption và nhãn **Ảnh dự phòng** nếu bản được chọn là fallback;
+- revision, QC và trạng thái `IN_REVIEW` khớp DB.
 
-## 4. Duyệt trên VENHO OS khi P4 đã đủ luồng
+Harry kiểm tra bài rồi duyệt trên UI. Sau khi tải lại, xác nhận delivery `APPROVED`, approval gắn đúng revision/hash và controls vẫn `DISABLED` + pause `1`. Approval không được tạo command, execution, webhook hay Make History run.
 
-Đăng nhập `os.venhohotel.com` bằng tài khoản operator có quyền `dashboard:read` và `dashboard:write` (group approval endpoint yêu cầu `dashboard:write`). Mở **Publishing → Growth Engine**, xem lịch tuần 16–22/11, chọn slot 16/11 và delivery `fb_hanoi` trong danh sách **Chờ tôi duyệt**. Nếu tên menu khác hoặc trang Growth v2 chưa được deploy, đánh dấu `BLOCKED_UI`; không dùng registry legacy để duyệt thay.
+**FAIL/BLOCKED_UI:** màn hình, quyền, Page ID, preview, caption hoặc approval không khớp. Không thay bằng approval registry legacy.
 
-Trước khi bấm duyệt, xác nhận preview ảnh, caption/facts, Page Hanoi ID, lịch `09:00 ICT`, revision và QC đúng cùng package. Bấm duyệt delivery Hanoi. Sau đó tải lại trạng thái và controls.
+## 5. Chạy readiness chỉ đọc và chốt P4
 
-**PASS:** delivery hiện `APPROVED` với revision/variant/QC đang được duyệt; controls vẫn `DISABLED` + global pause `1`; không có execution `AUTHORIZED`, Make run hay bài công khai.  
-**FAIL/dừng:** không thấy delivery/revision/preview, quyền thiếu, QC không đạt, hoặc controls/outbox thay đổi. Không tiếp tục đến T−0.
+```bash
+"$HOME/venho/growth-engine/current/ops/asus-server/growth-engine/run-with-legacy-provider-env.sh" \
+  cutover-readiness --date 2026-11-20 --time 09:00
+```
 
-## 5. Kết luận và quyết định lịch
+Lệnh mở SQLite `mode=ro`, không build worker, gọi provider, gọi Make hay sửa DB. **PASS** chỉ khi slot có delivery `fb_hanoi` `APPROVED` đang active; approval khớp revision/hash hiện hành; QC/variant gắn đúng; Page ID `1124616474074140` và route ref `GE_MAKE_WEBHOOK_URL_PAGE_A` khớp mapping đã snapshot trong revision; không có outbox/execution cho delivery đó; runtime vẫn `DISABLED` + pause `1`.
 
-Ghi `PASS`, `FAIL` hoặc `BLOCKED` riêng cho Bước 1–4, SHA deploy, timestamp ICT, package/delivery IDs và các job state; không ghi token, URL secret, nội dung env hoặc signed URL.
+Lưu kết quả lệnh, SHA deploy, thời điểm ICT, slot/delivery/revision ID, job state, ledger state và Harry approval vào biên bản không chứa bí mật. Chỉ ghi P4 PASS khi doctor, generation/QC, VENHO OS approval và `cutover-readiness` đều PASS. Đến đây vẫn không chuyển runtime sang `LIVE_MANUAL`, không bật Make và không dừng legacy.
 
-- **Giữ T−0 16/11 09:00** chỉ khi cả bốn bước PASS trước tối 14/11 và approval vẫn không dispatch trong trạng thái `DISABLED`.
-- Nếu bất kỳ bước nào FAIL/BLOCKED hoặc chưa có bằng chứng trước hạn, không cutover ngày 16; chọn slot 18/11 hoặc 20/11 sau khi code được sửa và dry run PASS.
-- Không thay đổi legacy code/registry/literal hex trong lượt dry run. P9-T04 vẫn là gate riêng trước khi gỡ bỏ publisher legacy vĩnh viễn.
+**Dự kiến:** nếu deploy/test provider và UI được hoàn tất trong 13–14/11, P4 có thể PASS sớm nhất **14/11/2026**. Sau đó chọn ngày cutover mới theo điều kiện ≥48 giờ và slot cadence; ngày 16/11 cũ đã hủy.
