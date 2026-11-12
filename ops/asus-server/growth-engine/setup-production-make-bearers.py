@@ -110,6 +110,7 @@ def provision(
     env_path: Path,
     handoff_path: Path,
     *,
+    rotate_existing: bool = False,
     token_factory: Callable[[], str] = lambda: secrets.token_urlsafe(48),
     capability_factory: Callable[[], str] | None = None,
 ) -> str:
@@ -133,18 +134,22 @@ def provision(
         _, values = _assignments(original)
         if values.get("GE_ENV") != "production":
             raise ProvisionError("growth-engine.env must set GE_ENV=production")
-        if handoff_path.exists():
+        handoff_exists = handoff_path.exists()
+        old_handoff: str | None = None
+        if handoff_exists:
             if stat.S_IMODE(handoff_path.stat().st_mode) != 0o600:
                 raise ProvisionError("existing bearer handoff must have mode 600")
-            _, existing_bearers = _assignments(handoff_path.read_text(encoding="utf-8"))
-            if set(existing_bearers) != set(ENV_NAMES) or _service_value(existing_bearers) != values.get("GE_SERVICE_TOKENS"):
-                raise ProvisionError("existing bearer handoff does not match production hashes")
-            if not _valid_capability_ring(values.get("GE_CAPABILITY_KEYS", "")):
-                raise ProvisionError("production capability key is missing")
-            return "already_configured"
+            old_handoff = handoff_path.read_text(encoding="utf-8")
+            if not rotate_existing:
+                _, existing_bearers = _assignments(old_handoff)
+                if set(existing_bearers) != set(ENV_NAMES) or _service_value(existing_bearers) != values.get("GE_SERVICE_TOKENS"):
+                    raise ProvisionError("existing bearer handoff does not match production hashes")
+                if not _valid_capability_ring(values.get("GE_CAPABILITY_KEYS", "")):
+                    raise ProvisionError("production capability key is missing")
+                return "already_configured"
 
         old_service_value = values.get("GE_SERVICE_TOKENS", "")
-        if old_service_value.strip() and "REQUIRED_FROM_P0" not in old_service_value:
+        if old_service_value.strip() and "REQUIRED_FROM_P0" not in old_service_value and not rotate_existing:
             raise ProvisionError("production bearer hashes exist but handoff is absent; refusing rotation")
         bearers = {variable: token_factory() for _, variable in PRINCIPALS}
         if any(not token.strip() or any(ch in token for ch in "\r\n\0") for token in bearers.values()):
@@ -169,9 +174,12 @@ def provision(
         try:
             _write_private(env_path, env_text)
         except Exception:
-            handoff_path.unlink(missing_ok=True)
+            if old_handoff is None:
+                handoff_path.unlink(missing_ok=True)
+            else:
+                _write_private(handoff_path, old_handoff)
             raise
-        return "created"
+        return "rotated" if rotate_existing else "created"
     finally:
         lock_path.unlink(missing_ok=True)
 
@@ -180,9 +188,14 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--env", type=Path, default=Path.home() / "venho/secrets/growth-engine.env")
     parser.add_argument("--handoff", type=Path, default=Path.home() / "venho/secrets/growth-engine.make-bearers.tmp")
+    parser.add_argument(
+        "--rotate-existing",
+        action="store_true",
+        help="Explicitly replace existing production hashes/handoff; keep publishing paused and update Make before releasing it.",
+    )
     args = parser.parse_args(argv)
     try:
-        result = provision(args.env, args.handoff)
+        result = provision(args.env, args.handoff, rotate_existing=args.rotate_existing)
     except (OSError, UnicodeError, ProvisionError):
         print("FAIL: production Make bearer setup did not complete", file=sys.stderr)
         return 1

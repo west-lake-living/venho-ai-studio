@@ -13,6 +13,7 @@ import sys
 import tempfile
 from pathlib import Path
 from typing import Any, Iterable
+from urllib.parse import urlsplit
 
 
 BASE_PLACEHOLDER = "https://set-in-make.invalid"
@@ -158,6 +159,7 @@ def _replace_internal_headers(
     bearers: dict[str, str],
     access_client_id: str,
     access_client_secret: str,
+    base_url: str,
 ) -> dict[str, int]:
     counts = {
         "bearer_fb_hanoi": 0,
@@ -198,7 +200,7 @@ def _replace_internal_headers(
             authorization["value"] = f"Bearer {bearer_value}"
             access_id_header["value"] = access_client_id
             access_secret_header["value"] = access_client_secret
-            mapper["url"] = url.replace(BASE_PLACEHOLDER, TEST_BASE_URL)
+            mapper["url"] = url.replace(BASE_PLACEHOLDER, base_url)
             counts[f"bearer_{channel}"] += 1
             counts["access_client_id"] += 1
             counts["access_client_secret"] += 1
@@ -257,6 +259,8 @@ def fill_document(
     bearers: dict[str, str],
     access_client_id: str,
     access_client_secret: str,
+    *,
+    base_url: str = TEST_BASE_URL,
 ) -> tuple[dict[str, Any], dict[str, int]]:
     if set(bearers) != set(BEARER_VARIABLES):
         raise FillError("bearer_set_invalid")
@@ -265,15 +269,28 @@ def fill_document(
             raise FillError("bearer_format_invalid")
     if not _valid_header_value(access_client_id) or not _valid_header_value(access_client_secret):
         raise FillError("access_credential_invalid")
+    parsed_base = urlsplit(base_url)
+    if (
+        parsed_base.scheme != "https"
+        or not parsed_base.hostname
+        or parsed_base.username is not None
+        or parsed_base.password is not None
+        or parsed_base.path not in {"", "/"}
+        or parsed_base.query
+        or parsed_base.fragment
+    ):
+        raise FillError("base_url_invalid")
 
     result = json.loads(json.dumps(document))
     modules_by_route = validate_template(result)
-    counts = _replace_internal_headers(modules_by_route, bearers, access_client_id, access_client_secret)
+    counts = _replace_internal_headers(
+        modules_by_route, bearers, access_client_id, access_client_secret, base_url.rstrip("/")
+    )
     counts["base_url"] = sum(
         1
         for modules in modules_by_route.values()
         for module in modules
-        if TEST_BASE_URL in str(module["mapper"].get("url", ""))
+        if base_url.rstrip("/") in str(module["mapper"].get("url", ""))
     )
     if counts["base_url"] != 9:
         raise FillError("internal_base_url_replacement_count_invalid")
@@ -290,7 +307,11 @@ def _valid_header_value(value: str) -> bool:
     )
 
 
-def load_bearer_handoff(path: Path) -> dict[str, str]:
+def load_bearer_handoff(
+    path: Path,
+    *,
+    expected_variables: Iterable[str] | None = None,
+) -> dict[str, str]:
     if path.is_symlink() or not path.is_file():
         raise FillError("bearer_handoff_not_regular_file")
     if stat.S_IMODE(path.stat().st_mode) != 0o600:
@@ -307,10 +328,12 @@ def load_bearer_handoff(path: Path) -> dict[str, str]:
         if "=" not in stripped:
             raise FillError("bearer_handoff_format_invalid")
         name, value = stripped.split("=", 1)
-        if name not in BEARER_VARIABLES or name in values or not BEARER_RE.fullmatch(value):
+        allowed = set(BEARER_VARIABLES if expected_variables is None else expected_variables)
+        if name not in allowed or name in values or not BEARER_RE.fullmatch(value):
             raise FillError("bearer_handoff_format_invalid")
         values[name] = value
-    if set(values) != set(BEARER_VARIABLES):
+    required = set(BEARER_VARIABLES if expected_variables is None else expected_variables)
+    if set(values) != required:
         raise FillError("bearer_handoff_incomplete")
     return values
 
@@ -320,7 +343,7 @@ def write_private_json(path: Path, document: dict[str, Any]) -> None:
         raise FillError("output_path_invalid")
     encoded = (json.dumps(document, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
     descriptor, temporary_name = tempfile.mkstemp(
-        prefix=".make_test_import.secret.json.", suffix=".secret.json", dir=path.parent
+        prefix=f".{path.name}.", suffix=".secret.json", dir=path.parent
     )
     temporary = Path(temporary_name)
     try:
