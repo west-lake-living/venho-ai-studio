@@ -13,10 +13,10 @@ related_briefs: []
 verified_by_human: false
 tags:
 - weather
-- golden_sunset
+- rain
 ---
 
-# 2026-11-17 — golden_sunset
+# 2026-11-17 — rain
 
-- Hoàng hôn vàng trên Hồ Tây — rooftop cuối ngày
-- Scenario: venho_rooftop_sunset
+- Mưa ngoài cửa kính — không gian ấm trong sảnh
+- Scenario: venho_lobby_cozy
