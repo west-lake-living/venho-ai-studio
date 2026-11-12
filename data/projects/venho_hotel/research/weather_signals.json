@@ -1,24 +1,6 @@
 {
-  "generated_at": "2026-11-11T02:37:33.054323",
+  "generated_at": "2026-11-12T03:40:42.677613",
   "signals": [
-    {
-      "rs_id": "RS-weather-2026-11-11",
-      "type": "weather",
-      "domain": "weather_signal",
-      "evidence_level": "R2-T",
-      "forecast_date": "2026-11-11",
-      "condition": "cold_snap",
-      "temperature_range": [
-        15.3,
-        22.1
-      ],
-      "visual_opportunity": "Trở lạnh — sảnh ấm, đèn vàng",
-      "matching_scenario_keys": [
-        "venho_lobby_cozy"
-      ],
-      "expires_at": "2026-11-13T02:37:32.931997",
-      "fact_key": null
-    },
     {
       "rs_id": "RS-weather-2026-11-12",
       "type": "weather",
@@ -27,14 +9,14 @@
       "forecast_date": "2026-11-12",
       "condition": "rain",
       "temperature_range": [
-        17.2,
-        19.7
+        17.0,
+        20.1
       ],
       "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
       "matching_scenario_keys": [
         "venho_lobby_cozy"
       ],
-      "expires_at": "2026-11-13T02:37:32.931997",
+      "expires_at": "2026-11-14T03:40:42.671926",
       "fact_key": null
     },
     {
@@ -45,14 +27,14 @@
       "forecast_date": "2026-11-13",
       "condition": "rain",
       "temperature_range": [
-        17.5,
-        24.9
+        16.5,
+        24.5
       ],
       "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
       "matching_scenario_keys": [
         "venho_lobby_cozy"
       ],
-      "expires_at": "2026-11-13T02:37:32.931997",
+      "expires_at": "2026-11-14T03:40:42.671926",
       "fact_key": null
     },
     {
@@ -63,14 +45,14 @@
       "forecast_date": "2026-11-14",
       "condition": "rain",
       "temperature_range": [
-        20.0,
-        26.8
+        19.7,
+        26.7
       ],
       "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
       "matching_scenario_keys": [
         "venho_lobby_cozy"
       ],
-      "expires_at": "2026-11-13T02:37:32.931997",
+      "expires_at": "2026-11-14T03:40:42.671926",
       "fact_key": null
     },
     {
@@ -81,14 +63,14 @@
       "forecast_date": "2026-11-15",
       "condition": "golden_sunset",
       "temperature_range": [
-        21.6,
-        29.8
+        22.0,
+        28.9
       ],
       "visual_opportunity": "Hoàng hôn vàng trên Hồ Tây — rooftop cuối ngày",
       "matching_scenario_keys": [
         "venho_rooftop_sunset"
       ],
-      "expires_at": "2026-11-13T02:37:32.931997",
+      "expires_at": "2026-11-14T03:40:42.671926",
       "fact_key": null
     },
     {
@@ -99,14 +81,14 @@
       "forecast_date": "2026-11-16",
       "condition": "golden_sunset",
       "temperature_range": [
-        23.1,
-        30.8
+        24.2,
+        30.9
       ],
       "visual_opportunity": "Hoàng hôn vàng trên Hồ Tây — rooftop cuối ngày",
       "matching_scenario_keys": [
         "venho_rooftop_sunset"
       ],
-      "expires_at": "2026-11-13T02:37:32.931997",
+      "expires_at": "2026-11-14T03:40:42.671926",
       "fact_key": null
     },
     {
@@ -117,14 +99,32 @@
       "forecast_date": "2026-11-17",
       "condition": "golden_sunset",
       "temperature_range": [
-        24.3,
-        30.2
+        23.3,
+        30.1
       ],
       "visual_opportunity": "Hoàng hôn vàng trên Hồ Tây — rooftop cuối ngày",
       "matching_scenario_keys": [
         "venho_rooftop_sunset"
       ],
-      "expires_at": "2026-11-13T02:37:32.931997",
+      "expires_at": "2026-11-14T03:40:42.671926",
+      "fact_key": null
+    },
+    {
+      "rs_id": "RS-weather-2026-11-18",
+      "type": "weather",
+      "domain": "weather_signal",
+      "evidence_level": "R2-T",
+      "forecast_date": "2026-11-18",
+      "condition": "rain",
+      "temperature_range": [
+        21.1,
+        26.7
+      ],
+      "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
+      "matching_scenario_keys": [
+        "venho_lobby_cozy"
+      ],
+      "expires_at": "2026-11-14T03:40:42.671926",
       "fact_key": null
     }
   ]
