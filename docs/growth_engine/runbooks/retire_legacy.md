@@ -12,17 +12,23 @@ Nguồn: Harry đọc trực tiếp History của production scenario `5868920`;
 
 **Quyết định Harry (11/11/2026):** đăng cùng một bài Facebook lên cả `Ven Hồ Hotel Hanoi` và `Ven Hồ Hotel` là chủ ý. Sau cutover một slot tạo hai command riêng (`fb_hanoi`, `fb_venho`), mỗi command có receipt/verify riêng. Hai module Facebook cùng chạy không còn được xem là lỗi legacy; v2 phải giữ hai target độc lập.
 
-**Đề xuất retire/cutover:** không sửa Make production trong task này. Giữ bằng chứng về URL Drive làm gate bắt buộc: thay bằng signed media URL trước khi bật Instagram v2. Xác minh từng target/outcome trước khi tắt legacy; không resend Hanoi để xử lý lỗi riêng của Ven Hồ.
+**DR Harry (12/11/2026):** ở T−0 chỉ **tạm dừng publisher legacy để chuyển quyền đăng sang v2**, giữ nguyên source code, registry và dữ liệu legacy; export backup scenario `5868920` trước khi import. Không xóa hoặc xoay literal hex ở bước tạm dừng; giữ nguyên trong backup và chỉ thay đổi sau quyết định retire riêng. Gate P9-T04 bên dưới (8 slot, 16 target outcomes, 14 ngày ổn định, restore rehearsal) chỉ bắt buộc cho **gỡ bỏ vĩnh viễn**, không chặn lần tạm dừng có thể đảo ngược. Rollback là import lại backup và khôi phục publisher legacy sau khi xác nhận v2 không còn run/queue/grant có thể đăng.
 
-## Gỡ filter chữ ký `Venho signature` và xoay literal hex
+Biện pháp bù trong thời gian chuyển tiếp: Make TEST MK-1…MK-6 đã PASS; mọi bài v2 chạy `LIVE_MANUAL` và phải được người có quyền duyệt từng bài; mỗi target có receipt + verify riêng; Telegram cảnh báo phải hoạt động. UNKNOWN hoặc thiếu receipt/verify thì pause và đối soát, không gửi lại target đã thành công.
 
-Blueprint production v2 thay filter cũ bằng điều kiện chung `schema_version = growth.command.v2` AND `environment = production` trước Router; mỗi route lọc `channel_key`. Trước khi import, lưu export production cũ ở nơi riêng tư mode `600`. Không ghi literal hex vào export đã khử bí mật, log, issue hoặc báo cáo.
+Signed media URL vẫn là gate trước khi bật Instagram v2. Xác minh từng target/outcome; không resend Hanoi để xử lý lỗi riêng của Ven Hồ.
 
-Trong cùng change window, xác định mọi producer/consumer còn dùng literal 64 ký tự hex. Nếu nó được dùng như bí mật ký, coi như đã lộ: tạo giá trị mới bằng secret manager, cập nhật producer và verifier tương ứng, vô hiệu hóa giá trị cũ, rồi xác minh payload v2 qua History. Không xoay riêng một phía khi legacy sender vẫn cần giá trị cũ; khi đó dừng cutover và lập kế hoạch chuyển đồng bộ. Nếu không còn consumer hợp lệ, retire literal thay vì thay bằng một bí mật mới. Chỉ ghi tên biến/đường dẫn consumer, ngày và kết quả xác minh; không ghi giá trị.
+## Thay filter trong lần chuyển tạm thời; gỡ và xoay chỉ khi retire
 
-**Quay lui:** nếu phải import lại export cũ, giữ scenario Inactive và runtime `DISABLED` cho đến khi producer/filter cũ được khôi phục nhất quán. Không mở lại publisher legacy chỉ để xử lý một target lỗi.
+Blueprint production v2 thay filter cũ trong scenario đang hoạt động bằng điều kiện chung `schema_version = growth.command.v2` AND `environment = production` trước Router; mỗi route lọc `channel_key`. Trước khi import, lưu export production cũ ở nơi riêng tư mode `600`. Đây là thay cấu hình có thể đảo ngược bằng cách import backup; giữ source code, registry và literal hex trong backup. Không ghi literal hex vào log, issue hoặc báo cáo.
 
-## Gate trước khi retire
+Chỉ trong bước **gỡ bỏ vĩnh viễn** mới xác định mọi producer/consumer còn dùng literal 64 ký tự hex. Nếu được dùng như bí mật ký, coi như đã lộ: tạo giá trị mới bằng secret manager, cập nhật producer/verifier, vô hiệu hóa giá trị cũ và xác minh payload. Không xoay riêng một phía khi legacy sender vẫn cần giá trị cũ. Nếu không còn consumer hợp lệ, retire literal. Chỉ ghi tên biến/đường dẫn consumer, ngày và kết quả xác minh; không ghi giá trị.
+
+**Quay lui tạm thời:** import lại export cũ, giữ runtime `DISABLED` + global pause trong lúc xác minh cấu hình; chỉ khôi phục đúng publisher legacy sau khi kiểm không còn v2 grant/run/queue và không có khả năng đăng trùng. Không mở lại publisher legacy chỉ để xử lý lỗi một target.
+
+## Gate trước khi gỡ bỏ vĩnh viễn
+
+Các gate dưới đây **không áp dụng** cho lần tạm dừng publisher ở T−0 ngày 16/11/2026. Chúng bắt buộc trước thao tác không còn duy trì đường quay về legacy: xóa/archival registry, vô hiệu hóa hoặc gỡ code/workflow, xoay/retire literal và đóng DR.
 
 - [ ] Harry phê duyệt retire sau khi P9-T04 đạt đầy đủ G-P9/AC-18: ≥8 slot, ≥16 target outcomes, ≥14 ngày; không duplicate/sai Page/sai ảnh; mọi UNKNOWN đã xử lý.
 - [ ] Restore rehearsal AC-18 đã có evidence; backup cuối kỳ, manifest media và checksum đã kiểm tra.
@@ -32,25 +38,25 @@ Trong cùng change window, xác định mọi producer/consumer còn dùng liter
 - [ ] Incidents, UNKNOWN, scheduled approvals và import deltas đã đóng/đối soát; bản lưu cần thiết đã được xác định.
 - [ ] Chuẩn bị kế hoạch rollback/forward recovery. Sau grant production, không khôi phục registry legacy làm authority.
 
-Nếu thiếu gate, dừng. Không vô hiệu hoá publisher legacy trước khi operator có quyết định và bằng chứng gate.
+Nếu thiếu gate, dừng thao tác **gỡ bỏ vĩnh viễn**. Việc tạm dừng có thể đảo ngược theo DR 12/11 vẫn được thực hiện khi có export scenario, drain runs/grants, rollback rõ ràng và operator approval.
 
 ## Checklist thay đổi có kiểm soát
 
 | Thứ tự | Thay đổi được Harry/operator thực hiện sau phê duyệt | Kiểm tra / kết quả mong đợi | Dừng nếu |
 |---|---|---|---|
 | 1. Chốt bằng chứng | Đóng báo cáo pilot; ghi release SHA, Page IDs, số slot/target, restore rehearsal, incident dispositions và quyết định. | Evidence index đầy đủ, đã khử secrets; tiêu chí pilot đều đạt. | Còn UNKNOWN, thiếu mẫu, sai Page/ảnh hoặc thiếu restore rehearsal. |
-| 2. Chặn legacy publish | Disable vĩnh viễn các timer/unit/workflow chỉ chịu trách nhiệm đăng Growth legacy; giữ nguyên các timer research/maintenance chưa được phê duyệt để tắt. | Liệt kê unit/timer/workflow cụ thể từ inventory; `systemctl --user list-timers 'venho-growth-*'` và lịch GitHub không còn publisher legacy có thể chạy. | Không phân biệt chắc publisher với job khác, hoặc còn execution đang sống. |
+| 2. Chặn legacy publish | Disable **vĩnh viễn** các timer/unit/workflow chỉ chịu trách nhiệm đăng Growth legacy; giữ nguyên các timer research/maintenance chưa được phê duyệt để tắt. | Liệt kê unit/workflow cụ thể từ inventory; không còn publisher legacy có thể chạy. | Không phân biệt chắc publisher với job khác, hoặc còn execution đang sống. |
 | 3. Archive registry | Chụp publication registry JSON cùng checksum vào vùng lưu trữ hạn chế quyền; đổi thành chỉ đọc; giữ nguyên file gốc và nguồn gốc. | SHA-256 trước/sau bằng nhau; archive index ghi đường dẫn, ngày, owner, retention và quyền. Không xoá bản gốc. | Hash mismatch, thiếu file, hoặc bản archive còn writable với service account. |
 | 4. Gỡ backend legacy khỏi VENHO OS | Harry/operator cập nhật cấu hình triển khai để `GROWTH_BACKEND=legacy` không còn là lựa chọn; đặt v2 theo quyết định rollout đã duyệt. Không chỉnh trong task tài liệu này. | BFF/API smoke check chứng minh request Growth chỉ dùng v2 và không fallback sang JSON legacy; session actor/auth còn nguyên. | v2 chưa sẵn sàng, dashboard lỗi, dữ liệu bị trộn hoặc phải fallback để duy trì service. |
-| 5. Gỡ filter chữ ký Make cũ | Trong scenario production sau khi v2 rollout/cutover được duyệt, gỡ `Venho signature` khỏi liên kết webhook → HTTP và thay bằng filter chung `schema_version = growth.command.v2` AND `environment = production` trước Router. Không thao tác trong checklist tài liệu này. | History chứng minh event legacy bị chặn và envelope v2 hợp lệ đi vào đúng Router; không ghi lại filter literal cũ. | Chưa xác minh common filter hoạt động hoặc còn nguồn gửi payload legacy. |
-| 6. Đánh giá literal chữ ký cũ | Xác định ngoài biên bản nếu literal hex cố định trong filter còn được dùng ở nơi khác; bản chất của nó là **CHƯA XÁC MINH**. Vì người có quyền đọc scenario có thể xem cấu hình filter, coi giá trị đó là đã lộ nếu nó là secret; xoay hoặc retire mọi phụ thuộc sau khi xác nhận. Không chép literal vào tài liệu/log. | Ghi quyết định xoay/retire và các phụ thuộc đã kiểm tra, không ghi giá trị literal. | Không rõ phụ thuộc hoặc chưa có kế hoạch chuyển signer/client. |
+| 5. Gỡ filter chữ ký Make cũ | Sau khi chuyển tạm sang v2 ổn định và khi Harry duyệt gỡ hẳn, xác nhận export rollback đã hết thời hạn lưu trước khi bỏ filter khỏi mọi bản cần vận hành. | History chứng minh event legacy bị chặn, envelope v2 vào đúng Router; không ghi literal. | Chưa xác minh common filter hoặc chưa có đường quay lui đã duyệt. |
+| 6. Đánh giá literal chữ ký cũ | Xác định mọi producer/consumer dùng literal hex; chỉ xoay/retire khi gỡ bỏ vĩnh viễn đã được duyệt. Không chép literal vào tài liệu/log. | Ghi tên biến/đường dẫn phụ thuộc, phương án, ngày và kết quả; không ghi giá trị. | Không rõ phụ thuộc hoặc chưa có kế hoạch chuyển signer/client. |
 | 7. Cập nhật ops docs | Cập nhật `ops/asus-server/README.md`, inventory và DR record: v2 là publisher duy nhất; legacy timers/registry đã retired; chỉ dẫn phục hồi không tái cấp quyền legacy tự động. | Tài liệu khớp trạng thái host/workflow và có commit/release SHA, approver, ngày ICT, archive checksum. | Tài liệu và trạng thái thực tế khác nhau. |
 | 8. Đóng DR | Ghi kết quả/risks còn lại, owner, recovery route, backup/restore refs, thời điểm đóng và phê duyệt Harry. | DR ticket/log đóng rõ; dashboard, API, worker, alert và backup tiếp tục health-check theo quy trình vận hành. | Health degraded, audit gap hoặc chưa có recovery owner. |
 
 ## Quy tắc sau retire
 
-- Không khôi phục timer hoặc registry legacy để xử lý một lỗi v2. Pause v2, đối soát target đã xử lý và dùng forward recovery trên DB v2 theo quyết định operator.
-- Nếu sự cố buộc quay lại legacy, yêu cầu quyết định mới của Harry, đối soát từng target đã authorized/reported/unknown và chứng minh không đăng trùng trước khi cấp quyền lại.
+- Sau retire vĩnh viễn, không khôi phục timer hoặc registry legacy để xử lý một lỗi v2. Trong cửa sổ tạm dừng theo DR 12/11, rollback bằng backup được phép sau khi đối soát target và bảo đảm không đăng trùng.
+- Trong cửa sổ tạm dừng đã được Harry duyệt, có thể quay lui bằng export backup `5868920` và publisher legacy đã giữ nguyên, sau khi đối soát target và xác nhận không còn v2 grant/run/queue. Sau khi retire vĩnh viễn, cần quyết định mới của Harry và kế hoạch phục hồi riêng.
 - Không xóa JSON, backup, receipts, Make History hoặc audit evidence khi retire.
 - Không ghi token, webhook URL, secret, signed URL hoặc thông tin đăng nhập vào biên bản.
 
