@@ -1,24 +1,6 @@
 {
-  "generated_at": "2026-11-13T03:16:56.496003",
+  "generated_at": "2026-11-14T02:57:11.496160",
   "signals": [
-    {
-      "rs_id": "RS-weather-2026-11-13",
-      "type": "weather",
-      "domain": "weather_signal",
-      "evidence_level": "R2-T",
-      "forecast_date": "2026-11-13",
-      "condition": "rain",
-      "temperature_range": [
-        16.6,
-        22.7
-      ],
-      "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
-      "matching_scenario_keys": [
-        "venho_lobby_cozy"
-      ],
-      "expires_at": "2026-11-15T03:16:56.492588",
-      "fact_key": null
-    },
     {
       "rs_id": "RS-weather-2026-11-14",
       "type": "weather",
@@ -27,15 +9,15 @@
       "forecast_date": "2026-11-14",
       "condition": "morning_mist",
       "temperature_range": [
-        17.3,
-        26.0
+        17.6,
+        25.6
       ],
       "visual_opportunity": "Sương sớm trên mặt hồ — cửa sổ phòng view hồ lúc bình minh",
       "matching_scenario_keys": [
         "venho_lake_view_room_sunrise",
         "venho_rooftop_sunrise"
       ],
-      "expires_at": "2026-11-15T03:16:56.492588",
+      "expires_at": "2026-11-16T02:57:11.492810",
       "fact_key": null
     },
     {
@@ -46,14 +28,14 @@
       "forecast_date": "2026-11-15",
       "condition": "rain",
       "temperature_range": [
-        20.5,
-        28.0
+        19.6,
+        27.5
       ],
       "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
       "matching_scenario_keys": [
         "venho_lobby_cozy"
       ],
-      "expires_at": "2026-11-15T03:16:56.492588",
+      "expires_at": "2026-11-16T02:57:11.492810",
       "fact_key": null
     },
     {
@@ -62,16 +44,16 @@
       "domain": "weather_signal",
       "evidence_level": "R2-T",
       "forecast_date": "2026-11-16",
-      "condition": "golden_sunset",
+      "condition": "rain",
       "temperature_range": [
-        23.1,
-        30.9
+        22.6,
+        30.3
       ],
-      "visual_opportunity": "Hoàng hôn vàng trên Hồ Tây — rooftop cuối ngày",
+      "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
       "matching_scenario_keys": [
-        "venho_rooftop_sunset"
+        "venho_lobby_cozy"
       ],
-      "expires_at": "2026-11-15T03:16:56.492588",
+      "expires_at": "2026-11-16T02:57:11.492810",
       "fact_key": null
     },
     {
@@ -82,14 +64,14 @@
       "forecast_date": "2026-11-17",
       "condition": "golden_sunset",
       "temperature_range": [
-        23.7,
-        29.8
+        24.3,
+        30.2
       ],
       "visual_opportunity": "Hoàng hôn vàng trên Hồ Tây — rooftop cuối ngày",
       "matching_scenario_keys": [
         "venho_rooftop_sunset"
       ],
-      "expires_at": "2026-11-15T03:16:56.492588",
+      "expires_at": "2026-11-16T02:57:11.492810",
       "fact_key": null
     },
     {
@@ -100,14 +82,14 @@
       "forecast_date": "2026-11-18",
       "condition": "rain",
       "temperature_range": [
-        21.4,
-        25.0
+        21.1,
+        27.5
       ],
       "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
       "matching_scenario_keys": [
         "venho_lobby_cozy"
       ],
-      "expires_at": "2026-11-15T03:16:56.492588",
+      "expires_at": "2026-11-16T02:57:11.492810",
       "fact_key": null
     },
     {
@@ -118,14 +100,32 @@
       "forecast_date": "2026-11-19",
       "condition": "golden_sunset",
       "temperature_range": [
-        19.3,
-        23.5
+        19.0,
+        23.1
       ],
       "visual_opportunity": "Hoàng hôn vàng trên Hồ Tây — rooftop cuối ngày",
       "matching_scenario_keys": [
         "venho_rooftop_sunset"
       ],
-      "expires_at": "2026-11-15T03:16:56.492588",
+      "expires_at": "2026-11-16T02:57:11.492810",
+      "fact_key": null
+    },
+    {
+      "rs_id": "RS-weather-2026-11-20",
+      "type": "weather",
+      "domain": "weather_signal",
+      "evidence_level": "R2-T",
+      "forecast_date": "2026-11-20",
+      "condition": "rain",
+      "temperature_range": [
+        18.1,
+        19.6
+      ],
+      "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
+      "matching_scenario_keys": [
+        "venho_lobby_cozy"
+      ],
+      "expires_at": "2026-11-16T02:57:11.492810",
       "fact_key": null
     }
   ]
