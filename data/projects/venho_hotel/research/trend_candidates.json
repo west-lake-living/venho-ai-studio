@@ -1790,5 +1790,86 @@
     "fast_lane": false,
     "verified_by_human": false,
     "scanned_at": "2026-11-11T00:19:57.349111+00:00"
+  },
+  {
+    "id": "gnews-1c3469992a9a7d85",
+    "title": "Hơn 130 năm là \"cái dạ dày của Hà Nội\", chợ Đồng Xuân giờ có một diện mạo rất khác khiến nhiều người tò mò",
+    "source_uri": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxOYzdVVTQ2bHhnM0paTHFfUU5qdVNuOXZEN0o2dGRLcjVOaGQ5ZTdRTmYxWVdHd1NTYjJKMjRHVmNWZGRBWWRWc1hLZDhYb0NLVllKNmZSZE5wcFpNYUczbDRVLUU1MS1HNlBmd0F0TnJiWmlZM2NaNElvdHhZTFRMV1dFQ0xlbHBkd1RuU0JCMEM5NHVKQWZia2kzYjRMNVJfOU1tazRwSFpwREV0cE9SbU1VWTN3cFcwUnRfRkc5MGZYVGhObklyN3FyZXp3QXpRR1hyQWpVTTJpZHI0UWc?oc=5",
+    "source_name": "aFamily",
+    "published_at": "2026-11-14T12:34:00+00:00",
+    "snippet": "aFamily",
+    "relevance_hint": 0.0,
+    "collector": "google_news",
+    "query": "\"Hồ Tây\" triển lãm",
+    "geographic": "hanoi",
+    "thematic": "travel_stay",
+    "actionability": "direct",
+    "type": "feature_story",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "food_culinary",
+      "culture_festival_positive"
+    ],
+    "is_event": false,
+    "event_name": null,
+    "event_start": null,
+    "event_end": null,
+    "venue": "Chợ Đồng Xuân",
+    "westlake_area": false,
+    "sources": [
+      {
+        "title": "Hơn 130 năm là \"cái dạ dày của Hà Nội\", chợ Đồng Xuân giờ có một diện mạo rất khác khiến nhiều người tò mò",
+        "source_uri": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxOYzdVVTQ2bHhnM0paTHFfUU5qdVNuOXZEN0o2dGRLcjVOaGQ5ZTdRTmYxWVdHd1NTYjJKMjRHVmNWZGRBWWRWc1hLZDhYb0NLVllKNmZSZE5wcFpNYUczbDRVLUU1MS1HNlBmd0F0TnJiWmlZM2NaNElvdHhZTFRMV1dFQ0xlbHBkd1RuU0JCMEM5NHVKQWZia2kzYjRMNVJfOU1tazRwSFpwREV0cE9SbU1VWTN3cFcwUnRfRkc5MGZYVGhObklyN3FyZXp3QXpRR1hyQWpVTTJpZHI0UWc?oc=5",
+        "source_name": "aFamily",
+        "published_at": "2026-11-14T12:34:00+00:00"
+      }
+    ],
+    "source_count": 1,
+    "relevance_score": 0.7,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "fast_lane": false,
+    "verified_by_human": false,
+    "scanned_at": "2026-11-15T00:17:38.728960+00:00"
+  },
+  {
+    "id": "gnews-f9e8219034dc0a79",
+    "title": "Khám phá tháp nước bí ẩn tại Hà Nội",
+    "source_uri": "https://news.google.com/rss/articles/CBMiakFVX3lxTE03bWo2bGFmR1YzVnhGdnNqNDZvZnRiemltUE02ZENBaUJBajFPTWJMV1QyUlpKQjdoSFlLSzZxcWQ2SXN1ajNwb3BBVnJKbDlfMmdRNHhJUmhlQ0t4ZkJ1Z3Vvd090UWdiVXc?oc=5",
+    "source_name": "Vietnam.vn",
+    "published_at": "2026-11-14T12:25:18+00:00",
+    "snippet": "Vietnam.vn",
+    "relevance_hint": 0.0,
+    "collector": "google_news",
+    "query": "\"Hồ Tây\" triển lãm",
+    "geographic": "hanoi",
+    "thematic": "travel_stay",
+    "actionability": "direct",
+    "type": "feature_story",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "culture_festival_positive"
+    ],
+    "is_event": false,
+    "event_name": null,
+    "event_start": null,
+    "event_end": null,
+    "venue": "Hà Nội",
+    "westlake_area": false,
+    "sources": [
+      {
+        "title": "Khám phá tháp nước bí ẩn tại Hà Nội",
+        "source_uri": "https://news.google.com/rss/articles/CBMiakFVX3lxTE03bWo2bGFmR1YzVnhGdnNqNDZvZnRiemltUE02ZENBaUJBajFPTWJMV1QyUlpKQjdoSFlLSzZxcWQ2SXN1ajNwb3BBVnJKbDlfMmdRNHhJUmhlQ0t4ZkJ1Z3Vvd090UWdiVXc?oc=5",
+        "source_name": "Vietnam.vn",
+        "published_at": "2026-11-14T12:25:18+00:00"
+      }
+    ],
+    "source_count": 1,
+    "relevance_score": 0.7,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "fast_lane": false,
+    "verified_by_human": false,
+    "scanned_at": "2026-11-15T00:17:38.728960+00:00"
   }
 ]
