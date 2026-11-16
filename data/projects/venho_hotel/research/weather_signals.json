@@ -1,24 +1,6 @@
 {
-  "generated_at": "2026-11-15T02:28:03.299920",
+  "generated_at": "2026-11-16T02:37:49.005414",
   "signals": [
-    {
-      "rs_id": "RS-weather-2026-11-15",
-      "type": "weather",
-      "domain": "weather_signal",
-      "evidence_level": "R2-T",
-      "forecast_date": "2026-11-15",
-      "condition": "rain",
-      "temperature_range": [
-        20.0,
-        28.5
-      ],
-      "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
-      "matching_scenario_keys": [
-        "venho_lobby_cozy"
-      ],
-      "expires_at": "2026-11-17T02:28:03.296203",
-      "fact_key": null
-    },
     {
       "rs_id": "RS-weather-2026-11-16",
       "type": "weather",
@@ -28,13 +10,13 @@
       "condition": "rain",
       "temperature_range": [
         22.5,
-        30.2
+        30.4
       ],
       "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
       "matching_scenario_keys": [
         "venho_lobby_cozy"
       ],
-      "expires_at": "2026-11-17T02:28:03.296203",
+      "expires_at": "2026-11-18T02:37:48.999891",
       "fact_key": null
     },
     {
@@ -45,14 +27,14 @@
       "forecast_date": "2026-11-17",
       "condition": "rain",
       "temperature_range": [
-        24.8,
-        30.4
+        24.2,
+        30.1
       ],
       "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
       "matching_scenario_keys": [
         "venho_lobby_cozy"
       ],
-      "expires_at": "2026-11-17T02:28:03.296203",
+      "expires_at": "2026-11-18T02:37:48.999891",
       "fact_key": null
     },
     {
@@ -63,14 +45,14 @@
       "forecast_date": "2026-11-18",
       "condition": "rain",
       "temperature_range": [
-        20.2,
-        29.6
+        19.3,
+        28.0
       ],
       "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
       "matching_scenario_keys": [
         "venho_lobby_cozy"
       ],
-      "expires_at": "2026-11-17T02:28:03.296203",
+      "expires_at": "2026-11-18T02:37:48.999891",
       "fact_key": null
     },
     {
@@ -81,14 +63,14 @@
       "forecast_date": "2026-11-19",
       "condition": "rain",
       "temperature_range": [
-        19.8,
-        21.8
+        19.6,
+        21.5
       ],
       "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
       "matching_scenario_keys": [
         "venho_lobby_cozy"
       ],
-      "expires_at": "2026-11-17T02:28:03.296203",
+      "expires_at": "2026-11-18T02:37:48.999891",
       "fact_key": null
     },
     {
@@ -99,14 +81,14 @@
       "forecast_date": "2026-11-20",
       "condition": "rain",
       "temperature_range": [
-        16.3,
-        20.4
+        16.1,
+        20.3
       ],
       "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
       "matching_scenario_keys": [
         "venho_lobby_cozy"
       ],
-      "expires_at": "2026-11-17T02:28:03.296203",
+      "expires_at": "2026-11-18T02:37:48.999891",
       "fact_key": null
     },
     {
@@ -115,16 +97,34 @@
       "domain": "weather_signal",
       "evidence_level": "R2-T",
       "forecast_date": "2026-11-21",
-      "condition": "rain",
+      "condition": "cold_snap",
       "temperature_range": [
-        14.4,
-        20.5
+        15.9,
+        21.1
       ],
-      "visual_opportunity": "Mưa ngoài cửa kính — không gian ấm trong sảnh",
+      "visual_opportunity": "Trở lạnh — sảnh ấm, đèn vàng",
       "matching_scenario_keys": [
         "venho_lobby_cozy"
       ],
-      "expires_at": "2026-11-17T02:28:03.296203",
+      "expires_at": "2026-11-18T02:37:48.999891",
+      "fact_key": null
+    },
+    {
+      "rs_id": "RS-weather-2026-11-22",
+      "type": "weather",
+      "domain": "weather_signal",
+      "evidence_level": "R2-T",
+      "forecast_date": "2026-11-22",
+      "condition": "golden_sunset",
+      "temperature_range": [
+        16.7,
+        23.4
+      ],
+      "visual_opportunity": "Hoàng hôn vàng trên Hồ Tây — rooftop cuối ngày",
+      "matching_scenario_keys": [
+        "venho_rooftop_sunset"
+      ],
+      "expires_at": "2026-11-18T02:37:48.999891",
       "fact_key": null
     }
   ]
