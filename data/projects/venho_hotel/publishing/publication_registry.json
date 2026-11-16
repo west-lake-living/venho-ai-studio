@@ -27377,13 +27377,13 @@
       "idempotency_key": "287787546b2a1d9635e22a751413f0a35b6e81e2b40d8ade4e69a5ed968607a0",
       "platform": "facebook",
       "slot_id": "slot-2026-11-16-monday",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
-      "platform_post_id": null,
-      "permalink": null,
+      "status": "PUBLISHED",
+      "gateway_status": "PUBLISHED",
+      "platform_post_id": "1124616474074140_122153078991351048",
+      "permalink": "https://www.facebook.com/1124616474074140_122153078991351048",
       "reconciliation_proof": null,
       "created_at": "2026-11-03T03:40:49.093842+00:00",
-      "updated_at": "2026-11-09T04:13:45.818840+00:00",
+      "updated_at": "2026-11-16T02:00:33.037442+00:00",
       "content": {
         "title": "Đường Thanh Niên sáng đầu tuần, nắng hanh và hàng cây",
         "text": "Sáng đầu tuần, đường Thanh Niên sáng rõ đến từng tán lá.\n\nTrời trong, không một gợn mây, nắng hanh khô đổ xuống mặt đường thành từng mảng vàng giữa bóng cây.\n\nHàng cây lâu năm hai bên đường đã quen với nhịp này: xe máy nối nhau đi làm, vài người đạp xe chậm hơn một chút, người đi bộ men theo lan can nhìn ra mặt nước. Một bên là Hồ Tây rộng, một bên là Trúc Bạch nhỏ hơn, lặng hơn. Vỉa hè gọn gàng, không bàn ghế bày ra, nên đoạn đường này sáng sớm thuộc về người đi bộ nhiều hơn.\n\nNhìn xa qua mặt hồ là những mái nhà thấp xen giữa vài khối nhà cao, ranh giới giữa phần Hà Nội cũ và phần Hà Nội mới cứ nằm cạnh nhau như vậy.\n\nNắng hanh cuối năm có cái dễ chịu riêng: đủ ấm để đi bộ lâu, đủ khô để không thấy ngột. Đi hết đường Thanh Niên rồi vòng về phía Nguyễn Đình Thi, mặt hồ mở ra rộng hơn, và buổi sáng đầu tuần bỗng không còn vội như lịch làm việc vẫn thường bắt đầu.\n\nVen Hồ Hotel nằm trên cung đường ven hồ đó, đủ gần để bạn bắt đầu một ngày bằng vài vòng đi bộ trước khi phố xá đông lên.\n\nNếu bạn đang chọn ngày cho một chuyến Hà Nội mùa này, nhắn cho Ven Hồ Hotel để xem phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #DuongThanhNien #KhachSanViewHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-monday-facebook-df63115d",
@@ -27550,7 +27550,9 @@
         "revoked_reason": null,
         "package_versions_checksum": "573774a88b0fd5a4206bc7d858ef68c4de316ee00234ec549d49bfecb3dc712e",
         "checksum": "a96b4b667179b533ab35a3c5b5f15245aa94dd671b3972278229b1805828902c"
-      }
+      },
+      "gateway_error": null,
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-monday-instagram-6edb8ec1",
@@ -27558,13 +27560,13 @@
       "idempotency_key": "9d0c15f72d9ca368fc5d8471a92175b9406be2c39647759f92166562000f657f",
       "platform": "instagram",
       "slot_id": "slot-2026-11-16-monday",
-      "status": "APPROVED_SCHEDULED",
-      "gateway_status": null,
-      "platform_post_id": null,
-      "permalink": null,
+      "status": "PUBLISHED",
+      "gateway_status": "PUBLISHED",
+      "platform_post_id": "17912275644570668",
+      "permalink": "https://www.instagram.com/17912275644570668",
       "reconciliation_proof": null,
       "created_at": "2026-11-03T03:41:17.441548+00:00",
-      "updated_at": "2026-11-09T04:13:45.818840+00:00",
+      "updated_at": "2026-11-16T02:00:48.410539+00:00",
       "content": {
         "title": "Sáng đầu tuần nắng hanh trên đường Thanh Niên",
         "text": "Đầu tuần, nắng hanh phủ một lớp vàng mỏng lên hàng cây đường Thanh Niên.\n\nTrời xanh, không một gợn mây. Nắng mùa này khô và nhẹ, chiếu qua tán lá già rồi rơi xuống mặt đường thành từng mảng sáng tối chạy dài theo chiều xe đi.\n\nMột bên là mặt hồ loang màu xám xanh. Một bên là những mái nhà cao thấp của thành phố, cái mới xen cái cũ, chẳng theo hàng lối nào nhưng nhìn lâu lại thấy quen.\n\nGần trưa, dòng người vẫn đều đặn qua lại. Có người đi bộ chậm dưới bóng cây, có người dừng xe bên lề chỉ để nhìn ra hồ một lúc rồi lại đi tiếp. Lối đi sạch, vỉa hè gọn, không ghế bàn, không gì níu chân ngoài khung cảnh.\n\nVen Hồ Hotel nằm trên đường Nguyễn Đình Thi, cùng một vòng hồ với Thanh Niên. Những buổi sáng trời trong như vậy, chỉ cần bước ra khỏi cửa là đã thấy Hồ Tây bắt đầu ngày mới.\n\nNếu bạn đang tính một kỳ nghỉ ngắn ở Hà Nội, nhắn Ven Hồ Hotel để xem phòng trống cho những ngày bạn định ghé nhé.\n\n#VenHoHotelHanoi #HoTay #DuongThanhNien #WestLakeHanoi #KhamPhaHoTay #KhachSanViewHoTay #NguyenDinhThi #HanoiTravel",
@@ -27734,7 +27736,9 @@
         "revoked_reason": null,
         "package_versions_checksum": "2468108e9804c8ee5755be211fe4b73c024db5afa1fa4fa21d5ee5177050f7a7",
         "checksum": "72dfd96d120602fa7939a3a082a9a1d5e88e65981e164503e66b1822d569be62"
-      }
+      },
+      "gateway_error": null,
+      "shadow_override_by": "hpham1504@gmail.com"
     },
     {
       "publication_id": "pub-wednesday-facebook-7f6ea814",
