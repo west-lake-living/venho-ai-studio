@@ -1871,5 +1871,47 @@
     "fast_lane": false,
     "verified_by_human": false,
     "scanned_at": "2026-11-15T00:17:38.728960+00:00"
+  },
+  {
+    "id": "gnews-32a6dae1454f5f19",
+    "title": "Trà sen Quảng Bá – Đánh thức hương xưa qua trải nghiệm",
+    "source_uri": "https://tayho.hanoi.gov.vn/van-hoa-xa-hoi/tra-sen-quang-ba-danh-thuc-huong-xua-qua-trai-nghiem-2697261115212843121.htm",
+    "source_name": "Cổng TTĐT phường Tây Hồ",
+    "published_at": null,
+    "snippet": "Cổng TTĐT phường Tây Hồ",
+    "relevance_hint": 0.0,
+    "collector": "official_page",
+    "geographic": "westlake",
+    "thematic": "food_local",
+    "actionability": "direct",
+    "type": "lifestyle_trend",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "food_culinary",
+      "culture_festival_positive",
+      "travel_accommodation"
+    ],
+    "is_event": false,
+    "event_name": null,
+    "event_start": null,
+    "event_end": null,
+    "venue": "Quảng Bá, Tây Hồ",
+    "westlake_area": true,
+    "sources": [
+      {
+        "title": "Trà sen Quảng Bá – Đánh thức hương xưa qua trải nghiệm",
+        "source_uri": "https://tayho.hanoi.gov.vn/van-hoa-xa-hoi/tra-sen-quang-ba-danh-thuc-huong-xua-qua-trai-nghiem-2697261115212843121.htm",
+        "source_name": "Cổng TTĐT phường Tây Hồ",
+        "published_at": null
+      }
+    ],
+    "source_count": 1,
+    "relevance_score": 0.8,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "fast_lane": false,
+    "verified_by_human": false,
+    "scanned_at": "2026-11-16T00:17:04.768882+00:00"
   }
 ]
