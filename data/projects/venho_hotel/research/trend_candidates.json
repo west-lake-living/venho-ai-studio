@@ -1913,5 +1913,45 @@
     "fast_lane": false,
     "verified_by_human": false,
     "scanned_at": "2026-11-16T00:17:04.768882+00:00"
+  },
+  {
+    "id": "event-undated-7b887b772a",
+    "title": "Ấm áp ngày hội Đại đoàn kết tại Tổ dân phố số 23: Gắn kết cộng đồng, lan tỏa những giá trị văn hóa",
+    "source_uri": "https://tayho.hanoi.gov.vn/van-hoa-xa-hoi/am-ap-ngay-hoi-dai-doan-ket-tai-to-dan-pho-so-23-gan-ket-cong-dong-lan-toa-nhung-gia-tri-van-hoa-2697261116205830955.htm",
+    "source_name": "Cổng TTĐT phường Tây Hồ",
+    "published_at": null,
+    "snippet": "Cổng TTĐT phường Tây Hồ",
+    "relevance_hint": 0.0,
+    "collector": "official_page",
+    "geographic": "westlake",
+    "thematic": "unrelated",
+    "actionability": "stretch",
+    "type": "cultural_event",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "culture_festival_positive"
+    ],
+    "is_event": true,
+    "event_name": "Ngày hội Đại đoàn kết tại Tổ dân phố số 23",
+    "event_start": null,
+    "event_end": null,
+    "venue": "Tổ dân phố số 23, phường Tây Hồ",
+    "westlake_area": true,
+    "sources": [
+      {
+        "title": "Ấm áp ngày hội Đại đoàn kết tại Tổ dân phố số 23: Gắn kết cộng đồng, lan tỏa những giá trị văn hóa",
+        "source_uri": "https://tayho.hanoi.gov.vn/van-hoa-xa-hoi/am-ap-ngay-hoi-dai-doan-ket-tai-to-dan-pho-so-23-gan-ket-cong-dong-lan-toa-nhung-gia-tri-van-hoa-2697261116205830955.htm",
+        "source_name": "Cổng TTĐT phường Tây Hồ",
+        "published_at": null
+      }
+    ],
+    "source_count": 1,
+    "relevance_score": 0.6,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "fast_lane": false,
+    "verified_by_human": false,
+    "scanned_at": "2026-11-17T00:18:26.071203+00:00"
   }
 ]
