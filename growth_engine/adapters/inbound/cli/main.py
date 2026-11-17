@@ -347,20 +347,34 @@ def p4_slot_status(
             else:
                 outbox_count = execution_count = 0
             revision = None
+            paid_call_keys: list[str] = []
+            paid_call_prefixes = [f"generate:{target['slot_id']}:%"]
             if target["current_revision_id"]:
                 revision_row = connection.execute(
-                    """SELECT r.id,r.payload_hash,v.mime,v.width,v.height,v.byte_size,v.qc_status,
-                              q.decision AS qc_decision
+                    """SELECT r.id,r.payload_hash,v.sha256 AS variant_sha256,
+                              v.mime,v.width,v.height,v.byte_size,v.qc_status,
+                              q.decision AS qc_decision,q.caption_hash,q.ruleset_hash,
+                              q.fact_snapshot_hash
                        FROM delivery_revisions r JOIN media_variants v ON v.id=r.variant_id
                        JOIN qc_reports q ON q.id=r.qc_report_id WHERE r.id=?""",
                     (target["current_revision_id"],),
                 ).fetchone()
                 if revision_row is not None:
                     revision = dict(revision_row)
+                    paid_call_keys.append(
+                        "qc:{variant_sha256}:{caption_hash}:{fact_snapshot_hash}:{ruleset_hash}".format(
+                            **dict(revision_row)
+                        )
+                    )
+            paid_call_where = ["business_key LIKE ?"]
+            paid_call_params: list[str] = list(paid_call_prefixes)
+            for business_key in paid_call_keys:
+                paid_call_where.append("business_key=?")
+                paid_call_params.append(business_key)
             paid_calls = [dict(row) for row in connection.execute(
                 """SELECT operation,state,reserved_minor,actual_minor
-                   FROM paid_calls WHERE created_at>=? ORDER BY created_at,id""",
-                (package_created_at,),
+                   FROM paid_calls WHERE """ + " OR ".join(paid_call_where) + " ORDER BY created_at,id",
+                tuple(paid_call_params),
             ).fetchall()]
         finally:
             connection.close()

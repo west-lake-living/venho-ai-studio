@@ -408,6 +408,17 @@ def test_p4_repairs_text_only_draft_from_allowlisted_legacy_drive_photo_without_
     from typer.testing import CliRunner
     from growth_engine.adapters.inbound.cli.main import app as engine_cli
 
+    connection = sqlite3.connect(settings.db_path)
+    connection.execute(
+        """INSERT INTO paid_calls
+           (id,business_key,period_key,currency,provider,operation,state,
+            reserved_minor,actual_minor,external_job_id,created_at,settled_at)
+           VALUES ('unrelated-call','generate:another-slot:spec:version','2026-11','VND',
+                   'fake','unrelated','SETTLED',1,1,NULL,9999999999999,9999999999999)"""
+    )
+    connection.commit()
+    connection.close()
+
     status = CliRunner().invoke(
         engine_cli,
         ["p4-slot-status", "--date", "2026-11-21"],
@@ -432,6 +443,7 @@ def test_p4_repairs_text_only_draft_from_allowlisted_legacy_drive_photo_without_
     assert status_json["revision"]["qc_decision"] == "PASS"
     assert status_json["controls"] == {"publish_mode": "DISABLED", "global_pause": 1}
     assert status_json["outbox_count"] == status_json["execution_count"] == 0
+    assert {row["operation"] for row in status_json["paid_calls"]} == {"draft_package", "image_qc"}
     assert all(secret not in status.stdout for secret in (
         "synthetic-capability-secret", "synthetic-service-secret", "synthetic-telegram-secret",
         "synthetic-chat-id", "synthetic-meta-secret", "synthetic-secret",
