@@ -13,7 +13,6 @@ from PIL import Image
 
 from growth_engine.application.content.generate_package import GeneratePackageCommand
 from growth_engine.application.dto import DraftPackage, EffectiveQcPolicy, FactSnapshot, QcResult
-from growth_engine.adapters.outbound.media.drive_image_library import DriveImage, DriveImageLibrary
 from growth_engine.application.review.approve_group import ApprovalItem
 from growth_engine.domain.kernel.hashing import sha256_hex
 from growth_engine.domain.publishing.runtime_mode import PublishMode
@@ -59,18 +58,6 @@ class _TextOnlyFakeGenerator:
             captions_by_profile={"default": "Ảnh chụp thật tại Ven Hồ Hotel."},
             image_options=(),
         )
-
-
-class _FakeDriveReader:
-    def __init__(self, image: DriveImage) -> None:
-        self.image = image
-        self.read_ids: list[str] = []
-
-    def read(self, file_id: str) -> DriveImage:
-        self.read_ids.append(file_id)
-        if file_id != self.image.file_id:
-            raise AssertionError("fake Drive reader was called with a non-fixture ID")
-        return self.image
 
 
 class _FakeFacts:
@@ -257,23 +244,23 @@ def test_production_p4_fake_e2e_approves_without_dispatch_while_disabled(
     assert "slot_mapping_mismatch" in mismatched_mapping.reasons
 
 
-def test_p4_repairs_text_only_draft_from_allowlisted_legacy_drive_photo_without_regeneration(
+def test_p4_repairs_text_only_draft_from_allowlisted_legacy_local_photo_without_regeneration(
     tmp_path: Path, monkeypatch, caplog
 ) -> None:
     photo_buffer = BytesIO()
     Image.new("RGB", (900, 1200), (43, 91, 117)).save(photo_buffer, format="JPEG", quality=92)
     photo_bytes = photo_buffer.getvalue()
     photo_sha = hashlib.sha256(photo_bytes).hexdigest()
-    drive_image = DriveImage(
-        file_id="legacy-photo-file-id-01",
-        name="approved-rooftop-photo.jpg",
-        mime_type="image/jpeg",
-        data=photo_bytes,
-        sha256=photo_sha,
-    )
-    reader = _FakeDriveReader(drive_image)
-    image_library = DriveImageLibrary(
-        {"venho_rooftop_railing_approved": (drive_image.file_id,)}, reader
+    legacy_root = tmp_path / "growth-runtime/venho-ai-studio/assets/raw"
+    photo_path = legacy_root / "outside" / "approved-rooftop-photo.jpg"
+    photo_path.parent.mkdir(parents=True)
+    photo_path.write_bytes(photo_bytes)
+    image_config = tmp_path / "growth-engine-image-library.yaml"
+    image_config.write_text(
+        "version: 1\nsource: local_legacy_library\nallowlist:\n"
+        "  venho_rooftop_railing_approved:\n"
+        f"    - path: outside/{photo_path.name}\n      sha256: {photo_sha}\n",
+        encoding="utf-8",
     )
     clock = FakeClock(int(datetime(2026, 11, 10, 2, 0, tzinfo=timezone.utc).timestamp() * 1000))
     settings = Settings(
@@ -282,6 +269,8 @@ def test_p4_repairs_text_only_draft_from_allowlisted_legacy_drive_photo_without_
         media_root=str(tmp_path / "media"),
         public_base_url="https://growth.example.invalid",
         dashboard_base_url="https://os.example.invalid",
+        image_library_config=str(image_config),
+        legacy_assets_root=str(legacy_root),
         capability_keys="synthetic:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
         service_tokens="synthetic:hash",
         make_webhook_urls={"PAGE_A": "https://make.example.invalid/fake"},
@@ -330,16 +319,20 @@ def test_p4_repairs_text_only_draft_from_allowlisted_legacy_drive_photo_without_
     assert delivery["state"] == "DRAFT"
     assert delivery["current_revision_id"] is None
 
-    container.repair_slot_media._image_library = image_library
+    preview = container.repair_slot_media.preview_context(
+        date(2026, 11, 21), channel_key="fb_hanoi"
+    )
+    assert preview["delivery_id"] == str(delivery["id"])
+    assert preview["topic_key"] == "p4-test-topic-without-media"
+
     repair = container.repair_slot_media.execute(
         date(2026, 11, 21),
         channel_key="fb_hanoi",
         reference_asset_id="venho_rooftop_railing_approved",
-        drive_file_id=drive_image.file_id,
     )
     assert repair.delivery_id == str(delivery["id"])
     assert repair.source_sha256 == photo_sha
-    assert reader.read_ids == [drive_image.file_id]
+    assert repair.source_relative_path == "outside/approved-rooftop-photo.jpg"
 
     # Simulate the original assembly job being picked before its variant exists.
     connection = sqlite3.connect(settings.db_path)
@@ -365,7 +358,6 @@ def test_p4_repairs_text_only_draft_from_allowlisted_legacy_drive_photo_without_
         date(2026, 11, 21),
         channel_key="fb_hanoi",
         reference_asset_id="venho_rooftop_railing_approved",
-        drive_file_id=drive_image.file_id,
     )
     assert repair_again.asset_id == repair.asset_id
     assert repair_again.assemble_job_id == repair.assemble_job_id

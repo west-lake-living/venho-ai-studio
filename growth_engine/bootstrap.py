@@ -31,6 +31,49 @@ class _NoVerifiedMakeErrorClasses:
         return None
 
 
+def _legacy_image_library_paths(settings: Any, repo_root: Path, project_config: Path) -> tuple[Path, Path]:
+    production = str(getattr(settings, "env", "")).lower() == "production"
+    default_config = (
+        Path.home() / "venho" / "config" / "growth-engine-image-library.yaml"
+        if production
+        else project_config / "image_library.yaml"
+    )
+    default_root = (
+        Path.home() / "venho" / "growth-runtime" / "venho-ai-studio" / "assets" / "raw"
+        if production
+        else repo_root / "assets" / "raw"
+    )
+    config_path = str(getattr(settings, "image_library_config", "") or "").strip()
+    assets_root = str(getattr(settings, "legacy_assets_root", "") or "").strip()
+    return (
+        Path(config_path).expanduser() if config_path else default_config,
+        Path(assets_root).expanduser() if assets_root else default_root,
+    )
+
+
+def _legacy_reference_subjects(repo_root: Path) -> dict[str, str]:
+    yaml = import_module("yaml")
+    growth_dir = repo_root / "config" / "projects" / "venho_hotel" / "growth"
+    scenarios = yaml.safe_load((growth_dir / "scenario_registry.yaml").read_text(encoding="utf-8")) or {}
+    catalog = yaml.safe_load((growth_dir / "reference_assets.yaml").read_text(encoding="utf-8")) or {}
+    catalog_ids = set((catalog.get("assets", {}) or {}).keys())
+    subjects: dict[str, set[str]] = {}
+    for scenario in (scenarios.get("scenarios", {}) or {}).values():
+        if not isinstance(scenario, dict):
+            continue
+        subject = scenario.get("dna_subject")
+        if not isinstance(subject, str) or not subject:
+            continue
+        for reference_id in scenario.get("reference_asset_ids", []) or []:
+            if str(reference_id) in catalog_ids:
+                subjects.setdefault(str(reference_id), set()).add(subject)
+    return {
+        reference_id: next(iter(values))
+        for reference_id, values in subjects.items()
+        if len(values) == 1
+    }
+
+
 class _LazyCapabilityIssuer:
     def __init__(self, key_config: str) -> None:
         self._key_config = key_config
@@ -454,40 +497,54 @@ class DoctorService:
             scenarios = yaml.safe_load(
                 (project_dir / "growth" / "scenario_registry.yaml").read_text(encoding="utf-8")
             ) or {}
-            image_library = yaml.safe_load(
-                (project_dir / "growth_engine" / "image_library.yaml").read_text(encoding="utf-8")
+            legacy_catalog = yaml.safe_load(
+                (project_dir / "growth" / "reference_assets.yaml").read_text(encoding="utf-8")
             ) or {}
-            required_ids = {
+            catalog_ids = legacy_catalog.get("assets", {})
+            if not isinstance(catalog_ids, dict):
+                raise ValueError
+            scenario_ids = {
                 str(reference_id)
                 for scenario in (scenarios.get("scenarios", {}) or {}).values()
                 if isinstance(scenario, dict)
                 for reference_id in (scenario.get("reference_asset_ids", []) or [])
             }
-            allowlist = image_library.get("allowlist", {})
-            if not isinstance(allowlist, dict):
-                raise ValueError
+            required_ids = scenario_ids.intersection(str(value) for value in catalog_ids)
+            unused_ids = sorted(scenario_ids - required_ids)
+            config_path, assets_root = _legacy_image_library_paths(
+                self.settings,
+                self._repo_root,
+                project_dir / "growth_engine",
+            )
+            library_adapter = import_module(
+                "growth_engine.adapters.outbound.media.local_legacy_image_library"
+            )
+            image_library = library_adapter.LocalLegacyImageLibrary.from_yaml(
+                config_path,
+                root=assets_root,
+            )
             missing_groups = sorted(
                 reference_id
                 for reference_id in required_ids
-                if not isinstance(allowlist.get(reference_id), list) or not allowlist[reference_id]
+                if not image_library.allowlist.get(reference_id)
             )
-        except (OSError, TypeError, ValueError):
-            return DoctorCheck("P4 image source", "FAIL", "Legacy image library config could not be read.")
-
-        missing_keys = []
-        if not os.environ.get("GOOGLE_DRIVE_TOKEN_JSON", "").strip():
-            missing_keys.append("GOOGLE_DRIVE_TOKEN_JSON")
-        problems: list[str] = []
-        if missing_groups:
-            problems.append("missing_allowlist_groups=" + ",".join(missing_groups))
-        if missing_keys:
-            problems.append("missing_keys=" + ",".join(missing_keys))
-        if problems:
-            return DoctorCheck("P4 image source", "FAIL", "; ".join(problems))
+            if missing_groups:
+                return DoctorCheck(
+                    "P4 image source",
+                    "FAIL",
+                    "missing_allowlist_groups=" + ",".join(missing_groups),
+                )
+            image_library.validate_reference_ids(required_ids)
+        except (OSError, TypeError, ValueError, RuntimeError) as error:
+            return DoctorCheck(
+                "P4 image source",
+                "FAIL",
+                f"legacy_image_validation=FAIL reason={type(error).__name__}",
+            )
         return DoctorCheck(
             "P4 image source",
             "PASS",
-            f"allowlisted_reference_groups={len(required_ids)}; GOOGLE_DRIVE_TOKEN_JSON present; live Drive access not probed.",
+            f"legacy_reference_groups={len(required_ids)}; local_images=SHA256 verified; ignored_uncatalogued_scenario_groups={len(unused_ids)}.",
         )
 
     @staticmethod
@@ -673,7 +730,7 @@ def build_container(
     )
     lane_store_adapter = import_module("growth_engine.adapters.outbound.persistence.sqlite.lane_store")
     legacy_generator_adapter = import_module("growth_engine.adapters.outbound.legacy.generator_adapter")
-    drive_image_library_adapter = import_module("growth_engine.adapters.outbound.media.drive_image_library")
+    local_image_library_adapter = import_module("growth_engine.adapters.outbound.media.local_legacy_image_library")
     legacy_fact_adapter = import_module("growth_engine.adapters.outbound.legacy.fact_source")
     ingest_asset_adapter = import_module("growth_engine.application.media.ingest_asset")
     upload_asset_adapter = import_module("growth_engine.application.media.upload_asset")
@@ -923,10 +980,17 @@ def build_container(
             encoding="utf-8"
         )
     ) or {}
-    image_library = drive_image_library_adapter.DriveImageLibrary.from_yaml(
-        project_config / "image_library.yaml",
-        os.environ,
-    )
+    image_config_path, legacy_assets_root = _legacy_image_library_paths(settings, repo_root, project_config)
+    try:
+        image_library = local_image_library_adapter.LocalLegacyImageLibrary.from_yaml(
+            image_config_path,
+            root=legacy_assets_root,
+        )
+    except FileNotFoundError:
+        if str(getattr(settings, "env", "")).lower() != "production":
+            raise
+        # Keep the dashboard/API available; production doctor and generation remain fail-closed.
+        image_library = local_image_library_adapter.LocalLegacyImageLibrary(legacy_assets_root, {})
     generator = legacy_generator_adapter.LegacyGeneratorAdapter(
         repo_root=repo_root,
         image_library=image_library,
@@ -956,6 +1020,7 @@ def build_container(
         asset_ingestor,
         clock,
         environment=channel_environment,
+        reference_subjects=_legacy_reference_subjects(repo_root),
     )
     dashboard_reads = dashboard_reads_adapter.SqliteDashboardReads(
         uow_factory,

@@ -41,6 +41,8 @@ class SqliteP4MediaRepairStore:
                 "channel_key": channel_key,
                 "slot_date": str(row["local_date"]),
                 "slot_time": str(row["local_time"]),
+                "topic_key": str(package.get("topic_key") or ""),
+                "brief": str(package.get("brief") or ""),
                 "asset_options": images,
             }
 

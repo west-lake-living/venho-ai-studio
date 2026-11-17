@@ -6,13 +6,15 @@
 
 ## Trạng thái triển khai
 
-Code P4 có audited `prepare-only`, worker cho `generate_slot` → ảnh gốc → `prepare_variant` → QC trong bước `assemble_revision`, review snapshot, ngân sách v2 riêng và lệnh chỉ đọc `cutover-readiness`. Doctor yêu cầu allowlist ảnh legacy theo từng nhóm cùng Drive token; hiện allowlist chưa được Harry điền, nên chưa thể chạy provider thật hoặc xác nhận P4 PASS.
+Code P4 có audited `prepare-only`, worker cho `generate_slot` → ảnh gốc → `prepare_variant` → QC trong bước `assemble_revision`, review snapshot, ngân sách v2 riêng và lệnh chỉ đọc `cutover-readiness`. Doctor xác minh image allowlist theo catalog legacy và SHA-256 dưới thư mục ảnh server.
 
-Provider do Harry chọn là provider và key legacy đang chạy: `ANTHROPIC_API_KEY`, `OPENAI_API_KEY` và Google Drive OAuth token từ `~/venho/secrets/growth.env`. Wrapper chuyển các biến này sang worker/doctor/repair; DB, media root, capability, tokens và controls vẫn lấy từ `~/venho/secrets/growth-engine.env`. Không in giá trị hoặc chạy dưới `set -x`.
+Provider do Harry chọn là provider và key legacy đang chạy: `ANTHROPIC_API_KEY` và `OPENAI_API_KEY` từ `~/venho/secrets/growth.env`. Wrapper chỉ chuyển hai key này sang worker/doctor/repair; cấu hình Growth Engine còn lại lấy từ `~/venho/secrets/growth-engine.env`. Không in giá trị hoặc chạy dưới `set -x`.
 
-**Nguồn ảnh legacy đã đối chiếu:** v3.2 lấy ảnh tham chiếu từ thư viện local `assets/raw/<subject>/`, xoay ảnh theo ngày; option A dùng ảnh thật làm input cho GPT Image edit, option C là ảnh thật chưa chỉnh. Drive trong legacy dùng để upload ảnh QC-pass làm nguồn cho Make, không đọc lại ảnh nguồn mặc định. Release GC2 không chứa `assets/raw`, vì vậy adapter mới nhận ảnh tham chiếu từ các Drive file ID đã được Harry duyệt trong `config/projects/venho_hotel/growth_engine/image_library.yaml`. Adapter chỉ gọi `files.get`/`get_media` cho ID allowlisted; không liệt kê hay tìm kiếm Drive. Ảnh gốc và ảnh AI được ingest vào `media_assets` với SHA-256; variant JPEG và QC vẫn chạy theo policy v2.
+**Nguồn ảnh theo quyết định Harry:** đọc read-only từ `/home/serveradmin/venho/growth-runtime/venho-ai-studio/assets/raw`. Resolver dùng đúng `config/projects/venho_hotel/growth/reference_assets.yaml`: `venho_rooftop_railing_approved` → `outside`; `venho_room_lake_view_approved` → `room` (đệ quy, gồm `ViewHo-room-1`); `venho_lobby_approved` → `lobby`; `venho_street_railing_approved` và `venho_lake_landscape_approved` → `westlake`. Không có reference ID legacy cho `facade` hoặc `linh_an`; `linh_an` không được allowlist nếu catalog không phê duyệt ảnh người dùng công khai. Không suy luận mapping từ tên file.
 
-Hiện file allowlist còn rỗng. Cần Harry chọn ảnh đã duyệt và điền file ID vào đúng nhóm `reference_asset_id` trước deploy. Doctor sẽ báo `P4 image source=FAIL` nếu thiếu nhóm hoặc `GOOGLE_DRIVE_TOKEN_JSON`; deploy-release dừng trước khi đổi release.
+Production image allowlist nằm ngoài repo tại `~/venho/config/growth-engine-image-library.yaml` (mode 600). Mỗi mục ghim `path` tương đối bên dưới thư mục nguồn cùng SHA-256. `LocalLegacyImageLibrary` mở file read-only, từ chối `..`, absolute path và symlink, rồi kiểm SHA/định dạng trước khi ingest. Không copy hoặc sửa ảnh legacy. Option A dùng bytes tham chiếu cho GPT Image edit; option C dùng ảnh thật theo cùng vòng xoay legacy. Asset được lưu trong GC2 `media_assets` theo SHA-256.
+
+Doctor chỉ bắt buộc các ID xuất hiện trong scenario registry **và** catalog ảnh legacy. Scenario ID không có trong catalog legacy được báo là bỏ qua, không chặn deploy. Với catalog hiện tại, năm nhóm trên đều được dùng; nếu server không còn ảnh trong folder tương ứng, inventory sẽ nêu nhóm đó và dừng ghi config để Harry bổ sung hoặc quyết định sửa catalog. Doctor kiểm tra file allowlist và SHA thật trước khi đổi release.
 
 ## 1. Deploy và kiểm tra fail-closed
 
@@ -134,26 +136,51 @@ Lưu kết quả lệnh, SHA deploy, thời điểm ICT, slot/delivery/revision 
 
 **Dry run 17/11/2026:** `generate_slot` và `generate_package` đã thành công; có một DRAFT và paid call đã `SETTLED`, nhưng không có media asset, variant, QC hoặc revision. Root cause là release checkout không có các thư mục `assets/raw` mà resolver legacy ánh xạ tới; adapter cũ bỏ qua ảnh thiếu, còn assembly trước đó được queue dù package không có media. Không có outbox command hoặc execution. Không chạy `prepare-slot`/`generate_package` lần nữa cho slot này.
 
-Chọn một ảnh thật đã duyệt hợp với caption và cảnh của bài, lấy ID từ Drive, rồi điền ID vào nhóm legacy tương ứng trong `image_library.yaml` (ví dụ `venho_rooftop_railing_approved`). Không thêm URL hoặc token. Kiểm từng nhóm cần dùng có ít nhất một ID; doctor không thay thế được thao tác thử quyền Drive.
+Lệnh inventory dùng mapping catalog; ảnh trong `facade` và `linh_an` không được đưa vào allowlist tự động. Mỗi lần chạy sẽ in candidate path tương đối, group đề xuất và SHA-256. Chỉ nhập `WRITE` sau khi Harry xem danh sách; file đích là `~/venho/config/growth-engine-image-library.yaml`, mode 600, ngoài Git. Nếu một group đang được catalog dùng nhưng không có file, script dừng ghi.
 
-Sau khi allowlist đã nằm trong release và deploy thành công, dùng lệnh audited để ingest ảnh, xếp lại `prepare_variant` và `assemble_revision` cho delivery DRAFT hiện có. Lệnh không gọi `generate_package`, không đổi caption/package, không tạo command và yêu cầu controls vẫn `DISABLED` + `global_pause=1`:
-
-```bash
-"$HOME/venho/growth-engine/current/ops/asus-server/growth-engine/run-with-legacy-provider-env.sh" \
-  repair-p4-media --date 2026-11-21 --channel fb_hanoi \
-  --reference-asset-id venho_rooftop_railing_approved --drive-file-id '<ID_ALLOWLISTED>'
-```
-
-`<ID_ALLOWLISTED>` phải là ID thật có trong nhóm đã chọn. Không chạy lệnh khi ID chưa được allowlist hoặc bài không khớp nhóm ảnh. Sau đó kiểm tra:
+Lệnh dán một lần sau khi commit này đã được push. Nó lấy checkout sạch SHA mới nhất của nhánh, cho Harry xem và xác nhận allowlist, deploy release, hiển thị topic/brief DRAFT để Harry chọn đúng reference group, rồi chờ status hoàn tất. `repair-p4-media` không gọi lại `generate_package`; không chạy khi Harry không xác nhận candidate list hoặc group bài:
 
 ```bash
-"$HOME/venho/growth-engine/current/ops/asus-server/growth-engine/run-with-legacy-provider-env.sh" \
-  p4-slot-status --date 2026-11-21
-journalctl --user -u growth-engine-worker@jobs.service --since '15 minutes ago' --no-pager \
-  | grep -E 'content job (started|finished)'
+set -Eeuo pipefail
+fail() { printf 'P4 recovery stopped: %s\n' "$*" >&2; exit 1; }
+REPO="$HOME/venho/gc2-src"
+BRANCH="gc2/build-v1-2"
+REMOTE_URL="$(git -C "$REPO" remote get-url origin)"
+SOURCE_DIR="$(mktemp -d "$HOME/venho/gc2-p4-source.XXXXXX")"
+trap 'rm -rf "$SOURCE_DIR"' EXIT
+git clone --quiet --no-checkout "$REMOTE_URL" "$SOURCE_DIR"
+git -C "$SOURCE_DIR" fetch --quiet origin "$BRANCH"
+P4_SHA="$(git -C "$SOURCE_DIR" rev-parse FETCH_HEAD)"
+git -C "$SOURCE_DIR" checkout --quiet --detach "$P4_SHA"
+[[ -z "$(git -C "$SOURCE_DIR" status --porcelain)" ]] || fail "source checkout is not clean"
+
+# Read-only inventory; the script writes only the external allowlist after Harry types WRITE.
+python3 "$SOURCE_DIR/scripts/growth_engine/prepare_legacy_image_library.py" --apply \
+  || fail "image inventory was rejected, incomplete, or not confirmed"
+
+# The release doctor validates all catalog-used groups and every pinned SHA before switching.
+bash "$SOURCE_DIR/ops/asus-server/growth-engine/deploy-release.sh" "$P4_SHA"
+RUNTIME="$HOME/venho/growth-engine/current/ops/asus-server/growth-engine/run-with-legacy-provider-env.sh"
+"$RUNTIME" repair-p4-media --date 2026-11-21 --channel fb_hanoi \
+  || fail "media repair did not queue; confirm the legacy reference group shown by the prompt"
+
+STATUS=""
+for ((attempt=1; attempt<=120; attempt++)); do
+  STATUS="$("$RUNTIME" p4-slot-status --date 2026-11-21)"
+  if printf '%s' "$STATUS" | python3 -c 'import json,sys; d=json.load(sys.stdin); j=[x for x in d.get("jobs",[]) if x.get("kind") in {"prepare_variant","assemble_revision"}]; sys.exit(0 if len(j)>=2 and all(x.get("state")=="SUCCEEDED" for x in j) else 3 if any(x.get("state") in {"FAILED","UNKNOWN","DEAD"} for x in j) else 1)'; then
+    break
+  else
+    result=$?
+    if [[ "$result" -eq 3 ]]; then printf '%s\n' "$STATUS"; fail "media job reached a terminal error"
+    elif [[ "$attempt" -eq 120 ]]; then printf '%s\n' "$STATUS"; fail "timed out waiting for media jobs"
+    fi
+  fi
+  sleep 5
+done
+printf '%s\n' "$STATUS"
 ```
 
-**PASS:** asset có SHA nguồn; `prepare_variant` và `assemble_revision` đều `SUCCEEDED`; DRAFT chuyển `IN_REVIEW`; JPEG/QC `PASS` hoặc `REVIEW`; `draft_package` vẫn chỉ có một lượt `SETTLED`; controls vẫn DISABLED/pause; outbox và execution đều bằng 0. Lệnh status chỉ in ID/trạng thái/lỗi đã lọc, không in caption, đường dẫn, URL hay token.
+**PASS:** asset có SHA nguồn; `prepare_variant` và `assemble_revision` đều `SUCCEEDED`; DRAFT chuyển `IN_REVIEW`; JPEG/QC `PASS` hoặc `REVIEW`; `draft_package` vẫn chỉ có một lượt `SETTLED`; controls vẫn DISABLED/pause; outbox và execution đều bằng 0. Lệnh status chỉ in ID, trạng thái, đường dẫn tương đối và lỗi đã lọc; không in caption, absolute path, URL hay token.
 
 Worker giữ `assemble_revision` ở `PENDING` trước khi claim nếu thiếu variant, cập nhật `last_error` bằng mã/message và lùi `run_at`; vì vậy nó không tiêu attempt liên tục. Nếu variant mất sau preflight do race, handler cũng defer về `PENDING`. Chạy lại `repair-p4-media` để queue lại prepare và assembly. Không sửa SQL tay. Nếu job báo lỗi khác, dùng code/message đã lọc và log INFO mỗi job để sửa riêng lỗi media.
 

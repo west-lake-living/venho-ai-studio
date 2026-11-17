@@ -16,10 +16,13 @@ class P4MediaRepairStore(Protocol):
 
 
 class ImageLibrary(Protocol):
-    def read_for_reference(self, reference_id: str, file_id: str) -> Any: ...
+    @property
+    def allowed_reference_ids(self) -> frozenset[str]: ...
+
+    def resolve(self, reference_id: str, rotation_key: str, rotation_offset: int = 0) -> Any: ...
 
 
-class DriveImageIdRequired(ValueError):
+class LegacyImageGroupRequired(ValueError):
     pass
 
 
@@ -28,13 +31,15 @@ class P4MediaRepairResult:
     delivery_id: str
     asset_id: str
     source_sha256: str
+    source_relative_path: str
+    reference_asset_id: str | None
     prepare_job_id: str | None
     assemble_job_id: str
     requeued: bool
 
 
 class RepairSlotMedia:
-    """Attach one existing or allowlisted Drive image to a P4 DRAFT and requeue media work."""
+    """Attach one hash-pinned legacy local image to a P4 DRAFT and requeue media work."""
 
     def __init__(
         self,
@@ -44,12 +49,27 @@ class RepairSlotMedia:
         clock: Any,
         *,
         environment: str,
+        reference_subjects: Mapping[str, str],
     ) -> None:
         self._store = store
         self._image_library = image_library
         self._asset_ingestor = asset_ingestor
         self._clock = clock
         self._environment = environment
+        self._reference_subjects = dict(reference_subjects)
+
+    @property
+    def allowed_reference_ids(self) -> frozenset[str]:
+        return frozenset(self._image_library.allowed_reference_ids).intersection(self._reference_subjects)
+
+    def preview_context(self, local_date: date, *, channel_key: str) -> Mapping[str, str]:
+        self._assert_target(channel_key)
+        context = self._store.load_draft_context(local_date, channel_key)
+        return {
+            "delivery_id": str(context["delivery_id"]),
+            "topic_key": str(context.get("topic_key") or ""),
+            "brief": str(context.get("brief") or ""),
+        }
 
     def execute(
         self,
@@ -57,73 +77,88 @@ class RepairSlotMedia:
         *,
         channel_key: str,
         reference_asset_id: str | None = None,
-        drive_file_id: str | None = None,
     ) -> P4MediaRepairResult:
-        if self._environment != "production":
-            raise ValueError("P4 media repair is restricted to production")
-        if channel_key != "fb_hanoi":
-            raise ValueError("P4 media repair currently supports fb_hanoi only")
+        self._assert_target(channel_key)
         context = self._store.load_draft_context(local_date, channel_key)
         images = context.get("asset_options")
         option = _existing_option(images)
         if option is None:
-            if not reference_asset_id or not drive_file_id:
-                raise DriveImageIdRequired(
-                    "the DRAFT has no original image; provide its legacy reference asset ID and an allowlisted Drive file ID"
+            if not reference_asset_id:
+                raise LegacyImageGroupRequired(
+                    "the DRAFT has no original image; choose its existing legacy reference group"
                 )
-            drive_image = self._image_library.read_for_reference(reference_asset_id, drive_file_id)
-            source_ref = f"google-drive:{drive_image.file_id}"
-            asset_id = self._store.find_asset(source_ref, drive_image.sha256)
+            library_image = self._image_library.resolve(reference_asset_id, local_date.isoformat(), 1)
+            if library_image is None:
+                raise ValueError("selected legacy reference group has no allowlisted image")
+            dna_subject = self._reference_subjects.get(reference_asset_id)
+            if not dna_subject:
+                raise ValueError("selected legacy reference group is not linked to a catalog scenario")
+            source_ref = f"legacy-local:{library_image.relative_path}"
+            asset_id = self._store.find_asset(source_ref, library_image.sha256)
             if asset_id is None:
                 asset = self._asset_ingestor.execute(
                     source_type="library",
                     source_ref=source_ref,
-                    source_revision=drive_image.sha256,
-                    stream=io.BytesIO(drive_image.data),
+                    source_revision=library_image.sha256,
+                    stream=io.BytesIO(library_image.data),
                     metadata={
-                        "source": "allowlisted_google_drive_library",
-                        "drive_file_id": drive_image.file_id,
+                        "source": "local_legacy_library",
+                        "relative_path": library_image.relative_path,
                         "reference_asset_id": reference_asset_id,
-                        "source_name": drive_image.name,
-                        "mime_type": drive_image.mime_type,
-                        "sha256": drive_image.sha256,
+                        "source_name": library_image.name,
+                        "mime_type": library_image.mime_type,
+                        "sha256": library_image.sha256,
                         "p4_repair": True,
                     },
                 )
                 asset_id = asset.id
-                if asset.source_sha256 != drive_image.sha256:
-                    raise ValueError("stored P4 media asset SHA-256 differs from the allowlisted Drive source")
+                if asset.source_sha256 != library_image.sha256:
+                    raise ValueError("stored P4 media asset SHA-256 differs from the allowlisted local source")
             option = {
                 "option_id": "C",
                 "asset_id": asset_id,
-                "sha256": drive_image.sha256,
+                "sha256": library_image.sha256,
                 "source_type": "library",
                 "label": None,
                 "provenance": {
-                    "source": "allowlisted_google_drive_library",
+                    "source": "local_legacy_library",
                     "source_ref": source_ref,
-                    "drive_file_id": drive_image.file_id,
+                    "relative_path": library_image.relative_path,
                     "reference_asset_id": reference_asset_id,
-                    "source_name": drive_image.name,
-                    "mime_type": drive_image.mime_type,
-                    "dna_subject": "outside",
-                    "image_sha256": drive_image.sha256,
+                    "source_name": library_image.name,
+                    "mime_type": library_image.mime_type,
+                    "dna_subject": dna_subject,
+                    "image_sha256": library_image.sha256,
                     "p4_repair": True,
                 },
             }
         asset_id = option.get("asset_id")
         source_sha = option.get("sha256")
-        if not isinstance(asset_id, str) or not asset_id or not isinstance(source_sha, str) or len(source_sha) != 64:
+        provenance = option.get("provenance")
+        source_relative_path = provenance.get("relative_path") if isinstance(provenance, dict) else None
+        if (
+            not isinstance(asset_id, str) or not asset_id
+            or not isinstance(source_sha, str) or len(source_sha) != 64
+            or not isinstance(source_relative_path, str) or not source_relative_path
+        ):
             raise ValueError("existing DRAFT image source has invalid asset identity")
         queued = self._store.queue_media(context, option, now_ms=self._clock.now_ms())
         return P4MediaRepairResult(
             delivery_id=str(context["delivery_id"]),
             asset_id=asset_id,
             source_sha256=source_sha,
+            source_relative_path=source_relative_path,
+            reference_asset_id=reference_asset_id if provenance.get("p4_repair") else None,
             prepare_job_id=queued.get("prepare_job_id"),
             assemble_job_id=str(queued["assemble_job_id"]),
             requeued=bool(queued.get("requeued", True)),
         )
+
+    def _assert_target(self, channel_key: str) -> None:
+        if self._environment != "production":
+            raise ValueError("P4 media repair is restricted to production")
+        if channel_key != "fb_hanoi":
+            raise ValueError("P4 media repair currently supports fb_hanoi only")
 
 
 def _existing_option(value: object) -> dict[str, object] | None:

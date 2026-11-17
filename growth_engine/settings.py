@@ -19,6 +19,8 @@ class Settings(BaseModel):
     media_root: str = _REQUIRED
     public_base_url: str = _REQUIRED
     dashboard_base_url: str = ""
+    image_library_config: str = ""
+    legacy_assets_root: str = ""
     capability_keys: str = Field(default=_REQUIRED, repr=False)
     service_tokens: str = Field(default=_REQUIRED, repr=False)
     make_webhook_urls: dict[str, str] = Field(default_factory=dict, repr=False)
@@ -37,6 +39,8 @@ class Settings(BaseModel):
             media_root=source.get("GE_MEDIA_ROOT", _REQUIRED),
             public_base_url=source.get("GE_PUBLIC_BASE_URL", _REQUIRED),
             dashboard_base_url=source.get("GE_DASHBOARD_BASE_URL", ""),
+            image_library_config=source.get("GE_IMAGE_LIBRARY_CONFIG", ""),
+            legacy_assets_root=source.get("GE_LEGACY_ASSETS_ROOT", ""),
             capability_keys=source.get("GE_CAPABILITY_KEYS", _REQUIRED),
             service_tokens=source.get("GE_SERVICE_TOKENS", _REQUIRED),
             make_webhook_urls=_read_prefix(source, "GE_MAKE_WEBHOOK_URL_"),

@@ -1,7 +1,8 @@
 version: 1
-# Explicit Google Drive file IDs only. No folder listing or Drive search is used.
-# Populate from the reviewed Ven Ho photo library before production P4 generation.
-# IDs are grouped by the existing legacy reference_asset_id used by each scenario.
+source: local_legacy_library
+# Production override lives outside the release at ~/venho/config/growth-engine-image-library.yaml.
+# Each entry is a reviewed path + content SHA-256 beneath GE_LEGACY_ASSETS_ROOT.
+# The catalog mapping is config/projects/venho_hotel/growth/reference_assets.yaml.
 allowlist:
   venho_rooftop_railing_approved: []
   venho_room_lake_view_approved: []

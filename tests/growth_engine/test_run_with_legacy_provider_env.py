@@ -18,7 +18,6 @@ def test_wrapper_keeps_gc2_paths_and_reuses_only_legacy_provider_keys(tmp_path: 
         'GE_DB_PATH="/tmp/legacy.db"\n'
         'ANTHROPIC_API_KEY="legacy-anthropic-synthetic"\n'
         'OPENAI_API_KEY="legacy-openai-synthetic"\n'
-        'GOOGLE_DRIVE_TOKEN_JSON=\'{"type":"authorized_user","refresh_token":"legacy-drive-synthetic"}\'\n'
         'GOOGLE_OAUTH_CLIENT_ID="legacy-client-id-synthetic"\n'
         'GOOGLE_OAUTH_CLIENT_SECRET="legacy-client-secret-synthetic"\n',
         encoding="utf-8",
@@ -37,9 +36,9 @@ def test_wrapper_keeps_gc2_paths_and_reuses_only_legacy_provider_keys(tmp_path: 
         'printf "GE_DB_PATH=%s\\n" "$GE_DB_PATH"\n'
         '[[ "$ANTHROPIC_API_KEY" == "legacy-anthropic-synthetic" ]] && echo ANTHROPIC=LEGACY\n'
         '[[ "$OPENAI_API_KEY" == "legacy-openai-synthetic" ]] && echo OPENAI=LEGACY\n'
-        '[[ "$GOOGLE_DRIVE_TOKEN_JSON" == *"legacy-drive-synthetic"* ]] && echo GOOGLE_DRIVE=LEGACY\n'
-        '[[ "$GOOGLE_OAUTH_CLIENT_ID" == "legacy-client-id-synthetic" ]] && echo GOOGLE_CLIENT_ID=LEGACY\n'
-        '[[ "$GOOGLE_OAUTH_CLIENT_SECRET" == "legacy-client-secret-synthetic" ]] && echo GOOGLE_CLIENT_SECRET=LEGACY\n',
+        '[[ -z "${GOOGLE_DRIVE_TOKEN_JSON:-}" ]] && echo GOOGLE_DRIVE=NOT_INJECTED\n'
+        '[[ -z "${GOOGLE_OAUTH_CLIENT_ID:-}" ]] && echo GOOGLE_CLIENT_ID=NOT_INJECTED\n'
+        '[[ -z "${GOOGLE_OAUTH_CLIENT_SECRET:-}" ]] && echo GOOGLE_CLIENT_SECRET=NOT_INJECTED\n',
         encoding="utf-8",
     )
     runtime.chmod(0o700)
@@ -61,9 +60,9 @@ def test_wrapper_keeps_gc2_paths_and_reuses_only_legacy_provider_keys(tmp_path: 
     assert "GE_DB_PATH=/tmp/gc2-production.db" in result.stdout
     assert "ANTHROPIC=LEGACY" in result.stdout
     assert "OPENAI=LEGACY" in result.stdout
-    assert "GOOGLE_DRIVE=LEGACY" in result.stdout
-    assert "GOOGLE_CLIENT_ID=LEGACY" in result.stdout
-    assert "GOOGLE_CLIENT_SECRET=LEGACY" in result.stdout
+    assert "GOOGLE_DRIVE=NOT_INJECTED" in result.stdout
+    assert "GOOGLE_CLIENT_ID=NOT_INJECTED" in result.stdout
+    assert "GOOGLE_CLIENT_SECRET=NOT_INJECTED" in result.stdout
     assert "legacy-anthropic-synthetic" not in result.stdout + result.stderr
     assert "legacy-openai-synthetic" not in result.stdout + result.stderr
     assert "gc2-must-not-win" not in result.stdout + result.stderr

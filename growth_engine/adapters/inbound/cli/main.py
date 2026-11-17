@@ -191,41 +191,39 @@ def prepare_slot(
 def repair_p4_media(
     local_date: str = typer.Option(..., "--date", help="Existing P4 DRAFT slot date in YYYY-MM-DD."),
     channel: str = typer.Option("fb_hanoi", "--channel", help="P4 recovery is limited to fb_hanoi."),
-    reference_asset_id: str | None = typer.Option(None, "--reference-asset-id", help="Legacy reference group matching the approved caption/photo scene."),
-    drive_file_id: str | None = typer.Option(None, "--drive-file-id", help="One reviewed Drive image ID from image_library.yaml."),
+    reference_asset_id: str | None = typer.Option(None, "--reference-asset-id", help="Catalog reference group matching the draft scene; prompted if omitted."),
 ) -> None:
     """Attach an allowlisted image to an existing DRAFT without regenerating its text package."""
-    from growth_engine.application.content.repair_slot_media import DriveImageIdRequired
     from growth_engine.bootstrap import build_container
 
     try:
         parsed_date = date.fromisoformat(local_date)
         container = build_container(Settings.from_env())
-        if not container.image_library.allowed_file_ids:
+        allowed_references = sorted(container.repair_slot_media.allowed_reference_ids)
+        if not allowed_references:
             raise ValueError(
-                "no reviewed Drive image IDs are configured in config/projects/venho_hotel/growth_engine/image_library.yaml"
+                "no reviewed local image paths are configured in the image library"
             )
-        try:
-            result = container.repair_slot_media.execute(
-                parsed_date,
-                channel_key=channel,
-                reference_asset_id=reference_asset_id,
-                drive_file_id=drive_file_id,
-            )
-        except DriveImageIdRequired:
-            allowed_references = sorted(container.image_library.allowlist)
-            chosen_reference = reference_asset_id or typer.prompt(
-                "Legacy reference asset ID (" + ", ".join(allowed_references) + ")"
-            )
-            chosen_id = drive_file_id or typer.prompt(
-                "Drive image file ID (must be allowlisted for that reference asset)"
-            )
-            result = container.repair_slot_media.execute(
-                parsed_date,
-                channel_key=channel,
-                reference_asset_id=chosen_reference,
-                drive_file_id=chosen_id,
-            )
+        preview = container.repair_slot_media.preview_context(
+            parsed_date,
+            channel_key=channel,
+        )
+        typer.echo(json.dumps({
+            "draft_delivery_id": preview["delivery_id"],
+            "topic_key": preview["topic_key"],
+            "brief": preview["brief"],
+            "available_reference_groups": allowed_references,
+        }, ensure_ascii=False, sort_keys=True), err=True)
+        chosen_reference = reference_asset_id or typer.prompt(
+            "Legacy reference asset ID (" + ", ".join(allowed_references) + ")"
+        )
+        if chosen_reference not in allowed_references:
+            raise ValueError("selected reference group is not in the reviewed image allowlist")
+        result = container.repair_slot_media.execute(
+            parsed_date,
+            channel_key=channel,
+            reference_asset_id=chosen_reference,
+        )
     except (ValueError, RuntimeError, OSError) as error:
         typer.echo(json.dumps({
             "result": "BLOCKED",
@@ -238,6 +236,8 @@ def repair_p4_media(
         "delivery_id": result.delivery_id,
         "asset_id": result.asset_id,
         "source_sha256": result.source_sha256,
+        "source_relative_path": result.source_relative_path,
+        "reference_asset_id": result.reference_asset_id,
         "prepare_job_id": result.prepare_job_id,
         "assemble_job_id": result.assemble_job_id,
         "requeued": result.requeued,

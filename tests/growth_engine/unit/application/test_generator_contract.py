@@ -11,7 +11,7 @@ from PIL import Image
 
 from growth_engine.adapters.outbound.legacy.fact_source import LegacyFactSource
 from growth_engine.adapters.outbound.legacy.generator_adapter import LegacyGeneratorAdapter
-from growth_engine.adapters.outbound.media.drive_image_library import DriveImage, DriveImageLibrary
+from growth_engine.adapters.outbound.media.local_legacy_image_library import LocalLegacyImageLibrary
 from growth_engine.application.dto import DraftRequest
 
 
@@ -44,15 +44,6 @@ class FakeImageProvider:
     def generate(self, prompt, *, size, quality, reference_images=None):
         self.calls.append((prompt, size, quality, reference_images))
         return self.payload
-
-
-class FakeDriveImageReader:
-    def __init__(self, image: DriveImage) -> None:
-        self.image = image
-
-    def read(self, file_id: str) -> DriveImage:
-        assert file_id == self.image.file_id
-        return self.image
 
 
 def _image_bytes(path: Path) -> bytes:
@@ -152,7 +143,7 @@ def test_generator_returns_contract_fields_and_keeps_images_temporary(tmp_path, 
     assert not Path(image_option["path"]).exists()
 
 
-def test_generator_uses_allowlisted_drive_photo_for_legacy_ai_edit_and_real_photo_option(
+def test_generator_uses_allowlisted_legacy_local_photo_for_ai_edit_and_real_photo_option(
     tmp_path, monkeypatch
 ):
     data_root = tmp_path / "data" / "projects"
@@ -165,16 +156,18 @@ def test_generator_uses_allowlisted_drive_photo_for_legacy_ai_edit_and_real_phot
     source_buffer = BytesIO()
     Image.new("RGB", (800, 1000), (44, 92, 121)).save(source_buffer, format="JPEG")
     source_bytes = source_buffer.getvalue()
-    source = DriveImage(
-        file_id="approved-drive-photo-00001",
-        name="approved-west-lake-photo.jpg",
-        mime_type="image/jpeg",
-        data=source_bytes,
-        sha256=hashlib.sha256(source_bytes).hexdigest(),
-    )
-    library = DriveImageLibrary(
-        {"venho_lake_landscape_approved": (source.file_id,)},
-        FakeDriveImageReader(source),
+    legacy_root = tmp_path / "assets/raw"
+    source_path = legacy_root / "westlake" / "approved-west-lake-photo.jpg"
+    source_path.parent.mkdir(parents=True)
+    source_path.write_bytes(source_bytes)
+    source_sha = hashlib.sha256(source_bytes).hexdigest()
+    library = LocalLegacyImageLibrary(
+        legacy_root,
+        {
+            "venho_lake_landscape_approved": (
+                {"path": "westlake/approved-west-lake-photo.jpg", "sha256": source_sha},
+            )
+        },
     )
     from agent_studio.growth.scenario_registry import ScenarioRegistry
     from agent_studio.growth.reference_asset_resolver import ReferenceAssetResolver
@@ -219,8 +212,12 @@ def test_generator_uses_allowlisted_drive_photo_for_legacy_ai_edit_and_real_phot
         assert reference.format == "PNG"
     assert {item["option_id"] for item in package.image_options} == {"A", "C"}
     real_photo = next(item for item in package.image_options if item["option_id"] == "C")
-    assert real_photo["provenance"]["source_ref"] == f"google-drive:{source.file_id}"
-    assert real_photo["provenance"]["image_sha256"] == source.sha256
+    assert real_photo["provenance"]["source_ref"] == "legacy-local:westlake/approved-west-lake-photo.jpg"
+    assert real_photo["provenance"]["image_sha256"] == source_sha
+    assert real_photo["provenance"]["relative_path"] == "westlake/approved-west-lake-photo.jpg"
+    generated_option = next(item for item in package.image_options if item["option_id"] == "A")
+    assert generated_option["provenance"]["reference_local_library_path"] == "westlake/approved-west-lake-photo.jpg"
+    assert generated_option["provenance"]["reference_local_library_sha256"] == source_sha
     assert real_photo["provenance"]["reference_asset_id"] == "venho_lake_landscape_approved"
     adapter.close()
 
