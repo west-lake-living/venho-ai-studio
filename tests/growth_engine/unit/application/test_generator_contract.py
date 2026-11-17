@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import shutil
+from io import BytesIO
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -9,6 +11,7 @@ from PIL import Image
 
 from growth_engine.adapters.outbound.legacy.fact_source import LegacyFactSource
 from growth_engine.adapters.outbound.legacy.generator_adapter import LegacyGeneratorAdapter
+from growth_engine.adapters.outbound.media.drive_image_library import DriveImage, DriveImageLibrary
 from growth_engine.application.dto import DraftRequest
 
 
@@ -41,6 +44,15 @@ class FakeImageProvider:
     def generate(self, prompt, *, size, quality, reference_images=None):
         self.calls.append((prompt, size, quality, reference_images))
         return self.payload
+
+
+class FakeDriveImageReader:
+    def __init__(self, image: DriveImage) -> None:
+        self.image = image
+
+    def read(self, file_id: str) -> DriveImage:
+        assert file_id == self.image.file_id
+        return self.image
 
 
 def _image_bytes(path: Path) -> bytes:
@@ -138,6 +150,79 @@ def test_generator_returns_contract_fields_and_keeps_images_temporary(tmp_path, 
 
     adapter.close()
     assert not Path(image_option["path"]).exists()
+
+
+def test_generator_uses_allowlisted_drive_photo_for_legacy_ai_edit_and_real_photo_option(
+    tmp_path, monkeypatch
+):
+    data_root = tmp_path / "data" / "projects"
+    knowledge_dir = data_root / "venho_hotel" / "knowledge"
+    knowledge_dir.mkdir(parents=True)
+    shutil.copyfile(
+        REPO_ROOT / "data/projects/venho_hotel/knowledge/VENHO_HOTEL_WESTLAKE_DNA.json",
+        knowledge_dir / "VENHO_HOTEL_WESTLAKE_DNA.json",
+    )
+    source_buffer = BytesIO()
+    Image.new("RGB", (800, 1000), (44, 92, 121)).save(source_buffer, format="JPEG")
+    source_bytes = source_buffer.getvalue()
+    source = DriveImage(
+        file_id="approved-drive-photo-00001",
+        name="approved-west-lake-photo.jpg",
+        mime_type="image/jpeg",
+        data=source_bytes,
+        sha256=hashlib.sha256(source_bytes).hexdigest(),
+    )
+    library = DriveImageLibrary(
+        {"venho_lake_landscape_approved": (source.file_id,)},
+        FakeDriveImageReader(source),
+    )
+    from agent_studio.growth.scenario_registry import ScenarioRegistry
+    from agent_studio.growth.reference_asset_resolver import ReferenceAssetResolver
+
+    registry = ScenarioRegistry.from_file(
+        REPO_ROOT / "config/projects/venho_hotel/growth/scenario_registry.yaml"
+    )
+    resolver = ReferenceAssetResolver.from_file(
+        REPO_ROOT / "config/projects/venho_hotel/growth/reference_assets.yaml",
+        assets_root=tmp_path / "empty-assets-root",
+    )
+    text_provider = FakeTextProvider()
+    image_provider = FakeImageProvider(source_bytes)
+    monkeypatch.setenv("GROWTH_IMAGE_ALTERNATIVES", "0")
+    adapter = LegacyGeneratorAdapter(
+        repo_root=REPO_ROOT,
+        data_root=data_root,
+        config_root=REPO_ROOT / "config/projects",
+        scenario_registry=registry,
+        reference_resolver=resolver,
+        generator_fn=text_provider,
+        image_provider=image_provider,
+        image_library=library,
+        image_alternatives_enabled=False,
+        temp_root=tmp_path / "runtime-images",
+    )
+
+    package = adapter.draft(
+        DraftRequest(
+            project_id="venho_hotel",
+            slot_id="slot-drive-reference-1",
+            lane="monday",
+            at_ms=1_799_000_000_000,
+            facts={"topic": "sương sớm trên mặt hồ", "fact_keys": []},
+        )
+    )
+
+    assert len(image_provider.calls) == 1
+    references = image_provider.calls[0][3]
+    assert references and len(references) == 1
+    with Image.open(BytesIO(references[0])) as reference:
+        assert reference.format == "PNG"
+    assert {item["option_id"] for item in package.image_options} == {"A", "C"}
+    real_photo = next(item for item in package.image_options if item["option_id"] == "C")
+    assert real_photo["provenance"]["source_ref"] == f"google-drive:{source.file_id}"
+    assert real_photo["provenance"]["image_sha256"] == source.sha256
+    assert real_photo["provenance"]["reference_asset_id"] == "venho_lake_landscape_approved"
+    adapter.close()
 
 
 def test_fact_source_returns_only_approved_current_facts_and_is_read_only(tmp_path):

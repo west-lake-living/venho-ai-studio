@@ -297,6 +297,10 @@ class SqliteGenerationStore:
                     correlation_id=correlation_id,
                     created_at_ms=settled_at,
                 )
+                # A text-only package remains a recoverable DRAFT. Do not enqueue
+                # assemble_revision until a durable original image asset exists.
+                if not snapshot["images"]:
+                    continue
                 self._save_job(
                     tx,
                     job_id=self._ids.new_id(),
@@ -483,6 +487,8 @@ class _GenerationTransaction:
             raise RuntimeError("package or channel route is missing for delivery assembly")
         snapshot = json.loads(package["source_snapshot_json"])
         image_options = snapshot.get("images", [])
+        if not isinstance(image_options, list) or not image_options:
+            return True
         self._tx.jobs.save(JobRecord(
             id=self._ids.new_id(),
             kind="assemble_revision",

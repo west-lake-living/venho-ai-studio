@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import logging
 import os
 import re
 import tempfile
@@ -20,6 +21,7 @@ from content_studio.content_context import load_content_config
 from content_studio.generators.claude_social_generator import claude_social_generator
 from content_studio.schemas.content_request import ContentRequest
 from growth_engine.application.dto import DraftPackage, DraftRequest
+from growth_engine.adapters.outbound.media.drive_image_library import DriveImage, DriveImageLibrary
 from growth_orchestrator.application.image_options import (
     alternate_scenario,
     library_photo_path,
@@ -38,6 +40,7 @@ TextGenerator = Callable[[ContentRequest, Any, dict[str, Any]], dict[str, Any]]
 
 _DEFAULT_REPO_ROOT = Path(__file__).resolve().parents[4]
 _LANE_ALIASES = {"saturday_trend": "saturday", "trend": "saturday"}
+_LOG = logging.getLogger(__name__)
 
 
 class LegacyGeneratorAdapter:
@@ -53,6 +56,7 @@ class LegacyGeneratorAdapter:
         reference_resolver: ReferenceAssetResolver | None = None,
         generator_fn: TextGenerator | None = None,
         image_provider: Any | None = None,
+        image_library: DriveImageLibrary | None = None,
         image_alternatives_enabled: bool | None = None,
         temp_root: Path | None = None,
     ) -> None:
@@ -63,6 +67,7 @@ class LegacyGeneratorAdapter:
         self.reference_resolver = reference_resolver
         self.generator_fn = generator_fn or claude_social_generator
         self.image_provider = image_provider or gpt_image_provider_from_env(os.environ)
+        self.image_library = image_library
         self.image_alternatives_enabled = (
             os.environ.get("GROWTH_IMAGE_ALTERNATIVES") == "1"
             if image_alternatives_enabled is None
@@ -253,11 +258,16 @@ class LegacyGeneratorAdapter:
         candidates: list[str],
         registry: ScenarioRegistry,
     ) -> list[dict[str, Any]]:
-        resolver = self._reference_asset_resolver(project)
         rotation_key = datetime.fromtimestamp(request.at_ms / 1000, tz=timezone.utc).date().isoformat()
         options: list[dict[str, Any]] = []
+        resolver = self._reference_asset_resolver(project)
+        reference_ids = list(registry.resolve(scenario_key).reference_asset_ids or [])
+        reference_images, drive_reference = self._load_reference_images(
+            reference_ids, resolver=resolver, rotation_key=rotation_key, rotation_offset=0,
+            scenario_key=scenario_key,
+        )
 
-        if getattr(self.image_provider, "enabled", True):
+        if getattr(self.image_provider, "enabled", True) and reference_images:
             option_a = self._generate_image_option(
                 option_id="A",
                 project=project,
@@ -268,6 +278,8 @@ class LegacyGeneratorAdapter:
                 resolver=resolver,
                 rotation_key=rotation_key,
                 rotation_offset=0,
+                reference_images=reference_images,
+                reference_file_id=None if drive_reference is None else drive_reference.file_id,
             )
             if option_a:
                 options.append(option_a)
@@ -275,6 +287,14 @@ class LegacyGeneratorAdapter:
             if self.image_alternatives_enabled:
                 alternative = alternate_scenario(scenario_key, candidates, registry)
                 if alternative:
+                    alternative_ids = list(registry.resolve(alternative).reference_asset_ids or [])
+                    alternative_images, alternative_drive = self._load_reference_images(
+                        alternative_ids,
+                        resolver=resolver,
+                        rotation_key=rotation_key,
+                        rotation_offset=1,
+                        scenario_key=alternative,
+                    )
                     option_b = self._generate_image_option(
                         option_id="B",
                         project=project,
@@ -285,10 +305,13 @@ class LegacyGeneratorAdapter:
                         resolver=resolver,
                         rotation_key=rotation_key,
                         rotation_offset=1,
+                        reference_images=alternative_images,
+                        reference_file_id=(None if alternative_drive is None else alternative_drive.file_id),
                     )
                     if option_b:
                         options.append(option_b)
 
+        photo_added = False
         try:
             photo_path = library_photo_path(
                 scenario_key,
@@ -300,10 +323,77 @@ class LegacyGeneratorAdapter:
                 option_c = self._copy_library_option(photo_path, scenario_key, request)
                 if option_c:
                     options.append(option_c)
-        except (OSError, KeyError, ValueError):
+                    photo_added = True
+        except (OSError, KeyError, ValueError) as error:
             # A missing curated reference is not a reason to write a broken file path.
-            pass
+            _LOG.warning(
+                "legacy local photo unavailable: scenario=%s error_code=%s",
+                scenario_key,
+                _safe_error_code(error),
+            )
+        if not photo_added and drive_reference is not None:
+            try:
+                drive_photo = self.image_library.resolve(reference_ids[0], rotation_key, 1) if self.image_library else None
+            except (OSError, RuntimeError, ValueError) as error:
+                _LOG.warning(
+                    "legacy image library photo unavailable: scenario=%s error_code=%s",
+                    scenario_key,
+                    _safe_error_code(error),
+                )
+                drive_photo = None
+            option_c = (
+                self._copy_drive_library_option(drive_photo, scenario_key, request)
+                if drive_photo is not None else None
+            )
+            if option_c:
+                options.append(option_c)
+        if not options:
+            _LOG.warning(
+                "legacy image sources unavailable: scenario=%s reference_ids=%d; draft will remain without media",
+                scenario_key,
+                len(reference_ids),
+            )
         return options
+
+    def _load_reference_images(
+        self,
+        reference_ids: list[str],
+        *,
+        resolver: ReferenceAssetResolver,
+        rotation_key: str,
+        rotation_offset: int,
+        scenario_key: str,
+    ) -> tuple[list[bytes] | None, DriveImage | None]:
+        if not reference_ids:
+            return None, None
+        try:
+            return (
+                resolver.resolve(reference_ids, rotation_key=rotation_key, rotation_offset=rotation_offset),
+                None,
+            )
+        except (OSError, KeyError, ValueError):
+            if self.image_library is None:
+                return None, None
+            try:
+                images = [
+                    self.image_library.resolve(reference_id, rotation_key, rotation_offset)
+                    for reference_id in reference_ids
+                ]
+                if any(image is None for image in images):
+                    _LOG.warning(
+                        "legacy image reference unavailable: scenario=%s error_code=ERR_GC2_IMAGE_ALLOWLIST_EMPTY",
+                        scenario_key,
+                    )
+                    return None, None
+                concrete_images = [image for image in images if image is not None]
+                return [_image_bytes_as_png(image.data) for image in concrete_images], concrete_images[0]
+            except (OSError, RuntimeError, ValueError) as error:
+                _LOG.warning(
+                    "legacy image reference unavailable: scenario=%s error_code=%s",
+                    scenario_key,
+                    _safe_error_code(error),
+                )
+                return None, None
 
     def _generate_image_option(
         self,
@@ -317,19 +407,11 @@ class LegacyGeneratorAdapter:
         resolver: ReferenceAssetResolver,
         rotation_key: str,
         rotation_offset: int,
+        reference_images: list[bytes] | None,
+        reference_file_id: str | None,
     ) -> dict[str, Any] | None:
         scenario = registry.resolve(scenario_key)
-        try:
-            references = (
-                resolver.resolve(
-                    list(scenario.reference_asset_ids),
-                    rotation_key=rotation_key,
-                    rotation_offset=rotation_offset,
-                )
-                if scenario.reference_asset_ids
-                else None
-            )
-        except (OSError, KeyError, ValueError):
+        if scenario.reference_asset_ids and not reference_images:
             return None
 
         dna = self._read_dna(project, scenario.dna_subject, rotation_key=rotation_key)
@@ -348,7 +430,7 @@ class LegacyGeneratorAdapter:
             final_prompt,
             size="1024x1280",
             quality="medium",
-            reference_images=references,
+            reference_images=reference_images,
         )
         image_path, output_bytes = self._write_generated_image(option_id, scenario_key, image_bytes)
         provenance = {
@@ -360,7 +442,44 @@ class LegacyGeneratorAdapter:
             "prompt_sha256": hashlib.sha256(final_prompt.encode("utf-8")).hexdigest(),
             "image_sha256": hashlib.sha256(output_bytes).hexdigest(),
         }
+        if reference_file_id:
+            provenance["reference_drive_file_id"] = reference_file_id
         return {"option_id": option_id, "path": str(image_path), "provenance": provenance}
+
+    def _copy_drive_library_option(
+        self,
+        drive_image: DriveImage,
+        scenario_key: str,
+        request: DraftRequest,
+    ) -> dict[str, Any] | None:
+        try:
+            with Image.open(BytesIO(drive_image.data)) as image:
+                image.verify()
+        except (OSError, ValueError):
+            return None
+        temporary_dir = self._temporary_directory()
+        suffix = Path(drive_image.name).suffix.lower()
+        if suffix not in {".jpg", ".jpeg", ".png", ".heic", ".heif"}:
+            suffix = ".jpg" if drive_image.mime_type == "image/jpeg" else ".png"
+        target = Path(temporary_dir.name) / f"C-{_slug(scenario_key)}{suffix}"
+        target.write_bytes(drive_image.data)
+        scenario = self._scenario_registry(request.project_id).resolve(scenario_key)
+        reference_ids = list(scenario.reference_asset_ids or [])
+        return {
+            "option_id": "C",
+            "path": str(target),
+            "provenance": {
+                "source": "google_drive_reference_library",
+                "source_ref": f"google-drive:{drive_image.file_id}",
+                "drive_file_id": drive_image.file_id,
+                "reference_asset_id": reference_ids[0] if reference_ids else None,
+                "scenario_key": scenario_key,
+                "dna_subject": scenario.dna_subject,
+                "source_name": drive_image.name,
+                "image_sha256": drive_image.sha256,
+                "at_ms": request.at_ms,
+            },
+        }
 
     def _copy_library_option(
         self,
@@ -424,6 +543,21 @@ def _caption_text(hook: str, body: str, cta: str, hashtags: list[str]) -> str:
     if tag_line:
         pieces.append(tag_line)
     return "\n\n".join(pieces)
+
+
+def _image_bytes_as_png(data: bytes) -> bytes:
+    with Image.open(BytesIO(data)) as image:
+        image.load()
+        output = BytesIO()
+        image.convert("RGB").save(output, format="PNG")
+        return output.getvalue()
+
+
+def _safe_error_code(error: Exception) -> str:
+    code = getattr(error, "code", None)
+    if isinstance(code, str) and code.startswith("ERR_"):
+        return code[:96]
+    return f"ERR_GC2_IMAGE_{type(error).__name__.upper()[:48]}"
 
 
 def _stable_index(key: str, size: int) -> int:

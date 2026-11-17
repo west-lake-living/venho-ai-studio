@@ -177,7 +177,9 @@ def test_sqlite_generation_persists_three_channel_targets_and_replays(tmp_path: 
     assert [(row["channel_key"], row["state"]) for row in targets] == [
         ("fb_hanoi", "DRAFT"), ("fb_venho", "DRAFT"), ("ig_venho", "DRAFT")
     ]
-    assert [row["kind"] for row in jobs] == ["assemble_revision"] * 3 + ["generate_package"]
+    # This fixture has no durable image assets, so generation must leave DRAFT
+    # deliveries recoverable without enqueueing assembly jobs.
+    assert [row["kind"] for row in jobs] == ["generate_package"]
     assert paid["state"] == "SETTLED"
 
 

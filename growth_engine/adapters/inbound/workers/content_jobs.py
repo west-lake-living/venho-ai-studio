@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import json
+import logging
+import re
 import secrets
+import time
 from dataclasses import dataclass
 from typing import Any, Callable, Mapping
 
@@ -17,6 +20,15 @@ from growth_engine.domain.media.media_policy import FACEBOOK_PHOTO_V1, INSTAGRAM
 
 
 _PRODUCTION_TARGETS = {"fb_hanoi": ("facebook", "1124616474074140")}
+_ERROR_SECRET = re.compile(
+    r"(?i)\b(authorization|bearer|access[_-]?token|refresh[_-]?token|api[_-]?key|client[_-]?secret|password)"
+    r"(\s*[:=]\s*|\s+)([^\s,;]+)"
+)
+_URL = re.compile(r"https?://[^\s\])}>,]+", re.IGNORECASE)
+_LONG_SECRET = re.compile(r"\b[A-Za-z0-9_-]{48,}\b")
+_API_KEY = re.compile(r"\b(?:sk-[A-Za-z0-9_-]{16,}|EAA[A-Za-z0-9_-]{16,}|ya29\.[A-Za-z0-9._-]{16,})\b")
+_ERROR_CODE = re.compile(r"^(?:ERR_)?[A-Z][A-Z0-9_]{1,96}$")
+_LOG = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
@@ -29,7 +41,10 @@ class ContentJobsResult:
 
 
 class _WaitingForContentDependency(Exception):
-    pass
+    def __init__(self, code: str, message: str) -> None:
+        self.code = code
+        self.public_message = message
+        super().__init__(message)
 
 
 class ContentJobsWorker:
@@ -77,6 +92,8 @@ class ContentJobsWorker:
                 break
             claimed += 1
             job_id, lease_token, kind, payload = lease
+            started = time.monotonic()
+            _LOG.info("content job started: id=%s kind=%s", job_id, kind)
             try:
                 if kind == "generate_slot":
                     self._generate_slot(payload)
@@ -86,53 +103,134 @@ class ContentJobsWorker:
                     self._assemble(payload)
                 else:
                     raise ValueError("unsupported content job kind")
-            except _WaitingForContentDependency:
-                self._defer(job_id, lease_token, "waiting_for_content_dependency")
+            except _WaitingForContentDependency as error:
+                self._defer(job_id, lease_token, _format_error(error))
                 deferred += 1
-            except (GenerationUnknown, QcPaidCallUnknown):
-                self._complete(job_id, lease_token, "UNKNOWN", "paid_provider_result_unknown")
+                _LOG.info(
+                    "content job finished: id=%s kind=%s outcome=DEFERRED elapsed_ms=%d error=%s",
+                    job_id, kind, _elapsed_ms(started), _format_error(error),
+                )
+            except (GenerationUnknown, QcPaidCallUnknown) as error:
+                self._complete(job_id, lease_token, "UNKNOWN", _format_error(error))
                 unknown += 1
+                _LOG.info(
+                    "content job finished: id=%s kind=%s outcome=UNKNOWN elapsed_ms=%d error=%s",
+                    job_id, kind, _elapsed_ms(started), _format_error(error),
+                )
             except Exception as error:
-                self._complete(job_id, lease_token, "FAILED", type(error).__name__)
+                safe_error = _format_error(error)
+                self._complete(job_id, lease_token, "FAILED", safe_error)
                 failed += 1
+                _LOG.info(
+                    "content job finished: id=%s kind=%s outcome=FAILED elapsed_ms=%d error=%s",
+                    job_id, kind, _elapsed_ms(started), safe_error,
+                )
             else:
                 self._complete(job_id, lease_token, "SUCCEEDED", None)
                 completed += 1
+                _LOG.info(
+                    "content job finished: id=%s kind=%s outcome=SUCCEEDED elapsed_ms=%d",
+                    job_id, kind, _elapsed_ms(started),
+                )
         return ContentJobsResult(claimed, completed, deferred, failed, unknown)
 
     def _claim_next(self) -> tuple[str, str, str, dict[str, object]] | None:
         now_ms = self._clock.now_ms()
         with self._uow_factory().begin_immediate() as tx:
-            row = tx.connection.execute(
+            rows = tx.connection.execute(
                 """SELECT id, kind, state, run_at, lease_until, payload_json
                    FROM jobs WHERE lane='jobs' AND kind IN ('generate_slot','prepare_variant','assemble_revision')
                      AND run_at<=? AND (state='PENDING' OR (state='RUNNING' AND lease_until<=?))
                    ORDER BY CASE kind WHEN 'generate_slot' THEN 0 WHEN 'prepare_variant' THEN 1 ELSE 2 END,
-                            run_at, created_at, id LIMIT 1""",
+                            run_at, created_at, id LIMIT 100""",
                 (now_ms, now_ms),
-            ).fetchone()
-            if row is None:
-                return None
-            conditions: dict[str, object] = {
-                "id": str(row["id"]),
-                "state": str(row["state"]),
-                "run_at": ("<=", now_ms),
-            }
-            if row["state"] == "RUNNING":
-                conditions["lease_until"] = ("<=", now_ms)
-            result = tx.jobs.claim_with_lease(
-                conditions,
-                owner=self._owner,
-                lease_ms=self._lease_ms,
-                now_ms=now_ms,
+            ).fetchall()
+            for row in rows:
+                payload = json.loads(str(row["payload_json"]))
+                if not isinstance(payload, dict):
+                    raise ValueError("content job payload must be an object")
+                if str(row["kind"]) == "assemble_revision":
+                    wait_error = self._assembly_dependency_wait(tx.connection, payload)
+                    if wait_error is not None:
+                        safe_error = _format_error(wait_error)
+                        tx.connection.execute(
+                            """UPDATE jobs SET state='PENDING',run_at=?,last_error=?,lease_owner=NULL,
+                                      lease_token=NULL,lease_until=NULL,updated_at=? WHERE id=?""",
+                            (now_ms + self._dependency_delay_ms, safe_error, now_ms, row["id"]),
+                        )
+                        _LOG.info(
+                            "content job waiting: id=%s kind=assemble_revision error=%s",
+                            row["id"], safe_error,
+                        )
+                        continue
+                conditions: dict[str, object] = {
+                    "id": str(row["id"]),
+                    "state": str(row["state"]),
+                    "run_at": ("<=", now_ms),
+                }
+                if row["state"] == "RUNNING":
+                    conditions["lease_until"] = ("<=", now_ms)
+                result = tx.jobs.claim_with_lease(
+                    conditions,
+                    owner=self._owner,
+                    lease_ms=self._lease_ms,
+                    now_ms=now_ms,
+                )
+                if result is None:
+                    continue
+                claimed, token = result
+                return str(claimed["id"]), token, str(claimed["kind"]), payload
+            return None
+
+    def _assembly_dependency_wait(
+        self, connection: Any, payload: Mapping[str, object]
+    ) -> _WaitingForContentDependency | None:
+        options = payload.get("asset_options")
+        if not isinstance(options, list) or not options:
+            return _WaitingForContentDependency(
+                "ERR_GC2_MEDIA_SOURCE_PENDING",
+                "No media source is attached to the existing content package.",
             )
-            if result is None:
-                return None
-            claimed, token = result
-            payload = json.loads(str(claimed["payload_json"]))
-            if not isinstance(payload, dict):
-                raise ValueError("content job payload must be an object")
-            return str(claimed["id"]), token, str(claimed["kind"]), payload
+        try:
+            profile = _media_profile(_required(payload, "media_profile"))
+            version = self._transform_version_for_profile(profile)
+        except ValueError:
+            return None  # Let the job handler persist the malformed payload as a failure.
+        usable = [
+            option for option in options
+            if isinstance(option, dict)
+            and str(option.get("option_id", "")).upper() in {"A", "C", "FALLBACK"}
+            and isinstance(option.get("asset_id"), str)
+            and str(option.get("asset_id")).strip()
+        ]
+        if not usable:
+            return _WaitingForContentDependency(
+                "ERR_GC2_MEDIA_SOURCE_PENDING",
+                "The assembly job has no durable image asset to prepare.",
+            )
+        for option in usable:
+            asset_id = str(option["asset_id"])
+            variant = connection.execute(
+                "SELECT id FROM media_variants WHERE asset_id=? AND transform_version=? LIMIT 1",
+                (asset_id, version),
+            ).fetchone()
+            if variant is not None:
+                continue
+            prepare = connection.execute(
+                "SELECT state FROM jobs WHERE kind='prepare_variant' AND business_key=?",
+                (f"prepare-variant:{asset_id}:{profile.name}",),
+            ).fetchone()
+            prepare_state = None if prepare is None else str(prepare["state"])
+            if prepare_state in {"FAILED", "DEAD", "UNKNOWN"}:
+                return _WaitingForContentDependency(
+                    "ERR_GC2_MEDIA_VARIANT_PREPARE_FAILED",
+                    f"Media variant preparation is {prepare_state}; requeue the media step before assembly.",
+                )
+            return _WaitingForContentDependency(
+                "ERR_GC2_MEDIA_VARIANT_PENDING",
+                "The required media variant is not ready; assembly is waiting for preparation.",
+            )
+        return None
 
     def _generate_slot(self, payload: Mapping[str, object]) -> None:
         slot_id = _required(payload, "slot_id")
@@ -216,9 +314,13 @@ class ContentJobsWorker:
             if state is not DeliveryState.DRAFT:
                 return
             snapshot = json.loads(str(row["source_snapshot_json"]))
-            image_options = snapshot.get("images", [])
+            queued_options = payload.get("asset_options")
+            image_options = queued_options if isinstance(queued_options, list) and queued_options else snapshot.get("images", [])
             if not isinstance(image_options, list) or not image_options:
-                raise ValueError("content package has no generated or curated image option")
+                raise _WaitingForContentDependency(
+                    "ERR_GC2_MEDIA_SOURCE_PENDING",
+                    "No media source is attached to the existing content package.",
+                )
             captions = snapshot.get("captions_by_profile", {})
             if not isinstance(captions, dict):
                 raise ValueError("content package captions are invalid")
@@ -250,15 +352,11 @@ class ContentJobsWorker:
                        WHERE asset_id=? AND transform_version=? ORDER BY created_at DESC LIMIT 1""",
                     (asset_id, version),
                 ).fetchone()
-                pending = tx.connection.execute(
-                    """SELECT state FROM jobs WHERE kind='prepare_variant'
-                       AND business_key=? ORDER BY created_at DESC LIMIT 1""",
-                    (f"prepare-variant:{asset_id}:{profile.name}",),
-                ).fetchone()
             if variant_row is None:
-                if pending is not None and str(pending["state"]) in {"FAILED", "DEAD", "UNKNOWN"}:
-                    raise ValueError("required media variant preparation did not succeed")
-                raise _WaitingForContentDependency
+                raise _WaitingForContentDependency(
+                    "ERR_GC2_MEDIA_VARIANT_PENDING",
+                    "The required media variant is not ready; assembly is deferred.",
+                )
             variant_id = str(variant_row["id"])
             provenance = option.get("provenance", {})
             subject = (
@@ -309,6 +407,30 @@ class ContentJobsWorker:
                 last_error=reason,
             ):
                 raise RuntimeError("content job lease was lost before dependency defer")
+
+
+def _format_error(error: Exception) -> str:
+    code = getattr(error, "code", None)
+    if isinstance(code, str) and _ERROR_CODE.fullmatch(code) is not None:
+        if not code.startswith("ERR_"):
+            code = f"ERR_GC2_{code}"
+    else:
+        name = re.sub(r"(?<!^)(?=[A-Z])", "_", type(error).__name__)
+        name = re.sub(r"[^A-Za-z0-9]+", "_", name).strip("_").upper() or "UNKNOWN"
+        code = f"ERR_GC2_JOB_{name[:64]}"
+    message = getattr(error, "public_message", None)
+    if not isinstance(message, str):
+        message = str(error) or type(error).__name__
+    message = _ERROR_SECRET.sub(r"\1\2[REDACTED]", message)
+    message = _URL.sub("[URL REDACTED]", message)
+    message = _API_KEY.sub("[SECRET REDACTED]", message)
+    message = _LONG_SECRET.sub("[SECRET REDACTED]", message)
+    message = " ".join(message.split())[:384]
+    return f"{code}: {message}"[:512]
+
+
+def _elapsed_ms(started: float) -> int:
+    return max(0, int((time.monotonic() - started) * 1000))
 
 
 def _required(payload: Mapping[str, object], key: str) -> str:

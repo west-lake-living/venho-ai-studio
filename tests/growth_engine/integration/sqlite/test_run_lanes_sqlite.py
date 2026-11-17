@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 from datetime import date, datetime, timezone
 from pathlib import Path
 
@@ -130,14 +129,9 @@ def test_sqlite_run_lanes_reserves_each_page_from_one_shared_package(tmp_path: P
     assert len(deliveries) == 3
     assert {row["package_id"] for row in deliveries} == {"package-lane-synthetic"}
     assert {row["state"] for row in deliveries} == {"DRAFT"}
-    assert len(jobs) == 3
-    assembly = [json.loads(row["payload_json"]) for row in jobs]
-    assert {row["media_profile"] for row in assembly if row["platform"] == "instagram"} == {
-        "instagram_photo_v1"
-    }
-    assert {row["media_profile"] for row in assembly if row["platform"] == "facebook"} == {
-        "facebook_photo_v1"
-    }
+    # This package is text-only. ReserveTarget must not enqueue assembly before
+    # a durable original image exists.
+    assert jobs == []
 
 
 def test_sqlite_fast_lane_skips_published_page_and_only_reserves_pending_pages(tmp_path: Path) -> None:

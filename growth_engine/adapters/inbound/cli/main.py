@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import json
+import logging
 import os
+import re
 import time
 from datetime import date
 from importlib import import_module
@@ -146,6 +148,10 @@ def worker(
     """Run the publish or content-jobs lane."""
     if lane not in {"publish", "jobs"}:
         raise typer.BadParameter("lane must be 'publish' or 'jobs'")
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s %(levelname)s %(name)s %(message)s",
+    )
     settings = Settings.from_env()
     if not settings.db_path.strip() or "REQUIRED_FROM_P0" in settings.db_path:
         raise typer.BadParameter("configure GE_DB_PATH before running the worker")
@@ -181,6 +187,207 @@ def prepare_slot(
     }, ensure_ascii=False, sort_keys=True))
 
 
+@app.command("repair-p4-media")
+def repair_p4_media(
+    local_date: str = typer.Option(..., "--date", help="Existing P4 DRAFT slot date in YYYY-MM-DD."),
+    channel: str = typer.Option("fb_hanoi", "--channel", help="P4 recovery is limited to fb_hanoi."),
+    reference_asset_id: str | None = typer.Option(None, "--reference-asset-id", help="Legacy reference group matching the approved caption/photo scene."),
+    drive_file_id: str | None = typer.Option(None, "--drive-file-id", help="One reviewed Drive image ID from image_library.yaml."),
+) -> None:
+    """Attach an allowlisted image to an existing DRAFT without regenerating its text package."""
+    from growth_engine.application.content.repair_slot_media import DriveImageIdRequired
+    from growth_engine.bootstrap import build_container
+
+    try:
+        parsed_date = date.fromisoformat(local_date)
+        container = build_container(Settings.from_env())
+        if not container.image_library.allowed_file_ids:
+            raise ValueError(
+                "no reviewed Drive image IDs are configured in config/projects/venho_hotel/growth_engine/image_library.yaml"
+            )
+        try:
+            result = container.repair_slot_media.execute(
+                parsed_date,
+                channel_key=channel,
+                reference_asset_id=reference_asset_id,
+                drive_file_id=drive_file_id,
+            )
+        except DriveImageIdRequired:
+            allowed_references = sorted(container.image_library.allowlist)
+            chosen_reference = reference_asset_id or typer.prompt(
+                "Legacy reference asset ID (" + ", ".join(allowed_references) + ")"
+            )
+            chosen_id = drive_file_id or typer.prompt(
+                "Drive image file ID (must be allowlisted for that reference asset)"
+            )
+            result = container.repair_slot_media.execute(
+                parsed_date,
+                channel_key=channel,
+                reference_asset_id=chosen_reference,
+                drive_file_id=chosen_id,
+            )
+    except (ValueError, RuntimeError, OSError) as error:
+        typer.echo(json.dumps({
+            "result": "BLOCKED",
+            "reason": type(error).__name__,
+            "message": _safe_cli_error(error),
+        }, ensure_ascii=False, sort_keys=True), err=True)
+        raise typer.Exit(code=1) from error
+    typer.echo(json.dumps({
+        "result": "QUEUED",
+        "delivery_id": result.delivery_id,
+        "asset_id": result.asset_id,
+        "source_sha256": result.source_sha256,
+        "prepare_job_id": result.prepare_job_id,
+        "assemble_job_id": result.assemble_job_id,
+        "requeued": result.requeued,
+        "text_package_regenerated": False,
+    }, ensure_ascii=False, sort_keys=True))
+
+
+@app.command("p4-slot-status")
+def p4_slot_status(
+    local_date: str = typer.Option(..., "--date", help="P4 slot date in YYYY-MM-DD."),
+) -> None:
+    """Read-only P4 status summary; omits caption, file paths, Drive URLs and secrets."""
+    import sqlite3
+
+    try:
+        settings = Settings.from_env()
+        parsed_date = date.fromisoformat(local_date)
+        db_path = Path(settings.db_path).expanduser().resolve()
+        connection = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
+        connection.row_factory = sqlite3.Row
+        try:
+            controls = connection.execute(
+                "SELECT publish_mode, global_pause FROM runtime_controls WHERE environment='production'"
+            ).fetchone()
+            target = connection.execute(
+                """SELECT s.id AS slot_id, s.local_date, s.local_time,
+                          d.id AS delivery_id, d.state AS delivery_state, d.current_revision_id,
+                          d.row_version, d.package_id, p.created_at AS package_created_at,
+                          p.source_snapshot_json, p.fact_snapshot_json,
+                          c.enabled, c.remote_account_id
+                   FROM slots s JOIN slot_targets st ON st.slot_id=s.id
+                   JOIN channels c ON c.id=st.channel_id
+                   LEFT JOIN deliveries d ON d.target_id=st.id AND d.active=1
+                   LEFT JOIN content_packages p ON p.id=d.package_id
+                   WHERE c.environment='production' AND c.channel_key='fb_hanoi'
+                     AND s.local_date=? AND s.local_time='09:00'
+                   ORDER BY s.id LIMIT 1""",
+                (parsed_date.isoformat(),),
+            ).fetchone()
+            if target is None:
+                raise ValueError("P4 fb_hanoi slot was not found")
+            package_snapshot = json.loads(str(target["source_snapshot_json"] or "{}"))
+            package_images = package_snapshot.get("images", [])
+            if not isinstance(package_images, list):
+                package_images = []
+            asset_ids = {
+                str(image["asset_id"])
+                for image in package_images
+                if isinstance(image, dict) and isinstance(image.get("asset_id"), str)
+            }
+            package_created_at = int(target["package_created_at"] or 0)
+            delivery_id = target["delivery_id"]
+            related_jobs: list[dict[str, object]] = []
+            rows = connection.execute(
+                """SELECT id,kind,state,attempts,last_error,payload_json,created_at
+                   FROM jobs WHERE lane='jobs' AND kind IN ('generate_slot','prepare_variant','assemble_revision')
+                     AND created_at>=? ORDER BY created_at,id""",
+                (package_created_at,),
+            ).fetchall()
+            decoded_jobs: list[tuple[sqlite3.Row, dict[str, object]]] = []
+            for job in rows:
+                payload = json.loads(str(job["payload_json"]))
+                decoded_jobs.append((job, payload))
+                if payload.get("delivery_id") == delivery_id:
+                    options = payload.get("asset_options", [])
+                    if not isinstance(options, list):
+                        options = []
+                    for option in options:
+                        if isinstance(option, dict) and isinstance(option.get("asset_id"), str):
+                            asset_ids.add(str(option["asset_id"]))
+            for job, payload in decoded_jobs:
+                related = (
+                    payload.get("slot_id") == target["slot_id"]
+                    or payload.get("delivery_id") == delivery_id
+                    or payload.get("asset_id") in asset_ids
+                )
+                if related:
+                    related_jobs.append({
+                        "id": str(job["id"]),
+                        "kind": str(job["kind"]),
+                        "state": str(job["state"]),
+                        "attempts": int(job["attempts"]),
+                        "last_error": None if not job["last_error"] else _safe_cli_error_text(str(job["last_error"])),
+                    })
+            if asset_ids:
+                placeholders = ",".join("?" for _ in asset_ids)
+                media_assets = int(connection.execute(
+                    f"SELECT count(*) FROM media_assets WHERE id IN ({placeholders})", tuple(asset_ids)
+                ).fetchone()[0])
+                media_variants = int(connection.execute(
+                    f"SELECT count(*) FROM media_variants WHERE asset_id IN ({placeholders})", tuple(asset_ids)
+                ).fetchone()[0])
+                qc_reports = int(connection.execute(
+                    f"""SELECT count(*) FROM qc_reports q JOIN media_variants v ON v.id=q.variant_id
+                        WHERE v.asset_id IN ({placeholders})""",
+                    tuple(asset_ids),
+                ).fetchone()[0])
+            else:
+                media_assets = media_variants = qc_reports = 0
+            if delivery_id:
+                outbox_count = int(connection.execute(
+                    "SELECT count(*) FROM outbox_commands WHERE delivery_id=?", (delivery_id,)
+                ).fetchone()[0])
+                execution_count = int(connection.execute(
+                    "SELECT count(*) FROM executions WHERE delivery_id=?", (delivery_id,)
+                ).fetchone()[0])
+            else:
+                outbox_count = execution_count = 0
+            revision = None
+            if target["current_revision_id"]:
+                revision_row = connection.execute(
+                    """SELECT r.id,r.payload_hash,v.mime,v.width,v.height,v.byte_size,v.qc_status,
+                              q.decision AS qc_decision
+                       FROM delivery_revisions r JOIN media_variants v ON v.id=r.variant_id
+                       JOIN qc_reports q ON q.id=r.qc_report_id WHERE r.id=?""",
+                    (target["current_revision_id"],),
+                ).fetchone()
+                if revision_row is not None:
+                    revision = dict(revision_row)
+            paid_calls = [dict(row) for row in connection.execute(
+                """SELECT operation,state,reserved_minor,actual_minor
+                   FROM paid_calls WHERE created_at>=? ORDER BY created_at,id""",
+                (package_created_at,),
+            ).fetchall()]
+        finally:
+            connection.close()
+    except (OSError, sqlite3.Error, ValueError) as error:
+        typer.echo(json.dumps({"result": "FAIL", "reason": type(error).__name__, "message": _safe_cli_error(error)}, sort_keys=True), err=True)
+        raise typer.Exit(code=1) from error
+    typer.echo(json.dumps({
+        "result": "OK",
+        "slot": {"date": str(target["local_date"]), "time": str(target["local_time"]), "timezone": "Asia/Ho_Chi_Minh"},
+        "controls": None if controls is None else dict(controls),
+        "channel": {"key": "fb_hanoi", "enabled": bool(target["enabled"]), "remote_account_id": str(target["remote_account_id"])},
+        "delivery": None if not delivery_id else {
+            "id": str(delivery_id),
+            "state": str(target["delivery_state"]),
+            "row_version": int(target["row_version"]),
+            "revision_id": target["current_revision_id"],
+            "package_id": str(target["package_id"]),
+        },
+        "revision": revision,
+        "media": {"assets": media_assets, "variants": media_variants, "qc_reports": qc_reports},
+        "jobs": related_jobs,
+        "paid_calls": paid_calls,
+        "outbox_count": outbox_count,
+        "execution_count": execution_count,
+    }, ensure_ascii=False, sort_keys=True))
+
+
 @app.command("cutover-readiness")
 def cutover_readiness(
     local_date: str = typer.Option(..., "--date", help="Target slot date in YYYY-MM-DD."),
@@ -206,6 +413,27 @@ def cutover_readiness(
         "mapping_route_ref": result.mapping_route_ref,
         "reasons": list(result.reasons),
     }, ensure_ascii=False, sort_keys=True))
+
+
+_CLI_SECRET_ASSIGNMENT = re.compile(
+    r"(?i)\b(authorization|bearer|access[_-]?token|refresh[_-]?token|api[_-]?key|client[_-]?secret|password)"
+    r"(\s*[:=]\s*|\s+)([^\s,;]+)"
+)
+_CLI_URL = re.compile(r"https?://[^\s\])}>,]+", re.IGNORECASE)
+_CLI_LONG_SECRET = re.compile(r"\b[A-Za-z0-9_-]{48,}\b")
+_CLI_KEY = re.compile(r"\b(?:sk-[A-Za-z0-9_-]{16,}|EAA[A-Za-z0-9_-]{16,}|ya29\.[A-Za-z0-9._-]{16,})\b")
+
+
+def _safe_cli_error(error: Exception) -> str:
+    return _safe_cli_error_text(str(error) or type(error).__name__)
+
+
+def _safe_cli_error_text(message: str) -> str:
+    safe = _CLI_SECRET_ASSIGNMENT.sub(r"\1\2[REDACTED]", message)
+    safe = _CLI_URL.sub("[URL REDACTED]", safe)
+    safe = _CLI_KEY.sub("[SECRET REDACTED]", safe)
+    safe = _CLI_LONG_SECRET.sub("[SECRET REDACTED]", safe)
+    return " ".join(safe.split())[:384]
     if not result.ready:
         raise typer.Exit(code=1)
 

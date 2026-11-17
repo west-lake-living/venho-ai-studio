@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import hashlib
+import json
+import logging
 import sqlite3
+from io import BytesIO
 from datetime import date, datetime, timezone
 from pathlib import Path
 from types import SimpleNamespace
@@ -10,6 +13,7 @@ from PIL import Image
 
 from growth_engine.application.content.generate_package import GeneratePackageCommand
 from growth_engine.application.dto import DraftPackage, EffectiveQcPolicy, FactSnapshot, QcResult
+from growth_engine.adapters.outbound.media.drive_image_library import DriveImage, DriveImageLibrary
 from growth_engine.application.review.approve_group import ApprovalItem
 from growth_engine.domain.kernel.hashing import sha256_hex
 from growth_engine.domain.publishing.runtime_mode import PublishMode
@@ -37,6 +41,36 @@ class _FakeContentGenerator:
                 "provenance": {"dna_subject": "outside", "_synthetic": True},
             },),
         )
+
+
+class _TextOnlyFakeGenerator:
+    def __init__(self) -> None:
+        self.image_provider = SimpleNamespace(enabled=False)
+        self.image_alternatives_enabled = False
+        self.calls = 0
+
+    def draft(self, request) -> DraftPackage:
+        self.calls += 1
+        return DraftPackage(
+            topic_key="p4-test-topic-without-media",
+            pillar="west_lake_life",
+            brief="Synthetic P4 content brief.",
+            fact_keys=(),
+            captions_by_profile={"default": "Ảnh chụp thật tại Ven Hồ Hotel."},
+            image_options=(),
+        )
+
+
+class _FakeDriveReader:
+    def __init__(self, image: DriveImage) -> None:
+        self.image = image
+        self.read_ids: list[str] = []
+
+    def read(self, file_id: str) -> DriveImage:
+        self.read_ids.append(file_id)
+        if file_id != self.image.file_id:
+            raise AssertionError("fake Drive reader was called with a non-fixture ID")
+        return self.image
 
 
 class _FakeFacts:
@@ -221,3 +255,184 @@ def test_production_p4_fake_e2e_approves_without_dispatch_while_disabled(
     assert mismatched_mapping.ready is False
     assert mismatched_mapping.mapping_dry_run == "FAIL"
     assert "slot_mapping_mismatch" in mismatched_mapping.reasons
+
+
+def test_p4_repairs_text_only_draft_from_allowlisted_legacy_drive_photo_without_regeneration(
+    tmp_path: Path, monkeypatch, caplog
+) -> None:
+    photo_buffer = BytesIO()
+    Image.new("RGB", (900, 1200), (43, 91, 117)).save(photo_buffer, format="JPEG", quality=92)
+    photo_bytes = photo_buffer.getvalue()
+    photo_sha = hashlib.sha256(photo_bytes).hexdigest()
+    drive_image = DriveImage(
+        file_id="legacy-photo-file-id-01",
+        name="approved-rooftop-photo.jpg",
+        mime_type="image/jpeg",
+        data=photo_bytes,
+        sha256=photo_sha,
+    )
+    reader = _FakeDriveReader(drive_image)
+    image_library = DriveImageLibrary(
+        {"venho_rooftop_railing_approved": (drive_image.file_id,)}, reader
+    )
+    clock = FakeClock(int(datetime(2026, 11, 10, 2, 0, tzinfo=timezone.utc).timestamp() * 1000))
+    settings = Settings(
+        env="production",
+        db_path=str(tmp_path / "growth_engine.db"),
+        media_root=str(tmp_path / "media"),
+        public_base_url="https://growth.example.invalid",
+        dashboard_base_url="https://os.example.invalid",
+        capability_keys="synthetic:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        service_tokens="synthetic:hash",
+        make_webhook_urls={"PAGE_A": "https://make.example.invalid/fake"},
+        meta_read_tokens={"fb_hanoi": "synthetic-read-token"},
+        telegram={"BOT_TOKEN": "synthetic-bot", "CHAT_ID": "synthetic-chat"},
+    )
+    from growth_engine.bootstrap import build_container
+
+    container = build_container(settings, clock=clock, ids=SeqIds("p4-repair"))
+    container.migration_service.run(Path(settings.db_path), check=False)
+    channels.provision(settings.db_path, _manifest(), now_ms=clock.now_ms())
+    _controls(Path(settings.db_path), "DISABLED")
+    channels.set_enabled(
+        settings.db_path, "fb_hanoi", True, prepare_only=True, now_ms=clock.now_ms()
+    )
+    text_generator = _TextOnlyFakeGenerator()
+    container.generate_package._generator = text_generator
+    container.generate_package._fact_source = _FakeFacts()
+    container.evaluate_qc._evaluator = _FakeQcEvaluator()
+
+    with caplog.at_level(logging.INFO):
+        queued = container.queue_slot_generation.execute(date(2026, 11, 21), channel_key="fb_hanoi")
+        assert queued.state == "PENDING"
+        generated = container.content_jobs_worker.process_once(limit=20)
+    assert generated.claimed == generated.completed == 1
+    assert generated.failed == 0
+    assert text_generator.calls == 1
+    assert any("content job started" in record.message for record in caplog.records)
+    assert any("outcome=SUCCEEDED" in record.message for record in caplog.records)
+
+    with container.uow_factory().read_only() as tx:
+        delivery = tx.connection.execute(
+            """SELECT d.id, d.package_id, d.state, d.current_revision_id
+               FROM deliveries d JOIN channels c ON c.id=d.channel_id
+               JOIN slots s ON s.id=(SELECT slot_id FROM slot_targets WHERE id=d.target_id)
+               WHERE c.channel_key='fb_hanoi' AND s.local_date='2026-11-21'"""
+        ).fetchone()
+        package_before = str(delivery["package_id"])
+        assert json.loads(tx.connection.execute(
+            "SELECT source_snapshot_json FROM content_packages WHERE id=?", (package_before,)
+        ).fetchone()[0])["images"] == []
+        assert tx.connection.execute(
+            "SELECT count(*) FROM jobs WHERE kind='assemble_revision' AND payload_json LIKE ?",
+            (f"%{delivery['id']}%",),
+        ).fetchone()[0] == 0
+    assert delivery["state"] == "DRAFT"
+    assert delivery["current_revision_id"] is None
+
+    container.repair_slot_media._image_library = image_library
+    repair = container.repair_slot_media.execute(
+        date(2026, 11, 21),
+        channel_key="fb_hanoi",
+        reference_asset_id="venho_rooftop_railing_approved",
+        drive_file_id=drive_image.file_id,
+    )
+    assert repair.delivery_id == str(delivery["id"])
+    assert repair.source_sha256 == photo_sha
+    assert reader.read_ids == [drive_image.file_id]
+
+    # Simulate the original assembly job being picked before its variant exists.
+    connection = sqlite3.connect(settings.db_path)
+    connection.execute("DELETE FROM jobs WHERE kind='prepare_variant' AND payload_json LIKE ?", (f"%{repair.asset_id}%",))
+    connection.commit()
+    connection.close()
+    with caplog.at_level(logging.INFO):
+        blocked = container.content_jobs_worker.process_once(limit=20)
+    assert blocked.claimed == 0
+    assert blocked.deferred == 0
+    assert blocked.failed == 0
+    assert any("content job waiting" in record.message for record in caplog.records)
+    with container.uow_factory().read_only() as tx:
+        assembly = tx.connection.execute(
+            "SELECT state,attempts,last_error FROM jobs WHERE id=?", (repair.assemble_job_id,)
+        ).fetchone()
+    assert assembly["state"] == "PENDING"
+    assert assembly["attempts"] == 0
+    assert assembly["last_error"].startswith("ERR_GC2_MEDIA_VARIANT_PENDING:")
+
+    # Re-running the audited repair requeues only missing media work; package/provider are untouched.
+    repair_again = container.repair_slot_media.execute(
+        date(2026, 11, 21),
+        channel_key="fb_hanoi",
+        reference_asset_id="venho_rooftop_railing_approved",
+        drive_file_id=drive_image.file_id,
+    )
+    assert repair_again.asset_id == repair.asset_id
+    assert repair_again.assemble_job_id == repair.assemble_job_id
+    finished = container.content_jobs_worker.process_once(limit=20)
+    assert finished.claimed == finished.completed == 2
+    assert finished.failed == 0
+    assert text_generator.calls == 1
+
+    with container.uow_factory().read_only() as tx:
+        stored_asset = tx.media.get_asset(repair.asset_id)
+        final_delivery = tx.connection.execute(
+            "SELECT state,current_revision_id FROM deliveries WHERE id=?", (repair.delivery_id,)
+        ).fetchone()
+        package_count = int(tx.connection.execute(
+            "SELECT count(*) FROM content_packages WHERE id=?", (package_before,)
+        ).fetchone()[0])
+        draft_calls = int(tx.connection.execute(
+            "SELECT count(*) FROM paid_calls WHERE operation='draft_package' AND state='SETTLED'"
+        ).fetchone()[0])
+        variant = tx.connection.execute(
+            """SELECT v.mime,v.qc_status,q.decision
+               FROM delivery_revisions r JOIN media_variants v ON v.id=r.variant_id
+               JOIN qc_reports q ON q.id=r.qc_report_id WHERE r.id=?""",
+            (final_delivery["current_revision_id"],),
+        ).fetchone()
+        controls = tx.controls.get("production")
+        command_count = tx.connection.execute(
+            "SELECT count(*) FROM outbox_commands WHERE delivery_id=?", (repair.delivery_id,)
+        ).fetchone()[0]
+        execution_count = tx.connection.execute(
+            "SELECT count(*) FROM executions WHERE delivery_id=?", (repair.delivery_id,)
+        ).fetchone()[0]
+    assert stored_asset is not None and stored_asset.source_sha256 == photo_sha
+    assert package_count == 1 and draft_calls == 1
+    assert final_delivery["state"] == "IN_REVIEW"
+    assert variant["mime"] == "image/jpeg" and variant["qc_status"] == variant["decision"] == "PASS"
+    assert controls.mode is PublishMode.DISABLED and controls.global_pause
+    assert command_count == execution_count == 0
+
+    from typer.testing import CliRunner
+    from growth_engine.adapters.inbound.cli.main import app as engine_cli
+
+    status = CliRunner().invoke(
+        engine_cli,
+        ["p4-slot-status", "--date", "2026-11-21"],
+        env={
+            "GE_ENV": "production",
+            "GE_DB_PATH": settings.db_path,
+            "GE_MEDIA_ROOT": settings.media_root,
+            "GE_PUBLIC_BASE_URL": settings.public_base_url,
+            "GE_DASHBOARD_BASE_URL": settings.dashboard_base_url,
+            "GE_CAPABILITY_KEYS": "synthetic-capability-secret",
+            "GE_SERVICE_TOKENS": "synthetic-service-secret",
+            "GE_TELEGRAM_BOT_TOKEN": "synthetic-telegram-secret",
+            "GE_TELEGRAM_CHAT_ID": "synthetic-chat-id",
+            "GE_MAKE_WEBHOOK_URL_PAGE_A": "https://make.example.invalid/synthetic-secret",
+            "GE_META_READ_TOKEN_FB_HANOI": "synthetic-meta-secret",
+        },
+    )
+    assert status.exit_code == 0, status.output
+    status_json = json.loads(status.stdout)
+    assert status_json["delivery"]["state"] == "IN_REVIEW"
+    assert status_json["revision"]["mime"] == "image/jpeg"
+    assert status_json["revision"]["qc_decision"] == "PASS"
+    assert status_json["controls"] == {"publish_mode": "DISABLED", "global_pause": 1}
+    assert status_json["outbox_count"] == status_json["execution_count"] == 0
+    assert all(secret not in status.stdout for secret in (
+        "synthetic-capability-secret", "synthetic-service-secret", "synthetic-telegram-secret",
+        "synthetic-chat-id", "synthetic-meta-secret", "synthetic-secret",
+    ))

@@ -261,6 +261,7 @@ class DoctorService:
                 checks.append(self._channel_check(connection))
                 if str(getattr(self.settings, "env", "")).lower() == "production":
                     checks.append(self._p4_provider_budget_check(connection))
+                    checks.append(self._p4_image_source_check())
             finally:
                 connection.close()
         checks.extend(
@@ -446,6 +447,49 @@ class DoctorService:
             f"legacy provider keys present by name ({', '.join(expected_keys)}); v2 monthly remaining {remaining_minor} {currency}; P4 reserve estimate {required_minor} {currency}.",
         )
 
+    def _p4_image_source_check(self) -> DoctorCheck:
+        try:
+            yaml = import_module("yaml")
+            project_dir = self._repo_root / "config" / "projects" / "venho_hotel"
+            scenarios = yaml.safe_load(
+                (project_dir / "growth" / "scenario_registry.yaml").read_text(encoding="utf-8")
+            ) or {}
+            image_library = yaml.safe_load(
+                (project_dir / "growth_engine" / "image_library.yaml").read_text(encoding="utf-8")
+            ) or {}
+            required_ids = {
+                str(reference_id)
+                for scenario in (scenarios.get("scenarios", {}) or {}).values()
+                if isinstance(scenario, dict)
+                for reference_id in (scenario.get("reference_asset_ids", []) or [])
+            }
+            allowlist = image_library.get("allowlist", {})
+            if not isinstance(allowlist, dict):
+                raise ValueError
+            missing_groups = sorted(
+                reference_id
+                for reference_id in required_ids
+                if not isinstance(allowlist.get(reference_id), list) or not allowlist[reference_id]
+            )
+        except (OSError, TypeError, ValueError):
+            return DoctorCheck("P4 image source", "FAIL", "Legacy image library config could not be read.")
+
+        missing_keys = []
+        if not os.environ.get("GOOGLE_DRIVE_TOKEN_JSON", "").strip():
+            missing_keys.append("GOOGLE_DRIVE_TOKEN_JSON")
+        problems: list[str] = []
+        if missing_groups:
+            problems.append("missing_allowlist_groups=" + ",".join(missing_groups))
+        if missing_keys:
+            problems.append("missing_keys=" + ",".join(missing_keys))
+        if problems:
+            return DoctorCheck("P4 image source", "FAIL", "; ".join(problems))
+        return DoctorCheck(
+            "P4 image source",
+            "PASS",
+            f"allowlisted_reference_groups={len(required_ids)}; GOOGLE_DRIVE_TOKEN_JSON present; live Drive access not probed.",
+        )
+
     @staticmethod
     def _clock_check() -> DoctorCheck:
         return DoctorCheck("Clock skew", "WARN", "Chưa có nguồn thời gian chuẩn để đo độ lệch.")
@@ -520,6 +564,8 @@ class Container:
     reschedule_slot: Any
     ensure_slots: Any
     generate_package: Any
+    image_library: Any
+    repair_slot_media: Any
     prepare_variant: Any
     evaluate_qc: Any
     content_jobs_worker: Any
@@ -621,8 +667,13 @@ def build_container(
     ensure_slots_adapter = import_module("growth_engine.application.scheduling.ensure_slots")
     reserve_target_adapter = import_module("growth_engine.application.scheduling.reserve_target")
     generate_package_adapter = import_module("growth_engine.application.content.generate_package")
+    repair_slot_media_adapter = import_module("growth_engine.application.content.repair_slot_media")
+    p4_media_repair_store_adapter = import_module(
+        "growth_engine.adapters.outbound.persistence.sqlite.p4_media_repair"
+    )
     lane_store_adapter = import_module("growth_engine.adapters.outbound.persistence.sqlite.lane_store")
     legacy_generator_adapter = import_module("growth_engine.adapters.outbound.legacy.generator_adapter")
+    drive_image_library_adapter = import_module("growth_engine.adapters.outbound.media.drive_image_library")
     legacy_fact_adapter = import_module("growth_engine.adapters.outbound.legacy.fact_source")
     ingest_asset_adapter = import_module("growth_engine.application.media.ingest_asset")
     upload_asset_adapter = import_module("growth_engine.application.media.upload_asset")
@@ -872,8 +923,13 @@ def build_container(
             encoding="utf-8"
         )
     ) or {}
+    image_library = drive_image_library_adapter.DriveImageLibrary.from_yaml(
+        project_config / "image_library.yaml",
+        os.environ,
+    )
     generator = legacy_generator_adapter.LegacyGeneratorAdapter(
         repo_root=repo_root,
+        image_library=image_library,
         image_alternatives_enabled=bool(model_policy.get("image_alternatives_enabled", False)),
     )
     fact_source = legacy_fact_adapter.LegacyFactSource(
@@ -885,6 +941,21 @@ def build_container(
         media_store,
         clock,
         ids,
+    )
+    repair_store = p4_media_repair_store_adapter.SqliteP4MediaRepairStore(
+        uow_factory,
+        ids,
+        environment=channel_environment,
+        transform_version_for_facebook=pillow_processor_adapter.transform_version(
+            import_module("growth_engine.domain.media.media_policy").FACEBOOK_PHOTO_V1
+        ),
+    )
+    repair_slot_media = repair_slot_media_adapter.RepairSlotMedia(
+        repair_store,
+        image_library,
+        asset_ingestor,
+        clock,
+        environment=channel_environment,
     )
     dashboard_reads = dashboard_reads_adapter.SqliteDashboardReads(
         uow_factory,
@@ -1076,6 +1147,8 @@ def build_container(
         reschedule_slot=reschedule_slot,
         ensure_slots=ensure_slots,
         generate_package=generate_package,
+        image_library=image_library,
+        repair_slot_media=repair_slot_media,
         prepare_variant=prepare_variant,
         evaluate_qc=evaluate_qc,
         content_jobs_worker=content_jobs_worker,

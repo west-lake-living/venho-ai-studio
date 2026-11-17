@@ -21,6 +21,9 @@ needs_provider=0
 if [[ "$1" == "doctor" ]]; then
   needs_provider=1
 fi
+if [[ "$1" == "repair-p4-media" ]]; then
+  needs_provider=1
+fi
 for argument in "$@"; do
   if [[ "$argument" == "jobs" ]]; then
     needs_provider=1
@@ -36,13 +39,21 @@ if (( needs_provider )); then
   set +a
   legacy_anthropic_api_key="${ANTHROPIC_API_KEY:-}"
   legacy_openai_api_key="${OPENAI_API_KEY:-}"
+  legacy_google_drive_token_json="${GOOGLE_DRIVE_TOKEN_JSON:-}"
+  legacy_google_oauth_client_id="${GOOGLE_OAUTH_CLIENT_ID:-}"
+  legacy_google_oauth_client_secret="${GOOGLE_OAUTH_CLIENT_SECRET:-}"
   set -a
   . "$GC2_ENV"
   set +a
   ANTHROPIC_API_KEY="$legacy_anthropic_api_key"
   OPENAI_API_KEY="$legacy_openai_api_key"
-  export ANTHROPIC_API_KEY OPENAI_API_KEY
-  unset legacy_anthropic_api_key legacy_openai_api_key
+  GOOGLE_DRIVE_TOKEN_JSON="$legacy_google_drive_token_json"
+  GOOGLE_OAUTH_CLIENT_ID="$legacy_google_oauth_client_id"
+  GOOGLE_OAUTH_CLIENT_SECRET="$legacy_google_oauth_client_secret"
+  export ANTHROPIC_API_KEY OPENAI_API_KEY GOOGLE_DRIVE_TOKEN_JSON \
+    GOOGLE_OAUTH_CLIENT_ID GOOGLE_OAUTH_CLIENT_SECRET
+  unset legacy_anthropic_api_key legacy_openai_api_key legacy_google_drive_token_json \
+    legacy_google_oauth_client_id legacy_google_oauth_client_secret
 else
   set -a
   . "$GC2_ENV"

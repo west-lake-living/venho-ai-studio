@@ -6,20 +6,30 @@
 
 ## Trạng thái triển khai
 
-Code P4 có audited `prepare-only`, worker cho `generate_slot` → `prepare_variant` → `assemble_revision`/QC, review snapshot, ngân sách v2 riêng và lệnh chỉ đọc `cutover-readiness`. Test SQLite giả lập toàn luồng đã chứng minh approval không dispatch khi `DISABLED`. Đây chưa phải bằng chứng chạy provider thật, duyệt UI production hay P4 PASS.
+Code P4 có audited `prepare-only`, worker cho `generate_slot` → ảnh gốc → `prepare_variant` → QC trong bước `assemble_revision`, review snapshot, ngân sách v2 riêng và lệnh chỉ đọc `cutover-readiness`. Doctor yêu cầu allowlist ảnh legacy theo từng nhóm cùng Drive token; hiện allowlist chưa được Harry điền, nên chưa thể chạy provider thật hoặc xác nhận P4 PASS.
 
-Provider do Harry chọn là provider và key legacy đang chạy: `ANTHROPIC_API_KEY` và `OPENAI_API_KEY` từ `~/venho/secrets/growth.env`. Wrapper chỉ chuyển hai key này sang worker/doctor; DB, media root, capability, tokens và controls vẫn lấy từ `~/venho/secrets/growth-engine.env`. Không in giá trị hoặc chạy dưới `set -x`.
+Provider do Harry chọn là provider và key legacy đang chạy: `ANTHROPIC_API_KEY`, `OPENAI_API_KEY` và Google Drive OAuth token từ `~/venho/secrets/growth.env`. Wrapper chuyển các biến này sang worker/doctor/repair; DB, media root, capability, tokens và controls vẫn lấy từ `~/venho/secrets/growth-engine.env`. Không in giá trị hoặc chạy dưới `set -x`.
+
+**Nguồn ảnh legacy đã đối chiếu:** v3.2 lấy ảnh tham chiếu từ thư viện local `assets/raw/<subject>/`, xoay ảnh theo ngày; option A dùng ảnh thật làm input cho GPT Image edit, option C là ảnh thật chưa chỉnh. Drive trong legacy dùng để upload ảnh QC-pass làm nguồn cho Make, không đọc lại ảnh nguồn mặc định. Release GC2 không chứa `assets/raw`, vì vậy adapter mới nhận ảnh tham chiếu từ các Drive file ID đã được Harry duyệt trong `config/projects/venho_hotel/growth_engine/image_library.yaml`. Adapter chỉ gọi `files.get`/`get_media` cho ID allowlisted; không liệt kê hay tìm kiếm Drive. Ảnh gốc và ảnh AI được ingest vào `media_assets` với SHA-256; variant JPEG và QC vẫn chạy theo policy v2.
+
+Hiện file allowlist còn rỗng. Cần Harry chọn ảnh đã duyệt và điền file ID vào đúng nhóm `reference_asset_id` trước deploy. Doctor sẽ báo `P4 image source=FAIL` nếu thiếu nhóm hoặc `GOOGLE_DRIVE_TOKEN_JSON`; deploy-release dừng trước khi đổi release.
 
 ## 1. Deploy và kiểm tra fail-closed
 
-Trên ASUS server, thay `<P4_SHA>` bằng commit đã push của lượt này:
+Trên ASUS server, thay `<P4_SHA>` bằng commit đã push. Tạo checkout tạm đúng SHA để `deploy-release.sh` cũng lấy unit và wrapper từ cùng revision; không dùng file unit cũ trong `gc2-src`:
 
 ```bash
-cd "$HOME/venho/gc2-src"
-git status --short
-git fetch origin gc2/build-v1-2
-git merge-base --is-ancestor <P4_SHA> origin/gc2/build-v1-2
-bash ops/asus-server/growth-engine/deploy-release.sh <P4_SHA>
+set -Eeuo pipefail
+P4_SHA='<P4_SHA>'
+REMOTE_URL="$(git -C "$HOME/venho/gc2-src" remote get-url origin)"
+SOURCE_DIR="$(mktemp -d "$HOME/venho/gc2-deploy-source.XXXXXX")"
+trap 'rm -rf "$SOURCE_DIR"' EXIT
+git clone --quiet --no-checkout "$REMOTE_URL" "$SOURCE_DIR"
+git -C "$SOURCE_DIR" fetch --quiet origin gc2/build-v1-2
+git -C "$SOURCE_DIR" merge-base --is-ancestor "$P4_SHA" origin/gc2/build-v1-2
+git -C "$SOURCE_DIR" checkout --quiet --detach "$P4_SHA"
+[[ -z "$(git -C "$SOURCE_DIR" status --porcelain)" ]]
+bash "$SOURCE_DIR/ops/asus-server/growth-engine/deploy-release.sh" "$P4_SHA"
 systemctl --user is-enabled growth-engine-api.service growth-engine-worker@publish.service growth-engine-worker@jobs.service
 systemctl --user is-active growth-engine-api.service growth-engine-worker@publish.service growth-engine-worker@jobs.service
 loginctl show-user "$USER" -p Linger --value
@@ -51,11 +61,11 @@ Trong trạng thái `DISABLED`, publish scheduler và authorize fail-closed; int
 
 ## 3. Chọn slot cadence và queue một lần
 
-Chọn ngày cadence tương lai đủ thời gian review, không chọn lại slot đã qua. Lịch hiện tại là Mon/Wed/Fri/Sat lúc 09:00 ICT. Ví dụ 20/11/2026:
+Với một P4 mới chưa có package, chọn ngày cadence tương lai đủ thời gian review. Slot 21/11/2026 đã có DRAFT/package nên **không chạy `prepare-slot` lại cho ngày này**; dùng Section 6 để phục hồi media. Lịch hiện tại là Mon/Wed/Fri/Sat lúc 09:00 ICT. Lệnh minh họa dưới đây chỉ dành cho slot mới chưa có package:
 
 ```bash
 "$HOME/venho/growth-engine/current/ops/asus-server/growth-engine/run-with-legacy-provider-env.sh" \
-  prepare-slot --date 2026-11-20 --channel fb_hanoi
+  prepare-slot --date 2026-11-21 --channel fb_hanoi
 ```
 
 Lệnh idempotent: chạy lại trả cùng job cho cùng slot, không phát sinh generation thứ hai. Output chỉ có `slot_id`, `job_id`, trạng thái và `replayed`.
@@ -67,7 +77,7 @@ Với policy hiện tại, doctor cần đủ dự phòng tối đa cho một sl
 Kiểm trạng thái chỉ đọc, không in caption, path, token hoặc signed URL:
 
 ```bash
-python3 - "$HOME/venho/state/growth-engine/growth_engine.db" 2026-11-20 <<'PY'
+python3 - "$HOME/venho/state/growth-engine/growth_engine.db" 2026-11-21 <<'PY'
 import sqlite3, sys
 db = sqlite3.connect(f"file:{sys.argv[1]}?mode=ro", uri=True)
 db.row_factory = sqlite3.Row
@@ -111,11 +121,42 @@ Harry kiểm tra bài rồi duyệt trên UI. Sau khi tải lại, xác nhận d
 
 ```bash
 "$HOME/venho/growth-engine/current/ops/asus-server/growth-engine/run-with-legacy-provider-env.sh" \
-  cutover-readiness --date 2026-11-20 --time 09:00
+  cutover-readiness --date 2026-11-21 --time 09:00
 ```
 
 Lệnh mở SQLite `mode=ro`, không build worker, gọi provider, gọi Make hay sửa DB. **PASS** chỉ khi slot có delivery `fb_hanoi` `APPROVED` đang active; approval khớp revision/hash hiện hành; QC/variant gắn đúng; Page ID `1124616474074140` và route ref `GE_MAKE_WEBHOOK_URL_PAGE_A` khớp mapping đã snapshot trong revision; không có outbox/execution cho delivery đó; runtime vẫn `DISABLED` + pause `1`.
 
 Lưu kết quả lệnh, SHA deploy, thời điểm ICT, slot/delivery/revision ID, job state, ledger state và Harry approval vào biên bản không chứa bí mật. Chỉ ghi P4 PASS khi doctor, generation/QC, VENHO OS approval và `cutover-readiness` đều PASS. Đến đây vẫn không chuyển runtime sang `LIVE_MANUAL`, không bật Make và không dừng legacy.
 
-**Dự kiến:** nếu deploy/test provider và UI được hoàn tất trong 13–14/11, P4 có thể PASS sớm nhất **14/11/2026**. Sau đó chọn ngày cutover mới theo điều kiện ≥48 giờ và slot cadence; ngày 16/11 cũ đã hủy.
+**Dự kiến:** ngày cutover chỉ tính sau P4 PASS và Harry duyệt một delivery thật trên VENHO OS, với ít nhất 48 giờ đệm.
+
+## 6. Khôi phục DRAFT thiếu ảnh của slot 21/11
+
+**Dry run 17/11/2026:** `generate_slot` và `generate_package` đã thành công; có một DRAFT và paid call đã `SETTLED`, nhưng không có media asset, variant, QC hoặc revision. Root cause là release checkout không có các thư mục `assets/raw` mà resolver legacy ánh xạ tới; adapter cũ bỏ qua ảnh thiếu, còn assembly trước đó được queue dù package không có media. Không có outbox command hoặc execution. Không chạy `prepare-slot`/`generate_package` lần nữa cho slot này.
+
+Chọn một ảnh thật đã duyệt hợp với caption và cảnh của bài, lấy ID từ Drive, rồi điền ID vào nhóm legacy tương ứng trong `image_library.yaml` (ví dụ `venho_rooftop_railing_approved`). Không thêm URL hoặc token. Kiểm từng nhóm cần dùng có ít nhất một ID; doctor không thay thế được thao tác thử quyền Drive.
+
+Sau khi allowlist đã nằm trong release và deploy thành công, dùng lệnh audited để ingest ảnh, xếp lại `prepare_variant` và `assemble_revision` cho delivery DRAFT hiện có. Lệnh không gọi `generate_package`, không đổi caption/package, không tạo command và yêu cầu controls vẫn `DISABLED` + `global_pause=1`:
+
+```bash
+"$HOME/venho/growth-engine/current/ops/asus-server/growth-engine/run-with-legacy-provider-env.sh" \
+  repair-p4-media --date 2026-11-21 --channel fb_hanoi \
+  --reference-asset-id venho_rooftop_railing_approved --drive-file-id '<ID_ALLOWLISTED>'
+```
+
+`<ID_ALLOWLISTED>` phải là ID thật có trong nhóm đã chọn. Không chạy lệnh khi ID chưa được allowlist hoặc bài không khớp nhóm ảnh. Sau đó kiểm tra:
+
+```bash
+"$HOME/venho/growth-engine/current/ops/asus-server/growth-engine/run-with-legacy-provider-env.sh" \
+  p4-slot-status --date 2026-11-21
+journalctl --user -u growth-engine-worker@jobs.service --since '15 minutes ago' --no-pager \
+  | grep -E 'content job (started|finished)'
+```
+
+**PASS:** asset có SHA nguồn; `prepare_variant` và `assemble_revision` đều `SUCCEEDED`; DRAFT chuyển `IN_REVIEW`; JPEG/QC `PASS` hoặc `REVIEW`; `draft_package` vẫn chỉ có một lượt `SETTLED`; controls vẫn DISABLED/pause; outbox và execution đều bằng 0. Lệnh status chỉ in ID/trạng thái/lỗi đã lọc, không in caption, đường dẫn, URL hay token.
+
+Worker giữ `assemble_revision` ở `PENDING` trước khi claim nếu thiếu variant, cập nhật `last_error` bằng mã/message và lùi `run_at`; vì vậy nó không tiêu attempt liên tục. Nếu variant mất sau preflight do race, handler cũng defer về `PENDING`. Chạy lại `repair-p4-media` để queue lại prepare và assembly. Không sửa SQL tay. Nếu job báo lỗi khác, dùng code/message đã lọc và log INFO mỗi job để sửa riêng lỗi media.
+
+### Notification jobs PENDING
+
+`DISABLED`/`global_pause` ngăn publish/dispatch, không ngăn worker gửi thông báo Telegram. Publish worker dispatch notification nếu bot/chat có cấu hình; khi cấu hình thiếu thì không có dispatcher và job có thể nằm `PENDING`. Vì vậy bốn notify PENDING từ 13/11 và 16/11 không được xem là hành vi bị chặn đúng bởi DISABLED. Trước khi retry, kiểm tra unit publish đang active, Telegram env được nạp và `attempts`/`last_error`; không xóa hoặc gửi lại hàng loạt khi chưa biết từng thông báo còn hợp lệ hay đã cũ.

@@ -1,0 +1,10 @@
+version: 1
+# Explicit Google Drive file IDs only. No folder listing or Drive search is used.
+# Populate from the reviewed Ven Ho photo library before production P4 generation.
+# IDs are grouped by the existing legacy reference_asset_id used by each scenario.
+allowlist:
+  venho_rooftop_railing_approved: []
+  venho_room_lake_view_approved: []
+  venho_lobby_approved: []
+  venho_street_railing_approved: []
+  venho_lake_landscape_approved: []
