@@ -61,21 +61,45 @@ def test_production_image_source_doctor_uses_catalog_mappings_and_ignores_uncata
 
     missing = doctor._p4_image_source_check()
     assert missing.status == "FAIL"
-    assert missing.detail == (
-        "missing_allowlist_groups=venho_rooftop_railing_approved,venho_room_lake_view_approved"
-    )
+    assert "ERR_GC2_LEGACY_IMAGE_GROUP_EMPTY" in missing.detail
+    assert "file=growth-engine-image-library.yaml" in missing.detail
+    assert "venho_rooftop_railing_approved,venho_room_lake_view_approved" in missing.detail
 
+    broken_path = root / "outside/broken.jpeg"
+    broken_path.write_bytes(b"not a jpeg")
+    broken_sha = hashlib.sha256(broken_path.read_bytes()).hexdigest()
     image_config.write_text(
         "version: 1\nsource: local_legacy_library\nallowlist:\n"
         "  venho_rooftop_railing_approved:\n"
         "    - path: outside/roof.jpg\n"
         f"      sha256: {rooftop_sha}\n"
+        "    - path: outside/broken.jpeg\n"
+        f"      sha256: {broken_sha}\n"
         "  venho_room_lake_view_approved:\n"
         "    - path: room/view.jpg\n"
         f"      sha256: {room_sha}\n",
         encoding="utf-8",
     )
     ready = doctor._p4_image_source_check()
-    assert ready.status == "PASS"
+    assert ready.status == "WARN"
     assert "legacy_reference_groups=2" in ready.detail
     assert "ignored_uncatalogued_scenario_groups=1" in ready.detail
+    assert "ERR_GC2_LEGACY_IMAGE_INVALID" in ready.detail
+    assert "group=venho_rooftop_railing_approved" in ready.detail
+    assert "file=outside/broken.jpeg" in ready.detail
+
+    image_config.write_text(
+        "version: 1\nsource: local_legacy_library\nallowlist:\n"
+        "  venho_rooftop_railing_approved:\n"
+        "    - path: outside/broken.jpeg\n"
+        f"      sha256: {broken_sha}\n"
+        "  venho_room_lake_view_approved:\n"
+        "    - path: room/view.jpg\n"
+        f"      sha256: {room_sha}\n",
+        encoding="utf-8",
+    )
+    no_valid_image = doctor._p4_image_source_check()
+    assert no_valid_image.status == "FAIL"
+    assert "ERR_GC2_LEGACY_IMAGE_GROUP_NO_VALID_FILES" in no_valid_image.detail
+    assert "group=venho_rooftop_railing_approved" in no_valid_image.detail
+    assert "file=outside/broken.jpeg" in no_valid_image.detail

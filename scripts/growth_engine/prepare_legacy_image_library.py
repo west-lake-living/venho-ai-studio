@@ -233,6 +233,20 @@ def main() -> int:
         print("IMAGE_LIBRARY_WRITE=NOT_REQUESTED")
         return 0
 
+    rendered = render_yaml(allowlist)
+    output_path = arguments.output.expanduser()
+    if output_path.is_file() and not output_path.is_symlink():
+        try:
+            unchanged = (
+                stat.S_IMODE(output_path.stat().st_mode) == 0o600
+                and output_path.read_text(encoding="utf-8") == rendered
+            )
+        except OSError:
+            unchanged = False
+        if unchanged:
+            print("IMAGE_LIBRARY_WRITE=UNCHANGED entries=" + str(total) + " mode=600; no confirmation needed")
+            return 0
+
     print(f"review the table above; target config is {arguments.output}")
     try:
         answer = input("Type WRITE to replace/create this allowlist: ").strip()
@@ -241,7 +255,7 @@ def main() -> int:
     if answer != "WRITE":
         print("IMAGE_LIBRARY_WRITE=CANCELLED")
         return 3
-    write_private(arguments.output, render_yaml(allowlist))
+    write_private(output_path, rendered)
     print(f"IMAGE_LIBRARY_WRITE=PASS entries={total} mode=600")
     return 0
 

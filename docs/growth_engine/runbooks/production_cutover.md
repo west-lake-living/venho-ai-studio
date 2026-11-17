@@ -266,7 +266,18 @@ python3 ops/asus-server/growth-engine/push-meta-tokens.py --host asus-server
 
 Trên server điền `GE_TELEGRAM_BOT_TOKEN`, `GE_TELEGRAM_CHAT_ID`, `GE_HEARTBEAT_URL` từ secret store/Healthchecks; bot token phải thuộc `@venho_growth_alerts_bot`, không dùng `@Venhohotel_bot`. Giữ `growth-engine.env` mode 600. Không gửi tin Telegram thử.
 
-Thêm metadata expiry, không phải token: `GE_META_TOKEN_EXPIRY_IG_VENHO=2027-01-10` là ngày ước tính theo thông tin hiện có; `GE_META_DATA_ACCESS_EXPIRY_IG_VENHO=2027-02-09` là ước tính 90 ngày từ 11/11. Đối chiếu cả hai ngày với Access Token Debugger và sửa nếu khác. `doctor` trả WARN khi còn 14 ngày trở xuống hoặc metadata thiếu/sai. Worker publish kiểm tra mỗi 6 giờ và enqueue một Telegram notification bền vững cho mỗi loại expiry/ngày; notification dispatcher gửi qua bot production.
+Lấy hạn thật trên ASUS từ IG token đã có trong env production, không in token:
+
+```bash
+set -Eeuo pipefail
+cd "$HOME/venho/gc2-src"
+python3 ops/asus-server/growth-engine/update-meta-token-expiry.py
+systemctl --user restart growth-engine-worker@publish.service
+```
+
+Script gọi Graph API v27.0 `debug_token` bằng token `GE_META_READ_TOKEN_IG_VENHO` ngay trên server; xác nhận token hợp lệ và thuộc app `1679968647246378`, rồi ghi `expires_at` và `data_access_expires_at` thành ngày ICT vào `growth-engine.env`. Chỉ output mã kết quả và hai ngày, không output token/URL/lỗi Graph. File env phải là file thường, mode 600, do tài khoản hiện hành sở hữu. Nếu Graph không cho token hiện tại gọi `debug_token`, script dừng mà không sửa env; lúc đó lấy hai ngày trong Access Token Debugger rồi cập nhật thủ công. Restart publish worker để nạp metadata mới.
+
+`doctor` trả WARN khi còn 14 ngày trở xuống hoặc metadata thiếu/sai. Worker publish kiểm tra mỗi 6 giờ và enqueue một Telegram notification bền vững cho mỗi loại expiry/ngày; notification dispatcher gửi qua bot production.
 
 Đối chiếu tên biến mà không in giá trị:
 

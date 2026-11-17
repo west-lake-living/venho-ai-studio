@@ -247,12 +247,14 @@ def test_production_p4_fake_e2e_approves_without_dispatch_while_disabled(
 def test_p4_repairs_text_only_draft_from_allowlisted_legacy_local_photo_without_regeneration(
     tmp_path: Path, monkeypatch, caplog
 ) -> None:
+    import pillow_heif
+
     photo_buffer = BytesIO()
-    Image.new("RGB", (900, 1200), (43, 91, 117)).save(photo_buffer, format="JPEG", quality=92)
+    pillow_heif.from_pillow(Image.new("RGB", (900, 1200), (43, 91, 117))).save(photo_buffer)
     photo_bytes = photo_buffer.getvalue()
     photo_sha = hashlib.sha256(photo_bytes).hexdigest()
     legacy_root = tmp_path / "growth-runtime/venho-ai-studio/assets/raw"
-    photo_path = legacy_root / "outside" / "approved-rooftop-photo.jpg"
+    photo_path = legacy_root / "outside" / "approved-rooftop-photo.jpeg"
     photo_path.parent.mkdir(parents=True)
     photo_path.write_bytes(photo_bytes)
     image_config = tmp_path / "growth-engine-image-library.yaml"
@@ -332,7 +334,7 @@ def test_p4_repairs_text_only_draft_from_allowlisted_legacy_local_photo_without_
     )
     assert repair.delivery_id == str(delivery["id"])
     assert repair.source_sha256 == photo_sha
-    assert repair.source_relative_path == "outside/approved-rooftop-photo.jpg"
+    assert repair.source_relative_path == "outside/approved-rooftop-photo.jpeg"
 
     # Simulate the original assembly job being picked before its variant exists.
     connection = sqlite3.connect(settings.db_path)

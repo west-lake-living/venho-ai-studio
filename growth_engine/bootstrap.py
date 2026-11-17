@@ -491,6 +491,9 @@ class DoctorService:
         )
 
     def _p4_image_source_check(self) -> DoctorCheck:
+        library_adapter = import_module(
+            "growth_engine.adapters.outbound.media.local_legacy_image_library"
+        )
         try:
             yaml = import_module("yaml")
             project_dir = self._repo_root / "config" / "projects" / "venho_hotel"
@@ -502,7 +505,10 @@ class DoctorService:
             ) or {}
             catalog_ids = legacy_catalog.get("assets", {})
             if not isinstance(catalog_ids, dict):
-                raise ValueError
+                raise ValueError(
+                    "ERR_GC2_LEGACY_IMAGE_CATALOG_INVALID: Catalog assets phải là mapping; "
+                    "file=reference_assets.yaml"
+                )
             scenario_ids = {
                 str(reference_id)
                 for scenario in (scenarios.get("scenarios", {}) or {}).values()
@@ -515,9 +521,6 @@ class DoctorService:
                 self.settings,
                 self._repo_root,
                 project_dir / "growth_engine",
-            )
-            library_adapter = import_module(
-                "growth_engine.adapters.outbound.media.local_legacy_image_library"
             )
             image_library = library_adapter.LocalLegacyImageLibrary.from_yaml(
                 config_path,
@@ -532,14 +535,29 @@ class DoctorService:
                 return DoctorCheck(
                     "P4 image source",
                     "FAIL",
-                    "missing_allowlist_groups=" + ",".join(missing_groups),
+                    "ERR_GC2_LEGACY_IMAGE_GROUP_EMPTY: Nhóm không có ảnh trong allowlist; "
+                    "file=growth-engine-image-library.yaml; groups=" + ",".join(missing_groups),
                 )
-            image_library.validate_reference_ids(required_ids)
-        except (OSError, TypeError, ValueError, RuntimeError) as error:
+            excluded_images = image_library.validate_reference_ids(required_ids)
+        except Exception as error:
+            if isinstance(error, library_adapter.LegacyImageValidationError):
+                return DoctorCheck("P4 image source", "FAIL", str(error))
+            safe_message = library_adapter._redact_public_message(str(error))
             return DoctorCheck(
                 "P4 image source",
                 "FAIL",
-                f"legacy_image_validation=FAIL reason={type(error).__name__}",
+                "ERR_GC2_P4_IMAGE_VALIDATION: "
+                + safe_message
+                + "; file=growth-engine-image-library.yaml",
+            )
+        if excluded_images:
+            excluded = " | ".join(issue.render() for issue in excluded_images)
+            return DoctorCheck(
+                "P4 image source",
+                "WARN",
+                f"ERR_GC2_LEGACY_IMAGE_CANDIDATES_EXCLUDED: Có ảnh không hợp lệ bị loại; "
+                f"các nhóm vẫn còn ảnh dùng được; legacy_reference_groups={len(required_ids)}; "
+                f"ignored_uncatalogued_scenario_groups={len(unused_ids)}. {excluded}",
             )
         return DoctorCheck(
             "P4 image source",

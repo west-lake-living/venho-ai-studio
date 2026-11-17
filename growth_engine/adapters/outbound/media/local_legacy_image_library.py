@@ -5,6 +5,7 @@ import io
 import os
 import re
 import stat
+import warnings
 from dataclasses import dataclass
 from datetime import date
 from pathlib import Path, PurePosixPath
@@ -23,6 +24,14 @@ except ImportError:  # pragma: no cover - optional if no HEIC photos are configu
 _SHA256 = re.compile(r"^[a-f0-9]{64}$")
 _IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png", ".heic", ".heif"}
 MAX_LEGACY_IMAGE_BYTES = 25 * 1024 * 1024
+MAX_LEGACY_IMAGE_PIXELS = 50_000_000
+_SECRET_ASSIGNMENT = re.compile(
+    r"(?i)\b(authorization|bearer|access[_-]?token|refresh[_-]?token|api[_-]?key|client[_-]?secret|password)"
+    r"(\s*[:=]\s*|\s+)([^\s,;]+)"
+)
+_URL = re.compile(r"https?://[^\s\])}>,]+", re.IGNORECASE)
+_LONG_SECRET = re.compile(r"\b[A-Za-z0-9_-]{48,}\b")
+_API_KEY = re.compile(r"\b(?:sk-[A-Za-z0-9_-]{16,}|EAA[A-Za-z0-9_-]{16,}|ya29\.[A-Za-z0-9._-]{16,})\b")
 
 
 @dataclass(frozen=True)
@@ -35,6 +44,46 @@ class LocalLegacyImage:
     @property
     def name(self) -> str:
         return PurePosixPath(self.relative_path).name
+
+
+@dataclass(frozen=True)
+class LegacyImageIssue:
+    reference_id: str
+    relative_path: str
+    code: str
+    message: str
+
+    def render(self) -> str:
+        return f"{self.code}: {self.message}; group={self.reference_id}; file={self.relative_path}"
+
+
+class LegacyImageValidationError(ValueError):
+    def __init__(
+        self,
+        code: str,
+        message: str,
+        *,
+        reference_id: str | None = None,
+        relative_path: str | None = None,
+        issues: tuple[LegacyImageIssue, ...] = (),
+    ) -> None:
+        self.code = code
+        safe_message = _redact_public_message(message)
+        self.reference_id = reference_id
+        self.relative_path = relative_path
+        self.issues = issues
+        details = [safe_message]
+        if reference_id:
+            details.append(f"group={reference_id}")
+        if relative_path:
+            details.append(f"file={relative_path}")
+        details.extend(issue.render() for issue in issues)
+        self.public_message = _redact_public_message("; ".join(details))
+        super().__init__(f"{code}: {self.public_message}")
+
+
+class UnsupportedLegacyImageError(LegacyImageValidationError):
+    """A candidate file is corrupt or its detected format is unsupported."""
 
 
 class LocalLegacyImageLibrary:
@@ -92,13 +141,26 @@ class LocalLegacyImageLibrary:
     def allowed_reference_ids(self) -> frozenset[str]:
         return frozenset(self.allowlist)
 
-    def validate_reference_ids(self, reference_ids: set[str]) -> None:
+    def validate_reference_ids(self, reference_ids: set[str]) -> tuple[LegacyImageIssue, ...]:
+        excluded: list[LegacyImageIssue] = []
         for reference_id in sorted(reference_ids):
             entries = self.allowlist.get(reference_id, ())
             if not entries:
-                raise ValueError(f"ERR_GC2_LEGACY_IMAGE_GROUP_EMPTY:{reference_id}")
-            for entry in entries:
-                self.read_for_reference(reference_id, entry["path"], expected_sha256=entry["sha256"])
+                raise LegacyImageValidationError(
+                    "ERR_GC2_LEGACY_IMAGE_GROUP_EMPTY",
+                    "Nhóm không có ảnh trong allowlist.",
+                    reference_id=reference_id,
+                )
+            valid_entries, issues = self._valid_entries(reference_id)
+            excluded.extend(issues)
+            if not valid_entries:
+                raise LegacyImageValidationError(
+                    "ERR_GC2_LEGACY_IMAGE_GROUP_NO_VALID_FILES",
+                    "Nhóm không còn ảnh hợp lệ sau khi kiểm tra nội dung.",
+                    reference_id=reference_id,
+                    issues=issues,
+                )
+        return tuple(excluded)
 
     def resolve(
         self,
@@ -106,15 +168,39 @@ class LocalLegacyImageLibrary:
         rotation_key: str,
         rotation_offset: int = 0,
     ) -> LocalLegacyImage | None:
-        entries = self.allowlist.get(reference_id, ())
-        if not entries:
-            return None
+        valid_entries, issues = self._valid_entries(reference_id)
+        if not valid_entries:
+            if not self.allowlist.get(reference_id):
+                return None
+            raise LegacyImageValidationError(
+                "ERR_GC2_LEGACY_IMAGE_GROUP_NO_VALID_FILES",
+                "Nhóm không còn ảnh hợp lệ sau khi kiểm tra nội dung.",
+                reference_id=reference_id,
+                issues=issues,
+            )
         try:
             rotation = date.fromisoformat(rotation_key).toordinal()
         except ValueError:
             rotation = int.from_bytes(hashlib.sha256(rotation_key.encode("utf-8")).digest()[:4], "big")
-        selected = entries[(rotation + rotation_offset) % len(entries)]
+        selected = valid_entries[(rotation + rotation_offset) % len(valid_entries)]
         return self.read_for_reference(reference_id, selected["path"], expected_sha256=selected["sha256"])
+
+    def _valid_entries(
+        self, reference_id: str
+    ) -> tuple[tuple[dict[str, str], ...], tuple[LegacyImageIssue, ...]]:
+        entries = self.allowlist.get(reference_id, ())
+        if not entries:
+            return (), ()
+        valid: list[dict[str, str]] = []
+        issues: list[LegacyImageIssue] = []
+        for entry in entries:
+            try:
+                self.read_for_reference(reference_id, entry["path"], expected_sha256=entry["sha256"])
+            except UnsupportedLegacyImageError as error:
+                issues.append(LegacyImageIssue(reference_id, entry["path"], error.code, error.public_message))
+            else:
+                valid.append(entry)
+        return tuple(valid), tuple(issues)
 
     def read_for_reference(
         self,
@@ -126,22 +212,67 @@ class LocalLegacyImageLibrary:
         entries = self.allowlist.get(reference_id, ())
         entry = next((item for item in entries if item["path"] == relative_path), None)
         if entry is None:
-            raise ValueError("legacy image path is not allowlisted for the selected reference group")
+            raise LegacyImageValidationError(
+                "ERR_GC2_LEGACY_IMAGE_NOT_ALLOWLISTED",
+                "Đường dẫn không nằm trong allowlist của nhóm.",
+                reference_id=reference_id,
+                relative_path=relative_path,
+            )
         expected = expected_sha256 or entry["sha256"]
         if expected != entry["sha256"]:
-            raise ValueError("legacy image SHA-256 does not match the configured allowlist")
-        data = _read_beneath_no_symlinks(self.root, relative_path)
+            raise LegacyImageValidationError(
+                "ERR_GC2_LEGACY_IMAGE_SHA256_CONFIG",
+                "SHA-256 yêu cầu không khớp cấu hình allowlist.",
+                reference_id=reference_id,
+                relative_path=relative_path,
+            )
+        try:
+            data = _read_beneath_no_symlinks(self.root, relative_path)
+        except (OSError, ValueError) as error:
+            errno = error.errno if isinstance(error, OSError) else 0
+            raise LegacyImageValidationError(
+                "ERR_GC2_LEGACY_IMAGE_READ",
+                f"Không thể đọc an toàn ảnh (errno={errno or 0}).",
+                reference_id=reference_id,
+                relative_path=relative_path,
+            ) from None
         if not data or len(data) > MAX_LEGACY_IMAGE_BYTES:
-            raise ValueError("legacy image is empty or exceeds 25 MiB")
+            raise LegacyImageValidationError(
+                "ERR_GC2_LEGACY_IMAGE_SIZE",
+                "Ảnh rỗng hoặc vượt giới hạn 25 MiB.",
+                reference_id=reference_id,
+                relative_path=relative_path,
+            )
         actual_sha256 = hashlib.sha256(data).hexdigest()
         if actual_sha256 != expected:
-            raise ValueError("legacy image changed after allowlist review")
-        mime_type = _validate_image(data)
+            raise LegacyImageValidationError(
+                "ERR_GC2_LEGACY_IMAGE_SHA256_MISMATCH",
+                "Bytes ảnh không khớp SHA-256 đã duyệt.",
+                reference_id=reference_id,
+                relative_path=relative_path,
+            )
+        try:
+            mime_type = _validate_image(data)
+        except UnsupportedLegacyImageError as error:
+            raise UnsupportedLegacyImageError(
+                error.code,
+                error.public_message,
+                reference_id=reference_id,
+                relative_path=relative_path,
+            ) from None
         return LocalLegacyImage(relative_path, actual_sha256, mime_type, data)
 
 
+def _redact_public_message(message: str) -> str:
+    value = _SECRET_ASSIGNMENT.sub(r"\1\2[REDACTED]", message)
+    value = _URL.sub("[URL REDACTED]", value)
+    value = _API_KEY.sub("[SECRET REDACTED]", value)
+    value = _LONG_SECRET.sub("[SECRET REDACTED]", value)
+    return " ".join(value.split())[:384]
+
+
 def _validate_relative_path(value: str) -> tuple[str, ...]:
-    if not value or value.startswith("/") or "\\" in value or "\x00" in value:
+    if not value or value.startswith("/") or "\\" in value or any(ord(char) < 32 for char in value):
         raise ValueError("legacy image path must be a safe relative POSIX path")
     components = tuple(value.split("/"))
     if any(component in {"", ".", ".."} for component in components):
@@ -217,11 +348,38 @@ def _reject_symlink_components(path: Path, *, allow_missing: bool) -> None:
 
 def _validate_image(data: bytes) -> str:
     try:
-        with Image.open(io.BytesIO(data)) as image:
-            image.verify()
-            image_format = str(image.format or "").upper()
-    except Exception as error:
-        raise ValueError("legacy allowlisted file is not a decodable image") from error
+        with warnings.catch_warnings():
+            warnings.simplefilter("error", Image.DecompressionBombWarning)
+            with Image.open(io.BytesIO(data)) as image:
+                image_format = str(image.format or "").upper()
+                if image.width * image.height > MAX_LEGACY_IMAGE_PIXELS:
+                    raise UnsupportedLegacyImageError(
+                        "ERR_GC2_LEGACY_IMAGE_PIXEL_LIMIT",
+                        "Ảnh vượt giới hạn 50 triệu pixel.",
+                    )
+                image.verify()
+            with Image.open(io.BytesIO(data)) as decoded:
+                if str(decoded.format or "").upper() != image_format:
+                    raise UnsupportedLegacyImageError(
+                        "ERR_GC2_LEGACY_IMAGE_FORMAT_MISMATCH",
+                        "Định dạng giải mã không khớp chữ ký ảnh.",
+                    )
+                decoded.load()
+    except UnsupportedLegacyImageError:
+        raise
+    except Exception:
+        if _looks_like_heif(data):
+            try:
+                import pillow_heif  # noqa: F401
+            except ImportError:
+                raise UnsupportedLegacyImageError(
+                    "ERR_GC2_LEGACY_IMAGE_HEIF_DECODER_MISSING",
+                    "Nội dung là HEIF/HEIC nhưng pillow-heif chưa được cài.",
+                ) from None
+        raise UnsupportedLegacyImageError(
+            "ERR_GC2_LEGACY_IMAGE_INVALID",
+            "Bytes không phải ảnh JPEG/PNG/HEIF hợp lệ hoặc ảnh bị hỏng.",
+        ) from None
     mime_type = {
         "JPEG": "image/jpeg",
         "PNG": "image/png",
@@ -229,5 +387,14 @@ def _validate_image(data: bytes) -> str:
         "HEIF": "image/heif",
     }.get(image_format)
     if mime_type is None:
-        raise ValueError("legacy allowlisted image format is unsupported")
+        raise UnsupportedLegacyImageError(
+            "ERR_GC2_LEGACY_IMAGE_FORMAT_UNSUPPORTED",
+            f"Định dạng ảnh theo nội dung không được hỗ trợ (format={image_format or 'unknown'}).",
+        )
     return mime_type
+
+
+def _looks_like_heif(data: bytes) -> bool:
+    if len(data) < 12 or data[4:8] != b"ftyp":
+        return False
+    return data[8:12] in {b"heic", b"heix", b"hevc", b"hevx", b"mif1", b"msf1"}
