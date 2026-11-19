@@ -289,3 +289,87 @@ bash "$HOME/venho/reprocess-p4-qc-evidence.sh"
 **Kết quả mong đợi:** deploy reports requested SHA; API và hai worker active; preflight identifies the target delivery and stored observation keys without values; operator types REPROCESS; result is REPROCESSED, delivery_state=IN_REVIEW, and provider/paid-call counts are both zero. A repeat returns ALREADY_PROCESSED. p4-slot-status --date 2026-11-21 shows one QC report and revision (including a safe `revision.qc_report` summary with verdict and integer `*_bp` scores), delivery IN_REVIEW, both original/retry QC paid calls still SETTLED at 400 VND each, DISABLED + pause 1, and zero outbox/executions. Do not approve the delivery during this recovery.
 
 **Dừng:** evidence missing/invalid, parser lists a field error, target/config/hash mismatch, controls changed, or deployment SHA/service check fails. ERR_GC2_P4_QC_EVIDENCE_INSUFFICIENT prints the missing evidence and says Option B needs separate approval; do not run provider QC from that failure path.
+
+## 9. Duyệt P4 trên VENHO OS
+
+Release 290957f đã reprocess thành công delivery `2509f430-4a4a-47dd-97a9-4b99e8d4ba88`
+sang `IN_REVIEW`, revision `bd5eb9fd-a45b-4768-acf1-a8a40019e83a`.
+Bản tóm tắt mới ghi `forbidden_checks` với `rule_id`, `violated` và `confidence_bp`.
+Confidence 10.000 bp mô tả độ tin cậy của mục kiểm tra, còn cờ `violated` cho biết kết quả.
+Điểm forbidden 100 là trường hợp không có cờ vi phạm. Mục DNA 60 điểm góp vào điểm tổng có trọng số.
+Đọc `section_scores` cùng trường `section` và `key` để biết mục nào. Verdict của Validator Studio
+là approve. GC2 giữ REVIEW khi detector còn thiếu độ phủ, nên cần Harry duyệt.
+
+Job gốc giữ `FAILED` và lỗi cũ. `p4-slot-status` hiện thêm `recovery_status=RECOVERED`
+khi audit recovery trỏ đúng delivery và revision hiện tại. `cutover-readiness` kiểm approval
+khớp revision/hash, mapping, QC và outbox/execution. Job lịch sử không nằm trong gate.
+Lệnh reprocess trả `ALREADY_PROCESSED` cho audit đã có, với chi phí phát sinh bằng 0.
+
+**Điều kiện cho khối 2.** VENHO OS đã deploy commit `5c684b3eb8419109d9c00900d52a8148c2704bd5` hoặc build chứa route của commit đó. Build có `GET /api/health/growth-backend`.
+Endpoint trả 204, `Cache-Control: private, no-store` và `X-Venho-Growth-Backend`.
+Chạy build một lần khi đưa route vào release. Sau đó đổi `GROWTH_BACKEND` chỉ cần restart,
+do Next đọc biến phía server lúc xử lý request. Dùng phiên SSH có TTY, chạy sau 09:30 ICT
+và hoàn tất cùng phiên. Hai chế độ đều chặn thao tác chủ động từ 08:30 đến 09:30 ICT.
+Script cảnh báo số mục chờ duyệt hôm nay trong registry legacy cục bộ. Nếu registry chưa đọc được,
+kiểm tra queue trên dashboard legacy trước. Trong v2, màn Publishing ẩn phần duyệt legacy.
+Legacy scheduler và webhook/Make 5868920 vẫn theo lịch riêng. Restart chỉ làm VENHO OS
+gián đoạn ngắn, nên tránh giờ đăng.
+
+**Khối 1 — deploy GC2, kiểm recovery và mở preview.** Dùng block deploy ở §8 với SHA
+đã duyệt, rồi thay phần từ dòng `RUNTIME=` đến trước `SCRIPT` bằng đoạn sau.
+Block dùng wrapper trên TTY, chạy lại an toàn khi job đã recover.
+
+```bash
+RUNTIME="$CURRENT_RELEASE/ops/asus-server/growth-engine/run-with-legacy-provider-env.sh"
+"$RUNTIME" reprocess-p4-qc-evidence --job e0d00517-3661-4390-a532-6f516e0ef176
+"$RUNTIME" p4-slot-status --date 2026-11-21
+"$RUNTIME" p4-review-preview --delivery 2509f430-4a4a-47dd-97a9-4b99e8d4ba88
+```
+
+**Khối 2 — mở v2, duyệt, rồi về legacy.** Sau khi thấy `VENHO_OS=healthy GROWTH_BACKEND=v2`,
+mở Publishing trên VENHO OS bằng tài khoản có `studio:write`. Kiểm Page `1124616474074140`,
+21/11/2026 09:00 ICT, caption và preview JPEG. Sau khi duyệt và tải lại thấy `APPROVED`,
+gõ `APPROVED` trong terminal trong vòng 15 phút. Nếu có lỗi, gõ nội dung khác để script quay lại legacy. Hết thời gian cũng quay lại legacy.
+Gate PASS xác nhận đúng revision, đúng hash, runtime vẫn DISABLED + pause và không có
+outbox/execution. Gate FAIL vẫn quay lại legacy. Sau đó tải lại màn Publishing để
+xác nhận dashboard legacy hiện lại.
+
+```bash
+cat > "$HOME/venho/p4-approve-on-os.sh" <<'SCRIPT'
+#!/usr/bin/env bash
+set -Eeuo pipefail
+ROOT="$HOME/venho/growth-engine/current/ops/asus-server"
+SWITCH="$ROOT/venho-os/growth-backend-switch.sh"
+ENGINE="$ROOT/growth-engine/run-with-legacy-provider-env.sh"
+needs_legacy=0
+cleanup() {
+  status=$?
+  trap - EXIT
+  rm -f "$HOME/venho/p4-approve-on-os.sh"
+  if (( needs_legacy )) && ! bash "$SWITCH" legacy; then
+    printf '%s\n' 'RESTORE_LEGACY=FAILED' >&2
+    status=1
+  fi
+  exit "$status"
+}
+trap cleanup EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM HUP
+{ exec 3<>/dev/tty; } 2>/dev/null || { echo 'ERR_GC2_OPERATOR_TTY_REQUIRED' >&2; exit 2; }
+
+bash "$SWITCH" v2
+needs_legacy=1
+printf 'Duyệt trên VENHO OS, tải lại rồi gõ APPROVED để kiểm tra: ' >&3
+IFS= read -r -t 900 answer <&3
+[[ "$answer" == APPROVED ]] || exit 2
+
+ready=0
+"$ENGINE" cutover-readiness --date 2026-11-21 --time 09:00 || ready=$?
+bash "$SWITCH" legacy
+needs_legacy=0
+"$ENGINE" p4-slot-status --date 2026-11-21
+exit "$ready"
+SCRIPT
+chmod 700 "$HOME/venho/p4-approve-on-os.sh"
+bash "$HOME/venho/p4-approve-on-os.sh"
+```

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import logging
 import os
@@ -432,14 +433,102 @@ def _p4_qc_summary(result_json: str) -> dict[str, object]:
             if key in {"dna_match", "authenticity", "composition", "lighting",
                        "material", "technical_quality", "forbidden"} and type(value) is int
         }
-    for field, score in (("section_scores", "score_bp"), ("forbidden_violations", "confidence_bp")):
-        rows = report.get(field)
-        if isinstance(rows, list):
-            summary[field] = [
-                {score: row[score]} for row in rows
-                if isinstance(row, dict) and type(row.get(score)) is int
-            ]
+    sections = report.get("section_scores")
+    if isinstance(sections, list):
+        summary["section_scores"] = [
+            {"section": _qc_section_id(row.get("section")), "key": _qc_section_id(row.get("key")),
+             "score_bp": row["score_bp"]}
+            for row in sections if isinstance(row, dict) and type(row.get("score_bp")) is int
+        ]
+    checks = report.get("forbidden_violations")
+    if isinstance(checks, list):
+        summary["forbidden_checks"] = [
+            {
+                "rule_id": hashlib.sha256(row["rule"].encode()).hexdigest()[:16]
+                if isinstance(row.get("rule"), str) else None,
+                "violated": row["violated"] if type(row.get("violated")) is bool else None,
+                "confidence_bp": row["confidence_bp"],
+            }
+            for row in checks if isinstance(row, dict) and type(row.get("confidence_bp")) is int
+        ]
     return summary
+
+
+def _qc_section_id(value: object) -> str | None:
+    return value if isinstance(value, str) and re.fullmatch(r"[a-zA-Z][a-zA-Z0-9_.-]{0,79}", value) else None
+
+
+def _p4_preview_caption(caption: str) -> str:
+    from urllib.parse import parse_qsl, urlsplit
+
+    def redact_signed(match: re.Match[str]) -> str:
+        try:
+            parts = urlsplit(match[0])
+            if parts.username or any(
+                re.search(r"signature|token|credential|^sig$|^t$|^key$|^x-amz-|^x-goog-", key, re.I)
+                for key, _ in parse_qsl(parts.query, keep_blank_values=True)
+            ):
+                return "[URL bảo mật đã ẩn]"
+            return match[0]
+        except ValueError:
+            return "[URL bảo mật đã ẩn]"
+
+    return _CLI_URL.sub(redact_signed, caption)
+
+
+@app.command("p4-review-preview")
+def p4_review_preview(
+    delivery_id: str = typer.Option(..., "--delivery", help="Production fb_hanoi delivery ID."),
+) -> None:
+    """Show the current P4 revision and verified local JPEG for operator review."""
+    import sqlite3
+    from contextlib import closing
+    from datetime import datetime
+    from zoneinfo import ZoneInfo
+
+    try:
+        settings = Settings.from_env()
+        if settings.env.lower() != "production":
+            raise ValueError("production environment required")
+        db = Path(settings.db_path).expanduser().resolve()
+        with closing(sqlite3.connect(f"{db.as_uri()}?mode=ro", uri=True)) as conn:
+            conn.row_factory = sqlite3.Row
+            row = conn.execute(
+                """SELECT d.id AS delivery_id,d.state,d.row_version,r.id AS revision_id,
+                          r.caption,r.payload_hash,r.scheduled_at,c.remote_account_id AS page_id,
+                          v.width,v.height,v.byte_size,v.sha256,v.object_key,v.mime
+                   FROM deliveries d JOIN channels c ON c.id=d.channel_id
+                   JOIN delivery_revisions r ON r.id=d.current_revision_id AND r.delivery_id=d.id
+                   JOIN media_variants v ON v.id=r.variant_id
+                   WHERE d.id=? AND d.active=1 AND c.environment='production'
+                     AND c.channel_key='fb_hanoi' AND c.platform='facebook'
+                     AND d.state IN ('IN_REVIEW','APPROVED')""",
+                (delivery_id,),
+            ).fetchone()
+        if row is None:
+            raise ValueError("active fb_hanoi review revision required")
+        result = dict(row)
+        sha = result["sha256"]
+        key = result.pop("object_key")
+        if not re.fullmatch(r"[0-9a-f]{64}", sha) or key != f"variants/{sha[:2]}/{sha}.jpg":
+            raise ValueError("invalid variant object key")
+        root = Path(settings.media_root).expanduser().resolve(strict=True)
+        file = (root / key).resolve(strict=True)
+        if not file.is_relative_to(root) or not file.is_file() or file.stat().st_size != result["byte_size"]:
+            raise ValueError("variant path or size mismatch")
+        with file.open("rb") as stream:
+            if hashlib.file_digest(stream, "sha256").hexdigest() != sha:
+                raise ValueError("variant SHA-256 mismatch")
+        result["variant_path"] = str(file)
+        result["scheduled_at_ict"] = datetime.fromtimestamp(
+            result.pop("scheduled_at") / 1000, tz=ZoneInfo("Asia/Ho_Chi_Minh")
+        ).isoformat()
+        result["caption"] = _p4_preview_caption(result["caption"])
+    except (OSError, ValueError, sqlite3.Error) as error:
+        typer.echo(json.dumps({"result": "BLOCKED", "code": "ERR_GC2_P4_REVIEW_PREVIEW",
+                               "reason": _safe_cli_error(error)}, ensure_ascii=False), err=True)
+        raise typer.Exit(code=1) from error
+    typer.echo(json.dumps(result, ensure_ascii=False, sort_keys=True, indent=2))
 
 
 @app.command("p4-slot-status")
@@ -489,10 +578,15 @@ def p4_slot_status(
             delivery_id = target["delivery_id"]
             related_jobs: list[dict[str, object]] = []
             rows = connection.execute(
-                """SELECT id,kind,state,attempts,last_error,payload_json,created_at
-                   FROM jobs WHERE lane='jobs' AND kind IN ('generate_slot','prepare_variant','assemble_revision')
+                """SELECT j.id,j.kind,j.state,j.attempts,j.last_error,j.payload_json,j.created_at,
+                          EXISTS(SELECT 1 FROM audit_events a
+                                 WHERE a.aggregate_type='job' AND a.aggregate_id=j.id
+                                   AND a.action='p4.qc_evidence_reprocessed'
+                                   AND json_extract(a.details_json,'$.delivery_id')=?
+                                   AND json_extract(a.details_json,'$.revision_id')=?) AS recovered
+                   FROM jobs j WHERE lane='jobs' AND kind IN ('generate_slot','prepare_variant','assemble_revision')
                      AND created_at>=? ORDER BY created_at,id""",
-                (package_created_at,),
+                (delivery_id, target["current_revision_id"], package_created_at),
             ).fetchall()
             decoded_jobs: list[tuple[sqlite3.Row, dict[str, object]]] = []
             for job in rows:
@@ -516,6 +610,7 @@ def p4_slot_status(
                         "id": str(job["id"]),
                         "kind": str(job["kind"]),
                         "state": str(job["state"]),
+                        "recovery_status": "RECOVERED" if job["recovered"] else None,
                         "attempts": int(job["attempts"]),
                         "last_error": None if not job["last_error"] else _safe_cli_error_text(str(job["last_error"])),
                     })
@@ -634,6 +729,8 @@ def cutover_readiness(
         "mapping_route_ref": result.mapping_route_ref,
         "reasons": list(result.reasons),
     }, ensure_ascii=False, sort_keys=True))
+    if not result.ready:
+        raise typer.Exit(code=1)
 
 
 _CLI_SECRET_ASSIGNMENT = re.compile(

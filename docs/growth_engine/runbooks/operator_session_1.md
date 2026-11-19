@@ -552,3 +552,10 @@ systemctl --user list-timers --all 'venho-growth-*'
 **Mong đợi:** cả hai timer hiện trạng thái enabled/active; lệnh chạy bằng legacy runtime `~/venho/growth-runtime/venho-ai-studio/.venv/bin/venho-analytics`. Reconcile quét 7 ngày; Insights chạy backfill rồi ghi báo cáo. Output chỉ nằm trong `~/venho/state/growth-reports/`.
 
 **Dừng:** nếu thiếu token/quyền Meta, lệnh báo lỗi, output không nằm ngoài git, hoặc timer gọi runtime/DB v2 thì dừng và chạy `systemctl --user disable --now venho-growth-reconcile.timer venho-growth-insights.timer`; lưu lỗi đã khử bí mật. Không sửa lịch legacy publish timers. Production v2 giữ `DISABLED`.
+
+## Duyệt P4 trên VENHO OS trước cutover
+
+Dùng [hai khối lệnh duyệt P4](p4_production_dry_run.md#9-duyệt-p4-trên-venho-os).
+Chạy preview trước, mở màn v2 sau 09:30 ICT, duyệt đúng Page ID `1124616474074140` và
+slot 21/11/2026 09:00 ICT, kiểm `cutover-readiness`, rồi trở lại legacy và tải lại màn
+Publishing. Giữ engine production `DISABLED`, `global_pause=1` và giữ legacy scheduler/Make 5868920.

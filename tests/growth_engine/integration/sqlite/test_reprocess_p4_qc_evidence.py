@@ -224,6 +224,11 @@ def test_reprocess_creates_qc_and_in_review_revision_once_without_provider_call(
                            env=_cli_env(database, tmp_path), input="", obj=obj)
     assert replay.exit_code == 0, replay.output
     assert '"result": "ALREADY_PROCESSED"' in replay.output
+    status = runner.invoke(app, ["p4-slot-status", "--date", "2026-11-21"], env=_cli_env(database, tmp_path))
+    assert status.exit_code == 0, status.output
+    job = next(job for job in json.loads(status.output)["jobs"] if job["id"] == job_id)
+    assert job["state"] == "FAILED" and job["recovery_status"] == "RECOVERED"
+    assert "ValueError" in job["last_error"]
     assert qc.provider_calls == 0 and qc.reprocess_calls >= 2
     with connect(database) as connection:
         assert connection.execute("SELECT count(*) FROM qc_reports").fetchone()[0] == 1
@@ -327,12 +332,21 @@ def test_status_qc_summary_only_returns_verdict_and_integer_scores() -> None:
         "dna_match_score_bp": "unexpected",
         "notes": ["hidden"],
         "category_scores_bp": {"dna_match": 800000, "unexpected": 1},
-        "section_scores": [{"score_bp": 900000, "reason": "hidden"}],
-        "forbidden_violations": [{"confidence_bp": 6999, "rule": "hidden"}],
+        "section_scores": [{"section": "composition", "key": "window_layout", "score_bp": 900000, "reason": "hidden"}],
+        "forbidden_violations": [{"confidence_bp": 6999, "rule": "hidden", "violated": False}],
     }})) == {
         "verdict": "revise",
         "overall_score_bp": 899900,
         "category_scores_bp": {"dna_match": 800000},
-        "section_scores": [{"score_bp": 900000}],
-        "forbidden_violations": [{"confidence_bp": 6999}],
+        "section_scores": [{"section": "composition", "key": "window_layout", "score_bp": 900000}],
+        "forbidden_checks": [{"confidence_bp": 6999, "rule_id": "e564b4081d7a9ea4", "violated": False}],
     }
+
+
+def test_review_caption_preserves_text_and_public_links_without_signed_urls() -> None:
+    from growth_engine.adapters.inbound.cli.main import _p4_preview_caption
+
+    caption = "Ven Hồ\nhttps://venhohotel.com/?utm_source=fb\nhttps://example.test/img.jpg?t=secret"
+    assert _p4_preview_caption(caption) == (
+        "Ven Hồ\nhttps://venhohotel.com/?utm_source=fb\n[URL bảo mật đã ẩn]"
+    )

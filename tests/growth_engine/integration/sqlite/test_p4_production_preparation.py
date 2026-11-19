@@ -211,6 +211,12 @@ def test_production_p4_fake_e2e_approves_without_dispatch_while_disabled(
     assert enqueue.skipped_reason == "MODE_NOT_LIVE_MANUAL"
     assert dispatch.claimed_count == 0
     assert make.calls == 0
+    with container.uow_factory().begin_immediate() as tx:
+        tx.connection.execute(
+            "UPDATE jobs SET state='FAILED', last_error='historical QC error' "
+            "WHERE kind='assemble_revision' AND json_extract(payload_json,'$.delivery_id')=?",
+            (delivery["id"],),
+        )
     readiness = container.cutover_readiness.execute("2026-11-13", "09:00")
     assert readiness.ready is True
     assert readiness.mapping_dry_run == "PASS"
@@ -413,23 +419,28 @@ def test_p4_repairs_text_only_draft_from_allowlisted_legacy_local_photo_without_
     connection.commit()
     connection.close()
 
-    status = CliRunner().invoke(
-        engine_cli,
-        ["p4-slot-status", "--date", "2026-11-21"],
-        env={
-            "GE_ENV": "production",
-            "GE_DB_PATH": settings.db_path,
-            "GE_MEDIA_ROOT": settings.media_root,
-            "GE_PUBLIC_BASE_URL": settings.public_base_url,
-            "GE_DASHBOARD_BASE_URL": settings.dashboard_base_url,
-            "GE_CAPABILITY_KEYS": "synthetic-capability-secret",
-            "GE_SERVICE_TOKENS": "synthetic-service-secret",
-            "GE_TELEGRAM_BOT_TOKEN": "synthetic-telegram-secret",
-            "GE_TELEGRAM_CHAT_ID": "synthetic-chat-id",
-            "GE_MAKE_WEBHOOK_URL_PAGE_A": "https://make.example.invalid/synthetic-secret",
-            "GE_META_READ_TOKEN_FB_HANOI": "synthetic-meta-secret",
-        },
-    )
+    cli_env = {
+        "GE_ENV": "production",
+        "GE_DB_PATH": settings.db_path,
+        "GE_MEDIA_ROOT": settings.media_root,
+        "GE_PUBLIC_BASE_URL": settings.public_base_url,
+        "GE_DASHBOARD_BASE_URL": settings.dashboard_base_url,
+        "GE_CAPABILITY_KEYS": "synthetic-capability-secret",
+        "GE_SERVICE_TOKENS": "synthetic-service-secret",
+        "GE_TELEGRAM_BOT_TOKEN": "synthetic-telegram-secret",
+        "GE_TELEGRAM_CHAT_ID": "synthetic-chat-id",
+        "GE_MAKE_WEBHOOK_URL_PAGE_A": "https://make.example.invalid/synthetic-secret",
+        "GE_META_READ_TOKEN_FB_HANOI": "synthetic-meta-secret",
+    }
+    status = CliRunner().invoke(engine_cli, ["p4-slot-status", "--date", "2026-11-21"], env=cli_env)
+    preview = CliRunner().invoke(engine_cli, ["p4-review-preview", "--delivery", repair.delivery_id], env=cli_env)
+    assert preview.exit_code == 0, preview.output
+    review = json.loads(preview.output)
+    assert review["page_id"] == "1124616474074140"
+    assert review["scheduled_at_ict"] == "2026-11-21T09:00:00+07:00"
+    assert review["mime"] == "image/jpeg"
+    assert review["sha256"] in review["variant_path"]
+    assert review["caption"]
     assert status.exit_code == 0, status.output
     status_json = json.loads(status.stdout)
     assert status_json["delivery"]["state"] == "IN_REVIEW"
