@@ -7,9 +7,7 @@ from pathlib import Path
 import pytest
 from typer.testing import CliRunner
 
-import growth_engine.adapters.inbound.cli.main as cli_main
 from growth_engine.adapters.inbound.cli.main import app
-from growth_engine.adapters.inbound.cli.operator_tty import OperatorTtyUnavailable
 from growth_engine.adapters.outbound.persistence.sqlite.connection import connect
 from growth_engine.adapters.outbound.persistence.sqlite.migrator import MigrationRunner
 from growth_engine.adapters.outbound.persistence.sqlite.review_store import SqliteReviewStore
@@ -183,7 +181,7 @@ def _cli_env(database: Path, root: Path) -> dict[str, str]:
 
 
 def test_reprocess_creates_qc_and_in_review_revision_once_without_provider_call(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    tmp_path: Path
 ) -> None:
     database = tmp_path / "growth.db"
     _seed_reprocessable_job(database)
@@ -203,22 +201,26 @@ def test_reprocess_creates_qc_and_in_review_revision_once_without_provider_call(
     runner = CliRunner()
     obj = {"reprocess_p4_qc_evidence_service": service}
     # The line sent to CliRunner is deliberately not trusted as confirmation.
-    monkeypatch.setattr(cli_main, "confirm_from_tty", lambda *_args: False)
     declined = runner.invoke(app, ["reprocess-p4-qc-evidence", "--job", job_id],
                              env=_cli_env(database, tmp_path), input="REPROCESS\n", obj=obj)
     assert declined.exit_code == 2
-    assert "no changes made" in declined.output
+    assert "ERR_GC2_OPERATOR_CONFIRMATION_REQUIRED" in declined.output
     with connect(database) as connection:
         assert connection.execute("SELECT count(*) FROM qc_reports").fetchone()[0] == 0
         assert connection.execute("SELECT state FROM deliveries WHERE id=?", (preview.delivery_id,)).fetchone()[0] == "DRAFT"
 
-    monkeypatch.setattr(cli_main, "confirm_from_tty", lambda *_args: True)
-    accepted = runner.invoke(app, ["reprocess-p4-qc-evidence", "--job", job_id],
+    preflight = runner.invoke(app, ["reprocess-p4-qc-evidence", "--job", job_id, "--preflight-only"],
+                              env=_cli_env(database, tmp_path), obj=obj)
+    assert preflight.exit_code == 0 and '"preflight": "READY"' in preflight.output
+    with connect(database) as connection:
+        assert connection.execute("SELECT count(*) FROM qc_reports").fetchone()[0] == 0
+
+    accepted = runner.invoke(app, ["reprocess-p4-qc-evidence", "--job", job_id, "--operator-confirmed", f"REPROCESS:{job_id}"],
                              env=_cli_env(database, tmp_path), input="not-the-confirmation\n", obj=obj)
     assert accepted.exit_code == 0, accepted.output
     assert '"result": "REPROCESSED"' in accepted.output
     assert '"delivery_state": "IN_REVIEW"' in accepted.output
-    replay = runner.invoke(app, ["reprocess-p4-qc-evidence", "--job", job_id],
+    replay = runner.invoke(app, ["reprocess-p4-qc-evidence", "--job", job_id, "--preflight-only"],
                            env=_cli_env(database, tmp_path), input="", obj=obj)
     assert replay.exit_code == 0, replay.output
     assert '"result": "ALREADY_PROCESSED"' in replay.output
@@ -237,28 +239,21 @@ def test_reprocess_creates_qc_and_in_review_revision_once_without_provider_call(
         assert evidence_after == evidence_before
 
 
-def test_reprocess_refuses_without_tty_even_if_stdin_contains_confirmation(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+@pytest.mark.parametrize("confirmation", ["RESOLVE:e0d00517-3661-4390-a532-6f516e0ef176", "REPROCESS:another-job"])
+def test_reprocess_refuses_wrong_confirmation(tmp_path: Path, confirmation: str) -> None:
     database = tmp_path / "growth.db"
     _seed_reprocessable_job(database)
     service = _service(database, _OfflineQcEvaluator())
     job_id = "e0d00517-3661-4390-a532-6f516e0ef176"
-    monkeypatch.setattr(
-        cli_main,
-        "confirm_from_tty",
-        lambda *_args: (_ for _ in ()).throw(OperatorTtyUnavailable("tty required")),
-    )
-
     result = CliRunner().invoke(
         app,
-        ["reprocess-p4-qc-evidence", "--job", job_id],
+        ["reprocess-p4-qc-evidence", "--job", job_id, "--operator-confirmed", confirmation],
         env=_cli_env(database, tmp_path),
         input="REPROCESS\n",
         obj={"reprocess_p4_qc_evidence_service": service},
     )
     assert result.exit_code == 2
-    assert "ERR_GC2_OPERATOR_TTY_REQUIRED" in result.output
+    assert "ERR_GC2_OPERATOR_CONFIRMATION_REQUIRED" in result.output
     with connect(database) as connection:
         assert connection.execute("SELECT count(*) FROM qc_reports").fetchone()[0] == 0
         assert connection.execute("SELECT state FROM deliveries").fetchone()[0] == "DRAFT"
@@ -321,3 +316,23 @@ def test_reprocess_rolls_back_every_write_if_revision_fails_mid_transaction(tmp_
         assert connection.execute("SELECT qc_status FROM media_variants").fetchone()[0] == "PENDING"
         assert connection.execute("SELECT count(*) FROM audit_events WHERE aggregate_id=?",
                                   ("e0d00517-3661-4390-a532-6f516e0ef176",)).fetchone()[0] == 0
+
+
+def test_status_qc_summary_only_returns_verdict_and_integer_scores() -> None:
+    from growth_engine.adapters.inbound.cli.main import _p4_qc_summary
+
+    assert _p4_qc_summary(json.dumps({"validator_report": {
+        "verdict": "revise",
+        "overall_score_bp": 899900,
+        "dna_match_score_bp": "unexpected",
+        "notes": ["hidden"],
+        "category_scores_bp": {"dna_match": 800000, "unexpected": 1},
+        "section_scores": [{"score_bp": 900000, "reason": "hidden"}],
+        "forbidden_violations": [{"confidence_bp": 6999, "rule": "hidden"}],
+    }})) == {
+        "verdict": "revise",
+        "overall_score_bp": 899900,
+        "category_scores_bp": {"dna_match": 800000},
+        "section_scores": [{"score_bp": 900000}],
+        "forbidden_violations": [{"confidence_bp": 6999}],
+    }

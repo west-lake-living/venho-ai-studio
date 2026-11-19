@@ -13,10 +13,7 @@ from typing import Protocol
 import typer
 
 from growth_engine.settings import Settings
-from growth_engine.adapters.inbound.cli.operator_tty import (
-    OperatorTtyUnavailable,
-    confirm_from_tty,
-)
+
 
 
 app = typer.Typer()
@@ -249,6 +246,21 @@ def repair_p4_media(
     }, ensure_ascii=False, sort_keys=True))
 
 
+def _require_p4_confirmation(
+    preflight_only: bool, supplied: str | None, action: str, job_id: str
+) -> None:
+    if (preflight_only and supplied is None) or (
+        not preflight_only and supplied == f"{action}:{job_id}"
+    ):
+        return
+    typer.echo(json.dumps({
+        "result": "BLOCKED",
+        "code": "ERR_GC2_OPERATOR_CONFIRMATION_REQUIRED",
+        "reason": "run the operator wrapper for confirmation of this action and job",
+    }), err=True)
+    raise typer.Exit(code=2)
+
+
 @app.command("resolve-p4-qc-unknown")
 def resolve_p4_qc_unknown(
     ctx: typer.Context,
@@ -256,12 +268,15 @@ def resolve_p4_qc_unknown(
     actual_minor: int | None = typer.Option(None, "--actual-minor", min=0, help="Settled legacy QC cost in VND minor units; defaults to the reserved per-call amount."),
     input_tokens: int | None = typer.Option(None, "--input-tokens", min=0, help="Provider usage evidence from the successful response."),
     output_tokens: int | None = typer.Option(None, "--output-tokens", min=0, help="Provider usage evidence from the successful response."),
+    preflight_only: bool = typer.Option(False, "--preflight-only", help="Read-only operator preflight."),
+    operator_confirmed: str | None = typer.Option(None, "--operator-confirmed", hidden=True),
 ) -> None:
     """Settle one evidenced P4 QC call and requeue exactly one controlled QC retry."""
     from growth_engine.application.ops.resolve_p4_qc_unknown import (
         P4QcResolutionError,
     )
 
+    _require_p4_confirmation(preflight_only, operator_confirmed, "RESOLVE", job_id)
     try:
         settings = Settings.from_env()
         if settings.env.lower() != "production":
@@ -283,29 +298,21 @@ def resolve_p4_qc_unknown(
             return
         if (input_tokens is None) != (output_tokens is None):
             raise P4QcResolutionError("supply both --input-tokens and --output-tokens, or neither")
-        typer.echo(json.dumps({
-            "preflight": "READY",
-            "job_id": preview.job_id,
-            "delivery_id": preview.delivery_id,
-            "slot": {"date": preview.slot_date, "time": preview.slot_time, "timezone": "Asia/Ho_Chi_Minh"},
-            "paid_call_id": preview.paid_call_id,
-            "paid_call_state": preview.paid_call_state,
-            "reserved_minor": preview.reserved_minor,
-            "actual_minor": preview.actual_minor,
-            "input_tokens": input_tokens,
-            "output_tokens": output_tokens,
-            "publishing": "DISABLED + global_pause required",
-        }, ensure_ascii=False, sort_keys=True))
-        try:
-            confirmed = confirm_from_tty(
-                "RESOLVE", "Gõ RESOLVE để settle chi phí và requeue một lần QC"
-            )
-        except OperatorTtyUnavailable as error:
-            typer.echo(json.dumps({"result": "BLOCKED", "code": error.code, "reason": str(error)}), err=True)
-            raise typer.Exit(code=2) from error
-        if not confirmed:
-            typer.echo("RESOLVE=DECLINED; no changes made")
-            raise typer.Exit(code=2)
+        if preflight_only:
+            typer.echo(json.dumps({
+                "preflight": "READY",
+                "job_id": preview.job_id,
+                "delivery_id": preview.delivery_id,
+                "slot": {"date": preview.slot_date, "time": preview.slot_time, "timezone": "Asia/Ho_Chi_Minh"},
+                "paid_call_id": preview.paid_call_id,
+                "paid_call_state": preview.paid_call_state,
+                "reserved_minor": preview.reserved_minor,
+                "actual_minor": preview.actual_minor,
+                "input_tokens": input_tokens,
+                "output_tokens": output_tokens,
+                "publishing": "DISABLED + global_pause required",
+            }, ensure_ascii=False, sort_keys=True))
+            return
         result = service.execute(
             job_id,
             actual_minor=actual_minor,
@@ -335,12 +342,15 @@ def resolve_p4_qc_unknown(
 def reprocess_p4_qc_evidence(
     ctx: typer.Context,
     job_id: str = typer.Option(..., "--job", help="Failed P4 assemble_revision job ID."),
+    preflight_only: bool = typer.Option(False, "--preflight-only", help="Read-only operator preflight."),
+    operator_confirmed: str | None = typer.Option(None, "--operator-confirmed", hidden=True),
 ) -> None:
     """Reprocess stored filtered P4 QC response evidence without calling a provider."""
     from growth_engine.application.ops.reprocess_p4_qc_evidence import (
         P4QcEvidenceError,
     )
 
+    _require_p4_confirmation(preflight_only, operator_confirmed, "REPROCESS", job_id)
     try:
         settings = Settings.from_env()
         if settings.env.lower() != "production":
@@ -358,26 +368,18 @@ def reprocess_p4_qc_evidence(
                 "delivery_id": preview.delivery_id,
             }, sort_keys=True))
             return
-        typer.echo(json.dumps({
-            "preflight": "READY",
-            "job_id": preview.job_id,
-            "delivery_id": preview.delivery_id,
-            "evidence_length": preview.evidence_length,
-            "readable_keys": list(preview.readable_keys),
-            "provider_calls": 0,
-            "paid_calls_created": 0,
-            "publishing": "DISABLED + global_pause required",
-        }, ensure_ascii=False, sort_keys=True))
-        try:
-            confirmed = confirm_from_tty(
-                "REPROCESS", "Gõ REPROCESS để tạo QC report và revision từ evidence đã lưu"
-            )
-        except OperatorTtyUnavailable as error:
-            typer.echo(json.dumps({"result": "BLOCKED", "code": error.code, "reason": str(error)}), err=True)
-            raise typer.Exit(code=2) from error
-        if not confirmed:
-            typer.echo("REPROCESS=DECLINED; no changes made")
-            raise typer.Exit(code=2)
+        if preflight_only:
+            typer.echo(json.dumps({
+                "preflight": "READY",
+                "job_id": preview.job_id,
+                "delivery_id": preview.delivery_id,
+                "evidence_length": preview.evidence_length,
+                "readable_keys": list(preview.readable_keys),
+                "provider_calls": 0,
+                "paid_calls_created": 0,
+                "publishing": "DISABLED + global_pause required",
+            }, ensure_ascii=False, sort_keys=True))
+            return
         result = service.execute(job_id)
     except typer.Exit:
         raise
@@ -389,9 +391,6 @@ def reprocess_p4_qc_evidence(
             "option_b": "one new QC call up to 400 VND requires separate operator approval; not started",
         }, ensure_ascii=False, sort_keys=True), err=True)
         raise typer.Exit(code=1) from error
-    except OperatorTtyUnavailable as error:
-        typer.echo(json.dumps({"result": "BLOCKED", "code": error.code, "reason": str(error)}), err=True)
-        raise typer.Exit(code=2) from error
     except (OSError, ValueError, RuntimeError) as error:
         typer.echo(json.dumps({
             "result": "BLOCKED",
@@ -410,6 +409,37 @@ def reprocess_p4_qc_evidence(
         "paid_calls_created": 0,
         "delivery_state": "IN_REVIEW",
     }, ensure_ascii=False, sort_keys=True))
+
+
+def _p4_qc_summary(result_json: str) -> dict[str, object]:
+    report = json.loads(result_json)
+    if not isinstance(report, dict):
+        return {}
+    report = report.get("validator_report", {})
+    if not isinstance(report, dict):
+        return {}
+    summary: dict[str, object] = {}
+    verdict = report.get("verdict")
+    if verdict in ("approve", "revise", "regenerate", "reject"):
+        summary["verdict"] = verdict
+    for field in ("overall_score_bp", "dna_match_score_bp"):
+        if type(report.get(field)) is int:
+            summary[field] = report[field]
+    categories = report.get("category_scores_bp")
+    if isinstance(categories, dict):
+        summary["category_scores_bp"] = {
+            key: value for key, value in categories.items()
+            if key in {"dna_match", "authenticity", "composition", "lighting",
+                       "material", "technical_quality", "forbidden"} and type(value) is int
+        }
+    for field, score in (("section_scores", "score_bp"), ("forbidden_violations", "confidence_bp")):
+        rows = report.get(field)
+        if isinstance(rows, list):
+            summary[field] = [
+                {score: row[score]} for row in rows
+                if isinstance(row, dict) and type(row.get(score)) is int
+            ]
+    return summary
 
 
 @app.command("p4-slot-status")
@@ -521,13 +551,14 @@ def p4_slot_status(
                     """SELECT r.id,r.payload_hash,v.sha256 AS variant_sha256,
                               v.mime,v.width,v.height,v.byte_size,v.qc_status,
                               q.decision AS qc_decision,q.caption_hash,q.ruleset_hash,
-                              q.fact_snapshot_hash
+                              q.fact_snapshot_hash,q.result_json
                        FROM delivery_revisions r JOIN media_variants v ON v.id=r.variant_id
                        JOIN qc_reports q ON q.id=r.qc_report_id WHERE r.id=?""",
                     (target["current_revision_id"],),
                 ).fetchone()
                 if revision_row is not None:
                     revision = dict(revision_row)
+                    revision["qc_report"] = _p4_qc_summary(revision.pop("result_json"))
                     paid_call_keys.append(
                         "qc:{variant_sha256}:{caption_hash}:{fact_snapshot_hash}:{ruleset_hash}".format(
                             **dict(revision_row)

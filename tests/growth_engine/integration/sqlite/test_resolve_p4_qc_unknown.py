@@ -5,7 +5,6 @@ from pathlib import Path
 
 from typer.testing import CliRunner
 
-import growth_engine.adapters.inbound.cli.main as cli_main
 from growth_engine.adapters.inbound.cli.main import app
 from growth_engine.adapters.outbound.persistence.sqlite.connection import connect
 from growth_engine.adapters.outbound.persistence.sqlite.migrator import MigrationRunner
@@ -106,7 +105,7 @@ def test_resolve_p4_qc_unknown_settles_once_audits_and_requeues_once(tmp_path: P
 
 
 def test_resolve_cli_requires_exact_confirmation_and_is_idempotent(
-    tmp_path: Path, monkeypatch
+    tmp_path: Path
 ) -> None:
     database = tmp_path / "growth.db"
     _seed_unknown_p4_job(database)
@@ -133,19 +132,25 @@ def test_resolve_cli_requires_exact_confirmation_and_is_idempotent(
         now_ms=lambda: 2_000_000,
     )
     obj = {"resolve_p4_qc_unknown_service": service}
-    monkeypatch.setattr(cli_main, "confirm_from_tty", lambda *_args: False)
     declined = runner.invoke(app, args, env=env, input="resolve\n", obj=obj)
     assert declined.exit_code == 2, declined.output
-    assert "no changes made" in declined.output
+    assert "ERR_GC2_OPERATOR_CONFIRMATION_REQUIRED" in declined.output
     with connect(database) as connection:
         assert connection.execute("SELECT state FROM paid_calls WHERE id='paid-p4'").fetchone()[0] == "UNKNOWN"
         assert connection.execute("SELECT state FROM jobs WHERE id='job-p4'").fetchone()[0] == "UNKNOWN"
 
-    monkeypatch.setattr(cli_main, "confirm_from_tty", lambda *_args: True)
-    accepted = runner.invoke(app, args, env=env, input="not-a-confirmation\n", obj=obj)
+    for wrong in ("REPROCESS:job-p4", "RESOLVE:another-job"):
+        blocked = runner.invoke(app, [*args, "--operator-confirmed", wrong], env=env, obj=obj)
+        assert blocked.exit_code == 2 and "ERR_GC2_OPERATOR_CONFIRMATION_REQUIRED" in blocked.output
+    preflight = runner.invoke(app, [*args, "--preflight-only"], env=env, obj=obj)
+    assert preflight.exit_code == 0 and '"preflight": "READY"' in preflight.output
+    with connect(database) as connection:
+        assert connection.execute("SELECT state FROM paid_calls WHERE id='paid-p4'").fetchone()[0] == "UNKNOWN"
+
+    accepted = runner.invoke(app, [*args, "--operator-confirmed", "RESOLVE:job-p4"], env=env, input="not-a-confirmation\n", obj=obj)
     assert accepted.exit_code == 0, accepted.output
     assert "RESOLVED_AND_REQUEUED" in accepted.output
-    replay = runner.invoke(app, args, env=env, input="", obj=obj)
+    replay = runner.invoke(app, [*args, "--preflight-only"], env=env, input="", obj=obj)
     assert replay.exit_code == 0, replay.output
     assert "ALREADY_RESOLVED" in replay.output
     assert "RESOLVED_AND_REQUEUED" not in replay.output

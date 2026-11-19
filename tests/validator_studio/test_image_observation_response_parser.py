@@ -99,3 +99,43 @@ def test_non_finite_provider_float_has_distinct_code_and_field_path(value: float
 def test_canonical_json_still_rejects_any_unconverted_float() -> None:
     with pytest.raises(ValueError, match=r"field \$\.nested\[0\]\.score: floating point values are not allowed"):
         canonical_json_bytes({"nested": [{"score": 0.92}]})
+
+
+@pytest.mark.parametrize(("score", "verdict", "status"), [
+    (59.99, "reject", "FAIL"), (60, "regenerate", "WARNING"),
+    (69.99, "regenerate", "WARNING"), (70, "revise", "WARNING"),
+    (79.99, "revise", "WARNING"), (80, "revise", "WARNING"),
+    (89.99, "revise", "WARNING"), (90, "approve", "OK"),
+])
+def test_image_score_cutoffs_use_points(score: float, verdict: str, status: str) -> None:
+    from validator_studio.scoring import status_for_score, verdict_for_score
+
+    assert verdict_for_score(score).value == verdict
+    assert status_for_score(score).name == status
+
+
+def test_image_scoring_uses_confidence_bp_as_weight_and_not_as_policy_cutoff() -> None:
+    from validator_studio.scoring import IMAGE_CATEGORIES, score_image_observation
+
+    config = {
+        "image_validation_weights": {key: int(key == "dna_match") for key in IMAGE_CATEGORIES},
+        "rubric": {"match": 100, "partial": 60, "mismatch": 0},
+        "kill_switch": {"forbidden_high_cap": 40},
+    }
+    observation = parse_image_observation_response(json.dumps({
+        "dna_matches": [
+            {"key": "window", "match_state": "match", "confidence": 0.6999},
+            {"key": "wall", "match_state": "partial", "confidence": 1},
+        ],
+        "forbidden": [{"rule": "logo", "violated": False, "confidence": 0.6999}],
+    }))
+    assert observation.dna_matches[0].confidence_bp == 6999
+    score = score_image_observation(observation, config)
+    assert score.overall_score == 76.47
+    assert score.verdict.value == "revise"
+    assert not score.kill_switch.triggered
+    observation.forbidden[0].violated = True
+    blocked = score_image_observation(observation, config)
+    assert blocked.overall_score == 40
+    assert blocked.kill_switch.triggered
+    assert blocked.verdict.value == "reject"

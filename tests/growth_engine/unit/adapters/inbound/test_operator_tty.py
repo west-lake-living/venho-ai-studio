@@ -40,7 +40,7 @@ def test_confirmation_opens_controlling_tty_and_never_reads_stdin() -> None:
         return terminal
 
     assert confirm_from_tty("REPROCESS", "Type REPROCESS:", opener=opener)
-    assert opened == [("/dev/tty", "r+", "utf-8")]
+    assert opened == [("/dev/tty", "r", "utf-8"), ("/dev/tty", "w", "utf-8")]
     assert "Type REPROCESS:" in terminal.prompt_text
 
 

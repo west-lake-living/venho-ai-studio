@@ -198,9 +198,22 @@ Nguyên nhân đã xác nhận từ lần chạy thật: confidence và điểm 
 
 Các float có nguồn provider trong đường QC là `dna_matches[*].confidence` và `forbidden[*].confidence`. Report sau scoring còn các float `overall_score`, `dna_match_score`, `category_scores[*]`, `section_scores[*].score` và `forbidden_violations[*].confidence`; adapter serialize thành `overall_score_bp`, `dna_match_score_bp`, `category_scores_bp`, `score_bp`, `confidence_bp`. Evidence provider gốc trong `paid_calls.provider_response_json` được giữ nguyên byte-for-byte.
 
-Lệnh `reprocess-p4-qc-evidence --job ...` dùng filtered response evidence từ paid call đã SETTLED, dựng lại observation/report offline và tạo revision `IN_REVIEW`. Không gọi provider, không tạo paid call, không dispatch. Trước khi ghi, in JSON preflight gồm job, delivery, độ dài evidence và các key đọc được. Chỉ tiếp tục khi operator gõ chính xác `REPROCESS` trên `/dev/tty`; stdin không thể xác nhận. Lần chạy lại sau thành công trả `ALREADY_PROCESSED`. Ghi QC report, trạng thái variant, revision, delivery và audit trong cùng một transaction SQLite; mọi lỗi giữa chừng rollback toàn bộ.
+### Ngưỡng QC ảnh P4
 
-Parser chấp nhận JSON sạch, JSON trong code fence, JSON có prose bao quanh, field tuỳ chọn bị lược, enum khác hoa/thường và số/boolean ở dạng chuỗi không mơ hồ. Làm tròn dùng Decimal, `ROUND_HALF_EVEN`; NaN/Inf bị chặn với `ERR_GC2_QC_NONFINITE_NUMBER` và đường dẫn field. Field bắt buộc thiếu, enum không nhận dạng, confidence ngoài 0–1 hoặc kiểu không an toàn sẽ chặn với tên field và lý do. Các giá trị response không được in. Lệnh xác nhận `RESOLVE`, `REPROCESS` và các lệnh operator có side-effect khác đọc `/dev/tty`; nếu không có controlling TTY thì dừng.
+| Ngưỡng hoặc gate | Giá trị và đơn vị | Nơi áp dụng |
+| --- | --- | --- |
+| Verdict | ≥90 approve, ≥80 hoặc ≥70 revise, ≥60 regenerate, <60 reject. Điểm 0–100 | `validator_studio/scoring.py`, `verdict_for_score` |
+| Trạng thái từng mục DNA | ≥90 OK, ≥60 WARNING, <60 FAIL. Điểm 0–100 | `status_for_score` |
+| Báo vấn đề DNA | <90, mức HIGH khi điểm = 0, còn lại MEDIUM. Điểm 0–100 | `score_image_observation` |
+| Trọng số confidence tối thiểu | 100 confidence bp = 0,01. Confidence hợp lệ 0–10.000 bp, không có ngưỡng duyệt 7.000 bp | `score_image_observation`, `max(confidence_bp, 100) / 10_000` |
+| Kill switch vi phạm HIGH | Ép verdict reject, cap 40 điểm trên thang 0–100 | `score_image_observation`, `config/validation.yaml` |
+| Gate GC2 | Vi phạm curated khớp policy hoặc kill switch → FAIL. Thiếu độ phủ → REVIEW | `LegacyQcAdapter._result_from_report`, `_effective_decision` |
+
+Score serialized = điểm × 10.000. Ví dụ 89,99 điểm là 899.900 trong report và vẫn dưới ngưỡng 90 điểm. Ngưỡng chạy trên điểm gốc trước khi serialize. Bảng `validation.thresholds` trong YAML trùng giá trị hiện tại nhưng các hàm trên so với hằng số trong code.
+
+Lệnh `reprocess-p4-qc-evidence --job ...` dùng filtered response evidence từ paid call đã SETTLED, dựng lại observation/report offline và tạo revision `IN_REVIEW`. Không gọi provider, không tạo paid call, không dispatch. Chạy wrapper từ shell SSH có controlling TTY. Wrapper chạy một unit `systemd-run --pipe` riêng với `--preflight-only` để in job, delivery, độ dài evidence và các key đọc được. Sau READY, wrapper xả input chờ và hỏi qua fd 3 mở từ `/dev/tty`. Khi nhận đúng `REPROCESS`, wrapper mới mở unit thực thi với `--operator-confirmed REPROCESS:<job_id>`. Engine kiểm đúng action và job, không đọc input. `RESOLVE` dùng cùng trình tự với xác nhận riêng. Lần chạy lại sau thành công trả `ALREADY_PROCESSED`. Ghi QC report, trạng thái variant, revision, delivery và audit trong cùng một transaction SQLite; mọi lỗi giữa chừng rollback toàn bộ.
+
+Parser chấp nhận JSON sạch, JSON trong code fence, JSON có prose bao quanh, field tuỳ chọn bị lược, enum khác hoa/thường và số/boolean ở dạng chuỗi không mơ hồ. Làm tròn dùng Decimal, `ROUND_HALF_EVEN`; NaN/Inf bị chặn với `ERR_GC2_QC_NONFINITE_NUMBER` và đường dẫn field. Field bắt buộc thiếu, enum không nhận dạng, confidence ngoài 0–1 hoặc kiểu không an toàn sẽ chặn với tên field và lý do. Các giá trị response không được in. Nếu thiếu controlling TTY, wrapper trả `ERR_GC2_OPERATOR_TTY_REQUIRED` trước khi mở unit. `systemd-run --pipe` chỉ chuyển stdio nên phần prompt phải nằm ngoài unit. Bản cũ còn mở tty bằng Python text mode `r+`, yêu cầu seek và lỗi ngay cả trên PTY hợp lệ. Các script operator chạy trực tiếp dùng hai handle đọc/ghi riêng.
 
 Rà canonical JSON: Draft package chuẩn hóa float trong facts/provenance thành chuỗi trước khi hash; trend candidate cũng chuyển float thành chuỗi; media metadata hiện chỉ gồm chuỗi và kích thước ảnh/Pillow là số nguyên, không lưu EXIF float. Các payload bên ngoài khác (research candidate, Make receipt) giữ canonical strict và fail-closed nếu phát sinh float chưa chuẩn hóa.
 
@@ -252,6 +265,7 @@ EXPECTED_RELEASE="$HOME/venho/growth-engine/releases/$P4_SHA"
 systemctl --user is-active --quiet growth-engine-api.service || fail 'Growth Engine API is not active'
 systemctl --user is-active --quiet growth-engine-worker@publish.service || fail 'publish worker is not active'
 systemctl --user is-active --quiet growth-engine-worker@jobs.service || fail 'jobs worker is not active'
+[[ "$(git -C "$CURRENT_RELEASE" rev-parse HEAD)" == "$P4_SHA" ]] || fail 'deployed checkout SHA mismatch'
 printf 'RELEASE_SHA=%s\nAPI=active\nPUBLISH_WORKER=active\nJOBS_WORKER=active\n' "$P4_SHA"
 
 RUNTIME="$HOME/venho/growth-engine/current/ops/asus-server/growth-engine/run-with-legacy-provider-env.sh"
@@ -272,6 +286,6 @@ chmod 700 "$HOME/venho/reprocess-p4-qc-evidence.sh"
 bash "$HOME/venho/reprocess-p4-qc-evidence.sh"
 ~~~
 
-**Kết quả mong đợi:** deploy reports requested SHA; API và hai worker active; preflight identifies the target delivery and stored observation keys without values; operator types REPROCESS; result is REPROCESSED, delivery_state=IN_REVIEW, and provider/paid-call counts are both zero. A repeat returns ALREADY_PROCESSED. p4-slot-status --date 2026-11-21 shows one QC report and revision, delivery IN_REVIEW, both original/retry QC paid calls still SETTLED at 400 VND each, DISABLED + pause 1, and zero outbox/executions. Do not approve the delivery during this recovery.
+**Kết quả mong đợi:** deploy reports requested SHA; API và hai worker active; preflight identifies the target delivery and stored observation keys without values; operator types REPROCESS; result is REPROCESSED, delivery_state=IN_REVIEW, and provider/paid-call counts are both zero. A repeat returns ALREADY_PROCESSED. p4-slot-status --date 2026-11-21 shows one QC report and revision (including a safe `revision.qc_report` summary with verdict and integer `*_bp` scores), delivery IN_REVIEW, both original/retry QC paid calls still SETTLED at 400 VND each, DISABLED + pause 1, and zero outbox/executions. Do not approve the delivery during this recovery.
 
 **Dừng:** evidence missing/invalid, parser lists a field error, target/config/hash mismatch, controls changed, or deployment SHA/service check fails. ERR_GC2_P4_QC_EVIDENCE_INSUFFICIENT prints the missing evidence and says Option B needs separate approval; do not run provider QC from that failure path.

@@ -10,12 +10,16 @@ def read_tty_line(prompt: str, *, opener=None) -> str:
     if opener is None:
         opener = open
     try:
-        with opener("/dev/tty", "r+", encoding="utf-8") as terminal:
-            terminal.write(prompt)
+        # Text update mode requires seeking, which terminal devices do not support.
+        with (
+            opener("/dev/tty", "r", encoding="utf-8") as terminal_input,
+            opener("/dev/tty", "w", encoding="utf-8") as terminal_output,
+        ):
+            terminal_output.write(prompt)
             if not prompt.endswith((" ", "\n")):
-                terminal.write(" ")
-            terminal.flush()
-            answer = terminal.readline()
+                terminal_output.write(" ")
+            terminal_output.flush()
+            answer = terminal_input.readline()
     except OSError:
         raise OperatorTtyUnavailable("an interactive controlling terminal is required") from None
     if answer == "":
