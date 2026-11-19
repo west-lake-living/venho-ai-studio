@@ -628,14 +628,20 @@ class DoctorService:
     def _backup_check(self) -> DoctorCheck:
         if _is_required(self.settings.db_path):
             return DoctorCheck("Backup age", "WARN", "Chưa xác định thư mục backup.")
-        parent = Path(self.settings.db_path).parent
-        backups = [path for path in parent.glob("*.bak*") if path.is_file()]
+        backup = import_module("growth_engine.adapters.outbound.backup.sqlite_backup")
+        backups = backup.staged_backups(backup.staging_directory(Path(self.settings.db_path)))
         if not backups:
-            return DoctorCheck("Backup age", "WARN", "Chưa tìm thấy backup cạnh DB.")
-        newest = max(backups, key=lambda path: path.stat().st_mtime)
-        age_seconds = max(0, int(time.time() - newest.stat().st_mtime))
-        status = "PASS" if age_seconds <= 2 * 60 * 60 else "FAIL"
+            return DoctorCheck("Backup age", "WARN", "Chưa tìm thấy snapshot hoàn tất trong backup-staging.")
+        age_seconds = int(time.time() - backups[0][0] / 1000)
+        status = "PASS" if 0 <= age_seconds <= 2 * 60 * 60 else "FAIL"
         return DoctorCheck("Backup age", status, f"Backup mới nhất {age_seconds // 60} phút trước.")
+
+
+
+def build_backup_tools():
+    backup = import_module("growth_engine.adapters.outbound.backup.sqlite_backup")
+    restore = import_module("growth_engine.adapters.outbound.backup.restore")
+    return backup.SqliteBackup(), restore.RestoreBackup(), backup.staged_backups, backup.staging_directory
 
 
 @dataclass(frozen=True)
@@ -652,6 +658,7 @@ class Container:
     review_store: Any
     review_data_reader: Any
     dashboard_api: Any
+    operator_controls: Any
     approve_group: Any
     reject_revision: Any
     revoke_approval: Any
@@ -1247,6 +1254,7 @@ def build_container(
         review_store=review_store,
         review_data_reader=review_store,
         dashboard_api=dashboard_api,
+        operator_controls=controls,
         approve_group=approve_group,
         reject_revision=reject_revision,
         revoke_approval=revoke_approval,

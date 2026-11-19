@@ -47,10 +47,16 @@ class RestoreBackup:
         if target.exists():
             raise BackupError("restore target must not already exist")
 
+        with tempfile.TemporaryDirectory(prefix="gc2-decrypt-") as temporary:
+            archive = Path(temporary) / "backup.tar.gz"
+            self._crypto.decrypt(encrypted_backup, archive, identity_file)
+            return self.restore_archive(archive=archive, target=target, now_ms=now_ms)
+
+    def restore_archive(self, *, archive: Path, target: Path, now_ms: int) -> RestoreResult:
+        if target.exists():
+            raise BackupError("restore target must not already exist")
         with tempfile.TemporaryDirectory(prefix="gc2-restore-") as temporary:
             work = Path(temporary)
-            archive = work / "backup.tar.gz"
-            self._crypto.decrypt(encrypted_backup, archive, identity_file)
             extracted = work / "extracted"
             extracted.mkdir()
             _extract_safe(archive, extracted)

@@ -9,6 +9,7 @@ from dataclasses import dataclass
 from typing import Any, Callable, Mapping
 
 from growth_engine.application.content.generate_package import GenerationUnknown
+from growth_engine.application.content.queue_slot_generation import PRODUCTION_TARGETS
 from growth_engine.application.content.run_lanes import LanePackageFactory
 from growth_engine.application.dto import FactSnapshot
 from growth_engine.application.media.evaluate_qc import EvaluateQc, QcPaidCallUnknown
@@ -19,7 +20,6 @@ from growth_engine.domain.delivery.states import DeliveryState
 from growth_engine.domain.media.media_policy import FACEBOOK_PHOTO_V1, INSTAGRAM_PHOTO_V1
 
 
-_PRODUCTION_TARGETS = {"fb_hanoi": ("facebook", "1124616474074140")}
 _ERROR_SECRET = re.compile(
     r"(?i)\b(authorization|bearer|access[_-]?token|refresh[_-]?token|api[_-]?key|client[_-]?secret|password)"
     r"(\s*[:=]\s*|\s+)([^\s,;]+)"
@@ -236,10 +236,11 @@ class ContentJobsWorker:
         slot_id = _required(payload, "slot_id")
         lane = _required(payload, "lane")
         channel_key = _required(payload, "channel_key")
+        required_mode = "LIVE_MANUAL" if channel_key == "group" else "DISABLED"
         with self._uow_factory().read_only() as tx:
             controls = tx.controls.get(self._environment)
             if self._environment == "production" and (
-                controls is None or controls.mode.value != "DISABLED" or not controls.global_pause
+                controls is None or controls.mode.value != required_mode or not controls.global_pause
             ):
                 raise ValueError("production slot preparation requires DISABLED and global_pause=1")
             targets = tx.connection.execute(
@@ -251,17 +252,18 @@ class ContentJobsWorker:
                 (slot_id, self._environment),
             ).fetchall()
         enabled = [row for row in targets if bool(row["enabled"])]
-        if not enabled or any(str(row["channel_key"]) != channel_key for row in enabled):
+        if self._environment == "production":
+            expected = PRODUCTION_TARGETS if channel_key == "group" else {channel_key: PRODUCTION_TARGETS.get(channel_key)}
+            mapped = {row["channel_key"]: (row["platform"], row["remote_account_id"]) for row in enabled}
+            if channel_key == "group":
+                with self._uow_factory().read_only() as tx:
+                    slot = tx.slots.get_slot(slot_id)
+                if slot is None or slot.scheduled_at_ms <= self._clock.now_ms():
+                    raise ValueError("group preparation requires a future slot")
+            if mapped != expected or any(row["paused"] or not row["configured"] for row in enabled):
+                raise ValueError("production content job no longer matches the verified preparation mapping")
+        elif not enabled or any(row["channel_key"] != channel_key for row in enabled):
             raise ValueError("queued slot channel targets changed after preparation")
-        expected = _PRODUCTION_TARGETS.get(channel_key)
-        if self._environment == "production" and (
-            expected is None
-            or len(enabled) != 1
-            or (str(enabled[0]["platform"]), str(enabled[0]["remote_account_id"])) != expected
-            or bool(enabled[0]["paused"])
-            or not bool(enabled[0]["configured"])
-        ):
-            raise ValueError("production content job no longer matches the prepare-only target mapping")
         package = self._generator.create(slot_id, lane, excluded_topic_keys=())
         for target in enabled:
             with self._uow_factory().read_only() as tx:

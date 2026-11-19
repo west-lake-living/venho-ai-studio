@@ -246,3 +246,19 @@ def _all_modules(document: dict):
                 yield handler
 
     return list(walk(document["flow"]))
+
+
+def test_production_selector_binding_takes_only_existing_production_authority():
+    from scripts.growth_engine.prepare_make_test_blueprint import bind_production_connections
+
+    scaffold = source_blueprint()
+    production = source_blueprint()
+    for node in _all_modules(production):
+        if node["id"] in {2, 3, 6, 12}:
+            key = "hook" if node["id"] == 2 else "__IMTCONN__"
+            node.setdefault("parameters", {})[key] = 1000 + node["id"]
+    prepared = prepare_blueprint(bind_production_connections(scaffold, production), environment="production")
+    for node in _all_modules(prepared):
+        if node["id"] in {2, 3, 6, 12}:
+            key = "hook" if node["id"] == 2 else "__IMTCONN__"
+            assert node["parameters"][key] == 1000 + node["id"]

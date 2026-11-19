@@ -5,6 +5,7 @@ import inspect
 import json
 import re
 from collections.abc import Callable
+from dataclasses import replace
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 
@@ -110,6 +111,12 @@ class EvaluateQc:
         if existing is not None:
             return existing
 
+        shared_report = self._reuse_matching_image_report(
+            variant.id, variant.sha256, caption_hash, facts.snapshot_hash, policy.ruleset_hash,
+        )
+        if shared_report is not None:
+            return shared_report
+
         retry_key = qc_retry_key
         if retry_key is not None and (not retry_key.strip() or len(retry_key) > 128):
             raise ValueError("QC retry key is invalid")
@@ -199,15 +206,7 @@ class EvaluateQc:
                 current_variant = tx.media.get_variant(variant.id)
                 if current_variant is None or current_variant.sha256 != variant.sha256:
                     raise ValueError("media variant changed during QC")
-                if self._variant_qc_status_updater is None:
-                    updater = getattr(tx.media, "update_qc_status", None)
-                    if not callable(updater):
-                        raise QcStatusPersistenceUnavailable(
-                            "MediaRepo.update_qc_status is required to persist QC status atomically"
-                        )
-                    updater(variant.id, _variant_status(decision))
-                else:
-                    self._variant_qc_status_updater(tx, variant.id, _variant_status(decision))
+                self._update_variant_qc_status(tx, report)
                 tx.qc.save(report)
                 if reserved:
                     paid_call = tx.budget.get(paid_business_key)
@@ -241,6 +240,39 @@ class EvaluateQc:
                     "QC provider call may have completed; the paid call was marked UNKNOWN."
                 ) from error
             raise
+
+    def _reuse_matching_image_report(
+        self, variant_id: str, sha256: str, caption_hash: str, fact_hash: str, ruleset_hash: str,
+    ) -> QcReport | None:
+        with self._uow_factory().begin_immediate() as tx:
+            finder = getattr(tx.qc, "find_matching_image", None)
+            if not callable(finder):
+                return None
+            if existing := tx.qc.find_matching(variant_id, caption_hash, fact_hash, ruleset_hash):
+                return existing
+            if (equivalent := finder(sha256, caption_hash, fact_hash, ruleset_hash)) is None:
+                return None
+            variant = tx.media.get_variant(variant_id)
+            if variant is None or variant.sha256 != sha256:
+                raise ValueError("media variant changed during QC reuse")
+            # Receipt and approval still bind to this variant's own report.
+            report = replace(equivalent, id=self._ids.new_id(), variant_id=variant_id,
+                             created_at_ms=self._clock.now_ms())
+            self._update_variant_qc_status(tx, report)
+            tx.qc.save(report)
+            return report
+
+    def _update_variant_qc_status(self, tx: UnitOfWork, report: QcReport) -> None:
+        status = _variant_status(report.decision)
+        if self._variant_qc_status_updater is not None:
+            self._variant_qc_status_updater(tx, report.variant_id, status)
+            return
+        updater = getattr(tx.media, "update_qc_status", None)
+        if not callable(updater):
+            raise QcStatusPersistenceUnavailable(
+                "MediaRepo.update_qc_status is required to persist QC status atomically"
+            )
+        updater(report.variant_id, status)
 
     def _persist_provider_evidence(
         self,

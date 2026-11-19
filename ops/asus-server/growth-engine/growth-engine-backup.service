@@ -1,0 +1,14 @@
+[Unit]
+Description=Growth Engine production SQLite and media backup
+OnFailure=venho-growth-alert@%n.service
+
+[Service]
+Type=oneshot
+EnvironmentFile=%h/venho/secrets/growth-engine.env
+WorkingDirectory=%h/venho/growth-engine/current
+ExecStart=%h/venho/growth-engine/current/.venv/bin/venho-engine stage-backup
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ReadWritePaths=%h/venho/state/growth-engine

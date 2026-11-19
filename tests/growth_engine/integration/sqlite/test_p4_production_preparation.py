@@ -469,3 +469,48 @@ def test_p4_repairs_text_only_draft_from_allowlisted_legacy_local_photo_without_
         "synthetic-capability-secret", "synthetic-service-secret", "synthetic-telegram-secret",
         "synthetic-chat-id", "synthetic-meta-secret", "synthetic-secret",
     ))
+
+
+def test_paused_live_rollout_prepares_three_targets_and_stays_paused(tmp_path, monkeypatch):
+    from growth_engine.adapters.inbound.cli import cutover_ops
+    from growth_engine.bootstrap import build_container
+
+    image = tmp_path / "rooftop.png"
+    Image.new("RGB", (800, 1000), (42, 96, 120)).save(image)
+    clock = FakeClock(int(datetime(2026, 11, 27, 3, tzinfo=timezone.utc).timestamp() * 1000))
+    hook = "https://make.example.invalid/mock"
+    settings = Settings(
+        env="production", db_path=str(tmp_path / "growth.db"), media_root=str(tmp_path / "media"),
+        make_webhook_urls={"PAGE_A": hook, "PAGE_B": hook, "IG_VENHO": hook},
+        public_base_url="https://growth.example.invalid",
+        capability_keys="synthetic:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    )
+    container = build_container(settings, clock=clock, ids=SeqIds("p4-group"))
+    container.migration_service.run(Path(settings.db_path), check=False)
+    channels.provision(settings.db_path, _manifest(), now_ms=clock.now_ms())
+    _controls(Path(settings.db_path), "LIVE_MANUAL")
+    for key in ("fb_hanoi", "fb_venho", "ig_venho"):
+        channels.set_enabled(settings.db_path, key, True, now_ms=clock.now_ms())
+    container.generate_package._generator = _FakeContentGenerator(image)
+    container.generate_package._fact_source = _FakeFacts()
+    container.evaluate_qc._evaluator = _FakeQcEvaluator()
+
+    queued = container.queue_slot_generation.execute(date(2026, 11, 28), channel_key="group")
+    assert not queued.replayed
+    assert container.queue_slot_generation.execute(date(2026, 11, 28), channel_key="group").replayed
+    jobs = container.content_jobs_worker.process_once(limit=20)
+    assert jobs.failed == jobs.unknown == 0
+    monkeypatch.setattr(cutover_ops, "now_ms", clock.now_ms)
+    monkeypatch.setattr("growth_engine.application.ops.cutover_readiness.time.time_ns", lambda: clock.now_ms() * 1_000_000)
+    cutover_ops.backup(settings)
+    assert cutover_ops.rehearsal(settings)["result"] == "PASS"
+    stage = cutover_ops.pending_gate(settings, "2026-11-28", channels=set(cutover_ops.TARGETS))
+    assert stage["result"] == "PASS", stage
+    assert stage["controls"]["global_pause"] == 1
+    assert {row["state"] for row in stage["deliveries"]} == {"IN_REVIEW"}
+    assert len(stage["deliveries"]) == 3
+    assert all(not row["commands"] and not row["executions"] for row in stage["deliveries"])
+    approved = cutover_ops.pending_gate(settings, "2026-11-28", approved=True, channels=set(cutover_ops.TARGETS))
+    assert "slot_targets_not_approved" in approved["reasons"]
+    with container.uow_factory().read_only() as tx:
+        assert tx.connection.execute("SELECT count(DISTINCT package_id) FROM deliveries").fetchone()[0] == 1

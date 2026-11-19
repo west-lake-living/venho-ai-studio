@@ -556,17 +556,61 @@ def _write_private(path: Path, document: dict[str, Any]) -> None:
     os.chmod(path, 0o600)
 
 
+def bind_production_connections(
+    scaffold: dict[str, Any], production_export: dict[str, Any],
+) -> dict[str, Any]:
+    """Use TEST module shapes and only the existing production hook/connection selectors."""
+    def by_id(flow: Any, found: dict[int, dict]) -> None:
+        if not isinstance(flow, list):
+            return
+        for module in flow:
+            identifier = module.get("id")
+            if identifier in {2, 3, 6, 12}:
+                if identifier in found:
+                    raise PreparationError("duplicate_authority_module")
+                found[identifier] = module
+            for route in module.get("routes", []):
+                by_id(route.get("flow"), found)
+
+    merged = copy.deepcopy(scaffold)
+    test_modules: dict[int, dict] = {}
+    prod_modules: dict[int, dict] = {}
+    by_id(merged.get("flow"), test_modules)
+    by_id(production_export.get("flow"), prod_modules)
+    for module_id in (2, 3, 6, 12):
+        source = prod_modules.get(module_id)
+        target = test_modules.get(module_id)
+        if not source or not target or source.get("module") != target.get("module"):
+            raise PreparationError("production_authority_module_mismatch")
+        key = "hook" if module_id == 2 else "__IMTCONN__"
+        selector = (source.get("parameters") or {}).get(key)
+        if not (type(selector) is int and selector > 0 or isinstance(selector, str) and selector.isdecimal()):
+            raise PreparationError("production_authority_selector_missing")
+        target.setdefault("parameters", {})[key] = selector
+        # Drop the TEST selector label; Make repopulates it when resolving production.
+        restore = target.get("metadata", {}).get("restore", {}).get("parameters", {})
+        if isinstance(restore, dict):
+            restore.pop(key, None)
+    return merged
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--environment", choices=tuple(SOURCE_BY_ENVIRONMENT), default="test")
     parser.add_argument("--source", type=Path)
     parser.add_argument("--output", type=Path)
+    parser.add_argument("--production-export", type=Path, help="Existing production selector authority for a TEST scaffold.")
     args = parser.parse_args(argv)
     source_path = args.source or SOURCE_BY_ENVIRONMENT[args.environment]
     output_path = args.output or TARGET_BY_ENVIRONMENT[args.environment]
 
     try:
         source = json.loads(source_path.read_text(encoding="utf-8"))
+        if args.production_export:
+            if args.environment != "production":
+                raise PreparationError("production_export_requires_production_environment")
+            production_export = json.loads(args.production_export.read_text(encoding="utf-8"))
+            source = bind_production_connections(source, production_export)
         prepared = prepare_blueprint(source, environment=args.environment)
     except (OSError, UnicodeError, json.JSONDecodeError):
         print("FAIL: source unavailable or invalid JSON")

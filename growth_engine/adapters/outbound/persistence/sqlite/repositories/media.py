@@ -157,3 +157,14 @@ class QcRepository(SqliteRepository):
             (variant_id, caption_hash, fact_snapshot_hash, ruleset_hash),
         ).fetchone()
         return None if row is None else self.get(str(row["id"]))
+
+    def find_matching_image(
+        self, sha256: str, caption_hash: str, fact_snapshot_hash: str, ruleset_hash: str,
+    ) -> QcReport | None:
+        row = self.connection.execute(
+            """SELECT q.id FROM qc_reports q JOIN media_variants v ON v.id=q.variant_id
+               WHERE v.sha256=? AND q.caption_hash=? AND q.fact_snapshot_hash=? AND q.ruleset_hash=?
+               ORDER BY q.created_at DESC, q.id DESC LIMIT 1""",
+            (sha256, caption_hash, fact_snapshot_hash, ruleset_hash),
+        ).fetchone()
+        return None if row is None else self.get(str(row["id"]))

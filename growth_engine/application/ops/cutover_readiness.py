@@ -46,7 +46,11 @@ class CutoverReadiness:
         self._db_path = Path(db_path).expanduser()
         self._now_ms = now_ms or (lambda: time.time_ns() // 1_000_000)
 
-    def execute(self, slot_date: str, slot_time: str = "09:00") -> CutoverReadinessResult:
+    def execute(
+        self, slot_date: str, slot_time: str = "09:00", *,
+        require_approval: bool = True, require_disabled: bool = True,
+        channel_key: str = "fb_hanoi", target_id: str = _HANOI_PAGE_ID, route_ref: str = _HANOI_ROUTE_REF,
+    ) -> CutoverReadinessResult:
         if not self._db_path.is_file():
             return CutoverReadinessResult(False, slot_date, slot_time, None, None, "FAIL", ("database_missing",))
         connection = sqlite3.connect(f"file:{self._db_path}?mode=ro", uri=True)
@@ -72,7 +76,9 @@ class CutoverReadiness:
             controls = connection.execute(
                 "SELECT publish_mode, global_pause FROM runtime_controls WHERE environment='production'"
             ).fetchone()
-            if controls is None or controls["publish_mode"] != "DISABLED" or int(controls["global_pause"]) != 1:
+            if require_disabled and (
+                controls is None or controls["publish_mode"] != "DISABLED" or int(controls["global_pause"]) != 1
+            ):
                 reasons.append("production_controls_not_disabled_and_paused")
 
             rows = connection.execute(
@@ -98,10 +104,10 @@ class CutoverReadiness:
                    LEFT JOIN approval_decisions a ON a.id=d.active_approval_id
                    JOIN media_variants v ON v.id=r.variant_id
                    JOIN qc_reports q ON q.id=r.qc_report_id
-                   WHERE c.environment='production' AND c.channel_key='fb_hanoi'
+                   WHERE c.environment='production' AND c.channel_key=?
                      AND s.local_date=? AND s.local_time=? AND d.active=1
                    ORDER BY d.created_at DESC LIMIT 1""",
-                (slot_date, slot_time),
+                (channel_key, slot_date, slot_time),
             ).fetchone()
             if rows is None:
                 reasons.append("approved_fb_hanoi_delivery_missing")
@@ -115,12 +121,12 @@ class CutoverReadiness:
 
             payload = json.loads(str(rows["payload_json"]))
             mapping_ok = (
-                rows["channel_key"] == "fb_hanoi"
-                and rows["platform"] == "facebook"
-                and rows["remote_account_id"] == _HANOI_PAGE_ID
-                and rows["make_route_ref"] == _HANOI_ROUTE_REF
+                rows["channel_key"] == channel_key
+                and rows["platform"] == ("instagram" if channel_key == "ig_venho" else "facebook")
+                and rows["remote_account_id"] == target_id
+                and rows["make_route_ref"] == route_ref
                 and payload.get("channel_id") == rows["channel_id"]
-                and payload.get("remote_account_id") == _HANOI_PAGE_ID
+                and payload.get("remote_account_id") == target_id
                 and payload.get("channel_config_hash") == rows["config_hash"]
                 and payload.get("channel_config_hash")
             )
@@ -133,8 +139,10 @@ class CutoverReadiness:
                 and rows["approval_revision_id"] == rows["current_revision_id"]
                 and rows["approval_payload_hash"] == rows["payload_hash"]
             )
-            if not approved:
+            if require_approval and not approved:
                 reasons.append("delivery_not_approved_for_current_revision")
+            if not require_approval and rows["state"] not in {"IN_REVIEW", "APPROVED"}:
+                reasons.append("delivery_not_ready_for_review")
             if rows["qc_id"] != rows["qc_report_id"] or rows["qc_variant_id"] != rows["variant_id"]:
                 reasons.append("revision_qc_mapping_mismatch")
             if rows["qc_decision"] == "FAIL":

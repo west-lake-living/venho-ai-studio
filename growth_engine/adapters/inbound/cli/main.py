@@ -5,6 +5,7 @@ import json
 import logging
 import os
 import re
+import sqlite3
 import time
 from datetime import date
 from importlib import import_module
@@ -167,9 +168,9 @@ def worker(
 @app.command("prepare-slot")
 def prepare_slot(
     local_date: str = typer.Option(..., "--date", help="Configured slot date in YYYY-MM-DD."),
-    channel: str = typer.Option("fb_hanoi", "--channel", help="P4 production preparation currently supports fb_hanoi."),
+    channel: str = typer.Option("fb_hanoi", "--channel", help="Use fb_hanoi under DISABLED or group under paused LIVE_MANUAL."),
 ) -> None:
-    """Queue a single P4 content-only slot while production publishing is disabled and paused."""
+    """Queue one content-only production slot with global pause active."""
     settings = Settings.from_env()
     from growth_engine.bootstrap import build_container
 
@@ -786,6 +787,60 @@ def apply_test_receipts() -> None:
         f"receipt_jobs claimed={result.claimed} completed={result.completed} failed={result.failed}"
     )
     if result.failed:
+        raise typer.Exit(code=1)
+
+
+@app.command("stage-backup")
+def stage_backup() -> None:
+    from growth_engine.adapters.inbound.cli.cutover_ops import backup
+    _cutover_output(lambda: backup(Settings.from_env()))
+
+
+@app.command("restore-rehearsal")
+def restore_rehearsal() -> None:
+    from growth_engine.adapters.inbound.cli.cutover_ops import rehearsal
+    _cutover_output(lambda: rehearsal(Settings.from_env()))
+
+
+@app.command("cutover-ops")
+def cutover_ops(
+    action: str,
+    local_date: str = typer.Option(..., "--date"),
+    operator_confirmed: str = typer.Option("", "--operator-confirmed", hidden=True),
+) -> None:
+    from growth_engine.adapters.inbound.cli import cutover_ops as operator
+    from zoneinfo import ZoneInfo
+    from datetime import datetime
+    from uuid import uuid4
+
+    def run():
+        settings = Settings.from_env()
+        date.fromisoformat(local_date)
+        if action == "status":
+            return operator.state(settings, local_date)
+        if action == "verified-hanoi":
+            return operator.verified_hanoi(settings, local_date)
+        if action in {"preflight", "approved", "disabled-preflight"}:
+            return operator.pending_gate(settings, local_date, approved=action == "approved",
+                                         require_disabled=action == "disabled-preflight")
+        if operator_confirmed != f"{action}:{local_date}":
+            raise ValueError("operator_confirmation_required")
+        clock = datetime.now(ZoneInfo("Asia/Ho_Chi_Minh")).strftime("%H:%M")
+        if "08:30" <= clock <= "09:30":
+            raise ValueError("publish_window_locked")
+        return operator.gate(settings, action, local_date, actor="production-operator", correlation_id=str(uuid4()))
+
+    _cutover_output(run)
+
+
+def _cutover_output(run) -> None:
+    try:
+        result = run()
+    except (ValueError, RuntimeError, OSError, sqlite3.Error) as error:
+        code = str(error) if type(error) is ValueError and re.fullmatch(r"[a-z_]+", str(error)) else type(error).__name__
+        result = {"result": "FAIL", "reason": code}
+    typer.echo(json.dumps(result, ensure_ascii=False, sort_keys=True))
+    if result["result"] != "PASS":
         raise typer.Exit(code=1)
 
 

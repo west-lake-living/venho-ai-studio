@@ -11,7 +11,11 @@ from growth_engine.domain.kernel.hashing import canonical_json_bytes
 from growth_engine.domain.publishing.runtime_mode import PublishMode
 
 
-_PRODUCTION_PAGE_IDS = {"fb_hanoi": "1124616474074140"}
+PRODUCTION_TARGETS = {
+    "fb_hanoi": ("facebook", "1124616474074140"),
+    "fb_venho": ("facebook", "803531149684177"),
+    "ig_venho": ("instagram", "17841457936965829"),
+}
 
 
 @dataclass(frozen=True)
@@ -45,30 +49,23 @@ class QueueSlotGeneration:
     def execute(self, local_date: date, *, channel_key: str = "fb_hanoi") -> QueueSlotGenerationResult:
         if self._environment != "production":
             raise ValueError("queue-slot is only available in production")
-        if channel_key not in _PRODUCTION_PAGE_IDS:
-            raise ValueError("P4 preparation currently allows only fb_hanoi")
+        if channel_key not in {"fb_hanoi", "group"}:
+            raise ValueError("preparation currently allows fb_hanoi or the production group")
+        expected = PRODUCTION_TARGETS if channel_key == "group" else {"fb_hanoi": PRODUCTION_TARGETS["fb_hanoi"]}
+        required_mode = PublishMode.LIVE_MANUAL if channel_key == "group" else PublishMode.DISABLED
 
         with self._uow_factory().read_only() as tx:
             controls = tx.controls.get("production")
-            if controls is None or controls.mode is not PublishMode.DISABLED or not controls.global_pause:
-                raise ValueError("production must remain DISABLED with global_pause=1")
+            if controls is None or controls.mode is not required_mode or not controls.global_pause:
+                raise ValueError("production preparation requires the expected mode with global_pause=1")
             rows = tx.connection.execute(
-                """SELECT id, channel_key, platform, remote_account_id, enabled, paused,
-                          (SELECT count(*) FROM channel_configs cc WHERE cc.channel_id=c.id) AS config_count
-                   FROM channels c WHERE environment='production' ORDER BY channel_key"""
+                """SELECT channel_key, platform, remote_account_id, paused,
+                          EXISTS(SELECT 1 FROM channel_configs cc WHERE cc.channel_id=c.id) AS configured
+                   FROM channels c WHERE environment='production' AND enabled=1"""
             ).fetchall()
-            by_key = {str(row["channel_key"]): row for row in rows}
-            selected = by_key.get(channel_key)
-            if selected is None:
-                raise ValueError("fb_hanoi is not provisioned")
-            if not bool(selected["enabled"]):
-                raise ValueError("fb_hanoi must be enabled through the audited prepare-only channel operation")
-            if str(selected["platform"]) != "facebook" or str(selected["remote_account_id"]) != _PRODUCTION_PAGE_IDS[channel_key]:
-                raise ValueError("fb_hanoi mapping does not match the verified production Page ID")
-            if bool(selected["paused"]) or int(selected["config_count"]) < 1:
-                raise ValueError("fb_hanoi must have an active channel config and not be channel-paused")
-            if any(bool(row["enabled"]) for key, row in by_key.items() if key != channel_key):
-                raise ValueError("P4 preparation requires fb_venho and ig_venho to remain disabled")
+            mapped = {row["channel_key"]: (row["platform"], row["remote_account_id"]) for row in rows}
+            if mapped != expected or any(row["paused"] or not row["configured"] for row in rows):
+                raise ValueError("production content targets do not match the verified preparation mapping")
 
         now_ms = self._clock.now_ms()
         self._ensure_slots.execute(
@@ -81,16 +78,18 @@ class QueueSlotGeneration:
 
         with self._uow_factory().begin_immediate() as tx:
             slot = tx.connection.execute(
-                """SELECT s.id, s.lane FROM slots s
+                """SELECT s.id, s.lane, s.scheduled_at FROM slots s
                    JOIN slot_targets st ON st.slot_id=s.id
                    JOIN channels c ON c.id=st.channel_id
                    WHERE s.project_id='venho_hotel' AND s.local_date=? AND s.local_time=?
                      AND c.environment='production' AND c.channel_key=?
                    ORDER BY s.id LIMIT 1""",
-                (local_date.isoformat(), str(getattr(self._cadence_policy, "publish_time")), channel_key),
+                (local_date.isoformat(), str(getattr(self._cadence_policy, "publish_time")), "fb_hanoi"),
             ).fetchone()
             if slot is None:
                 raise ValueError("requested date is not a configured production cadence slot")
+            if channel_key == "group" and slot["scheduled_at"] <= now_ms:
+                raise ValueError("group preparation requires a future slot")
             slot_id = str(slot["id"])
             business_key = f"prepare-slot:{slot_id}:{channel_key}"
             existing = tx.connection.execute(
