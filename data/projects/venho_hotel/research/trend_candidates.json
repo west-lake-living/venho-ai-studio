@@ -1703,11 +1703,13 @@
     ],
     "source_count": 1,
     "relevance_score": 0.6,
-    "status": "needs_human_approval",
+    "status": "rejected",
     "rejection_reason": null,
     "fast_lane": false,
     "verified_by_human": false,
-    "scanned_at": "2026-11-10T12:18:32.862855+00:00"
+    "scanned_at": "2026-11-10T12:18:32.862855+00:00",
+    "rejected_by": "hpham1504@gmail.com",
+    "rejected_at": "2026-11-19T03:39:20.543335+00:00"
   },
   {
     "id": "gnews-b91f4526e153f20f",
