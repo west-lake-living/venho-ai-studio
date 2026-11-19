@@ -329,7 +329,10 @@ RUNTIME="$CURRENT_RELEASE/ops/asus-server/growth-engine/run-with-legacy-provider
 **Trước khối 2.** Chạy Khối 0 deploy VENHO OS main có health route. Script
 `ops/asus-server/venho-os/deploy-main.sh` dùng `npm ci --include=dev` và
 `npm run build`, restart user unit `venho-os.service`, kiểm health 204 với
-backend `legacy` và login 200. Script giữ nguyên `.env.local`. Sau rollback,
+backend `legacy` và login 200. Nếu checkout đã ở đúng `origin/main`, script
+chỉ kiểm health và in `RESULT=already_current`. Script giữ nguyên `.env.local`,
+tạm dừng timer `venho-os-deploy.timer` nếu đang active và in trạng thái trước/sau.
+Sau khi thành công, timer trở về trạng thái ban đầu. Sau rollback,
 timer auto-deploy dừng để tránh tự áp lại bản lỗi. Nếu release cũ chưa có health
 route, rollback xác minh SHA cũ, service active, login 200 và health 404 như baseline.
 Deploy bản GC2 có cảnh báo quá hạn trước khi mở v2. Readiness sẽ FAIL nếu slot

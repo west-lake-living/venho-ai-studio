@@ -20,6 +20,7 @@ cd "$repo"
 exec 9>"$HOME/venho/.growth-backend-switch.lock"
 flock -n 9 || fail 'Growth backend switch or manual deploy already running'
 tmp="$(mktemp -d)"
+timer_before=unknown
 restore_timer=0
 mutating=0
 step=preflight
@@ -81,6 +82,8 @@ cleanup() {
     printf 'AUTO_DEPLOY_TIMER=RESTORE_FAILED\n' >&2
     status=1
   fi
+  timer_after="$(systemctl --user show "$timer" -p ActiveState --value)" || timer_after=unknown
+  printf 'AUTO_DEPLOY_TIMER=%s BEFORE=%s AFTER=%s\n' "$timer" "$timer_before" "$timer_after"
   rm -rf -- "$tmp"
   exit "$status"
 }
@@ -88,7 +91,12 @@ trap cleanup EXIT
 trap 'exit 130' INT
 trap 'exit 143' TERM HUP
 
-if systemctl --user is-active --quiet "$timer"; then
+timer_before="$(systemctl --user show "$timer" -p ActiveState --value)"
+case "$timer_before" in
+  active|inactive|failed) ;;
+  *) fail 'automatic deploy timer is transitioning or unavailable' ;;
+esac
+if [[ "$timer_before" == active ]]; then
   restore_timer=1
   systemctl --user stop "$timer"
 fi
@@ -102,13 +110,31 @@ old="$(git rev-parse HEAD)"
 old_branch="$(git symbolic-ref -q --short HEAD || true)"
 old_health=404
 if git cat-file -e "$old:src/app/api/health/growth-backend/route.ts" 2>/dev/null; then old_health=204; fi
-probe "$old_health" || fail 'current service or legacy backend is unhealthy'
 printf 'OLD_HEAD=%s\n' "$old"
 
 step=fetch
 git -c core.hooksPath=/dev/null fetch --quiet origin refs/heads/main:refs/remotes/origin/main
 new="$(git rev-parse origin/main)"
 git merge-base --is-ancestor "$required" "$new" || fail 'chưa merge PR'
+
+finish() {
+  step=restore_timer
+  if (( restore_timer )); then
+    systemctl --user start "$timer"
+    restore_timer=0
+  fi
+  printf 'DEPLOY_OS=PASS RESULT=%s OLD_HEAD=%s NEW_HEAD=%s BACKEND=%s HEALTH_HTTP=%s LOGIN_HTTP=%s\n' \
+    "$1" "$old" "$new" "$backend" "$health_http" "$login_http"
+}
+
+if [[ "$old" == "$new" ]]; then
+  step=verify_current
+  systemctl --user is-active --quiet "$unit" && probe 204 || fail 'current service or legacy backend is unhealthy'
+  finish already_current
+  exit 0
+fi
+
+probe "$old_health" || fail 'current service or legacy backend is unhealthy'
 git merge-base --is-ancestor "$old" "$new" || fail 'current HEAD cannot fast-forward'
 local_main="$(git rev-parse main)"
 git merge-base --is-ancestor "$local_main" "$old" || fail 'local main conflicts with the running checkout'
@@ -134,10 +160,4 @@ step=build
 build
 step=restart_probe
 restart_and_verify 204
-step=restore_timer
-if (( restore_timer )); then
-  systemctl --user start "$timer"
-  restore_timer=0
-fi
-printf 'DEPLOY_OS=PASS OLD_HEAD=%s NEW_HEAD=%s BACKEND=%s HEALTH_HTTP=%s LOGIN_HTTP=%s\n' \
-  "$old" "$(git rev-parse HEAD)" "$backend" "$health_http" "$login_http"
+finish deployed
