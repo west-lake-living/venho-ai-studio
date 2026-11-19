@@ -13,6 +13,10 @@ from typing import Protocol
 import typer
 
 from growth_engine.settings import Settings
+from growth_engine.adapters.inbound.cli.operator_tty import (
+    OperatorTtyUnavailable,
+    confirm_from_tty,
+)
 
 
 app = typer.Typer()
@@ -292,7 +296,14 @@ def resolve_p4_qc_unknown(
             "output_tokens": output_tokens,
             "publishing": "DISABLED + global_pause required",
         }, ensure_ascii=False, sort_keys=True))
-        if typer.prompt("Gõ RESOLVE để settle chi phí và requeue một lần QC") != "RESOLVE":
+        try:
+            confirmed = confirm_from_tty(
+                "RESOLVE", "Gõ RESOLVE để settle chi phí và requeue một lần QC"
+            )
+        except OperatorTtyUnavailable as error:
+            typer.echo(json.dumps({"result": "BLOCKED", "code": error.code, "reason": str(error)}), err=True)
+            raise typer.Exit(code=2) from error
+        if not confirmed:
             typer.echo("RESOLVE=DECLINED; no changes made")
             raise typer.Exit(code=2)
         result = service.execute(
@@ -357,7 +368,14 @@ def reprocess_p4_qc_evidence(
             "paid_calls_created": 0,
             "publishing": "DISABLED + global_pause required",
         }, ensure_ascii=False, sort_keys=True))
-        if typer.prompt("Gõ REPROCESS để tạo QC report và revision từ evidence đã lưu") != "REPROCESS":
+        try:
+            confirmed = confirm_from_tty(
+                "REPROCESS", "Gõ REPROCESS để tạo QC report và revision từ evidence đã lưu"
+            )
+        except OperatorTtyUnavailable as error:
+            typer.echo(json.dumps({"result": "BLOCKED", "code": error.code, "reason": str(error)}), err=True)
+            raise typer.Exit(code=2) from error
+        if not confirmed:
             typer.echo("REPROCESS=DECLINED; no changes made")
             raise typer.Exit(code=2)
         result = service.execute(job_id)
@@ -371,6 +389,9 @@ def reprocess_p4_qc_evidence(
             "option_b": "one new QC call up to 400 VND requires separate operator approval; not started",
         }, ensure_ascii=False, sort_keys=True), err=True)
         raise typer.Exit(code=1) from error
+    except OperatorTtyUnavailable as error:
+        typer.echo(json.dumps({"result": "BLOCKED", "code": error.code, "reason": str(error)}), err=True)
+        raise typer.Exit(code=2) from error
     except (OSError, ValueError, RuntimeError) as error:
         typer.echo(json.dumps({
             "result": "BLOCKED",

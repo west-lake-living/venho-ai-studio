@@ -121,20 +121,20 @@ def _safe_payload(row: dict[str, Any]) -> dict[str, object]:
     return normalized
 
 
-def _normalize_json(value: object) -> object:
+def _normalize_json(value: object, path: str = "$") -> object:
     if isinstance(value, float):
         if not math.isfinite(value):
-            raise ValueError("trend candidate contains a non-finite number")
+            raise ValueError(f"field {path}: trend candidate contains a non-finite number")
         return format(value, ".15g")
     if isinstance(value, dict):
         if any(not isinstance(key, str) for key in value):
-            raise ValueError("trend candidate payload keys must be strings")
-        return {key: _normalize_json(nested) for key, nested in value.items()}
+            raise ValueError(f"field {path}: trend candidate payload keys must be strings")
+        return {key: _normalize_json(nested, f"{path}.{key}") for key, nested in value.items()}
     if isinstance(value, list):
-        return [_normalize_json(nested) for nested in value]
+        return [_normalize_json(nested, f"{path}[{index}]") for index, nested in enumerate(value)]
     if value is None or isinstance(value, (str, int, bool)):
         return value
-    raise ValueError("trend candidate payload contains an unsupported value")
+    raise ValueError(f"field {path}: trend candidate payload contains an unsupported value")
 
 
 def _event_date_ms(value: object, *, end_of_day: bool) -> int | None:

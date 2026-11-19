@@ -31,10 +31,12 @@ class QcPostResponseError(RuntimeError):
 
     def __init__(self, error: Exception) -> None:
         error_type = type(error).__name__
+        error_code = getattr(error, "code", None)
         detail = _safe_postprocess_detail(error)
         self.public_message = (
             "QC provider response was received and cost settled, but post-response processing failed "
-            f"(error_type={error_type}, detail={detail}); filtered response evidence was retained."
+            f"(error_type={error_type}, error_code={error_code or 'UNCLASSIFIED'}, detail={detail}); "
+            "filtered response evidence was retained."
         )
         super().__init__(self.public_message)
 

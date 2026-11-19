@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 from collections.abc import Callable
+from contextlib import nullcontext
 from typing import Any
 
 from growth_engine.application.errors import Conflict, NotFound, PreconditionFailed
@@ -31,116 +32,140 @@ class SqliteReviewStore:
         self._ids = ids
         self._clock = clock
 
-    def load_context(self, delivery_id: str, draft: RevisionDraft) -> RevisionContext | None:
+    def load_context(
+        self,
+        delivery_id: str,
+        draft: RevisionDraft,
+        *,
+        transaction: Any | None = None,
+        qc_report_override: QcReport | None = None,
+    ) -> RevisionContext | None:
+        if transaction is not None:
+            return self._load_context(
+                transaction, delivery_id, draft, qc_report_override=qc_report_override
+            )
         with self._uow_factory().read_only() as tx:
-            row = tx.connection.execute(
-                """SELECT d.id, d.state, d.row_version, d.permalink, d.current_revision_id,
-                          d.active_approval_id, d.package_id, d.channel_id,
-                          c.remote_account_id, cc.id AS channel_config_id, cc.config_hash,
-                          s.scheduled_at, s.deadline_at,
-                          r.id AS revision_id, r.payload_json AS revision_json,
-                          r.payload_hash AS revision_hash, r.revision_no,
-                          r.variant_id AS current_variant_id,
-                          a.id AS approval_id, a.revision_id AS approval_revision_id,
-                          a.payload_hash AS approval_hash, a.decision AS approval_decision,
-                          a.actor_id AS approval_actor, a.reason AS approval_reason,
-                          a.revokes_id AS approval_revokes_id, a.created_at AS approval_created_at,
-                          p.fact_snapshot_hash,
-                          EXISTS(SELECT 1 FROM executions e WHERE e.delivery_id=d.id
-                            AND e.state IN ('AUTHORIZED','REPORTED','UNKNOWN')) AS live_execution,
-                          (SELECT e.state FROM executions e WHERE e.delivery_id=d.id
-                            AND e.state IN ('AUTHORIZED','REPORTED','UNKNOWN') LIMIT 1) AS execution_state,
-                          (SELECT oc.state FROM outbox_commands oc WHERE oc.delivery_id=d.id
-                            ORDER BY oc.created_at DESC LIMIT 1) AS latest_command_state
-                   FROM deliveries d
-                   JOIN channels c ON c.id=d.channel_id
-                   JOIN slot_targets st ON st.id=d.target_id AND st.channel_id=d.channel_id
-                   JOIN slots s ON s.id=st.slot_id
-                   JOIN content_packages p ON p.id=d.package_id
-                   LEFT JOIN channel_configs cc ON cc.channel_id=c.id
-                   LEFT JOIN delivery_revisions r ON r.id=d.current_revision_id AND r.delivery_id=d.id
-                   LEFT JOIN approval_decisions a ON a.id=d.active_approval_id
-                   WHERE d.id=?
-                   ORDER BY cc.version DESC LIMIT 1""",
-                (delivery_id,),
-            ).fetchone()
-            if row is None:
-                return None
-            if not row["channel_config_id"]:
-                raise Conflict("Bài chưa có cấu hình kênh để tạo revision.")
+            return self._load_context(tx, delivery_id, draft, qc_report_override=qc_report_override)
 
-            current_revision = (
-                None
-                if row["revision_id"] is None
-                else DeliveryRevision(row["revision_json"], row["revision_hash"])
-            )
-            effective_caption = draft.caption
-            if effective_caption is None and current_revision is not None:
-                value = current_revision.payload.get("caption")
-                effective_caption = value if isinstance(value, str) else None
-            variant_id = draft.variant_id or row["current_variant_id"]
-            if not variant_id:
-                raise NotFound("Không tìm thấy biến thể ảnh cho revision.")
-            variant_row = tx.connection.execute(
-                """SELECT id, asset_id, transform_version, sha256, object_key, width, height,
-                          mime, byte_size, qc_status, created_at
-                   FROM media_variants WHERE id=?""",
-                (variant_id,),
-            ).fetchone()
-            if variant_row is None:
-                raise NotFound("Không tìm thấy biến thể ảnh.")
-            variant = _variant(variant_row)
-            if effective_caption is None:
-                raise Conflict("Cần caption để tìm QC report khớp revision.")
-            caption_hash = hashlib.sha256(normalize_caption(effective_caption).encode("utf-8")).hexdigest()
-            qc_row = tx.connection.execute(
-                """SELECT id, variant_id, caption_hash, ruleset_hash, fact_snapshot_hash,
-                          decision, coverage_gaps_json, result_json, created_at
-                   FROM qc_reports WHERE variant_id=? AND caption_hash=? AND fact_snapshot_hash=?
-                   ORDER BY created_at DESC LIMIT 1""",
-                (variant.id, caption_hash, row["fact_snapshot_hash"]),
-            ).fetchone()
-            if qc_row is None:
-                raise Conflict("Chưa có QC report khớp caption, facts và biến thể ảnh.")
-            approval = None
-            if row["approval_id"] is not None:
-                approval = ApprovalDecision(
-                    id=row["approval_id"],
-                    revision_id=row["approval_revision_id"],
-                    payload_hash=row["approval_hash"],
-                    decision=ApprovalType(row["approval_decision"]),
-                    actor_id=row["approval_actor"],
-                    created_at_ms=int(row["approval_created_at"]),
-                    reason=row["approval_reason"],
-                    revokes_id=row["approval_revokes_id"],
-                )
-            command_state = row["execution_state"] or row["latest_command_state"]
-            next_revision_no = int(row["revision_no"] or 0) + 1
-            return RevisionContext(
-                delivery=Delivery(
-                    row["id"], DeliveryState(row["state"]), int(row["row_version"]), row["permalink"]
-                ),
-                channel_id=row["channel_id"],
-                channel_config_id=row["channel_config_id"],
-                channel_config_hash=row["config_hash"],
-                remote_account_id=row["remote_account_id"],
-                next_revision_no=next_revision_no,
-                scheduled_at_ms=int(row["scheduled_at"]),
-                deadline_at_ms=int(row["deadline_at"]),
-                fact_snapshot_hash=row["fact_snapshot_hash"],
-                current_revision=current_revision,
-                active_approval=approval,
-                variant=variant,
-                qc_report=_qc_report(qc_row),
-                command_state=command_state,
-                live_execution=bool(row["live_execution"]),
-            )
+    def _load_context(
+        self,
+        tx: Any,
+        delivery_id: str,
+        draft: RevisionDraft,
+        *,
+        qc_report_override: QcReport | None = None,
+    ) -> RevisionContext | None:
+        row = tx.connection.execute(
+            """SELECT d.id, d.state, d.row_version, d.permalink, d.current_revision_id,
+                      d.active_approval_id, d.package_id, d.channel_id,
+                      c.remote_account_id, cc.id AS channel_config_id, cc.config_hash,
+                      s.scheduled_at, s.deadline_at,
+                      r.id AS revision_id, r.payload_json AS revision_json,
+                      r.payload_hash AS revision_hash, r.revision_no,
+                      r.variant_id AS current_variant_id,
+                      a.id AS approval_id, a.revision_id AS approval_revision_id,
+                      a.payload_hash AS approval_hash, a.decision AS approval_decision,
+                      a.actor_id AS approval_actor, a.reason AS approval_reason,
+                      a.revokes_id AS approval_revokes_id, a.created_at AS approval_created_at,
+                      p.fact_snapshot_hash,
+                      EXISTS(SELECT 1 FROM executions e WHERE e.delivery_id=d.id
+                        AND e.state IN ('AUTHORIZED','REPORTED','UNKNOWN')) AS live_execution,
+                      (SELECT e.state FROM executions e WHERE e.delivery_id=d.id
+                        AND e.state IN ('AUTHORIZED','REPORTED','UNKNOWN') LIMIT 1) AS execution_state,
+                      (SELECT oc.state FROM outbox_commands oc WHERE oc.delivery_id=d.id
+                        ORDER BY oc.created_at DESC LIMIT 1) AS latest_command_state
+               FROM deliveries d
+               JOIN channels c ON c.id=d.channel_id
+               JOIN slot_targets st ON st.id=d.target_id AND st.channel_id=d.channel_id
+               JOIN slots s ON s.id=st.slot_id
+               JOIN content_packages p ON p.id=d.package_id
+               LEFT JOIN channel_configs cc ON cc.channel_id=c.id
+               LEFT JOIN delivery_revisions r ON r.id=d.current_revision_id AND r.delivery_id=d.id
+               LEFT JOIN approval_decisions a ON a.id=d.active_approval_id
+               WHERE d.id=?
+               ORDER BY cc.version DESC LIMIT 1""",
+            (delivery_id,),
+        ).fetchone()
+        if row is None:
+            return None
+        if not row["channel_config_id"]:
+            raise Conflict("Bài chưa có cấu hình kênh để tạo revision.")
 
-    def apply_revision(self, write: RevisionWrite) -> None:
+        current_revision = (
+            None
+            if row["revision_id"] is None
+            else DeliveryRevision(row["revision_json"], row["revision_hash"])
+        )
+        effective_caption = draft.caption
+        if effective_caption is None and current_revision is not None:
+            value = current_revision.payload.get("caption")
+            effective_caption = value if isinstance(value, str) else None
+        variant_id = draft.variant_id or row["current_variant_id"]
+        if not variant_id:
+            raise NotFound("Không tìm thấy biến thể ảnh cho revision.")
+        variant_row = tx.connection.execute(
+            """SELECT id, asset_id, transform_version, sha256, object_key, width, height,
+                      mime, byte_size, qc_status, created_at
+               FROM media_variants WHERE id=?""",
+            (variant_id,),
+        ).fetchone()
+        if variant_row is None:
+            raise NotFound("Không tìm thấy biến thể ảnh.")
+        variant = _variant(variant_row)
+        if effective_caption is None:
+            raise Conflict("Cần caption để tìm QC report khớp revision.")
+        caption_hash = hashlib.sha256(normalize_caption(effective_caption).encode("utf-8")).hexdigest()
+        qc_row = tx.connection.execute(
+            """SELECT id, variant_id, caption_hash, ruleset_hash, fact_snapshot_hash,
+                      decision, coverage_gaps_json, result_json, created_at
+               FROM qc_reports WHERE variant_id=? AND caption_hash=? AND fact_snapshot_hash=?
+               ORDER BY created_at DESC LIMIT 1""",
+            (variant.id, caption_hash, row["fact_snapshot_hash"]),
+        ).fetchone()
+        if qc_report_override is None and qc_row is None:
+            raise Conflict("Chưa có QC report khớp caption, facts và biến thể ảnh.")
+        approval = None
+        if row["approval_id"] is not None:
+            approval = ApprovalDecision(
+                id=row["approval_id"],
+                revision_id=row["approval_revision_id"],
+                payload_hash=row["approval_hash"],
+                decision=ApprovalType(row["approval_decision"]),
+                actor_id=row["approval_actor"],
+                created_at_ms=int(row["approval_created_at"]),
+                reason=row["approval_reason"],
+                revokes_id=row["approval_revokes_id"],
+            )
+        command_state = row["execution_state"] or row["latest_command_state"]
+        next_revision_no = int(row["revision_no"] or 0) + 1
+        return RevisionContext(
+            delivery=Delivery(
+                row["id"], DeliveryState(row["state"]), int(row["row_version"]), row["permalink"]
+            ),
+            channel_id=row["channel_id"],
+            channel_config_id=row["channel_config_id"],
+            channel_config_hash=row["config_hash"],
+            remote_account_id=row["remote_account_id"],
+            next_revision_no=next_revision_no,
+            scheduled_at_ms=int(row["scheduled_at"]),
+            deadline_at_ms=int(row["deadline_at"]),
+            fact_snapshot_hash=row["fact_snapshot_hash"],
+            current_revision=current_revision,
+            active_approval=approval,
+            variant=variant,
+            qc_report=qc_report_override if qc_report_override is not None else _qc_report(qc_row),
+            command_state=command_state,
+            live_execution=bool(row["live_execution"]),
+        )
+
+    def apply_revision(self, write: RevisionWrite, *, transaction: Any | None = None) -> None:
         delivery_id = write.context.delivery.id
         revision_id = str(write.revision.payload["revision_id"])
+        transaction_context = (
+            self._uow_factory().begin_immediate() if transaction is None else nullcontext(transaction)
+        )
         try:
-            with self._uow_factory().begin_immediate() as tx:
+            with transaction_context as tx:
                 current = tx.connection.execute(
                     """SELECT row_version, state, current_revision_id, active_approval_id, channel_id
                        FROM deliveries WHERE id=?""",

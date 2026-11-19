@@ -6,10 +6,13 @@ import pytest
 from pydantic import ValidationError
 
 from validator_studio.observe_adapter import (
+    ObservationNonFiniteNumberError,
     ObservationSchemaError,
+    _normalize_provider_numbers,
     parse_image_observation_response,
 )
 from validator_studio.schemas.image_validation import ImageObservation
+from growth_engine.domain.kernel.hashing import canonical_json_bytes
 
 
 def _variant_observation() -> dict[str, object]:
@@ -32,7 +35,7 @@ def _variant_observation() -> dict[str, object]:
 def test_parse_clean_json_and_numeric_string_fields() -> None:
     result = parse_image_observation_response(json.dumps(_variant_observation()))
     assert result.dna_matches[0].match_state.value == "match"
-    assert result.dna_matches[0].confidence == pytest.approx(0.92)
+    assert result.dna_matches[0].confidence_bp == 9_200
     assert result.forbidden[0].violated is False
     assert result.allowed_imperfections == []
     assert result.notes == []
@@ -69,3 +72,30 @@ def test_invalid_confidence_fails_with_field_and_reason_without_guessing() -> No
     payload = {"dna_matches": [{"key": "window_frame", "match_state": "match", "confidence": "high"}]}
     with pytest.raises(ObservationSchemaError, match=r"field \$\.dna_matches\[0\]\.confidence: expected a number"):
         parse_image_observation_response(payload)
+
+
+def test_nested_provider_floats_use_decimal_half_even_basis_points() -> None:
+    nested = _normalize_provider_numbers({"items": [0.00005, {"score": 0.00015}]})
+    assert nested == {"items": [0, {"score": 2}]}
+
+    parsed = parse_image_observation_response({
+        "dna_matches": [
+            {"key": "a", "match_state": "match", "confidence": 0.92},
+            {"key": "b", "match_state": "partial", "confidence": 0.00005},
+        ],
+        "forbidden": [{"rule": "c", "confidence": 0.00015}],
+    })
+    assert [item.confidence_bp for item in parsed.dna_matches] == [9_200, 0]
+    assert parsed.forbidden[0].confidence_bp == 2
+
+
+@pytest.mark.parametrize("value", [float("nan"), float("inf"), float("-inf")])
+def test_non_finite_provider_float_has_distinct_code_and_field_path(value: float) -> None:
+    with pytest.raises(ObservationNonFiniteNumberError, match=r"field \$\.items\[1\]\.score") as error:
+        _normalize_provider_numbers({"items": [0, {"score": value}]})
+    assert error.value.code == "ERR_GC2_QC_NONFINITE_NUMBER"
+
+
+def test_canonical_json_still_rejects_any_unconverted_float() -> None:
+    with pytest.raises(ValueError, match=r"field \$\.nested\[0\]\.score: floating point values are not allowed"):
+        canonical_json_bytes({"nested": [{"score": 0.92}]})

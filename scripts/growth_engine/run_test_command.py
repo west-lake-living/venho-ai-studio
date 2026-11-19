@@ -22,6 +22,12 @@ from typing import Any, Callable
 from urllib.parse import parse_qsl, quote, urlsplit
 from uuid import UUID, uuid4
 
+REPO_ROOT = Path(__file__).resolve().parents[2]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from growth_engine.adapters.inbound.cli.operator_tty import OperatorTtyUnavailable, read_tty_line  # noqa: E402
+
 
 CHANNEL_KEY = "fb_hanoi"
 MANIFEST_CHANNEL_ID = "page_test"
@@ -511,7 +517,7 @@ def run_first_command(
     *,
     home: Path | None = None,
     repo_root: Path | None = None,
-    input_fn: Callable[[str], str] = input,
+    input_fn: Callable[[str], str] = read_tty_line,
     secret_input: Callable[[str], str] = getpass.getpass,
     runner: Callable[..., subprocess.CompletedProcess[str]] = subprocess.run,
     sleep: Callable[[float], None] = time.sleep,
@@ -631,11 +637,11 @@ def run_first_command(
 
 
 def main() -> int:
-    if not sys.stdin.isatty():
-        print("run-test-command: interactive terminal required; no secrets were read", file=sys.stderr)
-        return 2
     try:
         return run_first_command()
+    except OperatorTtyUnavailable as error:
+        print(f"run-test-command: {error.code}; no webhook was sent", file=sys.stderr)
+        return 2
     except RunTestError as error:
         print(f"run-test-command: {error}", file=sys.stderr)
         return 2

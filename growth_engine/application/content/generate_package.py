@@ -338,20 +338,20 @@ def choose_default_image(
     return None
 
 
-def _json_safe(value: object) -> object:
+def _json_safe(value: object, path: str = "$") -> object:
     if isinstance(value, float):
         if not math.isfinite(value):
-            raise ValueError("fact snapshot cannot contain a non-finite number")
+            raise ValueError(f"field {path}: snapshot cannot contain a non-finite number")
         return format(value, ".15g")
     if isinstance(value, Mapping):
         if any(not isinstance(key, str) for key in value):
-            raise ValueError("snapshot object keys must be strings")
-        return {key: _json_safe(nested) for key, nested in value.items()}
+            raise ValueError(f"field {path}: snapshot object keys must be strings")
+        return {key: _json_safe(nested, f"{path}.{key}") for key, nested in value.items()}
     if isinstance(value, (list, tuple)):
-        return [_json_safe(nested) for nested in value]
+        return [_json_safe(nested, f"{path}[{index}]") for index, nested in enumerate(value)]
     if value is None or isinstance(value, (str, int, bool)):
         return value
-    raise ValueError(f"snapshot value is not JSON-compatible: {type(value).__name__}")
+    raise ValueError(f"field {path}: snapshot value is not JSON-compatible ({type(value).__name__})")
 
 
 def _package_facts(facts: Mapping[str, object]) -> tuple[PackageFact, ...]:

@@ -124,7 +124,7 @@ def score_image_observation(observation: ImageObservation, config: dict) -> Scor
         score = score_match_state(item.match_state, rubric)
         if score is None:
             continue
-        weight = max(item.confidence, 0.01)
+        weight = max(item.confidence_bp, 100) / 10_000
         dna_items.append((score, weight))
         category = item.category if item.category in IMAGE_CATEGORIES else "dna_match"
         category_items[category].append((score, weight))
@@ -164,7 +164,7 @@ def score_image_observation(observation: ImageObservation, config: dict) -> Scor
             source=item.source,
             severity=item.severity,
             violated=item.violated,
-            confidence=item.confidence,
+            confidence=item.confidence_bp / 10_000,
             reason=item.reason,
         )
         for item in observation.forbidden

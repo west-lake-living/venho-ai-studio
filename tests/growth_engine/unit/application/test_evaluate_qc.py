@@ -3,13 +3,14 @@ from __future__ import annotations
 from contextlib import contextmanager
 from dataclasses import replace
 from hashlib import sha256
+import json
 from pathlib import Path
 from types import SimpleNamespace
 from typing import Iterator
 
 import pytest
 
-from growth_engine.adapters.outbound.legacy.qc_adapter import LegacyQcAdapter
+from growth_engine.adapters.outbound.legacy.qc_adapter import LegacyQcAdapter, _normalize_qc_numbers
 from growth_engine.application.dto import EffectiveQcPolicy, FactSnapshot, QcResult, VariantView
 from growth_engine.application.errors import NotFound
 from growth_engine.application.media.evaluate_qc import (
@@ -20,6 +21,7 @@ from growth_engine.application.media.evaluate_qc import (
 )
 from growth_engine.domain.media.asset import MediaVariant, VariantQcStatus
 from growth_engine.domain.media.qc import QcDecision, QcReport
+from growth_engine.domain.kernel.hashing import canonical_json_bytes
 from tests.growth_engine.support.fakes import FakeClock, FakeQc, SeqIds
 
 _HASH_A = "a" * 64
@@ -493,3 +495,63 @@ def _approved_report(project: str, subject: str, path: Path, **kwargs: object) -
         "observer": {"provider": "mock", "model": "mock", "samples": 1},
     }
     return report
+
+
+def test_qc_report_floats_are_renamed_and_encoded_as_basis_points() -> None:
+    encoded = _normalize_qc_numbers({
+        "validator_report": {
+            "overall_score": 92.5,
+            "dna_match_score": 0.00005,
+            "category_scores": {"material": 88.125},
+            "section_scores": [{"score": 0.00015}],
+            "forbidden_violations": [{"confidence": 0.92}],
+        }
+    })
+    assert encoded == {
+        "validator_report": {
+            "overall_score_bp": 925_000,
+            "dna_match_score_bp": 0,
+            "category_scores_bp": {"material": 881_250},
+            "section_scores": [{"score_bp": 2}],
+            "forbidden_violations": [{"confidence_bp": 9_200}],
+        }
+    }
+    canonical_json_bytes(encoded)
+
+
+def test_qc_non_finite_report_value_fails_with_field_path_and_code() -> None:
+    from growth_engine.adapters.outbound.legacy.qc_adapter import QcNonFiniteNumberError
+
+    with pytest.raises(QcNonFiniteNumberError, match=r"field \$\.validator_report\.section_scores\[0\]\.score") as error:
+        _normalize_qc_numbers({"validator_report": {"section_scores": [{"score": float("inf")}]}})
+    assert error.value.code == "ERR_GC2_QC_NONFINITE_NUMBER"
+
+
+def test_legacy_qc_adapter_result_is_canonical_json_after_float_normalization(tmp_path: Path) -> None:
+    report = _approved_report("test", "room", tmp_path / "unused.jpg")
+    report.model_dump = lambda mode="json": {
+        "overall_score": 92.5,
+        "dna_match_score": 91.25,
+        "category_scores": {"material": 88.0},
+        "section_scores": [{"score": 90.5}],
+        "forbidden_violations": [{"confidence": 0.92}],
+        "raw_observation": {"dna_matches": [{"confidence_bp": 9_200}]},
+    }
+    adapter = LegacyQcAdapter(_FakeStore(_VARIANT_BYTES), base_dir=tmp_path)
+    policy = EffectiveQcPolicy("test", "room", None, _HASH_A, ())
+
+    result = adapter._result_from_report(
+        report,
+        _variant_view(),
+        "Synthetic caption",
+        FactSnapshot({}, _HASH_C),
+        policy,
+    )
+    payload = json.loads(result.result_json)
+    canonical_json_bytes(payload)
+    validator_report = payload["validator_report"]
+    assert validator_report["overall_score_bp"] == 925_000
+    assert validator_report["dna_match_score_bp"] == 912_500
+    assert validator_report["category_scores_bp"]["material"] == 880_000
+    assert validator_report["section_scores"][0]["score_bp"] == 905_000
+    assert validator_report["forbidden_violations"][0]["confidence_bp"] == 9_200

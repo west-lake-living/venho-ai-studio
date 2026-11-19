@@ -5,6 +5,7 @@ from pathlib import Path
 
 from typer.testing import CliRunner
 
+import growth_engine.adapters.inbound.cli.main as cli_main
 from growth_engine.adapters.inbound.cli.main import app
 from growth_engine.adapters.outbound.persistence.sqlite.connection import connect
 from growth_engine.adapters.outbound.persistence.sqlite.migrator import MigrationRunner
@@ -104,7 +105,9 @@ def test_resolve_p4_qc_unknown_settles_once_audits_and_requeues_once(tmp_path: P
     assert audit_count == 1
 
 
-def test_resolve_cli_requires_exact_confirmation_and_is_idempotent(tmp_path: Path) -> None:
+def test_resolve_cli_requires_exact_confirmation_and_is_idempotent(
+    tmp_path: Path, monkeypatch
+) -> None:
     database = tmp_path / "growth.db"
     _seed_unknown_p4_job(database)
     env = {
@@ -130,6 +133,7 @@ def test_resolve_cli_requires_exact_confirmation_and_is_idempotent(tmp_path: Pat
         now_ms=lambda: 2_000_000,
     )
     obj = {"resolve_p4_qc_unknown_service": service}
+    monkeypatch.setattr(cli_main, "confirm_from_tty", lambda *_args: False)
     declined = runner.invoke(app, args, env=env, input="resolve\n", obj=obj)
     assert declined.exit_code == 2, declined.output
     assert "no changes made" in declined.output
@@ -137,7 +141,8 @@ def test_resolve_cli_requires_exact_confirmation_and_is_idempotent(tmp_path: Pat
         assert connection.execute("SELECT state FROM paid_calls WHERE id='paid-p4'").fetchone()[0] == "UNKNOWN"
         assert connection.execute("SELECT state FROM jobs WHERE id='job-p4'").fetchone()[0] == "UNKNOWN"
 
-    accepted = runner.invoke(app, args, env=env, input="RESOLVE\n", obj=obj)
+    monkeypatch.setattr(cli_main, "confirm_from_tty", lambda *_args: True)
+    accepted = runner.invoke(app, args, env=env, input="not-a-confirmation\n", obj=obj)
     assert accepted.exit_code == 0, accepted.output
     assert "RESOLVED_AND_REQUEUED" in accepted.output
     replay = runner.invoke(app, args, env=env, input="", obj=obj)

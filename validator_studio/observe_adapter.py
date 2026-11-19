@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 import json
-import math
 from collections import Counter
+from decimal import Decimal, InvalidOperation, ROUND_HALF_EVEN
 from pathlib import Path
 from typing import Any, Callable, Optional
 
@@ -36,6 +36,10 @@ class ObservationSchemaError(ValueError):
     """Layer 1 observe returned data outside the enum-only Validator Studio contract."""
 
 
+class ObservationNonFiniteNumberError(ObservationSchemaError):
+    code = "ERR_GC2_QC_NONFINITE_NUMBER"
+
+
 def _assert_no_ai_scores(payload: Any, path: str = "$") -> None:
     """Image observe may return confidence, but never scoring fields."""
     if isinstance(payload, dict):
@@ -59,6 +63,7 @@ def parse_image_observation_response(response: object) -> ImageObservation:
         payload = response
     if not isinstance(payload, dict):
         raise ObservationSchemaError("field $: expected a JSON object")
+    payload = _normalize_provider_numbers(payload)
     _assert_no_ai_scores(payload)
     _reject_unknown_fields(payload, {"dna_matches", "forbidden", "allowed_imperfections", "notes"}, "$")
     if "dna_matches" not in payload:
@@ -108,7 +113,9 @@ def _normalize_dna_match(item: object, index: int) -> dict[str, Any]:
     result = dict(row)
     result["match_state"] = _normalize_enum(result["match_state"], MatchState, f"{path}.match_state")
     if "confidence" in result:
-        result["confidence"] = _normalize_confidence(result["confidence"], f"{path}.confidence")
+        result["confidence_bp"] = result.pop("confidence")
+    if "confidence_bp" in result:
+        result["confidence_bp"] = _validate_confidence_bp(result["confidence_bp"], f"{path}.confidence")
     return result
 
 
@@ -124,7 +131,9 @@ def _normalize_forbidden(item: object, index: int) -> dict[str, Any]:
     if "violated" in result:
         result["violated"] = _normalize_bool(result["violated"], f"{path}.violated")
     if "confidence" in result:
-        result["confidence"] = _normalize_confidence(result["confidence"], f"{path}.confidence")
+        result["confidence_bp"] = result.pop("confidence")
+    if "confidence_bp" in result:
+        result["confidence_bp"] = _validate_confidence_bp(result["confidence_bp"], f"{path}.confidence")
     return result
 
 
@@ -162,16 +171,52 @@ def _normalize_enum(value: object, enum_type: type[MatchState] | type[Severity],
     return normalized
 
 
-def _normalize_confidence(value: object, path: str) -> float:
+def _normalize_provider_numbers(value: Any, path: str = "$") -> Any:
+    """Convert provider floats recursively before they can reach canonical JSON."""
+    if isinstance(value, dict):
+        normalized: dict[str, Any] = {}
+        for key, nested in value.items():
+            child_path = f"{path}.{key}"
+            if key == "confidence":
+                normalized[key] = _confidence_to_bp(nested, child_path)
+            else:
+                normalized[key] = _normalize_provider_numbers(nested, child_path)
+        return normalized
+    if isinstance(value, list):
+        return [_normalize_provider_numbers(item, f"{path}[{index}]") for index, item in enumerate(value)]
+    if isinstance(value, float):
+        return _decimal_x10000(value, path)
+    return value
+
+
+def _decimal_x10000(value: object, path: str) -> int:
+    try:
+        decimal = Decimal(str(value))
+    except (InvalidOperation, ValueError):
+        raise ObservationSchemaError(f"field {path}: expected a finite number") from None
+    if not decimal.is_finite():
+        raise ObservationNonFiniteNumberError(f"field {path}: NaN and infinity are not allowed")
+    return int((decimal * Decimal(10_000)).to_integral_value(rounding=ROUND_HALF_EVEN))
+
+
+def _confidence_to_bp(value: object, path: str) -> int:
     if isinstance(value, bool):
         raise ObservationSchemaError(f"field {path}: expected a number from 0 to 1")
     try:
-        number = float(value)
-    except (TypeError, ValueError):
+        number = Decimal(str(value))
+    except (InvalidOperation, TypeError, ValueError):
         raise ObservationSchemaError(f"field {path}: expected a number from 0 to 1") from None
-    if not math.isfinite(number) or not 0 <= number <= 1:
-        raise ObservationSchemaError(f"field {path}: number must be finite and between 0 and 1")
-    return number
+    if not number.is_finite():
+        raise ObservationNonFiniteNumberError(f"field {path}: NaN and infinity are not allowed")
+    if not 0 <= number <= 1:
+        raise ObservationSchemaError(f"field {path}: number must be between 0 and 1")
+    return int((number * Decimal(10_000)).to_integral_value(rounding=ROUND_HALF_EVEN))
+
+
+def _validate_confidence_bp(value: object, path: str) -> int:
+    if type(value) is not int or not 0 <= value <= 10_000:
+        raise ObservationSchemaError(f"field {path}: expected integer basis points from 0 to 10000")
+    return value
 
 
 def _normalize_bool(value: object, path: str) -> bool:
@@ -282,7 +327,10 @@ def _mock_observe_once(image_path: Path, dna: dict) -> ImageObservation:
             observed=observed,
             category=category,
             match_state=state,
-            confidence=float(feature.get("confidence", item.get("confidence", 1.0)) or 1.0),
+            confidence_bp=_confidence_to_bp(
+                feature.get("confidence", item.get("confidence", 1.0)) or 1.0,
+                f"$.mock.dna_matches.{key}.confidence",
+            ),
             reason=f"Observed '{observed}' against expected '{expected}'.",
             evidence=observed,
         ))
@@ -294,7 +342,7 @@ def _mock_observe_once(image_path: Path, dna: dict) -> ImageObservation:
             source=str(item.get("source", "curated")),
             severity=_severity_for_rule(str(item.get("rule", ""))),
             violated=forced_bad and index == 0,
-            confidence=1.0,
+            confidence_bp=10_000,
             reason="Mock forced violation from artifact filename." if forced_bad and index == 0 else "No violation observed by mock provider.",
         )
         for index, item in enumerate(_forbidden_rules_for_validation(dna))
@@ -333,7 +381,10 @@ def _merge_samples(samples: list[ImageObservation]) -> ImageObservation:
         first = items[0]
         merged.append(first.model_copy(update={
             "match_state": _majority_state([item.match_state for item in items]),
-            "confidence": round(sum(item.confidence for item in items) / len(items), 3),
+            "confidence_bp": int(
+                (Decimal(sum(item.confidence_bp for item in items)) / Decimal(len(items)))
+                .to_integral_value(rounding=ROUND_HALF_EVEN)
+            ),
         }))
     forbidden: list[ForbiddenObservation] = []
     for index, item in enumerate(samples[0].forbidden):

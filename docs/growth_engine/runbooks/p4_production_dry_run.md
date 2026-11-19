@@ -194,13 +194,19 @@ Lượt QC đầu nhận HTTP 200 nhưng hậu xử lý lỗi; lệnh resolve-p4
 
 ## 8. Reprocess QC evidence đã trả phí
 
-Lệnh reprocess-p4-qc-evidence --job ... chỉ đọc filtered response evidence từ paid call đã SETTLED, dựng lại observation/report offline, rồi tạo revision qua luồng review hiện có. Không gọi provider, không tạo paid call, không dispatch. Trước khi ghi lệnh in JSON preflight gồm job, delivery, độ dài evidence và các key đọc được; chỉ tiếp tục khi operator gõ chính xác REPROCESS. Lần chạy lại sau thành công trả ALREADY_PROCESSED.
+Nguyên nhân đã xác nhận từ lần chạy thật: confidence và điểm QC còn ở dạng float sau khi parse/serialize report; `canonical_json` từ chối float trước khi ghi QC report. Đây cũng là nguyên nhân gốc phù hợp với `ValueError` của lượt đầu. Không nới lỏng canonical JSON. Bộ parse đổi confidence provider thành `confidence_bp`; report đổi các trường điểm thành integer có hậu tố `_bp` theo `round(x * 10000)` bằng `Decimal` + `ROUND_HALF_EVEN`. Mọi so sánh ngưỡng QC hiện diễn ra trước serialize trên thang điểm nội bộ hiện hữu; Growth Engine/BFF hiện không đọc hoặc hiển thị `result_json`. Nếu sau này giao diện hiển thị các điểm serialized, giá trị hiển thị bằng integer chia 10000.
 
-Parser chấp nhận JSON sạch, JSON trong code fence, JSON có prose bao quanh, field tuỳ chọn bị lược, enum khác hoa/thường và số/boolean ở dạng chuỗi không mơ hồ. Field bắt buộc thiếu, enum không nhận dạng, confidence ngoài 0–1 hoặc kiểu không an toàn sẽ chặn với mã lỗi, tên field và lý do. Các giá trị response không được in. Log lỗi hậu xử lý mới giữ chi tiết field đã lọc; log sự cố cũ chỉ giữ error_type=ValueError, nên từ log bàn giao không thể khẳng định chính xác field nào đã gây lỗi production.
+Các float có nguồn provider trong đường QC là `dna_matches[*].confidence` và `forbidden[*].confidence`. Report sau scoring còn các float `overall_score`, `dna_match_score`, `category_scores[*]`, `section_scores[*].score` và `forbidden_violations[*].confidence`; adapter serialize thành `overall_score_bp`, `dna_match_score_bp`, `category_scores_bp`, `score_bp`, `confidence_bp`. Evidence provider gốc trong `paid_calls.provider_response_json` được giữ nguyên byte-for-byte.
+
+Lệnh `reprocess-p4-qc-evidence --job ...` dùng filtered response evidence từ paid call đã SETTLED, dựng lại observation/report offline và tạo revision `IN_REVIEW`. Không gọi provider, không tạo paid call, không dispatch. Trước khi ghi, in JSON preflight gồm job, delivery, độ dài evidence và các key đọc được. Chỉ tiếp tục khi operator gõ chính xác `REPROCESS` trên `/dev/tty`; stdin không thể xác nhận. Lần chạy lại sau thành công trả `ALREADY_PROCESSED`. Ghi QC report, trạng thái variant, revision, delivery và audit trong cùng một transaction SQLite; mọi lỗi giữa chừng rollback toàn bộ.
+
+Parser chấp nhận JSON sạch, JSON trong code fence, JSON có prose bao quanh, field tuỳ chọn bị lược, enum khác hoa/thường và số/boolean ở dạng chuỗi không mơ hồ. Làm tròn dùng Decimal, `ROUND_HALF_EVEN`; NaN/Inf bị chặn với `ERR_GC2_QC_NONFINITE_NUMBER` và đường dẫn field. Field bắt buộc thiếu, enum không nhận dạng, confidence ngoài 0–1 hoặc kiểu không an toàn sẽ chặn với tên field và lý do. Các giá trị response không được in. Lệnh xác nhận `RESOLVE`, `REPROCESS` và các lệnh operator có side-effect khác đọc `/dev/tty`; nếu không có controlling TTY thì dừng.
+
+Rà canonical JSON: Draft package chuẩn hóa float trong facts/provenance thành chuỗi trước khi hash; trend candidate cũng chuyển float thành chuỗi; media metadata hiện chỉ gồm chuỗi và kích thước ảnh/Pillow là số nguyên, không lưu EXIF float. Các payload bên ngoài khác (research candidate, Make receipt) giữ canonical strict và fail-closed nếu phát sinh float chưa chuẩn hóa.
 
 Nếu stored evidence thiếu observation hoặc không có bằng chứng HTTP 200/paid call tương ứng, lệnh dừng với ERR_GC2_P4_QC_EVIDENCE_INSUFFICIENT. Phương án B là một QC mới, tối đa 400 VND, chỉ sau khi operator duyệt riêng; lệnh này không tự chạy phương án B. Code sửa này không thêm migration; script bên dưới vẫn chạy migration idempotent để áp các migration còn thiếu trước deploy.
 
-**Chạy trên ASUS:** thay <REVIEWED_P4_SHA> bằng commit SHA đã review trên nhánh gc2/build-v1-2. Dán block này trong SSH; phần set -Eeuo pipefail nằm trong file script được tạo, không chạy trực tiếp trong interactive shell. Không pipe output của lệnh reprocess/status.
+**Chạy trên ASUS:** thay `<REVIEWED_P4_SHA>` bằng commit SHA đã review trên nhánh `gc2/build-v1-2`. Dán block này trong SSH; `set -Eeuo pipefail` chỉ chạy trong file script, không trực tiếp trong interactive shell. Script tự xóa file handoff khi kết thúc. Không pipe output của lệnh reprocess/status; sau lệnh `bash` cuối không dán thêm lệnh cùng dòng.
 
 ~~~bash
 cat > "$HOME/venho/reprocess-p4-qc-evidence.sh" <<'SCRIPT'
@@ -216,8 +222,14 @@ P4_SHA='<REVIEWED_P4_SHA>'
 BRANCH='gc2/build-v1-2'
 REPO="$HOME/venho/gc2-src"
 REMOTE_URL="$(git -C "$REPO" remote get-url origin)"
+SCRIPT_PATH="$HOME/venho/reprocess-p4-qc-evidence.sh"
+SOURCE_DIR=''
+cleanup() {
+  [[ -z "$SOURCE_DIR" ]] || rm -rf "$SOURCE_DIR"
+  rm -f "$SCRIPT_PATH"
+}
+trap cleanup EXIT
 SOURCE_DIR="$(mktemp -d "$HOME/venho/gc2-qc-source.XXXXXX")"
-trap 'rm -rf "$SOURCE_DIR"' EXIT
 
 git clone --quiet --no-checkout "$REMOTE_URL" "$SOURCE_DIR"
 git -C "$SOURCE_DIR" fetch --quiet origin "$BRANCH"

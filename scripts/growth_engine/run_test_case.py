@@ -26,6 +26,10 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
+from growth_engine.adapters.inbound.cli.operator_tty import (  # noqa: E402
+    OperatorTtyUnavailable,
+    read_tty_line,
+)
 from scripts.growth_engine.run_test_command import (  # noqa: E402
     RunTestError,
     _safe_webhook_url,
@@ -640,7 +644,7 @@ def run_case(
     *,
     home: Path | None = None,
     repo_root: Path = REPO_ROOT,
-    input_fn: Callable[[str], str] = input,
+    input_fn: Callable[[str], str] = read_tty_line,
     secret_input: Callable[[str], str] = getpass.getpass,
     runner: Callable[..., subprocess.CompletedProcess[str]] = subprocess.run,
     sleep: Callable[[float], None] = time.sleep,
@@ -1082,11 +1086,11 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("case", choices=tuple(CASES))
     args = parser.parse_args(argv)
-    if not sys.stdin.isatty():
-        print("run-test-case: interactive terminal required; no TEST request was sent", file=sys.stderr)
-        return 2
     try:
         return run_case(args.case)
+    except OperatorTtyUnavailable as error:
+        print(f"run-test-case: {error.code}; no TEST webhook was sent", file=sys.stderr)
+        return 2
     except TestCaseError as error:
         print(f"run-test-case: {error}", file=sys.stderr)
         return 2

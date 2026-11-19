@@ -24,14 +24,14 @@ def canonical_json_bytes(value: object) -> bytes:
     return encoded.encode("utf-8")
 
 
-def _reject_float_or_non_string_key(value: object) -> None:
+def _reject_float_or_non_string_key(value: object, path: str = "$") -> None:
     if isinstance(value, float):
-        raise ValueError("floating point values are not allowed in canonical JSON")
+        raise ValueError(f"field {path}: floating point values are not allowed in canonical JSON")
     if isinstance(value, Mapping):
         for key, nested in value.items():
             if not isinstance(key, str):
-                raise ValueError("canonical JSON object keys must be strings")
-            _reject_float_or_non_string_key(nested)
+                raise ValueError(f"field {path}: canonical JSON object keys must be strings")
+            _reject_float_or_non_string_key(nested, f"{path}.{key}")
     elif isinstance(value, Sequence) and not isinstance(value, (str, bytes, bytearray)):
-        for nested in value:
-            _reject_float_or_non_string_key(nested)
+        for index, nested in enumerate(value):
+            _reject_float_or_non_string_key(nested, f"{path}[{index}]")

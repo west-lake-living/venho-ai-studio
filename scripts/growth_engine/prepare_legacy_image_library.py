@@ -13,6 +13,15 @@ import sys
 import tempfile
 from pathlib import Path, PurePosixPath
 
+REPO_ROOT = Path(__file__).resolve().parents[2]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from growth_engine.adapters.inbound.cli.operator_tty import (  # noqa: E402
+    OperatorTtyUnavailable,
+    read_tty_line,
+)
+
 
 IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png", ".heic", ".heif"}
 CATALOG_LINE = re.compile(r"^\s{2}([A-Za-z0-9_]+):\s*([^\s#]+)\s*(?:#.*)?$")
@@ -182,7 +191,11 @@ def write_private(path: Path, contents: str) -> None:
         temporary.unlink(missing_ok=True)
 
 
-def main() -> int:
+def main(
+    argv: list[str] | None = None,
+    *,
+    confirmation_reader=read_tty_line,
+) -> int:
     repo_root = Path(__file__).resolve().parents[2]
     home = Path.home()
     parser = argparse.ArgumentParser(description=__doc__)
@@ -206,7 +219,7 @@ def main() -> int:
         action="store_true",
         help="write the external allowlist only after displaying candidates and receiving WRITE confirmation",
     )
-    arguments = parser.parse_args()
+    arguments = parser.parse_args(argv)
     try:
         mapping = parse_catalog(arguments.catalog)
         allowlist, unmapped_dirs = inventory(arguments.assets_root, mapping)
@@ -249,9 +262,10 @@ def main() -> int:
 
     print(f"review the table above; target config is {arguments.output}")
     try:
-        answer = input("Type WRITE to replace/create this allowlist: ").strip()
-    except EOFError:
-        answer = ""
+        answer = confirmation_reader("Type WRITE to replace/create this allowlist:").strip()
+    except OperatorTtyUnavailable:
+        print("IMAGE_LIBRARY_WRITE=BLOCKED code=ERR_GC2_OPERATOR_TTY_REQUIRED")
+        return 2
     if answer != "WRITE":
         print("IMAGE_LIBRARY_WRITE=CANCELLED")
         return 3

@@ -3,8 +3,10 @@ from __future__ import annotations
 import hashlib
 import inspect
 import json
+import math
 import re
 import tempfile
+from decimal import Decimal, InvalidOperation, ROUND_HALF_EVEN
 from pathlib import Path
 from typing import Any, Callable
 
@@ -26,6 +28,10 @@ class UnsupportedQcConfigurationError(ValueError):
 
 class QcArtifactError(ValueError):
     pass
+
+
+class QcNonFiniteNumberError(ValueError):
+    code = "ERR_GC2_QC_NONFINITE_NUMBER"
 
 
 class LegacyQcAdapter:
@@ -167,6 +173,7 @@ class LegacyQcAdapter:
             ],
             "coverage_gaps": coverage_gaps,
         }
+        result_payload = _normalize_qc_numbers(result_payload)
         return QcResult(
             decision=decision,
             ruleset_hash=policy.ruleset_hash,
@@ -175,6 +182,59 @@ class LegacyQcAdapter:
             coverage_gaps=tuple(dict.fromkeys(coverage_gaps)),
             result_json=json.dumps(result_payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")),
         )
+
+
+def _normalize_qc_numbers(value: Any, path: str = "$", *, unit_declared: bool = False) -> Any:
+    """Encode every QC float as deterministic integer basis points for canonical storage."""
+    if isinstance(value, float):
+        if not math.isfinite(value):
+            raise QcNonFiniteNumberError(
+                f"field {path}: QC number must be finite; NaN and infinity are not allowed"
+            )
+        try:
+            decimal = Decimal(str(value))
+        except (InvalidOperation, ValueError):
+            raise ValueError(f"field {path}: QC number cannot be represented as Decimal") from None
+        return int((decimal * Decimal(10_000)).to_integral_value(rounding=ROUND_HALF_EVEN))
+    if isinstance(value, dict):
+        normalized: dict[str, Any] = {}
+        for key, nested in value.items():
+            target_key = key
+            declares_unit = key == "category_scores" and _contains_float(nested)
+            if declares_unit:
+                target_key = "category_scores_bp"
+            elif not unit_declared and isinstance(nested, (list, tuple)) and any(
+                isinstance(item, float) for item in nested
+            ):
+                target_key = _with_bp_unit(key)
+            elif not unit_declared and isinstance(nested, float):
+                target_key = _with_bp_unit(key)
+            normalized[target_key] = _normalize_qc_numbers(
+                nested,
+                f"{path}.{target_key}",
+                unit_declared=unit_declared or declares_unit,
+            )
+        return normalized
+    if isinstance(value, (list, tuple)):
+        return [
+            _normalize_qc_numbers(item, f"{path}[{index}]", unit_declared=unit_declared)
+            for index, item in enumerate(value)
+        ]
+    return value
+
+
+def _contains_float(value: Any) -> bool:
+    if isinstance(value, float):
+        return True
+    if isinstance(value, dict):
+        return any(_contains_float(item) for item in value.values())
+    if isinstance(value, (list, tuple)):
+        return any(_contains_float(item) for item in value)
+    return False
+
+
+def _with_bp_unit(key: str) -> str:
+    return key if key.endswith("_bp") else f"{key}_bp"
 
 
 def compile_effective_qc_policy(

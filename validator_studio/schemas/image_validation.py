@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from validator_studio.schemas.validation_base import MatchState, Severity
 
@@ -11,7 +11,7 @@ class DnaMatchObservation(BaseModel):
     observed: str = ""
     category: str = "dna_match"
     match_state: MatchState
-    confidence: float = 1.0
+    confidence_bp: int = Field(default=10_000, ge=0, le=10_000)
     reason: str = ""
     evidence: str = ""
 
@@ -21,7 +21,7 @@ class ForbiddenObservation(BaseModel):
     source: str = "curated"
     severity: Severity = Severity.HIGH
     violated: bool = False
-    confidence: float = 1.0
+    confidence_bp: int = Field(default=10_000, ge=0, le=10_000)
     reason: str = ""
 
 

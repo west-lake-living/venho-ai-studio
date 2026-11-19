@@ -202,7 +202,9 @@ def test_local_library_rejects_symlink_escape_and_changed_sha(tmp_path: Path) ->
         )
 
 
-def test_inventory_uses_legacy_catalog_mapping_and_excludes_unmapped_folders(tmp_path: Path) -> None:
+def test_inventory_uses_legacy_catalog_mapping_and_excludes_unmapped_folders(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
     root = tmp_path / "assets/raw"
     _jpeg(root / "outside" / "rooftop.jpg", (10, 50, 120))
     _jpeg(root / "westlake" / "lake.jpg", (20, 60, 130))
@@ -218,20 +220,37 @@ def test_inventory_uses_legacy_catalog_mapping_and_excludes_unmapped_folders(tmp
     )
     output = tmp_path / "config/growth-engine-image-library.yaml"
     script = Path(__file__).resolve().parents[2] / "scripts/growth_engine/prepare_legacy_image_library.py"
-    result = subprocess.run(
-        [sys.executable, str(script), "--assets-root", str(root), "--catalog", str(catalog), "--output", str(output), "--apply"],
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location("prepare_legacy_image_library", script)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    result = module.main(
+        ["--assets-root", str(root), "--catalog", str(catalog), "--output", str(output), "--apply"],
+        confirmation_reader=lambda _prompt: "WRITE",
+    )
+    output_text = capsys.readouterr().out
+    assert result == 0
+    assert "venho_street_railing_approved" in output_text
+    assert "venho_lake_landscape_approved" in output_text
+    assert "unmapped_top_level_dirs=facade,linh_an" in output_text
+    assert "linh_an/portrait.jpg" not in output_text
+    assert "IMAGE_LIBRARY_WRITE=PASS entries=3 mode=600" in output_text
+    assert os.stat(output).st_mode & 0o777 == 0o600
+
+    blocked_output = tmp_path / "config/blocked.yaml"
+    blocked = subprocess.run(
+        [sys.executable, str(script), "--assets-root", str(root), "--catalog", str(catalog),
+         "--output", str(blocked_output), "--apply"],
         input="WRITE\n",
         text=True,
         capture_output=True,
         check=False,
     )
-    assert result.returncode == 0, result.stderr
-    assert "venho_street_railing_approved" in result.stdout
-    assert "venho_lake_landscape_approved" in result.stdout
-    assert "unmapped_top_level_dirs=facade,linh_an" in result.stdout
-    assert "linh_an/portrait.jpg" not in result.stdout
-    assert "IMAGE_LIBRARY_WRITE=PASS entries=3 mode=600" in result.stdout
-    assert os.stat(output).st_mode & 0o777 == 0o600
+    assert blocked.returncode == 2
+    assert "ERR_GC2_OPERATOR_TTY_REQUIRED" in blocked.stdout
+    assert not blocked_output.exists()
 
     unchanged = subprocess.run(
         [sys.executable, str(script), "--assets-root", str(root), "--catalog", str(catalog), "--output", str(output), "--apply"],

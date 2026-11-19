@@ -7,7 +7,9 @@ from pathlib import Path
 import pytest
 from typer.testing import CliRunner
 
+import growth_engine.adapters.inbound.cli.main as cli_main
 from growth_engine.adapters.inbound.cli.main import app
+from growth_engine.adapters.inbound.cli.operator_tty import OperatorTtyUnavailable
 from growth_engine.adapters.outbound.persistence.sqlite.connection import connect
 from growth_engine.adapters.outbound.persistence.sqlite.migrator import MigrationRunner
 from growth_engine.adapters.outbound.persistence.sqlite.review_store import SqliteReviewStore
@@ -15,6 +17,7 @@ from growth_engine.adapters.outbound.persistence.sqlite.uow import SqliteUnitOfW
 from growth_engine.application.dto import EffectiveQcPolicy, QcResult
 from growth_engine.application.ops.reprocess_p4_qc_evidence import (
     P4QcEvidenceInsufficient,
+    P4QcEvidenceNonFiniteNumber,
     ReprocessP4QcEvidence,
 )
 from growth_engine.application.review.create_revision import CreateRevision
@@ -62,7 +65,7 @@ def _seed_reprocessable_job(database: Path, *, evidence: str | None = None) -> N
 
     caption_hash = hashlib.sha256(normalize_caption(CAPTION).encode()).hexdigest()
     response = {
-        "dna_matches": [{"key": "window_frame", "match_state": "MATCH", "confidence": "0.9"}],
+        "dna_matches": [{"key": "window_frame", "match_state": "MATCH", "confidence": 0.9}],
         "forbidden": [{"rule": "no visible logo", "violated": "false"}],
     }
     events = [
@@ -179,12 +182,18 @@ def _cli_env(database: Path, root: Path) -> dict[str, str]:
     }
 
 
-def test_reprocess_creates_qc_and_in_review_revision_once_without_provider_call(tmp_path: Path) -> None:
+def test_reprocess_creates_qc_and_in_review_revision_once_without_provider_call(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     database = tmp_path / "growth.db"
     _seed_reprocessable_job(database)
     qc = _OfflineQcEvaluator()
     service = _service(database, qc)
     job_id = "e0d00517-3661-4390-a532-6f516e0ef176"
+    with connect(database) as connection:
+        evidence_before = connection.execute(
+            "SELECT provider_response_json FROM paid_calls WHERE id='paid-p4'"
+        ).fetchone()[0]
 
     preview = service.preview(job_id)
     assert preview.delivery_id == "2509f430-4a4a-47dd-97a9-4b99e8d4ba88"
@@ -193,16 +202,19 @@ def test_reprocess_creates_qc_and_in_review_revision_once_without_provider_call(
 
     runner = CliRunner()
     obj = {"reprocess_p4_qc_evidence_service": service}
+    # The line sent to CliRunner is deliberately not trusted as confirmation.
+    monkeypatch.setattr(cli_main, "confirm_from_tty", lambda *_args: False)
     declined = runner.invoke(app, ["reprocess-p4-qc-evidence", "--job", job_id],
-                             env=_cli_env(database, tmp_path), input="no\n", obj=obj)
+                             env=_cli_env(database, tmp_path), input="REPROCESS\n", obj=obj)
     assert declined.exit_code == 2
     assert "no changes made" in declined.output
     with connect(database) as connection:
         assert connection.execute("SELECT count(*) FROM qc_reports").fetchone()[0] == 0
         assert connection.execute("SELECT state FROM deliveries WHERE id=?", (preview.delivery_id,)).fetchone()[0] == "DRAFT"
 
+    monkeypatch.setattr(cli_main, "confirm_from_tty", lambda *_args: True)
     accepted = runner.invoke(app, ["reprocess-p4-qc-evidence", "--job", job_id],
-                             env=_cli_env(database, tmp_path), input="REPROCESS\n", obj=obj)
+                             env=_cli_env(database, tmp_path), input="not-the-confirmation\n", obj=obj)
     assert accepted.exit_code == 0, accepted.output
     assert '"result": "REPROCESSED"' in accepted.output
     assert '"delivery_state": "IN_REVIEW"' in accepted.output
@@ -219,6 +231,37 @@ def test_reprocess_creates_qc_and_in_review_revision_once_without_provider_call(
         assert connection.execute("SELECT count(*) FROM executions").fetchone()[0] == 0
         assert connection.execute("SELECT count(*) FROM paid_calls").fetchone()[0] == 1
         assert connection.execute("SELECT state FROM paid_calls").fetchone()[0] == "SETTLED"
+        evidence_after = connection.execute(
+            "SELECT provider_response_json FROM paid_calls WHERE id='paid-p4'"
+        ).fetchone()[0]
+        assert evidence_after == evidence_before
+
+
+def test_reprocess_refuses_without_tty_even_if_stdin_contains_confirmation(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    database = tmp_path / "growth.db"
+    _seed_reprocessable_job(database)
+    service = _service(database, _OfflineQcEvaluator())
+    job_id = "e0d00517-3661-4390-a532-6f516e0ef176"
+    monkeypatch.setattr(
+        cli_main,
+        "confirm_from_tty",
+        lambda *_args: (_ for _ in ()).throw(OperatorTtyUnavailable("tty required")),
+    )
+
+    result = CliRunner().invoke(
+        app,
+        ["reprocess-p4-qc-evidence", "--job", job_id],
+        env=_cli_env(database, tmp_path),
+        input="REPROCESS\n",
+        obj={"reprocess_p4_qc_evidence_service": service},
+    )
+    assert result.exit_code == 2
+    assert "ERR_GC2_OPERATOR_TTY_REQUIRED" in result.output
+    with connect(database) as connection:
+        assert connection.execute("SELECT count(*) FROM qc_reports").fetchone()[0] == 0
+        assert connection.execute("SELECT state FROM deliveries").fetchone()[0] == "DRAFT"
 
 
 def test_reprocess_stops_cleanly_when_stored_evidence_is_insufficient(tmp_path: Path) -> None:
@@ -236,3 +279,45 @@ def test_reprocess_stops_cleanly_when_stored_evidence_is_insufficient(tmp_path: 
         assert connection.execute("SELECT state FROM deliveries").fetchone()[0] == "DRAFT"
         paid = connection.execute("SELECT state,actual_minor FROM paid_calls").fetchone()
         assert (paid["state"], paid["actual_minor"]) == ("SETTLED", 400)
+
+
+def test_reprocess_rejects_non_finite_number_with_field_specific_code(tmp_path: Path) -> None:
+    database = tmp_path / "growth.db"
+    evidence = json.dumps([
+        {"source": "provider", "event": {"event": "response_received", "http_status": 200}},
+        {"source": "validator", "event": {
+            "rawResponse": '{"dna_matches":[{"key":"x","match_state":"match",'
+                           '"confidence":NaN}]}',
+        }},
+    ])
+    _seed_reprocessable_job(database, evidence=evidence)
+    service = _service(database, _OfflineQcEvaluator())
+
+    with pytest.raises(P4QcEvidenceNonFiniteNumber) as error:
+        service.preview("e0d00517-3661-4390-a532-6f516e0ef176")
+    assert getattr(error.value, "code", None) == "ERR_GC2_QC_NONFINITE_NUMBER"
+    assert "$.dna_matches[0].confidence" in str(error.value)
+    with connect(database) as connection:
+        assert connection.execute("SELECT count(*) FROM qc_reports").fetchone()[0] == 0
+        assert connection.execute("SELECT state FROM deliveries").fetchone()[0] == "DRAFT"
+
+
+def test_reprocess_rolls_back_every_write_if_revision_fails_mid_transaction(tmp_path: Path) -> None:
+    database = tmp_path / "growth.db"
+    _seed_reprocessable_job(database)
+    service = _service(database, _OfflineQcEvaluator())
+
+    def fail_revision(*_args, **_kwargs):
+        raise RuntimeError("synthetic failure after QC report write")
+
+    service._create_revision.execute = fail_revision
+    with pytest.raises(RuntimeError, match="synthetic failure"):
+        service.execute("e0d00517-3661-4390-a532-6f516e0ef176")
+
+    with connect(database) as connection:
+        assert connection.execute("SELECT count(*) FROM qc_reports").fetchone()[0] == 0
+        assert connection.execute("SELECT count(*) FROM delivery_revisions").fetchone()[0] == 0
+        assert connection.execute("SELECT state FROM deliveries").fetchone()[0] == "DRAFT"
+        assert connection.execute("SELECT qc_status FROM media_variants").fetchone()[0] == "PENDING"
+        assert connection.execute("SELECT count(*) FROM audit_events WHERE aggregate_id=?",
+                                  ("e0d00517-3661-4390-a532-6f516e0ef176",)).fetchone()[0] == 0

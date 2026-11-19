@@ -63,8 +63,15 @@ class RevisionStore(Protocol):
     command cancellation, audit event, and review-notification job before commit.
     """
 
-    def load_context(self, delivery_id: str, draft: RevisionDraft) -> RevisionContext | None: ...
-    def apply_revision(self, write: RevisionWrite) -> None: ...
+    def load_context(
+        self,
+        delivery_id: str,
+        draft: RevisionDraft,
+        *,
+        transaction: object | None = None,
+        qc_report_override: QcReport | None = None,
+    ) -> RevisionContext | None: ...
+    def apply_revision(self, write: RevisionWrite, *, transaction: object | None = None) -> None: ...
 
 
 @dataclass(frozen=True)
@@ -90,6 +97,8 @@ class CreateRevision:
         expected_row_version: int,
         draft: RevisionDraft,
         actor: str,
+        transaction: object | None = None,
+        qc_report_override: QcReport | None = None,
     ) -> CreateRevisionResult:
         if not delivery_id.strip() or not actor.strip():
             raise ValueError("delivery_id and actor are required")
@@ -98,7 +107,15 @@ class CreateRevision:
         if not isinstance(draft, RevisionDraft):
             raise TypeError("draft must be RevisionDraft")
 
-        context = self._store.load_context(delivery_id, draft)
+        if transaction is None and qc_report_override is None:
+            context = self._store.load_context(delivery_id, draft)
+        else:
+            context = self._store.load_context(
+                delivery_id,
+                draft,
+                transaction=transaction,
+                qc_report_override=qc_report_override,
+            )
         if context is None:
             raise NotFound("Không tìm thấy bài cần chỉnh sửa.")
         if context.delivery.row_version != expected_row_version:
@@ -208,7 +225,10 @@ class CreateRevision:
             created_at_ms=now_ms,
             cancel_open_command=context.command_state in _OPEN_COMMAND_STATES,
         )
-        self._store.apply_revision(write)
+        if transaction is None:
+            self._store.apply_revision(write)
+        else:
+            self._store.apply_revision(write, transaction=transaction)
         return CreateRevisionResult(
             delivery_id=context.delivery.id,
             revision=revision,

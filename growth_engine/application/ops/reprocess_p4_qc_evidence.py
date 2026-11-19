@@ -44,6 +44,10 @@ class P4QcEvidenceInsufficient(P4QcEvidenceError):
         ValueError.__init__(self, self.public_message)
 
 
+class P4QcEvidenceNonFiniteNumber(P4QcEvidenceError):
+    code = "ERR_GC2_QC_NONFINITE_NUMBER"
+
+
 @dataclass(frozen=True)
 class P4QcEvidencePreview:
     job_id: str
@@ -112,14 +116,19 @@ class ReprocessP4QcEvidence:
         if completed is not None:
             return completed
         plan = self._prepare(job_id)
-        report = self._persist_qc_report(plan)
-        revision = self._create_revision.execute(
-            plan.delivery_id,
-            expected_row_version=plan.row_version,
-            draft=RevisionDraft(caption=plan.caption, variant_id=plan.variant.variant_id),
-            actor=actor,
-        )
-        self._record_completion(plan, report.id, str(revision.revision.payload["revision_id"]), actor)
+        with self._uow_factory().begin_immediate() as tx:
+            report = self._persist_qc_report(tx, plan)
+            revision = self._create_revision.execute(
+                plan.delivery_id,
+                expected_row_version=plan.row_version,
+                draft=RevisionDraft(caption=plan.caption, variant_id=plan.variant.variant_id),
+                actor=actor,
+                transaction=tx,
+                qc_report_override=report,
+            )
+            self._record_completion(
+                tx, plan, report.id, str(revision.revision.payload["revision_id"]), actor
+            )
         return P4QcEvidenceResult(
             plan.job_id,
             plan.delivery_id,
@@ -228,6 +237,8 @@ class ReprocessP4QcEvidence:
             try:
                 result = self._qc_evaluator.reprocess_response(variant, caption, facts, policy, response)
             except ValueError as error:
+                if getattr(error, "code", None) == P4QcEvidenceNonFiniteNumber.code:
+                    raise P4QcEvidenceNonFiniteNumber(_safe_error(error)) from None
                 raise P4QcEvidenceInsufficient(_safe_error(error)) from None
             if (
                 result.ruleset_hash != policy.ruleset_hash
@@ -288,7 +299,7 @@ class ReprocessP4QcEvidence:
         if artifacts is None or int(artifacts["outbox_count"]) or int(artifacts["execution_count"]):
             raise P4QcEvidenceError("delivery already has dispatch artifacts")
 
-    def _persist_qc_report(self, plan: _Plan) -> QcReport:
+    def _persist_qc_report(self, tx: UnitOfWork, plan: _Plan) -> QcReport:
         caption_hash = hashlib.sha256(plan.caption.encode()).hexdigest()
         report = QcReport(
             id=self._id_factory(),
@@ -301,65 +312,71 @@ class ReprocessP4QcEvidence:
             result_json=plan.result.result_json,
             created_at_ms=self._now_ms(),
         )
-        with self._uow_factory().begin_immediate() as tx:
-            existing = tx.qc.find_matching(
-                report.variant_id, report.caption_hash, report.fact_snapshot_hash, report.ruleset_hash
-            )
-            if existing is not None:
-                return existing
-            current = tx.media.get_variant(report.variant_id)
-            if current is None or current.sha256 != plan.variant.sha256:
-                raise P4QcEvidenceError("JPEG variant changed during reprocessing")
-            tx.media.update_qc_status(report.variant_id, _variant_status(report.decision))
+        existing = tx.qc.find_matching(
+            report.variant_id, report.caption_hash, report.fact_snapshot_hash, report.ruleset_hash
+        )
+        if existing is not None:
+            report = existing
+        current = tx.media.get_variant(report.variant_id)
+        if current is None or current.sha256 != plan.variant.sha256:
+            raise P4QcEvidenceError("JPEG variant changed during reprocessing")
+        tx.media.update_qc_status(report.variant_id, _variant_status(report.decision))
+        if existing is None:
             tx.qc.save(report)
         return report
 
-    def _record_completion(self, plan: _Plan, report_id: str, revision_id: str, actor: str) -> None:
+    def _record_completion(
+        self,
+        tx: UnitOfWork,
+        plan: _Plan,
+        report_id: str,
+        revision_id: str,
+        actor: str,
+    ) -> None:
         now_ms = self._now_ms()
-        with self._uow_factory().begin_immediate() as tx:
-            if self._has_audit(tx.connection, plan.job_id):
-                return
-            delivery = tx.connection.execute(
-                "SELECT state,current_revision_id,row_version FROM deliveries WHERE id=?",
-                (plan.delivery_id,),
-            ).fetchone()
-            revision = tx.connection.execute(
-                "SELECT payload_json FROM delivery_revisions WHERE id=? AND delivery_id=?",
-                (revision_id, plan.delivery_id),
-            ).fetchone()
-            if (
-                delivery is None
-                or delivery["state"] != "IN_REVIEW"
-                or delivery["current_revision_id"] != revision_id
-                or revision is None
-                or json.loads(str(revision["payload_json"])).get("qc_report_id") != report_id
-            ):
-                raise P4QcEvidenceError("revision is not linked to the reprocessed QC report")
-            tx.audit.append(
-                event_id=self._id_factory(),
-                aggregate_type="job",
-                aggregate_id=plan.job_id,
-                actor=actor,
-                action=_REPROCESS_ACTION,
-                before_hash=_sha256_json({"job": "FAILED", "delivery": "DRAFT"}),
-                after_hash=_sha256_json({
-                    "job": "FAILED",
-                    "delivery": "IN_REVIEW",
-                    "qc_report_id": report_id,
-                    "revision_id": revision_id,
-                }),
-                details_json=json.dumps({
-                    "delivery_id": plan.delivery_id,
-                    "qc_report_id": report_id,
-                    "revision_id": revision_id,
-                    "evidence_length": plan.evidence_length,
-                    "readable_keys": list(plan.readable_keys),
-                    "provider_called": False,
-                    "paid_call_created": False,
-                }, sort_keys=True, separators=(",", ":")),
-                correlation_id=f"reprocess-p4-qc-evidence:{plan.job_id}",
-                created_at_ms=now_ms,
-            )
+        if self._has_audit(tx.connection, plan.job_id):
+            return
+        delivery = tx.connection.execute(
+            "SELECT state,current_revision_id,row_version FROM deliveries WHERE id=?",
+            (plan.delivery_id,),
+        ).fetchone()
+        revision = tx.connection.execute(
+            "SELECT payload_json FROM delivery_revisions WHERE id=? AND delivery_id=?",
+            (revision_id, plan.delivery_id),
+        ).fetchone()
+        if (
+            delivery is None
+            or delivery["state"] != "IN_REVIEW"
+            or delivery["current_revision_id"] != revision_id
+            or revision is None
+            or json.loads(str(revision["payload_json"])).get("qc_report_id") != report_id
+        ):
+            raise P4QcEvidenceError("revision is not linked to the reprocessed QC report")
+        tx.audit.append(
+            event_id=self._id_factory(),
+            aggregate_type="job",
+            aggregate_id=plan.job_id,
+            actor=actor,
+            action=_REPROCESS_ACTION,
+            before_hash=_sha256_json({"job": "FAILED", "delivery": "DRAFT"}),
+            after_hash=_sha256_json({
+                "job": "FAILED",
+                "delivery": "IN_REVIEW",
+                "qc_report_id": report_id,
+                "revision_id": revision_id,
+            }),
+            details_json=json.dumps({
+                "delivery_id": plan.delivery_id,
+                "qc_report_id": report_id,
+                "revision_id": revision_id,
+                "evidence_length": plan.evidence_length,
+                "readable_keys": list(plan.readable_keys),
+                "provider_called": False,
+                "paid_call_created": False,
+            }, sort_keys=True, separators=(",", ":")),
+            correlation_id=f"reprocess-p4-qc-evidence:{plan.job_id}",
+            created_at_ms=now_ms,
+        )
 
     def _completed_result(self, job_id: str) -> P4QcEvidenceResult | None:
         with self._uow_factory().read_only() as tx:
