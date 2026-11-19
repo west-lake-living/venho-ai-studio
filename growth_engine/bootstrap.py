@@ -1163,7 +1163,7 @@ def build_container(
         ids,
         environment=channel_environment,
     )
-    cutover_readiness = cutover_readiness_adapter.CutoverReadiness(settings.db_path)
+    cutover_readiness = cutover_readiness_adapter.CutoverReadiness(settings.db_path, now_ms=clock.now_ms)
 
     def report_jobs_error(task: Any, error: Exception) -> None:
         now_ms = clock.now_ms()

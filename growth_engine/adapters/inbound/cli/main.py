@@ -728,6 +728,15 @@ def cutover_readiness(
         "mapping_target_id": result.mapping_target_id,
         "mapping_route_ref": result.mapping_route_ref,
         "reasons": list(result.reasons),
+        "overdue_deliveries": {
+            "result": "WARN" if result.overdue_deliveries else "CLEAR",
+            "reason": "nonterminal_delivery_past_publish_deadline" if result.overdue_deliveries else None,
+            "items": [
+                {"delivery_id": item.delivery_id, "channel_key": item.channel_key,
+                 "state": item.state, "deadline_at_ms": item.deadline_at_ms}
+                for item in result.overdue_deliveries
+            ],
+        },
     }, ensure_ascii=False, sort_keys=True))
     if not result.ready:
         raise typer.Exit(code=1)

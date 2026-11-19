@@ -236,6 +236,22 @@ def test_production_p4_fake_e2e_approves_without_dispatch_while_disabled(
     assert command_count == 0
     assert execution_count == 0
 
+    with container.uow_factory().read_only() as tx:
+        deadline_at = tx.connection.execute(
+            "SELECT deadline_at FROM delivery_revisions WHERE delivery_id=?", (delivery["id"],)
+        ).fetchone()[0]
+    clock.set(deadline_at)
+    assert container.cutover_readiness.execute("2026-11-13", "09:00").ready
+    clock.set(deadline_at + 1)
+    overdue = container.cutover_readiness.execute("2026-11-13", "09:00")
+    assert not overdue.ready
+    assert "target_delivery_past_publish_deadline" in overdue.reasons
+    assert [(item.delivery_id, item.state) for item in overdue.overdue_deliveries] == [
+        (delivery["id"], "APPROVED"),
+    ]
+    assert container.expire_overdue.execute(clock.now_ms()).expired_delivery_ids == (delivery["id"],)
+    assert not container.cutover_readiness.execute("2026-11-13", "09:00").overdue_deliveries
+
     connection = sqlite3.connect(settings.db_path)
     connection.execute("DROP TRIGGER no_channel_config_update")
     connection.execute(

@@ -7,6 +7,7 @@ import time
 from datetime import date
 from pathlib import Path
 
+import pytest
 from fastapi.testclient import TestClient
 from growth_engine.adapters.inbound.api.app import create_app
 from growth_engine.adapters.inbound.workers.publish_lane import PublishLane
@@ -26,6 +27,67 @@ from growth_engine.domain.media.qc import QcDecision, QcReport
 from growth_engine.domain.publishing.runtime_mode import PublishMode, RuntimeControls
 from growth_engine.domain.scheduling.slot import Slot, SlotTarget
 from growth_engine.settings import Settings
+from tests.growth_engine.support.fakes import FakeClock, SeqIds
+
+
+@pytest.mark.parametrize(
+    ("now_ms", "expected_state", "expected_commands"),
+    [(9_999, "QUEUED", 1), (10_000, "QUEUED", 1), (10_001, "EXPIRED", 0)],
+)
+def test_approved_delivery_after_disabled_to_live(
+    tmp_path: Path, now_ms: int, expected_state: str, expected_commands: int,
+) -> None:
+    from growth_engine.adapters.outbound.persistence.sqlite.notifications import SqliteNotificationQueue
+    from growth_engine.application.ops.notifications import Notifications
+
+    class FakeSender:
+        def __init__(self) -> None:
+            self.messages = []
+
+        def send(self, message: str) -> None:
+            self.messages.append(message)
+
+    settings = Settings(
+        env="test",
+        db_path=str(tmp_path / "growth.db"),
+        media_root=str(tmp_path / "media"),
+        capability_keys="synthetic:" + base64.urlsafe_b64encode(b"x" * 32).decode().rstrip("="),
+    )
+    container = build_container(settings)
+    container.migration_service.run(Path(settings.db_path), check=False)
+    _seed_approved_delivery(container.uow_factory)
+    for mode in (PublishMode.DISABLED, PublishMode.DRY_RUN, PublishMode.LIVE_MANUAL):
+        with container.uow_factory().begin_immediate() as tx:
+            _, version = tx.controls.get_with_version("test")
+            assert tx.controls.compare_and_set(
+                "test", version, fields={"publish_mode": mode, "global_pause": mode is PublishMode.DISABLED},
+                updated_at_ms=now_ms,
+            )
+        result = container.enqueue_due.execute(now_ms)
+        if mode is not PublishMode.LIVE_MANUAL:
+            assert result.skipped_reason == "MODE_NOT_LIVE_MANUAL"
+        else:
+            assert len(result.enqueued_delivery_ids) == expected_commands
+
+    # Enqueue ran first on purpose. A delayed expiry task cannot permit a catch-up.
+    first = container.expire_overdue.execute(now_ms)
+    assert first.expired_delivery_ids == (("delivery-sqlite",) if not expected_commands else ())
+    assert container.expire_overdue.execute(now_ms).expired_delivery_ids == ()
+    sender = FakeSender()
+    queue = SqliteNotificationQueue(container.uow_factory, SeqIds("notice"))
+    notifications = Notifications(queue, sender, FakeClock(now_ms))
+    notifications.dispatch()
+    notifications.dispatch()
+    assert len(sender.messages) == 1 - expected_commands
+    with container.uow_factory().read_only() as tx:
+        assert tx.deliveries.get("delivery-sqlite").state.value == expected_state
+        for table, expected in (
+            ("outbox_commands", expected_commands), ("executions", 0),
+        ):
+            assert tx.connection.execute(f"SELECT count(*) FROM {table}").fetchone()[0] == expected
+        assert tx.connection.execute(
+            "SELECT count(*) FROM audit_events WHERE action='publish.delivery_expired'"
+        ).fetchone()[0] == 1 - expected_commands
 
 
 def test_publish_scheduler_enqueues_and_expires_atomically_in_sqlite(tmp_path: Path) -> None:

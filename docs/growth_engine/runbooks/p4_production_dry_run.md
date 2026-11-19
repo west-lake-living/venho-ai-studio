@@ -326,6 +326,15 @@ RUNTIME="$CURRENT_RELEASE/ops/asus-server/growth-engine/run-with-legacy-provider
 "$RUNTIME" p4-review-preview --delivery 2509f430-4a4a-47dd-97a9-4b99e8d4ba88
 ```
 
+**Trước khối 2.** Chạy Khối 0 deploy VENHO OS main có health route. Script
+`ops/asus-server/venho-os/deploy-main.sh` dùng `npm ci --include=dev` và
+`npm run build`, restart user unit `venho-os.service`, kiểm health 204 với
+backend `legacy` và login 200. Script giữ nguyên `.env.local`. Sau rollback,
+timer auto-deploy dừng để tránh tự áp lại bản lỗi. Nếu release cũ chưa có health
+route, rollback xác minh SHA cũ, service active, login 200 và health 404 như baseline.
+Deploy bản GC2 có cảnh báo quá hạn trước khi mở v2. Readiness sẽ FAIL nếu slot
+duyệt đã quá deadline; khi đó cần chọn slot mới và duyệt lại.
+
 **Khối 2 — mở v2, duyệt, rồi về legacy.** Sau khi thấy `VENHO_OS=healthy GROWTH_BACKEND=v2`,
 mở Publishing trên VENHO OS bằng tài khoản có `studio:write`. Kiểm Page `1124616474074140`,
 21/11/2026 09:00 ICT, caption và preview JPEG. Sau khi duyệt và tải lại thấy `APPROVED`,

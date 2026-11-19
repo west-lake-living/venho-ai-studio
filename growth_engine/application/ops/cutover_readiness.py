@@ -2,8 +2,21 @@ from __future__ import annotations
 
 import json
 import sqlite3
+import time
+from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
+
+
+from growth_engine.domain.delivery.states import TERMINAL
+
+
+@dataclass(frozen=True)
+class OverdueDelivery:
+    delivery_id: str
+    channel_key: str
+    state: str
+    deadline_at_ms: int
 
 
 _HANOI_PAGE_ID = "1124616474074140"
@@ -21,13 +34,17 @@ class CutoverReadinessResult:
     reasons: tuple[str, ...] = ()
     mapping_target_id: str | None = None
     mapping_route_ref: str | None = None
+    overdue_deliveries: tuple[OverdueDelivery, ...] = ()
 
 
 class CutoverReadiness:
     """Read-only P4 gate for an approved fb_hanoi delivery and exact route mapping."""
 
-    def __init__(self, db_path: str | Path) -> None:
+    def __init__(
+        self, db_path: str | Path, *, now_ms: Callable[[], int] | None = None
+    ) -> None:
         self._db_path = Path(db_path).expanduser()
+        self._now_ms = now_ms or (lambda: time.time_ns() // 1_000_000)
 
     def execute(self, slot_date: str, slot_time: str = "09:00") -> CutoverReadinessResult:
         if not self._db_path.is_file():
@@ -36,6 +53,22 @@ class CutoverReadiness:
         connection.row_factory = sqlite3.Row
         reasons: list[str] = []
         try:
+            connection.execute("BEGIN")
+            terminal_states = tuple(sorted(state.value for state in TERMINAL))
+            placeholders = ",".join("?" for _ in terminal_states)
+            overdue = tuple(OverdueDelivery(*row) for row in connection.execute(
+                f"""SELECT d.id, c.channel_key, d.state, COALESCE(r.deadline_at, s.deadline_at)
+                    FROM deliveries d
+                    JOIN slot_targets st ON st.id=d.target_id AND st.channel_id=d.channel_id
+                    JOIN slots s ON s.id=st.slot_id
+                    JOIN channels c ON c.id=d.channel_id
+                    LEFT JOIN delivery_revisions r ON r.id=d.current_revision_id AND r.delivery_id=d.id
+                    WHERE d.active=1 AND c.environment='production'
+                      AND d.state NOT IN ({placeholders})
+                      AND COALESCE(r.deadline_at, s.deadline_at) < ?
+                    ORDER BY 4, d.id""",
+                (*terminal_states, self._now_ms()),
+            ))
             controls = connection.execute(
                 "SELECT publish_mode, global_pause FROM runtime_controls WHERE environment='production'"
             ).fetchone()
@@ -73,8 +106,12 @@ class CutoverReadiness:
             if rows is None:
                 reasons.append("approved_fb_hanoi_delivery_missing")
                 return CutoverReadinessResult(
-                    False, slot_date, slot_time, None, None, "FAIL", tuple(reasons)
+                    False, slot_date, slot_time, None, None, "FAIL", tuple(reasons),
+                    overdue_deliveries=overdue,
                 )
+
+            if any(item.delivery_id == rows["delivery_id"] for item in overdue):
+                reasons.append("target_delivery_past_publish_deadline")
 
             payload = json.loads(str(rows["payload_json"]))
             mapping_ok = (
@@ -122,6 +159,7 @@ class CutoverReadiness:
                 tuple(reasons),
                 str(rows["remote_account_id"]),
                 str(rows["make_route_ref"]),
+                overdue,
             )
         finally:
             connection.close()

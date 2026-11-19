@@ -4,6 +4,7 @@ import sqlite3
 from collections.abc import Callable, Iterator, Sequence
 from contextlib import contextmanager
 
+from growth_engine.adapters.outbound.persistence.sqlite.repositories.jobs import JobRecord
 from growth_engine.application.ports.uow import UnitOfWork
 from growth_engine.application.publishing.enqueue_due import EnqueueCandidate
 from growth_engine.application.publishing.expire_overdue import ExpireCandidate
@@ -251,5 +252,24 @@ class SqlitePublishSchedulerTransaction:
             correlation_id=correlation_id,
             created_at_ms=at_ms,
         )
+        if candidate.delivery.state is DeliveryState.APPROVED:
+            dedupe_key = f"delivery-expired:{candidate.delivery.id}"
+            self._uow.jobs.save(JobRecord(
+                id=f"notify:{audit_event_id}",
+                kind="notify",
+                lane="publish",
+                business_key=dedupe_key,
+                payload_json=canonical_json_bytes({
+                    "dedupe_key": dedupe_key,
+                    "message": (
+                        f"Đã quá hạn đăng — delivery {candidate.delivery.id}. "
+                        "Muốn đăng, hãy tạo delivery cho lịch mới và duyệt lại."
+                    ),
+                }).decode("utf-8"),
+                state="PENDING",
+                run_at_ms=at_ms,
+                created_at_ms=at_ms,
+                updated_at_ms=at_ms,
+            ))
         connection.execute("RELEASE expire_overdue_delivery")
         return True

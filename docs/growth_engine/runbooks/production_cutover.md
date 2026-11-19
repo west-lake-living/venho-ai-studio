@@ -82,11 +82,19 @@ Harry đã chọn A theo DR đảo ngược được. Ngày 16/11 cố định �
 ### T−0 — cửa sổ cutover đã đủ điều kiện, không đăng thử
 
 1. Xác nhận P4 PASS, Harry đã duyệt bài `fb_hanoi` thật trên VENHO OS, readiness PASS và slot cutover cách thời điểm đạt điều kiện cuối ít nhất 48 giờ. Nếu thiếu bất kỳ gate nào, legacy tiếp tục là publisher duy nhất và không chạy cutover. Giữ runtime `DISABLED` + pause ON; backup scenario 5868920 có mode `600` và checksum, giữ code/registry/literal legacy.
-2. Tạm dừng đúng timer/workflow chỉ đăng bài Growth legacy; không xóa code/data, không archive/xóa registry và không xoay hex. Drain/đợi hết legacy Make runs và grants; nếu còn run không xác định thì dừng.
-3. Import `_incoming/make_production_import.secret.json` vào scenario 5868920. Kiểm common filter `schema_version` + `environment=production`, Router filters/ID, routes theo thứ tự, connections, caption/image mappings, bearer theo principal, Access headers, error handlers và Page/IG destination.
-4. Đặt schedule **Immediately as data arrives** rồi Save scenario; bật **Sequential processing** và xác nhận lưu; mở HTTP 25 (I1), xác nhận GET/body rỗng và Save module. Chưa bật scenario nếu còn sai lệch.
-5. Bật scenario, đặt `LIVE_MANUAL`, giữ pause ON; bật riêng Hanoi và đối chiếu approved delivery. Tại slot 09:00 đã duyệt, bỏ pause để dispatch. Bù rủi ro bằng duyệt từng bài, theo dõi Telegram và yêu cầu receipt+verify cho từng target. Không có test ngoài lịch.
-6. Đọc Make History: F1 image 200, authorize, Facebook Pages module 3, receipt. Chờ receipt `APPLIED` và verify post trên Hanoi Page `1124616474074140`; ghi post ID/permalink và xác nhận tên↔ID. Nếu execution/outcome mơ hồ, pause target và không chạy lại module.
+2. Khi runtime vẫn `DISABLED` + pause, chạy lệnh dưới đây cho **slot đăng production mới đã duyệt**. Xem `overdue_deliveries`: `WARN` liệt kê delivery quá hạn còn nonterminal; target quá hạn làm gate `FAIL`. Publish worker chạy expiry mỗi 60 giây cả khi `DISABLED`. Chờ đến khi delivery có thể đóng chuyển thành `EXPIRED` và chạy lại readiness. Nếu vẫn có delivery đang thực thi hoặc chưa rõ kết quả, giữ pause và đối soát. Deadline là giờ lên lịch cộng cửa sổ publish của slot (hiện 30 phút), lấy bao gồm đúng mốc deadline. Sau deadline không đăng bù; tạo slot/delivery mới và duyệt lại nếu muốn đăng.
+
+   ```bash
+   read -r -p 'Ngày slot production mới (YYYY-MM-DD): ' GC2_SLOT_DATE
+   "$HOME/venho/growth-engine/current/ops/asus-server/growth-engine/run-with-legacy-provider-env.sh" \
+     cutover-readiness --date "$GC2_SLOT_DATE" --time 09:00
+   ```
+
+3. Tạm dừng đúng timer/workflow chỉ đăng bài Growth legacy; không xóa code/data, không archive/xóa registry và không xoay hex. Drain/đợi hết legacy Make runs và grants; nếu còn run không xác định thì dừng.
+4. Import `_incoming/make_production_import.secret.json` vào scenario 5868920. Kiểm common filter `schema_version` + `environment=production`, Router filters/ID, routes theo thứ tự, connections, caption/image mappings, bearer theo principal, Access headers, error handlers và Page/IG destination.
+5. Đặt schedule **Immediately as data arrives** rồi Save scenario; bật **Sequential processing** và xác nhận lưu; mở HTTP 25 (I1), xác nhận GET/body rỗng và Save module. Chưa bật scenario nếu còn sai lệch.
+6. Bật scenario, đặt `LIVE_MANUAL`, giữ pause ON; bật riêng Hanoi và đối chiếu approved delivery. Tại slot 09:00 đã duyệt, bỏ pause để dispatch. Bù rủi ro bằng duyệt từng bài, theo dõi Telegram và yêu cầu receipt+verify cho từng target. Không có test ngoài lịch.
+7. Đọc Make History: F1 image 200, authorize, Facebook Pages module 3, receipt. Chờ receipt `APPLIED` và verify post trên Hanoi Page `1124616474074140`; ghi post ID/permalink và xác nhận tên↔ID. Nếu execution/outcome mơ hồ, pause target và không chạy lại module.
 
 ### T+slot kế — slot đăng lịch kế tiếp sau Hanoi đã xác minh
 
