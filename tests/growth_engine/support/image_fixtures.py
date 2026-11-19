@@ -57,6 +57,14 @@ def make_heic() -> bytes | None:
         return None
 
 
+def make_mpo() -> bytes:
+    primary = Image.new("RGB", (64, 48), (220, 35, 25))
+    secondary = Image.new("RGB", (64, 48), (25, 210, 45))
+    output = BytesIO()
+    primary.save(output, format="MPO", save_all=True, append_images=[secondary], quality=95)
+    return output.getvalue()
+
+
 def _save(image: Image.Image, format_name: str, **options: object) -> bytes:
     output = BytesIO()
     image.save(output, format=format_name, **options)

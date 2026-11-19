@@ -18,6 +18,7 @@ from tests.growth_engine.support.image_fixtures import (
     make_alpha_png,
     make_heic,
     make_html_with_jpg_extension,
+    make_mpo,
     make_orientation_jpeg,
     make_pixel_bomb_png,
     make_truncated_jpeg,
@@ -99,6 +100,18 @@ def test_heic_decodes_when_encoder_is_available(tmp_path: Path) -> None:
     assert normalized.mime == "image/jpeg"
     assert normalized.width == 64
     assert normalized.height == 48
+
+
+def test_mpo_source_uses_primary_frame_and_outputs_jpeg(tmp_path: Path) -> None:
+    normalized = PillowImageProcessor().normalize(
+        _source_file(tmp_path, make_mpo()), FACEBOOK_PHOTO_V1.spec
+    )
+
+    assert normalized.mime == "image/jpeg"
+    with Image.open(BytesIO(normalized.data)) as result:
+        assert result.format == "JPEG"
+        red, green, _blue = result.getpixel((normalized.width // 2, normalized.height // 2))
+        assert red > green * 2  # frame 0 is red; frame 1 is green.
 
 
 def test_same_input_and_profile_produce_same_sha256(tmp_path: Path) -> None:

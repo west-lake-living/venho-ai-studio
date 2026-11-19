@@ -275,7 +275,7 @@ python3 ops/asus-server/growth-engine/update-meta-token-expiry.py
 systemctl --user restart growth-engine-worker@publish.service
 ```
 
-Script gọi Graph API v27.0 `debug_token` bằng token `GE_META_READ_TOKEN_IG_VENHO` ngay trên server; xác nhận token hợp lệ và thuộc app `1679968647246378`, rồi ghi `expires_at` và `data_access_expires_at` thành ngày ICT vào `growth-engine.env`. Chỉ output mã kết quả và hai ngày, không output token/URL/lỗi Graph. File env phải là file thường, mode 600, do tài khoản hiện hành sở hữu. Nếu Graph không cho token hiện tại gọi `debug_token`, script dừng mà không sửa env; lúc đó lấy hai ngày trong Access Token Debugger rồi cập nhật thủ công. Restart publish worker để nạp metadata mới.
+Script gọi Graph API v27.0 `debug_token` bằng token `GE_META_READ_TOKEN_IG_VENHO` ngay trên server; xác nhận token hợp lệ và thuộc app `1679968647246378`, rồi ghi `expires_at` và `data_access_expires_at` vào `growth-engine.env`. Hạn có ngày được lưu thành ngày ICT; `expires_at` bằng 0 hoặc không có được lưu là `GE_META_TOKEN_EXPIRY_IG_VENHO=never` (token không hết hạn theo thời gian). `data_access_expires_at` vẫn phải có ngày hợp lệ và được giám sát độc lập. Chỉ output mã kết quả và hai giá trị expiry, không output token/URL/lỗi Graph. File env phải là file thường, mode 600, do tài khoản hiện hành sở hữu. Nếu Graph không cho token hiện tại gọi `debug_token`, script dừng mà không sửa env; lúc đó lấy hai ngày trong Access Token Debugger rồi cập nhật thủ công. Restart publish worker để nạp metadata mới.
 
 `doctor` trả WARN khi còn 14 ngày trở xuống hoặc metadata thiếu/sai. Worker publish kiểm tra mỗi 6 giờ và enqueue một Telegram notification bền vững cho mỗi loại expiry/ngày; notification dispatcher gửi qua bot production.
 

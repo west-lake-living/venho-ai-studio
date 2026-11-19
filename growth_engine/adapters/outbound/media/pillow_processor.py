@@ -133,7 +133,7 @@ def _distribution_version(name: str) -> str:
 
 def _detect_format(data: bytes) -> str | None:
     if data.startswith(b"\xff\xd8\xff"):
-        return "JPEG"
+        return "MPO" if _has_mpf_app2(data) else "JPEG"
     if data.startswith(b"\x89PNG\r\n\x1a\n"):
         return "PNG"
     if len(data) >= 16 and data[4:8] == b"ftyp":
@@ -146,6 +146,35 @@ def _detect_format(data: bytes) -> str | None:
     return None
 
 
+def _has_mpf_app2(data: bytes) -> bool:
+    """Recognize an MPO only from its JPEG APP2 MPF marker, not a filename."""
+    offset = 2
+    while offset + 4 <= len(data) and data[offset] == 0xFF:
+        while offset < len(data) and data[offset] == 0xFF:
+            offset += 1
+        if offset >= len(data):
+            return False
+        marker = data[offset]
+        offset += 1
+        if marker in {0xD8, 0xD9, 0x01} or 0xD0 <= marker <= 0xD7:
+            if marker == 0xD9:
+                return False
+            continue
+        if marker == 0xDA:  # Start of compressed image data; markers after this are not headers.
+            return False
+        if offset + 2 > len(data):
+            return False
+        segment_length = int.from_bytes(data[offset : offset + 2], "big")
+        if segment_length < 2 or offset + segment_length > len(data):
+            return False
+        payload_start = offset + 2
+        payload_end = offset + segment_length
+        if marker == 0xE2 and data[payload_start:payload_start + 4] == b"MPF\0":
+            return True
+        offset = payload_end
+    return False
+
+
 def _decode_fully(data: bytes, expected_format: str) -> Image.Image:
     try:
         with warnings.catch_warnings():
@@ -155,12 +184,16 @@ def _decode_fully(data: bytes, expected_format: str) -> Image.Image:
                     raise MediaProcessingError(MEDIA_UNSUPPORTED_FORMAT, "Image signature and decoder format differ")
                 if check.width * check.height > MAX_INPUT_PIXELS:
                     raise MediaProcessingError(MEDIA_PIXEL_LIMIT_EXCEEDED, "Image pixel limit exceeded")
+                if expected_format == "MPO":
+                    check.seek(0)
                 check.verify()
             with Image.open(BytesIO(data)) as opened:
                 if opened.format != expected_format:
                     raise MediaProcessingError(MEDIA_UNSUPPORTED_FORMAT, "Image signature and decoder format differ")
                 if opened.width * opened.height > MAX_INPUT_PIXELS:
                     raise MediaProcessingError(MEDIA_PIXEL_LIMIT_EXCEEDED, "Image pixel limit exceeded")
+                if expected_format == "MPO":
+                    opened.seek(0)
                 opened.load()
                 return opened.copy()
     except MediaProcessingError:

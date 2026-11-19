@@ -57,6 +57,17 @@ class LegacyImageIssue:
         return f"{self.code}: {self.message}; group={self.reference_id}; file={self.relative_path}"
 
 
+@dataclass(frozen=True)
+class LegacyImageGroupStatus:
+    reference_id: str
+    valid_count: int
+    issues: tuple[LegacyImageIssue, ...]
+
+    @property
+    def excluded_count(self) -> int:
+        return len(self.issues)
+
+
 class LegacyImageValidationError(ValueError):
     def __init__(
         self,
@@ -142,25 +153,33 @@ class LocalLegacyImageLibrary:
         return frozenset(self.allowlist)
 
     def validate_reference_ids(self, reference_ids: set[str]) -> tuple[LegacyImageIssue, ...]:
-        excluded: list[LegacyImageIssue] = []
-        for reference_id in sorted(reference_ids):
-            entries = self.allowlist.get(reference_id, ())
-            if not entries:
+        reports = self.inspect_reference_ids(reference_ids)
+        for report in reports:
+            if not self.allowlist.get(report.reference_id):
                 raise LegacyImageValidationError(
                     "ERR_GC2_LEGACY_IMAGE_GROUP_EMPTY",
                     "Nhóm không có ảnh trong allowlist.",
-                    reference_id=reference_id,
+                    reference_id=report.reference_id,
                 )
-            valid_entries, issues = self._valid_entries(reference_id)
-            excluded.extend(issues)
-            if not valid_entries:
+            if report.valid_count == 0:
                 raise LegacyImageValidationError(
                     "ERR_GC2_LEGACY_IMAGE_GROUP_NO_VALID_FILES",
                     "Nhóm không còn ảnh hợp lệ sau khi kiểm tra nội dung.",
-                    reference_id=reference_id,
-                    issues=issues,
+                    reference_id=report.reference_id,
+                    issues=report.issues,
                 )
-        return tuple(excluded)
+        return tuple(issue for report in reports for issue in report.issues)
+
+    def inspect_reference_ids(self, reference_ids: set[str]) -> tuple[LegacyImageGroupStatus, ...]:
+        reports = []
+        for reference_id in sorted(reference_ids):
+            entries = self.allowlist.get(reference_id, ())
+            if not entries:
+                reports.append(LegacyImageGroupStatus(reference_id, 0, ()))
+                continue
+            valid_entries, issues = self._valid_entries(reference_id)
+            reports.append(LegacyImageGroupStatus(reference_id, len(valid_entries), issues))
+        return tuple(reports)
 
     def resolve(
         self,
@@ -382,6 +401,7 @@ def _validate_image(data: bytes) -> str:
         ) from None
     mime_type = {
         "JPEG": "image/jpeg",
+        "MPO": "image/jpeg",
         "PNG": "image/png",
         "HEIC": "image/heic",
         "HEIF": "image/heif",

@@ -93,13 +93,24 @@ def test_production_image_source_doctor_uses_catalog_mappings_and_ignores_uncata
         "  venho_rooftop_railing_approved:\n"
         "    - path: outside/broken.jpeg\n"
         f"      sha256: {broken_sha}\n"
+        "    - path: outside/broken-2.jpeg\n"
+        f"      sha256: {hashlib.sha256(b'not an image 2').hexdigest()}\n"
+        "    - path: outside/broken-3.jpeg\n"
+        f"      sha256: {hashlib.sha256(b'not an image 3').hexdigest()}\n"
         "  venho_room_lake_view_approved:\n"
         "    - path: room/view.jpg\n"
         f"      sha256: {room_sha}\n",
         encoding="utf-8",
     )
+    (root / "outside/broken-2.jpeg").write_bytes(b"not an image 2")
+    (root / "outside/broken-3.jpeg").write_bytes(b"not an image 3")
     no_valid_image = doctor._p4_image_source_check()
     assert no_valid_image.status == "FAIL"
     assert "ERR_GC2_LEGACY_IMAGE_GROUP_NO_VALID_FILES" in no_valid_image.detail
     assert "group=venho_rooftop_railing_approved" in no_valid_image.detail
-    assert "file=outside/broken.jpeg" in no_valid_image.detail
+    assert "valid=0 excluded=3" in no_valid_image.detail
+    assert "files=[outside/broken.jpeg,outside/broken-2.jpeg,outside/broken-3.jpeg]" in no_valid_image.detail
+    assert "outside/broken-2.jpeg" in no_valid_image.detail
+    assert "outside/broken-3.jpeg" in no_valid_image.detail
+    assert "group=venho_room_lake_view_approved valid=1 excluded=0" in no_valid_image.detail
+    assert not no_valid_image.detail.endswith("…")

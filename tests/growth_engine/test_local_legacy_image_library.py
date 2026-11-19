@@ -11,6 +11,7 @@ import pytest
 from PIL import Image
 
 from growth_engine.adapters.outbound.media.local_legacy_image_library import LocalLegacyImageLibrary
+from tests.growth_engine.support.image_fixtures import make_mpo, make_orientation_jpeg
 
 
 def _jpeg(path: Path, color: tuple[int, int, int]) -> bytes:
@@ -62,6 +63,49 @@ def test_local_library_detects_heic_by_content_and_ignores_jpeg_suffix(tmp_path:
 
     assert image is not None
     assert image.mime_type == "image/heif"
+    assert image.sha256 == digest
+
+
+def test_local_library_accepts_mpo_as_jpeg_source_and_keeps_original_hash(tmp_path: Path) -> None:
+    root = tmp_path / "assets/raw"
+    path = root / "outside/IMG_5136.jpeg"
+    path.parent.mkdir(parents=True)
+    original = make_mpo()
+    path.write_bytes(original)
+    digest = hashlib.sha256(original).hexdigest()
+    library = LocalLegacyImageLibrary(
+        root,
+        {"venho_rooftop_railing_approved": ({"path": "outside/IMG_5136.jpeg", "sha256": digest},)},
+    )
+
+    image = library.resolve("venho_rooftop_railing_approved", "2026-11-21")
+
+    assert image is not None
+    assert image.mime_type == "image/jpeg"
+    assert image.sha256 == digest
+    with Image.open(io.BytesIO(image.data)) as decoded:
+        assert decoded.format == "MPO"
+        assert decoded.n_frames == 2
+        decoded.seek(0)
+        decoded.load()
+
+
+def test_local_library_accepts_exif_oriented_jpeg_source(tmp_path: Path) -> None:
+    root = tmp_path / "assets/raw"
+    path = root / "room/rotated.JPG"
+    path.parent.mkdir(parents=True)
+    original = make_orientation_jpeg(6)
+    path.write_bytes(original)
+    digest = hashlib.sha256(original).hexdigest()
+    library = LocalLegacyImageLibrary(
+        root,
+        {"venho_room_lake_view_approved": ({"path": "room/rotated.JPG", "sha256": digest},)},
+    )
+
+    image = library.resolve("venho_room_lake_view_approved", "2026-11-21")
+
+    assert image is not None
+    assert image.mime_type == "image/jpeg"
     assert image.sha256 == digest
 
 

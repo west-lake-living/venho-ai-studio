@@ -39,12 +39,16 @@ def evaluate_meta_token_expiry(
     missing: list[str] = []
     due: list[tuple[str, date, int, ExpiryAlert]] = []
     configured: list[tuple[str, date, int]] = []
+    never_expires: list[str] = []
 
     for channel, label, variable in _MONITORED_EXPIRIES:
         values = token_expiries if variable == "GE_META_TOKEN_EXPIRY_IG_VENHO" else data_access_expiries
         raw = values.get(channel, "").strip()
         if not raw or "REQUIRED_FROM_P0" in raw:
             missing.append(variable)
+            continue
+        if variable == "GE_META_TOKEN_EXPIRY_IG_VENHO" and raw.lower() == "never":
+            never_expires.append(variable)
             continue
         try:
             expires_on = date.fromisoformat(raw)
@@ -73,10 +77,12 @@ def evaluate_meta_token_expiry(
         if missing:
             details.append("thiếu/ngày sai: " + ", ".join(missing))
         return MetaTokenExpiryReport("WARN", "; ".join(details), alerts)
-    detail = "; ".join(
+    details = [f"{variable} không hết hạn theo thời gian" for variable in never_expires]
+    details.extend(
         f"{variable} còn {days} ngày ({expires_on.isoformat()})"
         for variable, expires_on, days in configured
     )
+    detail = "; ".join(details)
     return MetaTokenExpiryReport("PASS", detail or "Không có expiry được theo dõi.", alerts)
 
 

@@ -96,13 +96,32 @@ def test_expiry_update_writes_dates_atomically_without_echoing_token(tmp_path: P
     assert os.stat(path).st_mode & 0o777 == 0o600
 
 
+def test_non_expiring_token_writes_never_and_keeps_data_access_expiry(tmp_path: Path, capsys) -> None:
+    path = _env_file(tmp_path)
+
+    class Client:
+        def inspect(self, _token):
+            return json.loads(_debug_payload(expires_at=0))["data"]
+
+    result = update_meta.main(["--env", str(path)], client=Client())
+    output = capsys.readouterr()
+
+    assert result == 0
+    assert "META_EXPIRY_UPDATE=PASS" in output.out
+    assert "GE_META_TOKEN_EXPIRY_IG_VENHO=never" in output.out
+    assert "GE_META_DATA_ACCESS_EXPIRY_IG_VENHO=2027-02-09" in output.out
+    assert TOKEN not in output.out + output.err
+    assert "GE_META_TOKEN_EXPIRY_IG_VENHO=never" in path.read_text(encoding="utf-8")
+
+
 def test_meta_update_rejects_wrong_app_or_non_expiring_fields_without_change(tmp_path: Path) -> None:
     path = _env_file(tmp_path)
     original = path.read_text(encoding="utf-8")
     for payload in (
         _debug_payload(app_id="wrong-app"),
         _debug_payload(is_valid=False),
-        _debug_payload(expires_at=0),
+        _debug_payload(expires_at=-1),
+        _debug_payload(data_access_expires_at=0),
     ):
         class Client:
             def inspect(self, _token):
@@ -115,6 +134,13 @@ def test_meta_update_rejects_wrong_app_or_non_expiring_fields_without_change(tmp
         else:
             raise AssertionError("invalid Meta debug response was accepted")
         assert path.read_text(encoding="utf-8") == original
+
+
+def test_absent_token_expiry_is_never() -> None:
+    data = json.loads(_debug_payload())["data"]
+    del data["expires_at"]
+
+    assert update_meta.expiry_dates(data)["GE_META_TOKEN_EXPIRY_IG_VENHO"] == "never"
 
 
 def test_meta_request_failure_does_not_echo_url_or_token(tmp_path: Path, capsys) -> None:

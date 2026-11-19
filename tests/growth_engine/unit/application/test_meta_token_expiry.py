@@ -63,6 +63,31 @@ def test_no_expiry_warning_before_fourteen_day_window() -> None:
     assert report.alerts == ()
 
 
+def test_never_token_expiry_is_accepted_and_data_access_is_still_monitored() -> None:
+    report = evaluate_meta_token_expiry(
+        {"IG_VENHO": "never"},
+        {"IG_VENHO": "2027-02-09"},
+        now_ms=_ict_ms("2026-11-11"),
+    )
+    assert report.status == "PASS"
+    assert "GE_META_TOKEN_EXPIRY_IG_VENHO không hết hạn theo thời gian" in report.detail
+    assert "GE_META_DATA_ACCESS_EXPIRY_IG_VENHO còn" in report.detail
+    assert report.alerts == ()
+
+
+def test_never_token_still_warns_for_near_data_access_expiry() -> None:
+    report = evaluate_meta_token_expiry(
+        {"IG_VENHO": "never"},
+        {"IG_VENHO": "2026-11-25"},
+        now_ms=_ict_ms("2026-11-11"),
+    )
+
+    assert report.status == "WARN"
+    assert "Data Access 2026-11-25 (14 ngày)" in report.detail
+    assert len(report.alerts) == 1
+    assert "data-access" in report.alerts[0].key
+
+
 def test_missing_data_access_expiry_is_reported_without_inventing_a_date() -> None:
     report = evaluate_meta_token_expiry(
         {"IG_VENHO": "2027-01-10"},

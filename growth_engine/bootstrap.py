@@ -8,6 +8,7 @@ import sys
 import subprocess
 import tempfile
 import time
+from collections import Counter
 from datetime import datetime
 from uuid import uuid4
 from dataclasses import dataclass
@@ -538,7 +539,7 @@ class DoctorService:
                     "ERR_GC2_LEGACY_IMAGE_GROUP_EMPTY: Nhóm không có ảnh trong allowlist; "
                     "file=growth-engine-image-library.yaml; groups=" + ",".join(missing_groups),
                 )
-            excluded_images = image_library.validate_reference_ids(required_ids)
+            image_groups = image_library.inspect_reference_ids(required_ids)
         except Exception as error:
             if isinstance(error, library_adapter.LegacyImageValidationError):
                 return DoctorCheck("P4 image source", "FAIL", str(error))
@@ -550,19 +551,38 @@ class DoctorService:
                 + safe_message
                 + "; file=growth-engine-image-library.yaml",
             )
-        if excluded_images:
-            excluded = " | ".join(issue.render() for issue in excluded_images)
+        no_valid_images = [group for group in image_groups if group.valid_count == 0]
+        if no_valid_images:
+            summary = "; ".join(self._legacy_image_group_summary(group) for group in image_groups)
+            return DoctorCheck(
+                "P4 image source",
+                "FAIL",
+                "ERR_GC2_LEGACY_IMAGE_GROUP_NO_VALID_FILES: Nhóm không còn ảnh hợp lệ; " + summary,
+            )
+        excluded_groups = [group for group in image_groups if group.issues]
+        if excluded_groups:
+            excluded = "; ".join(self._legacy_image_group_summary(group) for group in image_groups)
             return DoctorCheck(
                 "P4 image source",
                 "WARN",
                 f"ERR_GC2_LEGACY_IMAGE_CANDIDATES_EXCLUDED: Có ảnh không hợp lệ bị loại; "
                 f"các nhóm vẫn còn ảnh dùng được; legacy_reference_groups={len(required_ids)}; "
-                f"ignored_uncatalogued_scenario_groups={len(unused_ids)}. {excluded}",
+                f"ignored_uncatalogued_scenario_groups={len(unused_ids)}; {excluded}",
             )
         return DoctorCheck(
             "P4 image source",
             "PASS",
             f"legacy_reference_groups={len(required_ids)}; local_images=SHA256 verified; ignored_uncatalogued_scenario_groups={len(unused_ids)}.",
+        )
+
+    @staticmethod
+    def _legacy_image_group_summary(group: Any) -> str:
+        reasons = Counter(f"{issue.code} ({issue.message})" for issue in group.issues)
+        reason_text = ", ".join(f"{reason} x{count}" for reason, count in sorted(reasons.items()))
+        files = ",".join(issue.relative_path for issue in group.issues)
+        return (
+            f"group={group.reference_id} valid={group.valid_count} excluded={group.excluded_count} "
+            f"reasons=[{reason_text}] files=[{files}]"
         )
 
     @staticmethod

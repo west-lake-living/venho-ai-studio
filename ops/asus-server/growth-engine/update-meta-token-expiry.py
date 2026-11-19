@@ -68,14 +68,22 @@ def expiry_dates(debug_data: dict[str, Any], *, expected_app_id: str = EXPECTED_
         raise MetaExpiryError("ERR_GC2_META_DEBUG_APP_MISMATCH")
     if debug_data.get("is_valid") is not True:
         raise MetaExpiryError("ERR_GC2_META_TOKEN_INVALID")
-    fields = ("expires_at", "data_access_expires_at")
-    result: dict[str, str] = {}
-    for field, variable in zip(fields, EXPIRY_VARIABLES, strict=True):
-        timestamp = debug_data.get(field)
-        if type(timestamp) is not int or timestamp <= 0:
-            raise MetaExpiryError(f"ERR_GC2_META_{field.upper()}_MISSING")
-        result[variable] = datetime.fromtimestamp(timestamp, timezone.utc).astimezone(ICT).date().isoformat()
-    return result
+    token_timestamp = debug_data.get("expires_at")
+    if token_timestamp is None or (type(token_timestamp) is int and token_timestamp == 0):
+        token_expiry = "never"
+    elif type(token_timestamp) is int and token_timestamp > 0:
+        token_expiry = datetime.fromtimestamp(token_timestamp, timezone.utc).astimezone(ICT).date().isoformat()
+    else:
+        raise MetaExpiryError("ERR_GC2_META_EXPIRES_AT_INVALID")
+
+    data_access_timestamp = debug_data.get("data_access_expires_at")
+    if type(data_access_timestamp) is not int or data_access_timestamp <= 0:
+        raise MetaExpiryError("ERR_GC2_META_DATA_ACCESS_EXPIRES_AT_MISSING")
+    data_access_expiry = datetime.fromtimestamp(data_access_timestamp, timezone.utc).astimezone(ICT).date().isoformat()
+    return {
+        "GE_META_TOKEN_EXPIRY_IG_VENHO": token_expiry,
+        "GE_META_DATA_ACCESS_EXPIRY_IG_VENHO": data_access_expiry,
+    }
 
 
 def read_env_file(path: Path) -> tuple[str, dict[str, str]]:
