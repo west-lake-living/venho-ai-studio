@@ -13,10 +13,10 @@ related_briefs: []
 verified_by_human: false
 tags:
 - weather
-- cold_snap
+- rain
 ---
 
-# 2026-11-25 — cold_snap
+# 2026-11-25 — rain
 
-- Trở lạnh — sảnh ấm, đèn vàng
+- Mưa ngoài cửa kính — không gian ấm trong sảnh
 - Scenario: venho_lobby_cozy
