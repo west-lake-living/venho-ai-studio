@@ -77,3 +77,70 @@ def test_legacy_inventory_blocks_future_sends_and_in_flight_rows():
     assert blockers(registry, "2026-11-25") == {
         "dispatching": 1, "approved_scheduled": 1, "pending_approval": 1,
     }
+
+
+def test_legacy_snapshot_includes_insights_wal_and_checksum(tmp_path):
+    import json
+    import runpy
+
+    tool = Path(__file__).resolve().parents[2] / "ops/asus-server/growth-engine/legacy-cutover-snapshot.py"
+    snapshot = runpy.run_path(str(tool))["snapshot"]
+    legacy = tmp_path / "legacy"
+    evidence = tmp_path / "evidence"
+    evidence.mkdir()
+    project = legacy / "data/projects/venho_hotel"
+    (project / "publishing").mkdir(parents=True)
+    (project / "growth").mkdir()
+    (project / "publishing/publication_registry.json").write_text('{"publications":[]}')
+    (project / "growth/slots_snapshot.json").write_text("{}")
+    insights = tmp_path / "insights.db"
+    with sqlite3.connect(project / "growth/growth.db") as growth:
+        growth.execute("CREATE TABLE slots (id)")
+    with sqlite3.connect(insights) as source:
+        source.execute("PRAGMA journal_mode=WAL")
+        source.execute("CREATE TABLE metrics (views)")
+        source.execute("INSERT INTO metrics VALUES (42)")
+        source.commit()
+        assert snapshot(legacy, evidence, check=False, insights=insights)
+        target = evidence / "legacy-snapshot"
+        copied = target / "source/insights.db"
+        manifest = json.loads((target / "manifest.json").read_text())
+        assert len(manifest) == 4
+        assert manifest["insights.db"] == hashlib.sha256(copied.read_bytes()).hexdigest()
+        with sqlite3.connect(copied) as restored:
+            assert restored.execute("SELECT views FROM metrics").fetchone() == (42,)
+        assert snapshot(legacy, evidence, check=False, insights=insights)
+
+
+def test_cutover_holds_os_timer_across_steps_and_restores_previous_state(tmp_path):
+    import subprocess
+
+    wrapper = Path(__file__).resolve().parents[2] / "ops/asus-server/growth-engine/cutover-window.sh"
+    functions = wrapper.read_text().split("os_timer_active_state() {", 1)[1].split("legacy_clear() {", 1)[0]
+    fake_systemctl = r'''
+systemctl() {
+  [[ "$1" == --user ]]
+  case "$2" in
+    show) if [[ "$3" == venho-os-deploy.service ]]; then echo inactive; else cat "$actual"; fi ;;
+    stop) echo inactive > "$actual" ;;
+    start) echo active > "$actual" ;;
+    *) return 1 ;;
+  esac
+}
+'''
+    subprocess.run(
+        ["bash", "-ec", fake_systemctl + "os_timer_active_state() {" + functions + r'''
+os_timer=venho-os-deploy.timer
+os_timer_state="$1/prior"
+actual="$1/actual"
+fail() { return 1; }
+echo active > "$actual"
+hold_os_timer
+hold_os_timer
+[[ "$(cat "$os_timer_state")" == active ]]
+require_os_timer_held
+restore_os_timer
+[[ "$(cat "$actual")" == active ]]
+''', "test", str(tmp_path)],
+        check=True,
+    )

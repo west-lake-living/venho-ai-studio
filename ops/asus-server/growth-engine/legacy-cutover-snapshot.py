@@ -42,7 +42,15 @@ def blockers(registry: dict, first: str) -> dict[str, int]:
     return dict(outstanding)
 
 
-def snapshot(legacy: Path, evidence: Path, *, check: bool) -> bool:
+def sqlite_snapshot(source_path: Path, target: Path) -> None:
+    with closing(sqlite3.connect(source_path.resolve().as_uri() + "?mode=ro", uri=True)) as source:
+        with closing(sqlite3.connect(target)) as destination:
+            source.backup(destination)
+            if destination.execute("PRAGMA integrity_check").fetchall() != [("ok",)]:
+                raise ValueError("legacy_sqlite_snapshot_invalid")
+
+
+def snapshot(legacy: Path, evidence: Path, *, check: bool, insights: Path | None) -> bool:
     registry = legacy / PROJECT / "publishing/publication_registry.json"
     data = registry.read_bytes()
     pending = blockers(json.loads(data), "2026-11-25")
@@ -53,12 +61,14 @@ def snapshot(legacy: Path, evidence: Path, *, check: bool) -> bool:
         print('{"result":"PASS","legacy_blockers":{}}')
         return True
 
+    if insights is None or not insights.is_file():
+        raise ValueError("legacy_insights_database_missing")
     target = evidence / "legacy-snapshot"
     if target.exists():
         manifest = json.loads((target / "manifest.json").read_text())
         if manifest["publication_registry.json"] != hashlib.sha256(data).hexdigest():
             raise ValueError("legacy_registry_changed_after_snapshot")
-        for name in ("publication_registry.json", "slots_snapshot.json", "growth.db"):
+        for name in ("publication_registry.json", "slots_snapshot.json", "growth.db", "insights.db"):
             if hashlib.sha256((target / "source" / name).read_bytes()).hexdigest() != manifest[name]:
                 raise ValueError("legacy_snapshot_checksum_mismatch")
         print('{"result":"PASS","legacy_snapshot":"existing_verified"}')
@@ -70,12 +80,8 @@ def snapshot(legacy: Path, evidence: Path, *, check: bool) -> bool:
         source_directory.mkdir(mode=0o700)
         (source_directory / "publication_registry.json").write_bytes(data)
         shutil.copyfile(legacy / PROJECT / "growth/slots_snapshot.json", source_directory / "slots_snapshot.json")
-        database = legacy / PROJECT / "growth/growth.db"
-        with closing(sqlite3.connect(database.as_uri() + "?mode=ro", uri=True)) as source:
-            with closing(sqlite3.connect(source_directory / "growth.db")) as output:
-                source.backup(output)
-                if output.execute("PRAGMA integrity_check").fetchall() != [("ok",)]:
-                    raise ValueError("legacy_sqlite_snapshot_invalid")
+        sqlite_snapshot(legacy / PROJECT / "growth/growth.db", source_directory / "growth.db")
+        sqlite_snapshot(insights, source_directory / "insights.db")
         if registry.read_bytes() != data:
             raise ValueError("legacy_registry_changed_during_snapshot")
         manifest = {}
@@ -85,7 +91,7 @@ def snapshot(legacy: Path, evidence: Path, *, check: bool) -> bool:
         (directory / "manifest.json").write_text(json.dumps(manifest, sort_keys=True) + "\n")
         (directory / "manifest.json").chmod(0o400)
         directory.rename(target)
-    print('{"result":"PASS","legacy_snapshot":"created","checksums":3}')
+    print('{"result":"PASS","legacy_snapshot":"created","checksums":4}')
     return True
 
 
@@ -94,9 +100,10 @@ def main() -> int:
     parser.add_argument("legacy", type=Path)
     parser.add_argument("evidence", type=Path)
     parser.add_argument("--check", action="store_true")
+    parser.add_argument("--insights", type=Path)
     args = parser.parse_args()
     try:
-        return 0 if snapshot(args.legacy, args.evidence, check=args.check) else 1
+        return 0 if snapshot(args.legacy, args.evidence, check=args.check, insights=args.insights) else 1
     except (OSError, ValueError, KeyError, TypeError, AttributeError, sqlite3.Error):
         print('{"result":"BLOCKED","reason":"legacy_snapshot_or_registry_invalid"}')
         return 1

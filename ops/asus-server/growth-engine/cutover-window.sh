@@ -9,12 +9,15 @@ engine="$ops/run-with-legacy-provider-env.sh"
 env_file="$HOME/venho/secrets/growth-engine.env"
 evidence="$HOME/venho/state/growth-engine/cutover-20261124"
 legacy="$HOME/venho/growth-runtime/venho-ai-studio"
-freeze="$HOME/venho/state/growth-engine/legacy-write.freeze"
+os_timer=venho-os-deploy.timer
+os_timer_state="$evidence/venho-os-deploy.timer.state"
+os_freeze_commit=dd236e53fd153278daa7f846cb11ff3a2e7d52ca
+insights="$HOME/venho/state/growth-reports/insights.db"
 legacy_repo=west-lake-living/venho-ai-studio
 names=(0900 1700 weekly-cycle replace-rejected trend-scan fast-lane expire-stale)
 instances=(primary second weekly-cycle replace-rejected trend-scan fast-lane expire-stale)
 first=2026-11-25
-next_slot=2026-11-28
+next_slot=2026-11-27
 fail() { printf 'CUTOVER=BLOCKED reason=%s\n' "$1" >&2; exit 1; }
 clock="$(TZ=Asia/Ho_Chi_Minh date +%H%M)"
 (( 10#$clock < 830 || 10#$clock > 930 )) || fail 'publish window 08:30–09:30 ICT'
@@ -37,8 +40,34 @@ legacy_write_status() {
   curl --silent --max-time 3 -X POST -o /dev/null -w '%{http_code}' \
     http://127.0.0.1:3000/api/v1/studio/growth/approve-group
 }
+os_timer_active_state() {
+  systemctl --user show "$os_timer" -p ActiveState --value
+}
+hold_os_timer() {
+  local prior
+  if [[ ! -f "$os_timer_state" ]]; then
+    prior="$(os_timer_active_state)"
+    [[ "$prior" == active || "$prior" == inactive ]] || fail unexpected_os_deploy_timer_state
+    printf '%s\n' "$prior" > "$os_timer_state"
+  fi
+  systemctl --user stop "$os_timer"
+  require_os_timer_held
+  printf 'OS_DEPLOY_TIMER=%s BEFORE=%s AFTER=inactive\n' "$os_timer" "$(< "$os_timer_state")"
+}
+require_os_timer_held() {
+  [[ -f "$os_timer_state" && "$(os_timer_active_state)" == inactive ]] || fail os_deploy_timer_not_held
+  [[ "$(systemctl --user show venho-os-deploy.service -p ActiveState --value)" =~ ^(inactive|failed)$ ]] \
+    || fail os_deploy_service_not_drained
+}
+restore_os_timer() {
+  local prior current
+  prior="$(< "$os_timer_state")"
+  if [[ "$prior" == active ]]; then systemctl --user start "$os_timer"; fi
+  current="$(os_timer_active_state)"
+  [[ "$current" == "$prior" ]] || fail os_deploy_timer_restore_mismatch
+  printf 'OS_DEPLOY_TIMER=%s BEFORE=%s AFTER=%s\n' "$os_timer" "$prior" "$current"
+}
 legacy_clear() {
-  [[ "$(legacy_write_status)" == 503 ]] || fail legacy_dashboard_write_not_frozen
   local unit active enabled mode
   for mode in "${names[@]}"; do
     unit="venho-growth-publish-$mode.timer"
@@ -64,7 +93,7 @@ legacy_clear() {
   [[ "$(git -C "$legacy" hash-object -- "$legacy/$registry")" == "$remote_blob" ]] || fail 'legacy local registry differs from GitHub'
   case "$1" in
     check) "$venv/python" "$ops/legacy-cutover-snapshot.py" "$legacy" "$evidence" --check ;;
-    snapshot) "$venv/python" "$ops/legacy-cutover-snapshot.py" "$legacy" "$evidence" ;;
+    snapshot) "$venv/python" "$ops/legacy-cutover-snapshot.py" "$legacy" "$evidence" --insights "$insights" ;;
   esac
 }
 mkdir -p -- "$evidence"
@@ -74,14 +103,16 @@ flock -n 9 || fail another_cutover_operation
 
 today="$(TZ=Asia/Ho_Chi_Minh date +%F)"
 case "${1:-}" in
+  friday-backup) [[ "$today" == 2026-11-20 ]] && (( 10#$clock > 930 )) || fail wrong_backup_date_or_time ;;
   t2) [[ "$today" == 2026-11-23 ]] || fail wrong_preparation_date ;;
   stop-legacy|snapshot|switch-and-epoch|rotate|dry-run|live) [[ "$today" == 2026-11-24 ]] || fail wrong_cutover_date ;;
-  expand|resume-three) [[ "$today" == 2026-11-27 ]] || fail wrong_expansion_date ;;
+  expand) [[ "$today" == 2026-11-25 ]] && (( 10#$clock > 930 )) || fail wrong_expansion_date_or_time ;;
+  resume-three) [[ "$today" == 2026-11-26 ]] || fail wrong_group_approval_date ;;
 esac
 
 case "${1:-}" in
-  t2)
-    confirm PREPARE_25
+  friday-backup)
+    confirm FIRST_BACKUP
     install -d "$HOME/.config/systemd/user"
     install -m 644 "$ops/growth-engine-backup.service" "$ops/growth-engine-backup.timer" "$HOME/.config/systemd/user/"
     systemctl --user daemon-reload
@@ -89,6 +120,13 @@ case "${1:-}" in
     "$engine" restore-rehearsal
     systemctl --user enable --now growth-engine-backup.timer
     systemctl --user is-active --quiet growth-engine-backup.timer
+    doctor="$("$engine" doctor)"
+    [[ "$doctor" == *'| Backup age | **PASS** |'* ]] || fail doctor_backup_age_not_pass
+    printf 'DOCTOR_BACKUP_AGE=PASS TIMER=growth-engine-backup.timer STATE=active\n'
+    ;;
+  t2)
+    "$engine" cutover-ops backup-fresh --date "$first"
+    confirm PREPARE_25
     channel fb_hanoi --enable --prepare-only
     "$engine" prepare-slot --date "$first" --channel fb_hanoi
     ;;
@@ -110,14 +148,12 @@ case "${1:-}" in
     workflow_state="$(gh api "repos/$legacy_repo/actions/workflows/growth-publish-scheduler.yml" --jq .state)"
     [[ "$workflow_state" == active || "$workflow_state" == disabled_manually ]] || fail unexpected_legacy_workflow_state
     printf '%s\n' "$workflow_state" > "$evidence/legacy-workflow-state"
-    if [[ ! -e "$freeze" ]]; then
-      (set -o noclobber; : > "$freeze")
-      if [[ "$(legacy_write_status)" != 503 ]]; then
-        rm -f -- "$freeze"
-        fail legacy_write_guard_not_deployed
-      fi
-    fi
-    [[ "$(legacy_write_status)" == 503 ]] || fail legacy_dashboard_write_not_frozen
+    git -C "$HOME/venho/venho-os" merge-base --is-ancestor "$os_freeze_commit" HEAD 2>/dev/null \
+      || fail legacy_write_guard_not_deployed
+    hold_os_timer
+    git -C "$HOME/venho/venho-os" merge-base --is-ancestor "$os_freeze_commit" HEAD 2>/dev/null \
+      || fail legacy_write_guard_not_deployed
+    [[ "$(legacy_write_status)" == 401 ]] || fail legacy_backend_probe_unexpected
     mv -- "$tmp" "$evidence/legacy-timers.tsv"
     gh workflow disable growth-publish-scheduler.yml --repo west-lake-living/venho-ai-studio >/dev/null
     while IFS=$'\t' read -r unit enabled active; do
@@ -126,6 +162,7 @@ case "${1:-}" in
     legacy_clear check
     ;;
   snapshot)
+    require_os_timer_held
     confirm MAKE_DRAINED
     legacy_clear snapshot
     systemctl --user start growth-engine-backup.service
@@ -134,15 +171,19 @@ case "${1:-}" in
     printf 'LEGACY_IMPORT_DRY_RUN=PASS\n'
     ;;
   switch-and-epoch)
+    require_os_timer_held
     legacy_clear snapshot
     [[ -s "$evidence/legacy-dry-run.md" ]] || fail missing_legacy_delta_review
-    confirm HISTORICAL_IMPORT_DEFERRED
+    confirm SWITCH_V2
     systemctl --user start growth-engine-backup.service
     "$engine" restore-rehearsal
     bash "$root/ops/asus-server/venho-os/growth-backend-switch.sh" v2
+    [[ "$(legacy_write_status)" == 503 ]] || fail legacy_dashboard_write_not_frozen
     control epoch "$first"
     ;;
   rotate)
+    require_os_timer_held
+    [[ "$(legacy_write_status)" == 503 ]] || fail legacy_dashboard_write_not_frozen
     legacy_clear check
     "$engine" cutover-ops disabled-preflight --date "$first"
     confirm ROTATE_BEARERS
@@ -153,21 +194,25 @@ case "${1:-}" in
     done
     ;;
   dry-run)
+    require_os_timer_held
+    [[ "$(legacy_write_status)" == 503 ]] || fail legacy_dashboard_write_not_frozen
     legacy_clear check
     [[ -f "$evidence/legacy-snapshot/manifest.json" ]] || fail missing_legacy_snapshot
     confirm MAKE_MAPPING_CHECKED
     systemctl --user start growth-engine-backup.service
     control dry-run "$first"
     "$engine" cutover-ops preflight --date "$first"
-    "$engine" cutover-ops status --date 2026-11-27
     "$engine" cutover-ops status --date "$next_slot"
     ;;
   live)
+    require_os_timer_held
+    [[ "$(legacy_write_status)" == 503 ]] || fail legacy_dashboard_write_not_frozen
     legacy_clear check
     "$engine" cutover-ops approved --date "$first"
     confirm LIVE_HANOI
     control live-hanoi "$first"
     control resume-hanoi "$first"
+    restore_os_timer
     ;;
   backup-check)
     confirm BACKUP
@@ -182,6 +227,7 @@ case "${1:-}" in
     control pause "$first"
     ;;
   expand)
+    [[ "$(legacy_write_status)" == 503 ]] || fail legacy_dashboard_write_not_frozen
     legacy_clear check
     "$engine" cutover-ops verified-hanoi --date "$first"
     confirm EXPAND_TO_THREE
@@ -191,6 +237,7 @@ case "${1:-}" in
     "$engine" prepare-slot --date "$next_slot" --channel group
     ;;
   resume-three)
+    [[ "$(legacy_write_status)" == 503 ]] || fail legacy_dashboard_write_not_frozen
     legacy_clear check
     "$engine" cutover-ops verified-hanoi --date "$first"
     confirm LIVE_THREE
@@ -200,11 +247,14 @@ case "${1:-}" in
   rollback-pause)
     confirm ROLLBACK_PAUSE
     control pause "$first"
+    hold_os_timer
+    printf 'ROLLBACK_OS_DEPLOY_TIMER=%s STATE=inactive\n' "$os_timer"
     control rollback "$first"
     ;;
   rollback-restore)
     [[ "$(TZ=Asia/Ho_Chi_Minh date +%F)" == 2026-11-24 ]] || fail 'rollback timer restart requires separate catch-up review outside 24/11'
     confirm LEGACY_MAKE_RESTORED
+    hold_os_timer
     control rollback "$first"
     bash "$root/ops/asus-server/venho-os/growth-backend-switch.sh" legacy
     [[ -s "$evidence/legacy-timers.tsv" ]] || fail missing_timer_snapshot
@@ -219,9 +269,8 @@ case "${1:-}" in
       gh workflow enable growth-publish-scheduler.yml --repo west-lake-living/venho-ai-studio >/dev/null
     fi
     [[ "$(gh api repos/west-lake-living/venho-ai-studio/actions/workflows/growth-publish-scheduler.yml --jq .state)" == "$prior" ]] || fail workflow_restore_mismatch
-    rm -f -- "$freeze"
     [[ "$(legacy_write_status)" == 401 ]] || fail legacy_write_freeze_restore_mismatch
-    printf 'ROLLBACK=PASS\n'
+    printf 'ROLLBACK=PASS OS_DEPLOY_TIMER=%s STATE=inactive\n' "$os_timer"
     ;;
   *) fail usage ;;
 esac

@@ -816,6 +816,8 @@ def cutover_ops(
     def run():
         settings = Settings.from_env()
         date.fromisoformat(local_date)
+        if action == "backup-fresh":
+            return {"result": "PASS", "snapshot": operator.fresh_backup(settings).name}
         if action == "status":
             return operator.state(settings, local_date)
         if action == "verified-hanoi":
