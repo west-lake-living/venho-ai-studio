@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Protocol, runtime_checkable
+from typing import Any, Callable, Protocol, runtime_checkable
 
 from growth_engine.application.dto import (
     CandidateInput,
@@ -26,6 +26,7 @@ class QcEvaluator(Protocol):
         caption: str,
         facts: FactSnapshot,
         policy: EffectiveQcPolicy,
+        response_sink: Callable[[dict[str, Any]], None] | None = None,
     ) -> QcResult: ...
     def compile_policy(
         self, project: str, subject: str, scenario: str | None

@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import hashlib
+import inspect
 import json
+import re
 from collections.abc import Callable
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
@@ -24,7 +26,32 @@ class QcPaidCallUnknown(RuntimeError):
     """A QC provider call may have completed; it must not be retried automatically."""
 
 
+class QcPostResponseError(RuntimeError):
+    code = "ERR_GC2_QC_POST_RESPONSE_FAILED"
+
+    def __init__(self, error_type: str) -> None:
+        self.public_message = (
+            "QC provider response was received and cost settled, but post-response processing failed "
+            f"(error_type={error_type}); filtered response evidence was retained."
+        )
+        super().__init__(self.public_message)
+
+
 VariantQcStatusUpdater = Callable[[UnitOfWork, str, VariantQcStatus], None]
+_SECRET_KEY = re.compile(
+    r"(?i)(authorization|bearer|access[_-]?token|refresh[_-]?token|api[_-]?key|client[_-]?secret|password|secret|(?:^|_)token(?:$|_))"
+)
+_SECRET_ASSIGNMENT = re.compile(
+    r"(?i)\b(authorization|bearer|access[_-]?token|refresh[_-]?token|api[_-]?key|client[_-]?secret|password|token)"
+    r"(\s*[:=]\s*|\s+)([^\s,;]+)"
+)
+_JSON_SECRET_ASSIGNMENT = re.compile(
+    r"(?i)([\"']?(?:authorization|bearer|access[_-]?token|refresh[_-]?token|api[_-]?key|client[_-]?secret|password|token)[\"']?\s*:\s*[\"']?)"
+    r"([^\"'\s,;}{]+)"
+)
+_URL = re.compile(r"https?://[^\s\])}>,]+", re.IGNORECASE)
+_LONG_SECRET = re.compile(r"\b[A-Za-z0-9_-]{48,}\b")
+_MAX_EVIDENCE_TEXT = 32_768
 
 
 class EvaluateQc:
@@ -63,6 +90,7 @@ class EvaluateQc:
         project: str,
         subject: str,
         scenario: str | None = None,
+        qc_retry_key: str | None = None,
     ) -> QcReport:
         with self._uow_factory().read_only() as tx:
             variant = tx.media.get_variant(variant_id)
@@ -78,10 +106,35 @@ class EvaluateQc:
         if existing is not None:
             return existing
 
-        paid_business_key = (
-            f"qc:{variant.sha256}:{caption_hash}:{facts.snapshot_hash}:{policy.ruleset_hash}"
-        )
+        retry_key = qc_retry_key
+        if retry_key is not None and (not retry_key.strip() or len(retry_key) > 128):
+            raise ValueError("QC retry key is invalid")
+        paid_business_key = f"qc:{variant.sha256}:{caption_hash}:{facts.snapshot_hash}:{policy.ruleset_hash}"
+        if retry_key:
+            paid_business_key += f":retry:{retry_key}"
         reserved = self._reserve_budget(paid_business_key)
+        provider_response_received = False
+        evidence_events: list[dict[str, object]] = []
+
+        def record_evidence(event: dict[str, object]) -> None:
+            nonlocal provider_response_received
+            safe_event = _safe_evidence_value(event)
+            if not isinstance(safe_event, dict):
+                safe_event = {"event": "invalid_evidence_shape"}
+            evidence_events.append(safe_event)
+            inner = event.get("event")
+            source = event.get("source")
+            if source == "provider" and isinstance(inner, dict) and inner.get("event") == "response_received":
+                provider_response_received = True
+            if source == "validator" and isinstance(inner, dict) and "rawResponse" in inner:
+                provider_response_received = True
+            if reserved:
+                self._persist_provider_evidence(
+                    paid_business_key,
+                    evidence_events,
+                    settle=provider_response_received,
+                )
+
         try:
             variant_view = VariantView(
                 variant_id=variant.id,
@@ -92,7 +145,33 @@ class EvaluateQc:
                 object_key=variant.object_key,
                 qc_status=variant.qc_status.value,
             )
-            result = self._evaluator.evaluate(variant_view, caption, facts, policy)
+            try:
+                evaluate_parameters = inspect.signature(self._evaluator.evaluate).parameters
+            except (TypeError, ValueError):
+                evaluate_parameters = {}
+            if "response_sink" in evaluate_parameters or any(
+                parameter.kind is inspect.Parameter.VAR_KEYWORD
+                for parameter in evaluate_parameters.values()
+            ):
+                result = self._evaluator.evaluate(
+                    variant_view, caption, facts, policy, response_sink=record_evidence
+                )
+            else:
+                result = self._evaluator.evaluate(variant_view, caption, facts, policy)
+            # A returned QC result proves that a provider response was received, even for
+            # legacy evaluator implementations which do not expose the response callback.
+            if reserved:
+                # In production the budget ledger is enabled and a successful evaluator
+                # return without transport hooks is still evidence that the paid result
+                # arrived. Non-paid/test evaluators do not imply an external call.
+                provider_response_received = True
+            evidence_events.append(_safe_evidence_value({
+                "stage": "qc_result_returned",
+                "decision": result.decision,
+                "result_json": result.result_json,
+            }))
+            if reserved:
+                self._persist_provider_evidence(paid_business_key, evidence_events, settle=True)
             if (
                 result.ruleset_hash != policy.ruleset_hash
                 or result.caption_hash != caption_hash
@@ -126,14 +205,28 @@ class EvaluateQc:
                 else:
                     self._variant_qc_status_updater(tx, variant.id, _variant_status(decision))
                 tx.qc.save(report)
-                if reserved and not tx.budget.settle(
-                    paid_business_key,
-                    actual_minor=int(self._cost_estimate_minor),
-                    settled_at_ms=report.created_at_ms,
-                ):
-                    raise RuntimeError("QC budget reservation could not be settled")
+                if reserved:
+                    paid_call = tx.budget.get(paid_business_key)
+                    if paid_call is not None and paid_call["state"] == "RESERVED":
+                        if not tx.budget.settle(
+                            paid_business_key,
+                            actual_minor=int(self._cost_estimate_minor),
+                            settled_at_ms=report.created_at_ms,
+                        ):
+                            raise RuntimeError("QC budget reservation could not be settled")
             return report
         except Exception as error:
+            if provider_response_received:
+                if reserved:
+                    evidence_events.append({
+                        "stage": "postprocess_error",
+                        "code": QcPostResponseError.code,
+                        "error_type": type(error).__name__,
+                    })
+                    self._persist_provider_evidence(paid_business_key, evidence_events, settle=True)
+                if isinstance(error, QcPostResponseError):
+                    raise
+                raise QcPostResponseError(type(error).__name__) from None
             if reserved:
                 with self._uow_factory().begin_immediate() as tx:
                     tx.budget.mark_unknown(paid_business_key)
@@ -143,6 +236,27 @@ class EvaluateQc:
                     "QC provider call may have completed; the paid call was marked UNKNOWN."
                 ) from error
             raise
+
+    def _persist_provider_evidence(
+        self,
+        business_key: str,
+        events: list[dict[str, object]],
+        *,
+        settle: bool,
+    ) -> None:
+        payload = json.dumps(events, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+        now_ms = self._clock.now_ms()
+        with self._uow_factory().begin_immediate() as tx:
+            if not tx.budget.record_provider_response(business_key, response_json=payload):
+                raise RuntimeError("QC provider evidence could not be persisted")
+            paid_call = tx.budget.get(business_key)
+            if settle and paid_call is not None and paid_call["state"] == "RESERVED":
+                if not tx.budget.settle(
+                    business_key,
+                    actual_minor=int(self._cost_estimate_minor),
+                    settled_at_ms=now_ms,
+                ):
+                    raise RuntimeError("confirmed QC provider cost could not be settled")
 
     def _find_report(
         self,
@@ -226,3 +340,30 @@ def _variant_status(decision: QcDecision) -> VariantQcStatus:
         QcDecision.FAIL: VariantQcStatus.FAIL,
         QcDecision.REVIEW: VariantQcStatus.REVIEW,
     }[decision]
+
+
+def _safe_evidence_value(value: object, *, key: str = "") -> object:
+    if _SECRET_KEY.search(key):
+        return "[REDACTED]"
+    if isinstance(value, str):
+        try:
+            decoded = json.loads(value)
+        except (TypeError, json.JSONDecodeError):
+            decoded = None
+        if isinstance(decoded, (dict, list)):
+            return _safe_evidence_value(decoded, key=key)
+        safe = _JSON_SECRET_ASSIGNMENT.sub(r"\1[REDACTED]", value)
+        safe = _SECRET_ASSIGNMENT.sub(r"\1\2[REDACTED]", safe)
+        safe = _URL.sub("[URL REDACTED]", safe)
+        safe = _LONG_SECRET.sub("[SECRET REDACTED]", safe)
+        safe = " ".join(safe.split())
+        if len(safe) > _MAX_EVIDENCE_TEXT:
+            safe = safe[:_MAX_EVIDENCE_TEXT] + " [TRUNCATED]"
+        return safe
+    if isinstance(value, dict):
+        return {str(name): _safe_evidence_value(item, key=str(name)) for name, item in value.items() if name != "parseError"}
+    if isinstance(value, (list, tuple)):
+        return [_safe_evidence_value(item) for item in value[:500]]
+    if value is None or type(value) in {bool, int, float}:
+        return value
+    return type(value).__name__

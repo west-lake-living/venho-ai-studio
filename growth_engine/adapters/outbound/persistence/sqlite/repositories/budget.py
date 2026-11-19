@@ -104,6 +104,43 @@ class BudgetRepository(SqliteRepository):
             and row["settled_at"] == settled_at_ms
         )
 
+    def record_provider_response(self, business_key: str, *, response_json: str) -> bool:
+        self._require_write_transaction()
+        cursor = self.connection.execute(
+            """UPDATE paid_calls SET provider_response_json=?
+               WHERE business_key=? AND state IN ('RESERVED','SETTLED','UNKNOWN')""",
+            (response_json, business_key),
+        )
+        if cursor.rowcount == 1:
+            return True
+        row = self.connection.execute(
+            "SELECT state, provider_response_json FROM paid_calls WHERE business_key=?",
+            (business_key,),
+        ).fetchone()
+        return bool(
+            row is not None
+            and row["state"] in {"SETTLED", "UNKNOWN"}
+            and row["provider_response_json"] == response_json
+        )
+
+    def resolve_unknown(self, business_key: str, *, actual_minor: int, settled_at_ms: int) -> bool:
+        """Operator-confirmed settlement of a paid call whose outcome was UNKNOWN."""
+        self._require_write_transaction()
+        if type(actual_minor) is not int or actual_minor < 0 or type(settled_at_ms) is not int:
+            raise ValueError("resolved cost and timestamp must be non-negative/integer values")
+        cursor = self.connection.execute(
+            """UPDATE paid_calls SET state='SETTLED', actual_minor=?, settled_at=?
+               WHERE business_key=? AND state='UNKNOWN'""",
+            (actual_minor, settled_at_ms, business_key),
+        )
+        if cursor.rowcount == 1:
+            return True
+        row = self.connection.execute(
+            "SELECT state, actual_minor FROM paid_calls WHERE business_key=?",
+            (business_key,),
+        ).fetchone()
+        return bool(row is not None and row["state"] == "SETTLED" and row["actual_minor"] == actual_minor)
+
     def mark_unknown(self, business_key: str, *, external_job_id: str | None = None) -> bool:
         self._require_write_transaction()
         cursor = self.connection.execute(
@@ -134,7 +171,8 @@ class BudgetRepository(SqliteRepository):
     def get(self, business_key: str):
         row = self.connection.execute(
             """SELECT id, business_key, period_key, currency, provider, operation, state,
-                      reserved_minor, actual_minor, external_job_id, created_at, settled_at
+                      reserved_minor, actual_minor, external_job_id, created_at, settled_at,
+                      provider_response_json
                FROM paid_calls WHERE business_key=?""",
             (business_key,),
         ).fetchone()

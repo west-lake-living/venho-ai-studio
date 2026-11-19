@@ -203,6 +203,7 @@ def observe_image_against_dna(
     provider: str = "mock",
     samples: int = 1,
     raw_response_sink: Optional[Callable[[dict[str, Any]], None]] = None,
+    transport_event_sink: Optional[Callable[[dict[str, Any]], None]] = None,
 ) -> ImageObservation:
     samples = max(samples, 1)
     if provider == "mock":
@@ -210,6 +211,7 @@ def observe_image_against_dna(
 
     system_prompt = _build_image_observe_prompt(dna)
     client = VisionClient(image_provider=provider, temperature=0.0)
+    client.transport_event_sink = transport_event_sink
     observed = []
     for sample_index in range(samples):
         try:

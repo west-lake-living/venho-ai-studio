@@ -134,6 +134,7 @@ class FakeQc:
         caption: str,
         facts: FactSnapshot,
         policy: EffectiveQcPolicy,
+        response_sink=None,
     ) -> QcResult:
         return self.result
 

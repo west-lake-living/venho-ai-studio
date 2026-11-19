@@ -370,6 +370,11 @@ class ContentJobsWorker:
                 facts=FactSnapshot(facts_value, facts_hash),
                 project=project,
                 subject=subject,
+                qc_retry_key=(
+                    str(payload["qc_retry_key"])
+                    if isinstance(payload.get("qc_retry_key"), str)
+                    else None
+                ),
             )
             candidates[option_id] = (variant_id, qc_report)
 

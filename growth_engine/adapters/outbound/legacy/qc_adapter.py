@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import inspect
 import json
 import re
 import tempfile
@@ -51,6 +52,7 @@ class LegacyQcAdapter:
         caption: str,
         facts: FactSnapshot,
         policy: EffectiveQcPolicy,
+        response_sink: Callable[[dict[str, Any]], None] | None = None,
     ) -> QcResult:
         if variant.mime != "image/jpeg" or variant.qc_status == "QUARANTINED":
             raise QcArtifactError("variant must be a non-quarantined JPEG")
@@ -65,12 +67,26 @@ class LegacyQcAdapter:
         with tempfile.TemporaryDirectory(prefix="growth-qc-") as temp_dir:
             image_path = Path(temp_dir) / "approved-variant.jpg"
             image_path.write_bytes(image_bytes)
+            validator_arguments: dict[str, Any] = {
+                "provider": self._provider,
+                "scenario_profile_id": None,
+            }
+            if response_sink is not None:
+                if _supports_keyword(self._validator_fn, "raw_response_sink"):
+                    validator_arguments["raw_response_sink"] = lambda event: response_sink({
+                        "source": "validator",
+                        "event": event,
+                    })
+                if _supports_keyword(self._validator_fn, "transport_event_sink"):
+                    validator_arguments["transport_event_sink"] = lambda event: response_sink({
+                        "source": "provider",
+                        "event": event,
+                    })
             report = self._validator_fn(
                 policy.project,
                 policy.subject,
                 image_path,
-                provider=self._provider,
-                scenario_profile_id=None,
+                **validator_arguments,
             )
 
         reported_sha = getattr(getattr(report, "artifact_ref", None), "hash", None)
@@ -174,6 +190,17 @@ def _field(value: object, name: str, default: Any = None) -> Any:
     if isinstance(value, dict):
         return value.get(name, default)
     return getattr(value, name, default)
+
+
+def _supports_keyword(function: Callable[..., Any], keyword: str) -> bool:
+    try:
+        parameters = inspect.signature(function).parameters.values()
+    except (TypeError, ValueError):
+        return False
+    return any(
+        parameter.name == keyword or parameter.kind is inspect.Parameter.VAR_KEYWORD
+        for parameter in parameters
+    )
 
 
 def _contains_term(text: str, terms: tuple[str, ...]) -> bool:

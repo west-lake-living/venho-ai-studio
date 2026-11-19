@@ -24,6 +24,7 @@ class OpenAIVisionProvider:
         self.temperature = temperature
         self.last_raw_response: str | None = None
         self.raw_response_sink = None
+        self.transport_event_sink = None
 
     def analyze(self, image_path: Path, system_prompt: str, **kwargs: Any) -> dict[str, Any]:
         """Analyze a single image and return structured dict."""
@@ -78,5 +79,14 @@ class OpenAIVisionProvider:
             self.raw_response_sink(raw)
         tokens_in = response.usage.prompt_tokens if response.usage else 0
         tokens_out = response.usage.completion_tokens if response.usage else 0
+        if self.transport_event_sink is not None:
+            self.transport_event_sink({
+                "event": "response_received",
+                "provider": "openai",
+                "model": self.model,
+                "http_status": 200,
+                "input_tokens": tokens_in,
+                "output_tokens": tokens_out,
+            })
         log(f"  OpenAI vision: {len(image_paths)} image(s), {tokens_in} in / {tokens_out} out tokens")
         return extract_json(raw)

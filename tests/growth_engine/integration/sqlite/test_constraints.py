@@ -269,7 +269,7 @@ def database(tmp_path: Path) -> sqlite3.Connection:
     try:
         runner = MigrationRunner(MIGRATIONS)
         runner.apply(connection, application_version="pytest")
-        assert runner.check(connection) == (1, 2, 3, 4, 5, 6, 7, 9)
+        assert runner.check(connection) == (1, 2, 3, 4, 5, 6, 7, 9, 10)
         _seed_valid_graph(connection)
         yield connection
         assert connection.execute("PRAGMA foreign_key_check").fetchall() == []

@@ -5,6 +5,7 @@ from __future__ import annotations
 import pytest
 
 from shared.vision.providers import openai_vision as ov
+from shared.vision.structured import StructuredResponseError
 
 
 class _FakeMessage:
@@ -20,7 +21,7 @@ class _FakeChoice:
 class _FakeResponse:
     def __init__(self, content: str) -> None:
         self.choices = [_FakeChoice(content)]
-        self.usage = None
+        self.usage = type("Usage", (), {"prompt_tokens": 1900, "completion_tokens": 1111})()
 
 
 class _FakeCompletions:
@@ -83,3 +84,36 @@ def test_analyze_single_image_still_works_via_analyze(monkeypatch, tmp_path):
     content = call["messages"][1]["content"]
     assert len(content) == 2  # 1 image block + 1 text block
     assert content[1] == {"type": "text", "text": "Analyze this image and return JSON only."}
+
+
+def test_provider_reports_http_200_usage_before_json_parse(monkeypatch, tmp_path):
+    class MalformedCompletions:
+        def create(self, **kwargs):
+            return _FakeResponse('{"partial":')
+
+    class MalformedOpenAI(_FakeOpenAI):
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.chat.completions = MalformedCompletions()
+
+    monkeypatch.setattr(ov, "OpenAI", MalformedOpenAI)
+    provider = ov.OpenAIVisionProvider(model="gpt-4o")
+    image = tmp_path / "candidate.png"
+    image.write_bytes(b"fake-image-bytes")
+    raw_events = []
+    transport_events = []
+    provider.raw_response_sink = raw_events.append
+    provider.transport_event_sink = transport_events.append
+
+    with pytest.raises(StructuredResponseError):
+        provider.analyze(image, "system prompt")
+
+    assert raw_events == ['{"partial":']
+    assert transport_events == [{
+        "event": "response_received",
+        "provider": "openai",
+        "model": "gpt-4o",
+        "http_status": 200,
+        "input_tokens": 1900,
+        "output_tokens": 1111,
+    }]

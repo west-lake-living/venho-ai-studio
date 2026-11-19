@@ -12,7 +12,12 @@ import pytest
 from growth_engine.adapters.outbound.legacy.qc_adapter import LegacyQcAdapter
 from growth_engine.application.dto import EffectiveQcPolicy, FactSnapshot, QcResult, VariantView
 from growth_engine.application.errors import NotFound
-from growth_engine.application.media.evaluate_qc import EvaluateQc, QcStatusPersistenceUnavailable
+from growth_engine.application.media.evaluate_qc import (
+    EvaluateQc,
+    QcPaidCallUnknown,
+    QcPostResponseError,
+    QcStatusPersistenceUnavailable,
+)
 from growth_engine.domain.media.asset import MediaVariant, VariantQcStatus
 from growth_engine.domain.media.qc import QcDecision, QcReport
 from tests.growth_engine.support.fakes import FakeClock, FakeQc, SeqIds
@@ -44,10 +49,40 @@ class _FakeQcRepo:
         self.reports.append(report)
 
 
+class _FakeBudgetRepo:
+    def __init__(self) -> None:
+        self.rows: dict[str, dict[str, object]] = {}
+
+    def reserve(self, **values) -> bool:
+        key = values["business_key"]
+        if key in self.rows:
+            return False
+        self.rows[key] = {"state": "RESERVED", "reserved_minor": values["amount_minor"], "actual_minor": None, "provider_response_json": None}
+        return True
+
+    def get(self, key: str):
+        return self.rows.get(key)
+
+    def record_provider_response(self, key: str, *, response_json: str) -> bool:
+        if key not in self.rows:
+            return False
+        self.rows[key]["provider_response_json"] = response_json
+        return True
+
+    def settle(self, key: str, *, actual_minor: int, settled_at_ms: int) -> bool:
+        self.rows[key].update(state="SETTLED", actual_minor=actual_minor, settled_at=settled_at_ms)
+        return True
+
+    def mark_unknown(self, key: str) -> bool:
+        self.rows[key]["state"] = "UNKNOWN"
+        return True
+
+
 class _FakeUnitOfWork:
-    def __init__(self, media: _FakeMediaRepo, qc: _FakeQcRepo) -> None:
+    def __init__(self, media: _FakeMediaRepo, qc: _FakeQcRepo, budget: _FakeBudgetRepo | None = None) -> None:
         self.media = media
         self.qc = qc
+        self.budget = budget or _FakeBudgetRepo()
 
     @contextmanager
     def read_only(self) -> Iterator[_FakeUnitOfWork]:
@@ -183,6 +218,92 @@ def test_missing_qc_status_repository_method_fails_closed_and_rolls_back_report(
     assert media.variant is not None and media.variant.qc_status is VariantQcStatus.PENDING
 
 
+def test_response_then_postprocess_failure_settles_and_retains_filtered_evidence(monkeypatch) -> None:
+    from growth_engine.application.media import evaluate_qc as evaluate_qc_module
+
+    class ResponseQc:
+        def compile_policy(self, project, subject, scenario):
+            return EffectiveQcPolicy(project, subject, scenario, "0" * 64, ("_synthetic_rule",))
+
+        def evaluate(self, variant, caption, facts, policy, response_sink=None):
+            response_sink({
+                "source": "validator",
+                "event": {
+                    "validator": "image",
+                    "rawResponse": '{"decision":"PASS","api_key":"secret","token":"hidden"',
+                    "parseStatus": "raw_captured",
+                },
+            })
+            response_sink({
+                "source": "provider",
+                "event": {"event": "response_received", "provider": "openai", "http_status": 200, "input_tokens": 1900, "output_tokens": 1111},
+            })
+            return _qc_result("PASS")
+
+    monkeypatch.setattr(
+        evaluate_qc_module,
+        "_effective_decision",
+        lambda *_args: (_ for _ in ()).throw(ValueError("postprocess failed with private provider body")),
+    )
+    budget = _FakeBudgetRepo()
+    uow = _FakeUnitOfWork(_FakeMediaRepo(_variant()), _FakeQcRepo(), budget)
+    use_case = EvaluateQc(
+        lambda: uow,
+        ResponseQc(),
+        FakeClock(1234),
+        SeqIds("qc-post-response"),
+        variant_qc_status_updater=lambda tx, variant_id, status: tx.media.save_variant_status(variant_id, status),
+        budget_policy=SimpleNamespace(monthly_cap_minor=10_000, currency="VND"),
+        cost_estimate_minor=400,
+    )
+
+    with pytest.raises(QcPostResponseError) as caught:
+        use_case.execute(
+            variant_id="variant-1", caption="Synthetic caption", facts=FactSnapshot({}, _HASH_C),
+            project="venho_hotel", subject="outside",
+        )
+
+    key = f"qc:{_VARIANT_SHA}:{sha256(b'Synthetic caption').hexdigest()}:{_HASH_C}:{'0' * 64}"
+    row = budget.get(key)
+    assert caught.value.code == "ERR_GC2_QC_POST_RESPONSE_FAILED"
+    assert "ValueError" in caught.value.public_message
+    assert "private provider body" not in caught.value.public_message
+    assert row["state"] == "SETTLED"
+    assert row["actual_minor"] == 400
+    assert "1900" in row["provider_response_json"] and "1111" in row["provider_response_json"]
+    assert "[REDACTED]" in row["provider_response_json"]
+    assert "secret" not in row["provider_response_json"]
+
+
+def test_failure_before_confirmed_response_remains_unknown() -> None:
+    class BeforeResponseQc:
+        def compile_policy(self, project, subject, scenario):
+            return EffectiveQcPolicy(project, subject, scenario, "0" * 64, ())
+
+        def evaluate(self, variant, caption, facts, policy, response_sink=None):
+            raise TimeoutError("transport timed out")
+
+    budget = _FakeBudgetRepo()
+    uow = _FakeUnitOfWork(_FakeMediaRepo(_variant()), _FakeQcRepo(), budget)
+    use_case = EvaluateQc(
+        lambda: uow,
+        BeforeResponseQc(),
+        FakeClock(1234),
+        SeqIds("qc-pre-response"),
+        budget_policy=SimpleNamespace(monthly_cap_minor=10_000, currency="VND"),
+        cost_estimate_minor=400,
+    )
+
+    with pytest.raises(QcPaidCallUnknown):
+        use_case.execute(
+            variant_id="variant-1", caption="Synthetic caption", facts=FactSnapshot({}, _HASH_C),
+            project="venho_hotel", subject="outside",
+        )
+    row = next(iter(budget.rows.values()))
+    assert row["state"] == "UNKNOWN"
+    assert row["actual_minor"] is None
+
+
 def test_legacy_qc_adapter_compiles_dna_hash_and_hard_forbidden(tmp_path: Path) -> None:
     _write_dna_config(tmp_path)
     adapter = LegacyQcAdapter(_FakeStore(_VARIANT_BYTES), base_dir=tmp_path, validator_fn=_approved_report)
@@ -211,6 +332,32 @@ def test_legacy_qc_adapter_forbidden_violation_overrides_approve(tmp_path: Path)
 
     assert result.decision == "FAIL"
     assert "forbidden_violated:no marble" in result.coverage_gaps
+
+
+def test_legacy_qc_adapter_forwards_provider_response_evidence(tmp_path: Path) -> None:
+    _write_dna_config(tmp_path)
+    events = []
+
+    def response_validator(
+        project: str, subject: str, path: Path, *, raw_response_sink, transport_event_sink, **kwargs: object
+    ) -> object:
+        raw_response_sink({"parseStatus": "raw_captured", "rawResponse": '{"verdict":"approve"}'})
+        transport_event_sink({"event": "response_received", "http_status": 200, "input_tokens": 1900})
+        return _approved_report(project, subject, path)
+
+    adapter = LegacyQcAdapter(
+        _FakeStore(_VARIANT_BYTES), base_dir=tmp_path, validator_fn=response_validator
+    )
+    policy = adapter.compile_policy("test", "room", None)
+    adapter.evaluate(
+        _variant_view(), "Synthetic caption", FactSnapshot({}, _HASH_C), policy,
+        response_sink=events.append,
+    )
+
+    assert events == [
+        {"source": "validator", "event": {"parseStatus": "raw_captured", "rawResponse": '{"verdict":"approve"}'}},
+        {"source": "provider", "event": {"event": "response_received", "http_status": 200, "input_tokens": 1900}},
+    ]
 
 
 class _FakeStore:

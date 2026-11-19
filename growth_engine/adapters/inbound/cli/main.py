@@ -245,6 +245,81 @@ def repair_p4_media(
     }, ensure_ascii=False, sort_keys=True))
 
 
+@app.command("resolve-p4-qc-unknown")
+def resolve_p4_qc_unknown(
+    ctx: typer.Context,
+    job_id: str = typer.Option(..., "--job", help="UNKNOWN assemble_revision job ID for the 2026-11-21 P4 slot."),
+    actual_minor: int | None = typer.Option(None, "--actual-minor", min=0, help="Settled legacy QC cost in VND minor units; defaults to the reserved per-call amount."),
+    input_tokens: int | None = typer.Option(None, "--input-tokens", min=0, help="Provider usage evidence from the successful response."),
+    output_tokens: int | None = typer.Option(None, "--output-tokens", min=0, help="Provider usage evidence from the successful response."),
+) -> None:
+    """Settle one evidenced P4 QC call and requeue exactly one controlled QC retry."""
+    from growth_engine.application.ops.resolve_p4_qc_unknown import (
+        P4QcResolutionError,
+    )
+
+    try:
+        settings = Settings.from_env()
+        if settings.env.lower() != "production":
+            raise P4QcResolutionError("resolution command is restricted to production")
+        service = ctx.obj.get("resolve_p4_qc_unknown_service") if isinstance(ctx.obj, dict) else None
+        if service is None:
+            from growth_engine.bootstrap import build_container
+
+            service = build_container(settings).resolve_p4_qc_unknown
+        preview = service.preview(job_id, actual_minor=actual_minor)
+        if preview.already_resolved:
+            typer.echo(json.dumps({
+                "result": "ALREADY_RESOLVED",
+                "job_id": preview.job_id,
+                "delivery_id": preview.delivery_id,
+                "paid_call_id": preview.paid_call_id,
+                "actual_minor": preview.actual_minor,
+            }, sort_keys=True))
+            return
+        if (input_tokens is None) != (output_tokens is None):
+            raise P4QcResolutionError("supply both --input-tokens and --output-tokens, or neither")
+        typer.echo(json.dumps({
+            "preflight": "READY",
+            "job_id": preview.job_id,
+            "delivery_id": preview.delivery_id,
+            "slot": {"date": preview.slot_date, "time": preview.slot_time, "timezone": "Asia/Ho_Chi_Minh"},
+            "paid_call_id": preview.paid_call_id,
+            "paid_call_state": preview.paid_call_state,
+            "reserved_minor": preview.reserved_minor,
+            "actual_minor": preview.actual_minor,
+            "input_tokens": input_tokens,
+            "output_tokens": output_tokens,
+            "publishing": "DISABLED + global_pause required",
+        }, ensure_ascii=False, sort_keys=True))
+        if typer.prompt("Gõ RESOLVE để settle chi phí và requeue một lần QC") != "RESOLVE":
+            typer.echo("RESOLVE=DECLINED; no changes made")
+            raise typer.Exit(code=2)
+        result = service.execute(
+            job_id,
+            actual_minor=actual_minor,
+            input_tokens=input_tokens,
+            output_tokens=output_tokens,
+        )
+    except typer.Exit:
+        raise
+    except P4QcResolutionError as error:
+        typer.echo(json.dumps({"result": "BLOCKED", "reason": str(error)}, ensure_ascii=False), err=True)
+        raise typer.Exit(code=1) from error
+    except (OSError, ValueError, RuntimeError) as error:
+        typer.echo(json.dumps({"result": "BLOCKED", "reason": type(error).__name__}, ensure_ascii=False), err=True)
+        raise typer.Exit(code=1) from error
+    typer.echo(json.dumps({
+        "result": "RESOLVED_AND_REQUEUED",
+        "job_id": result.job_id,
+        "delivery_id": result.delivery_id,
+        "paid_call_id": result.paid_call_id,
+        "actual_minor": result.actual_minor,
+        "qc_retry_key": result.qc_retry_key,
+        "already_resolved": result.already_resolved,
+    }, ensure_ascii=False, sort_keys=True))
+
+
 @app.command("p4-slot-status")
 def p4_slot_status(
     local_date: str = typer.Option(..., "--date", help="P4 slot date in YYYY-MM-DD."),
@@ -368,9 +443,18 @@ def p4_slot_status(
                     )
             paid_call_where = ["business_key LIKE ?"]
             paid_call_params: list[str] = list(paid_call_prefixes)
+            if asset_ids:
+                placeholders = ",".join("?" for _ in asset_ids)
+                variant_hashes = [str(row[0]) for row in connection.execute(
+                    f"SELECT DISTINCT sha256 FROM media_variants WHERE asset_id IN ({placeholders})",
+                    tuple(asset_ids),
+                ).fetchall()]
+                for variant_sha in variant_hashes:
+                    paid_call_where.append("business_key LIKE ?")
+                    paid_call_params.append(f"qc:{variant_sha}:%")
             for business_key in paid_call_keys:
-                paid_call_where.append("business_key=?")
-                paid_call_params.append(business_key)
+                paid_call_where.append("business_key LIKE ?")
+                paid_call_params.append(business_key + "%")
             paid_calls = [dict(row) for row in connection.execute(
                 """SELECT operation,state,reserved_minor,actual_minor
                    FROM paid_calls WHERE """ + " OR ".join(paid_call_where) + " ORDER BY created_at,id",

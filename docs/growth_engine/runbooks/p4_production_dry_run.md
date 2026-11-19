@@ -187,3 +187,48 @@ Worker giữ `assemble_revision` ở `PENDING` trước khi claim nếu thiếu 
 ### Notification jobs PENDING
 
 `DISABLED`/`global_pause` ngăn publish/dispatch, không ngăn worker gửi thông báo Telegram. Publish worker dispatch notification nếu bot/chat có cấu hình; khi cấu hình thiếu thì không có dispatcher và job có thể nằm `PENDING`. Vì vậy bốn notify PENDING từ 13/11 và 16/11 không được xem là hành vi bị chặn đúng bởi DISABLED. Trước khi retry, kiểm tra unit publish đang active, Telegram env được nạp và `attempts`/`last_error`; không xóa hoặc gửi lại hàng loạt khi chưa biết từng thông báo còn hợp lệ hay đã cũ.
+
+## 7. Khôi phục lượt QC UNKNOWN sau HTTP 200
+
+**Sự cố 19/11/2026:** job `assemble_revision` `e0d00517-3661-4390-a532-6f516e0ef176` nhận HTTP 200 từ OpenAI Vision (1900 input / 1111 output tokens) nhưng lỗi hậu xử lý làm paid call thành `UNKNOWN`. Không có QC report/revision, delivery vẫn DRAFT, runtime `DISABLED` + pause và outbox rỗng. Bản sửa mới lưu evidence response đã lọc vào `paid_calls.provider_response_json`, settle chi phí theo mức `vision_qc_minor` của bảng legacy (400 VND) ngay khi xác nhận response, rồi ghi lỗi hậu xử lý `ERR_GC2_QC_POST_RESPONSE_FAILED` để job kết thúc `FAILED`; lỗi trước response vẫn giữ UNKNOWN để tránh retry mù. Migration `0010_paid_call_provider_response.sql` thêm cột evidence; phải áp migration production trước deploy vì `deploy-release.sh` chỉ chạy `migrate --check`.
+
+Sau khi commit được push, Harry chạy lệnh dưới đây trên ASUS. Thay `<REVIEWED_P4_SHA>` bằng SHA vừa review. Lệnh build và migrate đúng release source trước deploy. Không đưa các lệnh resolver qua pipe, để prompt nhận được chính xác `RESOLVE`:
+
+```bash
+set -Eeuo pipefail
+fail() { printf 'P4 QC recovery stopped: %s\n' "$*" >&2; exit 1; }
+P4_SHA='<REVIEWED_P4_SHA>'
+REPO="$HOME/venho/gc2-src"
+REMOTE_URL="$(git -C "$REPO" remote get-url origin)"
+SOURCE_DIR="$(mktemp -d "$HOME/venho/gc2-qc-source.XXXXXX")"
+trap 'rm -rf "$SOURCE_DIR"' EXIT
+git clone --quiet --no-checkout "$REMOTE_URL" "$SOURCE_DIR"
+git -C "$SOURCE_DIR" fetch --quiet origin gc2/build-v1-2
+git -C "$SOURCE_DIR" cat-file -e "$P4_SHA^{commit}" || fail "reviewed SHA is not present in fetched branch"
+git -C "$SOURCE_DIR" merge-base --is-ancestor "$P4_SHA" FETCH_HEAD || fail "reviewed SHA is not on the deploy branch"
+git -C "$SOURCE_DIR" checkout --quiet --detach "$P4_SHA"
+[[ -z "$(git -C "$SOURCE_DIR" status --porcelain)" ]] || fail "source checkout is not clean"
+
+(cd "$SOURCE_DIR" && UV_PYTHON_PREFERENCE=only-managed "$HOME/.local/bin/uv" sync --frozen --python 3.11 --extra api --extra drive --extra gemini) \
+  || fail "release environment sync failed"
+systemd-run --user --pipe --wait --collect \
+  --property="EnvironmentFile=$HOME/venho/secrets/growth-engine.env" \
+  --property="WorkingDirectory=$SOURCE_DIR" \
+  --setenv=GE_ENV=production \
+  "$SOURCE_DIR/.venv/bin/venho-engine" migrate \
+  || fail "production migration did not complete"
+bash "$SOURCE_DIR/ops/asus-server/growth-engine/deploy-release.sh" "$P4_SHA" \
+  || fail "release deploy did not complete"
+
+RUNTIME="$HOME/venho/growth-engine/current/ops/asus-server/growth-engine/run-with-legacy-provider-env.sh"
+"$RUNTIME" resolve-p4-qc-unknown \
+  --job e0d00517-3661-4390-a532-6f516e0ef176 \
+  --actual-minor 400 --input-tokens 1900 --output-tokens 1111
+# At the prompt, type RESOLVE only after reviewing the preflight summary.
+# Then inspect the full status directly; do not pipe this command.
+"$RUNTIME" p4-slot-status --date 2026-11-21
+```
+
+**Resolve preflight:** verifies the exact production `fb_hanoi` Page `1124616474074140` DRAFT at 2026-11-21 09:00 ICT, one image asset, matching JPEG variant, exactly one UNKNOWN `legacy_openai_vision/image_qc` paid call, no outbox/execution, and `DISABLED`/pause. It reports the 400 VND settled cost and supplied token counts without secrets. Typing anything other than uppercase `RESOLVE` changes nothing. The transaction marks the original call `SETTLED`, records an append-only audit event and requeues this job once with a new QC business key. Repeating the command reports `ALREADY_RESOLVED` and does not requeue again. A retry reserves at most the configured 400 VND and remains subject to the monthly budget cap.
+
+**Expected after the worker finishes:** the original paid call is `SETTLED` at 400; a separate retry paid call is `SETTLED` if QC received a response; the assemble job is `SUCCEEDED` or has a specific `FAILED`/`UNKNOWN` reason; QC/revision status is visible in `p4-slot-status`; runtime remains `DISABLED` + pause and outbox/executions remain empty. If the retry reaches another error, do not run the resolver again or rerun QC by hand; preserve status and logs for diagnosis. This recovery does not approve or publish the delivery.

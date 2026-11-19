@@ -76,6 +76,7 @@ def validate_image(
     samples: Optional[int] = None,
     scenario_profile_id: Optional[str] = None,
     raw_response_sink: Optional[Callable[[dict[str, Any]], None]] = None,
+    transport_event_sink: Optional[Callable[[dict[str, Any]], None]] = None,
 ) -> ValidationReport:
     config = validation_config()
     resolved_samples = samples or int(config.get("observe_samples", 1))
@@ -85,6 +86,7 @@ def validate_image(
     observation = observe_image_against_dna(
         image_path, dna, provider=provider, samples=resolved_samples,
         raw_response_sink=raw_response_sink,
+        transport_event_sink=transport_event_sink,
     )
     observation = _apply_scenario_authority(project, subject, scenario_profile_id, observation)
     score = score_image_observation(observation, config)
