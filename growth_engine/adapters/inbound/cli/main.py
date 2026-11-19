@@ -320,6 +320,77 @@ def resolve_p4_qc_unknown(
     }, ensure_ascii=False, sort_keys=True))
 
 
+@app.command("reprocess-p4-qc-evidence")
+def reprocess_p4_qc_evidence(
+    ctx: typer.Context,
+    job_id: str = typer.Option(..., "--job", help="Failed P4 assemble_revision job ID."),
+) -> None:
+    """Reprocess stored filtered P4 QC response evidence without calling a provider."""
+    from growth_engine.application.ops.reprocess_p4_qc_evidence import (
+        P4QcEvidenceError,
+    )
+
+    try:
+        settings = Settings.from_env()
+        if settings.env.lower() != "production":
+            raise P4QcEvidenceError("reprocessing command is restricted to production")
+        service = ctx.obj.get("reprocess_p4_qc_evidence_service") if isinstance(ctx.obj, dict) else None
+        if service is None:
+            from growth_engine.bootstrap import build_container
+
+            service = build_container(settings).reprocess_p4_qc_evidence
+        preview = service.preview(job_id)
+        if preview.already_processed:
+            typer.echo(json.dumps({
+                "result": "ALREADY_PROCESSED",
+                "job_id": preview.job_id,
+                "delivery_id": preview.delivery_id,
+            }, sort_keys=True))
+            return
+        typer.echo(json.dumps({
+            "preflight": "READY",
+            "job_id": preview.job_id,
+            "delivery_id": preview.delivery_id,
+            "evidence_length": preview.evidence_length,
+            "readable_keys": list(preview.readable_keys),
+            "provider_calls": 0,
+            "paid_calls_created": 0,
+            "publishing": "DISABLED + global_pause required",
+        }, ensure_ascii=False, sort_keys=True))
+        if typer.prompt("Gõ REPROCESS để tạo QC report và revision từ evidence đã lưu") != "REPROCESS":
+            typer.echo("REPROCESS=DECLINED; no changes made")
+            raise typer.Exit(code=2)
+        result = service.execute(job_id)
+    except typer.Exit:
+        raise
+    except P4QcEvidenceError as error:
+        typer.echo(json.dumps({
+            "result": "BLOCKED",
+            "code": error.code,
+            "reason": _safe_cli_error(error),
+            "option_b": "one new QC call up to 400 VND requires separate operator approval; not started",
+        }, ensure_ascii=False, sort_keys=True), err=True)
+        raise typer.Exit(code=1) from error
+    except (OSError, ValueError, RuntimeError) as error:
+        typer.echo(json.dumps({
+            "result": "BLOCKED",
+            "code": "ERR_GC2_P4_QC_REPROCESS_FAILED",
+            "reason": _safe_cli_error(error),
+        }, ensure_ascii=False, sort_keys=True), err=True)
+        raise typer.Exit(code=1) from error
+    typer.echo(json.dumps({
+        "result": "REPROCESSED",
+        "job_id": result.job_id,
+        "delivery_id": result.delivery_id,
+        "qc_report_id": result.qc_report_id,
+        "revision_id": result.revision_id,
+        "already_processed": result.already_processed,
+        "provider_calls": 0,
+        "paid_calls_created": 0,
+        "delivery_state": "IN_REVIEW",
+    }, ensure_ascii=False, sort_keys=True))
+
+
 @app.command("p4-slot-status")
 def p4_slot_status(
     local_date: str = typer.Option(..., "--date", help="P4 slot date in YYYY-MM-DD."),

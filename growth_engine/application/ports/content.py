@@ -28,6 +28,14 @@ class QcEvaluator(Protocol):
         policy: EffectiveQcPolicy,
         response_sink: Callable[[dict[str, Any]], None] | None = None,
     ) -> QcResult: ...
+    def reprocess_response(
+        self,
+        variant: VariantView,
+        caption: str,
+        facts: FactSnapshot,
+        policy: EffectiveQcPolicy,
+        response: object,
+    ) -> QcResult: ...
     def compile_policy(
         self, project: str, subject: str, scenario: str | None
     ) -> EffectiveQcPolicy: ...

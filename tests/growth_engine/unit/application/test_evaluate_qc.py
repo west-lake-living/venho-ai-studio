@@ -360,6 +360,40 @@ def test_legacy_qc_adapter_forwards_provider_response_evidence(tmp_path: Path) -
     ]
 
 
+def test_legacy_qc_adapter_reprocesses_saved_observation_without_validator_call(tmp_path: Path, monkeypatch) -> None:
+    _write_dna_config(tmp_path)
+    parsed = {}
+
+    def report_from_observation(project, subject, image_path, observations, provider):
+        parsed["observation"] = observations[0]
+        return _approved_report(project, subject, image_path)
+
+    monkeypatch.setattr(
+        "growth_engine.adapters.outbound.legacy.qc_adapter.report_from_image_observations",
+        report_from_observation,
+    )
+
+    def forbidden_provider_call(*args, **kwargs):
+        raise AssertionError("saved evidence reprocessing must not call the validator/provider")
+
+    adapter = LegacyQcAdapter(
+        _FakeStore(_VARIANT_BYTES), base_dir=tmp_path, validator_fn=forbidden_provider_call, provider="openai"
+    )
+    policy = adapter.compile_policy("test", "room", None)
+    response = (
+        "Stored response:\n```json\n"
+        '{"dna_matches":[{"key":"window_frame","match_state":"MATCH","confidence":"0.9"}]}'
+        "\n```\nEnd."
+    )
+    result = adapter.reprocess_response(
+        _variant_view(), "Synthetic caption", FactSnapshot({}, _HASH_C), policy, response
+    )
+
+    assert parsed["observation"].dna_matches[0].match_state.value == "match"
+    assert result.decision == "REVIEW"
+    assert result.ruleset_hash == policy.ruleset_hash
+
+
 class _FakeStore:
     def __init__(self, content: bytes) -> None:
         self.content = content

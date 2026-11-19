@@ -662,6 +662,7 @@ class Container:
     image_library: Any
     repair_slot_media: Any
     resolve_p4_qc_unknown: Any
+    reprocess_p4_qc_evidence: Any
     prepare_variant: Any
     evaluate_qc: Any
     content_jobs_worker: Any
@@ -765,6 +766,7 @@ def build_container(
     generate_package_adapter = import_module("growth_engine.application.content.generate_package")
     repair_slot_media_adapter = import_module("growth_engine.application.content.repair_slot_media")
     resolve_p4_qc_adapter = import_module("growth_engine.application.ops.resolve_p4_qc_unknown")
+    reprocess_p4_qc_adapter = import_module("growth_engine.application.ops.reprocess_p4_qc_evidence")
     p4_media_repair_store_adapter = import_module(
         "growth_engine.adapters.outbound.persistence.sqlite.p4_media_repair"
     )
@@ -1256,6 +1258,13 @@ def build_container(
         repair_slot_media=repair_slot_media,
         resolve_p4_qc_unknown=resolve_p4_qc_adapter.ResolveP4QcUnknown(
             uow_factory, now_ms=clock.now_ms, id_factory=ids.new_id
+        ),
+        reprocess_p4_qc_evidence=reprocess_p4_qc_adapter.ReprocessP4QcEvidence(
+            uow_factory,
+            qc_evaluator,
+            create_revision,
+            now_ms=clock.now_ms,
+            id_factory=ids.new_id,
         ),
         prepare_variant=prepare_variant,
         evaluate_qc=evaluate_qc,

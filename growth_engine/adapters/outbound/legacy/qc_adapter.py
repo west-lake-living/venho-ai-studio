@@ -11,7 +11,8 @@ from typing import Any, Callable
 from growth_engine.application.dto import EffectiveQcPolicy, FactSnapshot, QcResult, VariantView
 from growth_engine.application.ports.media import MediaStore
 from knowledge_studio.vision.schemas.base import BaseDNA
-from validator_studio.image_validator import validate_image
+from validator_studio.image_validator import report_from_image_observations, validate_image
+from validator_studio.observe_adapter import parse_image_observation_response
 from validator_studio.utils import find_dna_path
 
 _IDENTIFIER = re.compile(r"^[a-z0-9_]+$")
@@ -54,15 +55,7 @@ class LegacyQcAdapter:
         policy: EffectiveQcPolicy,
         response_sink: Callable[[dict[str, Any]], None] | None = None,
     ) -> QcResult:
-        if variant.mime != "image/jpeg" or variant.qc_status == "QUARANTINED":
-            raise QcArtifactError("variant must be a non-quarantined JPEG")
-        with self._media_store.open(variant.object_key) as source:
-            image_bytes = source.read(_MAX_VARIANT_BYTES + 1)
-        if len(image_bytes) > _MAX_VARIANT_BYTES:
-            raise QcArtifactError("variant exceeds QC size limit")
-        artifact_sha256 = hashlib.sha256(image_bytes).hexdigest()
-        if artifact_sha256 != variant.sha256:
-            raise QcArtifactError("variant bytes do not match SHA-256 metadata")
+        image_bytes = self._read_verified_variant(variant)
 
         with tempfile.TemporaryDirectory(prefix="growth-qc-") as temp_dir:
             image_path = Path(temp_dir) / "approved-variant.jpg"
@@ -89,6 +82,50 @@ class LegacyQcAdapter:
                 **validator_arguments,
             )
 
+        return self._result_from_report(report, variant, caption, facts, policy)
+
+    def reprocess_response(
+        self,
+        variant: VariantView,
+        caption: str,
+        facts: FactSnapshot,
+        policy: EffectiveQcPolicy,
+        response: object,
+    ) -> QcResult:
+        """Rebuild QC locally from a previously captured response; never calls a provider."""
+        image_bytes = self._read_verified_variant(variant)
+        with tempfile.TemporaryDirectory(prefix="growth-qc-reprocess-") as temp_dir:
+            image_path = Path(temp_dir) / "approved-variant.jpg"
+            image_path.write_bytes(image_bytes)
+            observation = parse_image_observation_response(response)
+            report = report_from_image_observations(
+                policy.project,
+                policy.subject,
+                image_path,
+                [observation],
+                provider=self._provider,
+            )
+        return self._result_from_report(report, variant, caption, facts, policy)
+
+    def _read_verified_variant(self, variant: VariantView) -> bytes:
+        if variant.mime != "image/jpeg" or variant.qc_status == "QUARANTINED":
+            raise QcArtifactError("variant must be a non-quarantined JPEG")
+        with self._media_store.open(variant.object_key) as source:
+            image_bytes = source.read(_MAX_VARIANT_BYTES + 1)
+        if len(image_bytes) > _MAX_VARIANT_BYTES:
+            raise QcArtifactError("variant exceeds QC size limit")
+        if hashlib.sha256(image_bytes).hexdigest() != variant.sha256:
+            raise QcArtifactError("variant bytes do not match SHA-256 metadata")
+        return image_bytes
+
+    def _result_from_report(
+        self,
+        report: Any,
+        variant: VariantView,
+        caption: str,
+        facts: FactSnapshot,
+        policy: EffectiveQcPolicy,
+    ) -> QcResult:
         reported_sha = getattr(getattr(report, "artifact_ref", None), "hash", None)
         if reported_sha not in {variant.sha256, f"sha256:{variant.sha256}"}:
             raise QcArtifactError("Validator Studio report references different image bytes")

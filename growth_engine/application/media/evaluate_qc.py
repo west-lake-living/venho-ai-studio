@@ -29,10 +29,12 @@ class QcPaidCallUnknown(RuntimeError):
 class QcPostResponseError(RuntimeError):
     code = "ERR_GC2_QC_POST_RESPONSE_FAILED"
 
-    def __init__(self, error_type: str) -> None:
+    def __init__(self, error: Exception) -> None:
+        error_type = type(error).__name__
+        detail = _safe_postprocess_detail(error)
         self.public_message = (
             "QC provider response was received and cost settled, but post-response processing failed "
-            f"(error_type={error_type}); filtered response evidence was retained."
+            f"(error_type={error_type}, detail={detail}); filtered response evidence was retained."
         )
         super().__init__(self.public_message)
 
@@ -222,11 +224,12 @@ class EvaluateQc:
                         "stage": "postprocess_error",
                         "code": QcPostResponseError.code,
                         "error_type": type(error).__name__,
+                        "detail": _safe_postprocess_detail(error),
                     })
                     self._persist_provider_evidence(paid_business_key, evidence_events, settle=True)
                 if isinstance(error, QcPostResponseError):
                     raise
-                raise QcPostResponseError(type(error).__name__) from None
+                raise QcPostResponseError(error) from None
             if reserved:
                 with self._uow_factory().begin_immediate() as tx:
                     tx.budget.mark_unknown(paid_business_key)
@@ -367,3 +370,33 @@ def _safe_evidence_value(value: object, *, key: str = "") -> object:
     if value is None or type(value) in {bool, int, float}:
         return value
     return type(value).__name__
+
+
+def _safe_postprocess_detail(error: Exception) -> str:
+    errors_method = getattr(error, "errors", None)
+    if callable(errors_method):
+        try:
+            details = errors_method(include_input=False)[:4]
+            message = "; ".join(
+                f"{'.'.join(str(part) for part in item.get('loc', ())) or '$'}: {item.get('msg', 'invalid value')}"
+                for item in details
+            )
+        except (TypeError, ValueError):
+            message = type(error).__name__
+    else:
+        message = str(error) or type(error).__name__
+        safe_prefixes = (
+            "field ",
+            "image observation schema invalid",
+            "Weight categories mismatch.",
+            "Weight total must be",
+            "QC evaluator returned",
+            "QC result does not match",
+            "media variant changed during QC",
+        )
+        if not message.startswith(safe_prefixes):
+            message = type(error).__name__
+    safe = _SECRET_ASSIGNMENT.sub(r"\1\2[REDACTED]", message)
+    safe = _URL.sub("[URL REDACTED]", safe)
+    safe = _LONG_SECRET.sub("[SECRET REDACTED]", safe)
+    return " ".join(safe.split())[:200] or type(error).__name__
