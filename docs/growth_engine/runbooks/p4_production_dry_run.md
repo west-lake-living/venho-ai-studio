@@ -221,7 +221,6 @@ fail() {
 P4_SHA='<REVIEWED_P4_SHA>'
 BRANCH='gc2/build-v1-2'
 REPO="$HOME/venho/gc2-src"
-REMOTE_URL="$(git -C "$REPO" remote get-url origin)"
 SCRIPT_PATH="$HOME/venho/reprocess-p4-qc-evidence.sh"
 SOURCE_DIR=''
 cleanup() {
@@ -229,6 +228,7 @@ cleanup() {
   rm -f "$SCRIPT_PATH"
 }
 trap cleanup EXIT
+REMOTE_URL="$(git -C "$REPO" remote get-url origin)"
 SOURCE_DIR="$(mktemp -d "$HOME/venho/gc2-qc-source.XXXXXX")"
 
 git clone --quiet --no-checkout "$REMOTE_URL" "$SOURCE_DIR"
