@@ -23,6 +23,7 @@ print(load_recipient(Path(sys.argv[3]))[0])
 PY
 )"
 work="$(mktemp -d)"
+unset identity
 trap 'unset identity; rm -rf -- "$work"' EXIT
 step=clipboard
 python3 -c 'import termios; termios.tcflush(3, termios.TCIFLUSH)' || fail controlling_terminal_required
