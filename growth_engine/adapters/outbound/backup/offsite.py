@@ -72,8 +72,9 @@ def check_recipient(recipient: str) -> None:
         raise OffsiteError("offsite_recipient_rejected_by_age") from None
 
 
-def folder_id() -> str:
-    value = os.environ.get("GE_BACKUP_DRIVE_FOLDER_ID", "")
+def folder_id(value: str | None = None) -> str:
+    if value is None:
+        value = os.environ.get("GE_BACKUP_DRIVE_FOLDER_ID", "")
     if not DRIVE_ID.fullmatch(value) or value == "root":
         raise OffsiteError("offsite_drive_folder_missing_or_invalid")
     return value
@@ -327,10 +328,10 @@ class GoogleDrive:
 
     @classmethod
     def from_env(cls):
-        import httplib2
         from google_auth_httplib2 import AuthorizedHttp
         from google.oauth2.credentials import Credentials
         from googleapiclient.discovery import build
+        from googleapiclient.http import build_http
 
         try:
             info = json.loads(os.environ["GOOGLE_DRIVE_TOKEN_JSON"])
@@ -344,7 +345,9 @@ class GoogleDrive:
             # HTTP library diagnostics can contain resumable session URLs.
             logging.getLogger("googleapiclient").setLevel(logging.CRITICAL)
             logging.getLogger("google_auth_httplib2").setLevel(logging.CRITICAL)
-            return cls(build("drive", "v3", http=AuthorizedHttp(credentials, http=httplib2.Http(timeout=60)),
+            transport = build_http()  # Drive uses HTTP 308 to acknowledge partial uploads.
+            transport.timeout = 60
+            return cls(build("drive", "v3", http=AuthorizedHttp(credentials, http=transport),
                              cache_discovery=False))
         except Exception:
             raise OffsiteError("offsite_drive_oauth_unavailable") from None

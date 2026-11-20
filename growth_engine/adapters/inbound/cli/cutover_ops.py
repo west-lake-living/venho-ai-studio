@@ -66,6 +66,19 @@ def create_offsite_folder(settings: Settings) -> dict:
     return {"result": "PASS", "folder_id": folder}
 
 
+def check_offsite_folder(settings: Settings, candidate: str | None) -> dict:
+    database(settings)
+    offsite = build_offsite_tools()
+    folder = offsite.folder_id(candidate)
+    try:
+        offsite.GoogleDrive.from_env().check_folder(folder)
+    except offsite.OffsiteError:
+        raise
+    except Exception:
+        raise ValueError("offsite_drive_folder_check_failed") from None
+    return {"result": "PASS"}
+
+
 def require_offsite(settings: Settings) -> dict:
     offsite = build_offsite_tools()
     return offsite.require_fresh_remote(database(settings), REPO_ROOT, now_ms, offsite.GoogleDrive.from_env)

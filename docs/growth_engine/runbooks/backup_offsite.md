@@ -12,7 +12,7 @@ Legacy v3.2 dùng OAuth `authorized_user` qua `GOOGLE_DRIVE_TOKEN_JSON`, với `
 
 ## ASUS
 
-Từ checkout riêng tại SHA bàn giao trên `gc2/build-v1-2`, chạy `bash ops/asus-server/growth-engine/setup-offsite-backup.sh` sau 09:30 ICT. Chạy bằng tài khoản quản lý GC2. Chỉ bước cài `age` nếu thiếu dùng `sudo apt-get`. Xác nhận `OFFSITE` qua TTY. Kỳ vọng `RELEASE_SHA`, checksum PASS và `OFFSITE_SETUP=PASS`, user timer `growth-engine-backup-offsite.timer` active. Không có migration mới. Script deploy vẫn kiểm schema trước khi switch.
+Từ checkout riêng tại SHA bàn giao trên `gc2/build-v1-2`, chạy `bash ops/asus-server/growth-engine/setup-offsite-backup.sh` sau 09:30 ICT. Chạy bằng tài khoản quản lý GC2. Chỉ bước cài `age` nếu thiếu dùng `sudo apt-get`. Xác nhận `OFFSITE` qua TTY. Script kiểm folder hiện tại qua Drive trước khi hỏi. Nếu hợp lệ, script in `FOLDER_ENV=ALREADY_SET` và giữ nguyên env. Nếu cần nhập ID hoặc tạo folder, script xác minh folder qua Drive trước khi ghi env. Kỳ vọng `RELEASE_SHA`, checksum PASS và `OFFSITE_SETUP=PASS`, user timer `growth-engine-backup-offsite.timer` active. Không có migration mới. Script deploy vẫn kiểm schema trước khi switch.
 
 Timer user chạy lúc **02:30 ICT** hằng ngày. Nó mã hóa snapshot staging dưới 1 giờ với `age`, upload resumable lên Drive rồi đối chiếu MD5 và SHA-256 nếu Drive cung cấp thêm SHA-256. Chỉ công nhận khi MD5, kích thước, thư mục và nhận diện file khớp. SHA-256 nguồn được lưu trong manifest bàn giao để kiểm file tải xuống. Receipt mode 600 ở `backup-offsite/latest.json` cạnh DB. Doctor kiểm local receipt theo giờ tạo snapshot, không gọi Drive. Gate T5 và `offsite-status` kiểm lại Drive.
 

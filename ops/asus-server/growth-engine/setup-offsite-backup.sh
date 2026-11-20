@@ -68,18 +68,22 @@ printf 'RELEASE_SHA=%s\n' "$sha"
 engine="$current/ops/asus-server/growth-engine/run-with-legacy-provider-env.sh"
 
 step=configure_folder
-{ exec 3<>/dev/tty; } 2>/dev/null || fail controlling_terminal_required
-"$python" -c 'import termios; termios.tcflush(3,termios.TCIFLUSH)' || fail controlling_terminal_required
-printf 'Nhập ID folder VENHO GC2 Backups, hoặc gõ CREATE để OAuth tạo folder riêng: ' >&3
-IFS= read -r -u 3 -s folder || fail folder_required
-printf '\n' >&3
-exec 3>&-
-if [[ "$folder" == CREATE ]]; then
-  created="$("$engine" backup offsite-create-folder)"
-  folder="$(printf '%s' "$created" | "$python" -c 'import sys,json; print(json.load(sys.stdin)["folder_id"])')"
-fi
-[[ "$folder" =~ ^[A-Za-z0-9_-]{1,150}$ && "$folder" != root ]] || fail invalid_folder
-GE_OFFSITE_SETUP_FOLDER="$folder" "$python" - "$env_file" <<'PY'
+if "$engine" backup offsite-check-folder >/dev/null; then
+  printf 'FOLDER_ENV=ALREADY_SET\n'
+else
+  { exec 3<>/dev/tty; } 2>/dev/null || fail controlling_terminal_required
+  "$python" -c 'import termios; termios.tcflush(3,termios.TCIFLUSH)' || fail controlling_terminal_required
+  printf 'Nhập ID folder VENHO GC2 Backups, hoặc gõ CREATE để OAuth tạo folder riêng: ' >&3
+  IFS= read -r -u 3 -s folder || fail folder_required
+  printf '\n' >&3
+  exec 3>&-
+  if [[ "$folder" == CREATE ]]; then
+    created="$("$engine" backup offsite-create-folder)"
+    folder="$(printf '%s' "$created" | "$python" -c 'import sys,json; print(json.load(sys.stdin)["folder_id"])')"
+  fi
+  [[ "$folder" =~ ^[A-Za-z0-9_-]{1,150}$ && "$folder" != root ]] || fail invalid_folder
+  "$engine" backup offsite-check-folder --folder "$folder" || fail folder_check_failed
+  GE_OFFSITE_SETUP_FOLDER="$folder" "$python" - "$env_file" <<'PY'
 import os
 import re
 import shutil
@@ -115,7 +119,8 @@ if data != revised:
             tmp_path.unlink(missing_ok=True)
 print("FOLDER_ENV=PASS")
 PY
-unset folder created
+  unset folder created
+fi
 
 step=first_offsite_upload
 upload="$("$engine" backup offsite-now)" || { printf '%s\n' "$upload"; fail upload_failed; }

@@ -263,3 +263,55 @@ def test_age_round_trip_restores_sqlite_and_manifest_from_drive_bytes(tmp_path, 
                                        identity_file=identity, now_ms=NOW)
     assert restored.dispatch_epochs_rotated == 1
     assert (restored.media_root / "photo.jpg").read_bytes() == b"original photo"
+
+
+def test_google_resumable_upload_accepts_308_without_location(tmp_path, monkeypatch):
+    httplib2 = pytest.importorskip("httplib2")
+    credentials_module = pytest.importorskip("google.oauth2.credentials")
+    chunk_size = 8 * 1024 * 1024
+    source = tmp_path / "cipher"
+    with source.open("wb") as stream:
+        stream.truncate(chunk_size + 1024)
+
+    # Use real discovery, AuthorizedHttp and httplib2 redirect handling.
+    # Only intercept the socket-level exchange below httplib2's redirect logic.
+    monkeypatch.setenv("GOOGLE_DRIVE_TOKEN_JSON", "{}")
+    monkeypatch.setattr(
+        credentials_module.Credentials, "from_authorized_user_info",
+        lambda *args, **kwargs: credentials_module.Credentials("fake-token"),
+    )
+    replies = iter([
+        ({"status": "200", "location": "https://example.invalid/resumable"}, b""),
+        ({"status": "308", "range": f"bytes=0-{chunk_size - 1}"}, b""),
+        ({"status": "200", "content-type": "application/json"}, b'{"id":"backup-id"}'),
+    ])
+    requests = []
+
+    def exchange(transport, _conn, _uri, method, _body, headers):
+        assert 308 not in transport.redirect_codes
+        assert transport.timeout == 60
+        requests.append((method, headers.get("content-range")))
+        headers, body = next(replies)
+        return httplib2.Response(headers), body
+
+    monkeypatch.setattr(httplib2.Http, "_conn_request", exchange)
+    created = offsite.GoogleDrive.from_env().upload(FOLDER, source, "backup.age", {})
+    assert created == {"id": "backup-id"}
+    total = chunk_size + 1024
+    assert requests == [
+        ("POST", None),
+        ("PUT", f"bytes 0-{chunk_size - 1}/{total}"),
+        ("PUT", f"bytes {chunk_size}-{total - 1}/{total}"),
+    ]
+
+
+def test_check_offsite_folder_validates_candidate_without_echoing_drive_error(staged_db, monkeypatch):
+    settings = Settings(env="production", db_path=str(staged_db))
+    drive = Mock()
+    monkeypatch.setattr(offsite.GoogleDrive, "from_env", lambda: drive)
+    assert cutover_ops.check_offsite_folder(settings, None) == {"result": "PASS"}
+    drive.check_folder.assert_called_once_with(FOLDER)
+    drive.check_folder.side_effect = RuntimeError("sensitive Drive diagnostic")
+    with pytest.raises(ValueError, match="^offsite_drive_folder_check_failed$"):
+        cutover_ops.check_offsite_folder(settings, "typo-folder")
+    drive.check_folder.assert_called_with("typo-folder")

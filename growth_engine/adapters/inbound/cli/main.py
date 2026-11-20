@@ -858,6 +858,12 @@ def backup_offsite_status() -> None:
     _cutover_output(lambda: offsite_status(Settings.from_env()))
 
 
+@backup_cli.command("offsite-check-folder")
+def backup_offsite_check_folder(folder: str | None = typer.Option(None, "--folder")) -> None:
+    from growth_engine.adapters.inbound.cli.cutover_ops import check_offsite_folder
+    _cutover_output(lambda: check_offsite_folder(Settings.from_env(), folder))
+
+
 @backup_cli.command("offsite-create-folder")
 def backup_offsite_create_folder() -> None:
     from growth_engine.adapters.inbound.cli.cutover_ops import create_offsite_folder
