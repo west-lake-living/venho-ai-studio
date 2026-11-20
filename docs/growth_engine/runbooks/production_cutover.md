@@ -33,7 +33,7 @@ gc2_cutover friday-backup
 
 Deploy SHA mới trước khi chạy khối này. Gõ `FIRST_BACKUP` để tạo snapshot bằng Online Backup API, rehearsal trong thư mục tạm, bật timer user `growth-engine-backup.timer` mỗi giờ và kiểm Doctor `Backup age` PASS. Khối này không prepare slot, không thao tác legacy hay Make. Giữ production `DISABLED` + pause.
 
-Snapshot ở thư mục `backup-staging` cạnh DB thật (`~/venho/state/growth-engine/backup-staging/`), thư mục 700, archive 600. Manifest gồm `object_key` + SHA-256 cho originals/variants; thiếu/sai hash làm backup thất bại. Retention theo UTC giữ bản mới nhất của 48 bucket giờ, 14 ngày, 8 tuần, một file có thể thuộc nhiều bucket. Rehearsal kiểm integrity, foreign keys, manifest toàn bộ artifact, và làm bản copy `DISABLED` + pause + epoch mới; DB thật được mở read-only khi snapshot. Doctor Backup age PASS khi staging có bản hoàn tất ≤2 giờ; gate cutover yêu cầu **<1 giờ**. Archive staging chưa mã hóa, giữ trên ASUS trong vùng 700. Task riêng: triển khai age + upload Drive và thử restore từ bản offsite trước **24/11/2026 09:30 ICT**. Snapshot cùng đĩa có thể mất cùng DB khi ổ hỏng, máy mất hoặc bị xóa; chỉ tính offsite đạt khi kiểm checksum và restore thành công; đường backup age/restore cũ vẫn độc lập. Heartbeat sender hiện có; Doctor Heartbeat age vẫn WARN vì chưa có nguồn timestamp xác thực healthchecks.io, không suy ra PASS từ cấu hình URL.
+Snapshot ở thư mục `backup-staging` cạnh DB thật (`~/venho/state/growth-engine/backup-staging/`), thư mục 700, archive 600. Manifest gồm `object_key` + SHA-256 cho originals/variants; thiếu/sai hash làm backup thất bại. Retention theo UTC giữ bản mới nhất của 48 bucket giờ, 14 ngày, 8 tuần, một file có thể thuộc nhiều bucket. Rehearsal kiểm integrity, foreign keys, manifest toàn bộ artifact, và làm bản copy `DISABLED` + pause + epoch mới; DB thật được mở read-only khi snapshot. Doctor Backup age PASS khi staging có bản hoàn tất ≤2 giờ; gate cutover yêu cầu **<1 giờ**. Archive staging chưa mã hóa, giữ trên ASUS trong vùng 700. Backup cùng đĩa có thể mất cùng DB nếu ổ hỏng, máy mất hoặc dữ liệu bị xóa. Theo [runbook offsite](backup_offsite.md), hoàn tất upload đã kiểm checksum và diễn tập Mac trước khi mở ba kênh ngày 26/11. T3 chỉ WARN nếu offsite còn thiếu hoặc quá cũ. Heartbeat sender hiện có; Doctor Heartbeat age vẫn WARN vì chưa có nguồn timestamp xác thực healthchecks.io, không suy ra PASS từ cấu hình URL.
 
 ## T2 23/11 — sau 09:30 ICT
 
@@ -107,7 +107,7 @@ Harry duyệt đủ ba delivery trên VENHO OS v2. Đối chiếu Page/account, 
 gc2_cutover resume-three
 ```
 
-Gõ `LIVE_THREE`. Wrapper kiểm lại Hanoi 25/11, backup mới và approval hiện tại của cả ba target rồi mới bỏ global pause trong `LIVE_MANUAL`.
+Hoàn tất [offsite và diễn tập restore trên Mac](backup_offsite.md) trước bước này. Wrapper kiểm lại Hanoi 25/11 và xác minh trên Drive rằng backup offsite chưa đủ 26 giờ, đúng thư mục và khớp checksum. Khi đạt, gõ `LIVE_THREE`. Engine kiểm lại offsite, backup cục bộ mới và approval hiện tại của cả ba target rồi mới bỏ global pause trong `LIVE_MANUAL`. Nếu offsite thiếu, cũ, lệch hash hoặc Drive lỗi, giữ nguyên pause. Kiểm timer và chạy lại `backup offsite-now` sau khi khắc phục.
 
 ## T6 27/11 — ba kênh đăng lúc 09:00
 

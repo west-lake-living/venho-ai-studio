@@ -240,6 +240,7 @@ case "${1:-}" in
     [[ "$(legacy_write_status)" == 503 ]] || fail legacy_dashboard_write_not_frozen
     legacy_clear check
     "$engine" cutover-ops verified-hanoi --date "$first"
+    "$engine" backup offsite-status
     confirm LIVE_THREE
     systemctl --user start growth-engine-backup.service
     control resume-all "$next_slot"

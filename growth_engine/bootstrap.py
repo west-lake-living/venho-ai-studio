@@ -319,6 +319,7 @@ class DoctorService:
             )
         )
         if str(getattr(self.settings, "env", "")).lower() == "production":
+            checks.extend(self._offsite_checks())
             checks.append(self._meta_token_expiry_check())
             if self._meta_token_expiry_monitor is not None:
                 self._meta_token_expiry_monitor.execute()
@@ -636,6 +637,34 @@ class DoctorService:
         status = "PASS" if 0 <= age_seconds <= 2 * 60 * 60 else "FAIL"
         return DoctorCheck("Backup age", status, f"Backup mới nhất {age_seconds // 60} phút trước.")
 
+
+
+    def _offsite_checks(self) -> tuple[DoctorCheck, DoctorCheck]:
+        offsite = import_module("growth_engine.adapters.outbound.backup.offsite")
+        try:
+            recipient, checksum = offsite.load_recipient(self._repo_root)
+            offsite.check_recipient(recipient)
+        except offsite.OffsiteError as error:
+            status = "WARN" if str(error) == "offsite_age_cli_missing" else "FAIL"
+            return (DoctorCheck("Offsite recipient", status, str(error)),
+                    DoctorCheck("Offsite backup age", "WARN", "offsite_recipient_unavailable"))
+        receipt, reason = offsite.receipt_status(Path(self.settings.db_path), checksum, time.time_ns() // 1_000_000)
+        return (DoctorCheck("Offsite recipient", "PASS", "recipient_checksum_and_age_valid"),
+                DoctorCheck("Offsite backup age", "PASS" if receipt else "WARN", reason))
+
+
+def build_offsite_tools():
+    return import_module("growth_engine.adapters.outbound.backup.offsite")
+
+
+def build_backup_alert(settings):
+    telegram = import_module("growth_engine.adapters.outbound.notify.telegram_notifier")
+    try:
+        return telegram.TelegramNotifier(settings.telegram.get("BOT_TOKEN", ""), settings.telegram.get("CHAT_ID", "")).send
+    except ValueError:
+        def unavailable(_message):
+            raise RuntimeError("telegram_not_configured")
+        return unavailable
 
 
 def build_backup_tools():

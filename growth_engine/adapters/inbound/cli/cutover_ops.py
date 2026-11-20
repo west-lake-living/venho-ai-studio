@@ -7,10 +7,12 @@ from contextlib import closing
 from pathlib import Path
 from urllib.parse import urlsplit
 
-from growth_engine.bootstrap import build_backup_tools
+from growth_engine.bootstrap import build_backup_alert, build_backup_tools, build_offsite_tools
 from growth_engine.application.ops.cutover_readiness import CutoverReadiness
 from growth_engine.domain.publishing.runtime_mode import PublishMode
 from growth_engine.settings import Settings
+
+REPO_ROOT = Path(__file__).resolve().parents[4]
 
 TARGETS = {
     "fb_hanoi": ("facebook", "1124616474074140", "GE_MAKE_WEBHOOK_URL_PAGE_A"),
@@ -42,6 +44,48 @@ def backup(settings: Settings) -> dict:
     service, _, _, _ = build_backup_tools()
     copy = service.stage(db_path=database(settings), media_root=Path(settings.media_root), now_ms=now_ms())
     return {"result": "PASS", "snapshot": copy.destination.name, "artifacts": copy.artifact_count}
+
+
+def offsite_backup(settings: Settings) -> dict:
+    offsite = build_offsite_tools()
+    return offsite.upload_latest(database(settings), REPO_ROOT, offsite.GoogleDrive.from_env,
+                                  alert=build_backup_alert(settings))
+
+
+def create_offsite_folder(settings: Settings) -> dict:
+    database(settings)
+    offsite = build_offsite_tools()
+    try:
+        folder = offsite.GoogleDrive.from_env().create_folder()
+    except offsite.OffsiteError:
+        raise
+    except Exception:
+        raise ValueError("offsite_drive_folder_create_failed") from None
+    if not offsite.DRIVE_ID.fullmatch(folder):
+        raise ValueError("offsite_drive_folder_invalid")
+    return {"result": "PASS", "folder_id": folder}
+
+
+def require_offsite(settings: Settings) -> dict:
+    offsite = build_offsite_tools()
+    return offsite.require_fresh_remote(database(settings), REPO_ROOT, now_ms, offsite.GoogleDrive.from_env)
+
+
+def offsite_status(settings: Settings) -> dict:
+    receipt = require_offsite(settings)
+    return {"result": "PASS", "snapshot": receipt["name"], "checksum": "PASS",
+            "sha256": receipt["sha256"], "md5": receipt["md5"]}
+
+
+def offsite_warning(settings: Settings) -> str:
+    offsite = build_offsite_tools()
+    try:
+        recipient, checksum = offsite.load_recipient(REPO_ROOT)
+        offsite.check_recipient(recipient)
+    except offsite.OffsiteError as error:
+        return f"WARN: {error}"
+    receipt, reason = offsite.receipt_status(database(settings), checksum, now_ms())
+    return "PASS" if receipt else f"WARN: {reason}"
 
 
 def rehearsal(settings: Settings) -> dict:
@@ -156,6 +200,8 @@ def gate(settings: Settings, action: str, date: str, *, actor: str, correlation_
             raise ValueError("unexpected_publish_mode")
         if pending_gate(settings, date, approved=True, channels=expected)["result"] != "PASS":
             raise ValueError("approved_slot_gate_failed")
+        if action == "resume-all":
+            require_offsite(settings)
         if action == "live-hanoi":
             container.set_mode(PublishMode.LIVE_MANUAL, **audit)
         else:
@@ -203,4 +249,5 @@ def pending_gate(
     if approved and any(row["state"] != "APPROVED" for row in status["deliveries"]):
         reasons.append("slot_targets_not_approved")
     return {**status, "result": "FAIL" if reasons else "PASS", "reasons": reasons,
+            "offsite_backup": offsite_warning(settings),
             "overdue_delivery_ids": overdue}

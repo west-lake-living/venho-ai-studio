@@ -839,11 +839,29 @@ def _cutover_output(run) -> None:
     try:
         result = run()
     except (ValueError, RuntimeError, OSError, sqlite3.Error) as error:
-        code = str(error) if type(error) is ValueError and re.fullmatch(r"[a-z_]+", str(error)) else type(error).__name__
+        code = str(error) if isinstance(error, ValueError) and re.fullmatch(r"[a-z_0-9]+", str(error)) else type(error).__name__
         result = {"result": "FAIL", "reason": code}
     typer.echo(json.dumps(result, ensure_ascii=False, sort_keys=True))
     if result["result"] != "PASS":
         raise typer.Exit(code=1)
+
+
+@backup_cli.command("offsite-now")
+def backup_offsite_now() -> None:
+    from growth_engine.adapters.inbound.cli.cutover_ops import offsite_backup
+    _cutover_output(lambda: offsite_backup(Settings.from_env()))
+
+
+@backup_cli.command("offsite-status")
+def backup_offsite_status() -> None:
+    from growth_engine.adapters.inbound.cli.cutover_ops import offsite_status
+    _cutover_output(lambda: offsite_status(Settings.from_env()))
+
+
+@backup_cli.command("offsite-create-folder")
+def backup_offsite_create_folder() -> None:
+    from growth_engine.adapters.inbound.cli.cutover_ops import create_offsite_folder
+    _cutover_output(lambda: create_offsite_folder(Settings.from_env()))
 
 
 @backup_cli.command("now")

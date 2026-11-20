@@ -1,0 +1,9 @@
+[Unit]
+Description=Daily offsite Growth Engine backup at 02:30 ICT
+
+[Timer]
+OnCalendar=*-*-* 02:30:00 Asia/Ho_Chi_Minh
+Persistent=true
+
+[Install]
+WantedBy=timers.target
