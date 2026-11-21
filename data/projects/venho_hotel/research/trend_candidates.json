@@ -2093,15 +2093,22 @@
         "source_uri": "https://tayho.hanoi.gov.vn/van-hoa-xa-hoi/le-khai-mac-chuong-trinh-giao-luu-van-hoa-huu-nghi-quoc-te-tay-ho-di-san-ket-noi-nam-chau-se-dien-ra-vao-14h00-ngay-20-11-2697261119222254186.htm",
         "source_name": "Cổng TTĐT phường Tây Hồ",
         "published_at": null
+      },
+      {
+        "title": "Tây Hồ lan tỏa giá trị di sản đến gần hơn với bạn bè quốc tế,",
+        "source_uri": "https://news.google.com/rss/articles/CBMimgFBVV95cUxQN2NvbkRRTDlzUUgzNnlwNklXYjU4Yk9aZktQY2hmYVNKNnRtVzlRS1gzTk00dWliTE5nLUdmQzI5QW9rT1BIeXdza21TdURiWXZkSzB5X2JXLXBoaWVXeG1PMVJ5WFhSbXQ0ai1BdldicHJDRGZLdktPRXo4eENhVGg4cUFkbldxam1Pb2tYRzVwMlY1bE1DMkl3?oc=5",
+        "source_name": "Tạp chí Người Hà Nội",
+        "published_at": "2026-11-21T01:46:00+00:00"
       }
     ],
-    "source_count": 1,
+    "source_count": 2,
     "relevance_score": 0.6,
     "status": "needs_human_approval",
     "rejection_reason": null,
     "fast_lane": false,
     "verified_by_human": false,
-    "scanned_at": "2026-11-20T00:18:58.116663+00:00"
+    "scanned_at": "2026-11-20T00:18:58.116663+00:00",
+    "last_seen_at": "2026-11-21T12:18:41.673064+00:00"
   },
   {
     "id": "gnews-06d4393bb1a74fae",
@@ -2145,5 +2152,45 @@
     "fast_lane": false,
     "verified_by_human": false,
     "scanned_at": "2026-11-21T00:16:43.779861+00:00"
+  },
+  {
+    "id": "event-undated-365e99c19f",
+    "title": "Thông báo các hoạt động hưởng ứng Ngày Văn hóa Việt Nam năm 2026 tại Hà Nội",
+    "source_uri": "https://tayho.hanoi.gov.vn/van-hoa-xa-hoi/thong-bao-cac-hoat-dong-huong-ung-ngay-van-hoa-viet-nam-nam-2026-tai-ha-noi-2697261120203659376.htm",
+    "source_name": "Cổng TTĐT phường Tây Hồ",
+    "published_at": null,
+    "snippet": "Cổng TTĐT phường Tây Hồ",
+    "relevance_hint": 0.0,
+    "collector": "official_page",
+    "geographic": "westlake",
+    "thematic": "lifestyle_culture",
+    "actionability": "direct",
+    "type": "cultural_event",
+    "brand_safety_category": "safe",
+    "intersections": [
+      "hanoi_westlake_local",
+      "culture_festival_positive"
+    ],
+    "is_event": true,
+    "event_name": "Các hoạt động hưởng ứng Ngày Văn hóa Việt Nam năm 2026 tại Hà Nội",
+    "event_start": null,
+    "event_end": null,
+    "venue": "Phường Tây Hồ, Hà Nội",
+    "westlake_area": true,
+    "sources": [
+      {
+        "title": "Thông báo các hoạt động hưởng ứng Ngày Văn hóa Việt Nam năm 2026 tại Hà Nội",
+        "source_uri": "https://tayho.hanoi.gov.vn/van-hoa-xa-hoi/thong-bao-cac-hoat-dong-huong-ung-ngay-van-hoa-viet-nam-nam-2026-tai-ha-noi-2697261120203659376.htm",
+        "source_name": "Cổng TTĐT phường Tây Hồ",
+        "published_at": null
+      }
+    ],
+    "source_count": 1,
+    "relevance_score": 0.6,
+    "status": "needs_human_approval",
+    "rejection_reason": null,
+    "fast_lane": false,
+    "verified_by_human": false,
+    "scanned_at": "2026-11-21T12:18:41.673064+00:00"
   }
 ]
