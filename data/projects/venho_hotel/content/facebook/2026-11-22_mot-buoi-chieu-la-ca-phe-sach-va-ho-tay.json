@@ -1,0 +1,46 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "project": "venho_hotel",
+  "content_type": "facebook_post",
+  "target_language": "vi",
+  "generated_at": "2026-11-22T13:07:55.639376+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_OUTSIDE_DNA.json",
+      "dna_version": "1.2",
+      "hash": "sha256:aaad1f90ca3a80fbefe9dc168823190c89ef923952e96bd2d902e73f0c5ec577"
+    }
+  ],
+  "source_prompt": {
+    "file": "data/projects/venho_hotel/prompts/content/OUTSIDE__facebook-mot-buoi-chieu-la-ca-phe-sach-va-ho-tay__CONTENT_PROMPT_v1.0.json",
+    "prompt_id": "outside__content__facebook-mot-buoi-chieu-la-ca-phe-sach-va-ho-tay",
+    "prompt_version": "1.0"
+  },
+  "generator": {
+    "provider": "mock",
+    "model": "deterministic-social-builder",
+    "temperature": 0.6
+  },
+  "title": "Một buổi chiều chỉ cần cà phê, một cuốn sách và Hồ Tây",
+  "hook": "Có những buổi chiều ở Tây Hồ, ly cà phê nguội đi mà cuốn sách vẫn chưa sang được chương mới.",
+  "body": "Trời trong, nắng sáng rõ từng tán cây lớn dọc phố. Phía xa, những mái nhà cao thấp xen nhau, còn mặt hồ nằm im một khoảng xanh xám.\n\nBuổi chiều quanh Hồ Tây thường chậm hơn người ta tưởng. Vài người đi bộ qua, một chiếc xe đạp lướt ngang, rồi lại yên. Không có gì gấp gáp để bắt kịp, nên đọc sách ở đây dễ hơn hẳn — kể cả khi bạn đọc chẳng được bao nhiêu trang.\n\nKhu Nguyễn Đình Thi hợp với kiểu chiều như vậy. Bạn có thể mang theo một cuốn sách, tìm một chỗ ngồi có gió, gọi ly cà phê rồi để thời gian trôi. Khi nắng hạ xuống thấp, chỉ cần ngẩng lên là thấy mặt hồ đổi màu.\n\nVới khách đến Hà Nội vài ngày, một buổi chiều như thế thường là khoảng nghỉ cần thiết giữa lịch trình. Ven Hồ Hotel nằm ngay trên Nguyễn Đình Thi, đủ gần để bạn gấp sách lại là về đến nơi, và cũng đủ gần để quay ra kịp lúc hoàng hôn Hồ Tây bắt đầu.",
+  "cta": "Nếu bạn đang lên kế hoạch cho vài ngày ở Hà Nội, nhắn tin cho Ven Hồ Hotel để xem lịch phòng trống nhé.",
+  "hashtags": [
+    "#VenHoHotelHanoi",
+    "#HoTay",
+    "#WestLakeHanoi",
+    "#KhachSanHoTay",
+    "#HaNoi"
+  ],
+  "visual_note": null,
+  "contract_refs": null,
+  "payload": {},
+  "status": "draft",
+  "validation": {
+    "required": true,
+    "status": "pending",
+    "report_file": null,
+    "notes": []
+  }
+}

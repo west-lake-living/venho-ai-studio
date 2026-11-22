@@ -225,6 +225,118 @@
       "staleness": "current",
       "markdown": "data/projects/venho_hotel/content/instagram/2026-11-03_thu-h-n-i-v-7-tr-i-nghi-m-nh-t-nh-ph-i-th-khi-gh-th-m.md",
       "json": "data/projects/venho_hotel/content/instagram/2026-11-03_thu-h-n-i-v-7-tr-i-nghi-m-nh-t-nh-ph-i-th-khi-gh-th-m.json"
+    },
+    {
+      "id": "2026-11-22_nhung-nguoi-cau-ca-ven-ho-luc-binh-minh",
+      "type": "instagram_post",
+      "source_knowledge_hashes": [
+        "sha256:61f198440f5480c3ab7b63c38c97553d7cf072838b82dcdd5e4d802521e67a38"
+      ],
+      "source_prompt_version": "1.0",
+      "target_language": "vi",
+      "generated_at": "2026-11-22T13:04:00.895258+00:00",
+      "status": "draft",
+      "staleness": "current",
+      "markdown": "data/projects/venho_hotel/content/instagram/2026-11-22_nhung-nguoi-cau-ca-ven-ho-luc-binh-minh.md",
+      "json": "data/projects/venho_hotel/content/instagram/2026-11-22_nhung-nguoi-cau-ca-ven-ho-luc-binh-minh.json"
+    },
+    {
+      "id": "2026-11-22_mot-buoi-chieu-la-ca-phe-sach-va-ho-tay",
+      "type": "instagram_post",
+      "source_knowledge_hashes": [
+        "sha256:aaad1f90ca3a80fbefe9dc168823190c89ef923952e96bd2d902e73f0c5ec577"
+      ],
+      "source_prompt_version": "1.0",
+      "target_language": "vi",
+      "generated_at": "2026-11-22T13:08:10.763503+00:00",
+      "status": "draft",
+      "staleness": "current",
+      "markdown": "data/projects/venho_hotel/content/instagram/2026-11-22_mot-buoi-chieu-la-ca-phe-sach-va-ho-tay.md",
+      "json": "data/projects/venho_hotel/content/instagram/2026-11-22_mot-buoi-chieu-la-ca-phe-sach-va-ho-tay.json"
+    },
+    {
+      "id": "2026-11-22_phong-don-gian-nhung-du-day",
+      "type": "instagram_post",
+      "source_knowledge_hashes": [
+        "sha256:7c635dcdc575c74c8263cc1ade2f2b051b2359afc6ca2fc7b55067e64a2cc2f0"
+      ],
+      "source_prompt_version": "1.0",
+      "target_language": "vi",
+      "generated_at": "2026-11-22T13:11:22.733181+00:00",
+      "status": "draft",
+      "staleness": "current",
+      "markdown": "data/projects/venho_hotel/content/instagram/2026-11-22_phong-don-gian-nhung-du-day.md",
+      "json": "data/projects/venho_hotel/content/instagram/2026-11-22_phong-don-gian-nhung-du-day.json"
+    },
+    {
+      "id": "2026-11-22_chung-kh-o-cu-c-thi-gi-ng-h-t-hay-n-m-2026",
+      "type": "instagram_post",
+      "source_knowledge_hashes": [
+        "sha256:61f198440f5480c3ab7b63c38c97553d7cf072838b82dcdd5e4d802521e67a38"
+      ],
+      "source_prompt_version": "1.0",
+      "target_language": "vi",
+      "generated_at": "2026-11-22T13:14:23.499545+00:00",
+      "status": "draft",
+      "staleness": "current",
+      "markdown": "data/projects/venho_hotel/content/instagram/2026-11-22_chung-kh-o-cu-c-thi-gi-ng-h-t-hay-n-m-2026.md",
+      "json": "data/projects/venho_hotel/content/instagram/2026-11-22_chung-kh-o-cu-c-thi-gi-ng-h-t-hay-n-m-2026.json"
+    },
+    {
+      "id": "2026-11-22_nguoi-ha-noi-tap-the-duc-quanh-ho-tay-luc-6-gio-sang",
+      "type": "instagram_post",
+      "source_knowledge_hashes": [
+        "sha256:61f198440f5480c3ab7b63c38c97553d7cf072838b82dcdd5e4d802521e67a38"
+      ],
+      "source_prompt_version": "1.0",
+      "target_language": "vi",
+      "generated_at": "2026-11-22T13:17:48.963248+00:00",
+      "status": "draft",
+      "staleness": "current",
+      "markdown": "data/projects/venho_hotel/content/instagram/2026-11-22_nguoi-ha-noi-tap-the-duc-quanh-ho-tay-luc-6-gio-sang.md",
+      "json": "data/projects/venho_hotel/content/instagram/2026-11-22_nguoi-ha-noi-tap-the-duc-quanh-ho-tay-luc-6-gio-sang.json"
+    },
+    {
+      "id": "2026-11-22_quan-an-gan-ho-tay-ma-khach-o-ven-ho-hotel-hay-hoi",
+      "type": "instagram_post",
+      "source_knowledge_hashes": [
+        "sha256:aaad1f90ca3a80fbefe9dc168823190c89ef923952e96bd2d902e73f0c5ec577"
+      ],
+      "source_prompt_version": "1.0",
+      "target_language": "vi",
+      "generated_at": "2026-11-22T13:21:11.706237+00:00",
+      "status": "draft",
+      "staleness": "current",
+      "markdown": "data/projects/venho_hotel/content/instagram/2026-11-22_quan-an-gan-ho-tay-ma-khach-o-ven-ho-hotel-hay-hoi.md",
+      "json": "data/projects/venho_hotel/content/instagram/2026-11-22_quan-an-gan-ho-tay-ma-khach-o-ven-ho-hotel-hay-hoi.json"
+    },
+    {
+      "id": "2026-11-22_khong-gian-sanh-don-khach-vao-buoi-chieu",
+      "type": "instagram_post",
+      "source_knowledge_hashes": [
+        "sha256:e01fc1fa26c2318ce93d3a670067bac2ccbf9dc329a141ea906e80fb108c673f"
+      ],
+      "source_prompt_version": "1.0",
+      "target_language": "vi",
+      "generated_at": "2026-11-22T13:24:07.671648+00:00",
+      "status": "draft",
+      "staleness": "current",
+      "markdown": "data/projects/venho_hotel/content/instagram/2026-11-22_khong-gian-sanh-don-khach-vao-buoi-chieu.md",
+      "json": "data/projects/venho_hotel/content/instagram/2026-11-22_khong-gian-sanh-don-khach-vao-buoi-chieu.json"
+    },
+    {
+      "id": "2026-11-22_v-p-y-n-b-nh-v-m-t-y-h",
+      "type": "instagram_post",
+      "source_knowledge_hashes": [
+        "sha256:61f198440f5480c3ab7b63c38c97553d7cf072838b82dcdd5e4d802521e67a38"
+      ],
+      "source_prompt_version": "1.0",
+      "target_language": "vi",
+      "generated_at": "2026-11-22T13:27:13.802669+00:00",
+      "status": "draft",
+      "staleness": "current",
+      "markdown": "data/projects/venho_hotel/content/instagram/2026-11-22_v-p-y-n-b-nh-v-m-t-y-h.md",
+      "json": "data/projects/venho_hotel/content/instagram/2026-11-22_v-p-y-n-b-nh-v-m-t-y-h.json"
     }
   ]
 }

@@ -2,49 +2,49 @@
   {
     "slot_date": "2026-11-23",
     "day": "monday",
-    "status": "NOT_CREATED",
-    "content_package_id": null
+    "status": "PENDING_APPROVAL",
+    "content_package_id": "48099a68-c4e1-4de7-8aca-3b4a26b079f0"
   },
   {
     "slot_date": "2026-11-25",
     "day": "wednesday",
-    "status": "NOT_CREATED",
-    "content_package_id": null
+    "status": "PENDING_APPROVAL",
+    "content_package_id": "51767715-c206-4c3f-88cb-2a977a97b0f4"
   },
   {
     "slot_date": "2026-11-27",
     "day": "friday",
-    "status": "NOT_CREATED",
-    "content_package_id": null
+    "status": "PENDING_APPROVAL",
+    "content_package_id": "ef41feef-9cc6-45b7-9526-bfb67683a3fa"
   },
   {
     "slot_date": "2026-11-28",
     "day": "saturday",
-    "status": "NOT_CREATED",
-    "content_package_id": null
+    "status": "PENDING_APPROVAL",
+    "content_package_id": "95b6dc4f-743a-478d-9091-d4ebcc41d07d"
   },
   {
     "slot_date": "2026-11-30",
     "day": "monday",
-    "status": "NOT_CREATED",
-    "content_package_id": null
+    "status": "PENDING_APPROVAL",
+    "content_package_id": "cd596245-1d88-4475-896a-26a7185d8ee5"
   },
   {
     "slot_date": "2026-12-02",
     "day": "wednesday",
-    "status": "NOT_CREATED",
-    "content_package_id": null
+    "status": "PENDING_APPROVAL",
+    "content_package_id": "20f07a12-3882-4904-9bce-ccee033353bc"
   },
   {
     "slot_date": "2026-12-04",
     "day": "friday",
-    "status": "NOT_CREATED",
-    "content_package_id": null
+    "status": "PENDING_APPROVAL",
+    "content_package_id": "4fa0ddef-6e09-47b8-a81d-7096f3977e90"
   },
   {
     "slot_date": "2026-12-05",
     "day": "saturday",
-    "status": "NOT_CREATED",
-    "content_package_id": null
+    "status": "PENDING_APPROVAL",
+    "content_package_id": "800977c8-e6e8-425b-ab73-9bb2e1f66de4"
   }
 ]

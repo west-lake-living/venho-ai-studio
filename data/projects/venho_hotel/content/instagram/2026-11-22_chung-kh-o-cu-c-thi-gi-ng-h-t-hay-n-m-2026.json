@@ -1,0 +1,49 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "project": "venho_hotel",
+  "content_type": "instagram_post",
+  "target_language": "vi",
+  "generated_at": "2026-11-22T13:14:23.499545+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_WESTLAKE_DNA.json",
+      "dna_version": "1.2",
+      "hash": "sha256:61f198440f5480c3ab7b63c38c97553d7cf072838b82dcdd5e4d802521e67a38"
+    }
+  ],
+  "source_prompt": {
+    "file": "data/projects/venho_hotel/prompts/content/WESTLAKE__instagram-chung-kh-o-cu-c-thi-gi-ng-h-t-hay-n-m-2026__CONTENT_PROMPT_v1.0.json",
+    "prompt_id": "westlake__content__instagram-chung-kh-o-cu-c-thi-gi-ng-h-t-hay-n-m-2026",
+    "prompt_version": "1.0"
+  },
+  "generator": {
+    "provider": "mock",
+    "model": "deterministic-social-builder",
+    "temperature": 0.6
+  },
+  "title": "Cuối tuần ở Hồ Tây: một buổi chiều không cần kế hoạch",
+  "hook": "Có những cuối tuần ở Hồ Tây bắt đầu bằng việc không định đi đâu cả.",
+  "body": "Chiều thứ Bảy, trời nhiều mây nhưng không âm u. Nắng lọt qua từng khoảng trống, rơi xuống mặt nước một thứ ánh sáng dịu, không chói.\n\nMặt hồ hôm ấy phẳng. Màu nước ngả xanh ngọc trầm, không rực rỡ, nhìn lâu thấy dễ chịu. Không khí trong nên nhìn được tới tận bờ bên kia, nơi những toà nhà xa xa xếp thành một đường viền mờ phía chân trời.\n\nHàng cây ven đường đủ dày để có bóng mát, đủ thưa để vẫn thấy hồ. Người qua lại không nhiều. Đi bộ một đoạn, dừng lại một lúc, rồi lại đi tiếp — cuối tuần ở đây thường diễn ra đúng như vậy.\n\nVen Hồ Hotel nằm trên Nguyễn Đình Thi, bước ra khỏi cửa là tới mặt hồ. Với những ai thích một khách sạn view Hồ Tây để bắt đầu và kết thúc một ngày chậm rãi, khoảng cách ngắn ấy là thứ tạo nên khác biệt.",
+  "cta": "Nếu bạn đang tính dành một cuối tuần chậm hơn bên Hồ Tây, nhắn Ven Hồ Hotel để xem phòng trống cho những ngày bạn dự định ở Hà Nội nhé.",
+  "hashtags": [
+    "#VenHoHotelHanoi",
+    "#HoTay",
+    "#WestLakeHanoi",
+    "#KhachSanHoTay",
+    "#NguyenDinhThi",
+    "#KhamPhaHoTay",
+    "#HaNoi",
+    "#HanoiTravel"
+  ],
+  "visual_note": null,
+  "contract_refs": null,
+  "payload": {},
+  "status": "draft",
+  "validation": {
+    "required": true,
+    "status": "pending",
+    "report_file": null,
+    "notes": []
+  }
+}

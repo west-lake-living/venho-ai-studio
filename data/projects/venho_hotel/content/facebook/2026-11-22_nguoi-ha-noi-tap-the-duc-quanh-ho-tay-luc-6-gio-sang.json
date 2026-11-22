@@ -1,0 +1,46 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "project": "venho_hotel",
+  "content_type": "facebook_post",
+  "target_language": "vi",
+  "generated_at": "2026-11-22T13:17:27.561887+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_WESTLAKE_DNA.json",
+      "dna_version": "1.2",
+      "hash": "sha256:61f198440f5480c3ab7b63c38c97553d7cf072838b82dcdd5e4d802521e67a38"
+    }
+  ],
+  "source_prompt": {
+    "file": "data/projects/venho_hotel/prompts/content/WESTLAKE__facebook-nguoi-ha-noi-tap-the-duc-quanh-ho-tay-luc-6-gio-sang__CONTENT_PROMPT_v1.0.json",
+    "prompt_id": "westlake__content__facebook-nguoi-ha-noi-tap-the-duc-quanh-ho-tay-luc-6-gio-sang",
+    "prompt_version": "1.0"
+  },
+  "generator": {
+    "provider": "mock",
+    "model": "deterministic-social-builder",
+    "temperature": 0.6
+  },
+  "title": "Sáu giờ sáng ở Hồ Tây, thành phố còn chưa vội",
+  "hook": "Ở Hồ Tây, sáu giờ sáng là khung giờ của người Hà Nội, trước khi phố xá kịp đông lên.",
+  "body": "Mặt hồ lúc đó rất lặng. Nước mang sắc xanh ngả ngọc trầm, không rực rỡ, chỉ phẳng và rộng. Trời có mây nhưng không dày, ánh sáng dịu, không chói, nhìn thẳng ra được tới dãy nhà cao phía bờ bên kia.\n\nNgười ở ven hồ giờ này thưa. Vài bước chân đi bộ đều đều, một người chạy chậm rồi khuất sau hàng cây, một chiếc xe đạp đi qua rồi thôi. Không ai vội. Hàng cây dọc bờ đủ dày để che nắng sớm, đủ thưa để vẫn thấy mặt nước.\n\nĐó là cách nhiều người Hà Nội bắt đầu một tuần mới: đi hết một đoạn ven hồ, hít thở, rồi về nhà chuẩn bị đi làm. Một thói quen cũ, lặp lại mỗi ngày, và chính nó làm nên nhịp sống riêng của khu vực này.\n\nVen Hồ Hotel nằm trên đường Nguyễn Đình Thi, ngay cạnh hồ. Với khách ở đây, buổi sáng sớm không cần lên kế hoạch gì nhiều, chỉ cần dậy đúng giờ và bước ra khỏi cửa là đã ở trong khung cảnh ấy.",
+  "cta": "Nếu bạn đang sắp xếp một chuyến Hà Nội và muốn dành vài buổi sáng cho Hồ Tây, nhắn cho Ven Hồ Hotel để xem phòng trống cho những ngày bạn dự định ở lại nhé.",
+  "hashtags": [
+    "#VenHoHotelHanoi",
+    "#HoTay",
+    "#KhachSanHoTay",
+    "#HaNoi",
+    "#WestLakeHanoi"
+  ],
+  "visual_note": null,
+  "contract_refs": null,
+  "payload": {},
+  "status": "draft",
+  "validation": {
+    "required": true,
+    "status": "pending",
+    "report_file": null,
+    "notes": []
+  }
+}

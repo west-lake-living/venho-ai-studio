@@ -1,0 +1,48 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "project": "venho_hotel",
+  "content_type": "instagram_post",
+  "target_language": "vi",
+  "generated_at": "2026-11-22T13:27:13.802669+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_WESTLAKE_DNA.json",
+      "dna_version": "1.2",
+      "hash": "sha256:61f198440f5480c3ab7b63c38c97553d7cf072838b82dcdd5e4d802521e67a38"
+    }
+  ],
+  "source_prompt": {
+    "file": "data/projects/venho_hotel/prompts/content/WESTLAKE__instagram-v-p-y-n-b-nh-v-m-t-y-h__CONTENT_PROMPT_v1.0.json",
+    "prompt_id": "westlake__content__instagram-v-p-y-n-b-nh-v-m-t-y-h",
+    "prompt_version": "1.0"
+  },
+  "generator": {
+    "provider": "mock",
+    "model": "deterministic-social-builder",
+    "temperature": 0.6
+  },
+  "title": "Hồ Tây về đêm, khi mặt nước lặng đi",
+  "hook": "Tối đến, Hồ Tây không ồn lên. Nó lặng xuống.",
+  "body": "Mặt nước gần như không gợn. Ánh đèn từ những toà nhà phía bên kia hồ chỉ in xuống rất nhẹ, loang một vệt mờ rồi tan, không đủ để thành một tấm gương.\n\nBầu trời còn vài mảng mây, chỗ sáng chỗ tối. Tầm nhìn mở rất xa, nhìn thẳng được tới đường chân trời thành phố. Hàng cây ven hồ đứng thành từng mảng sẫm, gió đi qua nghe rõ hơn cả tiếng xe.\n\nBuổi tối ở Tây Hồ không có nhiều việc để làm. Đi bộ một đoạn, dừng lại nhìn ra giữa hồ, rồi quay về. Thế thôi. Nhưng với nhiều người, đó lại là phần dễ chịu nhất trong một ngày ở Hà Nội.\n\nVen Hồ Hotel nằm trên Nguyễn Đình Thi, chỉ vài bước chân là ra tới mép hồ, nên đoạn đường tối muộn ấy luôn vừa đủ ngắn để còn muốn đi thêm một vòng.",
+  "cta": "Nếu bạn đang tính vài ngày ở Hà Nội và muốn một khách sạn view Hồ Tây để tối nào cũng có thể ra hồ, nhắn tin cho Ven Hồ Hotel để xem phòng trống nhé.",
+  "hashtags": [
+    "#VenHoHotelHanoi",
+    "#HoTay",
+    "#WestLakeHanoi",
+    "#KhachSanHoTay",
+    "#HaNoiVeDem",
+    "#NguyenDinhThi",
+    "#HanoiTravel"
+  ],
+  "visual_note": null,
+  "contract_refs": null,
+  "payload": {},
+  "status": "draft",
+  "validation": {
+    "required": true,
+    "status": "pending",
+    "report_file": null,
+    "notes": []
+  }
+}

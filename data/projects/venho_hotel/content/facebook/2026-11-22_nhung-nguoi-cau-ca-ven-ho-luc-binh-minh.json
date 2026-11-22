@@ -1,0 +1,46 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "project": "venho_hotel",
+  "content_type": "facebook_post",
+  "target_language": "vi",
+  "generated_at": "2026-11-22T13:03:41.319341+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_WESTLAKE_DNA.json",
+      "dna_version": "1.2",
+      "hash": "sha256:61f198440f5480c3ab7b63c38c97553d7cf072838b82dcdd5e4d802521e67a38"
+    }
+  ],
+  "source_prompt": {
+    "file": "data/projects/venho_hotel/prompts/content/WESTLAKE__facebook-nhung-nguoi-cau-ca-ven-ho-luc-binh-minh__CONTENT_PROMPT_v1.0.json",
+    "prompt_id": "westlake__content__facebook-nhung-nguoi-cau-ca-ven-ho-luc-binh-minh",
+    "prompt_version": "1.0"
+  },
+  "generator": {
+    "provider": "mock",
+    "model": "deterministic-social-builder",
+    "temperature": 0.6
+  },
+  "title": "Những người câu cá ven Hồ Tây và buổi sáng chậm nhất trong tuần",
+  "hook": "Sáng sớm ven Hồ Tây, mặt nước phẳng đến mức gần như không phản chiếu gì. Trên bờ, vài chiếc cần câu dựng im.",
+  "body": "Nước hồ sáng nay mang sắc xanh ngọc trầm, không rực rỡ, chỉ lặng và sâu. Trời có mây rải rác, ánh sáng dịu nên nhìn được rất xa, tới tận dãy nhà cao phía bên kia hồ, nơi thành phố bắt đầu một ngày mới.\n\nNhững người câu cá ngồi cách nhau một quãng, lưng quay về phía lối đi, mắt hướng ra mặt nước. Họ không nói nhiều. Thi thoảng một người đổi thế ngồi, chỉnh lại chiếc cần, rồi lại im. Phía sau họ là hàng cây thưa và con đường dạo ven hồ, nơi người đi bộ qua lại mà không ai thấy cần phải nhanh.\n\nĐầu tuần, phần lớn Hà Nội đang khởi động. Nhưng ở mép nước này, nhịp sống đi theo một tốc độ khác. Có lẽ đó là lý do nhiều người tìm về Hồ Tây vào sáng sớm: không phải để làm gì cụ thể, chỉ để ngồi cạnh một thứ đang rất yên.\n\nVen Hồ Hotel nằm trên đường Nguyễn Đình Thi, chỉ cách lối đi ven hồ vài bước chân. Buổi sáng, bạn có thể ra khỏi cửa và gặp đúng khung cảnh này trước khi bắt đầu bất cứ lịch trình nào ở Hà Nội.",
+  "cta": "Nếu bạn đang lên kế hoạch tới Hà Nội, nhắn cho Ven Hồ Hotel để xem phòng trống cho những ngày bạn dự định ở lại.",
+  "hashtags": [
+    "#VenHoHotelHanoi",
+    "#HoTay",
+    "#WestLakeHanoi",
+    "#KhamPhaHoTay",
+    "#HaNoi"
+  ],
+  "visual_note": null,
+  "contract_refs": null,
+  "payload": {},
+  "status": "draft",
+  "validation": {
+    "required": true,
+    "status": "pending",
+    "report_file": null,
+    "notes": []
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "project": "venho_hotel",
+  "content_type": "instagram_post",
+  "target_language": "vi",
+  "generated_at": "2026-11-22T13:04:00.895258+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_WESTLAKE_DNA.json",
+      "dna_version": "1.2",
+      "hash": "sha256:61f198440f5480c3ab7b63c38c97553d7cf072838b82dcdd5e4d802521e67a38"
+    }
+  ],
+  "source_prompt": {
+    "file": "data/projects/venho_hotel/prompts/content/WESTLAKE__instagram-nhung-nguoi-cau-ca-ven-ho-luc-binh-minh__CONTENT_PROMPT_v1.0.json",
+    "prompt_id": "westlake__content__instagram-nhung-nguoi-cau-ca-ven-ho-luc-binh-minh",
+    "prompt_version": "1.0"
+  },
+  "generator": {
+    "provider": "mock",
+    "model": "deterministic-social-builder",
+    "temperature": 0.6
+  },
+  "title": "Buổi sáng đầu tuần, vài người ngồi câu bên Hồ Tây",
+  "hook": "Trời vừa sáng, mặt hồ phẳng như chưa ai chạm vào.\nVài người ngồi câu, cách nhau một quãng xa.",
+  "body": "Nước Hồ Tây sáng sớm có màu xanh ngả xám, trầm và tĩnh, không rực lên như người ta hay tưởng tượng. Mây che một nửa bầu trời nên ánh sáng rất dịu, đủ để nhìn rõ đường bờ bên kia và những khối nhà cao phía xa.\n\nNgười câu cá ở đây gần như không nói gì. Họ đến sớm, chọn một chỗ dưới tán cây, rồi ngồi yên. Thỉnh thoảng có tiếng dây câu, tiếng xe máy sau lưng, rồi lại im.\n\nĐó là nhịp riêng của Hồ Tây lúc đầu tuần: chậm hơn phần còn lại của thành phố chừng một tiếng đồng hồ. Nếu dậy sớm được, bạn chỉ cần đi bộ dọc Nguyễn Đình Thi, không cần kế hoạch gì thêm.",
+  "cta": "Ven Hồ Hotel nằm ngay trên cung đường ấy. Nhắn tin cho tụi mình nếu bạn muốn hỏi phòng trống cho những ngày sắp tới ở Hà Nội.",
+  "hashtags": [
+    "#VenHoHotelHanoi",
+    "#HoTay",
+    "#WestLakeHanoi",
+    "#KhamPhaHoTay",
+    "#KhachSanHoTay",
+    "#NguyenDinhThi",
+    "#HaNoi",
+    "#HanoiTravel"
+  ],
+  "visual_note": null,
+  "contract_refs": null,
+  "payload": {},
+  "status": "draft",
+  "validation": {
+    "required": true,
+    "status": "pending",
+    "report_file": null,
+    "notes": []
+  }
+}
