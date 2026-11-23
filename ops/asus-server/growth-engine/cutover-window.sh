@@ -82,9 +82,9 @@ legacy_clear() {
   done
   local runs workflow registry remote_blob
   for workflow in growth-publish-scheduler.yml growth-daily-cycle.yml growth-replace-rejected.yml growth-expire-stale-approvals.yml; do
-    runs="$(gh api --paginate --slurp "repos/$legacy_repo/actions/workflows/$workflow/runs?per_page=100" \
-      --jq '[.[].workflow_runs[] | select(.status != "completed")] | length')" || fail legacy_workflow_query_failed
-    [[ "$runs" == 0 ]] || fail "${workflow}_runs_not_drained"
+    runs="$(gh api --paginate "repos/$legacy_repo/actions/workflows/$workflow/runs?per_page=100" \
+      --jq '[.workflow_runs[] | select(.status != "completed")] | length')" || fail legacy_workflow_query_failed
+    [[ "$runs" =~ ^0($'\n'0)*$ ]] || fail "${workflow}_runs_not_drained"
   done
   [[ "$(gh api "repos/$legacy_repo/actions/workflows/growth-publish-scheduler.yml" --jq .state)" == disabled_manually ]] || fail 'legacy GitHub workflow remains enabled'
   registry=data/projects/venho_hotel/publishing/publication_registry.json
@@ -92,7 +92,7 @@ legacy_clear() {
   remote_blob="$(git -C "$legacy" rev-parse "FETCH_HEAD:$registry" 2>/dev/null)" || fail legacy_remote_registry_missing
   [[ "$(git -C "$legacy" hash-object -- "$legacy/$registry")" == "$remote_blob" ]] || fail 'legacy local registry differs from GitHub'
   case "$1" in
-    check) "$venv/python" "$ops/legacy-cutover-snapshot.py" "$legacy" "$evidence" --check ;;
+    check) "$venv/python" "$ops/legacy-cutover-snapshot.py" "$legacy" "$evidence" --check --insights "$insights" ;;
     snapshot) "$venv/python" "$ops/legacy-cutover-snapshot.py" "$legacy" "$evidence" --insights "$insights" ;;
   esac
 }

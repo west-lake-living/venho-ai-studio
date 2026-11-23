@@ -79,7 +79,8 @@ def test_legacy_inventory_blocks_future_sends_and_in_flight_rows():
     }
 
 
-def test_legacy_snapshot_includes_insights_wal_and_checksum(tmp_path):
+@pytest.mark.parametrize("present", [False, True])
+def test_legacy_snapshot_insights_state_and_checksum(tmp_path, capsys, present):
     import json
     import runpy
 
@@ -96,20 +97,44 @@ def test_legacy_snapshot_includes_insights_wal_and_checksum(tmp_path):
     insights = tmp_path / "insights.db"
     with sqlite3.connect(project / "growth/growth.db") as growth:
         growth.execute("CREATE TABLE slots (id)")
-    with sqlite3.connect(insights) as source:
-        source.execute("PRAGMA journal_mode=WAL")
-        source.execute("CREATE TABLE metrics (views)")
-        source.execute("INSERT INTO metrics VALUES (42)")
-        source.commit()
+    if present:
+        with sqlite3.connect(insights) as source:
+            source.execute("PRAGMA journal_mode=WAL")
+            source.execute("CREATE TABLE metrics (views)")
+            source.execute("INSERT INTO metrics VALUES (42)")
+            source.commit()
+            assert snapshot(legacy, evidence, check=False, insights=insights)
+    else:
+        assert snapshot(legacy, evidence, check=True, insights=insights)
         assert snapshot(legacy, evidence, check=False, insights=insights)
-        target = evidence / "legacy-snapshot"
-        copied = target / "source/insights.db"
-        manifest = json.loads((target / "manifest.json").read_text())
-        assert len(manifest) == 4
+        assert "INSIGHTS=ABSENT (D2 deferred)" in capsys.readouterr().out
+
+    target = evidence / "legacy-snapshot"
+    copied = target / "source/insights.db"
+    manifest = json.loads((target / "manifest.json").read_text())
+    if present:
         assert manifest["insights.db"] == hashlib.sha256(copied.read_bytes()).hexdigest()
         with sqlite3.connect(copied) as restored:
             assert restored.execute("SELECT views FROM metrics").fetchone() == (42,)
-        assert snapshot(legacy, evidence, check=False, insights=insights)
+    else:
+        assert manifest["insights.db"] == {"status": "ABSENT", "reason": "t0_06_never_deployed"}
+        assert not copied.exists()
+        from growth_engine.adapters.outbound.legacy.importer import LegacyImportDryRun
+
+        report = tmp_path / "dry-run.md"
+        LegacyImportDryRun().run(target / "source", report)
+        assert report.is_file()
+
+    for check in (True, False):
+        assert snapshot(legacy, evidence, check=check, insights=insights)
+
+    if present:
+        insights.unlink()
+    else:
+        insights.touch()
+    for check in (True, False):
+        with pytest.raises(ValueError, match="presence_changed_after_snapshot"):
+            snapshot(legacy, evidence, check=check, insights=insights)
 
 
 def test_cutover_holds_os_timer_across_steps_and_restores_previous_state(tmp_path):
@@ -144,3 +169,83 @@ restore_os_timer
 ''', "test", str(tmp_path)],
         check=True,
     )
+
+
+def test_t3_wrapper_runs_with_absent_insights(tmp_path):
+    import os
+    import shutil
+    import subprocess
+    import sys
+
+    ops = Path(__file__).resolve().parents[2] / "ops/asus-server/growth-engine"
+    root = tmp_path / "venho/growth-engine/current"
+    deployed = root / "ops/asus-server/growth-engine"
+    deployed.mkdir(parents=True)
+    shutil.copy(ops / "legacy-cutover-snapshot.py", deployed)
+    switch = deployed.parent / "venho-os/growth-backend-switch.sh"
+    switch.parent.mkdir()
+    switch.write_text('touch "$HOME/os-v2"\n')
+    venv = root / ".venv/bin"
+    venv.mkdir(parents=True)
+    (venv / "python").symlink_to(sys.executable)
+    (deployed / "setup-production-make-bearers.py").write_text("pass\n")
+    project = tmp_path / "venho/growth-runtime/venho-ai-studio/data/projects/venho_hotel"
+    (project / "publishing").mkdir(parents=True)
+    (project / "growth").mkdir()
+    (project / "publishing/publication_registry.json").write_text('{"publications":[]}')
+    (project / "growth/slots_snapshot.json").write_text("{}")
+    with sqlite3.connect(project / "growth/growth.db") as db:
+        db.execute("CREATE TABLE slots (id)")
+    engine = deployed / "run-with-legacy-provider-env.sh"
+    engine.write_text('''#!/bin/bash
+set -eu
+if [[ "$1" == legacy-import ]]; then
+  [[ "$2" == --dry-run && -f "$4/growth.db" && ! -e "$4/insights.db" ]]
+  echo report > "$6"
+fi
+echo "$*" >> "$HOME/engine.calls"
+''')
+    engine.chmod(0o700)
+    script = (ops / "cutover-window.sh").read_text()
+    start = script.index("confirm() {")
+    finish = script.index("control() {", start)
+    # Use real snapshot checks and wrapper sequencing, with all host mutations stubbed.
+    script = script[:start] + r'''
+confirm() { :; }
+date() { if [[ "$1" == +%F ]]; then echo 2026-11-24; else echo 1030; fi; }
+flock() { :; }
+curl() { if [[ -e "$HOME/os-v2" ]]; then echo 503; else echo 401; fi; }
+git() { case "$3" in rev-parse|hash-object) echo matched ;; esac; }
+gh() {
+  if [[ "$1" == workflow ]]; then touch "$HOME/workflow-off"
+  elif [[ "$2" == --paginate ]]; then printf '0\n0\n'
+  elif [[ -e "$HOME/workflow-off" ]]; then echo disabled_manually
+  else echo active; fi
+}
+systemctl() {
+  case "$2" in
+    show)
+      case "$3" in
+        venho-os-deploy.timer)
+          if [[ -e "$HOME/os-timer-off" ]]; then echo inactive; else echo active; fi ;;
+        *.service) echo inactive ;;
+        *) if [[ -e "$HOME/timers-off" ]]; then
+             if [[ "$4" == *UnitFileState* || "$5" == UnitFileState ]]; then echo disabled; else echo inactive; fi
+           elif [[ "$5" == UnitFileState ]]; then echo enabled; else echo active; fi ;;
+      esac ;;
+    stop) touch "$HOME/os-timer-off" ;;
+    disable) touch "$HOME/timers-off" ;;
+    start) if [[ "$3" == venho-os-deploy.timer ]]; then rm "$HOME/os-timer-off"; fi ;;
+    restart|is-active) : ;;
+  esac
+}
+''' + script[finish:]
+    for step in ("stop-legacy", "snapshot", "switch-and-epoch", "rotate", "dry-run", "live"):
+        result = subprocess.run(
+            ["bash", "-s", "--", step], input=script, text=True, capture_output=True,
+            env={**os.environ, "HOME": str(tmp_path)},
+        )
+        assert result.returncode == 0, (step, result.stdout, result.stderr)
+        if step != "stop-legacy":
+            assert "INSIGHTS=ABSENT (D2 deferred)" in result.stdout
+    assert "cutover-ops resume-hanoi" in (tmp_path / "engine.calls").read_text()

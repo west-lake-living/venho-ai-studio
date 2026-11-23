@@ -50,6 +50,23 @@ def sqlite_snapshot(source_path: Path, target: Path) -> None:
                 raise ValueError("legacy_sqlite_snapshot_invalid")
 
 
+INSIGHTS_ABSENT = {"status": "ABSENT", "reason": "t0_06_never_deployed"}
+
+
+def insights_present(path: Path | None) -> bool:
+    if path is None:
+        return False
+    try:
+        path.stat()
+    except FileNotFoundError:
+        if path.is_symlink():
+            raise ValueError("legacy_insights_invalid")
+        return False
+    if not path.is_file():
+        raise ValueError("legacy_insights_invalid")
+    return True
+
+
 def snapshot(legacy: Path, evidence: Path, *, check: bool, insights: Path | None) -> bool:
     registry = legacy / PROJECT / "publishing/publication_registry.json"
     data = registry.read_bytes()
@@ -57,21 +74,29 @@ def snapshot(legacy: Path, evidence: Path, *, check: bool, insights: Path | None
     if pending:
         print(json.dumps({"result": "BLOCKED", "legacy_blockers": pending}, sort_keys=True))
         return False
-    if check:
-        print('{"result":"PASS","legacy_blockers":{}}')
-        return True
-
-    if insights is None or not insights.is_file():
-        raise ValueError("legacy_insights_database_missing")
+    present = insights_present(insights)
     target = evidence / "legacy-snapshot"
     if target.exists():
         manifest = json.loads((target / "manifest.json").read_text())
         if manifest["publication_registry.json"] != hashlib.sha256(data).hexdigest():
             raise ValueError("legacy_registry_changed_after_snapshot")
+        recorded_absent = manifest["insights.db"] == INSIGHTS_ABSENT
+        if present == recorded_absent:
+            raise ValueError("legacy_insights_presence_changed_after_snapshot")
         for name in ("publication_registry.json", "slots_snapshot.json", "growth.db", "insights.db"):
-            if hashlib.sha256((target / "source" / name).read_bytes()).hexdigest() != manifest[name]:
+            copied = target / "source" / name
+            if name == "insights.db" and recorded_absent:
+                if copied.exists() or copied.is_symlink():
+                    raise ValueError("legacy_snapshot_checksum_mismatch")
+                continue
+            if hashlib.sha256(copied.read_bytes()).hexdigest() != manifest[name]:
                 raise ValueError("legacy_snapshot_checksum_mismatch")
+        if recorded_absent:
+            print("INSIGHTS=ABSENT (D2 deferred)")
         print('{"result":"PASS","legacy_snapshot":"existing_verified"}')
+        return True
+    if check:
+        print('{"result":"PASS","legacy_blockers":{}}')
         return True
     with tempfile.TemporaryDirectory(dir=evidence, prefix=".legacy-") as temporary:
         directory = Path(temporary) / "snapshot"
@@ -81,17 +106,26 @@ def snapshot(legacy: Path, evidence: Path, *, check: bool, insights: Path | None
         (source_directory / "publication_registry.json").write_bytes(data)
         shutil.copyfile(legacy / PROJECT / "growth/slots_snapshot.json", source_directory / "slots_snapshot.json")
         sqlite_snapshot(legacy / PROJECT / "growth/growth.db", source_directory / "growth.db")
-        sqlite_snapshot(insights, source_directory / "insights.db")
+        if present:
+            assert insights is not None
+            sqlite_snapshot(insights, source_directory / "insights.db")
+        if insights_present(insights) != present:
+            raise ValueError("legacy_insights_presence_changed_during_snapshot")
         if registry.read_bytes() != data:
             raise ValueError("legacy_registry_changed_during_snapshot")
         manifest = {}
         for path in source_directory.iterdir():
             manifest[path.name] = hashlib.sha256(path.read_bytes()).hexdigest()
             path.chmod(0o400)
+        checksums = len(manifest)
+        if not present:
+            manifest["insights.db"] = INSIGHTS_ABSENT
         (directory / "manifest.json").write_text(json.dumps(manifest, sort_keys=True) + "\n")
         (directory / "manifest.json").chmod(0o400)
         directory.rename(target)
-    print('{"result":"PASS","legacy_snapshot":"created","checksums":4}')
+    if not present:
+        print("INSIGHTS=ABSENT (D2 deferred)")
+    print(json.dumps({"result": "PASS", "legacy_snapshot": "created", "checksums": checksums}))
     return True
 
 
