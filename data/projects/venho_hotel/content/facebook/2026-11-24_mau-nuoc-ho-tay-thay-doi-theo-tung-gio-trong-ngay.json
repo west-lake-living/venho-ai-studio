@@ -1,0 +1,46 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "project": "venho_hotel",
+  "content_type": "facebook_post",
+  "target_language": "vi",
+  "generated_at": "2026-11-24T00:28:20.883834+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_WESTLAKE_DNA.json",
+      "dna_version": "1.2",
+      "hash": "sha256:61f198440f5480c3ab7b63c38c97553d7cf072838b82dcdd5e4d802521e67a38"
+    }
+  ],
+  "source_prompt": {
+    "file": "data/projects/venho_hotel/prompts/content/WESTLAKE__facebook-mau-nuoc-ho-tay-thay-doi-theo-tung-gio-trong-ngay__CONTENT_PROMPT_v1.0.json",
+    "prompt_id": "westlake__content__facebook-mau-nuoc-ho-tay-thay-doi-theo-tung-gio-trong-ngay",
+    "prompt_version": "1.0"
+  },
+  "generator": {
+    "provider": "mock",
+    "model": "deterministic-social-builder",
+    "temperature": 0.6
+  },
+  "title": "Màu nước Hồ Tây đổi theo từng giờ trong ngày",
+  "hook": "Cùng một mặt hồ, nhưng màu nước lúc bảy giờ sáng và bốn giờ chiều không giống nhau.",
+  "body": "Buổi sáng, nước Hồ Tây ngả sang xanh ngọc pha xám, mặt hồ phẳng, gần như không gợn. Đứng ở đoạn Nguyễn Đình Thi nhìn ra, mắt đi được rất xa, tới tận dãy nhà cao phía bên kia bờ.\n\nGiữa trưa, nếu trời có mây xen nắng, màu nước dịu lại chứ không chói. Mặt hồ hôm nay phản chiếu rất ít, nên thay vì thấy bóng cây hay bóng nhà in xuống nước, bạn sẽ thấy một mảng xanh trầm trải dài, phía trên là đường viền thành phố mờ dần về cuối tầm nhìn.\n\nSang chiều, khi ánh sáng hạ thấp, sắc nước đậm hơn một chút. Những ngày nhiều mây, hoàng hôn Hồ Tây không rực rỡ, chỉ là màu xanh chuyển dần sang tối, cây ven đường cũng sẫm theo.\n\nĐó là thứ chỉ nhận ra khi ở lại đủ lâu, ngang qua mặt hồ vài lần trong cùng một ngày. Khách chọn khách sạn view Hồ Tây thường vì lý do này: mở cửa sổ ra lúc nào cũng thấy một phiên bản khác của hồ. Ven Hồ Hotel nằm trên Nguyễn Đình Thi, chỉ vài bước là ra tới bờ nước.",
+  "cta": "Nếu bạn đang tính vài ngày ở Hà Nội, nhắn tin cho Ven Hồ Hotel để xem phòng trống nhé.",
+  "hashtags": [
+    "#VenHoHotelHanoi",
+    "#HoTay",
+    "#WestLakeHanoi",
+    "#KhachSanHoTay",
+    "#HaNoi"
+  ],
+  "visual_note": null,
+  "contract_refs": null,
+  "payload": {},
+  "status": "draft",
+  "validation": {
+    "required": true,
+    "status": "pending",
+    "report_file": null,
+    "notes": []
+  }
+}

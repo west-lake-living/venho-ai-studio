@@ -1,0 +1,49 @@
+{
+  "contract_version": "1.0",
+  "module": "content_studio",
+  "project": "venho_hotel",
+  "content_type": "instagram_post",
+  "target_language": "vi",
+  "generated_at": "2026-11-24T00:31:09.662768+00:00",
+  "source_knowledge": [
+    {
+      "file": "VENHO_HOTEL_OUTSIDE_DNA.json",
+      "dna_version": "1.2",
+      "hash": "sha256:aaad1f90ca3a80fbefe9dc168823190c89ef923952e96bd2d902e73f0c5ec577"
+    }
+  ],
+  "source_prompt": {
+    "file": "data/projects/venho_hotel/prompts/content/OUTSIDE__instagram-goc-check-in-dang-duoc-nhieu-nguoi-tim-den-gan-day__CONTENT_PROMPT_v1.0.json",
+    "prompt_id": "outside__content__instagram-goc-check-in-dang-duoc-nhieu-nguoi-tim-den-gan-day",
+    "prompt_version": "1.0"
+  },
+  "generator": {
+    "provider": "mock",
+    "model": "deterministic-social-builder",
+    "temperature": 0.6
+  },
+  "title": "Góc chụp ảnh nhiều người tìm đến gần đây ở Tây Hồ",
+  "hook": "Một góc ban công, vài tán cây và nền trời xanh. Chỉ vậy thôi mà dạo gần đây khá nhiều người hỏi đường tới chụp.",
+  "body": "Không có ghế, không có tiểu cảnh, cũng chẳng cần dựng thêm gì. Chỉ có sàn gạch sạch, lan can bê tông thấp và khoảng trời mở ra phía trước.\n\nĐứng ở đây giữa trưa hoặc đầu giờ chiều, ánh sáng tự nhiên đổ đều, không gắt. Phía xa là mái nhà cao thấp xen nhau của Tây Hồ, gần hơn là hàng cây lâu năm bên đường, tán phủ kín vỉa hè. Nhìn qua kẽ lá còn thấy một mảng mặt nước hiện ra, đủ để biết hồ ở ngay đó.\n\nẢnh chụp ở góc này thường không cần chỉnh nhiều. Trời xanh làm nền, cây làm khung, phần còn lại là nhịp phố Nguyễn Đình Thi vẫn chạy bên dưới.\n\nCó những góc đẹp vì được giữ gìn gọn gàng, chứ không vì được trang trí thêm.",
+  "cta": "Nếu bạn đang tính vài ngày ở Hà Nội, nhắn Ven Hồ Hotel để xem phòng trống và góc nhìn phù hợp nhất với lịch của bạn nhé.",
+  "hashtags": [
+    "#VenHoHotelHanoi",
+    "#HoTay",
+    "#WestLakeHanoi",
+    "#KhamPhaHoTay",
+    "#KhachSanViewHoTay",
+    "#NguyenDinhThi",
+    "#HaNoi",
+    "#HanoiTravel"
+  ],
+  "visual_note": null,
+  "contract_refs": null,
+  "payload": {},
+  "status": "draft",
+  "validation": {
+    "required": true,
+    "status": "pending",
+    "report_file": null,
+    "notes": []
+  }
+}

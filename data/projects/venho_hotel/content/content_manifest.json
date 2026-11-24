@@ -337,6 +337,34 @@
       "staleness": "current",
       "markdown": "data/projects/venho_hotel/content/instagram/2026-11-22_v-p-y-n-b-nh-v-m-t-y-h.md",
       "json": "data/projects/venho_hotel/content/instagram/2026-11-22_v-p-y-n-b-nh-v-m-t-y-h.json"
+    },
+    {
+      "id": "2026-11-24_mau-nuoc-ho-tay-thay-doi-theo-tung-gio-trong-ngay",
+      "type": "facebook_post",
+      "source_knowledge_hashes": [
+        "sha256:61f198440f5480c3ab7b63c38c97553d7cf072838b82dcdd5e4d802521e67a38"
+      ],
+      "source_prompt_version": "1.0",
+      "target_language": "vi",
+      "generated_at": "2026-11-24T00:28:20.883834+00:00",
+      "status": "draft",
+      "staleness": "current",
+      "markdown": "data/projects/venho_hotel/content/facebook/2026-11-24_mau-nuoc-ho-tay-thay-doi-theo-tung-gio-trong-ngay.md",
+      "json": "data/projects/venho_hotel/content/facebook/2026-11-24_mau-nuoc-ho-tay-thay-doi-theo-tung-gio-trong-ngay.json"
+    },
+    {
+      "id": "2026-11-24_goc-check-in-dang-duoc-nhieu-nguoi-tim-den-gan-day",
+      "type": "instagram_post",
+      "source_knowledge_hashes": [
+        "sha256:aaad1f90ca3a80fbefe9dc168823190c89ef923952e96bd2d902e73f0c5ec577"
+      ],
+      "source_prompt_version": "1.0",
+      "target_language": "vi",
+      "generated_at": "2026-11-24T00:31:09.662768+00:00",
+      "status": "draft",
+      "staleness": "current",
+      "markdown": "data/projects/venho_hotel/content/instagram/2026-11-24_goc-check-in-dang-duoc-nhieu-nguoi-tim-den-gan-day.md",
+      "json": "data/projects/venho_hotel/content/instagram/2026-11-24_goc-check-in-dang-duoc-nhieu-nguoi-tim-den-gan-day.json"
     }
   ]
 }

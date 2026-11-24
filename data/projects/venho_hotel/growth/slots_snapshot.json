@@ -26,8 +26,8 @@
   {
     "slot_date": "2026-12-07",
     "day": "monday",
-    "status": "NOT_CREATED",
-    "content_package_id": null
+    "status": "PENDING_APPROVAL",
+    "content_package_id": "3f164208-1b05-43a1-b8cf-2d477a9ff418"
   },
   {
     "slot_date": "2026-12-02",
