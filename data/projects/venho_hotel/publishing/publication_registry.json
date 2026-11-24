@@ -28882,13 +28882,13 @@
       "idempotency_key": "8d51bfa7697e20ad5c9c5469622e041d2c7e44a639b05c82adef754bbad33ad3",
       "platform": "facebook",
       "slot_id": "slot-2026-11-23-monday",
-      "status": "PENDING_APPROVAL",
+      "status": "STALE_APPROVAL",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-11-22T13:03:41.876176+00:00",
-      "updated_at": "2026-11-22T13:03:42.062075+00:00",
+      "updated_at": "2026-11-24T00:05:03.498075+00:00",
       "content": {
         "title": "Những người câu cá ven Hồ Tây và buổi sáng chậm nhất trong tuần",
         "text": "Sáng sớm ven Hồ Tây, mặt nước phẳng đến mức gần như không phản chiếu gì. Trên bờ, vài chiếc cần câu dựng im.\n\nNước hồ sáng nay mang sắc xanh ngọc trầm, không rực rỡ, chỉ lặng và sâu. Trời có mây rải rác, ánh sáng dịu nên nhìn được rất xa, tới tận dãy nhà cao phía bên kia hồ, nơi thành phố bắt đầu một ngày mới.\n\nNhững người câu cá ngồi cách nhau một quãng, lưng quay về phía lối đi, mắt hướng ra mặt nước. Họ không nói nhiều. Thi thoảng một người đổi thế ngồi, chỉnh lại chiếc cần, rồi lại im. Phía sau họ là hàng cây thưa và con đường dạo ven hồ, nơi người đi bộ qua lại mà không ai thấy cần phải nhanh.\n\nĐầu tuần, phần lớn Hà Nội đang khởi động. Nhưng ở mép nước này, nhịp sống đi theo một tốc độ khác. Có lẽ đó là lý do nhiều người tìm về Hồ Tây vào sáng sớm: không phải để làm gì cụ thể, chỉ để ngồi cạnh một thứ đang rất yên.\n\nVen Hồ Hotel nằm trên đường Nguyễn Đình Thi, chỉ cách lối đi ven hồ vài bước chân. Buổi sáng, bạn có thể ra khỏi cửa và gặp đúng khung cảnh này trước khi bắt đầu bất cứ lịch trình nào ở Hà Nội.\n\nNếu bạn đang lên kế hoạch tới Hà Nội, nhắn cho Ven Hồ Hotel để xem phòng trống cho những ngày bạn dự định ở lại.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhamPhaHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-monday-facebook-30e92645",
@@ -29035,7 +29035,9 @@
           "score": 100.0,
           "verdict": "approve"
         }
-      }
+      },
+      "stale_at": "2026-11-24T00:05:03.436478+00:00",
+      "stale_reason": "Approval window closed on 2026-11-23."
     },
     {
       "publication_id": "pub-monday-instagram-7ae82cd6",
@@ -29043,13 +29045,13 @@
       "idempotency_key": "756bdc40a386ea08e5a0e2d7f1ef56fdc5135b01711d999924f786f072b2c8fa",
       "platform": "instagram",
       "slot_id": "slot-2026-11-23-monday",
-      "status": "PENDING_APPROVAL",
+      "status": "STALE_APPROVAL",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-11-22T13:04:01.296245+00:00",
-      "updated_at": "2026-11-22T13:04:01.413019+00:00",
+      "updated_at": "2026-11-24T00:05:03.498075+00:00",
       "content": {
         "title": "Buổi sáng đầu tuần, vài người ngồi câu bên Hồ Tây",
         "text": "Trời vừa sáng, mặt hồ phẳng như chưa ai chạm vào.\nVài người ngồi câu, cách nhau một quãng xa.\n\nNước Hồ Tây sáng sớm có màu xanh ngả xám, trầm và tĩnh, không rực lên như người ta hay tưởng tượng. Mây che một nửa bầu trời nên ánh sáng rất dịu, đủ để nhìn rõ đường bờ bên kia và những khối nhà cao phía xa.\n\nNgười câu cá ở đây gần như không nói gì. Họ đến sớm, chọn một chỗ dưới tán cây, rồi ngồi yên. Thỉnh thoảng có tiếng dây câu, tiếng xe máy sau lưng, rồi lại im.\n\nĐó là nhịp riêng của Hồ Tây lúc đầu tuần: chậm hơn phần còn lại của thành phố chừng một tiếng đồng hồ. Nếu dậy sớm được, bạn chỉ cần đi bộ dọc Nguyễn Đình Thi, không cần kế hoạch gì thêm.\n\nVen Hồ Hotel nằm ngay trên cung đường ấy. Nhắn tin cho tụi mình nếu bạn muốn hỏi phòng trống cho những ngày sắp tới ở Hà Nội.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhamPhaHoTay #KhachSanHoTay #NguyenDinhThi #HaNoi #HanoiTravel",
@@ -29199,7 +29201,9 @@
           "score": 100.0,
           "verdict": "approve"
         }
-      }
+      },
+      "stale_at": "2026-11-24T00:05:03.436500+00:00",
+      "stale_reason": "Approval window closed on 2026-11-23."
     },
     {
       "publication_id": "pub-wednesday-facebook-f2168f38",
