@@ -29027,12 +29027,12 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 92.27,
         "image_qc": {
           "provider": "openai",
           "passed": true,
-          "score": 100.0,
+          "score": 100,
           "verdict": "approve"
         }
       },
@@ -29194,12 +29194,12 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.7,
         "image_qc": {
           "provider": "openai",
           "passed": true,
-          "score": 100.0,
+          "score": 100,
           "verdict": "approve"
         }
       },
@@ -29213,13 +29213,13 @@
       "idempotency_key": "ed45561d67ff67c145e1796cee89adf881274a14c52d0fc4e6a54a4b73e8c526",
       "platform": "facebook",
       "slot_id": "slot-2026-11-25-wednesday",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-11-22T13:07:56.023453+00:00",
-      "updated_at": "2026-11-22T13:07:56.118694+00:00",
+      "updated_at": "2026-11-24T11:23:21.631534+00:00",
       "content": {
         "title": "Một buổi chiều chỉ cần cà phê, một cuốn sách và Hồ Tây",
         "text": "Có những buổi chiều ở Tây Hồ, ly cà phê nguội đi mà cuốn sách vẫn chưa sang được chương mới.\n\nTrời trong, nắng sáng rõ từng tán cây lớn dọc phố. Phía xa, những mái nhà cao thấp xen nhau, còn mặt hồ nằm im một khoảng xanh xám.\n\nBuổi chiều quanh Hồ Tây thường chậm hơn người ta tưởng. Vài người đi bộ qua, một chiếc xe đạp lướt ngang, rồi lại yên. Không có gì gấp gáp để bắt kịp, nên đọc sách ở đây dễ hơn hẳn — kể cả khi bạn đọc chẳng được bao nhiêu trang.\n\nKhu Nguyễn Đình Thi hợp với kiểu chiều như vậy. Bạn có thể mang theo một cuốn sách, tìm một chỗ ngồi có gió, gọi ly cà phê rồi để thời gian trôi. Khi nắng hạ xuống thấp, chỉ cần ngẩng lên là thấy mặt hồ đổi màu.\n\nVới khách đến Hà Nội vài ngày, một buổi chiều như thế thường là khoảng nghỉ cần thiết giữa lịch trình. Ven Hồ Hotel nằm ngay trên Nguyễn Đình Thi, đủ gần để bạn gấp sách lại là về đến nơi, và cũng đủ gần để quay ra kịp lúc hoàng hôn Hồ Tây bắt đầu.\n\nNếu bạn đang lên kế hoạch cho vài ngày ở Hà Nội, nhắn tin cho Ven Hồ Hotel để xem lịch phòng trống nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanHoTay #HaNoi\n\nhttps://venhohotel.com/lien-he?utm_source=facebook&utm_medium=social&utm_content=pub-wednesday-facebook-f2168f38",
@@ -29360,14 +29360,36 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.01,
         "image_qc": {
           "provider": "openai",
           "passed": true,
-          "score": 100.0,
+          "score": 100,
           "verdict": "approve"
         }
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-11-24T11:23:21.589992+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-51767715-c206-4c3f-88cb-2a977a97b0f4",
+        "content_package_id": "51767715-c206-4c3f-88cb-2a977a97b0f4",
+        "copy_version_ids": [
+          "brief-wednesday-facebook-4fe76f0d-content_studio"
+        ],
+        "asset_version_ids": [
+          "f883e022-5143-466e-8969-dae5757f8cb2"
+        ],
+        "validation_snapshot_id": "2d110e0ad3b186a5a6e7b3cccd861e7540dedaa91c80b24ae107b4262dec1655",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-wednesday-facebook-4fe76f0d@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-11-24T11:23:21.590018+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "ea25c0bc05153ec6c53fb084fdb2601c1e4507132aeb52d98ff9c55687583226",
+        "checksum": "47a752385425f0419e4d265401fefaea38cb32e45fc32c67e3361812ecfcb7a8"
       }
     },
     {
@@ -29376,13 +29398,13 @@
       "idempotency_key": "a2bb7130e48ac0ac4785b885735d85c6e5fba8e86ff7333fd3985a6460af47de",
       "platform": "instagram",
       "slot_id": "slot-2026-11-25-wednesday",
-      "status": "PENDING_APPROVAL",
+      "status": "APPROVED_SCHEDULED",
       "gateway_status": null,
       "platform_post_id": null,
       "permalink": null,
       "reconciliation_proof": null,
       "created_at": "2026-11-22T13:08:11.212434+00:00",
-      "updated_at": "2026-11-22T13:08:11.302902+00:00",
+      "updated_at": "2026-11-24T11:23:21.631534+00:00",
       "content": {
         "title": "Một buổi chiều chỉ cần cà phê, một cuốn sách và Hồ Tây",
         "text": "Trời trong, nắng chiều rọi qua tán cây trên phố. Một ly cà phê, một cuốn sách đang đọc dở, và mặt hồ ở ngay kia.\n\nTây Hồ buổi chiều có nhịp riêng. Hàng cây lâu năm dọc đường đổ bóng xuống vỉa hè, phía xa là những mái nhà cao thấp xen nhau của Hà Nội. Nắng tự nhiên, không gắt, vừa đủ để đọc mà không phải nheo mắt.\n\nKhông cần phải đi đâu xa. Chọn một chỗ ngồi hướng ra mặt nước xanh xám, gọi một ly cà phê, mở cuốn sách mang theo từ nhà. Đọc được vài trang thì ngẩng lên nhìn hồ một lúc, rồi lại cúi xuống. Cà phê nguội dần cũng không sao.\n\nĐó là kiểu buổi chiều khó sắp xếp khi đang ở giữa một chuyến đi dày đặc lịch trình. Nhưng nếu chỗ nghỉ của bạn ở ngay khu Nguyễn Đình Thi, mọi thứ trở nên đơn giản hơn: bước ra là tới hồ, đọc chán thì đi bộ một vòng, mỏi chân thì quay về.\n\nVen Hồ Hotel nằm ở đoạn đó. Phòng hướng hồ có khung cửa đủ rộng để bạn kê ghế ngồi đọc cả chiều, nếu muốn giữ sự yên tĩnh cho riêng mình.\n\nNếu bạn đang tính một chuyến Hà Nội chậm rãi, nhắn tin cho Ven Hồ Hotel để xem phòng trống những ngày bạn định ghé nhé.\n\n#VenHoHotelHanoi #HoTay #WestLakeHanoi #KhachSanViewHoTay #NguyenDinhThi #HaNoi #HanoiTravel #KhamPhaHoTay",
@@ -29526,14 +29548,36 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 92.81,
         "image_qc": {
           "provider": "openai",
           "passed": true,
-          "score": 100.0,
+          "score": 100,
           "verdict": "approve"
         }
+      },
+      "approved_by": "hpham1504@gmail.com",
+      "approved_at": "2026-11-24T11:23:21.589992+00:00",
+      "approval_scope": "topic_group",
+      "approval_snapshot": {
+        "approval_request_id": "approval-7b9f98d4-2f7b-44b5-9f4b-16851ac82eb9",
+        "content_package_id": "7b9f98d4-2f7b-44b5-9f4b-16851ac82eb9",
+        "copy_version_ids": [
+          "brief-wednesday-instagram-2478475c-content_studio"
+        ],
+        "asset_version_ids": [
+          "f883e022-5143-466e-8969-dae5757f8cb2"
+        ],
+        "validation_snapshot_id": "12bebd204848f790dee633119cdd8355f288dab919ee741fba60caf74e300e30",
+        "fact_version_ids": [],
+        "brief_version_id": "brief-wednesday-instagram-2478475c@1",
+        "status": "approved",
+        "approved_by": "hpham1504@gmail.com",
+        "approved_at": "2026-11-24T11:23:21.590133+00:00",
+        "revoked_reason": null,
+        "package_versions_checksum": "20f0c110cd7feaa3299ab0b5b0aed2b967552c42951f6df68367e7750254eb47",
+        "checksum": "c89c5a49c33988eb5790299048411c6a788c743243e38b20526fa1575012abe1"
       }
     },
     {
@@ -29688,12 +29732,12 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 100.0,
+        "content_brand_fit": 100,
         "content_overall_score": 94.56,
         "image_qc": {
           "provider": "openai",
           "passed": true,
-          "score": 100.0,
+          "score": 100,
           "verdict": "approve"
         }
       }
@@ -29852,12 +29896,12 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 100.0,
+        "content_brand_fit": 100,
         "content_overall_score": 95.1,
         "image_qc": {
           "provider": "openai",
           "passed": true,
-          "score": 100.0,
+          "score": 100,
           "verdict": "approve"
         }
       }
@@ -30005,12 +30049,12 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.04,
         "image_qc": {
           "provider": "openai",
           "passed": true,
-          "score": 100.0,
+          "score": 100,
           "verdict": "approve"
         }
       }
@@ -30161,12 +30205,12 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.5,
         "image_qc": {
           "provider": "openai",
           "passed": true,
-          "score": 100.0,
+          "score": 100,
           "verdict": "approve"
         }
       }
@@ -30322,12 +30366,12 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 92.78,
         "image_qc": {
           "provider": "openai",
           "passed": true,
-          "score": 100.0,
+          "score": 100,
           "verdict": "approve"
         }
       }
@@ -30486,12 +30530,12 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.7,
         "image_qc": {
           "provider": "openai",
           "passed": true,
-          "score": 100.0,
+          "score": 100,
           "verdict": "approve"
         }
       }
@@ -30650,12 +30694,12 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 91.12,
         "image_qc": {
           "provider": "openai",
           "passed": true,
-          "score": 100.0,
+          "score": 100,
           "verdict": "approve"
         }
       }
@@ -30816,12 +30860,12 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.42,
         "image_qc": {
           "provider": "openai",
           "passed": true,
-          "score": 100.0,
+          "score": 100,
           "verdict": "approve"
         }
       }
@@ -30977,12 +31021,12 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.01,
         "image_qc": {
           "provider": "openai",
           "passed": true,
-          "score": 100.0,
+          "score": 100,
           "verdict": "approve"
         }
       }
@@ -31141,12 +31185,12 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.7,
         "image_qc": {
           "provider": "openai",
           "passed": true,
-          "score": 100.0,
+          "score": 100,
           "verdict": "approve"
         }
       }
@@ -31294,12 +31338,12 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 92.73,
         "image_qc": {
           "provider": "openai",
           "passed": true,
-          "score": 100.0,
+          "score": 100,
           "verdict": "approve"
         }
       }
@@ -31449,12 +31493,12 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.7,
         "image_qc": {
           "provider": "openai",
           "passed": true,
-          "score": 100.0,
+          "score": 100,
           "verdict": "approve"
         }
       }
@@ -31602,12 +31646,12 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 92.91,
         "image_qc": {
           "provider": "openai",
           "passed": true,
-          "score": 100.0,
+          "score": 100,
           "verdict": "approve"
         }
       },
@@ -31769,7 +31813,7 @@
       },
       "scorecard_signals": {
         "claim_kill_switch_triggered": false,
-        "content_brand_fit": 95.0,
+        "content_brand_fit": 95,
         "content_overall_score": 93.7,
         "image_qc": {
           "provider": "openai",
