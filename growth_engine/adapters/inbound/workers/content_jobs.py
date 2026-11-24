@@ -93,7 +93,6 @@ class ContentJobsWorker:
             claimed += 1
             job_id, lease_token, kind, payload = lease
             started = time.monotonic()
-            _LOG.info("content job started: id=%s kind=%s", job_id, kind)
             try:
                 if kind == "generate_slot":
                     self._generate_slot(payload)
@@ -107,29 +106,29 @@ class ContentJobsWorker:
                 self._defer(job_id, lease_token, _format_error(error))
                 deferred += 1
                 _LOG.info(
-                    "content job finished: id=%s kind=%s outcome=DEFERRED elapsed_ms=%d error=%s",
-                    job_id, kind, _elapsed_ms(started), _format_error(error),
+                    "content job finished: id=%s kind=%s state=DEFERRED duration_ms=%d error_code=%s",
+                    job_id, kind, _elapsed_ms(started), _format_error(error).partition(":")[0],
                 )
             except (GenerationUnknown, QcPaidCallUnknown) as error:
                 self._complete(job_id, lease_token, "UNKNOWN", _format_error(error))
                 unknown += 1
                 _LOG.info(
-                    "content job finished: id=%s kind=%s outcome=UNKNOWN elapsed_ms=%d error=%s",
-                    job_id, kind, _elapsed_ms(started), _format_error(error),
+                    "content job finished: id=%s kind=%s state=UNKNOWN duration_ms=%d error_code=%s",
+                    job_id, kind, _elapsed_ms(started), _format_error(error).partition(":")[0],
                 )
             except Exception as error:
                 safe_error = _format_error(error)
                 self._complete(job_id, lease_token, "FAILED", safe_error)
                 failed += 1
                 _LOG.info(
-                    "content job finished: id=%s kind=%s outcome=FAILED elapsed_ms=%d error=%s",
-                    job_id, kind, _elapsed_ms(started), safe_error,
+                    "content job finished: id=%s kind=%s state=FAILED duration_ms=%d error_code=%s",
+                    job_id, kind, _elapsed_ms(started), safe_error.partition(":")[0],
                 )
             else:
                 self._complete(job_id, lease_token, "SUCCEEDED", None)
                 completed += 1
                 _LOG.info(
-                    "content job finished: id=%s kind=%s outcome=SUCCEEDED elapsed_ms=%d",
+                    "content job finished: id=%s kind=%s state=SUCCEEDED duration_ms=%d",
                     job_id, kind, _elapsed_ms(started),
                 )
         return ContentJobsResult(claimed, completed, deferred, failed, unknown)

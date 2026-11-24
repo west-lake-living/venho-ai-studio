@@ -224,6 +224,14 @@ def gate(settings: Settings, action: str, date: str, *, actor: str, correlation_
     return state(settings, date)
 
 
+def generation_clear(settings: Settings) -> dict:
+    with closing(sqlite3.connect(database(settings).resolve().as_uri() + "?mode=ro", uri=True)) as connection:
+        count = connection.execute(
+            "SELECT count(*) FROM incidents WHERE type='GENERATION_UNKNOWN' AND state='OPEN'"
+        ).fetchone()[0]
+    return {"result": "FAIL" if count else "PASS", "open_generation_unknown": count}
+
+
 def pending_gate(
     settings: Settings, date: str, *, approved: bool = False, channels: set[str] | None = None,
     require_disabled: bool = False,

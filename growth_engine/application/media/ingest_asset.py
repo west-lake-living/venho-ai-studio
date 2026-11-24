@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 from collections.abc import Mapping
 from typing import BinaryIO, Callable
@@ -34,27 +35,37 @@ class IngestAsset:
         stream: BinaryIO,
         metadata: Mapping[str, object] | None = None,
     ) -> MediaAsset:
+        asset = self.stage(source_type=source_type, source_ref=source_ref,
+                           source_revision=source_revision, stream=stream, metadata=metadata)
+        with self._uow_factory().begin_immediate() as tx:
+            return tx.media.reuse_or_save_asset(asset)
+
+    def stage(
+        self, *, source_type: str, source_ref: str, source_revision: str | None, stream: BinaryIO,
+        metadata: Mapping[str, object] | None = None,
+    ) -> MediaAsset:
         if source_type not in {"ai_generated", "library", "upload", "fallback", "legacy"}:
             raise ValueError("source_type is invalid")
-        if not source_ref.strip() or not source_revision.strip():
+        if not source_ref.strip() or (source_revision is not None and not source_revision.strip()):
             raise ValueError("source_ref and source_revision are required")
         metadata_json = json.dumps(
             dict(metadata or {}), ensure_ascii=False, sort_keys=True, separators=(",", ":")
         )
         stored = self._media_store.put_original(stream, max_bytes=MAX_ORIGINAL_BYTES)
-        asset = MediaAsset(
+        return MediaAsset(
             id=self._ids.new_id(),
             source_type=source_type,
             source_ref=source_ref,
-            source_revision=source_revision,
+            source_revision=stored.sha256 if source_revision is None else source_revision,
             source_sha256=stored.sha256,
             original_key=stored.object_key,
             metadata_json=metadata_json,
             created_at_ms=self._clock.now_ms(),
         )
-        with self._uow_factory().begin_immediate() as tx:
-            tx.media.save_asset(asset)
-        return asset
+
+    def verify_staged(self, asset: MediaAsset) -> bool:
+        with self._media_store.open(asset.original_key) as stream:
+            return hashlib.file_digest(stream, "sha256").hexdigest() == asset.source_sha256
 
 
 def ingest_asset(

@@ -125,6 +125,8 @@ def test_operator_wrapper_blocks_without_controlling_tty(tmp_path: Path) -> None
     ("reprocess-p4-qc-evidence", "REPROCESS", "wrong", 2),
     ("reprocess-p4-qc-evidence", "REPROCESS", "REPROCESS", 0),
     ("resolve-p4-qc-unknown", "RESOLVE", "RESOLVE", 0),
+    ("resolve-generation-unknown", "RESOLVE", "RESOLVE", 0),
+    ("reprocess-generation-evidence", "REPROCESS", "REPROCESS", 0),
 ])
 def test_operator_wrapper_confirms_only_fresh_tty_input(
     tmp_path: Path, command: str, action: str, answer: str, status: int

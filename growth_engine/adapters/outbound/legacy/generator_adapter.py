@@ -18,9 +18,10 @@ from agent_studio.growth.reference_asset_resolver import ReferenceAssetResolver
 from agent_studio.growth.scenario_registry import ScenarioRegistry
 from content_studio.builders.social_builder import build_social_draft
 from content_studio.content_context import load_content_config
-from content_studio.generators.claude_social_generator import claude_social_generator
+from content_studio.generators.claude_social_generator import ClaudeDraftResponseError, claude_social_generator
 from content_studio.schemas.content_request import ContentRequest
 from growth_engine.application.dto import DraftPackage, DraftRequest
+from growth_engine.application.errors import DraftAfterProviderError, DraftBeforeProviderError
 from growth_engine.adapters.outbound.media.local_legacy_image_library import (
     LocalLegacyImage,
     LocalLegacyImageLibrary,
@@ -80,6 +81,28 @@ class LegacyGeneratorAdapter:
         self._temporary_directories: list[tempfile.TemporaryDirectory[str]] = []
 
     def draft(self, request: DraftRequest) -> DraftPackage:
+        attempted = received = False
+        response = None
+
+        def generate(*args):
+            nonlocal attempted, received, response
+            attempted = True
+            response = self.generator_fn(*args)
+            received = True
+            return response
+
+        try:
+            return self._build_draft(request, generate)
+        except ClaudeDraftResponseError as error:
+            raise DraftAfterProviderError("provider_draft_json", error.response_text) from None
+        except Exception:
+            if received:
+                raise DraftAfterProviderError("draft_adapter", response) from None
+            if not attempted:
+                raise DraftBeforeProviderError("draft_request") from None
+            raise
+
+    def _build_draft(self, request: DraftRequest, generate: TextGenerator) -> DraftPackage:
         project = ensure_safe_slug(request.project_id, field="project_id")
         content_config = load_content_config(project, config_root=self.config_root)
         lanes = content_config.get("content_pillars", {}).get("lanes", {})
@@ -130,7 +153,7 @@ class LegacyGeneratorAdapter:
             request_for_builder,
             content_prompt,
             content_config,
-            generator_fn=self.generator_fn,
+            generator_fn=generate,
         )
         caption = _caption_text(
             content_output.hook,

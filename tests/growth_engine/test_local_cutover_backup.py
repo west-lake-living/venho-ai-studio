@@ -210,6 +210,9 @@ def test_rescheduled_cutover_runs_with_absent_insights(tmp_path):
     engine = deployed / "run-with-legacy-provider-env.sh"
     engine.write_text('''#!/bin/bash
 set -eu
+if [[ "$1 ${2:-}" == "cutover-ops generation-clear" && -e "$HOME/open-generation-unknown" ]]; then
+  exit 1
+fi
 if [[ "$1" == legacy-import ]]; then
   [[ "$2" == --dry-run && -f "$4/growth.db" && ! -e "$4/insights.db" ]]
   echo report > "$6"
@@ -288,6 +291,12 @@ systemctl() {
     registry.write_text(json.dumps({"publications": [
         {"slot_id": "slot-2026-11-25-fb", "status": "PUBLISHED"},
     ]}))
+
+    incident = tmp_path / "open-generation-unknown"
+    incident.touch()
+    blocked = run("t2", "2026-11-25 0931")
+    assert blocked.returncode != 0 and "PREPARE_27" not in blocked.stdout
+    incident.unlink()
 
     steps = [
         ("t2", "2026-11-25 0931"),

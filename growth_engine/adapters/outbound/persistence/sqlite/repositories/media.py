@@ -25,6 +25,19 @@ class MediaRepository(SqliteRepository):
             ),
         )
 
+    def reuse_or_save_asset(self, asset: MediaAsset) -> MediaAsset:
+        row = self.connection.execute(
+            """SELECT id FROM media_assets WHERE source_sha256=? AND original_key=?
+               ORDER BY created_at, id LIMIT 1""",
+            (asset.source_sha256, asset.original_key),
+        ).fetchone()
+        if row is not None:
+            existing = self.get_asset(row["id"])
+            assert existing is not None
+            return existing
+        self.save_asset(asset)
+        return asset
+
     def get_asset(self, asset_id: str) -> MediaAsset | None:
         row = self.connection.execute(
             """SELECT id, source_type, source_ref, source_revision, source_sha256, original_key,

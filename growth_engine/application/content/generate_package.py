@@ -1,19 +1,19 @@
 from __future__ import annotations
 
-import hashlib
 import json
+import re
 import math
 from collections.abc import Mapping, Sequence
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Protocol
 
 from growth_engine.application.dto import DraftPackage, DraftRequest, FactSnapshot
-from growth_engine.application.errors import ApplicationError
-from growth_engine.application.media.ingest_asset import MAX_ORIGINAL_BYTES
+from growth_engine.application.errors import ApplicationError, DraftAfterProviderError, DraftBeforeProviderError
 from growth_engine.application.ports.clock import Clock, IdGenerator
 from growth_engine.domain.content.package import ContentPackage
+from growth_engine.domain.media.asset import MediaAsset
 from growth_engine.domain.kernel.errors import DomainError, ErrorCode
 from growth_engine.domain.kernel.hashing import canonical_json_bytes, sha256_hex
 from growth_engine.domain.kernel.time import BusinessCalendar
@@ -21,6 +21,10 @@ from growth_engine.domain.kernel.time import BusinessCalendar
 
 class GenerationUnknown(ApplicationError):
     code = "ERR_GC2_GENERATION_UNKNOWN"
+
+
+class GenerationPostResponseFailed(ApplicationError):
+    code = "ERR_GC2_GENERATION_POST_RESPONSE_FAILED"
 
 
 @dataclass(frozen=True)
@@ -60,7 +64,8 @@ class GeneratePackageStore(Protocol):
     """Transaction seam for budget/job claim and final package/target writes.
 
     `claim_generation` must atomically check the job key and reserve a paid call under
-    BEGIN IMMEDIATE. `complete_generation` must settle the reservation, persist the
+    BEGIN IMMEDIATE. `settle_response` must record evidence and cost before any
+    package writes. `complete_generation` must persist the
     package/facts, reserve one DRAFT delivery per slot target, and enqueue media and
     assemble jobs in one transaction. `mark_generation_unknown` must mark both job and
     paid call UNKNOWN and open the warning incident in one transaction.
@@ -68,6 +73,10 @@ class GeneratePackageStore(Protocol):
 
     def claim_generation(self, business_key: str, **claims: object) -> GenerationClaim: ...
     def mark_generation_unknown(self, business_key: str, **fields: object) -> None: ...
+    def fail_before_provider(self, business_key: str, *, now_ms: int) -> None: ...
+    def settle_response(self, business_key: str, evidence: dict, *, cost: int, now_ms: int) -> None: ...
+    def retain_evidence(self, business_key: str, evidence: dict) -> None: ...
+    def mark_post_response_failed(self, business_key: str, *, reason: str, now_ms: int) -> None: ...
     def complete_generation(
         self,
         business_key: str,
@@ -88,7 +97,8 @@ class FactSource(Protocol):
 
 
 class AssetIngestor(Protocol):
-    def execute(self, **arguments: object) -> object: ...
+    def stage(self, **arguments: object) -> MediaAsset: ...
+    def verify_staged(self, asset: MediaAsset) -> bool: ...
 
 
 class BudgetPolicyView(Protocol):
@@ -171,6 +181,10 @@ class GeneratePackage:
             return GeneratePackageResult(claim.package, claim.delivery_ids, (), replayed=True)
         if claim.disposition in {"UNKNOWN", "RESERVED", "RUNNING", "IN_PROGRESS"}:
             raise GenerationUnknown("Generation previously reached a provider and has no safe automatic retry.")
+        if claim.disposition == "BEFORE_PROVIDER_FAILED":
+            raise DraftBeforeProviderError("stored generation preparation failure")
+        if claim.disposition == "POST_RESPONSE_FAILED":
+            raise GenerationPostResponseFailed("stored provider response requires operator recovery")
         if claim.disposition == "BUDGET_EXCEEDED":
             raise DomainError(
                 ErrorCode.BUDGET_EXCEEDED,
@@ -181,69 +195,47 @@ class GeneratePackage:
             raise RuntimeError(f"invalid generation claim disposition: {claim.disposition!r}")
 
         try:
-            draft = self._generator.draft(request)
-            if not isinstance(draft, DraftPackage):
-                raise TypeError("ContentGenerator returned a non-DraftPackage value")
-            fact_snapshot = self._fact_source.approved_facts(list(draft.fact_keys), request.at_ms)
-            safe_facts = _json_safe(fact_snapshot.facts)
-            fact_snapshot_json = canonical_json_bytes(safe_facts).decode("utf-8")
-            fact_snapshot_hash = sha256_hex(fact_snapshot_json.encode("utf-8"))
-            package_id = self._ids.new_id()
-            source_snapshot = {
-                "package_spec_hash": command.package_spec_hash.lower(),
-                "generator_version": command.generator_version,
-                "topic_key": draft.topic_key,
-                "pillar": draft.pillar,
-                "brief": draft.brief,
-                "fact_keys": list(draft.fact_keys),
-                "images": [
-                    {
-                        "option_id": item.get("option_id"),
-                        "provenance": _json_safe(item.get("provenance", {})),
-                    }
-                    for item in draft.image_options
-                ],
-            }
-            package = ContentPackage(
-                id=package_id,
-                slot_id=request.slot_id,
-                topic_key=draft.topic_key,
-                pillar=draft.pillar,
-                lane=command.lane,
-                source_snapshot_json=canonical_json_bytes(source_snapshot).decode("utf-8"),
-                fact_snapshot_json=fact_snapshot_json,
-                fact_snapshot_hash=fact_snapshot_hash,
-                generation_version=command.generator_version,
-                created_at_ms=now_ms,
-                candidate_id=command.candidate_id,
-            )
-            package_facts = _package_facts(safe_facts)
-            assets = self._ingest_images(business_key, draft.image_options)
-            delivery_ids = self._store.complete_generation(
-                business_key,
-                package,
-                tuple(assets),
-                package_facts,
-                draft.captions_by_profile,
-                settled_at_ms=self._clock.now_ms(),
-                estimated_cost_minor=estimate,
-                correlation_id=business_key,
-            )
-            return GeneratePackageResult(
-                package=package,
-                delivery_ids=tuple(delivery_ids),
-                asset_ids=tuple(str(item["asset_id"]) for item in assets),
-            )
-        except Exception as exc:
-            self._store.mark_generation_unknown(
-                business_key,
-                error_class=type(exc).__name__,
-                now_ms=self._clock.now_ms(),
-                correlation_id=business_key,
-            )
-            raise GenerationUnknown(
-                "Generation result is uncertain; the paid provider call will not be repeated automatically."
-            ) from exc
+            try:
+                draft = self._generator.draft(request)
+            except DraftBeforeProviderError:
+                self._store.fail_before_provider(business_key, now_ms=self._clock.now_ms())
+                raise
+            except DraftAfterProviderError as error:
+                evidence = {"version": 1, "response_received": True, "request_at_ms": request.at_ms}
+                try:
+                    if isinstance(error.response, Mapping):
+                        evidence["partial_response"] = _filter_evidence(_json_safe(error.response))
+                    elif isinstance(error.response, str):
+                        evidence["unparsed_response_length"] = len(error.response)
+                except (TypeError, ValueError):
+                    pass
+                self._store.settle_response(business_key, evidence, cost=estimate, now_ms=self._clock.now_ms())
+                reason = f"{error.message}: provider response could not be assembled"
+                self._store.mark_post_response_failed(business_key, reason=reason, now_ms=self._clock.now_ms())
+                raise GenerationPostResponseFailed(reason) from None
+            except Exception as error:
+                self._store.mark_generation_unknown(
+                    business_key, error_class=type(error).__name__,
+                    now_ms=self._clock.now_ms(), correlation_id=business_key,
+                )
+                raise GenerationUnknown("Provider outcome is uncertain; automatic retry is disabled.") from None
+            step = "draft_evidence"
+            try:
+                # Record the known outcome even if serialization or staging fails.
+                evidence = {"version": 1, "response_received": True, "request_at_ms": request.at_ms}
+                try:
+                    evidence.update(_draft_evidence(draft))
+                finally:
+                    self._store.settle_response(business_key, evidence, cost=estimate, now_ms=self._clock.now_ms())
+                step = "image_options"
+                assets = self._stage_images(business_key, draft.image_options, evidence["images"])
+                evidence["assets"] = assets
+                self._store.retain_evidence(business_key, evidence)
+                return self.complete_from_evidence(business_key, command, evidence)
+            except Exception as error:
+                reason = diagnostic(error, step)
+                self._store.mark_post_response_failed(business_key, reason=reason, now_ms=self._clock.now_ms())
+                raise GenerationPostResponseFailed(reason) from None
         finally:
             cleanup = getattr(self._generator, "close", None)
             if callable(cleanup):
@@ -251,6 +243,41 @@ class GeneratePackage:
                     cleanup()
                 except OSError:
                     pass
+
+    def complete_from_evidence(
+        self, business_key: str, command: GeneratePackageCommand, evidence: dict, *, outer_job_id: str | None = None,
+    ) -> GeneratePackageResult:
+        step = "image_options"
+        try:
+            assets = evidence["assets"]
+            if outer_job_id is not None:
+                for option in assets:
+                    if not self._asset_ingestor.verify_staged(MediaAsset(**option["candidate"])):
+                        raise GenerationPostResponseFailed("image_options: retained original checksum mismatch")
+            step = "fact_snapshot"
+            request = command.request
+            fact_snapshot = self._fact_source.approved_facts(evidence["fact_keys"], request.at_ms)
+            safe_facts = _json_safe(fact_snapshot.facts)
+            fact_json = canonical_json_bytes(safe_facts)
+            package_facts = _package_facts(safe_facts)
+            step = "content_package"
+            snapshot = {key: evidence[key] for key in ("topic_key", "pillar", "brief", "fact_keys", "images")}
+            snapshot.update(package_spec_hash=command.package_spec_hash.lower(), generator_version=command.generator_version)
+            now_ms = self._clock.now_ms()
+            package = ContentPackage(
+                id=self._ids.new_id(), slot_id=request.slot_id, topic_key=evidence["topic_key"],
+                pillar=evidence["pillar"], lane=command.lane, source_snapshot_json=canonical_json_bytes(snapshot).decode(),
+                fact_snapshot_json=fact_json.decode(), fact_snapshot_hash=sha256_hex(fact_json),
+                generation_version=command.generator_version, created_at_ms=now_ms, candidate_id=command.candidate_id,
+            )
+            step = "complete_generation"
+            delivery_ids = self._store.complete_generation(
+                business_key, package, tuple(assets), package_facts, evidence["captions_by_profile"],
+                settled_at_ms=now_ms, correlation_id=business_key, outer_job_id=outer_job_id,
+            )
+            return GeneratePackageResult(package, tuple(delivery_ids), tuple(str(item["asset_id"]) for item in assets))
+        except Exception as error:
+            raise GenerationPostResponseFailed(diagnostic(error, step)) from None
 
     def _estimate_paid_cost(self) -> int:
         text_cost = self._cost_estimates.get("text_generation_minor", 0)
@@ -262,64 +289,66 @@ class GeneratePackage:
             raise ValueError("a positive image_generation_minor estimate is required when image generation is enabled")
         return text_cost + image_calls * self._cost_estimates.get("image_generation_minor", 0)
 
-    def _ingest_images(
-        self,
-        business_key: str,
-        image_options: Sequence[Mapping[str, object]],
-    ) -> list[dict[str, object]]:
-        assets: list[dict[str, object]] = []
-        for option in image_options:
-            option_id = str(option.get("option_id") or "").upper()
-            path_text = option.get("path")
-            provenance = option.get("provenance") or {}
-            if not option_id or not isinstance(path_text, str) or not isinstance(provenance, Mapping):
-                raise ValueError("image option must include option_id, path and provenance")
-            if option_id not in {"A", "B", "C", "FALLBACK"}:
-                raise ValueError(f"unsupported image option_id: {option_id!r}")
-            path = Path(path_text)
-            if not path.is_file():
-                raise FileNotFoundError(f"generated image path is unavailable for option {option_id}")
-            digest_builder = hashlib.sha256()
-            byte_count = 0
-            with path.open("rb") as source_stream:
-                while True:
-                    chunk = source_stream.read(64 * 1024)
-                    if not chunk:
-                        break
-                    byte_count += len(chunk)
-                    if byte_count > MAX_ORIGINAL_BYTES:
-                        raise ValueError(f"image option {option_id} exceeds 25 MiB")
-                    digest_builder.update(chunk)
-            digest = digest_builder.hexdigest()
-            source_type = "ai_generated" if option_id in {"A", "B"} else "fallback" if option_id == "FALLBACK" else "library"
+    def _stage_images(self, business_key: str, images: Sequence[Mapping[str, object]], safe_images: list) -> list[dict]:
+        assets = []
+        for index, (image, safe) in enumerate(zip(images, safe_images, strict=True)):
+            option_id = safe["option_id"]
+            source_type = {"A": "ai_generated", "B": "ai_generated", "C": "library", "FALLBACK": "fallback"}[option_id]
+            provenance = safe["provenance"]
             source_ref = str(provenance.get("source_ref") or f"{business_key}:{option_id}")
-            with path.open("rb") as stream:
-                asset = self._asset_ingestor.execute(
-                    source_type=source_type,
-                    source_ref=source_ref,
-                    source_revision=digest,
-                    stream=stream,
-                    metadata={
-                        "option_id": option_id,
-                        "provenance": dict(provenance),
-                        **({"label": "Ảnh dự phòng"} if option_id == "FALLBACK" else {}),
-                    },
-                )
-            asset_id = getattr(asset, "id", None)
-            if not isinstance(asset_id, str) or not asset_id:
-                raise ValueError("AssetIngestor returned an invalid asset id")
-            assets.append(
-                {
-                    "option_id": option_id,
-                    "asset_id": asset_id,
-                    "source_type": source_type,
-                    "source_ref": source_ref,
-                    "sha256": digest,
-                    "provenance": _json_safe(dict(provenance)),
-                    "label": "Ảnh dự phòng" if option_id == "FALLBACK" else None,
-                }
-            )
+            try:
+                with Path(image["path"]).open("rb") as stream:
+                    asset = self._asset_ingestor.stage(
+                        source_type=source_type, source_ref=source_ref, source_revision=None,
+                        stream=stream, metadata={"option_id": option_id, "provenance": provenance},
+                    )
+            except Exception as error:
+                raise GenerationPostResponseFailed(diagnostic(error, f"image_options[{index}].path")) from None
+            assets.append({
+                "option_id": option_id, "asset_id": asset.id, "candidate": asdict(asset),
+                "sha256": asset.source_sha256, "source_type": source_type, "source_ref": source_ref,
+                "provenance": provenance, "label": "Ảnh dự phòng" if option_id == "FALLBACK" else None,
+            })
         return assets
+
+
+def diagnostic(error: Exception, field: str) -> str:
+    if isinstance(error, GenerationPostResponseFailed):
+        return str(error)
+    # SQLite's UNIQUE message contains column identifiers only. Other messages
+    # (including trigger errors) may contain data, so keep the safe error name.
+    match = re.fullmatch(r"UNIQUE constraint failed: ([a-z_0-9., ]+)", str(error))
+    if match:
+        return f"{field}: UNIQUE({match[1]})"
+    constraint = getattr(error, "sqlite_errorname", "")
+    return f"{field}: {constraint or type(error).__name__}"
+
+
+_SENSITIVE = re.compile(r"(?i)https?://[^\s<>]+[?][^\s<>]+|(?:sk-|AIza|EAA)[A-Za-z0-9_\-]{12,}|Bearer\s+[A-Za-z0-9._\-]+")
+_SECRET_FIELD = re.compile(r"(?i)token|secret|password|api[_-]?key|authorization|^path$")
+
+
+def _filter_evidence(value):
+    if isinstance(value, str):
+        return _SENSITIVE.sub("[REDACTED]", value)
+    if isinstance(value, dict):
+        return {key: _filter_evidence(item) for key, item in value.items() if not _SECRET_FIELD.search(key)}
+    if isinstance(value, list):
+        return [_filter_evidence(item) for item in value]
+    return value
+
+
+def _draft_evidence(draft: DraftPackage) -> dict:
+    if not isinstance(draft, DraftPackage):
+        raise TypeError("invalid draft")
+    images = [
+        {"option_id": str(item.get("option_id", "")).upper(), "provenance": item.get("provenance", {})}
+        for item in draft.image_options
+    ]
+    return _filter_evidence(_json_safe({
+        "topic_key": draft.topic_key, "pillar": draft.pillar, "brief": draft.brief,
+        "fact_keys": list(draft.fact_keys), "captions_by_profile": dict(draft.captions_by_profile), "images": images,
+    }))
 
 
 def choose_default_image(

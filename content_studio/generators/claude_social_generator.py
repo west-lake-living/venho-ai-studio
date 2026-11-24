@@ -80,6 +80,14 @@ def create_anthropic_message(client: Any, **kwargs: Any) -> Any:
             time.sleep(_retry_delay_seconds(exc, attempt))
 
 
+class ClaudeDraftResponseError(ValueError):
+    """A response was received, but it could not be parsed into a draft."""
+
+    def __init__(self, response_text: str) -> None:
+        super().__init__("Claude response does not contain a valid draft object")
+        self.response_text = response_text
+
+
 def claude_social_generator(
     request: ContentRequest,
     prompt: ContentPromptContract,
@@ -122,17 +130,27 @@ def claude_social_generator(
         messages=[{"role": "user", "content": user_message}],
     )
 
-    text_block = next(block for block in response.content if block.type == "text")
+    text_block = next((block for block in response.content if block.type == "text"), None)
+    if text_block is None:
+        raise ClaudeDraftResponseError("")
     raw = text_block.text.strip()
     if raw.startswith("```"):
-        raw = raw.split("\n", 1)[1].rsplit("```", 1)[0].strip()
+        _, separator, body = raw.partition("\n")
+        if not separator:
+            raise ClaudeDraftResponseError(raw)
+        raw = body.rsplit("```", 1)[0].strip()
 
     # strict=False: Claude's JSON body strings sometimes contain literal
     # newlines (paragraph breaks) instead of escaped \n -- technically
     # invalid per the JSON spec's control-character rule, but the content is
     # otherwise well-formed and this is Claude's actual observed output
     # shape, not malformed data worth rejecting.
-    draft: GeneratedDraft = json.loads(raw, strict=False)
+    try:
+        draft: GeneratedDraft = json.loads(raw, strict=False)
+    except ValueError:
+        raise ClaudeDraftResponseError(raw) from None
+    if not isinstance(draft, dict):
+        raise ClaudeDraftResponseError(raw)
 
     draft.setdefault("title", request.topic)
     draft.setdefault("hook", "")

@@ -173,6 +173,7 @@ case "${1:-}" in
     printf 'DOCTOR_BACKUP_AGE=PASS TIMER=growth-engine-backup.timer STATE=active\n'
     ;;
   t2)
+    "$engine" cutover-ops generation-clear --date "$FIRST_SLOT"
     "$engine" cutover-ops backup-fresh --date "$FIRST_SLOT"
     confirm "PREPARE_${FIRST_SLOT##*-}"
     channel fb_hanoi --enable --prepare-only

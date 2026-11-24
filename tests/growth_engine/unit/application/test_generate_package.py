@@ -1,10 +1,11 @@
 from __future__ import annotations
 
+import hashlib
 import json
+from dataclasses import dataclass
 import sqlite3
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
-from types import SimpleNamespace
 
 import pytest
 from PIL import Image
@@ -72,15 +73,22 @@ class FakeFactSource:
         )
 
 
+@dataclass
+class _FakeStagedAsset:
+    id: str
+    source_sha256: str
+
+
 class FakeAssetIngestor:
     def __init__(self):
         self.ids = []
 
-    def execute(self, *, source_type, source_ref, source_revision, stream, metadata):
-        assert stream.read()
+    def stage(self, *, source_type, source_ref, source_revision, stream, metadata):
+        data = stream.read()
+        assert data
         asset_id = f"asset-{len(self.ids) + 1}"
         self.ids.append((asset_id, source_type, source_ref, source_revision, metadata))
-        return SimpleNamespace(id=asset_id)
+        return _FakeStagedAsset(asset_id, hashlib.sha256(data).hexdigest())
 
 
 class FakeGenerationStore:
@@ -110,6 +118,12 @@ class FakeGenerationStore:
         self.states[business_key] = "UNKNOWN"
         self.unknown.append((business_key, error_class, now_ms))
 
+    def settle_response(self, business_key, evidence, *, cost, now_ms):
+        self.states[business_key] = "SETTLED"
+
+    def retain_evidence(self, business_key, evidence):
+        assert self.states[business_key] == "SETTLED"
+
     def complete_generation(
         self,
         business_key,
@@ -119,7 +133,7 @@ class FakeGenerationStore:
         captions_by_profile,
         *,
         settled_at_ms,
-        estimated_cost_minor,
+        outer_job_id,
         correlation_id,
     ):
         self.states[business_key] = "SUCCEEDED"

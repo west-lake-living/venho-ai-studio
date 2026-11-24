@@ -153,6 +153,7 @@ def worker(
         raise typer.BadParameter("lane must be 'publish' or 'jobs'")
     logging.basicConfig(
         level=logging.INFO,
+        force=True,
         format="%(asctime)s %(levelname)s %(name)s %(message)s",
     )
     settings = Settings.from_env()
@@ -261,6 +262,75 @@ def _require_p4_confirmation(
         "reason": "run the operator wrapper for confirmation of this action and job",
     }), err=True)
     raise typer.Exit(code=2)
+
+
+def _generation_operator(ctx, job_id, action, preflight_only, operator_confirmed, actual_minor=None):
+    from growth_engine.application.content.generate_package import (
+        GeneratePackageCommand, GenerationPostResponseFailed,
+    )
+    from growth_engine.application.dto import DraftRequest
+
+    if action != "STATUS":
+        _require_p4_confirmation(preflight_only, operator_confirmed, action, job_id)
+    try:
+        settings = Settings.from_env()
+        if settings.env != "production":
+            raise ValueError("generation_recovery_requires_production")
+        container = _container(ctx, settings)
+        store = container.generation_store
+        status, recovery = store.operator_job(
+            job_id, action=action, now_ms=time.time_ns() // 1_000_000,
+            actual_minor=actual_minor, apply=action == "RESOLVE" and not preflight_only,
+        )
+        if action == "REPROCESS" and not preflight_only and recovery is not None:
+            payload = recovery["payload"]
+            command = GeneratePackageCommand(
+                request=DraftRequest("venho_hotel", payload["slot_id"], payload["lane"], recovery["at_ms"]),
+                package_spec_hash=payload["package_spec_hash"],
+                generator_version=payload["generator_version"], lane=payload["lane"],
+            )
+            result = container.generate_package.complete_from_evidence(
+                recovery["business_key"], command, recovery["evidence"], outer_job_id=job_id,
+            )
+            status = {"result": "REPROCESSED", "job_id": job_id, "package_id": result.package.id,
+                      "provider_calls": 0, "paid_calls_created": 0}
+        typer.echo(json.dumps(status, sort_keys=True))
+    except (ValueError, RuntimeError, OSError, sqlite3.Error, GenerationPostResponseFailed) as error:
+        reason = str(error)
+        code = getattr(error, "code", "ERR_GC2_GENERATION_RECOVERY_BLOCKED")
+        if not isinstance(error, GenerationPostResponseFailed) and not re.fullmatch(r"generation_[a-z_]+", reason):
+            reason = type(error).__name__
+        blocked = {"result": "BLOCKED", "code": code, "reason": reason}
+        if reason == "generation_evidence_incomplete":
+            blocked["next_step"] = "review missing draft or original media evidence before approving any new provider call"
+        typer.echo(json.dumps(blocked), err=True)
+        raise typer.Exit(code=1) from None
+
+
+@app.command("resolve-generation-unknown")
+def resolve_generation_unknown(
+    ctx: typer.Context,
+    job_id: str = typer.Option(..., "--job"),
+    actual_minor: int = typer.Option(..., "--actual-minor", min=0),
+    preflight_only: bool = typer.Option(False, "--preflight-only"),
+    operator_confirmed: str | None = typer.Option(None, "--operator-confirmed", hidden=True),
+) -> None:
+    _generation_operator(ctx, job_id, "RESOLVE", preflight_only, operator_confirmed, actual_minor)
+
+
+@app.command("reprocess-generation-evidence")
+def reprocess_generation_evidence(
+    ctx: typer.Context,
+    job_id: str = typer.Option(..., "--job"),
+    preflight_only: bool = typer.Option(False, "--preflight-only"),
+    operator_confirmed: str | None = typer.Option(None, "--operator-confirmed", hidden=True),
+) -> None:
+    _generation_operator(ctx, job_id, "REPROCESS", preflight_only, operator_confirmed)
+
+
+@app.command("generation-recovery-status")
+def generation_recovery_status(ctx: typer.Context, job_id: str = typer.Option(..., "--job")) -> None:
+    _generation_operator(ctx, job_id, "STATUS", True, None)
 
 
 @app.command("resolve-p4-qc-unknown")
@@ -816,6 +886,8 @@ def cutover_ops(
     def run():
         settings = Settings.from_env()
         date.fromisoformat(local_date)
+        if action == "generation-clear":
+            return operator.generation_clear(settings)
         if action == "backup-fresh":
             return {"result": "PASS", "snapshot": operator.fresh_backup(settings).name}
         if action == "status":

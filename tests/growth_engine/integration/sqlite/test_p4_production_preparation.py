@@ -322,8 +322,8 @@ def test_p4_repairs_text_only_draft_from_allowlisted_legacy_local_photo_without_
     assert generated.claimed == generated.completed == 1
     assert generated.failed == 0
     assert text_generator.calls == 1
-    assert any("content job started" in record.message for record in caplog.records)
-    assert any("outcome=SUCCEEDED" in record.message for record in caplog.records)
+    completion = [record.message for record in caplog.records if "content job finished" in record.message]
+    assert len(completion) == 1 and "state=SUCCEEDED" in completion[0]
 
     with container.uow_factory().read_only() as tx:
         delivery = tx.connection.execute(
@@ -514,3 +514,215 @@ def test_paused_live_rollout_prepares_three_targets_and_stays_paused(tmp_path, m
     assert "slot_targets_not_approved" in approved["reasons"]
     with container.uow_factory().read_only() as tx:
         assert tx.connection.execute("SELECT count(DISTINCT package_id) FROM deliveries").fetchone()[0] == 1
+
+
+def _generation_recovery_fixture(tmp_path):
+    from growth_engine.bootstrap import build_container
+
+    clock = FakeClock(int(datetime(2026, 11, 24, 11, tzinfo=timezone.utc).timestamp() * 1000))
+    settings = Settings(
+        env="production", db_path=str(tmp_path / "growth.db"), media_root=str(tmp_path / "media"),
+        public_base_url="https://growth.example.invalid",
+        make_webhook_urls={key: "https://make.example.invalid/fake" for key in ("PAGE_A", "PAGE_B", "IG_VENHO")},
+    )
+    container = build_container(settings, clock=clock, ids=SeqIds("generation"))
+    container.migration_service.run(Path(settings.db_path), check=False)
+    channels.provision(settings.db_path, _manifest(), now_ms=clock.now_ms())
+    _controls(Path(settings.db_path), "DISABLED")
+    channels.set_enabled(settings.db_path, "fb_hanoi", True, prepare_only=True, now_ms=clock.now_ms())
+    image = tmp_path / "source.jpg"
+    Image.new("RGB", (800, 1000), (42, 96, 120)).save(image)
+    container.generate_package._fact_source = _FakeFacts()
+    return settings, container, clock, image
+
+
+class _SharedLibraryGenerator:
+    image_provider = None
+
+    def __init__(self, image):
+        self.calls = 0
+        self.image = image
+
+    def draft(self, request):
+        self.calls += 1
+        return DraftPackage(
+            "west-lake", "hotel", "test brief", (), {"default": "caption"},
+            ({"option_id": "C", "path": str(self.image),
+              "provenance": {"source_ref": "legacy-local:westlake/same.jpg", "token": "fake-secret"}},),
+        )
+
+
+def test_second_slot_reuses_library_asset_and_variant_job(tmp_path):
+    from dataclasses import replace
+
+    import pytest
+
+    _, container, _, image = _generation_recovery_fixture(tmp_path)
+    generator = _SharedLibraryGenerator(image)
+    container.generate_package._generator = generator
+    container.evaluate_qc._evaluator = _FakeQcEvaluator()
+    container.queue_slot_generation.execute(date(2026, 11, 25))
+    assert container.content_jobs_worker.process_once().completed == 3
+    with container.uow_factory().begin_immediate() as tx:
+        asset_id = tx.connection.execute("SELECT id FROM media_assets").fetchone()[0]
+        asset = tx.media.get_asset(asset_id)
+        # Reproduce the exact constraint raised by pre-fix ingest.
+        with pytest.raises(sqlite3.IntegrityError, match=r"UNIQUE constraint failed: media_assets.source_type, media_assets.source_ref, media_assets.source_revision"):
+            tx.media.save_asset(replace(asset, id="another-asset-id"))
+        prepare_id = tx.connection.execute("SELECT id FROM jobs WHERE kind='prepare_variant'").fetchone()[0]
+        prepare_job = tx.jobs.get(prepare_id)
+        with pytest.raises(sqlite3.IntegrityError, match=r"UNIQUE constraint failed: jobs.kind, jobs.business_key"):
+            tx.jobs.save(replace(prepare_job, id="another-prepare-id"))
+    container.queue_slot_generation.execute(date(2026, 11, 27))
+    result = container.content_jobs_worker.process_once()
+    assert result.completed == 2 and result.failed == result.unknown == 0
+    with container.uow_factory().read_only() as tx:
+        packages = tx.connection.execute("SELECT source_snapshot_json FROM content_packages").fetchall()
+        assert len(packages) == 2
+        assert {json.loads(row[0])["images"][0]["asset_id"] for row in packages} == {asset_id}
+        assert tx.connection.execute("SELECT count(*) FROM jobs WHERE kind='prepare_variant'").fetchone()[0] == 1
+        assert tx.connection.execute("SELECT count(*) FROM media_variants").fetchone()[0] == 1
+    assert generator.calls == 2
+
+
+def test_generation_reprocess_rolls_back_and_never_calls_provider(tmp_path, monkeypatch):
+    from typer.testing import CliRunner
+
+    from growth_engine.adapters.inbound.cli.main import app
+
+    settings, container, clock, image = _generation_recovery_fixture(tmp_path)
+    generator = _SharedLibraryGenerator(image)
+    container.generate_package._generator = generator
+    container.queue_slot_generation.execute(date(2026, 11, 27))
+    with container.uow_factory().begin_immediate() as tx:
+        tx.connection.execute(
+            "CREATE TRIGGER fail_package BEFORE INSERT ON content_packages BEGIN SELECT RAISE(ABORT,'hidden'); END"
+        )
+    result = container.content_jobs_worker.process_once()
+    assert result.failed == 1 and result.unknown == 0
+    with container.uow_factory().begin_immediate() as tx:
+        paid = tx.connection.execute("SELECT * FROM paid_calls").fetchone()
+        outer = tx.connection.execute("SELECT * FROM jobs WHERE kind='generate_slot'").fetchone()
+        assert paid["state"] == "SETTLED" and paid["actual_minor"] == paid["reserved_minor"]
+        assert json.loads(paid["provider_response_json"])["assets"]
+        assert "fake-secret" not in paid["provider_response_json"]
+        assert str(image) not in paid["provider_response_json"]
+        assert "ERR_GC2_GENERATION_POST_RESPONSE_FAILED: complete_generation: SQLITE_CONSTRAINT_TRIGGER" in outer["last_error"]
+        assert tx.connection.execute("SELECT count(*) FROM media_assets").fetchone()[0] == 0
+        tx.connection.execute("DROP TRIGGER fail_package")
+        tx.connection.execute(
+            """CREATE TRIGGER fail_recovery_audit BEFORE INSERT ON audit_events
+               WHEN NEW.action='generation.evidence_reprocessed' BEGIN SELECT RAISE(ABORT,'hidden'); END"""
+        )
+
+    monkeypatch.setattr(Settings, "from_env", classmethod(lambda cls: settings))
+    monkeypatch.setattr("growth_engine.adapters.inbound.cli.main.time.time_ns", lambda: clock.now_ms() * 1_000_000)
+    runner = CliRunner()
+    base = ["reprocess-generation-evidence", "--job", outer["id"]]
+
+    def invoke(*args):
+        return runner.invoke(app, [*base, *args], obj={"container": container})
+
+    assert invoke().exit_code == 2
+    preview = invoke("--preflight-only")
+    assert preview.exit_code == 0, (preview.output, preview.exception)
+    confirmation = ("--operator-confirmed", f"REPROCESS:{outer['id']}")
+    assert invoke(*confirmation).exit_code == 1
+    with container.uow_factory().begin_immediate() as tx:
+        for table in ("media_assets", "deliveries", "content_packages"):
+            assert tx.connection.execute(f"SELECT count(*) FROM {table}").fetchone()[0] == 0
+        assert tx.connection.execute("SELECT state FROM jobs WHERE kind='generate_slot'").fetchone()[0] == "FAILED"
+        tx.connection.execute("DROP TRIGGER fail_recovery_audit")
+    done = invoke(*confirmation)
+    assert done.exit_code == 0, done.output
+    assert "REPROCESSED" in done.output
+    assert "ALREADY_PROCESSED" in invoke(*confirmation).output
+    with container.uow_factory().read_only() as tx:
+        assert tx.connection.execute("SELECT count(*) FROM paid_calls").fetchone()[0] == 1
+        assert tx.connection.execute("SELECT count(*) FROM deliveries").fetchone()[0] == 1
+        assert tx.connection.execute("SELECT state FROM jobs WHERE kind='generate_slot'").fetchone()[0] == "SUCCEEDED"
+    assert generator.calls == 1
+
+
+def test_generation_unknown_resolution_is_atomic_and_clears_t2(tmp_path, monkeypatch):
+    import pytest
+
+    from growth_engine.adapters.inbound.cli import cutover_ops
+
+    settings, container, clock, _ = _generation_recovery_fixture(tmp_path)
+    monkeypatch.setattr(cutover_ops, "fresh_backup", lambda _: None)
+
+    class Timeout:
+        image_provider = None
+
+        def draft(self, request):
+            raise TimeoutError("no response")
+
+    container.generate_package._generator = Timeout()
+    container.queue_slot_generation.execute(date(2026, 11, 25))
+    assert container.content_jobs_worker.process_once().unknown == 1
+    assert cutover_ops.generation_clear(settings) == {"result": "FAIL", "open_generation_unknown": 1}
+    readiness_before = container.cutover_readiness.execute("2026-11-27").reasons
+    gates_before = [
+        cutover_ops.pending_gate(settings, "2026-11-27", **options)["reasons"]
+        for options in ({"require_disabled": True}, {"approved": True})
+    ]
+    with container.uow_factory().begin_immediate() as tx:
+        job_id = tx.connection.execute("SELECT id FROM jobs WHERE kind='generate_slot'").fetchone()[0]
+        tx.connection.execute(
+            """CREATE TRIGGER fail_resolution BEFORE INSERT ON audit_events
+               WHEN NEW.action='generation.unknown_resolved' BEGIN SELECT RAISE(ABORT,'hidden'); END"""
+        )
+
+    store = container.generation_store
+    inputs = {"action": "RESOLVE", "now_ms": clock.now_ms(), "actual_minor": 6200}
+    assert store.operator_job(job_id, **inputs)[0]["preflight"] == "READY"
+    with pytest.raises(sqlite3.IntegrityError):
+        store.operator_job(job_id, apply=True, **inputs)
+    assert store.operator_job(job_id, action="STATUS", now_ms=clock.now_ms())[0]["paid_call_state"] == "UNKNOWN"
+    assert cutover_ops.generation_clear(settings)["result"] == "FAIL"
+    with container.uow_factory().begin_immediate() as tx:
+        tx.connection.execute("DROP TRIGGER fail_resolution")
+    summary, _ = store.operator_job(job_id, apply=True, **inputs)
+    assert summary["result"] == "RESOLVED"
+    assert summary["resolved_by"] == "production-operator"
+    assert summary["paid_call_state"] == "SETTLED" and summary["actual_minor"] == 6200
+    assert store.operator_job(job_id, apply=True, **inputs)[0]["result"] == "ALREADY_RESOLVED"
+    assert cutover_ops.generation_clear(settings) == {"result": "PASS", "open_generation_unknown": 0}
+    assert container.cutover_readiness.execute("2026-11-27").reasons == readiness_before
+    assert gates_before == [
+        cutover_ops.pending_gate(settings, "2026-11-27", **options)["reasons"]
+        for options in ({"require_disabled": True}, {"approved": True})
+    ]
+    assert container.content_jobs_worker.process_once().claimed == 0
+
+
+def test_generation_adapter_known_failure_phases_are_not_unknown(tmp_path):
+    from growth_engine.application.errors import DraftAfterProviderError, DraftBeforeProviderError
+
+    for index, (error, paid_state) in enumerate((
+        (DraftBeforeProviderError("draft_request"), "RELEASED"),
+        (DraftAfterProviderError("provider_draft_json", "malformed and confidential"), "SETTLED"),
+    )):
+        case = tmp_path / str(index)
+        case.mkdir()
+        _, container, _, _ = _generation_recovery_fixture(case)
+
+        class Adapter:
+            image_provider = None
+
+            def draft(self, request):
+                raise error
+
+        container.generate_package._generator = Adapter()
+        container.queue_slot_generation.execute(date(2026, 11, 27))
+        results = container.content_jobs_worker.process_once()
+        assert results.failed == 1 and results.unknown == 0
+        with container.uow_factory().read_only() as tx:
+            paid = tx.connection.execute("SELECT state, provider_response_json FROM paid_calls").fetchone()
+            assert paid["state"] == paid_state
+            if paid_state == "SETTLED":
+                evidence = json.loads(paid["provider_response_json"])
+                assert evidence["response_received"] is True
+                assert "confidential" not in paid["provider_response_json"]
+            assert tx.connection.execute("SELECT count(*) FROM incidents").fetchone()[0] == 0

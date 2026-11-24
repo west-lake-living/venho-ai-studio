@@ -18,8 +18,8 @@ RUNTIME_BIN="${VENHO_GC2_RUNTIME_BIN:-$HOME/venho/growth-engine/current/.venv/bi
 [[ -x "$RUNTIME_BIN" ]] || fail "Growth Engine runtime executable is unavailable"
 
 case "$1" in
-  reprocess-p4-qc-evidence) action=REPROCESS ;;
-  resolve-p4-qc-unknown) action=RESOLVE ;;
+  reprocess-p4-qc-evidence|reprocess-generation-evidence) action=REPROCESS ;;
+  resolve-p4-qc-unknown|resolve-generation-unknown) action=RESOLVE ;;
   *) action='' ;;
 esac
 
