@@ -90,6 +90,32 @@ def test_approved_delivery_after_disabled_to_live(
         ).fetchone()[0] == 1 - expected_commands
 
 
+def test_disabled_worker_expires_in_review_without_blocking_next_slot(tmp_path: Path) -> None:
+    from growth_engine.application.ops.cutover_readiness import CutoverReadiness
+
+    settings = Settings(env="production", db_path=str(tmp_path / "growth.db"), media_root=str(tmp_path / "media"))
+    container = build_container(settings)
+    container.migration_service.run(Path(settings.db_path), check=False)
+    _seed_approved_delivery(container.uow_factory, environment="production", in_review=True)
+    clock = FakeClock(10_000)
+    readiness = CutoverReadiness(settings.db_path, now_ms=clock.now_ms)
+
+    assert container.expire_overdue.execute(clock.now_ms()).expired_delivery_ids == ()
+    clock.set(10_001)
+    before = readiness.execute("2026-11-27")
+    assert tuple(row.delivery_id for row in before.overdue_deliveries) == ("delivery-sqlite",)
+    assert container.expire_overdue.execute(clock.now_ms()).expired_delivery_ids == ("delivery-sqlite",)
+    after = readiness.execute("2026-11-27")
+    assert after.reasons == before.reasons
+    assert after.overdue_deliveries == ()
+    with container.uow_factory().read_only() as tx:
+        assert tx.deliveries.get("delivery-sqlite").state is DeliveryState.EXPIRED
+        assert tx.controls.get("production").mode is PublishMode.DISABLED
+        assert tx.controls.get("production").global_pause
+        for table in ("outbox_commands", "executions"):
+            assert tx.connection.execute(f"SELECT count(*) FROM {table}").fetchone()[0] == 0
+
+
 def test_publish_scheduler_enqueues_and_expires_atomically_in_sqlite(tmp_path: Path) -> None:
     settings = Settings(
         env="test",
@@ -837,6 +863,8 @@ def _seed_approved_delivery(
     uow_factory,
     *,
     deadline_at_ms: int = 10_000,
+    environment: str = "test",
+    in_review: bool = False,
     media_root: Path | None = None,
     channel_id: str = "channel-test-fb",
     channel_key: str = "fb_hanoi",
@@ -855,7 +883,7 @@ def _seed_approved_delivery(
     channel = Channel(
         id=channel_id,
         project_id="venho_hotel",
-        environment="test",
+        environment=environment,
         channel_key=channel_key,
         platform=platform,
         remote_account_id=remote_account_id,
@@ -945,8 +973,11 @@ def _seed_approved_delivery(
         actor_id="synthetic-editor",
         created_at_ms=1,
     )
-    delivery = Delivery("delivery-sqlite", DeliveryState.APPROVED)
-    controls = RuntimeControls(PublishMode.LIVE_MANUAL, "epoch-test")
+    state = DeliveryState.IN_REVIEW if in_review else DeliveryState.APPROVED
+    delivery = Delivery("delivery-sqlite", state)
+    controls = RuntimeControls(
+        PublishMode.DISABLED if in_review else PublishMode.LIVE_MANUAL, "epoch-test", global_pause=in_review,
+    )
     with uow_factory().begin_immediate() as tx:
         tx.channels.save_channel(channel, created_at_ms=1)
         tx.channels.save_config(config, created_at_ms=1)
@@ -964,7 +995,7 @@ def _seed_approved_delivery(
             created_at_ms=1,
             updated_at_ms=1,
             current_revision_id=revision.payload["revision_id"],
-            active_approval_id=approval.id,
+            active_approval_id=None if in_review else approval.id,
         )
         tx.deliveries.save_revision(
             revision,
@@ -980,10 +1011,11 @@ def _seed_approved_delivery(
             created_by="synthetic-editor",
             created_at_ms=1,
         )
-        tx.deliveries.save_approval(approval)
+        if not in_review:
+            tx.deliveries.save_approval(approval)
         tx.controls.save(
             controls,
-            environment="test",
+            environment=environment,
             policy_version="synthetic-v1",
             updated_at_ms=1,
         )

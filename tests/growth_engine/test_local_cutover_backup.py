@@ -74,6 +74,7 @@ def test_legacy_inventory_blocks_future_sends_and_in_flight_rows():
         {"slot_id": "slot-2026-11-27-ig", "status": "PENDING_APPROVAL"},
         {"slot_id": "slot-2026-11-28-fb", "status": "CANCELLED"},
     ]}
+    assert blockers(registry, "2026-11-27") == {"dispatching": 1, "pending_approval": 1}
     assert blockers(registry, "2026-11-25") == {
         "dispatching": 1, "approved_scheduled": 1, "pending_approval": 1,
     }
@@ -103,10 +104,10 @@ def test_legacy_snapshot_insights_state_and_checksum(tmp_path, capsys, present):
             source.execute("CREATE TABLE metrics (views)")
             source.execute("INSERT INTO metrics VALUES (42)")
             source.commit()
-            assert snapshot(legacy, evidence, check=False, insights=insights)
+            assert snapshot(legacy, evidence, check=False, insights=insights, first_slot="2026-11-27")
     else:
-        assert snapshot(legacy, evidence, check=True, insights=insights)
-        assert snapshot(legacy, evidence, check=False, insights=insights)
+        assert snapshot(legacy, evidence, check=True, insights=insights, first_slot="2026-11-27")
+        assert snapshot(legacy, evidence, check=False, insights=insights, first_slot="2026-11-27")
         assert "INSIGHTS=ABSENT (D2 deferred)" in capsys.readouterr().out
 
     target = evidence / "legacy-snapshot"
@@ -126,7 +127,7 @@ def test_legacy_snapshot_insights_state_and_checksum(tmp_path, capsys, present):
         assert report.is_file()
 
     for check in (True, False):
-        assert snapshot(legacy, evidence, check=check, insights=insights)
+        assert snapshot(legacy, evidence, check=check, insights=insights, first_slot="2026-11-27")
 
     if present:
         insights.unlink()
@@ -134,7 +135,7 @@ def test_legacy_snapshot_insights_state_and_checksum(tmp_path, capsys, present):
         insights.touch()
     for check in (True, False):
         with pytest.raises(ValueError, match="presence_changed_after_snapshot"):
-            snapshot(legacy, evidence, check=check, insights=insights)
+            snapshot(legacy, evidence, check=check, insights=insights, first_slot="2026-11-27")
 
 
 def test_cutover_holds_os_timer_across_steps_and_restores_previous_state(tmp_path):
@@ -171,8 +172,10 @@ restore_os_timer
     )
 
 
-def test_t3_wrapper_runs_with_absent_insights(tmp_path):
+def test_rescheduled_cutover_runs_with_absent_insights(tmp_path):
+    import json
     import os
+    import shlex
     import shutil
     import subprocess
     import sys
@@ -182,12 +185,20 @@ def test_t3_wrapper_runs_with_absent_insights(tmp_path):
     deployed = root / "ops/asus-server/growth-engine"
     deployed.mkdir(parents=True)
     shutil.copy(ops / "legacy-cutover-snapshot.py", deployed)
+    policy = Path("config/projects/venho_hotel/growth/cadence_policy.yaml")
+    (root / policy.parent).mkdir(parents=True)
+    shutil.copy(ops.parents[2] / policy, root / policy)
+    old_evidence = tmp_path / "venho/state/growth-engine/cutover-20261124"
+    old_evidence.mkdir(parents=True)
+    (old_evidence / "legacy-timers.tsv").write_text("old evidence")
     switch = deployed.parent / "venho-os/growth-backend-switch.sh"
     switch.parent.mkdir()
     switch.write_text('touch "$HOME/os-v2"\n')
     venv = root / ".venv/bin"
     venv.mkdir(parents=True)
-    (venv / "python").symlink_to(sys.executable)
+    python = venv / "python"
+    python.write_text(f'#!/bin/bash\nexec {shlex.quote(sys.executable)} "$@"\n')
+    python.chmod(0o700)
     (deployed / "setup-production-make-bearers.py").write_text("pass\n")
     project = tmp_path / "venho/growth-runtime/venho-ai-studio/data/projects/venho_hotel"
     (project / "publishing").mkdir(parents=True)
@@ -207,12 +218,13 @@ echo "$*" >> "$HOME/engine.calls"
 ''')
     engine.chmod(0o700)
     script = (ops / "cutover-window.sh").read_text()
+    script = script.replace('timestamp="$(TZ=Asia/Ho_Chi_Minh date \'+%F %H%M\')"', 'timestamp="$FAKE_NOW"')
     start = script.index("confirm() {")
     finish = script.index("control() {", start)
     # Use real snapshot checks and wrapper sequencing, with all host mutations stubbed.
     script = script[:start] + r'''
-confirm() { :; }
-date() { if [[ "$1" == +%F ]]; then echo 2026-11-24; else echo 1030; fi; }
+confirm() { echo "CONFIRM=$1"; }
+systemd-run() { :; }
 flock() { :; }
 curl() { if [[ -e "$HOME/os-v2" ]]; then echo 503; else echo 401; fi; }
 git() { case "$3" in rev-parse|hash-object) echo matched ;; esac; }
@@ -240,12 +252,65 @@ systemctl() {
   esac
 }
 ''' + script[finish:]
-    for step in ("stop-legacy", "snapshot", "switch-and-epoch", "rotate", "dry-run", "live"):
-        result = subprocess.run(
-            ["bash", "-s", "--", step], input=script, text=True, capture_output=True,
-            env={**os.environ, "HOME": str(tmp_path)},
+    def run(step, timestamp, wrapper=script):
+        return subprocess.run(
+            ["bash", "-s", "--", step], input=wrapper, text=True, capture_output=True,
+            env={**os.environ, "HOME": str(tmp_path), "FAKE_NOW": timestamp},
         )
+
+    for step, now, reason in (
+        ("t2", "2026-11-25 0830", "publish window"),
+        ("t2", "2026-11-25 0930", "publish window"),
+        ("stop-legacy", "2026-11-24 1030", "wrong_cutover_date"),
+        ("rollback-restore", "2026-11-27 1030", "rollback_requires_separate"),
+        ("expand", "2026-11-27 0829", "wrong_group_window"),
+        ("expand", "2026-11-27 0930", "publish window"),
+        ("resume-three", "2026-11-28 0830", "publish window"),
+        ("resume-three", "2026-11-28 0931", "wrong_group_window"),
+    ):
+        blocked = run(step, now)
+        assert blocked.returncode != 0 and reason in blocked.stderr, (step, now, blocked.stderr)
+
+    for assignment in ("FIRST_SLOT=2026-11-26", "GROUP_SLOT=2026-11-29"):
+        key = assignment.split("=")[0]
+        bad = "\n".join(assignment if line.startswith(key + "=") else line for line in script.splitlines())
+        blocked = run("t2", "2026-11-25 0931", bad)
+        assert blocked.returncode != 0 and "invalid_cutover_schedule" in blocked.stderr
+
+    registry = project / "publishing/publication_registry.json"
+    registry.write_text(json.dumps({"publications": [
+        {"slot_id": "slot-2026-11-25-fb", "status": "PUBLISHED"},
+        {"slot_id": "slot-2026-11-27-fb", "status": "APPROVED_SCHEDULED"},
+    ]}))
+    blocked = run("stop-legacy", "2026-11-26 1030")
+    assert blocked.returncode != 0 and "approved_scheduled" in blocked.stdout
+    assert not (tmp_path / "workflow-off").exists()
+    registry.write_text(json.dumps({"publications": [
+        {"slot_id": "slot-2026-11-25-fb", "status": "PUBLISHED"},
+    ]}))
+
+    steps = [
+        ("t2", "2026-11-25 0931"),
+        *((step, "2026-11-26 1030") for step in (
+            "stop-legacy", "snapshot", "switch-and-epoch", "rotate", "dry-run", "live",
+        )),
+        ("expand", "2026-11-27 0931"),
+        ("resume-three", "2026-11-27 2300"),
+        ("status", "2026-11-28 0931"),
+    ]
+    for step, now in steps:
+        result = run(step, now)
         assert result.returncode == 0, (step, result.stdout, result.stderr)
-        if step != "stop-legacy":
+        assert "prior_evidence_ignored" in result.stderr
+        if step == "t2":
+            assert "CONFIRM=PREPARE_27" in result.stdout
+        if step in {"snapshot", "switch-and-epoch", "rotate", "dry-run", "live"}:
             assert "INSIGHTS=ABSENT (D2 deferred)" in result.stdout
-    assert "cutover-ops resume-hanoi" in (tmp_path / "engine.calls").read_text()
+    assert (old_evidence / "legacy-timers.tsv").read_text() == "old evidence"
+    assert (old_evidence.parent / "cutover-20261126/legacy-snapshot/manifest.json").is_file()
+    calls = (tmp_path / "engine.calls").read_text()
+    assert "prepare-slot --date 2026-11-27 --channel fb_hanoi" in calls
+    assert "cutover-ops resume-hanoi --date 2026-11-27" in calls
+    assert "prepare-slot --date 2026-11-28 --channel group" in calls
+    assert calls.count("cutover-ops verified-hanoi --date 2026-11-27") == 2
+    assert calls.index("backup offsite-status") < calls.index("cutover-ops resume-all --date 2026-11-28")

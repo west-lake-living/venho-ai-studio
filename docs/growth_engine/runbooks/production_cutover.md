@@ -1,14 +1,23 @@
-# GC2 production cutover — 24/11/2026 ICT
+# GC2 production cutover — 26/11/2026 ICT
 
-Harry đã chốt **phương án B theo lịch 23–27/11**. Trong lịch này, v2 mở theo từng kênh và **legacy ngừng đăng cả ba kênh từ 25/11**. Không dùng cấu hình lai từng được gọi là B trong bản cũ. Bỏ trống Page Ven Hồ và Instagram ngày 25/11 là chủ ý. Cadence thứ Hai/Tư/Sáu/Bảy lúc 09:00 ICT.
+Harry chốt **phương án A** sau khi T3 ngày 24/11 không chạy. Giữ lượt legacy 25/11 đã duyệt và đổi slot v2 đầu tiên sang 27/11. Legacy dừng cả ba kênh từ slot 27/11. Ngày 27/11 chỉ Hanoi đăng, Page Ven Hồ và Instagram bỏ trống. Cadence thứ Hai/Tư/Sáu/Bảy lúc 09:00 ICT.
+
+| Mốc | Việc thực hiện |
+|---|---|
+| T4 · 25/11 sau 09:30 | Legacy đã qua slot 09:00. Chạy `t2`, xác nhận `PREPARE_27`, export Make 5868920. |
+| T5 · 26/11 | `stop-legacy` → `snapshot` → `switch-and-epoch` → `rotate` → `dry-run` → duyệt Hanoi → `live`. |
+| T6 · 27/11 | Hanoi đăng lúc 09:00. Sau 09:30 chạy `expand` khi bài đã đối soát. Tối duyệt nhóm và chạy `resume-three`. |
+| T7 · 28/11 | Ba kênh đăng lúc 09:00. Sau 09:30 đối soát từng đích. |
+
+Wrapper lấy lịch từ đầu `cutover-window.sh`, kiểm hai slot theo cadence và lưu evidence tại `~/venho/state/growth-engine/cutover-20261126/`. Thư mục 24/11 nếu có chỉ được báo cảnh báo.
 
 Mốc operator cung cấp: GC2 `9c9e8dff`, schema 10, `DISABLED` + `global_pause=1`; P4/readiness PASS cho 21/11 09:00. VENHO OS `28beaefe367567ddbe89541d945a793196be85e5` có health route. API `127.0.0.1:8021`, hostname `growth-api.venhohotel.com`, Access app `growth-engine-production-internal`, service token `make-growth-engine-production`. Make hiện có scenario `5868920`; IP/port, DNS và quyền Meta được kiểm tra qua UI, không đổi nếu khớp.
 
-**Dừng cứng:** hết gate nào thì giữ pause. Từ 08:30 đến hết phút 09:30, wrapper chặn toàn bộ khối dưới đây. Riêng 25/11 09:00 xem Make History/Page **chỉ đọc qua UI**; chạy khối server sau 09:30. Không Run once, resend, đăng thử hoặc bắt slot cũ. Gate P9-T04 vẫn dành cho gỡ hẳn legacy. Quy trình bên dưới chỉ tạm dừng có thể đảo ngược, theo §12.2–12.3.
+**Dừng cứng:** hết gate nào thì giữ pause. Từ 08:30 đến hết phút 09:30, wrapper chặn toàn bộ khối dưới đây. Vào giờ đăng 25/11, 27/11 và 28/11 xem Make History/Page **chỉ đọc qua UI**; chạy khối server sau 09:30. Không Run once, resend, đăng thử hoặc bắt slot cũ. Gate P9-T04 vẫn dành cho gỡ hẳn legacy. Quy trình bên dưới chỉ tạm dừng có thể đảo ngược, theo §12.2–12.3.
 
 ## Cách chạy các khối
 
-Trước khối backup thứ Sáu 20/11, deploy **SHA bàn giao của PR/nhánh này** theo khối deploy từ origin trong [P4 runbook](p4_production_dry_run.md), vẫn giữ `DISABLED`/pause. GC2 không có migration mới. Dùng bootstrap độc lập bên dưới cho mỗi bước. Mỗi dòng gọi tự sinh file Bash riêng, xóa khi kết thúc và chuyển xác nhận qua wrapper TTY. Chạy từng dòng rồi kiểm kết quả trước khi chạy dòng tiếp theo.
+Deploy **SHA bàn giao của nhánh này** tối 24/11 hoặc sáng 25/11 sau hết phút 09:30 theo khối deploy từ origin trong [P4 runbook](p4_production_dry_run.md), vẫn giữ `DISABLED`/pause. GC2 không có migration mới. Dùng bootstrap độc lập bên dưới cho mỗi bước. Mỗi dòng gọi tự sinh file Bash riêng, xóa khi kết thúc và chuyển xác nhận qua wrapper TTY. Chạy từng dòng rồi kiểm kết quả trước khi chạy dòng tiếp theo.
 
 ```bash
 gc2_cutover() {
@@ -25,7 +34,7 @@ SCRIPT
 }
 ```
 
-## Thứ Sáu 20/11 — backup và rehearsal sau 09:30 ICT
+## Tham chiếu — backup và rehearsal ban đầu ngày 20/11
 
 ```bash
 gc2_cutover friday-backup
@@ -33,31 +42,31 @@ gc2_cutover friday-backup
 
 Deploy SHA mới trước khi chạy khối này. Gõ `FIRST_BACKUP` để tạo snapshot bằng Online Backup API, rehearsal trong thư mục tạm, bật timer user `growth-engine-backup.timer` mỗi giờ và kiểm Doctor `Backup age` PASS. Khối này không prepare slot, không thao tác legacy hay Make. Giữ production `DISABLED` + pause.
 
-Snapshot ở thư mục `backup-staging` cạnh DB thật (`~/venho/state/growth-engine/backup-staging/`), thư mục 700, archive 600. Manifest gồm `object_key` + SHA-256 cho originals/variants; thiếu/sai hash làm backup thất bại. Retention theo UTC giữ bản mới nhất của 48 bucket giờ, 14 ngày, 8 tuần, một file có thể thuộc nhiều bucket. Rehearsal kiểm integrity, foreign keys, manifest toàn bộ artifact, và làm bản copy `DISABLED` + pause + epoch mới; DB thật được mở read-only khi snapshot. Doctor Backup age PASS khi staging có bản hoàn tất ≤2 giờ; gate cutover yêu cầu **<1 giờ**. Archive staging chưa mã hóa, giữ trên ASUS trong vùng 700. Backup cùng đĩa có thể mất cùng DB nếu ổ hỏng, máy mất hoặc dữ liệu bị xóa. Theo [runbook offsite](backup_offsite.md), hoàn tất upload đã kiểm checksum và diễn tập Mac trước khi mở ba kênh ngày 26/11. T3 chỉ WARN nếu offsite còn thiếu hoặc quá cũ. Heartbeat sender hiện có; Doctor Heartbeat age vẫn WARN vì chưa có nguồn timestamp xác thực healthchecks.io, không suy ra PASS từ cấu hình URL.
+Snapshot ở thư mục `backup-staging` cạnh DB thật (`~/venho/state/growth-engine/backup-staging/`), thư mục 700, archive 600. Manifest gồm `object_key` + SHA-256 cho originals/variants; thiếu/sai hash làm backup thất bại. Retention theo UTC giữ bản mới nhất của 48 bucket giờ, 14 ngày, 8 tuần, một file có thể thuộc nhiều bucket. Rehearsal kiểm integrity, foreign keys, manifest toàn bộ artifact, và làm bản copy `DISABLED` + pause + epoch mới; DB thật được mở read-only khi snapshot. Doctor Backup age PASS khi staging có bản hoàn tất ≤2 giờ; gate cutover yêu cầu **<1 giờ**. Archive staging chưa mã hóa, giữ trên ASUS trong vùng 700. Backup cùng đĩa có thể mất cùng DB nếu ổ hỏng, máy mất hoặc dữ liệu bị xóa. Theo [runbook offsite](backup_offsite.md), hoàn tất upload đã kiểm checksum và diễn tập Mac trước khi mở ba kênh tối 27/11. T5 chỉ WARN nếu offsite còn thiếu hoặc quá cũ. Heartbeat sender hiện có; Doctor Heartbeat age vẫn WARN vì chưa có nguồn timestamp xác thực healthchecks.io, không suy ra PASS từ cấu hình URL.
 
-## T2 23/11 — sau 09:30 ICT
+## T4 25/11 — sau 09:30 ICT
 
 ```bash
 gc2_cutover t2
 ```
 
-Wrapper kiểm snapshot mới dưới một giờ rồi mới hỏi `PREPARE_25`. Chỉ bật Hanoi `--prepare-only` và queue slot 25/11 09:00. Kỳ vọng `QUEUED`; theo dõi `gc2_cutover status 2026-11-25` tới `IN_REVIEW`. Legacy vẫn nhận duyệt thứ Hai. Nếu snapshot cũ, kiểm timer trước và chạy `gc2_cutover backup-check` riêng.
+Wrapper kiểm snapshot mới dưới một giờ rồi mới hỏi `PREPARE_27`. Chỉ bật Hanoi `--prepare-only` và queue slot 27/11 09:00. Kỳ vọng `QUEUED`; theo dõi `gc2_cutover status 2026-11-27` tới `IN_REVIEW`. Lượt 25/11 đã duyệt vẫn do legacy đăng. Delivery v2 đã chuẩn bị cho 25/11 nếu còn `IN_REVIEW` sẽ tự chuyển `EXPIRED` sau deadline 09:30, theo tick 60 giây của publish worker kể cả khi `DISABLED` và pause. Tại 09:31 nếu tick chưa chạy, chờ rồi kiểm `gc2_cutover status 2026-11-25`. Trước `live`, kiểm delivery 21/11 (`2509f430…`) và 25/11 đều `EXPIRED`, không có outbox/command hay execution mới. Nếu còn nonterminal sau một tick, kiểm worker và dừng tại gate. Nếu snapshot cũ, kiểm timer trước và chạy `gc2_cutover backup-check` riêng.
 
-**Make UI T2:** xuất riêng blueprint nguyên trạng scenario production `5868920` qua **Copy blueprint to clipboard**. Lưu vào `_incoming/make_production_export.json` mode 600, ghi SHA-256 và xóa clipboard; không ghi nội dung. Giữ bản gốc để rollback. Chuẩn bị bản scaffold TEST trước import có Webhook 2, HTTP Download 4, Router 5, posts 3/6/12 và mẫu HTTP/Ignore 14/15. Bản TEST sau import không phải scaffold hợp lệ.
+**Make UI T4:** xuất riêng blueprint nguyên trạng scenario production `5868920` qua **Copy blueprint to clipboard**. Lưu vào `_incoming/make_production_export.json` mode 600, ghi SHA-256 và xóa clipboard; không ghi nội dung. Giữ bản gốc để rollback. Chuẩn bị bản scaffold TEST trước import có Webhook 2, HTTP Download 4, Router 5, posts 3/6/12 và mẫu HTTP/Ignore 14/15. Bản TEST sau import không phải scaffold hợp lệ.
 
-## T3 24/11 — 10:00–12:00 ICT
+## T5 26/11 — cutover, ngày không có slot cadence
 
-1. **Preflight:** UI xác minh Make backup, VENHO OS release/health và BFF production. D1: Harry merge nhánh VENHO OS `codex/gc2-legacy-freeze` (`dd236e5`), chờ timer deploy và kiểm HEAD chứa commit. Legacy route chỉ trả 503 sau switch v2; ngày 23/11 vẫn duyệt legacy bình thường. Dùng `gc2_cutover status 2026-11-25` để xác nhận `DISABLED`, pause=1, chỉ Hanoi được prepare. `stop-legacy` kiểm backup <1 giờ, mapping ba kênh, không delivery quá hạn nonterminal, Hanoi `IN_REVIEW` hoặc `APPROVED`, không outbox/execution cho slot. Nếu chỉ thiếu backup mới, chạy `gc2_cutover backup-check` → `BACKUP` rồi chạy lại preflight. Vì Harry duyệt sau khi chuyển OS, preflight này dùng phần kiểm readiness không yêu cầu approval; gate cuối vẫn bắt buộc approval đúng revision/hash. Hiển thị trạng thái bảo trì cho đội duyệt và yêu cầu dừng thao tác Growth cũ trên dashboard, Telegram, direct callbacks và workflow trong thời gian freeze.
-2. **Dừng legacy:** `gc2_cutover stop-legacy` → `STOP_LEGACY`. Wrapper ghi trạng thái và tạm dừng `venho-os-deploy.timer`, xác minh deploy service đã drain, rồi disable user timers `venho-growth-publish-0900.timer`, `venho-growth-publish-1700.timer`, `venho-growth-weekly-cycle.timer`, `venho-growth-replace-rejected.timer`, `venho-growth-trend-scan.timer`, `venho-growth-fast-lane.timer`, `venho-growth-expire-stale.timer`. Các instances `venho-growth-publish@{primary,second,weekly-cycle,replace-rejected,trend-scan,fast-lane,expire-stale}.service` phải inactive. Không hard-kill job đang chạy. Giữ `venho-growth-reconcile` và `venho-growth-insights` vì chỉ đọc Meta/viết analytics riêng. Tắt manual workflow `growth-publish-scheduler.yml` ở `west-lake-living/venho-ai-studio`; yêu cầu `gh` có quyền Actions write ngay trên máy operator. Kiểm không còn run chưa kết thúc trên cả bốn workflow bằng `gh api --paginate --jq`: mỗi trang phải trả số 0. Kiểm cả quyền đọc các workflow và quyền tắt scheduler trước cửa sổ T3. Nếu thiếu quyền, dừng và xử lý quyền trước khi sang bước tiếp. Nếu unit/state khác inventory, dừng đối chiếu. Đối chiếu registry local theo Git blob với GitHub `main`; không sync hoặc reset tự động. Registry scan chặn `DISPATCHING`, row chưa rõ hoặc bài chờ duyệt/chờ đăng/đã đăng sẵn từ 25/11. Không xóa hay sửa tay registry; Harry phải quyết định disposition trước khi sang bước tiếp. Nếu cần kiểm lại sau khi drain, chạy `gc2_cutover snapshot` theo bước 3.
-3. **Drain và snapshot:** Claude kiểm Make History/queue/incomplete buffers, Meta scheduled posts trên cả ba đích và callback legacy vào webhook. Không còn lượt đang chạy, hàng đợi, bài hẹn lịch hoặc grant có thể đăng. `gc2_cutover snapshot` → `MAKE_DRAINED` để lưu private legacy registry/slots, bản sao SQLite của `growth.db` và checksum cho từng file có mặt. Nếu `~/venho/state/growth-reports/insights.db` tồn tại, snapshot và kiểm checksum như trước. Nếu T0-06 chưa chạy và file vắng, `INSIGHTS=ABSENT (D2 deferred)` là kết quả hợp lệ. Các lần kiểm sau phải phát hiện file xuất hiện hoặc biến mất sau snapshot, chạy backup v2 + rehearsal mới, và chạy `legacy-import --dry-run` trên bản sao. Xem báo cáo đếm/mapping đã lọc ở `~/venho/state/growth-engine/cutover-20261124/legacy-dry-run.md`. Importer production chưa an toàn cho Page B/IG và chưa có đường chuyển `insights.db` vào `metric_observations`. Không chuyển approval legacy, không apply delta/import insights vào DB thật từ bước này. D2 đã chốt theo §12.2(4,10): hoãn import thật. Task theo dõi sau cutover: triển khai và chạy backfill T0-06, xác minh mapping Page B/IG, viết đường chuyển insights sang `metric_observations`, đối chiếu report dry-run và xin duyệt trước khi apply.
+1. **Preflight:** UI xác minh Make backup, VENHO OS release/health và BFF production. D1: Harry merge nhánh VENHO OS `codex/gc2-legacy-freeze` (`dd236e5`), chờ timer deploy và kiểm HEAD chứa commit. Legacy route chỉ trả 503 sau switch v2; lượt legacy 25/11 đã duyệt vẫn chạy. Dùng `gc2_cutover status 2026-11-27` để xác nhận `DISABLED`, pause=1, chỉ Hanoi được prepare. `stop-legacy` kiểm backup <1 giờ, mapping ba kênh, không delivery quá hạn nonterminal, Hanoi `IN_REVIEW` hoặc `APPROVED`, không outbox/execution cho slot. Nếu chỉ thiếu backup mới, chạy `gc2_cutover backup-check` → `BACKUP` rồi chạy lại preflight. Vì Harry duyệt sau khi chuyển OS, preflight này dùng phần kiểm readiness không yêu cầu approval; gate cuối vẫn bắt buộc approval đúng revision/hash. Hiển thị trạng thái bảo trì cho đội duyệt và yêu cầu dừng thao tác Growth cũ trên dashboard, Telegram, direct callbacks và workflow trong thời gian freeze.
+2. **Dừng legacy:** `gc2_cutover stop-legacy` → `STOP_LEGACY`. Wrapper ghi trạng thái và tạm dừng `venho-os-deploy.timer`, xác minh deploy service đã drain, rồi disable user timers `venho-growth-publish-0900.timer`, `venho-growth-publish-1700.timer`, `venho-growth-weekly-cycle.timer`, `venho-growth-replace-rejected.timer`, `venho-growth-trend-scan.timer`, `venho-growth-fast-lane.timer`, `venho-growth-expire-stale.timer`. Các instances `venho-growth-publish@{primary,second,weekly-cycle,replace-rejected,trend-scan,fast-lane,expire-stale}.service` phải inactive. Không hard-kill job đang chạy. Giữ `venho-growth-reconcile` và `venho-growth-insights` vì chỉ đọc Meta/viết analytics riêng. Tắt manual workflow `growth-publish-scheduler.yml` ở `west-lake-living/venho-ai-studio`; yêu cầu `gh` có quyền Actions write ngay trên máy operator. Kiểm không còn run chưa kết thúc trên cả bốn workflow bằng `gh api --paginate --jq`: mỗi trang phải trả số 0. Kiểm cả quyền đọc các workflow và quyền tắt scheduler trước cửa sổ T5. Nếu thiếu quyền, dừng và xử lý quyền trước khi sang bước tiếp. Nếu unit/state khác inventory, dừng đối chiếu. Đối chiếu registry local theo Git blob với GitHub `main`; không sync hoặc reset tự động. Registry scan chặn `DISPATCHING`, row chưa rõ hoặc bài chờ duyệt/chờ đăng/đã đăng sẵn từ 27/11. Không xóa hay sửa tay registry; Harry phải quyết định disposition trước khi sang bước tiếp. Nếu cần kiểm lại sau khi drain, chạy `gc2_cutover snapshot` theo bước 3.
+3. **Drain và snapshot:** Claude kiểm Make History/queue/incomplete buffers, Meta scheduled posts trên cả ba đích và callback legacy vào webhook. Không còn lượt đang chạy, hàng đợi, bài hẹn lịch hoặc grant có thể đăng. `gc2_cutover snapshot` → `MAKE_DRAINED` để lưu private legacy registry/slots, bản sao SQLite của `growth.db` và checksum cho từng file có mặt. Nếu `~/venho/state/growth-reports/insights.db` tồn tại, snapshot và kiểm checksum như trước. Nếu T0-06 chưa chạy và file vắng, `INSIGHTS=ABSENT (D2 deferred)` là kết quả hợp lệ. Các lần kiểm sau phải phát hiện file xuất hiện hoặc biến mất sau snapshot, chạy backup v2 + rehearsal mới, và chạy `legacy-import --dry-run` trên bản sao. Xem báo cáo đếm/mapping đã lọc ở `~/venho/state/growth-engine/cutover-20261126/legacy-dry-run.md`. Importer production chưa an toàn cho Page B/IG và chưa có đường chuyển `insights.db` vào `metric_observations`. Không chuyển approval legacy, không apply delta/import insights vào DB thật từ bước này. D2 đã chốt theo §12.2(4,10): hoãn import thật. Task theo dõi sau cutover: triển khai và chạy backfill T0-06, xác minh mapping Page B/IG, viết đường chuyển insights sang `metric_observations`, đối chiếu report dry-run và xin duyệt trước khi apply.
 4. **VENHO OS cố định v2, epoch:** `gc2_cutover switch-and-epoch` → `SWITCH_V2` sau khi snapshot và dry-run bước 3 đạt. Switch giữ v2 sau khi thoát, kiểm health header v2 và login 200, rồi dùng audited `bump_epoch` khi GC2 còn `DISABLED` và chưa có grant production. Worker/API đọc epoch từ runtime controls; không sửa env thủ công. Wrapper kiểm legacy POST trả 503 sau switch v2. Claude đăng nhập, xác nhận Publishing v2, `channels`/controls scope, preview JPEG đúng và đường duyệt legacy đã bị khóa theo thực tế. Nếu URL cũ vẫn có thể ghi, dừng.
 5. **Bearer + Make:** `gc2_cutover rotate` → `ROTATE_BEARERS`. Restart ba service sau khi hash đổi; handoff mode 600 dùng đúng principal. Trên Mac chạy khối Make bên dưới, rồi import vào **scenario hiện có 5868920**, vì đây là webhook/connection authority đã được cấu hình cho cả ba route và chỉ có một scenario sản xuất cần quay lui. Không tạo scenario production song song. Import trong lúc không còn legacy sender và GC2 còn pause.
-6. **DRY_RUN:** Sau checklist UI, `gc2_cutover dry-run` → `MAKE_MAPPING_CHECKED`. Runtime `DRY_RUN` + pause. So mapping DB và config thật cho cả ba route, đối chiếu UI Page/account đích, cùng một webhook production chứa đúng router, slot 25 chỉ Hanoi, slot 27 dự kiến ba target. Wrapper in inventory cho 25 và 27; slot tương lai chưa tạo hiện mảng delivery rỗng, vẫn đối chiếu được ba mapping cấu hình. Không gửi webhook hoặc cấp grant để kiểm mapping. Khi đã gen slot 27, gate kiểm từng revision/mapping thực tế cho cả ba trước khi resume.
-7. **Duyệt:** Harry duyệt slot 25/11 09:00 Page `1124616474074140` trên VENHO OS v2. Tải lại thấy `APPROVED`, xem JPEG và caption. `gc2_cutover live` chạy gate trước khi hỏi `LIVE_HANOI`; kiểm revision/hash/QC, mapping, backup mới, không overdue, và chỉ Hanoi enabled. Kỳ vọng `LIVE_MANUAL`, pause=0, Page B và IG tắt. Legacy phải tiếp tục dừng. Wrapper khôi phục `venho-os-deploy.timer` về trạng thái cũ sau khi arm Hanoi; nếu khôi phục lỗi, kiểm timer và controls trước khi chạy tiếp. Sau giờ slot, không phát lại bất kỳ delivery đã quá deadline.
+6. **DRY_RUN:** Sau checklist UI, `gc2_cutover dry-run` → `MAKE_MAPPING_CHECKED`. Runtime `DRY_RUN` + pause. So mapping DB và config thật cho cả ba route, đối chiếu UI Page/account đích, cùng một webhook production chứa đúng router, slot 27 chỉ Hanoi, slot 28 dự kiến ba target. Wrapper in inventory cho 27 và 28; slot tương lai chưa tạo hiện mảng delivery rỗng, vẫn đối chiếu được ba mapping cấu hình. Không gửi webhook hoặc cấp grant để kiểm mapping. Khi đã gen slot 28, gate kiểm từng revision/mapping thực tế cho cả ba trước khi resume.
+7. **Duyệt:** Harry duyệt slot 27/11 09:00 Page `1124616474074140` trên VENHO OS v2. Tải lại thấy `APPROVED`, xem JPEG và caption. `gc2_cutover live` chạy gate trước khi hỏi `LIVE_HANOI`; kiểm revision/hash/QC, mapping, backup mới, không overdue, và chỉ Hanoi enabled. Kỳ vọng `LIVE_MANUAL`, pause=0, Page B và IG tắt. Legacy phải tiếp tục dừng. Wrapper khôi phục `venho-os-deploy.timer` về trạng thái cũ sau khi arm Hanoi; nếu khôi phục lỗi, kiểm timer và controls trước khi chạy tiếp. Sau giờ slot, không phát lại bất kỳ delivery đã quá deadline.
 
 ### Khối Mac — dựng file Make sau khi rotate bearer
 
-Chạy tại checkout cùng SHA bàn giao trên Mac, đã có hai file input ở bước T2. Dùng TTY thật; công cụ đọc Access ID/Secret ẩn. Không dán giá trị vào lệnh. Handoff lấy từ ASUS qua alias đã xác minh.
+Chạy tại checkout cùng SHA bàn giao trên Mac, đã có hai file input ở bước T4. Dùng TTY thật; công cụ đọc Access ID/Secret ẩn. Không dán giá trị vào lệnh. Handoff lấy từ ASUS qua alias đã xác minh.
 
 ```bash
 job="$(mktemp)"
@@ -80,26 +89,26 @@ bash "$job"
 
 **Make UI:** Sau import đặt **Immediately as data arrives**, bật **Sequential processing**, mở rồi **Save HTTP 25** (I1 GET, body trống) và Save scenario. Đối chiếu method trong mapper viết thường `get`/`post` và mọi key có gạch ngang trong mapping bọc backtick, ví dụ `headers.\`content-type\``. Common filter phải AND `schema_version = growth.command.v2` + `environment = production`; Router đúng ba filter `fb_hanoi`, `fb_venho`, `ig_venho`, fallback off. Xác minh Page Hanoi `1124616474074140`, Page Ven Hồ `803531149684177`, IG `17841457936965829`; production connection `Ven Ho Hotel Hanoi (Ha Pham)`. Instagram nhận signed image URL JPEG 4:5 (variant ≤5 MiB). Kiểm authorize/receipt/Skip đúng nhánh và giữ URL/webhook production không đổi. Xác nhận `/internal` yêu cầu Access, media signed đi đến API và no-store, Cloudflare Host/Access token name đúng. Khóa scenario nếu có sai lệch. Khi import/save/kiểm xong, xóa file import có bí mật và clipboard trên Mac; bản legacy backup vẫn giữ mode 600. Giữ bearer handoff mode 600 tối thiểu trong cửa sổ quay lui nếu cần nhập lại, rồi xóa bản Mac/ASUS.
 
-## T4 25/11 — kiểm bài đầu
+## T6 27/11 — kiểm bài đầu
 
 09:00 chỉ đọc Make History và Page Hanoi, ghi timestamp/ID, tuyệt đối không Run once. Sau 09:30:
 
 ```bash
-gc2_cutover status 2026-11-25
+gc2_cutover status 2026-11-27
 ```
 
 Kỳ vọng một command, execution `REPORTED/POST_CREATED`, receipt `APPLIED`, verification `EXISTS/MATCH`, delivery `PUBLISHED`, post ID tiền tố `1124616474074140_`. Đối chiếu bài thực tế trên Page. Page B/IG không có bài slot này. Nếu `UNKNOWN`, thiếu receipt hoặc thấy sai Page/ảnh, pause qua VENHO OS ngay nếu đang trong khung khóa script; ngoài khung dùng `gc2_cutover pause` → `PAUSE`. Đối chiếu Make History, Meta, receipts và [UNKNOWN runbook](unknown_reconcile.md). Không retry, resend, cấp grant mới hoặc bật Page B/IG.
 
-## T4 25/11 chiều — chuẩn bị nhóm 27/11
+## T6 27/11 sau 09:30 — chuẩn bị nhóm 28/11
 
 ```bash
 gc2_cutover expand
-gc2_cutover status 2026-11-27
+gc2_cutover status 2026-11-28
 ```
 
-Gõ `EXPAND_TO_THREE` sau khi wrapper chứng minh Hanoi `POST_CREATED`, receipt `APPLIED` và verification cùng execution khớp. Wrapper bật hai target bổ sung dưới global pause để tạo nội dung và queue một package cho ba target. Pause vẫn giữ tới T5. Nếu Hanoi không đạt, wrapper dừng trước khi bật hai target. Đối soát Make History, receipt timeout và Page thật theo [UNKNOWN runbook](unknown_reconcile.md).
+Gõ `EXPAND_TO_THREE` sau khi wrapper chứng minh Hanoi `POST_CREATED`, receipt `APPLIED` và verification cùng execution khớp. Wrapper bật hai target bổ sung dưới global pause để tạo nội dung và queue một package cho ba target. Pause giữ tới khi mở nhóm tối 27/11. Nếu Hanoi không đạt, wrapper dừng trước khi bật hai target. Đối soát Make History, receipt timeout và Page thật theo [UNKNOWN runbook](unknown_reconcile.md).
 
-## T5 26/11 — duyệt và mở nhóm cho slot 27/11
+## T6 27/11 tối — duyệt và mở nhóm cho slot 28/11
 
 Harry duyệt đủ ba delivery trên VENHO OS v2. Đối chiếu Page/account, JPEG, revision và hash trước khi chạy:
 
@@ -107,15 +116,15 @@ Harry duyệt đủ ba delivery trên VENHO OS v2. Đối chiếu Page/account, 
 gc2_cutover resume-three
 ```
 
-Hoàn tất [offsite và diễn tập restore trên Mac](backup_offsite.md) trước bước này. Wrapper kiểm lại Hanoi 25/11 và xác minh trên Drive rằng backup offsite chưa đủ 26 giờ, đúng thư mục và khớp checksum. Khi đạt, gõ `LIVE_THREE`. Engine kiểm lại offsite, backup cục bộ mới và approval hiện tại của cả ba target rồi mới bỏ global pause trong `LIVE_MANUAL`. Nếu offsite thiếu, cũ, lệch hash hoặc Drive lỗi, giữ nguyên pause. Kiểm timer và chạy lại `backup offsite-now` sau khi khắc phục.
+Hoàn tất [offsite và diễn tập restore trên Mac](backup_offsite.md) trước bước này. Wrapper kiểm lại Hanoi 27/11 và xác minh trên Drive rằng backup offsite chưa đủ 26 giờ, đúng thư mục và khớp checksum. Khi đạt, gõ `LIVE_THREE` tối 27/11. Cả `expand` và `resume-three` chỉ chạy sau hết phút 09:30 của slot Hanoi và trước 08:30 của slot nhóm. Engine kiểm lại offsite, backup cục bộ mới và approval hiện tại của cả ba target rồi mới bỏ global pause trong `LIVE_MANUAL`. Nếu offsite thiếu, cũ, lệch hash hoặc Drive lỗi, giữ nguyên pause. Kiểm timer và chạy lại `backup offsite-now` sau khi khắc phục.
 
-## T6 27/11 — ba kênh đăng lúc 09:00
+## T7 28/11 — ba kênh đăng lúc 09:00
 
-Trong khung khóa chỉ đọc Make History và ba đích. Sau 09:30 chạy `gc2_cutover status 2026-11-27` để đối soát receipt/verify từng target. Khi có UNKNOWN, pause và đối soát riêng, không đăng lại.
+Trong khung khóa chỉ đọc Make History và ba đích. Sau 09:30 chạy `gc2_cutover status 2026-11-28` để đối soát receipt/verify từng target. Khi có UNKNOWN, pause và đối soát riêng, không đăng lại.
 
 ## Các slot tiếp theo
 
-Jobs lane tạo slot/target tự động mỗi ngày 00:10 ICT, horizon 14 ngày. Tác vụ tạo delivery tự động chạy Chủ nhật 20:00 và 22:00, cộng fast lane mỗi giờ :40 từ 07:40 đến 22:40. Cả hai chỉ chạy khi production không DISABLED và không pause; fast lane hiện cũng có thể lấy target tương lai chưa có delivery. Vì vậy 28/11 có thể được tạo sau khi bỏ pause 26/11, còn 30/11 nằm trong lượt Chủ nhật 29/11 nếu chưa tạo. Không có SLA cố định T-2. Telegram nhắc T-24h và T-6h theo mốc hạn của bài nếu bot và dashboard URL HTTPS đã cấu hình, poll 15 phút. Mọi delivery vẫn cần Harry duyệt.
+Jobs lane tạo slot/target tự động mỗi ngày 00:10 ICT, horizon 14 ngày. Tác vụ tạo delivery tự động chạy Chủ nhật 20:00 và 22:00, cộng fast lane mỗi giờ :40 từ 07:40 đến 22:40. Cả hai chỉ chạy khi production không DISABLED và không pause; fast lane hiện cũng có thể lấy target tương lai chưa có delivery. Slot 28/11 được chuẩn bị bằng `expand`. Slot 30/11 nằm trong lượt Chủ nhật 29/11 nếu chưa tạo. Không có SLA cố định T-2. Telegram nhắc T-24h và T-6h theo mốc hạn của bài nếu bot và dashboard URL HTTPS đã cấu hình, poll 15 phút. Mọi delivery vẫn cần Harry duyệt.
 
 Nếu cần SLA T-2 cố định, task riêng là một lượt prepare hằng ngày cho đúng slot cadence sau hai ngày, idempotent theo slot, một package/ba target, reserve qua ledger hiện có và báo thiếu ngân sách. Ước tính 6.200 VND cho một draft + một ảnh, thêm 800–1.200 VND cho 2–3 lượt QC. Tổng 7.000–7.400 VND/slot, khoảng 112.000–140.600 VND cho 16–19 slot/tháng, trước ảnh bổ sung, retry và chi phí khác. Trần GC2 vẫn 500.000 VND/tháng.
 
@@ -123,11 +132,11 @@ Nếu cần SLA T-2 cố định, task riêng là một lượt prepare hằng n
 
 1. `gc2_cutover rollback-pause` → `ROLLBACK_PAUSE`. Pause rồi kiểm **0 production grants**, đặt `DISABLED`. Nếu đã có grant, giữ pause và forward-recover, không cấp lại quyền legacy.
 2. Claude deactivate scenario `5868920`, drain, import **bản legacy backup đã kiểm SHA-256**, đặt lại schedule cũ, kiểm hook/filter/connection và bật scenario theo trạng thái cũ. Kiểm không có run đang chờ và không có v2 grant. Không replay.
-3. Trong ngày 24, sau xác nhận Make và slot legacy còn an toàn, `gc2_cutover rollback-restore` → `LEGACY_MAKE_RESTORED`. Xác minh lại 0 grant, switch OS về legacy và kiểm health, bật từng timer/workflow theo snapshot ban đầu, kiểm enablement/activity/state. Có `Persistent=true`; ngoài ngày 24 wrapper chặn khôi phục timer tự động, cần Harry đối chiếu nguy cơ catch-up trước khi thao tác riêng. Wrapper kiểm POST không session lại trả 401; giữ `venho-os-deploy.timer` dừng khi rollback và in trạng thái. Nếu một phần khôi phục lỗi, giữ GC2 pause và kiểm từng trạng thái trước khi làm tiếp.
+3. Trong ngày 26/11, sau xác nhận Make và slot legacy còn an toàn, `gc2_cutover rollback-restore` → `LEGACY_MAKE_RESTORED`. Xác minh lại 0 grant, switch OS về legacy và kiểm health, bật từng timer/workflow theo snapshot ban đầu, kiểm enablement/activity/state. Có `Persistent=true`; ngoài `CUTOVER_DATE` wrapper chặn khôi phục timer tự động, cần Harry đối chiếu nguy cơ catch-up trước khi thao tác riêng. Wrapper kiểm POST không session lại trả 401; giữ `venho-os-deploy.timer` dừng khi rollback và in trạng thái. Nếu một phần khôi phục lỗi, giữ GC2 pause và kiểm từng trạng thái trước khi làm tiếp.
 
 ## Tham chiếu bootstrap hạ tầng ban đầu
 
-Các bước dưới đây là tham chiếu cài mới; vận hành đợt 23–27/11 theo các khối phía trên.
+Các bước dưới đây là tham chiếu cài mới; vận hành đợt 25–28/11 theo các khối phía trên.
 
 ## 0. Tạo snapshot triển khai và kiểm tra cổng
 

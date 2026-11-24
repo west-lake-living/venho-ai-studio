@@ -12,6 +12,7 @@ import sqlite3
 import tempfile
 from collections import Counter
 from contextlib import closing
+from datetime import date
 from pathlib import Path
 
 
@@ -67,10 +68,10 @@ def insights_present(path: Path | None) -> bool:
     return True
 
 
-def snapshot(legacy: Path, evidence: Path, *, check: bool, insights: Path | None) -> bool:
+def snapshot(legacy: Path, evidence: Path, *, check: bool, insights: Path | None, first_slot: str) -> bool:
     registry = legacy / PROJECT / "publishing/publication_registry.json"
     data = registry.read_bytes()
-    pending = blockers(json.loads(data), "2026-11-25")
+    pending = blockers(json.loads(data), first_slot)
     if pending:
         print(json.dumps({"result": "BLOCKED", "legacy_blockers": pending}, sort_keys=True))
         return False
@@ -135,9 +136,11 @@ def main() -> int:
     parser.add_argument("evidence", type=Path)
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--insights", type=Path)
+    parser.add_argument("--first-slot", required=True, type=date.fromisoformat)
     args = parser.parse_args()
     try:
-        return 0 if snapshot(args.legacy, args.evidence, check=args.check, insights=args.insights) else 1
+        return 0 if snapshot(args.legacy, args.evidence, check=args.check, insights=args.insights,
+                             first_slot=args.first_slot.isoformat()) else 1
     except (OSError, ValueError, KeyError, TypeError, AttributeError, sqlite3.Error):
         print('{"result":"BLOCKED","reason":"legacy_snapshot_or_registry_invalid"}')
         return 1
