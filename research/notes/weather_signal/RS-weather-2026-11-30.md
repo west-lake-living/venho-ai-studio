@@ -13,10 +13,10 @@ related_briefs: []
 verified_by_human: false
 tags:
 - weather
-- golden_sunset
+- cold_snap
 ---
 
-# 2026-11-30 — golden_sunset
+# 2026-11-30 — cold_snap
 
-- Hoàng hôn vàng trên Hồ Tây — rooftop cuối ngày
-- Scenario: venho_rooftop_sunset
+- Trở lạnh — sảnh ấm, đèn vàng
+- Scenario: venho_lobby_cozy

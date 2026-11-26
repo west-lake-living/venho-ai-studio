@@ -13,10 +13,10 @@ related_briefs: []
 verified_by_human: false
 tags:
 - weather
-- morning_mist
+- rain
 ---
 
-# 2026-12-02 — morning_mist
+# 2026-12-02 — rain
 
-- Sương sớm trên mặt hồ — cửa sổ phòng view hồ lúc bình minh
-- Scenario: venho_lake_view_room_sunrise, venho_rooftop_sunrise
+- Mưa ngoài cửa kính — không gian ấm trong sảnh
+- Scenario: venho_lobby_cozy
