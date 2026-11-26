@@ -23,6 +23,7 @@ os_timer_state="$evidence/venho-os-deploy.timer.state"
 os_freeze_commit=dd236e53fd153278daa7f846cb11ff3a2e7d52ca
 insights="$HOME/venho/state/growth-reports/insights.db"
 legacy_repo=west-lake-living/venho-ai-studio
+legacy_workflows=(growth-publish-scheduler.yml growth-daily-cycle.yml growth-replace-rejected.yml growth-expire-stale-approvals.yml)
 names=(0900 1700 weekly-cycle replace-rejected trend-scan fast-lane expire-stale)
 instances=(primary second weekly-cycle replace-rejected trend-scan fast-lane expire-stale)
 fail() { printf 'CUTOVER=BLOCKED reason=%s\n' "$1" >&2; exit 1; }
@@ -121,19 +122,21 @@ legacy_clear() {
   done
   local runs workflow registry remote_blob
   local drained_pattern=$'^0(\n0)*$'
-  for workflow in growth-publish-scheduler.yml growth-daily-cycle.yml growth-replace-rejected.yml growth-expire-stale-approvals.yml; do
+  [[ "$(legacy_write_status)" == 503 ]] || fail legacy_dashboard_write_not_frozen
+  for workflow in "${legacy_workflows[@]}"; do
+    [[ "$(gh api "repos/$legacy_repo/actions/workflows/$workflow" --jq .state)" == disabled_manually ]] \
+      || fail "${workflow}_not_disabled"
     runs="$(gh api --paginate "repos/$legacy_repo/actions/workflows/$workflow/runs?per_page=100" \
       --jq '[.workflow_runs[] | select(.status != "completed")] | length')" || fail legacy_workflow_query_failed
     [[ "$runs" =~ $drained_pattern ]] || fail "${workflow}_runs_not_drained"
   done
-  [[ "$(gh api "repos/$legacy_repo/actions/workflows/growth-publish-scheduler.yml" --jq .state)" == disabled_manually ]] || fail 'legacy GitHub workflow remains enabled'
   registry=data/projects/venho_hotel/publishing/publication_registry.json
   git -C "$legacy" fetch --quiet origin main >/dev/null 2>&1 || fail legacy_registry_fetch_failed
   remote_blob="$(git -C "$legacy" rev-parse "FETCH_HEAD:$registry" 2>/dev/null)" || fail legacy_remote_registry_missing
   [[ "$(git -C "$legacy" hash-object -- "$legacy/$registry")" == "$remote_blob" ]] || fail 'legacy local registry differs from GitHub'
   case "$1" in
-    check) "$venv/python" "$ops/legacy-cutover-snapshot.py" "$legacy" "$evidence" --check --insights "$insights" --first-slot "$FIRST_SLOT" ;;
-    snapshot) "$venv/python" "$ops/legacy-cutover-snapshot.py" "$legacy" "$evidence" --insights "$insights" --first-slot "$FIRST_SLOT" ;;
+    check) "$venv/python" "$ops/legacy-cutover-snapshot.py" "$legacy" "$evidence" --check --require-frozen --insights "$insights" --first-slot "$FIRST_SLOT" ;;
+    snapshot) "$venv/python" "$ops/legacy-cutover-snapshot.py" "$legacy" "$evidence" --require-frozen --insights "$insights" --first-slot "$FIRST_SLOT" ;;
   esac
 }
 validate_schedule || fail invalid_cutover_schedule
@@ -183,7 +186,10 @@ case "${1:-}" in
     "$engine" cutover-ops disabled-preflight --date "$FIRST_SLOT"
     "$venv/python" "$ops/legacy-cutover-snapshot.py" "$legacy" "$evidence" --check \
       --insights "$insights" --first-slot "$FIRST_SLOT"
+    printf '%s\n' 'Chỉ xác nhận sau khi Make 5868920 Inactive, đã drain History/queue và đã tạm dừng mọi callback legacy ngoài repo.'
     confirm STOP_LEGACY
+    "$venv/python" "$ops/legacy-cutover-snapshot.py" "$legacy" "$evidence" --record-frozen \
+      --first-slot "$FIRST_SLOT"
     [[ ! -e "$evidence/legacy-timers.tsv" ]] || fail 'legacy timer state already saved'
     tmp="$(mktemp "$evidence/.timers.XXXXXX")"
     trap 'rm -f -- "$tmp"' EXIT
@@ -196,9 +202,13 @@ case "${1:-}" in
       [[ "$active" == active || "$active" == inactive ]] || fail "${unit}_unexpected_activity"
       printf '%s\t%s\t%s\n' "$unit" "$enabled" "$active" >> "$tmp"
     done
-    workflow_state="$(gh api "repos/$legacy_repo/actions/workflows/growth-publish-scheduler.yml" --jq .state)"
-    [[ "$workflow_state" == active || "$workflow_state" == disabled_manually ]] || fail unexpected_legacy_workflow_state
-    printf '%s\n' "$workflow_state" > "$evidence/legacy-workflow-state"
+    workflow_tmp="$(mktemp "$evidence/.workflows.XXXXXX")"
+    trap 'rm -f -- "$tmp" "$workflow_tmp"' EXIT
+    for workflow in "${legacy_workflows[@]}"; do
+      workflow_state="$(gh api "repos/$legacy_repo/actions/workflows/$workflow" --jq .state)"
+      [[ "$workflow_state" == active || "$workflow_state" == disabled_manually ]] || fail unexpected_legacy_workflow_state
+      printf '%s\t%s\n' "$workflow" "$workflow_state" >> "$workflow_tmp"
+    done
     git -C "$HOME/venho/venho-os" merge-base --is-ancestor "$os_freeze_commit" HEAD 2>/dev/null \
       || fail legacy_write_guard_not_deployed
     hold_os_timer
@@ -206,10 +216,16 @@ case "${1:-}" in
       || fail legacy_write_guard_not_deployed
     [[ "$(legacy_write_status)" == 401 ]] || fail legacy_backend_probe_unexpected
     mv -- "$tmp" "$evidence/legacy-timers.tsv"
-    gh workflow disable growth-publish-scheduler.yml --repo west-lake-living/venho-ai-studio >/dev/null
+    mv -- "$workflow_tmp" "$evidence/legacy-workflows.tsv"
+    while IFS=$'\t' read -r workflow workflow_state; do
+      if [[ "$workflow_state" == active ]]; then
+        gh workflow disable "$workflow" --repo "$legacy_repo" >/dev/null
+      fi
+    done < "$evidence/legacy-workflows.tsv"
     while IFS=$'\t' read -r unit enabled active; do
       systemctl --user disable --now "$unit"
     done < "$evidence/legacy-timers.tsv"
+    bash "$root/ops/asus-server/venho-os/growth-backend-switch.sh" v2
     legacy_clear check
     ;;
   snapshot)
@@ -228,8 +244,6 @@ case "${1:-}" in
     confirm SWITCH_V2
     systemctl --user start growth-engine-backup.service
     "$engine" restore-rehearsal
-    bash "$root/ops/asus-server/venho-os/growth-backend-switch.sh" v2
-    [[ "$(legacy_write_status)" == 503 ]] || fail legacy_dashboard_write_not_frozen
     control epoch "$FIRST_SLOT"
     ;;
   rotate)
@@ -323,11 +337,14 @@ case "${1:-}" in
       [[ "$(systemctl --user show "$unit" -p ActiveState --value)" == "$active" ]] || fail timer_restore_activity_mismatch
       [[ "$(systemctl --user show "$unit" -p UnitFileState --value)" == "$enabled" ]] || fail timer_restore_enablement_mismatch
     done < "$evidence/legacy-timers.tsv"
-    prior="$(< "$evidence/legacy-workflow-state")"
-    if [[ "$prior" == active ]]; then
-      gh workflow enable growth-publish-scheduler.yml --repo west-lake-living/venho-ai-studio >/dev/null
-    fi
-    [[ "$(gh api repos/west-lake-living/venho-ai-studio/actions/workflows/growth-publish-scheduler.yml --jq .state)" == "$prior" ]] || fail workflow_restore_mismatch
+    [[ -s "$evidence/legacy-workflows.tsv" ]] || fail missing_workflow_snapshot
+    while IFS=$'\t' read -r workflow prior; do
+      if [[ "$prior" == active ]]; then
+        gh workflow enable "$workflow" --repo "$legacy_repo" >/dev/null
+      fi
+      [[ "$(gh api "repos/$legacy_repo/actions/workflows/$workflow" --jq .state)" == "$prior" ]] \
+        || fail workflow_restore_mismatch
+    done < "$evidence/legacy-workflows.tsv"
     [[ "$(legacy_write_status)" == 401 ]] || fail legacy_write_freeze_restore_mismatch
     printf 'ROLLBACK=PASS OS_DEPLOY_TIMER=%s STATE=inactive\n' "$os_timer"
     ;;

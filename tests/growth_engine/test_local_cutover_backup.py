@@ -66,18 +66,64 @@ def test_legacy_inventory_blocks_future_sends_and_in_flight_rows():
     import runpy
 
     tool = Path(__file__).resolve().parents[2] / "ops/asus-server/growth-engine/legacy-cutover-snapshot.py"
-    blockers = runpy.run_path(str(tool))["blockers"]
+    inventory = runpy.run_path(str(tool))["inventory"]
     registry = {"publications": [
         {"slot_id": "slot-2026-11-23-fb", "status": "PUBLISHED"},
+        {"slot_id": "slot-2026-11-23-fb", "status": "GATEWAY_ACCEPTED"},
         {"slot_id": "slot-2026-11-23-fb", "status": "DISPATCHING"},
         {"slot_id": "slot-2026-11-25-fb", "status": "APPROVED_SCHEDULED"},
-        {"slot_id": "slot-2026-11-27-ig", "status": "PENDING_APPROVAL"},
+        {"slot_id": "slot-2026-11-27-ig", "status": "PENDING_APPROVAL",
+         "publication_id": "pending", "platform": "instagram", "content": "private"},
         {"slot_id": "slot-2026-11-28-fb", "status": "CANCELLED"},
+        {"slot_id": "slot-2026-11-28-fb", "status": "GATEWAY_ACCEPTED"},
+        {"slot_id": "slot-2026-11-28-fb", "status": "PUBLISHED"},
+        {"slot_id": "slot-2026-11-28-fb", "status": "UNEXPECTED"},
+        {"slot_id": "slot-2026-11-28-fb", "status": "SUPERSEDED"},
+        {"slot_id": "slot-2026-11-28-fb", "status": "DISABLED"},
+        {"status": "SUPERSEDED"},
+        {"status": "DISABLED"},
+        {"status": "PENDING_APPROVAL"},
     ]}
-    assert blockers(registry, "2026-11-27") == {"dispatching": 1, "pending_approval": 1}
-    assert blockers(registry, "2026-11-25") == {
-        "dispatching": 1, "approved_scheduled": 1, "pending_approval": 1,
+    blockers, frozen = inventory(registry, "2026-11-27")
+    assert blockers == {
+        "dispatching": 1, "gateway_accepted": 1, "already_published": 1,
+        "other_unresolved": 1, "undated_unresolved": 1,
     }
+    assert frozen == [{"publication_id": "pending", "slot_date": "2026-11-27",
+                       "platform": "instagram", "status": "PENDING_APPROVAL"}]
+    assert inventory(registry, "2026-11-25")[0] == {**blockers, "approved_scheduled": 1}
+
+
+@pytest.mark.parametrize("new_status", ["APPROVED_SCHEDULED", "SUPERSEDED", "DISABLED"])
+def test_frozen_pending_inventory_detects_mutation(tmp_path, capsys, new_status):
+    import json
+    import runpy
+
+    tool = Path(__file__).resolve().parents[2] / "ops/asus-server/growth-engine/legacy-cutover-snapshot.py"
+    snapshot = runpy.run_path(str(tool))["snapshot"]
+    registry = tmp_path / "data/projects/venho_hotel/publishing/publication_registry.json"
+    registry.parent.mkdir(parents=True)
+    evidence = tmp_path / "evidence"
+    evidence.mkdir()
+    freeze = evidence / "legacy-frozen-pending.json"
+    row = {"publication_id": "pending", "platform": "facebook", "slot_id": "slot-2026-11-27-fb",
+           "status": "PENDING_APPROVAL", "content": "private"}
+    registry.write_text(json.dumps({"publications": [row]}))
+    options = {"insights": None, "first_slot": "2026-11-27"}
+    assert snapshot(tmp_path, evidence, check=True, **options)
+    assert "LEGACY_FROZEN_PENDING=1" in capsys.readouterr().out
+    assert not freeze.exists()
+    with pytest.raises(ValueError, match="legacy_frozen_pending_missing"):
+        snapshot(tmp_path, evidence, check=True, require_frozen=True, **options)
+    assert snapshot(tmp_path, evidence, check=False, record_frozen=True, **options)
+    assert "private" not in freeze.read_text()
+    assert freeze.stat().st_mode & 0o777 == 0o600
+    assert snapshot(tmp_path, evidence, check=True, require_frozen=True, **options)
+    row["status"] = new_status
+    registry.write_text(json.dumps({"publications": [row]}))
+    for check in (True, False):
+        with pytest.raises(ValueError, match="legacy_frozen_pending_changed"):
+            snapshot(tmp_path, evidence, check=check, require_frozen=True, **options)
 
 
 @pytest.mark.parametrize("present", [False, True])
