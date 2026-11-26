@@ -1032,6 +1032,13 @@ def build_container(
         if settings.env.lower() == "production"
         else {}
     )
+    def enqueue_due_tick():
+        result = enqueue_due.execute(clock.now_ms())
+        logger = logging.getLogger("growth_engine.publish")
+        for delivery_id in result.enqueued_delivery_ids:
+            logger.info("enqueue-due delivery_id=%s outcome=COMMAND_CREATED", delivery_id)
+        return result
+
     def expire_overdue_tick():
         result = expire_overdue.execute(clock.now_ms())
         logger = logging.getLogger("growth_engine.publish")
@@ -1043,7 +1050,7 @@ def build_container(
 
     worker_tasks = publish_lane_adapter.build_publish_tasks(
         {
-            "enqueue_due": lambda: enqueue_due.execute(clock.now_ms()),
+            "enqueue_due": enqueue_due_tick,
             "expire_overdue": expire_overdue_tick,
             "dispatch_outbox": lambda: dispatch_outbox.execute(clock.now_ms()),
             "apply_receipts": process_receipt_jobs.execute,

@@ -5,6 +5,7 @@ import logging
 import urllib.error
 import urllib.request
 from collections.abc import Mapping
+from dataclasses import replace
 from pathlib import Path
 from typing import Callable
 
@@ -78,7 +79,25 @@ def build_publish_tasks(handlers: Mapping[str, LaneHandler]) -> tuple[PeriodicTa
             return handlers["heartbeat"]()
 
         tasks.append(PeriodicTask("heartbeat", ping_if_healthy, interval_s=60))
-    return tuple(tasks)
+    counts = dict.fromkeys((task.name for task in tasks), 0)
+    logger = logging.getLogger("growth_engine.publish")
+
+    def counted(task: PeriodicTask) -> PeriodicTask:
+        def run() -> object:
+            counts[task.name] += 1
+            return task.fn()
+
+        return replace(task, fn=run)
+
+    def summarize() -> None:
+        logger.info("publish task counts: %s", " ".join(f"{name}={count}" for name, count in counts.items()))
+        for name in counts:
+            counts[name] = 0
+
+    return (
+        *(counted(task) for task in tasks),
+        PeriodicTask("publish-task-summary", summarize, interval_s=600),
+    )
 
 
 def _database_is_healthy(result: object) -> bool:

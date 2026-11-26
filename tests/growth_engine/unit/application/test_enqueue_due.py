@@ -367,3 +367,56 @@ def test_publish_lane_ticks_enqueue_every_30s_and_expire_every_60s() -> None:
     by_name["receipt-timeouts"].fn()
     by_name["meta-token-expiry"].fn()
     assert calls == ["enqueue", "expire", "dispatch", "notifications", "apply-receipts", "receipt-timeouts", "meta-token-expiry"]
+
+
+def test_publish_run_forever_keeps_periodic_and_cron_deadlines(caplog) -> None:
+    from collections import Counter
+    from datetime import datetime
+    from zoneinfo import ZoneInfo
+
+    import pytest
+    from growth_engine.adapters.inbound.workers.loop import PeriodicTask, WorkerLoop
+    from tests.growth_engine.support.fakes import FakeClock
+
+    ict = ZoneInfo("Asia/Ho_Chi_Minh")
+    start = int(datetime(2026, 11, 26, 8, 55, tzinfo=ict).timestamp() * 1000)
+    clock = FakeClock(start)
+    runs = Counter()
+    cron_runs = []
+
+    def handler(name):
+        def run():
+            runs[name] += 1
+            return True
+
+        return run
+
+    tasks = build_publish_tasks({
+        name: handler(name) for name in (
+            "enqueue_due", "expire_overdue", "dispatch_outbox", "notifications",
+            "apply_receipts", "receipt_timeouts", "meta_token_expiry", "database_health", "heartbeat",
+        )
+    })
+
+    class StopWorker(Exception):
+        pass
+
+    def sleep(seconds):
+        if clock.now_ms() + round(seconds * 1000) > start + 600_000:
+            raise StopWorker
+        clock.set(clock.now_ms() + round(seconds * 1000))
+
+    caplog.set_level("INFO", logger="growth_engine.publish")
+    cron = PeriodicTask("cron", lambda: cron_runs.append(clock.now_ms()), cron_ict="09:00")
+    with pytest.raises(StopWorker):
+        WorkerLoop((*tasks, cron), clock, sleep=sleep).run_forever()
+
+    assert runs == {
+        "enqueue_due": 20, "expire_overdue": 10, "dispatch_outbox": 120,
+        "notifications": 120, "apply_receipts": 120, "receipt_timeouts": 10,
+        "database_health": 10, "heartbeat": 10,
+    }
+    assert cron_runs == [start + 300_000]
+    assert sum("publish task counts:" in msg for msg in caplog.messages) == 1
+    assert "enqueue-due=20 expire-overdue=10 dispatch-outbox=120" in caplog.text
+    assert "meta-token-expiry=0" in caplog.text

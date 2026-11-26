@@ -1081,3 +1081,6 @@ def test_disabled_paused_production_expires_only_overdue_approved_delivery(
         assert tx.deliveries.get("delivery-sqlite").state is expected_state
         for table in ("outbox_commands", "executions", "paid_calls"):
             assert tx.connection.execute(f"SELECT count(*) FROM {table}").fetchone()[0] == 0
+        assert tx.connection.execute(
+            "SELECT count(*) FROM jobs WHERE kind='notify' AND business_key='delivery-expired:delivery-sqlite'"
+        ).fetchone()[0] == int(past_deadline)
