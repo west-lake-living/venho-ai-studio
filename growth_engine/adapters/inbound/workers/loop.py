@@ -85,20 +85,23 @@ class WorkerLoop:
         now_ms = self._clock.now_ms()
         if until_ms < now_ms:
             raise ValueError("until_ms must not precede the worker clock")
+        self._run(until_ms, now_ms)
+
+    def _run(self, until_ms: int | None, now_ms: int) -> None:
         due = {task.name: task.next_after(now_ms) for task in self._tasks}
 
         while due:
             task = min(self._tasks, key=lambda item: due[item.name])
             next_at = due[task.name]
-            if next_at > until_ms:
+            if until_ms is not None and next_at > until_ms:
                 return
             now_ms = self._clock.now_ms()
             if next_at > now_ms:
                 self._sleep((next_at - now_ms) / 1000)
                 now_ms = self._clock.now_ms()
                 if now_ms < next_at:
-                    raise RuntimeError("worker sleep did not advance the clock to the scheduled time")
-            if now_ms > until_ms:
+                    continue
+            if until_ms is not None and now_ms > until_ms:
                 return
             try:
                 task.fn()
@@ -112,12 +115,6 @@ class WorkerLoop:
 
     def run_forever(self) -> None:
         """Run until the process is stopped."""
-        while True:
-            next_at = min(
-                (task.next_after(self._clock.now_ms()) for task in self._tasks),
-                default=None,
-            )
-            if next_at is None:
-                self._sleep(60)
-                continue
-            self.run_until(next_at)
+        while not self._tasks:
+            self._sleep(60)
+        self._run(None, self._clock.now_ms())

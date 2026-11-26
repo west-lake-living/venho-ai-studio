@@ -1025,3 +1025,59 @@ class _TokenClaims:
     def __init__(self, **values) -> None:
         for name, value in values.items():
             setattr(self, name, value)
+
+
+@pytest.mark.parametrize("operator_run", [False, True])
+@pytest.mark.parametrize("deadline_ms", [10_000, 100_000])
+def test_disabled_paused_production_expires_only_overdue_approved_delivery(
+    tmp_path: Path, monkeypatch, caplog, operator_run: bool, deadline_ms: int,
+) -> None:
+    from growth_engine.adapters.inbound.cli import cutover_ops
+
+    settings = Settings(env="production", db_path=str(tmp_path / "growth.db"), media_root=str(tmp_path / "media"))
+    clock = FakeClock(20_000)
+    container = build_container(settings, clock=clock)
+    container.migration_service.run(Path(settings.db_path), check=False)
+    _seed_approved_delivery(container.uow_factory, environment="production", deadline_at_ms=deadline_ms)
+    past_deadline = deadline_ms < clock.now_ms()
+    if operator_run:
+        with pytest.raises(ValueError, match="expiry_requires_disabled_or_paused"):
+            cutover_ops.expire_overdue_now(settings)
+    with container.uow_factory().begin_immediate() as tx:
+        _, version = tx.controls.get_with_version("production")
+        assert tx.controls.compare_and_set(
+            "production", version, fields={"publish_mode": PublishMode.DISABLED, "global_pause": True},
+            updated_at_ms=clock.now_ms(),
+        )
+        assert tx.controls.get("production").mode is PublishMode.DISABLED
+        assert tx.controls.get("production").global_pause
+
+    if operator_run:
+        monkeypatch.setattr(cutover_ops, "now_ms", lambda: deadline_ms)
+        assert cutover_ops.expire_overdue_now(settings)["expired"] == []
+        monkeypatch.setattr(cutover_ops, "now_ms", clock.now_ms)
+        expected = [{"delivery_id": "delivery-sqlite", "reason": "deadline_passed"}] if past_deadline else []
+        assert cutover_ops.expire_overdue_now(settings)["expired"] == expected
+        assert cutover_ops.expire_overdue_now(settings)["expired"] == []
+    else:
+        class StopWorker(Exception):
+            pass
+
+        def sleep(seconds: float) -> None:
+            # Model a real sleep that overshoots its deadline.
+            next_ms = clock.now_ms() + round(seconds * 1000) + 1
+            if next_ms > 90_000:
+                raise StopWorker
+            clock.set(next_ms)
+
+        caplog.set_level("INFO", logger="growth_engine.publish")
+        monkeypatch.setattr(container.publish_lane._loop, "_sleep", sleep)
+        with pytest.raises(StopWorker):
+            container.publish_lane.run_forever()
+        assert ("expire-overdue delivery_id=delivery-sqlite outcome=EXPIRED" in caplog.text) == past_deadline
+
+    with container.uow_factory().read_only() as tx:
+        expected_state = DeliveryState.EXPIRED if past_deadline else DeliveryState.APPROVED
+        assert tx.deliveries.get("delivery-sqlite").state is expected_state
+        for table in ("outbox_commands", "executions", "paid_calls"):
+            assert tx.connection.execute(f"SELECT count(*) FROM {table}").fetchone()[0] == 0

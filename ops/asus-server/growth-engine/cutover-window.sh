@@ -270,6 +270,10 @@ case "${1:-}" in
     systemctl --user start growth-engine-backup.service
     "$engine" restore-rehearsal
     ;;
+  expire-overdue-now)
+    confirm EXPIRE
+    control expire-overdue-now "$FIRST_SLOT"
+    ;;
   status)
     "$engine" cutover-ops status --date "${2:-$FIRST_SLOT}"
     ;;

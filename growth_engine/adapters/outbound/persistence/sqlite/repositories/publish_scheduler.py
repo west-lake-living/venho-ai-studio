@@ -24,12 +24,15 @@ class SqlitePublishSchedulerStore:
         uow_factory: Callable[[], UnitOfWork],
         environment: str,
         signing_key_id: Callable[[], str] | None = None,
+        *,
+        expiry_guard: Callable[[UnitOfWork], None] | None = None,
     ) -> None:
         if environment not in {"test", "production"}:
             raise ValueError("environment must be test or production")
         self._uow_factory = uow_factory
         self._environment = environment
         self._signing_key_id = signing_key_id
+        self._expiry_guard = expiry_guard
 
     def read_controls(self) -> RuntimeControls | None:
         with self._uow_factory().read_only() as tx:
@@ -52,6 +55,8 @@ class SqlitePublishSchedulerStore:
 
     def overdue_delivery_ids(self, now_ms: int) -> Sequence[str]:
         with self._uow_factory().read_only() as tx:
+            if self._expiry_guard is not None:
+                self._expiry_guard(tx)
             rows = tx.connection.execute(
                 """SELECT d.id
                    FROM deliveries d
@@ -69,6 +74,8 @@ class SqlitePublishSchedulerStore:
     @contextmanager
     def begin_immediate(self) -> Iterator["SqlitePublishSchedulerTransaction"]:
         with self._uow_factory().begin_immediate() as tx:
+            if self._expiry_guard is not None:
+                self._expiry_guard(tx)
             yield SqlitePublishSchedulerTransaction(tx, self._environment, self._signing_key_id)
 
 

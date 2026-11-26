@@ -902,6 +902,8 @@ def cutover_ops(
         clock = datetime.now(ZoneInfo("Asia/Ho_Chi_Minh")).strftime("%H:%M")
         if "08:30" <= clock <= "09:30":
             raise ValueError("publish_window_locked")
+        if action == "expire-overdue-now":
+            return operator.expire_overdue_now(settings)
         return operator.gate(settings, action, local_date, actor="production-operator", correlation_id=str(uuid4()))
 
     _cutover_output(run)

@@ -731,6 +731,29 @@ class Container:
     restore_service: Any
 
 
+def run_production_expiry(db: Path, at_ms: int):
+    PublishMode = import_module("growth_engine.domain.publishing.runtime_mode").PublishMode
+    connect = import_module("growth_engine.adapters.outbound.persistence.sqlite.connection").connect
+    SqlitePublishSchedulerStore = import_module("growth_engine.adapters.outbound.persistence.sqlite.repositories.publish_scheduler").SqlitePublishSchedulerStore
+    SqliteUnitOfWork = import_module("growth_engine.adapters.outbound.persistence.sqlite.uow").SqliteUnitOfWork
+    ExpireOverdue = import_module("growth_engine.application.publishing.expire_overdue").ExpireOverdue
+
+    def guard(tx) -> None:
+        controls = tx.controls.get("production")
+        if controls is None or (controls.mode is not PublishMode.DISABLED and not controls.global_pause):
+            raise ValueError("expiry_requires_disabled_or_paused")
+        if tx.connection.execute(
+            """SELECT 1 FROM executions e JOIN deliveries d ON d.id=e.delivery_id
+               JOIN channels c ON c.id=d.channel_id WHERE c.environment='production' LIMIT 1"""
+        ).fetchone() is not None:
+            raise ValueError("expiry_requires_zero_production_grants")
+
+    store = SqlitePublishSchedulerStore(
+        lambda: SqliteUnitOfWork(lambda: connect(db)), "production", expiry_guard=guard,
+    )
+    return ExpireOverdue(store, _UuidIds()).execute(at_ms)
+
+
 def build_container(
     settings: Any,
     *,
@@ -1009,10 +1032,19 @@ def build_container(
         if settings.env.lower() == "production"
         else {}
     )
+    def expire_overdue_tick():
+        result = expire_overdue.execute(clock.now_ms())
+        logger = logging.getLogger("growth_engine.publish")
+        for delivery_id in result.expired_delivery_ids:
+            logger.info("expire-overdue delivery_id=%s outcome=EXPIRED reason=deadline_passed", delivery_id)
+        for delivery_id, reason in zip(result.skipped_delivery_ids, result.skip_reasons, strict=True):
+            logger.info("expire-overdue delivery_id=%s outcome=SKIPPED reason=%s", delivery_id, reason)
+        return result
+
     worker_tasks = publish_lane_adapter.build_publish_tasks(
         {
             "enqueue_due": lambda: enqueue_due.execute(clock.now_ms()),
-            "expire_overdue": lambda: expire_overdue.execute(clock.now_ms()),
+            "expire_overdue": expire_overdue_tick,
             "dispatch_outbox": lambda: dispatch_outbox.execute(clock.now_ms()),
             "apply_receipts": process_receipt_jobs.execute,
             "receipt_timeouts": watch_receipt_timeouts.execute,

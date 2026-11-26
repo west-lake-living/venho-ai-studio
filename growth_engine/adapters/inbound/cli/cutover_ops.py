@@ -114,6 +114,23 @@ def rehearsal(settings: Settings) -> dict:
             "foreign_key_check": "ok", "artifact_check": "ok", "dispatch_epochs_rotated": result.dispatch_epochs_rotated}
 
 
+def expire_overdue_now(settings: Settings) -> dict:
+    from growth_engine.bootstrap import run_production_expiry
+
+    result = run_production_expiry(database(settings), now_ms())
+    return {
+        "result": "PASS",
+        "expired": [
+            {"delivery_id": delivery_id, "reason": "deadline_passed"}
+            for delivery_id in result.expired_delivery_ids
+        ],
+        "skipped": [
+            {"delivery_id": delivery_id, "reason": reason}
+            for delivery_id, reason in zip(result.skipped_delivery_ids, result.skip_reasons, strict=True)
+        ],
+    }
+
+
 def state(settings: Settings, date: str) -> dict:
     db = database(settings)
     with closing(sqlite3.connect(db.as_uri() + "?mode=ro", uri=True)) as connection:
